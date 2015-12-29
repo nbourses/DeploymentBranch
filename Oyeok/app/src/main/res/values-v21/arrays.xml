@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--<string-array name="markArray">-->
+        <!--<item>Rental</item>-->
+        <!--<item>Sale</item>-->
+        <!--<item>Loan</item>-->
+        <!--<item>Auction</item>-->
+        <!--<item>Builder</item>-->
+    <!--</string-array>-->
+
+    <!--<string-array name="loanArray">-->
+        <!--<item>Home</item>-->
+        <!--<item>Car</item>-->
+        <!--<item>Peer</item>-->
+        <!--<item>Security</item>-->
+        <!--<item>Bike</item>-->
+    <!--</string-array>-->
+
+    <!--<string-array name="jobArray">-->
+        <!--<item>Mnc</item>-->
+        <!--<item>Govt</item>-->
+        <!--<item>Foreign</item>-->
+        <!--<item>Startups</item>-->
+        <!--<item>Internship</item>-->
+    <!--</string-array>-->
+
+    <!--<string-array name="intent">-->
+        <!--<item>See</item>-->
+        <!--<item>Show</item>-->
+    <!--</string-array>-->
+
+    <!--<string-array name="Purpose">-->
+        <!--<item>Residential</item>-->
+        <!--<item>Commercial</item>-->
+        <!--<item>Industrial</item>-->
+        <!--<item>Retail</item>-->
+    <!--</string-array>-->
+
+    <!--<string-array name="price">-->
+        <!--<item> </item>-->
+        <!--<item>500</item>-->
+        <!--<item>1000</item>-->
+        <!--<item>1500</item>-->
+        <!--<item> </item>-->
+    <!--</string-array>-->
+
+    <!--<string-array name="room">-->
+        <!--<item>1bhk</item>-->
+        <!--<item>2bhk</item>-->
+        <!--<item>3bhk</item>-->
+        <!--<item>4bhk</item>-->
+        <!--<item>5bhk</item>-->
+    <!--</string-array>-->
+
+    <!--<string-array name="values">-->
+
+        <!--<item>1200 </item>-->
+        <!--<item>1800</item>-->
+        <!--<item>2000</item>-->
+
+    <!--</string-array>-->
+
+    <!--<string-array name="max_min">-->
+        <!--<item>Max</item>-->
+        <!--<item> </item>-->
+        <!--<item></item>-->
+        <!--<item></item>-->
+        <!--<item>Min</item>-->
+    <!--</string-array>-->
+
+
+</resources>
