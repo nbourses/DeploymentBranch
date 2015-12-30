@@ -43,7 +43,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.SharedPrefs;
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Drooms_Client_new;
@@ -175,7 +175,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             @Override
             public void onClick(View v) {
 
-                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null);
+                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new());
             }
         });
         mVisits.setOnClickListener(new View.OnClickListener() {
@@ -184,7 +184,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
                 Bundle args = new Bundle();
                 args.putString("BrokerType", brokerType);
-                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(),args);
+                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs());
                 //OyeIntentSpecs oye = new OyeIntentSpecs();
 
                 ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs());
@@ -195,7 +195,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         mQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+
                 IntentIntegrator.forSupportFragment(RexMarkerPanelScreen.this).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES).setCaptureActivity(CaptureActivityAnyOrientation.class).setOrientationLocked(false).initiateScan();
             }
         });
@@ -375,8 +375,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         user.setLongitude(19.2);
         user.setLatitude(72.45);
         user.setLocality("andheri west");
-        user.setPincode("400058");
-		
+
         /*user.setDeviceId(dbHelper.getValue("deviceId"));
         user.setGcmId(dbHelper.getValue("dcmId"));
         user.setUserRole(dbHelper.getValue("userRole"));
@@ -457,30 +456,11 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 }
             });
 
-
-        } else {
-            //Intent intent = new Intent(this, MainActivity.class);
-            //startActivity(intent);
-
-            Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
         }
 
     }
 
-    @Override
-    public void onPositionSelected(int position, int count) {
 
-        Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
-        if(count!=2){
-            if(position==0)
-                 brokerType="rent";
-            else if(position==1)
-                brokerType="sale";
-        }
-        else{
-
-        }
-    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -525,6 +505,12 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             new LocationUpdater().execute();
         }
     }
+
+    @Override
+    public void onPositionSelected(int position) {
+        Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
+    }
+
     protected class LocationUpdater extends AsyncTask<Double, Double, String>{
         public JSONObject getJSONfromURL(String url) {
 
