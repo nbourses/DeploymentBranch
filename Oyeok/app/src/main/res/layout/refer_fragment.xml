@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/View"
+    android:background="@color/White"
+    >
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/layout">
+
+        <RelativeLayout android:id="@+id/relLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <TextView
+                android:id="@+id/t1"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Name"
+                android:textSize="20dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="30dp"
+
+                />
+            <TextView
+                android:id="@+id/t2"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Name"
+                android:textSize="20dp"
+                android:layout_alignTop="@+id/t1"
+                android:layout_marginRight="35dp"
+                android:layout_alignParentRight="true" />
+            <ImageView
+                android:id="@+id/imgView1"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/emptyprofile"
+                android:layout_alignTop="@+id/imgView3"
+                android:layout_marginLeft="35dp"
+                android:layout_alignParentStart="true" />
+            <ImageView
+                android:id="@+id/imgView2"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/connect"
+                android:layout_alignTop="@+id/imgView3"
+                android:layout_centerHorizontal="true" />
+            <ImageView
+                android:id="@+id/imgView3"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/emptyprofile"
+                android:layout_below="@+id/t2"
+                android:layout_alignStart="@+id/t2"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp" />
+            <LinearLayout
+                android:id="@+id/line_lay1"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_below="@+id/more"
+                android:visibility="gone">
+                <TextView android:text=""
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More>"
+                android:layout_marginRight="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="15dp"
+                android:textSize="20dp"
+                android:layout_below="@+id/imgView3"
+                android:clickable="true"
+                android:textColor="@color/Black"
+                />
+            <RelativeLayout
+                android:id="@+id/relLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/line_lay1">
+                <TextView
+                    android:id="@+id/t3"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="Your Earnings"
+                    android:layout_centerHorizontal="true"
+
+                    android:textSize="20dp"
+                    android:textColor="@color/Black"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="15dp"
+                    />
+                //Table
+                <TextView
+                    android:id="@+id/tt1"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="60dp"
+                    android:textSize="20dp"
+                    android:layout_below="@id/t3"
+                    android:text="4$"/>
+                <TextView
+                    android:id="@+id/tt2"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:paddingRight="60dp"
+                    android:textSize="20dp"
+                    android:layout_below="@id/t3"
+                    android:text="72$"/>
+                <TextView
+                    android:id="@+id/tt3"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="57dp"
+                    android:textSize="20dp"
+                    android:layout_below="@id/tt1"
+                    android:text="Via"/>
+
+                <TextView
+                    android:id="@+id/tt4"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="18dp"
+                    android:textSize="20dp"
+                    android:layout_alignParentRight="true"
+                    android:paddingRight="62dp"
+                    android:text="Via"
+                    android:layout_below="@id/tt2"/>
+                <TextView
+                    android:id="@+id/tt5"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textSize="20dp"
+                    android:paddingLeft="45dp"
+                    android:text="Friend"
+                    android:layout_below="@id/tt3"/>
+                <TextView
+                    android:id="@+id/tt6"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:textSize="20dp"
+                    android:text="Broker"
+                    android:layout_alignParentRight="true"
+                    android:paddingRight="50dp"
+                    android:layout_below="@id/tt4"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/line_lay2"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_below="@+id/details"
+                android:visibility="gone">
+                <TextView android:text=""
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Details>"
+                android:textSize="20dp"
+                android:textColor="@color/Black"
+                android:layout_marginRight="25dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/relLayout2"
+                android:clickable="true"
+                />
+
+            <Button
+                android:id="@+id/refer"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:text="Refer A Deal Start To Earn"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_below="@id/line_lay2"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/rect_button"
+                />
+        </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/relLayout3"
+        android:layout_marginTop="15dp"
+        >
+
+    </RelativeLayout>
+</RelativeLayout>
+</ScrollView>
