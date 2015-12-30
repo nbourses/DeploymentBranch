@@ -209,8 +209,8 @@
     <orderEntry type="library" exported="" name="retrofit-1.9.0" level="project" />
     <orderEntry type="library" exported="" name="materialdatetimepicker-2.0.2" level="project" />
     <orderEntry type="library" exported="" name="play-services-nearby-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="fab-1.6.2" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-23.1.1" level="project" />
     <orderEntry type="library" exported="" name="beta-1.1.4" level="project" />
     <orderEntry type="library" exported="" name="play-services-panorama-8.3.0" level="project" />
