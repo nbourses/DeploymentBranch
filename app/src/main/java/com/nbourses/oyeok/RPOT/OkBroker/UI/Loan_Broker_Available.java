@@ -57,10 +57,10 @@ public class Loan_Broker_Available extends Fragment implements CircularSeekBarNe
         displayOkText = (TextView) v.findViewById(R.id.displayOkText);
         mOkbutton = (Button) v.findViewById(R.id.okButton);
         rentText.setText("Loan : Rs 50L");
-
+        dbHelper = new DBHelper(getContext());
         pickContact = (Button) v.findViewById(R.id.pickContact);
         contactName = (TextView) v.findViewById(R.id.contactText);
-        dbHelper=new DBHelper(getContext());
+
 
         mOkbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,8 +73,6 @@ public class Loan_Broker_Available extends Fragment implements CircularSeekBarNe
         });
 
         JSONArray dummyData= new JSONArray();
-        cbn = (CircularSeekBarNew) v.findViewById(R.id.circularseekbar);
-        cbn.setmImageAction(this);
         cbn = (CircularSeekBarNew) v.findViewById(R.id.circularseekbar);
         cbn.setmImageAction(this);
         for(int i=0;i<2;i++) {
@@ -95,8 +93,7 @@ public class Loan_Broker_Available extends Fragment implements CircularSeekBarNe
                 e.printStackTrace();
             }
             try {
-                element.put("price", (1+i)*(100000));
-
+                element.put("price", (1 + i) * (100000));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -180,7 +177,7 @@ public class Loan_Broker_Available extends Fragment implements CircularSeekBarNe
 //        YoPopup yoPopup = new YoPopup();
 //        yoPopup.inflateYo(getActivity(), "LL-3BHK-20K", "broker");
         try {
-            rentText.setText("Price : Rs "+ m.getJSONObject(position).getString("price"));
+            rentText.setText("Loan : Rs "+ m.getJSONObject(position).getString("price"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

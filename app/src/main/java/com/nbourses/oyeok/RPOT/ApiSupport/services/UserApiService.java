@@ -116,8 +116,9 @@ import retrofit.http.POST;
        /* @POST("1/user/rating")
         void setUserRating(@Body User user, Callback<User>);*/
 
-        @POST("/1/test/gcm")
-        void testGcm(@Body User user, Callback<User> callback);
+        @POST("/1/user/gps")
+        void userGps(@Body User user, Callback<User> callback);
+
 
         @POST("/1/verify/mobile")
         void verifyMobile(@Body User user, Callback<MobileVerify> callback);

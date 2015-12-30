@@ -3,8 +3,12 @@ package com.nbourses.oyeok.RPOT.PriceDiscovery;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,6 +24,8 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.nbourses.oyeok.Database.DBHelper;
+import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.GoogleCloudMessaging.RegistrationIntentService;
 import com.nbourses.oyeok.JPOT.SalaryDiscovery.UI.JexMarkerPanelScreen;
 import com.nbourses.oyeok.LPOT.PriceDiscoveryLoan.UI.LexMarkerPanelScreen;
@@ -46,7 +52,7 @@ import io.branch.referral.util.LinkProperties;
 //import com.rockerhieu.emojicon.emoji.Emojicon;
 
 
-public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener, View.OnClickListener{
 
     private static final String[] INITIAL_PERMS={
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -90,12 +96,20 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     Button refer;
 
+  /*  @Override
+    public void onFragmentInteraction(String s) {
+        Log.i("House",""+s);
+        OyeIntentSpecs.data=s;
+    }*/
 
 
     public interface openMapsClicked{
         public void clicked();
     }
 
+    /*public void onFragmentInteraction(Uri uri){
+        //you can leave it empty
+    }*/
 
 
     @Override
@@ -109,6 +123,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             f1.onActivityResult(requestCode,resultCode,data);
         }
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,9 +145,14 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 openRightMenu();
             }
         });
+        dbHelper=new DBHelper(getBaseContext());
+
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+
+
 
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
@@ -144,17 +165,48 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 if (isChecked){
                     Toast.makeText(getBaseContext(), "offline mode",
                             Toast.LENGTH_LONG).show();
-                    //dbHelper.save(DatabaseConstants.offmode, "yes");
+                    dbHelper.save(DatabaseConstants.offmode, "yes");
+                    Log.i("offmode entry", dbHelper.getValue(DatabaseConstants.offmode));
+                    try {
+                        RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                        r.setPhasedSeekBar();
+                    }
+                    catch (ClassCastException e){
+                        Ok_Broker_MainScreen m= (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                        m.setPhasedSeekBar();
+                    }
+                    /*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
+                    r.setPhasedSeekBar();*/
                 }
                 else{
                     Toast.makeText(getBaseContext(), "online mode",
                             Toast.LENGTH_LONG).show();
-                    //dbHelper.save(DatabaseConstants.offmode, "no");
+                    dbHelper.save(DatabaseConstants.offmode, "null");
+                    Log.i("offmode entry", dbHelper.getValue(DatabaseConstants.offmode));
+                    try {
+                        RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                        r.setPhasedSeekBar();
+                    }
+                    catch (ClassCastException e){
+                        Ok_Broker_MainScreen m= (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                        m.setPhasedSeekBar();
+                    }
+                    /*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
+                    r.setPhasedSeekBar();*/
                 }
             }
         });
 
+
         setUpMenuChangeUserRole();
+
+        if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+            changeFragment(new Ok_Broker_MainScreen(),null);
+        else
+            displayView(0);
+
+
+
 
         openMaps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,11 +221,13 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         refer = (Button) findViewById(R.id.refer);
         refer.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                changeFragment(new ReferFragment());
+                changeFragment(new ReferFragment(), null);
             }
         });
         // display the first navigation drawer view on app launch
-        displayView(0);
+
+
+
     }
 
     @Override
@@ -245,7 +299,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 //                List<KeyValuePair> list=dbHelper.getAllKeyValuePair();
 //                for (KeyValuePair k:list )
 //                    Log.i("DB", k.getKey()+"  "+k.getValue());
+                Bundle bundle=new Bundle();
+                //bundle.putStringArray("propertySpecification",propertySpecification);
+                bundle.putString("lastFragment", "OyeIntentSpecs");
                 fragment = new SignUpFragment();
+                fragment.setArguments(bundle);
                 title= "Sign Up";
                 break;
             case 4:
@@ -275,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         String mobile = "Get contact number here!";
         //JSONObject sessionParams = branch.getFirstReferringParams();
         branch.setIdentity(mobile);
-
+        
         branchUniversalObject = new BranchUniversalObject()
                 // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
                 .setCanonicalIdentifier(mobile);
@@ -304,15 +362,17 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     }
 
 
-    public void changeFragment(Fragment f)
+    public void changeFragment(Fragment f, Bundle args)
     {
         Fragment fragment = f;
         if (fragment != null) {
+            f.setArguments(args);
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.container_body, fragment);
             fragmentTransaction.commit();
 
+            Log.i("Change Fragment",f.toString());
             // set the toolbar title
             getSupportActionBar().setTitle("Dealing rooms");
         }
@@ -384,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if (view == resideMenuItems[0]){
             //Amplitude.getInstance().logEvent("resideMenuItems[0] clicked");
 
-            changeFragment(new RexMarkerPanelScreen());
+            changeFragment(new RexMarkerPanelScreen(), null);
             Toast.makeText(getApplicationContext(), "Real Exchange HAS STARTED",
                     Toast.LENGTH_LONG).show();
 
@@ -398,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             resideMenuItems[1].tv_title.setTextColor(Color.BLUE);
             resideMenuItems[0].tv_title.setTextColor(Color.BLACK);
             resideMenuItems[2].tv_title.setTextColor(Color.BLACK);
-            changeFragment(new JexMarkerPanelScreen());
+            changeFragment(new JexMarkerPanelScreen(), null);
 
 
         }else if (view == resideMenuItems[2])
@@ -408,7 +468,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             resideMenuItems[2].tv_title.setTextColor(Color.BLUE);
             resideMenuItems[1].tv_title.setTextColor(Color.BLACK);
             resideMenuItems[0].tv_title.setTextColor(Color.BLACK);
-            changeFragment(new LexMarkerPanelScreen());
+            changeFragment(new LexMarkerPanelScreen(), null);
         }
         resideMenu.closeMenu();
     }
@@ -450,4 +510,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     //- End Implementing Reside Menu
 
     //refer button onclick
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

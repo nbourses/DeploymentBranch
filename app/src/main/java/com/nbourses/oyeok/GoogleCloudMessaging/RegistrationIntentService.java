@@ -9,11 +9,10 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 
 import java.io.IOException;
-
-import com.nbourses.oyeok.Database.SharedPrefs;
 
 /**
  * Created by YASH_SHAH on 28/12/2015.
@@ -44,7 +43,7 @@ public class RegistrationIntentService extends IntentService {
                 String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
                         GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
                 // [END get_token]
-                SharedPrefs.save(getBaseContext(), SharedPrefs.MY_GCM_ID,token);
+                SharedPrefs.save(this, SharedPrefs.MY_GCM_ID,token);
                 dbHelper.save(DatabaseConstants.gcmId, token);
                 // TODO: Implement this method to send any registration to your app's servers.
                 sendRegistrationToServer(token);

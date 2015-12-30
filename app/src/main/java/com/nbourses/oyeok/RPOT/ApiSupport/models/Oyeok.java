@@ -142,6 +142,31 @@ public class Oyeok {
     @SerializedName("price")
     private String price;
 
+
+
+    @SerializedName("property_type")
+    private String propertyType;
+
+
+    @SerializedName("property_subtype")
+    private String propertySubtype;
+
+    public String getPropertySubtype() {
+        return propertySubtype;
+    }
+
+    public void setPropertySubtype(String propertySubtype) {
+        this.propertySubtype = propertySubtype;
+    }
+
+    public String getPropertyType() {
+        return propertyType;
+    }
+
+    public void setPropertyType(String propertyType) {
+        this.propertyType = propertyType;
+    }
+
     //@JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 

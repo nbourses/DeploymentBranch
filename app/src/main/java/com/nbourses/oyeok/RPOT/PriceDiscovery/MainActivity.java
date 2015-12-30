@@ -1,11 +1,8 @@
 package com.nbourses.oyeok.RPOT.PriceDiscovery;
 
-import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,14 +18,14 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.nbourses.oyeok.Database.DBHelper;
+import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.GoogleCloudMessaging.RegistrationIntentService;
 import com.nbourses.oyeok.JPOT.SalaryDiscovery.UI.JexMarkerPanelScreen;
 import com.nbourses.oyeok.LPOT.PriceDiscoveryLoan.UI.LexMarkerPanelScreen;
-import com.nbourses.oyeok.MyFragment;
 import com.nbourses.oyeok.PayTM.PayTMFragment;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
-import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.ReferFragment.ReferFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
@@ -143,9 +140,13 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             }
         });
         dbHelper=new DBHelper(getBaseContext());
-        dbHelper.save(DatabaseConstants.userRole,"Client");
+
+
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+
+
 
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
@@ -190,7 +191,16 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             }
         });
 
+
         setUpMenuChangeUserRole();
+
+        if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+            changeFragment(new Ok_Broker_MainScreen(),null);
+        else
+            displayView(0);
+
+
+
 
         openMaps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,7 +219,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             }
         });
         // display the first navigation drawer view on app launch
-        displayView(0);
+
+
+
     }
 
     @Override
@@ -281,7 +293,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 //                List<KeyValuePair> list=dbHelper.getAllKeyValuePair();
 //                for (KeyValuePair k:list )
 //                    Log.i("DB", k.getKey()+"  "+k.getValue());
+                Bundle bundle=new Bundle();
+                //bundle.putStringArray("propertySpecification",propertySpecification);
+                bundle.putString("lastFragment", "OyeIntentSpecs");
                 fragment = new SignUpFragment();
+                fragment.setArguments(bundle);
                 title= "Sign Up";
                 break;
             case 4:

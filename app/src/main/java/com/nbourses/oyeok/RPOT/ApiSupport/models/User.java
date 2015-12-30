@@ -64,9 +64,9 @@ public class User {
 
         // Location Variables
         @SerializedName("long")
-        private Double Longitude;
+        private String Longitude;
         @SerializedName("lat")
-        private Double Latitude;
+        private String Latitude;
         @SerializedName("geo_num")
         private String geonum;
 
@@ -296,7 +296,7 @@ public class User {
          * The Longitude
          */
         //@JsonProperty("long")
-        public Double getLongitude() {
+        public String getLongitude() {
                 return Longitude;
         }
 
@@ -306,7 +306,7 @@ public class User {
          * The Longitude
          */
         //@JsonProperty("long")
-        public void setLongitude(Double Longitude) {
+        public void setLongitude(String Longitude) {
                 this.Longitude = Longitude;
         }
 
@@ -316,7 +316,7 @@ public class User {
          * The Latitude
          */
         //@JsonProperty("lat")
-        public Double getLatitude() {
+        public String getLatitude() {
                 return Latitude;
         }
 
@@ -326,7 +326,7 @@ public class User {
          * The Latitude
          */
         //@JsonProperty("lat")
-        public void setLatitude(Double Latitude) {
+        public void setLatitude(String Latitude) {
                 this.Latitude = Latitude;
         }
 

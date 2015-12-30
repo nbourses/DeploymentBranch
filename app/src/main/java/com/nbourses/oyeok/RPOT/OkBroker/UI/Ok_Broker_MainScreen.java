@@ -1,13 +1,18 @@
 package com.nbourses.oyeok.RPOT.OkBroker.UI;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,7 +39,9 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.PreOk;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.SlidingTabLayout.PagerItem;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.SlidingTabLayout.SlidingTabLayout;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
@@ -44,6 +51,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
+import com.nbourses.oyeok.SignUp.SignUpFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,13 +97,68 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 //        PagerSlidingTabStrip.width = width / 2;
          v= inflater.inflate(R.layout.broker_main_screen, container, false);
         ((MainActivity)getActivity()).setMapsClicked(this);
+
         //mHideShow = (LinearLayout) v.findViewById(R.id.showMap);
         mMapView = (FrameLayout) v.findViewById(R.id.mapView);
         bPinLocation = (ImageButton)v.findViewById(R.id.bPinLocation);
         dbHelper=new DBHelper(getContext());
         earnOk = (Button) v.findViewById(R.id.earnOk);
 
+        if(!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+        {
+            if(!dbHelper.getValue(DatabaseConstants.user).equals("Client"))
+            {
+                dbHelper.save(DatabaseConstants.userRole, "Broker");
+                Bundle bundle = new Bundle();
+                //bundle.putStringArray("propertySpecification",propertySpecification);
+                bundle.putString("lastFragment", "MainBroker");
+                Fragment fragment = null;
+                fragment = new SignUpFragment();
+                fragment.setArguments(bundle);
 
+                String title = "Sign Up";
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.container_body, fragment);
+                fragmentTransaction.commit();
+            }
+            else
+            {
+                dbHelper.save(DatabaseConstants.userRole, "Broker");
+                dbHelper.save(DatabaseConstants.user,"Broker");
+                String API="http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000";
+                //{"user_role":"broker","device_id":"device", "lat":89.2, "long":78.2, "user_role":"client", "gcm_id":"ping"}
+                RestAdapter restAdapter = new RestAdapter.Builder()
+                        .setEndpoint(API).setLogLevel(RestAdapter.LogLevel.FULL).build();
+                OyeokApiService service;
+
+                User user = new User();
+                user.setUserRole("broker");
+                user.setGcmId(dbHelper.getValue(DatabaseConstants.gcmId));
+                user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+                user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+                user.setDeviceId("deviceId");
+                if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
+                    try {
+                        UserApiService user1 = restAdapter.create(UserApiService.class);
+                        user1.userGps(user, new Callback<User>() {
+                            @Override
+                            public void success(User user, Response response) {
+                                Log.i("role changed to", "Broker");
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+                                Log.i("to broker failed", error.getMessage());
+                            }
+                        });
+                    }
+                    catch (Exception e){
+                        Log.i("Exception","caught in user gps call");
+                    }
+                }
+            }
+        }
         mPager = (ViewPager) v.findViewById(R.id.pager);
         mTabs  = (SlidingTabLayout) v.findViewById(R.id.tabs);
         //mTabs.setDistributeEvenly(true);
@@ -130,8 +193,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 ((MainActivity) getActivity()).changeFragment(new EarnOkFragment(), null);
             }
         });
-
-        preok();
+        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable())
+            preok();
 
 
 
@@ -460,6 +523,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         mCustomPhasedSeekbar.setListener(this);
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     public void preok() {
         String API = "http://52.25.136.179:9000";
         Oyeok preok = new Oyeok();
@@ -476,35 +546,37 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         OyeokApiService user1 = restAdapter.create(OyeokApiService.class);
-        user1.preOk(preok, new Callback<JsonElement>() {
-            @Override
-            public void success(JsonElement jsonElement, Response response) {
-                JsonObject k = jsonElement.getAsJsonObject();
-                try {
-                    JSONObject ne = new JSONObject(k.toString());
-                    Log.i("preok response",ne.toString());
+        try {
+            user1.preOk(preok, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+                    JsonObject k = jsonElement.getAsJsonObject();
+                    try {
+                        JSONObject ne = new JSONObject(k.toString());
+                        Log.i("preok response", ne.toString());
 
-                    JSONObject neighbours= ne.getJSONObject("responseData").getJSONObject("neighbours");
-                    JSONArray reqLl = neighbours.getJSONArray("req_ll");
-                    JSONArray reqOr = neighbours.getJSONArray("req_or");
-                    JSONArray avlLl = neighbours.getJSONArray("avl_ll");
-                    JSONArray avlOr = neighbours.getJSONArray("avl_or");
-                 //   Log.i("oye_id=", reqLl.getJSONObject(0).getString("oye_id"));
-                    dbHelper.save(DatabaseConstants.reqLl, reqLl.toString());
-                    dbHelper.save(DatabaseConstants.reqOr, reqOr.toString());
-                    dbHelper.save(DatabaseConstants.avlLl, avlLl.toString());
-                    dbHelper.save(DatabaseConstants.avlOr, avlOr.toString());
-                  //
-                  //  Log.i("req_ll from db: ", dbHelper.getValue(DatabaseConstants.reqLl));
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                        JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
+                        JSONArray reqLl = neighbours.getJSONArray("req_ll");
+                        JSONArray reqOr = neighbours.getJSONArray("req_or");
+                        JSONArray avlLl = neighbours.getJSONArray("avl_ll");
+                        JSONArray avlOr = neighbours.getJSONArray("avl_or");
+                        //   Log.i("oye_id=", reqLl.getJSONObject(0).getString("oye_id"));
+                        dbHelper.save(DatabaseConstants.reqLl, reqLl.toString());
+                        dbHelper.save(DatabaseConstants.reqOr, reqOr.toString());
+                        dbHelper.save(DatabaseConstants.avlLl, avlLl.toString());
+                        dbHelper.save(DatabaseConstants.avlOr, avlOr.toString());
+                        //
+                        //  Log.i("req_ll from db: ", dbHelper.getValue(DatabaseConstants.reqLl));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            @Override
-            public void failure(RetrofitError error) {
+                @Override
+                public void failure(RetrofitError error) {
 
-            }
+
+                }
 //            @Override
 //            public void success(PreOk.ResponseData n, Response response) {
 //                //Log.i("preok response",neighbours);
@@ -516,7 +588,10 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 //
 //
 //            }
-        });
+            });
+        }catch (Exception e){
+            Log.i("Exception","caught in preok");
+        }
     }
 
 }

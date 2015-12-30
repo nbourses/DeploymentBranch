@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 
 public class Rental_Broker_Requirement extends Fragment implements CircularSeekBarNew.imageAction {
 
@@ -73,8 +74,9 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
             @Override
             public void onClick(View v) {
 
-                if (mOkbutton.getText().toString().equals("Auto Ok")) {
-                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                if(mOkbutton.getText().toString().equals("Auto Ok"))
+                {
+                    ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
                 }
                 else{
                     AcceptOkCall a= new AcceptOkCall();

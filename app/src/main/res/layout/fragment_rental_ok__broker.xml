@@ -86,7 +86,7 @@
         android:layout_width="match_parent"
 
         android:layout_gravity="center"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_height="match_parent"
         app:circlenew_color="#81C784"
         app:circlenew_stroke_width="5dp"/>

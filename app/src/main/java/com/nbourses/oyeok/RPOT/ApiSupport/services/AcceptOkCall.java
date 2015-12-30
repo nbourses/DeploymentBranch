@@ -1,5 +1,8 @@
 package com.nbourses.oyeok.RPOT.ApiSupport.services;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
@@ -42,17 +45,17 @@ public class AcceptOkCall {
         //DBHelper dbHelper1= new DBHelper();
         acceptOk.setDeviceId("Hardware");
         acceptOk.setGcmId(dbHelper.getValue(DatabaseConstants.gcmId));
-        //acceptOk.setUserRole(dbHelper.getValue(DatabaseConstants.userRole));
-        acceptOk.setUserRole("broker");
+        acceptOk.setUserRole(dbHelper.getValue(DatabaseConstants.userRole));
+        //acceptOk.setUserRole("broker");
         acceptOk.setLong(SharedPrefs.getString(activity.getBaseContext(), SharedPrefs.MY_LNG));
-        acceptOk.setLat(SharedPrefs.getString(activity.getBaseContext(),SharedPrefs.MY_LAT));
+        acceptOk.setLat(SharedPrefs.getString(activity.getBaseContext(), SharedPrefs.MY_LAT));
         acceptOk.setTt(tt);
         acceptOk.setSize(size);
         acceptOk.setPrice(price);
         acceptOk.setReqAvl(reqAvl);
         acceptOk.setOyeId(oyeId);
-        //acceptOk.setUserId(dbHelper.getValue(DatabaseConstants.userId));
-        acceptOk.setUserId("yjhjoy71igl77w1as3krul7mb0wgavoy");
+        acceptOk.setUserId(dbHelper.getValue(DatabaseConstants.userId));
+        //acceptOk.setUserId("yjhjoy71igl77w1as3krul7mb0wgavoy");
         acceptOk.setOyeUserId(oyeUserId);
         acceptOk.setTimeToMeet("15");
 
@@ -60,16 +63,28 @@ public class AcceptOkCall {
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         OyeokApiService user1 = restAdapter.create(OyeokApiService.class);
-        user1.acceptOk(acceptOk, new Callback<AcceptOk>() {
-            @Override
-            public void success(AcceptOk acceptOk, Response response) {
-                Log.i("call chala","nachoo");
-            }
+        if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable(activity))
+        try {
+            user1.acceptOk(acceptOk, new Callback<AcceptOk>() {
+                @Override
+                public void success(AcceptOk acceptOk, Response response) {
+                    Log.i("call chala", "nachoo");
+                }
 
-            @Override
-            public void failure(RetrofitError error) {
-                Log.i("accept error",error.getMessage());
-            }
-        });
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.i("accept error", error.getMessage());
+                }
+            });
+        }catch (Exception e){
+            Log.i("Exception","caught in accept ok");
+        }
+    }
+
+    private boolean isNetworkAvailable(FragmentActivity activity) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

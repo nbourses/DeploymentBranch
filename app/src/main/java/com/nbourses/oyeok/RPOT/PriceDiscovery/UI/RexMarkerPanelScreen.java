@@ -2,11 +2,14 @@ package com.nbourses.oyeok.RPOT.PriceDiscovery.UI;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -51,18 +54,11 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCusto
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.QrCode.CaptureActivityAnyOrientation;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -73,6 +69,13 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import static android.support.v4.content.PermissionChecker.checkSelfPermission;
+
+/*import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;*/
 
 
 public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener {
@@ -164,7 +167,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void onClick(View v) {
                 Bundle args = new Bundle();
                 args.putString("BrokerType", brokerType);
-                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(),args);
+                args.putString("Address",SharedPrefs.getString(getActivity(),SharedPrefs.MY_REGION));
+                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(), args);
                 //OyeIntentSpecs oye = new OyeIntentSpecs();
 
                 //oye.setArguments(args);
@@ -276,13 +280,22 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     mMarkerPanel.setVisibility(View.VISIBLE);
                     mMarkerminmax.setVisibility(View.VISIBLE);
                     getPrice();
+                    LatLng latlng = map.getCameraPosition().target;
+                    lat = latlng.latitude;
+                    lng = latlng.longitude;
+                    if (isNetworkAvailable()) {
+                        try {
+                            getRegion();
+                        } catch (Exception e) {
+                            Log.i("Exception", "caught in get region");
+                        }
+                    }
                 }
-                LatLng latlng = map.getCameraPosition().target;
-                lat = latlng.latitude;
-                lng  = latlng.longitude;
-                SharedPrefs.save(getContext(),SharedPrefs.MY_LAT,lat+"");
-                SharedPrefs.save(getContext(), SharedPrefs.MY_LNG, lng + "");
-                getRegion();
+
+                SharedPrefs.save(getActivity(),SharedPrefs.MY_LAT,lat+"");
+                SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+
+
             }
         });
 
@@ -293,15 +306,28 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 if (location != null) {
                     lat = location.getLatitude();
                     lng = location.getLongitude();
-                    SharedPrefs.save(getContext(),SharedPrefs.MY_LAT,lat+"");
-                    SharedPrefs.save(getContext(),SharedPrefs.MY_LNG,lng+"");
-                    getRegion();
+                    SharedPrefs.save(getActivity(),SharedPrefs.MY_LAT,lat+"");
+                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                    if(isNetworkAvailable()) {
+                        try {
+                            getRegion();
+                        } catch (Exception e) {
+                            Log.i("Exception", "caught in get region");
+                        }
+                    }
+
                     LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
                     map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
                     map.animateCamera(CameraUpdateFactory.zoomTo(16));
 
                     //make retrofit call to get Min Max price
-                    getPrice();
+                    if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
+                        try {
+                            getPrice();
+                        } catch (Exception e) {
+
+                        }
+                    }
                 }
             }
         });
@@ -381,6 +407,12 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         }
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
     public void getPrice() {
 
@@ -390,8 +422,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         user.setDeviceId("Hardware");
         user.setGcmId("gliui");
         user.setUserRole("client");
-        user.setLongitude(19.2);
-        user.setLatitude(72.45);
+        user.setLongitude("19.2");
+        user.setLatitude("72.45");
         user.setLocality("andheri west");
         user.setPincode("400058");
 		
@@ -489,10 +521,14 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
         Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
         if(count!=2){
-            if(position==0)
-                 brokerType="rent";
-            else if(position==1)
-                brokerType="sale";
+            if(position==0) {
+                brokerType = "rent";
+                dbHelper.save(DatabaseConstants.brokerType, "ll");
+            }
+            else if(position==1) {
+                brokerType = "sale";
+                dbHelper.save(DatabaseConstants.brokerType, "or");
+            }
         }
         else{
 
@@ -518,7 +554,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         for(int i=0; i<addresses.get(0).getMaxAddressLineIndex(); i++){
             fullAddress += addresses.get(0).getAddressLine(i);
         }
-        SharedPrefs.save(getContext(),SharedPrefs.MY_REGION, fullAddress);
+        SharedPrefs.save(getActivity(),SharedPrefs.MY_REGION, fullAddress);
         Log.v(TAG, fullAddress);
         if (addresses.size() > 0) {
             pincode = addresses.get(0).getPostalCode();
@@ -532,7 +568,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         }
     }
     //alternative for geocoder
-    public static JSONObject getLocationInfo(String address) {
+   /* public static JSONObject getLocationInfo(String address) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
 
@@ -564,7 +600,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         }
 
         return jsonObject;
-    }
+    }*/
     private static List<Address> getAddrByWeb(JSONObject jsonObject){
         List<Address> res = new ArrayList<Address>();
         try

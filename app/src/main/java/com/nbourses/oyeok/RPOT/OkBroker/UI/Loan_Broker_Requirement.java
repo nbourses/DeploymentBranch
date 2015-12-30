@@ -56,7 +56,7 @@ public class Loan_Broker_Requirement extends Fragment implements CircularSeekBar
         displayOkText = (TextView) v.findViewById(R.id.displayOkText);
         mOkbutton = (Button) v.findViewById(R.id.okButton);
         rentText.setText("Loan : Rs 50L");
-
+        dbHelper = new DBHelper(getContext());
 
         pickContact = (Button) v.findViewById(R.id.pickContact);
         contactName = (TextView) v.findViewById(R.id.contactText);
@@ -110,7 +110,6 @@ public class Loan_Broker_Requirement extends Fragment implements CircularSeekBar
             }
             try {
                 element.put("price", (1+i)*(100000));
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -140,6 +139,12 @@ public class Loan_Broker_Requirement extends Fragment implements CircularSeekBar
                 e.printStackTrace();
             }
         }
+
+
+        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
+            cbn.setValues(dbHelper.getValue(DatabaseConstants.reqLl));
+        else
+            cbn.setValues(dummyData.toString());
 
 
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))

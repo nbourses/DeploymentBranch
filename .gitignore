@@ -1,5 +1,12 @@
+
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
 .DS_Store
-<<<<<<< HEAD
+/build
+/captures
+.DS_Store
 Oyeok/.idea/misc.xml
 
 Oyeok/app/app.iml
@@ -44,8 +51,7 @@ proguard/
 
 # Android Studio captures folder
 captures/
-=======
+
 .ds_store
 .Ds_store
 .DS_store
->>>>>>> 0c06deb4458303c75765ba011bd66dcd5a7bff36

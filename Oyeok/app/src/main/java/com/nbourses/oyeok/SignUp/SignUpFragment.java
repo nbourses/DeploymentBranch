@@ -5,6 +5,8 @@ import android.content.Context;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,14 +23,22 @@ import android.widget.Toast;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.Firebase.UserProfileFirebase;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.MobileVerify;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
+import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
+import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
 import com.nbourses.oyeok.User.UserProfileViewModel;
+import com.nbourses.oyeok.activity.MessagesFragment;
 
 import butterknife.Bind;
 import retrofit.Callback;
@@ -83,15 +93,29 @@ public class SignUpFragment extends Fragment {
     UserProfileFirebase userProfileFirebase;
     LinearLayout llsignup;
     LinearLayout llotp;
+    String[] propertySpecification;
+    Boolean redirectToOyeIntentSpecs=false;
+    Bundle b;
+    String lastFragment="";
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        b=getArguments();
+        if(b.getString("lastFragment")!=null)
+        if(b.getString("lastFragment")!=null)
+        lastFragment=b.getString("lastFragment");
+
+        if(lastFragment.equals("OyeIntentSpecs")){
+            Log.i("bundle_in",(b.getStringArray("propertySpecification"))[0]);
+            redirectToOyeIntentSpecs=true;
+            propertySpecification=b.getStringArray("propertySpecification");
+        }
         View view = inflater.inflate(R.layout.fragment_sign_up,
                 container, false);
-        dbHelper=new DBHelper(getContext());
+        dbHelper=new DBHelper(getActivity());
 
         name= (EditText) view.findViewById(R.id.etname);
         email= (EditText) view.findViewById(R.id.etemail);
@@ -199,7 +223,7 @@ public class SignUpFragment extends Fragment {
             llsignup.setVisibility(View.GONE);
             llotp.setVisibility(View.VISIBLE);
 
-            if(dbHelper.getValue("offmode").equals("no")) {
+            if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")) {
                     user1.verifyMobile(user, new Callback<MobileVerify>() {
                         @Override
 
@@ -226,9 +250,8 @@ public class SignUpFragment extends Fragment {
                     });
             }
             else{
-                Toast.makeText(getContext(), "sign up in offline mode done",
+                Toast.makeText(getContext(), "mobile verification in offline mode done",
                         Toast.LENGTH_LONG).show();
-                dbHelper.save(DatabaseConstants.offmode, "no");
             }
             }
         }
@@ -263,15 +286,22 @@ public class SignUpFragment extends Fragment {
                         getApplicationContext(),
                         "Please enable location services",
                         Toast.LENGTH_LONG).show();*/
-            if(otpReceived[0].equals(Svcode)) {
-                signup_success();
-                Log.i("error", "Validation success");
-            }
-            else{
+            if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")) {
+                if (otpReceived[0].equals(Svcode)) {
+                    signup_success();
+                    Log.i("", "Validation success");
+                } else {
                 /*Toast.makeText(
                         getContext(),
                         "Please Enter Otp as mentioned in the SMS"+Svcode,
                         Toast.LENGTH_LONG).show();*/
+                }
+            }
+            else{
+                Toast.makeText(
+                        getContext(),
+                        "otp validation in offline mode done",
+                        Toast.LENGTH_LONG).show();
             }
         }}
 
@@ -280,6 +310,8 @@ public class SignUpFragment extends Fragment {
 
 
         /*TelephonyManager tm = (TelephonyManager) context.getSystemService();*/
+
+
         Log.i("inside","signup");
         String API="http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000";
         my_user_id = "icroi614g4su7pxts6p4w2nt7891jm4u";
@@ -288,7 +320,7 @@ public class SignUpFragment extends Fragment {
         OyeokApiService service;
 
         User user = new User();
-        user.setMobileNo("8087275035");
+        user.setMobileNo("Snumber");
         user.setMobileCode("+91");
         user.setEmail(Semail);
         user.setName(Sname);
@@ -309,26 +341,80 @@ public class SignUpFragment extends Fragment {
         userProfileViewModel.setEmailId(Semail);
         userProfileViewModel.setDeviceId(my_user_id);
 
+        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")) {
+            UserApiService user1 = restAdapter.create(UserApiService.class);
+            user1.userSignUp(user, new Callback<SignUp>() {
+                @Override
+                public void success(SignUp signUp, retrofit.client.Response response) {
+                    Log.i("TAG", "Inside signup success");
+                    my_user_id=signUp.responseData.getUserId();
+                    dbHelper.save(DatabaseConstants.userId, my_user_id);
+                    Log.i("Firebase", userProfileViewModel.getUserProfile().toString());
+                    userProfileFirebase=new UserProfileFirebase(firebaseUrl,my_user_id);
+                    userProfileFirebase.setUserProfileValues(userProfileViewModel.getUserProfile());
+                    if(dbHelper.getValue(DatabaseConstants.userRole).equals("Broker"))
+                    {
+                        dbHelper.save(DatabaseConstants.user,"Broker");
+                    }
+                    else
+                        dbHelper.save(DatabaseConstants.user,"Client");
+                    if(redirectToOyeIntentSpecs)
+                    letsOye();
 
-        UserApiService user1 = restAdapter.create(UserApiService.class);
-        user1.userSignUp(user, new Callback<SignUp>() {
-            @Override
-            public void success(SignUp signUp, retrofit.client.Response response) {
-                Log.i("TAG", "Inside signup success");
-                my_user_id=signUp.responseData.getUserId();
-                Log.i("Firebase",userProfileViewModel.getUserProfile().toString());
-                userProfileFirebase=new UserProfileFirebase(firebaseUrl,my_user_id);
-                userProfileFirebase.setUserProfileValues(userProfileViewModel.getUserProfile());
-                Toast.makeText(getContext(), "signup success", Toast.LENGTH_LONG).show();
+                    Fragment fragment = null;
+                    if(lastFragment.equals("MainBroker"))
+                        fragment = new Ok_Broker_MainScreen();
+                    else{
+                        fragment = new RexMarkerPanelScreen();
+                    }
 
-            }
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.container_body, fragment);
+                    fragmentTransaction.commit();
+                   // Toast.makeText(getContext(), "signup success", Toast.LENGTH_LONG).show();
+                    /*if (redirectToOyeIntentSpecs)
+                    {
+                        Fragment fragment = null;
+                        Bundle bundle=new Bundle();
+                        bundle.putString("cameFrom","SignUp");
+                        bundle.putStringArray("propertySpecification",propertySpecification);
+                        fragment = new OyeIntentSpecs();
+                        fragment.setArguments(bundle);
+                        String title= "Oye Specifications";
+                        FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.container_body, fragment);
+                        fragmentTransaction.commit();
+                    }*/
 
-            @Override
-            public void failure(RetrofitError error) {
+                }
 
-                Log.i("TAG", "Inside signup Failure"+error.getMessage());
-            }
-        });
+                @Override
+                public void failure(RetrofitError error) {
+
+                    Log.i("TAG", "Inside signup Failure"+error.getMessage());
+                    if (redirectToOyeIntentSpecs)
+                    {
+                        Fragment fragment = null;
+                        Bundle bundle=new Bundle();
+                        bundle.putString("cameFrom","SignUp");
+                        bundle.putStringArray("propertySpecification",propertySpecification);
+                        fragment = new OyeIntentSpecs();
+                        fragment.setArguments(bundle);
+                        String title= "Oye Specifications";
+                        FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.container_body, fragment);
+                        fragmentTransaction.commit();
+                    }
+                }
+            });
+        }
+        else{
+            Toast.makeText(getContext(), "signup success in offline mode", Toast.LENGTH_LONG).show();
+        }
+
 
 
         //FirebaseClass.setAllValuesOfUserProfile("UserProfileViewModel", Snumber, my_user_id,"+91", Sname, Semail, user_role, regid, Str_Lng, Str_Lat);
@@ -370,6 +456,95 @@ public class SignUpFragment extends Fragment {
 
 
 
+
+
+    }
+
+    public void letsOye()
+    {
+        Oyeok oyeOk = new Oyeok();
+        oyeOk.setSpecCode(propertySpecification[2] + "-" + propertySpecification[1] + "-" + propertySpecification[4]);
+        oyeOk.setReqAvl(propertySpecification[3]);
+        oyeOk.setUserId(dbHelper.getValue(DatabaseConstants.userId));
+        oyeOk.setUserRole(dbHelper.getValue(DatabaseConstants.userRole));
+        oyeOk.setLong(SharedPrefs.getString(getActivity().getBaseContext(),SharedPrefs.MY_LNG));
+        oyeOk.setLat(SharedPrefs.getString(getActivity().getBaseContext(), SharedPrefs.MY_LAT));
+        oyeOk.setRegion(SharedPrefs.getString(getActivity().getBaseContext(), SharedPrefs.MY_REGION));
+        oyeOk.setPincode(dbHelper.getValue(DatabaseConstants.pinCode));
+
+        Log.i("UserId", "saved in DB");
+
+
+        /*oyeOk.setSpecCode("LL-3BHK-9Cr");
+        oyeOk.setReqAvl("req");
+        oyeOk.setUserId("egtgxhr02ai31a2uzu82ps2bysljv43n");
+        oyeOk.setUserRole("client");
+        oyeOk.setLong("19");
+        oyeOk.setLat("17");
+        oyeOk.setRegion("powai");
+        oyeOk.setPincode("400058");*/
+        String off_mode = "NO";
+        String API = "http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000";
+        RestAdapter restAdapter1 = new RestAdapter.Builder().setEndpoint(API).build();
+        restAdapter1.setLogLevel(RestAdapter.LogLevel.FULL);
+        OyeokApiService oyeok = restAdapter1.create(OyeokApiService.class);
+        oyeok.letsOye(oyeOk, new Callback<LetsOye>() {
+            @Override
+            public void success(LetsOye letsOye, retrofit.client.Response response) {
+                //if(!off_mode.equals("yes")) {
+                //String s = post(nameValuePairs);
+                String s = letsOye.getResponseData();
+                if (!s.equals("")) {
+                    try {
+
+                        if (s.equalsIgnoreCase("Your Oye is published")) {
+                                /*FirebaseClass.setOyebookRecord(UserCredentials.getString(EnterConfigActivity.this, PreferenceKeys.MY_SHORTMOBILE_KEY), reNt, show, lng.toString(), lat.toString(), user_id, bhkval + "BHK", msg4, UserCredentials.getString(EnterConfigActivity.this, PreferenceKeys.CURRENT_LOC_KEY));
+                                Intent NextActivity = new Intent(context, MainActivity.class);
+                                startActivity(NextActivity);
+                                UserCredentials.saveString(context, PreferenceKeys.SUCCESSFUL_HAIL, "true");*/
+                           // Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
+                            //finish();
+
+                        } else if (s.equalsIgnoreCase("User already has an active oye. Pls end first")) {
+                                /*Intent NextActivity = new Intent(context, MainActivity.class);
+                                startActivity(NextActivity);*/
+                           // Toast.makeText(getContext(), "You already have an active oye. Pls end it first", Toast.LENGTH_LONG).show();
+                            //finish();
+                        } else
+
+                        {
+                                /*Intent NextActivity = new Intent(context, MainActivity.class);
+                                startActivity(NextActivity);*/
+                           // Toast.makeText(getContext(), "There is some error.", Toast.LENGTH_LONG).show();
+                            //finish();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                    }
+
+                }
+                ((MainActivity) getActivity()).changeFragment(new MessagesFragment(), null);
+                /*}else
+                {
+                    *//*Intent NextActivity = new Intent(context, MainActivity.class);
+                    startActivity(NextActivity);*//*
+                    Toast.makeText(getContext(), "In offline mode.Done", Toast.LENGTH_LONG).show();
+                    //finish();
+                }*/
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+               /* Toast.makeText(getContext(), "lets oye call failed in enter config",
+                        Toast.LENGTH_LONG).show();*/
+                // FirebaseClass.setOyebookRecord(UserCredentials.getString(EnterConfigActivity.this,PreferenceKeys.MY_SHORTMOBILE_KEY),reNt,show,lng,lat,user_id,bhkval+"BHK",msg4,UserCredentials.getString(EnterConfigActivity.this,PreferenceKeys.CURRENT_LOC_KEY));
+                //Intent NextActivity = new Intent(context, MainActivity.class);
+                //startActivity(NextActivity);finish();
+                Log.i("TAG", "lets oye call failed in enter config");
+                Log.i("TAG", "inside error" + error.getMessage());
+            }
+        });
     }
 
 

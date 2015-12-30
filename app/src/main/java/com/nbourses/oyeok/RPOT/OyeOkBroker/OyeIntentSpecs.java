@@ -1,11 +1,10 @@
 package com.nbourses.oyeok.RPOT.OyeOkBroker;
 
 import android.app.Activity;
-
-import android.content.Intent;
-import android.net.Uri;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -16,8 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -26,14 +23,17 @@ import android.widget.Toast;
 import com.appyvet.rangebar.RangeBar;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.MyFragment;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.activity.MessagesFragment;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
+
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -46,7 +46,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
     DBHelper dbHelper;
     private Button mOye;
     public static String data="";
-    TextView rentOrSale;
+    TextView rentOrSale,inputSearch;
     String rentSale,budget="";
     Bundle b;
     RadioGroup seeShowGrp;
@@ -56,6 +56,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
     RangeBar priceRangeBar;
     String dataFromMyFragment="",seeOrShow="";
     String[] propertySpecification;
+    DiscreteSeekBar discreteSeekBar;
     //String off_mode;
     MyFragment myFragment;
     public OyeIntentSpecs() {
@@ -82,6 +83,8 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
         rentSale=b.getString("BrokerType");
         rentOrSale= (TextView) rootView.findViewById(R.id.textForRentSale);
+        inputSearch= (TextView) rootView.findViewById(R.id.inputSearch);
+        inputSearch.setText(b.getString("Address"));
         rentOrSale.setText(rentSale);
         dbHelper=new DBHelper(getContext());
         mOye = (Button) rootView.findViewById(R.id.bt_oye);
@@ -98,10 +101,63 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         seeShowGrp= (RadioGroup) rootView.findViewById(R.id.RadioBtnGroup);
         seeRadioButton= (RadioButton) rootView.findViewById(R.id.seeRadioButton);
         showRadioButton= (RadioButton) rootView.findViewById(R.id.showRadioButton);
+        discreteSeekBar=(DiscreteSeekBar) rootView.findViewById(R.id.discreteSeekBar1);
 
-        final FragmentManager fm = getChildFragmentManager();
+        /*final FragmentManager fm = getChildFragmentManager();
         final FragmentTransaction ft = fm.beginTransaction();
-        final Fragment fragOne = new MyFragment();
+        final Fragment fragOne = new MyFragment();*/
+
+
+        homeImageView.setSelected(true);
+        shopImageView.setSelected(false);
+        industrialImageView.setSelected(false);
+        officeImageView.setSelected(false);
+        othersImageView.setSelected(false);
+        LinearLayout fragContainer = (LinearLayout) getActivity().findViewById(R.id.linearlayout_container);
+
+        LinearLayout ll = new LinearLayout(getContext());
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+
+       // ll.setId(12345);
+        FragmentManager fm = getChildFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        MyFragment fragOne = new MyFragment();
+        fragOne.setmListener((MyFragment.OnFragmentInteractionListener) OyeIntentSpecs.this);
+        //fragOne.setmListener(OyeIntentSpecs.this);
+
+
+        fm.beginTransaction();
+        //Fragment fragOne = new MyFragment();
+        Bundle arguments = new Bundle();
+        arguments.putString("propertyType", "House");
+        fragOne.setArguments(arguments);
+        ft.replace(R.id.linearlayout_container, fragOne);
+        ft.commit();
+
+
+
+        discreteSeekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+            @Override
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+               /* if (fromUser) {
+                    settings.setTextZoom(value);
+                }*/
+                //int val= seekBar.getProgress();
+                String s = numToVal(value);
+                seekBar.setIndicatorFormatter(s);
+                budget = s;
+            }
+
+            @Override
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+        });
 
 
         seeShowGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
@@ -136,7 +192,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 LinearLayout ll = new LinearLayout(getContext());
                 ll.setOrientation(LinearLayout.HORIZONTAL);
 
-                ll.setId(12345);
+               // ll.setId(12345);
                  FragmentManager fm = getChildFragmentManager();
                  FragmentTransaction ft = fm.beginTransaction();
                  MyFragment fragOne = new MyFragment();
@@ -170,7 +226,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 LinearLayout ll = new LinearLayout(getContext());
                 ll.setOrientation(LinearLayout.HORIZONTAL);
 
-                ll.setId(12345);
+                //ll.setId(12345);
 
                 FragmentManager fm = getChildFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
@@ -217,7 +273,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 LinearLayout ll = new LinearLayout(getContext());
                 ll.setOrientation(LinearLayout.HORIZONTAL);
 
-                ll.setId(12345);
+                //ll.setId(12345);
                 FragmentManager fm = getChildFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 MyFragment fragOne = new MyFragment();
@@ -247,7 +303,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 LinearLayout ll = new LinearLayout(getContext());
                 ll.setOrientation(LinearLayout.HORIZONTAL);
 
-                ll.setId(12345);
+               // ll.setId(12345);
                 FragmentManager fm = getChildFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 MyFragment fragOne = new MyFragment();
@@ -276,7 +332,9 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 LinearLayout ll = new LinearLayout(getContext());
                 ll.setOrientation(LinearLayout.HORIZONTAL);
 
-                ll.setId(12345);
+                
+
+                //ll.setId(12345);
 
                 FragmentManager fm = getChildFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
@@ -294,6 +352,12 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         mOye.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String[] temp=dataFromMyFragment.split(" ");
+                if(temp.length<=1)
+                {
+                    Toast.makeText(getActivity().getBaseContext(),"Enter the value",Toast.LENGTH_SHORT);
+                }
+                else
                 letsOye();
             }
         });
@@ -321,7 +385,9 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
             Fragment fragment = null;
             Bundle bundle=new Bundle();
             bundle.putStringArray("propertySpecification",propertySpecification);
-            Log.i("Bundle_oye",propertySpecification[0]);
+            bundle.putString("lastFragment","OyeIntentSpecs");
+            Log.i("Bundle_oye", propertySpecification[0]);
+            dbHelper.save(DatabaseConstants.userRole,"Client");
             fragment = new SignUpFragment();
             fragment.setArguments(bundle);
             String title= "Sign Up";
@@ -335,9 +401,17 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
 
 
             Oyeok oyeOk = new Oyeok();
-            oyeOk.setSpecCode(propertySpecification[2] + "-" + propertySpecification[1] + "-" + propertySpecification[4]);
+            Log.i("tt="+propertySpecification[2]," size="+propertySpecification[1]+" price="+propertySpecification[4]+" req_avl="+propertySpecification[3]);
+            oyeOk.setTt(propertySpecification[2]);
+            oyeOk.setSize(propertySpecification[1]);
+            oyeOk.setPrice(propertySpecification[4]);
             oyeOk.setReqAvl(propertySpecification[3]);
             oyeOk.setUserId(dbHelper.getValue(DatabaseConstants.userId));
+            oyeOk.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+            oyeOk.setLat(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LAT));
+            oyeOk.setUserRole("client");
+            oyeOk.setPropertyType(propertySpecification[0]);
+            oyeOk.setPropertySubtype(propertySpecification[1]);
             Log.i("UserId", "saved in DB");
 
 
@@ -354,43 +428,45 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
             RestAdapter restAdapter1 = new RestAdapter.Builder().setEndpoint(API).build();
             restAdapter1.setLogLevel(RestAdapter.LogLevel.FULL);
             OyeokApiService oyeok = restAdapter1.create(OyeokApiService.class);
-            oyeok.letsOye(oyeOk, new Callback<LetsOye>() {
-                @Override
-                public void success(LetsOye letsOye, retrofit.client.Response response) {
-                    //if(!off_mode.equals("yes")) {
-                    //String s = post(nameValuePairs);
-                    String s = letsOye.getResponseData();
-                    if (!s.equals("")) {
-                        try {
+            if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
+                try {
+                    oyeok.letsOye(oyeOk, new Callback<LetsOye>() {
+                        @Override
+                        public void success(LetsOye letsOye, retrofit.client.Response response) {
+                            //if(!off_mode.equals("yes")) {
+                            //String s = post(nameValuePairs);
+                            String s = letsOye.getResponseData();
+                            if (!s.equals("")) {
+                                try {
 
-                            if (s.equalsIgnoreCase("Your Oye is published")) {
+                                    if (s.equalsIgnoreCase("Your Oye is published")) {
                                 /*FirebaseClass.setOyebookRecord(UserCredentials.getString(EnterConfigActivity.this, PreferenceKeys.MY_SHORTMOBILE_KEY), reNt, show, lng.toString(), lat.toString(), user_id, bhkval + "BHK", msg4, UserCredentials.getString(EnterConfigActivity.this, PreferenceKeys.CURRENT_LOC_KEY));
                                 Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);
                                 UserCredentials.saveString(context, PreferenceKeys.SUCCESSFUL_HAIL, "true");*/
-                                Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
-                                //finish();
+                                        Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
+                                        //finish();
 
-                            } else if (s.equalsIgnoreCase("User already has an active oye. Pls end first")) {
+                                    } else if (s.equalsIgnoreCase("User already has an active oye. Pls end first")) {
                                 /*Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);*/
-                                Toast.makeText(getContext(), "You already have an active oye. Pls end it first", Toast.LENGTH_LONG).show();
-                                //finish();
-                            } else
+                                        Toast.makeText(getContext(), "You already have an active oye. Pls end it first", Toast.LENGTH_LONG).show();
+                                        //finish();
+                                    } else
 
-                            {
+                                    {
                                 /*Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);*/
-                                Toast.makeText(getContext(), "There is some error.", Toast.LENGTH_LONG).show();
-                                //finish();
+                                        Toast.makeText(getContext(), "There is some error.", Toast.LENGTH_LONG).show();
+                                        //finish();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+
+                                }
+
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-
-                        }
-
-                    }
-                    ((MainActivity) getActivity()).changeFragment(new MessagesFragment(), null);
+                            ((MainActivity) getActivity()).changeFragment(new MessagesFragment(), null);
                 /*}else
                 {
                     *//*Intent NextActivity = new Intent(context, MainActivity.class);
@@ -398,21 +474,32 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                     Toast.makeText(getContext(), "In offline mode.Done", Toast.LENGTH_LONG).show();
                     //finish();
                 }*/
-                }
+                        }
 
-                @Override
-                public void failure(RetrofitError error) {
-                    Toast.makeText(getContext(), "lets oye call failed in enter config",
-                            Toast.LENGTH_LONG).show();
-                    // FirebaseClass.setOyebookRecord(UserCredentials.getString(EnterConfigActivity.this,PreferenceKeys.MY_SHORTMOBILE_KEY),reNt,show,lng,lat,user_id,bhkval+"BHK",msg4,UserCredentials.getString(EnterConfigActivity.this,PreferenceKeys.CURRENT_LOC_KEY));
-                    //Intent NextActivity = new Intent(context, MainActivity.class);
-                    //startActivity(NextActivity);finish();
-                    Log.i("TAG", "lets oye call failed in enter config");
-                    Log.i("TAG", "inside error" + error.getMessage());
+                        @Override
+                        public void failure(RetrofitError error) {
+                            Toast.makeText(getContext(), "lets oye call failed in enter config",
+                                    Toast.LENGTH_LONG).show();
+                            // FirebaseClass.setOyebookRecord(UserCredentials.getString(EnterConfigActivity.this,PreferenceKeys.MY_SHORTMOBILE_KEY),reNt,show,lng,lat,user_id,bhkval+"BHK",msg4,UserCredentials.getString(EnterConfigActivity.this,PreferenceKeys.CURRENT_LOC_KEY));
+                            //Intent NextActivity = new Intent(context, MainActivity.class);
+                            //startActivity(NextActivity);finish();
+                            Log.i("TAG", "lets oye call failed in enter config");
+                            Log.i("TAG", "inside error" + error.getMessage());
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.i("Exception", "caught in lets oye");
                 }
-            });
+            }
 
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     private void splitDataFromMyFragment() {
@@ -420,25 +507,10 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         propertySpecification[0]=temp[0];
         switch(temp[0]){
             case "House":
-                propertySpecification[1]=temp[1]+"BHK";
+                propertySpecification[1]=temp[1];
                 break;
             case "Shop":
-                if(Integer.parseInt(temp[1])==1)
-                {
-                    propertySpecification[1]="Retail";
-                }
-                else
-                {
-                    if(Integer.parseInt(temp[1])==2)
-                    {
-                        propertySpecification[1]="Food";
-                    }
-                    else
-                    {
-                        propertySpecification[1]="Bank/Office";
-                    }
-
-                }
+                propertySpecification[1]=temp[1];
                 break;
             case "Industrial":
                 propertySpecification[1]=temp[1];
@@ -450,8 +522,13 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 propertySpecification[1]=dataFromMyFragment;
                 break;
         }
-        propertySpecification[2]=rentSale;
-        propertySpecification[3]=seeOrShow;
+        propertySpecification[2]=dbHelper.getValue(DatabaseConstants.brokerType);
+
+        if(seeRadioButton.isChecked())
+            propertySpecification[3]="Req";
+        else
+            propertySpecification[3]="Avl";
+
         propertySpecification[4]=budget;
     }
 
@@ -467,7 +544,6 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
             c = 8;
         }
         if (c%2 == 1){
-
             c--;
         }
 
@@ -493,23 +569,19 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
 
                 v = val+"";
                 no = no%100000;
-
                 if (val != 0){
-                    str = str+v+"L";
+                    str = str+v+"L ";
                     twoWord++;
                 }
                 if (twoWord == 2){
                     break;}
 
             case 3:
-
                 val = no/1000;
                 v = val+"";
-
                 if (val != 0) {
                     str = str+v+"K";
                 }
-
                 break;
             default :
                 // print("noToWord Default")
@@ -517,7 +589,6 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         }
         return str;
     }
-
     @Override
     public void onFragmentInteraction(String data) {
         dataFromMyFragment=data;
