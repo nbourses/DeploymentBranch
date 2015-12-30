@@ -34,7 +34,7 @@ public class MessagesFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null);
+                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new());
             }
         });
         // Inflate the layout for this fragment

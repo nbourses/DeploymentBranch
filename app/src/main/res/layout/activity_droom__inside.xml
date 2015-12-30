@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.nbourses.oyeok.RPOT.Droom_Real_Estate.Droom_Inside">
+
+<RelativeLayout
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:background="?attr/colorPrimary"
+    android:layout_height="?attr/actionBarSize">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:text="Valencia-2Bhk-15k/month"
+        android:layout_marginLeft="50dp"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/smalldetail"
+        android:layout_width="wrap_content"
+        android:text="This property is being delt in three other rooms in Povai and 10 other rooms in Andheri"
+        android:layout_marginLeft="50dp"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/title"
+        android:textColor="#fff"
+        android:textSize="15sp"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>
+
+    <FrameLayout
+        android:layout_above="@+id/bottomView"
+        android:id="@+id/chatContainer"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/bottomView"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/smileys"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/ic_smiley"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/waste"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/compare"
+                android:layout_toLeftOf="@+id/waste"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/ic_compare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/history"
+                android:layout_toRightOf="@+id/waste"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/showCommands"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="30dp"
+
+                android:background="@drawable/drawable_grey_circle"
+                android:text="/"
+                android:textSize="15sp"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <FrameLayout
+                android:visibility="gone"
+                android:layout_below="@+id/smileys"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:id="@+id/container">
+
+            </FrameLayout>
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+
+</RelativeLayout>

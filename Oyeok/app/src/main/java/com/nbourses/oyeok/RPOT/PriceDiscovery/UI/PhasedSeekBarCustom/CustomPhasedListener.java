@@ -5,6 +5,6 @@ package com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom;
  */
 public interface CustomPhasedListener {
 
-    void onPositionSelected(int position, int count);
+    void onPositionSelected(int position);
 
 }

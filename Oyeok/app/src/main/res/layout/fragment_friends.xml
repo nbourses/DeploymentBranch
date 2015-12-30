@@ -7,10 +7,7 @@
     <RelativeLayout
         android:id="@+id/top"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_height="fill_parent">
 
 
         <LinearLayout
@@ -87,107 +84,55 @@
             android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/twenty_four" />
 
-        <RadioGroup
-            android:id="@+id/RadioBtnGroupSeeShow"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginLeft="@dimen/sixteen_dp"
-            android:weightSum="2"
-            android:layout_below="@+id/textforoye"
-            android:layout_marginBottom="@dimen/sixteen_dp"
-            >
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="See"
-                android:id="@+id/seeRadioButton"
-                android:layout_below="@+id/recordWorkout"
-                android:layout_alignRight="@+id/recordWorkout"
-                android:layout_alignEnd="@+id/recordWorkout"
-                android:checked="false" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Show"
-                android:id="@+id/showRadioButton"
-                android:layout_below="@+id/seeRadioButton"
-                android:layout_alignLeft="@+id/seeRadioButton"
-                android:layout_alignStart="@+id/seeRadioButton"
-                android:checked="false" />
-        </RadioGroup>
-
-
-        <TextView
-            android:id="@+id/textForRentSale"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/RadioBtnGroupSeeShow"
-            android:layout_margin="@dimen/sixteen_dp"
-            android:text=""
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/twenty_four" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/oye_select"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textForRentSale"
-            android:clickable="true"
+            android:layout_below="@+id/textforoye"
             android:layout_marginLeft="@dimen/sixteen_dp"
             android:layout_marginRight="@dimen/sixteen_dp"
             android:orientation="horizontal">
-
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/eight_dp"
                 android:paddingTop="@dimen/eight_dp"
-                android:src="@drawable/ic_room_24dp" />
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="100dp"
-                android:paddingBottom="@dimen/eight_dp"
-                android:paddingTop="@dimen/eight_dp"
-                android:src="@drawable/ic_home_oye_intent_specs_selector"
+                android:src="@drawable/ic_home_oye_intent_specs"
                 android:id="@+id/icon_home" />
 
             <ImageView
-                android:layout_width="60dp"
-                android:layout_height="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/eight_dp"
                 android:paddingTop="@dimen/eight_dp"
-                android:src="@drawable/ic_shop_oye_intent_specs_selector"
+                android:src="@drawable/ic_shop_oye_intent_specs"
                 android:id="@+id/icon_shop" />
 
             <ImageView
-                android:layout_width="60dp"
-                android:layout_height="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/eight_dp"
                 android:paddingTop="@dimen/eight_dp"
-                android:src="@drawable/ic_industrial_oye_intent_specs_selector"
+                android:src="@drawable/ic_industrial_oye_intent_specs"
                 android:id="@+id/icon_industrial" />
 
             <ImageView
-                android:layout_width="60dp"
-                android:layout_height="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/eight_dp"
                 android:paddingTop="@dimen/eight_dp"
-                android:src="@drawable/ic_office_oye_intent_specs_selector"
+                android:src="@drawable/ic_office_oye_intent_specs"
                 android:id="@+id/icon_office" />
 
             <ImageView
-                android:layout_width="60dp"
-                android:layout_height="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/eight_dp"
                 android:paddingTop="@dimen/eight_dp"
-                android:src="@drawable/ic_others_oye_intent_specs_selector"
+                android:src="@drawable/ic_others_oye_intent_specs"
                 android:id="@+id/icon_others" />
-
 
             <!--<Spinner
                 android:id="@+id/static_spinner"
@@ -234,7 +179,7 @@
                 android:background="@color/colorPrimary" />
         </LinearLayout>
 
-        <!--<TextView
+        <TextView
             android:id="@+id/fora"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -242,7 +187,7 @@
             android:text="Purpose"
             android:layout_below="@+id/border_linespinner"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/twenty_four" />-->
+            android:textSize="@dimen/twenty_four" />
 
         <RadioGroup
             android:id="@+id/RadioBtnGroup"
@@ -254,6 +199,8 @@
             android:layout_below="@+id/fora"
             android:layout_marginBottom="@dimen/sixteen_dp"
             >
+
+
 
             <!--<RadioButton
                 android:id="@+id/prepaidRadio"
@@ -277,10 +224,10 @@
         </RadioGroup>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/linearlayout_container"
+            android:id="@+id/layout_container"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/oye_select"
+            android:layout_below="@+id/textforoye"
             android:layout_marginLeft="@dimen/sixteen_dp"
             android:layout_marginRight="@dimen/sixteen_dp"
             android:orientation="horizontal">
@@ -289,11 +236,11 @@
 
 
 
+
         </LinearLayout>
 
 
-
-        <!--<com.nbourses.oyeok.RPOT.PriceDiscovery.UI.rangeSeekBarBrokerTypePanel.RangeSeekbar_roomprice
+        <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.rangeSeekBarBrokerTypePanel.RangeSeekbar_roomprice
             xmlns:seekbar="http://schemas.android.com/apk/res-auto"
             android:id="@+id/seekbarprice"
             android:layout_width="fill_parent"
@@ -306,7 +253,7 @@
             seekbar:rightCursorBackground="@drawable/rangeseekbar_roomprice_cursor"
             seekbar:spaceBetween="20dp"
             seekbar:textSize="@dimen/twelve_sp" />
--->
+
         <!--<com.appyvet.rangebar.RangeBar-->
         <!--xmlns:custom="http://schemas.android.com/apk/res-auto"-->
         <!--android:id="@+id/rangebar"-->
@@ -317,20 +264,20 @@
         <!--android:layout_marginLeft="16dp"-->
         <!--android:layout_marginRight="16dp"/>-->
 
-        <!-- <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.rangeSeekBarBrokerTypePanel.RangeSeekbar_minmaxvalue xmlns:seekbar="http://schemas.android.com/apk/res-auto"
-             android:id="@+id/seekbar"
-             android:layout_width="fill_parent"
-             android:layout_height="72dp"
-             android:layout_below="@+id/seekbarprice"
-             android:layout_marginTop="@dimen/eight_dp"
-             android:paddingLeft="@dimen/sixteen_dp"
-             android:paddingRight="@dimen/sixteen_dp"
-             seekbar:leftCursorBackground="@drawable/rangeseekbar_roomprice_cursor"
-             seekbar:markTextArray="@array/values"
-             seekbar:rightCursorBackground="@drawable/rangeseekbar_roomprice_cursor"
-             seekbar:spaceBetween="20dp"
-             seekbar:textSize="@dimen/twelve_sp" />
- -->
+        <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.rangeSeekBarBrokerTypePanel.RangeSeekbar_minmaxvalue xmlns:seekbar="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/seekbar"
+            android:layout_width="fill_parent"
+            android:layout_height="72dp"
+            android:layout_below="@+id/seekbarprice"
+            android:layout_marginTop="@dimen/eight_dp"
+            android:paddingLeft="@dimen/sixteen_dp"
+            android:paddingRight="@dimen/sixteen_dp"
+            seekbar:leftCursorBackground="@drawable/rangeseekbar_roomprice_cursor"
+            seekbar:markTextArray="@array/values"
+            seekbar:rightCursorBackground="@drawable/rangeseekbar_roomprice_cursor"
+            seekbar:spaceBetween="20dp"
+            seekbar:textSize="@dimen/twelve_sp" />
+
 
         <!--<View-->
         <!--android:id="@+id/border_line"-->
@@ -339,41 +286,6 @@
         <!--android:background="@color/grey"-->
         <!--android:layout_above="@+id/oye"-->
         <!--/>-->
-
-        <!--<com.appyvet.rangebar.RangeBar
-            xmlns:custom="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/priceRangeBar"
-            android:layout_width="match_parent"
-            custom:rangeBar="false"
-            android:layout_height="80dp"
-            custom:tickStart="20000"
-            custom:tickEnd="700000"
-            custom:selectorColor="#00CC99"
-            custom:connectingLineColor="#00CC99"
-            custom:pinColor="#00CC99"
-            custom:pinRadius="18dp"
-            android:layout_above="@+id/bt_oye"
-            android:layout_toRightOf="@+id/textView1"
-            android:layout_toLeftOf="@+id/textView3"
-            android:layout_toStartOf="@+id/textView3" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:text="20 K"
-            android:id="@+id/textView1"
-            android:layout_alignBottom="@+id/priceRangeBar"
-            android:layout_alignLeft="@+id/bt_oye"
-            android:layout_alignStart="@+id/bt_oye" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:text="7 L"
-            android:id="@+id/textView3"
-            android:layout_above="@+id/bt_oye"
-            android:layout_alignRight="@+id/bt_oye"
-            android:layout_alignEnd="@+id/bt_oye" />-->
 
         <Button
             android:id="@+id/bt_oye"
@@ -388,7 +300,6 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="@dimen/sixteen_sp" />
-
 
 
     </RelativeLayout>

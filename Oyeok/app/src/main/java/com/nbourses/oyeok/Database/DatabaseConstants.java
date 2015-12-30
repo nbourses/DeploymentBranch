@@ -9,8 +9,5 @@ public class DatabaseConstants {
     public static String gcmId="GcmId";
     public static String mobileNumber="MobileNumber";
     public static String initialLng="InitialLng",currentLng="CurrentLng",currentLat="CurrentLat",initialLat="InitialLat";
-    public static String deviceId="DeviceId",userRole="UserRole",userRating="UserRating",offmode="Offmode";
-    public static String userId="UserId";
-    public static String region="Region";
-    public static String pinCode="PinCode";
+    public static String deviceId="DeviceId",userRole="UserRole",userRating="UserRating",offmode="offmode";
 }

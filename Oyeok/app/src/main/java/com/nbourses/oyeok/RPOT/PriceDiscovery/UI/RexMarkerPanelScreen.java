@@ -41,6 +41,9 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.SharedPrefs;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Drooms_Client_new;
@@ -59,6 +62,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.QrCode.CaptureActivityAnyOrient
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -70,6 +74,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -176,13 +181,13 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         mVisits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Bundle args = new Bundle();
                 args.putString("BrokerType", brokerType);
                 ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(),args);
                 //OyeIntentSpecs oye = new OyeIntentSpecs();
 
-                //oye.setArguments(args);
-                //getFragmentManager().beginTransaction().add(R.id., oye).commit();
+                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs());
             }
         });
 
@@ -190,41 +195,10 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         mQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(getContext(),
-                        Manifest.permission.CAMERA)
-                        != PackageManager.PERMISSION_GRANTED) {
-
-                    // Should we show an explanation?
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                            Manifest.permission.CAMERA)) {
-
-                        // Show an expanation to the user *asynchronously* -- don't block
-                        // this thread waiting for the user's response! After the user
-                        // sees the explanation, try again to request the permission.
-
-                    } else {
-
-                        // No explanation needed, we can request the permission.
-
-                        ActivityCompat.requestPermissions(getActivity(),
-                                new String[]{Manifest.permission.CAMERA},MY_PERMISSION_FOR_CAMERA);
-
-                        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                        // app-defined int constant. The callback method gets the
-                        // result of the request.
-                    }
-                }
-
-
-
-
-
-
-                /*IntentIntegrator.forSupportFragment(RexMarkerPanelScreen.this).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES).setCaptureActivity(CaptureActivityAnyOrientation.class).setOrientationLocked(false).initiateScan();*/
+                
+                IntentIntegrator.forSupportFragment(RexMarkerPanelScreen.this).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES).setCaptureActivity(CaptureActivityAnyOrientation.class).setOrientationLocked(false).initiateScan();
             }
         });
-
-
 
         mMarkerPanel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,12 +236,15 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void onMapReady(GoogleMap googleMap) {
                 map = googleMap;
                 map.setMyLocationEnabled(true);
+
                 setCameraListener();
                 //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, map);
                 //selectedLocation = map.getCameraPosition().target;
                 geoFence.drawPloygon(map);
+
             }
         });
+
 
         customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
             @Override

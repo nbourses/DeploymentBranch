@@ -62,7 +62,7 @@ public class Sale_Broker_Requirement extends Fragment implements LineSeekBar.ima
 
                 if(mOkbutton.getText().toString().equals("Auto Ok"))
                 {
-                    ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                    ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs());
                 }
             }
         });

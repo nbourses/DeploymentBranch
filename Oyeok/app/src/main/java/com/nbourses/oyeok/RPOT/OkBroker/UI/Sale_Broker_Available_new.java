@@ -70,7 +70,7 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
             public void onClick(View v) {
 
                 if (mOkbutton.getText().toString().equals("Auto Ok")) {
-                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs());
                 }
             }
         });

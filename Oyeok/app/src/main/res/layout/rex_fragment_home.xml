@@ -242,8 +242,7 @@
                 android:weightSum="1"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="12dp"
-                android:id="@+id/lin">
+                android:layout_marginRight="12dp">
 
                 <ImageView
                     android:id="@+id/qrCode"

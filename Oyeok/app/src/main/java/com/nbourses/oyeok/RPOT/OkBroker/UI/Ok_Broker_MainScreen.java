@@ -25,12 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.PreOk;
-import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.SlidingTabLayout.PagerItem;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.SlidingTabLayout.SlidingTabLayout;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
@@ -42,12 +37,6 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 
 public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openMapsClicked,CustomPhasedListener {
@@ -65,8 +54,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     private Button earnOk;
     private ImageButton bPinLocation;
     private LatLng latlng;
-    DBHelper dbHelper;
-    View v;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,12 +66,11 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 //        display.getSize(size);
 //        int width = size.x;
 //        PagerSlidingTabStrip.width = width / 2;
-         v= inflater.inflate(R.layout.broker_main_screen, container, false);
+        View v= inflater.inflate(R.layout.broker_main_screen, container, false);
         ((MainActivity)getActivity()).setMapsClicked(this);
         //mHideShow = (LinearLayout) v.findViewById(R.id.showMap);
         mMapView = (FrameLayout) v.findViewById(R.id.mapView);
         bPinLocation = (ImageButton)v.findViewById(R.id.bPinLocation);
-        dbHelper=new DBHelper(getContext());
         earnOk = (Button) v.findViewById(R.id.earnOk);
 
 
@@ -103,10 +90,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
 
         mCustomPhasedSeekbar = (CustomPhasedSeekBar) v.findViewById(R.id.phasedSeekBar);
-        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
-            mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{"Rental", "Sale"}));
-        else
-            mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.broker_type1_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.broker_type1_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Loan", "Auction"}));
+        mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.broker_type1_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.broker_type1_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Loan", "Auction"}));
         mCustomPhasedSeekbar.setListener(this);
         bPinLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,11 +102,11 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         earnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).changeFragment(new EarnOkFragment(), null);
+                ((MainActivity)getActivity()).changeFragment(new EarnOkFragment());
             }
         });
 
-        preok();
+
 
 
 
@@ -185,8 +169,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                             @Override
                             public void onMapReady(GoogleMap googleMap) {
                                 map = googleMap;
-
-                                map.setMyLocationEnabled(true);
+                                map.setMyLocationEnabled(false);
                                 //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, map);
                                 //selectedLocation = map.getCameraPosition().target;
 
@@ -240,95 +223,62 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     }
 
     @Override
-    public void onPositionSelected(int position, int count) {
+    public void onPositionSelected(int position) {
 
-        if(count!=2) {
+        if(position == 2) {
+            ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
+            pagerItems.add(new PagerItem("Loan Seekers", new Loan_Broker_Requirement()));
+            pagerItems.add(new PagerItem("Loan Lenders", new Loan_Broker_Available()));
+            adapter.setPagerItems(pagerItems);
+            adapter.notifyDataSetChanged();
+            mTabs.settabData();
+            mTabs.setDistributeEvenly(true);
+            currentItem = 2;
+            //mTabs.notifyAll();
 
-            if (position == 2) {
-                ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Loan Seekers", new Loan_Broker_Requirement()));
-                pagerItems.add(new PagerItem("Loan Lenders", new Loan_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 2;
-                //mTabs.notifyAll();
-
-                //mPager.invalidate();
-            }
-
-            if (position == 1) {
-                ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Seekers", new Sale_Broker_Requirement_new()));
-                pagerItems.add(new PagerItem("Owners", new Sale_Broker_Available_new()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 1;
-                //mTabs.notifyAll();
-
-                //mPager.invalidate();
-            }
-
-            if (position == 0) {
-                ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
-                pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 0;
-                //mTabs.notifyAll();
-
-                //mPager.invalidate();
-            }
-
-            if (position == 3) {
-                ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
-                pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 3;
-                //mTabs.notifyAll();
-
-                //mPager.invalidate();
-            }
+            //mPager.invalidate();
         }
 
-        else{
-            if (position == 1) {
-                ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Seekers", new Sale_Broker_Requirement_new()));
-                pagerItems.add(new PagerItem("Owners", new Sale_Broker_Available_new()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 1;
-                //mTabs.notifyAll();
+        if(position == 1) {
+            ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
+            pagerItems.add(new PagerItem("Seekers", new Sale_Broker_Requirement_new()));
+            pagerItems.add(new PagerItem("Owners", new Sale_Broker_Available_new()));
+            adapter.setPagerItems(pagerItems);
+            adapter.notifyDataSetChanged();
+            mTabs.settabData();
+            mTabs.setDistributeEvenly(true);
+            currentItem =1;
+            //mTabs.notifyAll();
 
-                //mPager.invalidate();
-            }
+            //mPager.invalidate();
+        }
 
-            if (position == 0) {
-                ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
-                pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 0;
-                //mTabs.notifyAll();
+        if(position == 0) {
+            ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
+            pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
+            pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
+            adapter.setPagerItems(pagerItems);
+            adapter.notifyDataSetChanged();
+            mTabs.settabData();
+            mTabs.setDistributeEvenly(true);
+            currentItem = 0;
+            //mTabs.notifyAll();
 
-                //mPager.invalidate();
-            }
+            //mPager.invalidate();
+        }
+
+        if(position == 3) {
+            ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
+            pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
+            pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
+            adapter.setPagerItems(pagerItems);
+            adapter.notifyDataSetChanged();
+            mTabs.settabData();
+            mTabs.setDistributeEvenly(true);
+            currentItem =3;
+            //mTabs.notifyAll();
+
+            //mPager.invalidate();
         }
 
     }
@@ -441,48 +391,5 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
     }
 
-    public void setPhasedSeekBar(){
-
-        mCustomPhasedSeekbar = (CustomPhasedSeekBar) v.findViewById(R.id.phasedSeekBar);
-        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
-            mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{"Rental", "Sale"}));
-        else
-            mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.broker_type1_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.broker_type1_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Loan", "Auction"}));
-        mCustomPhasedSeekbar.setListener(this);
-    }
-
-    public void preok() {
-        String API = "http://52.25.136.179:9000";
-        Oyeok preok = new Oyeok();
-        preok.setDeviceId("Hardware");
-        preok.setGcmId("gliui");
-        preok.setUserRole("broker");
-        preok.setLong("72.1456");
-        preok.setLat("19.2344");
-
-
-        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API).build();
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-        OyeokApiService user1 = restAdapter.create(OyeokApiService.class);
-        user1.preOk(preok, new Callback<PreOk>() {
-            @Override
-            public void success(PreOk preok, Response response) {
-                //Toast.makeText(getContext(), "get price success", Toast.LENGTH_LONG).show();
-                //Log.i("oye_id", preok.responseData.neighbours.reqLl[0].getOyeId());
-                //String req_ll= Arrays.toString(preok.responseData.neighbours.reqLl[0]);
-                //Arrays.toString();
-                //Log.i("req_ll",req_ll);
-                //String[] stringArray = Arrays.copyOf(preok.responseData.neighbours.reqLl, preok.responseData.neighbours.reqLl.length, String[].class);
-                //String[] stringArray=Arrays.asList(preok.responseData.neighbours.reqLl).toArray(new String[preok.responseData.neighbours.reqLl.length]);
-                //Log.i("req_ll",stringArray.toString());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-
-            }
-        });
-    }
 
 }

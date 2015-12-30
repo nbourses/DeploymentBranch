@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ExpandableLayout">
+        <attr name="el_headerLayout" format="reference"/>
+        <attr name="el_contentLayout" format="reference" />
+        <attr name="el_duration" format="integer" />
+    </declare-styleable>
+
+
+    <declare-styleable name="RangeSeekbar">
+        <attr name="seekbarHeight" format="dimension" />
+        <attr name="textSize" format="dimension" />
+        <attr name="spaceBetween" format="dimension" />
+
+        <attr name="leftCursorBackground" format="reference" />
+        <attr name="rightCursorBackground" format="reference" />
+        <attr name="markTextArray" format="reference" />
+
+        <attr name="textColorNormal" format="color" />
+        <attr name="textColorSelected" format="color" />
+        <attr name="seekbarColorNormal" format="color" />
+        <attr name="seekbarColorSelected" format="color" />
+
+        <attr name="autoMoveDuration" format="integer" />
+
+    </declare-styleable>
+
+    <declare-styleable name="PhasedSeekBar">
+        <attr name="phased_mode">
+            <enum name="horizontal" value="1"/>
+            <enum name="vertical" value="2"/>
+        </attr>
+        <attr name="phased_base_margin_left" format="dimension|reference"/>
+        <attr name="phased_base_margin_right" format="dimension|reference"/>
+        <attr name="phased_base_margin_top" format="dimension|reference"/>
+        <attr name="phased_base_margin_bottom" format="dimension|reference"/>
+        <attr name="phased_base_background" format="color|reference"/>
+        <attr name="phased_item_width" format="dimension|reference"/>
+        <attr name="phased_item_height" format="dimension|reference"/>
+        <attr name="phased_anchor_width" format="dimension|reference"/>
+        <attr name="phased_anchor_height" format="dimension|reference"/>
+        <attr name="phased_draw_on_off" format="boolean"/>
+        <attr name="phased_fix_point" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="CircularSeekBarNew">
+        <attr name="radius" format="dimension"></attr>
+        <attr name="circlenew_color" format="color"></attr>
+        <attr name="circlenew_stroke_width" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="CircularSeekBar">
+        <attr name="progress" format="integer"></attr>
+        <attr name="max" format="integer"></attr>
+        <attr name="move_outside_circle" format="boolean"></attr>
+        <attr name="maintain_equal_circle" format="boolean"></attr>
+        <attr name="use_custom_radii" format="boolean"></attr>
+        <attr name="lock_enabled" format="boolean"></attr>
+        <attr name="circle_x_radius" format="dimension" />
+        <attr name="circle_y_radius" format="dimension" />
+        <attr name="circle_stroke_width" format="dimension" />
+        <attr name="pointer_radius" format="dimension" />
+        <attr name="pointer_halo_width" format="dimension" />
+        <attr name="pointer_halo_border_width" format="dimension"></attr>
+        <attr name="circle_color" format="color"></attr>
+        <attr name="circle_progress_color" format="color"></attr>
+        <attr name="pointer_color" format="color"></attr>
+        <attr name="pointer_halo_color" format="color"></attr>
+        <attr name="pointer_halo_color_ontouch" format="color"></attr>
+        <attr name="pointer_alpha_ontouch" format="integer"></attr>
+        <attr name="start_angle" format="float"></attr>
+        <attr name="end_angle" format="float"></attr>
+        <attr name="circle_fill" format="color"></attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="CustomPhasedSeekBar">
+        <attr name="custom_phasedseekbar_marginLeft" format="dimension|reference"/>
+        <attr name="custom_phasedseekbar_marginRight" format="dimension|reference"/>
+        <attr name="custom_phasedseekbar_marginTop" format="dimension|reference"/>
+        <attr name="custom_phasedseekbar_marginBottom" format="dimension|reference"/>
+        <attr name="custom_phasedseekbar_itemWidth" format="dimension|reference"/>
+        <attr name="custom_phasedseekbar_itemHeight" format="dimension|reference"/>
+
+    </declare-styleable>
+</resources>

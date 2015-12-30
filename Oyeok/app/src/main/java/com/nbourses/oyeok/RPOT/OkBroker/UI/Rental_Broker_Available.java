@@ -70,7 +70,7 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
             public void onClick(View v) {
 
                 if (mOkbutton.getText().toString().equals("Auto Ok")) {
-                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs());
                 }
             }
         });

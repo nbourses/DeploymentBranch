@@ -63,7 +63,7 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
 
                 if(mOkbutton.getText().toString().equals("Auto Ok"))
                 {
-                    ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                    ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs());
                 }
             }
         });

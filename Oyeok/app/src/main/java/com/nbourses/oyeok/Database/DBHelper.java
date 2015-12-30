@@ -47,37 +47,13 @@ public class DBHelper extends SQLiteOpenHelper{
     /* Basic Database Functionalities */
 
     public long save(String key,String value) {
-        if(ifexists(key)==0) {
-            SQLiteDatabase db = this.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(KEY_COLUMN_NAME, key);
-            values.put(VALUE_COLUMN_NAME, value);
-            // insert row
-            long entry_id = db.insert(TABLE_SHAREDPREFERENCE_NAME, null, values);
-            return entry_id;
-        }
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_COLUMN_NAME,key);
         values.put(VALUE_COLUMN_NAME,value);
-        long entry_id=  db.update(TABLE_SHAREDPREFERENCE_NAME,values,KEY_COLUMN_NAME+"= '"+key+"'",null);
+        // insert row
+        long entry_id = db.insert(TABLE_SHAREDPREFERENCE_NAME, null, values);
         return entry_id;
-    }
-    public int ifexists(String key){
-        String s="null";
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        String selectQuery = "select count(*) from " + TABLE_SHAREDPREFERENCE_NAME + " where "
-                + KEY_COLUMN_NAME + " = " +"'" + key + "'";
-
-        Cursor c = db.rawQuery(selectQuery, null);
-        if (c != null) {
-            c.moveToFirst();
-            int exist = c.getInt(0);
-            return exist;
-        }
-        else
-            return 0;
     }
 
     public String getValue(String key) {

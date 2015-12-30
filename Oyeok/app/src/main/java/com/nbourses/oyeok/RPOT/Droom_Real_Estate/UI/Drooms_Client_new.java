@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+//import com.bignerdranch.expandablerecyclerview.Model.ParentObject;
+
 
 public class Drooms_Client_new extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -55,7 +57,7 @@ public class Drooms_Client_new extends Fragment {
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).changeFragment(new StartDroomFragment(), null);
+                ((MainActivity)getActivity()).changeFragment(new StartDroomFragment());
             }
         });
         //ExpandableListView mDroomsRecyclerView = (ExpandableListView) rootView.findViewById(R.id.list);
@@ -180,7 +182,7 @@ public class Drooms_Client_new extends Fragment {
     public class SwipeDetector implements View.OnTouchListener {
 
         private static final int MIN_DISTANCE = 300;
-        private static final int MIN_LOCK_DISTANCE = 120; // disallow motion intercept
+        private static final int MIN_LOCK_DISTANCE = 80; // disallow motion intercept
         private boolean motionInterceptDisallowed = false;
         private float downX, upX;
         private MyAdapter.ViewHolder2 holder2;
@@ -250,7 +252,7 @@ public class Drooms_Client_new extends Fragment {
 //                        holder.deleteView.setVisibility(View.VISIBLE);
 //                    }
 
-
+                    swipe(-(int) deltaX);
                     return true;
                 }
 
@@ -390,6 +392,152 @@ public class Drooms_Client_new extends Fragment {
             return false;
         }
 
+        /*@Override
+        public int getCount() {
+            return 0;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
+        }
+
+        @Override*/
+        public View getView(int position, View convertView, ViewGroup parent) {
+           /* ViewHolder1 vh1 = null;
+            ViewHolder2 vh2 = null;
+            //int type = getChildType(position,childPosition);
+            int type=1;
+            if(convertView == null) {
+
+
+                if(type == 0)
+                {
+                    convertView = LayoutInflater.from(getActivity()).inflate(R.layout.droom_dashboard_child_marketdeal, parent, false);
+                    vh1 = new ViewHolder1(convertView);
+                    convertView.setTag(vh1);
+
+                } else {
+                    convertView = LayoutInflater.from(getActivity()).inflate(R.layout.droom_dashboard_child_mydeal, parent, false);
+                    vh2 = new ViewHolder2(convertView);
+                    convertView.setTag(vh2);
+
+                }
+
+            }
+
+            Child ch = (Child) ((Title) pObj.get(groupPosition)).getChildObjectList().get(childPosition);
+            if(type == 0) {
+
+                vh1 = new ViewHolder1(convertView);
+                vh1.days.setText(ch.getDays());
+                vh1.title1.setText(ch.getApartment());
+                vh1.title2.setText(ch.getDoorno());
+                vh1.title3.setText(ch.getBhk());
+                vh1.spec1.setText(ch.getRent());
+                vh1.spec2.setText(ch.getDeposit());
+                vh1.spec3.setText(ch.getNp());
+                String s = ch.getAsk() + "/" + ch.getBid();
+                vh1.askbid.setText(s);
+
+                vh1.clone.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getActivity(), "clicked", Toast.LENGTH_LONG).show();
+                    }
+                });
+                vh1.mCardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ((MainActivity) getActivity()).changeFragment(new Drooms_Client_Chat());
+                    }
+                });
+
+                GestureDetector mGestureDetector = new GestureDetector(getActivity(),new SingleTapConfirm(groupPosition,childPosition));
+                vh1.mCardView.setOnTouchListener(new SwipeDetector(vh1, groupPosition,childPosition,type,mGestureDetector));
+
+
+//              convertView.setOnClickListener(new View.OnClickListener() {
+//                  @Override
+//                  public void onClick(View v) {
+//                      ((MainActivity) getActivity()).changeFragment(new Drooms_Client_Chat());
+//                  }
+//              });
+
+
+                if (ch.getFav().equals("yes")) {
+                    vh1.fav.setImageResource(R.drawable.ic_favorite_50dp);
+                } else {
+                    vh1.fav.setImageResource(R.drawable.ic_favorite_50dp_unselected);
+                }
+            }else
+            {
+                vh2 = new ViewHolder2(convertView);
+                vh2.days.setText(ch.getDays());
+                vh2.title1.setText(ch.getApartment());
+                vh2.title2.setText(ch.getDoorno());
+                vh2.title3.setText(ch.getBhk());
+                vh2.spec1.setText(ch.getRent());
+                vh2.spec2.setText(ch.getDeposit());
+                vh2.spec3.setText(ch.getNp());
+                String s = ch.getAsk() + "/" + ch.getBid();
+                vh2.askbid.setText(s);
+
+                vh2.clone.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getActivity(), "clicked", Toast.LENGTH_LONG).show();
+                    }
+                });
+                vh2.mCardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ((MainActivity) getActivity()).changeFragment(new Drooms_Client_Chat());
+                    }
+                });
+                GestureDetector mGestureDetector = new GestureDetector(getActivity(),new SingleTapConfirm(groupPosition,childPosition));
+                vh2.mCardView.setOnTouchListener(new SwipeDetector(vh2, groupPosition,childPosition,type,mGestureDetector));
+//              convertView.setOnClickListener(new View.OnClickListener() {
+//                  @Override
+//                  public void onClick(View v) {
+//                      ((MainActivity) getActivity()).changeFragment(new Drooms_Client_Chat());
+//                  }
+//              });
+
+
+                if (ch.getFav().equals("yes")) {
+                    vh2.fav.setImageResource(R.drawable.ic_favorite_50dp);
+                } else {
+                    vh2.fav.setImageResource(R.drawable.ic_favorite_50dp_unselected);
+                }
+
+            }
+
+
+
+            return convertView;*/
+            return null;
+        }
+
+        /*@Override
+        public int getItemViewType(int position) {
+            return 0;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return 0;
+        }*/
 
         @Override
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
