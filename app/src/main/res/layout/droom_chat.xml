@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/container">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/likescontainer"
+        android:background="#90A4AE"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+    <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/dislikescontainer"
+        android:background="#90A4AE"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:id="@+id/floatingmenulayout"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_gravity="bottom">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/liked"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/ic_accepted_up_24dp"
+            android:layout_width="wrap_content"
+            app:fab_elevationCompat="4dp"
+            app:fab_colorNormal="#26C6DA"
+            app:fab_colorPressed="#80DEEA"
+            android:layout_height="wrap_content">
+
+        </com.github.clans.fab.FloatingActionButton>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu"
+            android:layout_width="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            app:fab_colorNormal="#26C6DA"
+            app:fab_colorPressed="#80DEEA"
+            android:src="@drawable/ic_keyboard_24dp"
+            android:layout_height="wrap_content">
+        </com.github.clans.fab.FloatingActionButton>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/disliked"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            app:fab_elevationCompat="4dp"
+            android:src="@drawable/ic_rejected_down_24dp"
+            android:layout_alignParentRight="true"
+            app:fab_colorNormal="#26C6DA"
+            app:fab_colorPressed="#80DEEA"
+            android:layout_height="wrap_content">
+
+        </com.github.clans.fab.FloatingActionButton>
+    </RelativeLayout>
+
+
+    <FrameLayout
+        android:id="@+id/keyboardContainer"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:visibility="gone"
+        android:background="#A1887F"
+        android:layout_gravity="bottom">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pagerParameters"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v4.view.ViewPager>
+
+    </FrameLayout>
+
+
+
+
+
+</FrameLayout>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <!--<TextView-->
+        <!--android:id="@+id/text"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="48dp"-->
+        <!--android:gravity="center"-->
+        <!--android:hint="Hello World !"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:background="#c0392b"/>-->
+
+    <!--<Button-->
+        <!--android:layout_below="@+id/text"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="click ME !"/>-->
+
+
+
+    <TableLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:shrinkColumns="*"  android:stretchColumns="*" android:background="#ffffff">
+
+
+        <!-- Row 1 with single column -->
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:gravity="center_horizontal">
+
+
+            <TextView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textSize="18dp" android:text="Valencia-502-3BHK"  android:layout_span="3"
+                android:padding="18dip" android:background="#ffffff"
+                android:textColor="#000"
+                android:id="@+id/tv_propert_name" />
+
+
+        </TableRow>
+
+        <!-- Row 2 with 3 columns -->
+
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+
+            <TextView
+                android:id="@+id/tv_rent" android:text="Rent:\n 35K"
+                android:layout_weight="1" android:background="#ffffff"
+                android:textColor="#000000"
+                android:padding="20dip" android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tv_deposit" android:text="Deposit: \n1.5L"
+                android:layout_weight="1" android:background="#ffffff"
+                android:textColor="#000000"
+                android:padding="20dip" android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tv_notice_period" android:text="Notice Period:\n 1 Month"
+                android:layout_weight="1" android:background="#ffffff"
+                android:textColor="#000000"
+                android:padding="20dip" android:gravity="center"/>
+
+        </TableRow>
+
+        <!-- Row 3 with 2 columns -->
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:gravity="center_horizontal">
+
+            <ImageView android:id="@+id/ImageView01" android:layout_width="wrap_content"
+                android:layout_height="match_parent" android:src="@drawable/user_icon"
+                android:layout_weight="0.22" android:paddingRight="15dip">
+            </ImageView>
+
+            <TextView
+                android:id="@+id/tv_ask_bid" android:text="Ask/Bid:\n 2\4"
+                android:layout_weight="1" android:background="#a09f9f"
+                android:textColor="#000000"
+                android:padding="18dip" android:gravity="center"/>
+        </TableRow>
+
+    </TableLayout>
+
+
+</RelativeLayout>
