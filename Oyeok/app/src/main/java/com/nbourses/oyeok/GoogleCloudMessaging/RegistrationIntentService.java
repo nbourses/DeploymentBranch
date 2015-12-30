@@ -2,14 +2,8 @@ package com.nbourses.oyeok.GoogleCloudMessaging;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.nfc.Tag;
-import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.firebase.client.Firebase;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -18,8 +12,8 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 
 import java.io.IOException;
-import com.amplitude.api.Amplitude;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.SharedPrefs;
+
+import com.nbourses.oyeok.Database.SharedPrefs;
 
 /**
  * Created by YASH_SHAH on 28/12/2015.
