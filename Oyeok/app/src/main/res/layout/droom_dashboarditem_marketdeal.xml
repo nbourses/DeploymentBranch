@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
+    android:layout_width="match_parent"
+    android:layout_height="163dp">
+
+    <View
+        android:layout_toRightOf="@+id/membersLine"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#000"/>
+
+    <LinearLayout
+        android:layout_toRightOf="@+id/membersLine"
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:text="Valencia"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/title1"/>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#000"/>
+
+        <TextView
+            android:text="502"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/title2"/>
+        <View
+
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#000"/>
+
+        <TextView
+
+            android:text="3 BHK"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/title3"/>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#000"/>
+
+
+
+    </LinearLayout>
+    <View
+        android:id="@+id/b2"
+        android:layout_toRightOf="@+id/members"
+        android:layout_below="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#000"/>
+
+    <LinearLayout
+        android:id="@+id/specs"
+        android:layout_toRightOf="@+id/membersLine"
+        android:layout_below="@+id/b2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:text="Rent"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spec11"/>
+
+
+
+            <TextView
+                android:text="30k"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spec1"/>
+
+        </LinearLayout>
+        <View
+            android:layout_width="2dp"
+
+            android:layout_height="match_parent"
+            android:background="#000"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:text="Deposit"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spec22"/>
+
+
+
+            <TextView
+                android:text="1.5L"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spec2"/>
+
+        </LinearLayout>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#000"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:text="NP"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spec33"/>
+
+
+
+            <TextView
+                android:text="1 month"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spec3"/>
+
+        </LinearLayout>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#000"/>
+
+
+
+
+
+    </LinearLayout>
+    <View
+        android:layout_below="@+id/specs"
+        android:layout_toRightOf="@+id/members"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#000"/>
+
+    <LinearLayout
+        android:id="@+id/bid"
+        android:layout_toRightOf="@+id/membersLine"
+        android:layout_below="@+id/specs"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:id="@+id/fav"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_favorite_50dp_unselected"/>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#000"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_height="50dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal"
+                android:text="Ask/Bid"/>
+
+            <TextView
+                android:id="@+id/askbid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal"
+                android:text="2/4"/>
+
+        </LinearLayout>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#000"/>
+
+    </LinearLayout>
+    <View
+        android:layout_below="@+id/bid"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_toRightOf="@+id/members"
+        android:background="#000"/>
+
+    <LinearLayout
+
+        android:layout_width="130dp"
+        android:id="@+id/members"
+        android:orientation="vertical"
+        android:layout_height="154dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:text="Copy Deal"/>
+
+        <TextView
+            android:id="@+id/days"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="40sp"
+            android:text="28days"/>
+
+
+
+    </LinearLayout>
+    <View
+
+        android:layout_below="@+id/members"
+        android:layout_width="130dp"
+        android:layout_height="2dp"
+        android:background="#000"/>
+    <View
+        android:id="@+id/membersLine"
+        android:layout_toRightOf="@+id/members"
+        android:layout_width="2dp"
+        android:layout_height="156dp"
+        android:background="#000">
+
+    </View>
+
+
+
+
+</RelativeLayout>

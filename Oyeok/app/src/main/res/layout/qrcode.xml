@@ -1,0 +1,69 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:id="@+id/rl_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/sixteen_dp"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Visit web.whatsapp.com on your computer and scan the QR Code"
+            android:textSize="@dimen/sixteen_sp"
+            android:textColor="@color/black"
+            />
+
+
+    </RelativeLayout>
+    <View
+        android:id="@+id/border_line"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey"
+        android:layout_below="@+id/rl_textview"
+        />
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/border_line"
+        >
+
+
+
+        <LinearLayout
+            android:layout_margin="@dimen/sixteen_dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@drawable/dashed_line"
+            android:layout_above="@+id/userdetail"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="Tap to Scan QR code"
+                android:textSize="@dimen/sixteen_sp"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+
+
+
+
+
+    </RelativeLayout>
+
+
+
+
+
+
+</RelativeLayout>
