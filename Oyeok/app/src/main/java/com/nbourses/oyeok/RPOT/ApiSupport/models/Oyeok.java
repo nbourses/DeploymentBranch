@@ -202,10 +202,10 @@ public class Oyeok {
     public String getReqAvl(){
         return reqAvl;
     }
-    public String getUserRoleole(){
+    public String getUser_role(){
         return userRole;
     }
-    public void setUserRole(String user_role){
+    public void setUser_role(String user_role){
         this.userRole=user_role;
     }
 

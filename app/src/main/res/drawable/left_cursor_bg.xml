@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#cccccc"/>
+            <size
+                android:height="40dp"
+                android:width="40dp" />
+        </shape>
+
+    </item>
+    <item
+        android:drawable="@drawable/ic_account_circle_24dp"
+        />
+
+</layer-list>
+
+
+
+
+
+<!--<shape xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:shape="oval"-->
+    <!-->-->
+
+    <!--<item android:drawable="@drawable/ic_account_circle_24dp"-->
+        <!--/>-->
+
+
+    <!--<solid android:color="#fff75674"-->
+        <!--/>-->
+
+
+
+<!--</shape>-->
+
+    <!--android:bottom="4dp"-->
+    <!--android:left="4dp"-->
+    <!--android:right="4dp"-->
+    <!--android:top="4dp"-->

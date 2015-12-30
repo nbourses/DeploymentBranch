@@ -1,5 +1,7 @@
 package com.nbourses.oyeok.RPOT.PriceDiscovery;
 
+import com.nbourses.oyeok.Database.DBHelper;
+import com.nbourses.oyeok.Database.DatabaseConstants;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Color;

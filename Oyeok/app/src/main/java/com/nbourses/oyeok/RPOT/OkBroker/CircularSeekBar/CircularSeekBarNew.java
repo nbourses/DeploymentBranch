@@ -155,7 +155,7 @@ public class CircularSeekBarNew extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        int [] drawables = {R.drawable.ic_broker_home,R.drawable.ic_industrial_oye_intent_specs,R.drawable.ic_shop,R.drawable.ic_loans};
+        int [] drawables = {R.drawable.ic_broker_home,R.drawable.ic_industrial_24dp,R.drawable.ic_shop,R.drawable.ic_loans};
 
         canvas.drawArc(mCircleRectF, 120f, 300f, false, mCirclePaint);
         int startx = (int)(mCircleRectF.left+(mCircleRectF.width() / 2) - mWidth * (0.5));

@@ -56,6 +56,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -147,6 +148,13 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
         mPhasedSeekBar.setListener(this);
 
+
+
+
+        mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
+        mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
+        mPhasedSeekBar.setListener(this);
+
         AutoCompleteTextView autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
         autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
         autoCompView.setOnItemClickListener(this);
@@ -168,8 +176,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(), args);
                 //OyeIntentSpecs oye = new OyeIntentSpecs();
 
-                //oye.setArguments(args);
-                //getFragmentManager().beginTransaction().add(R.id., oye).commit();
+                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs());
             }
         });
 
@@ -534,6 +541,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     }
     //alternative for geocoder
    /* public static JSONObject getLocationInfo(String address) {
+    public static JSONObject getLocationInfo(String address) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
 

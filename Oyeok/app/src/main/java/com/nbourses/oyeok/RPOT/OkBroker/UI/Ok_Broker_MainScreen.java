@@ -213,6 +213,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                                 map = googleMap;
 
                                 map.setMyLocationEnabled(true);
+                                map.setMyLocationEnabled(false);
                                 //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, map);
                                 //selectedLocation = map.getCameraPosition().target;
 
@@ -266,95 +267,62 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     }
 
     @Override
-    public void onPositionSelected(int position, int count) {
+    public void onPositionSelected(int position) {
 
-        if(count!=2) {
+        if(position == 2) {
+            ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
+            pagerItems.add(new PagerItem("Loan Seekers", new Loan_Broker_Requirement()));
+            pagerItems.add(new PagerItem("Loan Lenders", new Loan_Broker_Available()));
+            adapter.setPagerItems(pagerItems);
+            adapter.notifyDataSetChanged();
+            mTabs.settabData();
+            mTabs.setDistributeEvenly(true);
+            currentItem = 2;
+            //mTabs.notifyAll();
 
-            if (position == 2) {
-                ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Loan Seekers", new Loan_Broker_Requirement()));
-                pagerItems.add(new PagerItem("Loan Lenders", new Loan_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 2;
-                //mTabs.notifyAll();
-
-                //mPager.invalidate();
-            }
-
-            if (position == 1) {
-                ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Seekers", new Sale_Broker_Requirement_new()));
-                pagerItems.add(new PagerItem("Owners", new Sale_Broker_Available_new()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 1;
-                //mTabs.notifyAll();
-
-                //mPager.invalidate();
-            }
-
-            if (position == 0) {
-                ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
-                pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 0;
-                //mTabs.notifyAll();
-
-                //mPager.invalidate();
-            }
-
-            if (position == 3) {
-                ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
-                pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 3;
-                //mTabs.notifyAll();
-
-                //mPager.invalidate();
-            }
+            //mPager.invalidate();
         }
 
-        else{
-            if (position == 1) {
-                ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Seekers", new Sale_Broker_Requirement_new()));
-                pagerItems.add(new PagerItem("Owners", new Sale_Broker_Available_new()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 1;
-                //mTabs.notifyAll();
+        if(position == 1) {
+            ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
+            pagerItems.add(new PagerItem("Seekers", new Sale_Broker_Requirement_new()));
+            pagerItems.add(new PagerItem("Owners", new Sale_Broker_Available_new()));
+            adapter.setPagerItems(pagerItems);
+            adapter.notifyDataSetChanged();
+            mTabs.settabData();
+            mTabs.setDistributeEvenly(true);
+            currentItem =1;
+            //mTabs.notifyAll();
 
-                //mPager.invalidate();
-            }
+            //mPager.invalidate();
+        }
 
-            if (position == 0) {
-                ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
-                pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 0;
-                //mTabs.notifyAll();
+        if(position == 0) {
+            ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
+            pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
+            pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
+            adapter.setPagerItems(pagerItems);
+            adapter.notifyDataSetChanged();
+            mTabs.settabData();
+            mTabs.setDistributeEvenly(true);
+            currentItem = 0;
+            //mTabs.notifyAll();
 
-                //mPager.invalidate();
-            }
+            //mPager.invalidate();
+        }
+
+        if(position == 3) {
+            ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
+            pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
+            pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
+            adapter.setPagerItems(pagerItems);
+            adapter.notifyDataSetChanged();
+            mTabs.settabData();
+            mTabs.setDistributeEvenly(true);
+            currentItem =3;
+            //mTabs.notifyAll();
+
+            //mPager.invalidate();
         }
 
     }

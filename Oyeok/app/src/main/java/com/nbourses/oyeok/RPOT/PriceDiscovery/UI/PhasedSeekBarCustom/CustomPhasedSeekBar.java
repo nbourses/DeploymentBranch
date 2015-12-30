@@ -180,7 +180,7 @@ public class CustomPhasedSeekBar extends View {
 
     protected void setCurrentItem(int currentItem) {
         if (mCurrentItem != currentItem && mListener != null) {
-            mListener.onPositionSelected(currentItem,getCount());
+            mListener.onPositionSelected(currentItem);
         }
         mCurrentItem = currentItem;
     }
@@ -287,17 +287,8 @@ public class CustomPhasedSeekBar extends View {
 
 //            int brokerlength = (int) (6 * 15 *DPTOPX_SCALE)/2;
             paint.setColor(Color.BLACK);
-            double textSize=42 / count;
-            if(count==4) {
-                textSize = 42 / count;
-            }
-            else if (count==3){
-                textSize=10.5;
-            }
-            else if (count==2){
-                textSize=10.5;
-            }
-            paint.setTextSize((float) (textSize * DPTOPX_SCALE));
+            int textSize = 42/count;
+            paint.setTextSize(textSize * DPTOPX_SCALE);
 
             canvas.drawText(s + " min", mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
                     10 * DPTOPX_SCALE, paint) ;
@@ -345,8 +336,6 @@ public class CustomPhasedSeekBar extends View {
 
     public void setAdapter(CustomPhasedAdapter adapter) {
         mAdapter = adapter;
-        mFirstDraw =  true;
-        invalidate();
     }
 
 

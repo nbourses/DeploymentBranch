@@ -95,9 +95,6 @@ public class User {
         @SerializedName("success")
         public String success;
 
-
-        public String pincode;
-
         public class ResponseData{
                 @SerializedName("otp")
                 private String otp;
@@ -499,13 +496,6 @@ public class User {
         //@JsonProperty("rating_given")
         public void setRatingGiven(String ratingGiven) {
                 this.ratingGiven = ratingGiven;
-        }
-        public String getPincode() {
-                return pincode;
-        }
-
-        public void setPincode(String pincode) {
-                this.pincode = pincode;
         }
 
         public Map<String, Object> getAdditionalProperties() {

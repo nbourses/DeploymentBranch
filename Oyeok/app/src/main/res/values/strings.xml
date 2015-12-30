@@ -16,6 +16,11 @@
     
 
 
+
+
+
+
+
     <string name="head1">Get Free Oyes!</string>
     <string name="head2">Use Oyes to unlock features</string>
     <string name="head3">Buy Oyes!</string>
@@ -32,7 +37,7 @@
     <string name="follow">Follow</string>
     <string name="tweet">Tweet</string>
 
-
+    
     <string name="memberinfo">Member /n Info</string>
 
 
@@ -53,7 +58,7 @@
     <string name="title_friends">Friends</string>
     <string name="title_home">Home</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+<!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_capture_activity_any_orientation">CaptureActivityAnyOrientation
     </string>

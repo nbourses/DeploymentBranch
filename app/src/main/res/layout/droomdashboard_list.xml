@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.diegocarloslima.fgelv.lib.FloatingGroupExpandableListView
+        android:id="@+id/my_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/start_droom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add"
+        android:layout_margin="@dimen/sixteen_dp"
+        android:layout_gravity="end|bottom"
+        app:elevation="4dp" />
+
+</FrameLayout>

@@ -61,7 +61,7 @@ public class Loan_Broker_Requirement extends Fragment implements CircularSeekBar
 
                 if(mOkbutton.getText().toString().equals("Auto Ok"))
                 {
-                    ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                    ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs());
                 }
             }
         });

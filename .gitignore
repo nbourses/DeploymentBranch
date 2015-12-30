@@ -1,3 +1,15 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+=======
+>>>>>>> b231b6aa882d5dacfe6b375e241ab447b7e4c737
 .DS_Store
 <<<<<<< HEAD
 Oyeok/.idea/misc.xml
@@ -49,3 +61,7 @@ captures/
 .Ds_store
 .DS_store
 >>>>>>> 0c06deb4458303c75765ba011bd66dcd5a7bff36
+<<<<<<< HEAD
+=======
+>>>>>>> f381dee70ac9faa63e26ea189c69b11fc8fceb13
+>>>>>>> b231b6aa882d5dacfe6b375e241ab447b7e4c737

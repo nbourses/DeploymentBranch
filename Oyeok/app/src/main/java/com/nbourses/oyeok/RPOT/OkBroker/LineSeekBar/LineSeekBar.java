@@ -165,7 +165,7 @@ public class LineSeekBar extends View {
         canvas.drawLine(mCircleRectF.centerX()+15*DPTOPX_SCALE,mCircleRectF.centerY(),mCircleRectF.right,mCircleRectF.top,mCirclePaint);
 
 
-        int [] drawables = {R.drawable.ic_broker_home,R.drawable.ic_industrial_oye_intent_specs,R.drawable.ic_shop,R.drawable.ic_loans};
+        int [] drawables = {R.drawable.ic_broker_home,R.drawable.ic_industrial_24dp,R.drawable.ic_shop,R.drawable.ic_loans};
 
 
         imagesRect.clear();

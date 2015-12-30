@@ -63,7 +63,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
 
                 if(mOkbutton.getText().toString().equals("Auto Ok"))
                 {
-                    ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                    ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs());
                 }
             }
         });

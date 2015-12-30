@@ -2,7 +2,6 @@ package com.nbourses.oyeok.RPOT.ApiSupport.services;
 
 import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.PreOk;
 
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -59,7 +58,7 @@ public interface OyeokApiService {
     void giveUserRoleRating(@Body Oyeok oyeok, Callback<Oyeok> callback);
 
     @POST("/1/pre/ok")
-    void preOk(@Body Oyeok oyeok, Callback<PreOk> callback);
+    void preOk(@Body Oyeok oyeok, Callback<Oyeok> callback);
 
     @POST("/1/lets/oye")
     void letsOye(@Body Oyeok oyeok, Callback<LetsOye> callback);
