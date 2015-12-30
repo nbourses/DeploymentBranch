@@ -26,6 +26,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -71,15 +72,67 @@ public class Loan_Broker_Available extends Fragment implements CircularSeekBarNe
             }
         });
 
+        JSONArray dummyData= new JSONArray();
         cbn = (CircularSeekBarNew) v.findViewById(R.id.circularseekbar);
         cbn.setmImageAction(this);
-        /*values.add(2);
-        values.add(7);
-        values.add(19);
-        values.add(13);
+        cbn = (CircularSeekBarNew) v.findViewById(R.id.circularseekbar);
+        cbn.setmImageAction(this);
+        for(int i=0;i<2;i++) {
+            JSONObject element= new JSONObject();
+            try {
+                element.put("oye_id", "vhdhCMSDMz");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                element.put("req_avl", "req");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                element.put("size", i+1+"bhk");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                element.put("price", (1+i)*(100000));
 
-        cbn.setValues(values);*/
-        cbn.setValues(dbHelper.getValue(DatabaseConstants.reqLl));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                if(i%2==0)
+                    element.put("oye_status", "active");
+                else
+                    element.put("oye_status","inactive");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                element.put("user_id", "vhdhCMSDMz");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {if(i%2==0)
+                element.put("user_role", "client");
+            else
+                element.put("user_role","broker");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                dummyData.put(i, element);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
+            cbn.setValues(dbHelper.getValue(DatabaseConstants.reqLl));
+        else
+            cbn.setValues(dummyData.toString());
+
 
         pickContact.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +165,7 @@ public class Loan_Broker_Available extends Fragment implements CircularSeekBarNe
                 // TODO Fetch other Contact details as you want to use
                 contactName.setText(name);
                 mOkbutton.setBackgroundColor(Color.parseColor("#B2DFDB"));
+                mOkbutton.setText("Ok(4290)");
                 Log.i("start droom", "name=" + name);
 
             }
@@ -126,7 +180,7 @@ public class Loan_Broker_Available extends Fragment implements CircularSeekBarNe
 //        YoPopup yoPopup = new YoPopup();
 //        yoPopup.inflateYo(getActivity(), "LL-3BHK-20K", "broker");
         try {
-            rentText.setText("Loan : Rs "+ m.get(position)+"L");
+            rentText.setText("Price : Rs "+ m.getJSONObject(position).getString("price"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

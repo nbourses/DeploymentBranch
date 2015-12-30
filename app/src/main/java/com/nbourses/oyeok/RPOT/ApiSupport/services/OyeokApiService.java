@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.RPOT.ApiSupport.services;
 
 import com.google.gson.JsonElement;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.AcceptOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.PreOk;
@@ -67,8 +68,8 @@ public interface OyeokApiService {
     @POST("/1/lets/oye")
     void letsOye(@Body Oyeok oyeok, Callback<LetsOye> callback);
 
-    @POST("/1/ok/acceptOk")
-    void acceptOk(@Body Oyeok oyeok, Callback<Oyeok> callback);
+    @POST("/1/ok/accept")
+    void acceptOk(@Body Oyeok oyeok, Callback<AcceptOk> callback);
 }
 
 

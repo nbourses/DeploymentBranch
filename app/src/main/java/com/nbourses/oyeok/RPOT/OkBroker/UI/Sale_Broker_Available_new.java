@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.OkBroker.CircularSeekBar.CircularSeekBarNew;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.AutoOkIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
@@ -44,6 +45,9 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
     private JSONArray values = new JSONArray();
     DBHelper dbHelper;
     JSONArray dummyData= new JSONArray();
+    String oyeId,specCode,oyeUserId,reqAvl;
+    JSONArray p= new JSONArray();
+    int j;
 
 
     @Override
@@ -134,6 +138,10 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
                 if (mOkbutton.getText().toString().equals("Auto Ok")) {
                     ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
                 }
+                else{
+                    AcceptOkCall a= new AcceptOkCall();
+                    a.acceptOk(p,j, dbHelper,getActivity());
+                }
             }
         });
 
@@ -169,6 +177,7 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
                 // TODO Fetch other Contact details as you want to use
                 contactName.setText(name);
                 mOkbutton.setBackgroundColor(Color.parseColor("#B2DFDB"));
+                mOkbutton.setText("Ok(4290)");
                 Log.i("start droom", "name=" + name);
 
             }
@@ -183,7 +192,13 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
 //        YoPopup yoPopup = new YoPopup();
 //        yoPopup.inflateYo(getActivity(), "LL-3BHK-20K", "broker");
         try {
-            rentText.setText("Price : Rs "+ m.get(position)+"L");
+            p=m;
+            j=position;
+            rentText.setText("Price : Rs "+ m.getJSONObject(position).getString("price"));
+            /*oyeId=m.getJSONObject(position).getString("oye_id");
+            oyeUserId= m.getJSONObject(position).getString("user_id");
+            specCode=m.getJSONObject(position).getString("tt")+"-"+m.getJSONObject(position).getString("size")+"-"+m.getJSONObject(position).getString("price");
+            reqAvl=m.getJSONObject(position).getString("req_avl");*/
         } catch (JSONException e) {
             e.printStackTrace();
         }

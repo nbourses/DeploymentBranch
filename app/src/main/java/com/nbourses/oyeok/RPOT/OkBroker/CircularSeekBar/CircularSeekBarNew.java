@@ -306,9 +306,9 @@ public class CircularSeekBarNew extends View {
             e.printStackTrace();
         }
 
-        Log.i("values= ",values.toString());
+        Log.i("values length= ",Integer.toString(values.length()));
         if(values.length()==0){
-            Toast.makeText(getContext(),"We are looking for oyes in your region",Toast.LENGTH_SHORT);
+            Toast.makeText(mContext,"Sit back and relax",Toast.LENGTH_SHORT).show();
         }
 
         if(values.length()==1){

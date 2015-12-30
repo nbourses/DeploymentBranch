@@ -16,7 +16,5 @@ public class LetsOye {
 
     @SerializedName("responseData")
     String responseData;
-
-
 }
 //q0u6wc96uzxhahxepzu5loacn1t307py

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.OkBroker.CircularSeekBar.CircularSeekBarNew;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.AutoOkIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
@@ -27,8 +28,6 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 
 public class Sale_Broker_Requirement_new extends Fragment implements CircularSeekBarNew.imageAction {
@@ -44,6 +43,9 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
     private JSONArray values = new JSONArray();
     JSONArray dummyData= new JSONArray();
     DBHelper dbHelper;
+    String oyeId,specCode,oyeUserId,reqAvl;
+    JSONArray p=new JSONArray();
+    int j;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,6 +73,10 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
 
                 if (mOkbutton.getText().toString().equals("Auto Ok")) {
                     ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                }
+                else{
+                    AcceptOkCall a= new AcceptOkCall();
+                    a.acceptOk(p,j, dbHelper, getActivity());
                 }
             }
         });
@@ -166,6 +172,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
                 // TODO Fetch other Contact details as you want to use
                 contactName.setText(name);
                 mOkbutton.setBackgroundColor(Color.parseColor("#B2DFDB"));
+                mOkbutton.setText("Ok(4290)");
                 Log.i("start droom", "name=" + name);
 
             }
@@ -180,7 +187,9 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
 //        YoPopup yoPopup = new YoPopup();
 //        yoPopup.inflateYo(getActivity(), "LL-3BHK-20K", "broker");
         try {
-            rentText.setText("Price : Rs "+ m.get(position)+"L");
+            p=new JSONArray(m.toString());
+            j=position;
+            rentText.setText("Price : Rs "+ m.getJSONObject(position).getString("price"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

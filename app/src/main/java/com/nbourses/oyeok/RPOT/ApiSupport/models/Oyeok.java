@@ -28,7 +28,8 @@ public class Oyeok {
     @SerializedName("mobile_no")
     private String mobileNo;
 
-
+    @SerializedName("oye_user_id")
+    private String oyeUserId;
 
     @SerializedName("success")
     private String success;
@@ -132,6 +133,15 @@ public class Oyeok {
     @SerializedName("pincode")
     private String pincode;
 
+    @SerializedName("tt")
+    private String tt;
+
+    @SerializedName("size")
+    private String size;
+
+    @SerializedName("price")
+    private String price;
+
     //@JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -141,6 +151,31 @@ public class Oyeok {
      * @return
      * The userId
      */
+
+
+    public String getTt() {
+        return tt;
+    }
+
+    public void setTt(String tt) {
+        this.tt = tt;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
 
     public void setOyeId(String oyeId){
         this.oyeId=oyeId;
@@ -211,6 +246,14 @@ public class Oyeok {
 
     public void setMobileNo(String mobileNo){
         this.mobileNo=mobileNo;
+    }
+
+    public String getOyeUserId() {
+        return oyeUserId;
+    }
+
+    public void setOyeUserId(String oyeUserId) {
+        this.oyeUserId = oyeUserId;
     }
 
     public String getMobileNo(){

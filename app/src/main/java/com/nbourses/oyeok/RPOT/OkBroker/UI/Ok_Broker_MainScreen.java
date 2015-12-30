@@ -30,6 +30,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.PreOk;
@@ -463,10 +464,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         String API = "http://52.25.136.179:9000";
         Oyeok preok = new Oyeok();
         preok.setDeviceId("Hardware");
-        preok.setGcmId("gliui");
+        //preok.setGcmId("gliui");
         preok.setUserRole("broker");
         preok.setLong("72.1456");
         preok.setLat("19.2344");
+        preok.setGcmId(dbHelper.getValue(DatabaseConstants.gcmId));
+        /*preok.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+        preok.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));*/
 
 
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API).build();
@@ -485,12 +489,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                     JSONArray reqOr = neighbours.getJSONArray("req_or");
                     JSONArray avlLl = neighbours.getJSONArray("avl_ll");
                     JSONArray avlOr = neighbours.getJSONArray("avl_or");
-                    Log.i("oye_id=", reqLl.getJSONObject(0).getString("oye_id"));
+                 //   Log.i("oye_id=", reqLl.getJSONObject(0).getString("oye_id"));
                     dbHelper.save(DatabaseConstants.reqLl, reqLl.toString());
                     dbHelper.save(DatabaseConstants.reqOr, reqOr.toString());
                     dbHelper.save(DatabaseConstants.avlLl, avlLl.toString());
                     dbHelper.save(DatabaseConstants.avlOr, avlOr.toString());
-                    Log.i("req_ll from db: ", dbHelper.getValue(DatabaseConstants.reqLl));
+                  //
+                  //  Log.i("req_ll from db: ", dbHelper.getValue(DatabaseConstants.reqLl));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
