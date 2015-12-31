@@ -4,7 +4,7 @@
     <string name="action_search">Search</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
-
+    <string name="Profile">Profile</string>
     <string name="Oye">Oye</string>
 
     <string name="QrCode">QrCode</string>
@@ -38,6 +38,7 @@
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">
+        <item>@string/Profile</item>
         <item>@string/Oye</item>
 
         <item>@string/QrCode</item>
@@ -46,6 +47,7 @@
         <item>@string/signup</item>
         <item>@string/PayTM</item>
         <item>@string/share_app</item>
+
 
     </string-array>
 

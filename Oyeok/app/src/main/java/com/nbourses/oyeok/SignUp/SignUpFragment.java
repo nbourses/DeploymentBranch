@@ -7,7 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
@@ -327,7 +326,7 @@ public class SignUpFragment extends Fragment {
         OyeokApiService service;
 
         User user = new User();
-        user.setMobileNo("Snumber");
+        user.setMobileNo(Snumber);
         user.setMobileCode("+91");
         user.setEmail(Semail);
         user.setName(Sname);
@@ -360,6 +359,9 @@ public class SignUpFragment extends Fragment {
                         Log.i("Firebase", userProfileViewModel.getUserProfile().toString());
                         userProfileFirebase = new UserProfileFirebase(firebaseUrl, my_user_id);
                         userProfileFirebase.setUserProfileValues(userProfileViewModel.getUserProfile());
+                        dbHelper.save(DatabaseConstants.name, Sname);
+                        dbHelper.save(DatabaseConstants.email,Semail);
+                        dbHelper.save(DatabaseConstants.mobileNumber,Snumber);
                         if (dbHelper.getValue(DatabaseConstants.userRole).equals("Broker")) {
                             dbHelper.save(DatabaseConstants.user, "Broker");
                         } else

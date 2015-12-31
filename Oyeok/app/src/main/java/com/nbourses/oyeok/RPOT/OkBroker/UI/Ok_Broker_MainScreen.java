@@ -9,7 +9,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
@@ -38,7 +37,6 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.PreOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
@@ -58,8 +56,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -83,7 +79,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     private ImageButton bPinLocation;
     private LatLng latlng;
     DBHelper dbHelper;
-    View v;
+    //View v;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,7 +91,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 //        display.getSize(size);
 //        int width = size.x;
 //        PagerSlidingTabStrip.width = width / 2;
-         v= inflater.inflate(R.layout.broker_main_screen, container, false);
+       View  v= inflater.inflate(R.layout.broker_main_screen, container, false);
         ((MainActivity)getActivity()).setMapsClicked(this);
 
         //mHideShow = (LinearLayout) v.findViewById(R.id.showMap);
@@ -515,7 +511,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
     public void setPhasedSeekBar(){
 
-        mCustomPhasedSeekbar = (CustomPhasedSeekBar) v.findViewById(R.id.phasedSeekBar);
+       // mCustomPhasedSeekbar = (CustomPhasedSeekBar) v.findViewById(R.id.phasedSeekBar);
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{"Rental", "Sale"}));
         else
@@ -536,11 +532,11 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         preok.setDeviceId("Hardware");
         //preok.setGcmId("gliui");
         preok.setUserRole("broker");
-        preok.setLong("72.1456");
-        preok.setLat("19.2344");
+        //preok.setLong("72.1456");
+        //preok.setLat("19.2344");
         preok.setGcmId(dbHelper.getValue(DatabaseConstants.gcmId));
-        /*preok.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-        preok.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));*/
+        preok.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+        preok.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
 
 
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API).build();

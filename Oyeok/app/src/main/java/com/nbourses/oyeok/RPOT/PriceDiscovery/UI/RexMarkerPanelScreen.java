@@ -117,15 +117,17 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private CustomPhasedSeekBar mPhasedSeekBar;
     String brokerType;
     private Geocoder geocoder;
+    private GetCurrentLocation.CurrentLocationCallback mcallback;
     String pincode, region, fullAddress;
     Double lat, lng;
-    View rootView;
+    private GetCurrentLocation getLocationActivity;
+    //View rootView;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
+      View  rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
         mDrooms = (TextView) rootView.findViewById(R.id.linearlayout_drooms);
        mVisits = (TextView) rootView.findViewById(R.id.newVisits);
@@ -292,15 +294,14 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     }
                 }
 
-                SharedPrefs.save(getActivity(),SharedPrefs.MY_LAT,lat+"");
+                SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                 SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
 
 
             }
         });
 
-
-        new GetCurrentLocation(getActivity(), new GetCurrentLocation.CurrentLocationCallback() {
+        mcallback           =  new GetCurrentLocation.CurrentLocationCallback() {
             @Override
             public void onComplete(Location location) {
                 if (location != null) {
@@ -330,7 +331,40 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     }
                 }
             }
-        });
+        };
+
+        getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
+//        new GetCurrentLocation(getActivity(), new GetCurrentLocation.CurrentLocationCallback() {
+//            @Override
+//            public void onComplete(Location location) {
+//                if (location != null) {
+//                    lat = location.getLatitude();
+//                    lng = location.getLongitude();
+//                    SharedPrefs.save(getActivity(),SharedPrefs.MY_LAT,lat+"");
+//                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+//                    if(isNetworkAvailable()) {
+//                        try {
+//                            getRegion();
+//                        } catch (Exception e) {
+//                            Log.i("Exception", "caught in get region");
+//                        }
+//                    }
+//
+//                    LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+//                    map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+//                    map.animateCamera(CameraUpdateFactory.zoomTo(16));
+//
+//                    //make retrofit call to get Min Max price
+//                    if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
+//                        try {
+//                            getPrice();
+//                        } catch (Exception e) {
+//
+//                        }
+//                    }
+//                }
+//            }
+//        });
 
 
         ((MainActivity) getActivity()).bringResideMenu();
@@ -374,9 +408,18 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         return rootView;
     }
 
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        getLocationActivity.setCallback(null);
+
+    }
+
     public void setPhasedSeekBar(){
         //View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
-        mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
+        //mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{"Rental", "Sale"}));
         else

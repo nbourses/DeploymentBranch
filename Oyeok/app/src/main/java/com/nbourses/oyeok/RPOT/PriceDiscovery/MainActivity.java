@@ -32,6 +32,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.resideMenu.ResideMenu;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.resideMenu.ResideMenuItem;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
+import com.nbourses.oyeok.User.Profile;
 import com.nbourses.oyeok.activity.MessagesFragment;
 
 import org.json.JSONException;
@@ -197,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
             changeFragment(new Ok_Broker_MainScreen(),null);
         else
-            displayView(0);
+            displayView(1);
 
 
 
@@ -273,7 +274,12 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         Fragment fragment = null;
         String title = getString(R.string.app_name);
         switch (position) {
+
             case 0:
+                fragment = new Profile();
+                title = getString(R.string.title_home);
+                break;
+            case 1:
                 fragment = new RexMarkerPanelScreen();
                 title = getString(R.string.title_home);
                 break;
@@ -281,30 +287,30 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 //                fragment = new OyeIntentSpecs();
 //                title = getString(R.string.title_friends);
 //                break;
-            case 1:
+            case 2:
                 fragment = new MessagesFragment();
                 title = getString(R.string.title_messages);
                 break;
-            case 2:
+            case 3:
                fragment = new Ok_Broker_MainScreen();
                 title = "Broker";
                 break;
-            case 3:
+            case 4:
 //                List<KeyValuePair> list=dbHelper.getAllKeyValuePair();
 //                for (KeyValuePair k:list )
 //                    Log.i("DB", k.getKey()+"  "+k.getValue());
                 Bundle bundle=new Bundle();
                 //bundle.putStringArray("propertySpecification",propertySpecification);
-                bundle.putString("lastFragment", "OyeIntentSpecs");
+                bundle.putString("lastFragment", "RexMarkerPanel");
                 fragment = new SignUpFragment();
                 fragment.setArguments(bundle);
                 title= "Sign Up";
                 break;
-            case 4:
+            case 5:
                 fragment = new PayTMFragment();
                 title = "Pay";
                 break;
-            case 5:
+            case 6:
                 shareReferralLink();
                 break;
 
@@ -314,6 +320,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.container_body, fragment);
+           // fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
 
             // set the toolbar title

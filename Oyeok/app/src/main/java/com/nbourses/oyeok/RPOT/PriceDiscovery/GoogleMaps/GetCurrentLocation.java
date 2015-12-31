@@ -20,9 +20,6 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import static android.support.v4.app.ActivityCompat.requestPermissions;
-import static android.support.v4.content.PermissionChecker.checkSelfPermission;
-
 public class GetCurrentLocation extends Activity implements LocationListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener{
 
     Context context;
@@ -55,6 +52,10 @@ public class GetCurrentLocation extends Activity implements LocationListener,Goo
     private Location location;
 
     public CurrentLocationCallback currentLocationCallback;
+
+    public void setCallback(CurrentLocationCallback callback) {
+        this.currentLocationCallback = callback;
+    }
 
 
     public interface CurrentLocationCallback {
@@ -119,7 +120,9 @@ public class GetCurrentLocation extends Activity implements LocationListener,Goo
     public void onLocationChanged(Location location) {
         Log.d("currentLocation", "\n ======> onLocationChange : " + location);
         if ( location != null ) {
-            currentLocationCallback.onComplete(location);
+            if(currentLocationCallback != null) {
+                currentLocationCallback.onComplete(location);
+            }
         }
         fusedLocationProviderApi.removeLocationUpdates(googleApiClient, this);
     }

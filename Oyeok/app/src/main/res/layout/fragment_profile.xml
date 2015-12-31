@@ -1,0 +1,81 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context="com.nbourses.oyeok.Profile">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:orientation="horizontal"
+        android:background="#011627"
+        android:id="@+id/imageViewLayout">
+        <ImageView
+            android:layout_width="188dp"
+            android:layout_height="match_parent"
+            android:id="@+id/imageView"
+            android:layout_gravity="left|top"
+            android:src="@drawable/ic_profile"
+            android:layout_marginLeft="10dp"
+            android:padding="20dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="132dp"
+            android:text="USERNAME"
+            android:id="@+id/txt_user"
+            android:textColor="#ffffff"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:gravity="center"
+            android:textSize="10sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="right|center_vertical"
+        android:layout_below="@+id/imageViewLayout"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_role"
+            android:layout_gravity="left|center_vertical"
+            android:text="Role Here"
+            android:padding="30dp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_email"
+            android:layout_gravity="left|center_vertical"
+            android:text="Email Here"
+            android:padding="30dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_phone"
+            android:layout_gravity="left|center_vertical"
+            android:text="Phone Here"
+            android:padding="30dp"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_oye"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/thirtysix_dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/sixteen_dp"
+        android:layout_marginRight="@dimen/sixteen_dp"
+        android:layout_marginLeft="@dimen/sixteen_dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_greenishblue"
+        android:gravity="center"
+        android:text="Log Out"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sixteen_sp"
+        android:layout_gravity="right|bottom" />
+
+</FrameLayout>
