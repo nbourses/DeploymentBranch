@@ -30,8 +30,8 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
-import com.nbourses.oyeok.activity.MessagesFragment;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
@@ -81,17 +81,19 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
             letsOye();
         }*/
         View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
-        rentSale=b.getString("BrokerType");
+
         rentOrSale= (TextView) rootView.findViewById(R.id.textForRentSale);
         inputSearch= (TextView) rootView.findViewById(R.id.inputSearch);
         inputSearch.setText(b.getString("Address"));
-        rentOrSale.setText(rentSale);
+
         dbHelper=new DBHelper(getContext());
+        rentSale=dbHelper.getValue("BrokerType");
+        rentOrSale.setText(rentSale);
         mOye = (Button) rootView.findViewById(R.id.bt_oye);
         homeImageView= (ImageView) rootView.findViewById(R.id.icon_home);
         shopImageView= (ImageView) rootView.findViewById(R.id.icon_shop);
         myFragment=new MyFragment();
-        dbHelper.save(DatabaseConstants.offmode,"null");
+        //dbHelper.save(DatabaseConstants.offmode, "null");
         //priceRangeBar= (RangeBar) rootView.findViewById(R.id.priceRangeBar);
         myFragment.setmListener(this);
         propertySpecification=new String[10];
@@ -143,6 +145,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                     settings.setTextZoom(value);
                 }*/
                 //int val= seekBar.getProgress();
+                Log.i("Debug",""+value);
                 String s = numToVal(value);
                 seekBar.setIndicatorFormatter(s);
                 budget = s;
@@ -355,7 +358,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 String[] temp=dataFromMyFragment.split(" ");
                 if(temp.length<=1)
                 {
-                    Toast.makeText(getActivity().getBaseContext(),"Enter the value",Toast.LENGTH_SHORT);
+                    Toast.makeText(getActivity(),"Please enter all the fields",Toast.LENGTH_LONG).show();
                 }
                 else
                 letsOye();
@@ -428,6 +431,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
             RestAdapter restAdapter1 = new RestAdapter.Builder().setEndpoint(API).build();
             restAdapter1.setLogLevel(RestAdapter.LogLevel.FULL);
             OyeokApiService oyeok = restAdapter1.create(OyeokApiService.class);
+            Log.i("Check",isNetworkAvailable()+"  "+dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") );
             if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
                 try {
                     oyeok.letsOye(oyeOk, new Callback<LetsOye>() {
@@ -466,7 +470,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                                 }
 
                             }
-                            ((MainActivity) getActivity()).changeFragment(new MessagesFragment(), null);
+                            ((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null);
                 /*}else
                 {
                     *//*Intent NextActivity = new Intent(context, MainActivity.class);
@@ -490,6 +494,9 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 } catch (Exception e) {
                     Log.i("Exception", "caught in lets oye");
                 }
+            }else{
+                Toast.makeText(getContext(), "You are are using offline mode or you are not connected to internet", Toast.LENGTH_LONG).show();
+                ((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null);
             }
 
         }

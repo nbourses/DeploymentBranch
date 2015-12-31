@@ -2,28 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="OF TYPE"
-        android:id="@+id/textView"
-        android:textSize="15sp"
-        android:padding="10dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/linearlayout1"
-        android:layout_alignStart="@+id/linearlayout1" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:id="@+id/linearlayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="3dp"
         android:layout_marginBottom="10dp"
         android:layout_marginRight="3dp"
+        android:layout_marginTop="10dp"
         >
 
 
@@ -39,7 +28,10 @@
             android:background="@drawable/my_button_shape"
             android:id="@+id/btn_coldStorage"
             android:textColor="#000000"
-            android:textSize="13sp"/>
+            android:textSize="13sp"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"/>
 
         <Button
             android:layout_width="0dp"
@@ -54,7 +46,10 @@
             android:background="@drawable/my_button_shape"
             android:id="@+id/btn_kitchen"
             android:textColor="#000000"
-            android:textSize="13sp"/>
+            android:textSize="13sp"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"/>
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -71,7 +66,10 @@
             android:background="@drawable/my_button_shape"
             android:id="@+id/btn_wareHouse"
             android:textColor="#000000"
-            android:textSize="13sp"/>
+            android:textSize="13sp"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"/>
 
     </LinearLayout>
 
@@ -104,7 +102,10 @@
             android:layout_marginRight="3dp"
             android:layout_marginTop="3dp"
             android:id="@+id/btn_officeSpace"
-            android:textColor="#000000"/>
+            android:textColor="#000000"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"/>
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -120,7 +121,10 @@
             android:layout_marginTop="3dp"
             android:background="@drawable/my_button_shape"
             android:id="@+id/btn_manufacturing"
-            android:textColor="#000000"/>
+            android:textColor="#000000"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"/>
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -135,7 +139,10 @@
             android:layout_marginTop="3dp"
             android:background="@drawable/my_button_shape"
             android:id="@+id/btn_workshop"
-            android:textColor="#000000"/>
+            android:textColor="#000000"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"/>
 
     </LinearLayout>
 </RelativeLayout>

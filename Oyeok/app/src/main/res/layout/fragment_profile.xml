@@ -36,12 +36,13 @@
         android:orientation="vertical"
         android:layout_gravity="right|center_vertical"
         android:layout_below="@+id/imageViewLayout"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="50dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txt_role"
             android:layout_gravity="left|center_vertical"
+            android:layout_below="@+id/imageViewLayout"
             android:text="Role Here"
             android:padding="30dp"
             />
@@ -50,12 +51,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/txt_email"
             android:layout_gravity="left|center_vertical"
+            android:layout_below="@+id/text_role"
             android:text="Email Here"
             android:padding="30dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txt_phone"
+            android:layout_below="@+id/text_email"
             android:layout_gravity="left|center_vertical"
             android:text="Phone Here"
             android:padding="30dp"/>

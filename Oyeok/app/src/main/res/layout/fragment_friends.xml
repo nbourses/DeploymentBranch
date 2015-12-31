@@ -59,7 +59,6 @@
                 android:orientation="vertical"
                 android:weightSum="1">
 
-
                 <TextView
                     android:id="@+id/inputSearch"
                     android:layout_width="fill_parent"
@@ -70,9 +69,9 @@
                     android:paddingTop="@dimen/eight_dp"
                     android:text=" "
                     android:textColor="@color/white"
+                    android:textColorHint="@color/white"
 
-                    android:textColorHint="@color/white" />
-
+                    />
 
             </LinearLayout>
 
@@ -120,7 +119,7 @@
                     android:layout_below="@+id/recordWorkout"
                     android:layout_alignRight="@+id/recordWorkout"
                     android:layout_alignEnd="@+id/recordWorkout"
-                    android:checked="false"
+                    android:checked="true"
                     android:layout_weight="1"/>
 
                 <RadioButton
@@ -178,7 +177,10 @@
                     android:layout_width="60dp"
                     android:layout_height="match_parent"
                     android:text="HOME"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:ellipsize="end"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="60dp"
@@ -198,7 +200,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="SHOP"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:ellipsize="end"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -218,7 +223,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="FACTORY"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:ellipsize="end"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -238,7 +246,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="OFFICE"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:ellipsize="end"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -259,7 +270,10 @@
                     android:layout_height="match_parent"
                     android:text="OTHERS"
                     android:gravity="center"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:ellipsize="end"/>
             </LinearLayout>
         </LinearLayout>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -319,38 +333,51 @@
 
         </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_above="@+id/bt_oye"
+        android:layout_below="@+id/top"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/bt_oye"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="BUDGET"
             android:textSize="15sp"
             android:layout_gravity="left"
-            android:layout_marginLeft="15dp"
             android:textColor="#000000"
-            />
+            android:layout_above="@+id/discreteSeekBar1"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/textView3" />
+
         <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/discreteSeekBar1"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            app:dsb_min="20000"
-            app:dsb_max="700000"
+            app:dsb_min="40000"
+            app:dsb_max="100000000"
+            android:layout_alignParentBottom="true"
             android:layout_toRightOf="@+id/textView"
-            android:layout_toLeftOf="@+id/textView"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginRight="15dp"
-            android:weightSum="2">
+            android:layout_toLeftOf="@+id/textView2"
+            android:layout_toStartOf="@+id/textView2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10CR "
+                android:id="@+id/textView2"
+                android:layout_gravity="right"
+                android:foregroundGravity="center_vertical"
+                android:gravity="center_vertical"
+                android:textSize="15sp"
+                android:textColor="#000000"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/textView3" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -358,23 +385,16 @@
                 android:text="40K"
                 android:id="@+id/textView"
                 android:textSize="15sp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:layout_marginLeft="15dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical"
                 android:textColor="#000000"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10CR "
-                android:id="@+id/textView2"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:textSize="15sp"
-                android:textColor="#000000" />
-        </LinearLayout>
-    </LinearLayout>
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignTop="@+id/discreteSeekBar1" />
+
+
+    </RelativeLayout>
     <Button
         android:id="@+id/bt_oye"
         android:layout_width="fill_parent"
