@@ -1,6 +1,22 @@
 package com.nbourses.oyeok.RPOT.PriceDiscovery.UI;
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+//import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
+import com.nbourses.oyeok.Database.SharedPrefs;
+import com.google.android.gms.maps.model.CameraPosition;
+import android.text.TextUtils;
+import android.os.AsyncTask;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -78,7 +94,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;*/
 
 
-public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener {
+public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener {
 
     private final String TAG = RexMarkerPanelScreen.class.getSimpleName();
     private static final String[] INITIAL_PERMS = {
@@ -120,6 +136,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     String pincode, region, fullAddress;
     Double lat, lng;
     View rootView;
+    private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "";
+    AutoCompleteTextView autoCompView;
 
 
     @Override
@@ -150,16 +168,22 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
         mPhasedSeekBar.setListener(this);
 
-        AutoCompleteTextView autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
-        autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
-        autoCompView.setOnItemClickListener(this);
+        autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
+        autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));		        autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
+        autoCompView.setOnItemClickListener(this);		        autoCompView.setOnItemClickListener(this);
+        autoCompView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                autoCompView.showDropDown();
+            }
+        });
 
 
         mDrooms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null);
+                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(),null);
             }
         });
         mVisits.setOnClickListener(new View.OnClickListener() {
@@ -252,6 +276,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void onMapReady(GoogleMap googleMap) {
                 map = googleMap;
                 map.setMyLocationEnabled(true);
+                setCameraListener();
                 //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, map);
                 //selectedLocation = map.getCameraPosition().target;
                 geoFence.drawPloygon(map);
@@ -279,7 +304,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     mMarkerpriceslider.setVisibility(View.GONE);
                     mMarkerPanel.setVisibility(View.VISIBLE);
                     mMarkerminmax.setVisibility(View.VISIBLE);
-                    getPrice();
+                    /*getPrice();
                     LatLng latlng = map.getCameraPosition().target;
                     lat = latlng.latitude;
                     lng = latlng.longitude;
@@ -289,7 +314,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                         } catch (Exception e) {
                             Log.i("Exception", "caught in get region");
                         }
-                    }
+                    }*/
                 }
 
                 SharedPrefs.save(getActivity(),SharedPrefs.MY_LAT,lat+"");
@@ -407,12 +432,12 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         }
     }
 
-    private boolean isNetworkAvailable() {
+    /*private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
+    }*/
 
     public void getPrice() {
 
@@ -567,75 +592,141 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             }
         }
     }
-    //alternative for geocoder
-   /* public static JSONObject getLocationInfo(String address) {
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-
-            address = address.replaceAll(" ","%20");
-
-            HttpPost httppost = new HttpPost("http://maps.google.com/maps/api/geocode/json?address=" + address + "&sensor=false");
-            HttpClient client = new DefaultHttpClient();
-            HttpResponse response;
-            stringBuilder = new StringBuilder();
-
-
-            response = client.execute(httppost);
-            HttpEntity entity = response.getEntity();
-            InputStream stream = entity.getContent();
-            int b;
-            while ((b = stream.read()) != -1) {
-                stringBuilder.append((char) b);
-            }
-        } catch (ClientProtocolException e) {
-        } catch (IOException e) {
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+        if (isNetworkAvailable()) {
+            lat = cameraPosition.target.latitude;
+            lng = cameraPosition.target.longitude;
+            SharedPrefs.save(getActivity(),SharedPrefs.MY_LAT,lat+"");
+            SharedPrefs.save(getActivity(),SharedPrefs.MY_LNG,lng+"");
+            new LocationUpdater().execute();
         }
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = new JSONObject(stringBuilder.toString());
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return jsonObject;
-    }*/
-    private static List<Address> getAddrByWeb(JSONObject jsonObject){
-        List<Address> res = new ArrayList<Address>();
-        try
-        {
-            JSONArray array = (JSONArray) jsonObject.get("results");
-            for (int i = 0; i < array.length(); i++)
-            {
-                Double lon = new Double(0);
-                Double lat = new Double(0);
-                String name = "";
-                try
-                {
-                    lon = array.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
-
-                    lat = array.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getDouble("lat");
-                    name = array.getJSONObject(i).getString("formatted_address");
-                    Address addr = new Address(Locale.getDefault());
-                    addr.setLatitude(lat);
-                    addr.setLongitude(lon);
-                    addr.setAddressLine(0, name != null ? name : "");
-                    res.add(addr);
-                }
-                catch (JSONException e)
-                {
-                    e.printStackTrace();
-
-                }
-            }
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
-        return res;
     }
 
+    //@Override
+    public void onPositionSelected(int position) {
+        Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
+    }
+
+    protected class LocationUpdater extends AsyncTask<Double, Double, String>{
+        public JSONObject getJSONfromURL(String url) {
+
+            // initialize
+            InputStream is = null;
+            String result = "";
+            JSONObject jObject = null;
+
+            // http post
+            try {
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpPost httppost = new HttpPost(url);
+                HttpResponse response = httpclient.execute(httppost);
+                HttpEntity entity = response.getEntity();
+                is = entity.getContent();
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error in http connection " + e.toString());
+            }
+
+            // convert response to string
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                is.close();
+                result = sb.toString();
+            } catch (Exception e) {
+                Log.e(TAG, "Error converting result " + e.toString());
+            }
+
+            // try parse the string to a JSON object
+            try {
+                jObject = new JSONObject(result);
+            } catch (JSONException e) {
+                Log.e(TAG, "Error parsing data " + e.toString());
+            }
+
+            return jObject;
+        }
+        @Override
+        protected String doInBackground(Double[] objects) {
+            try {
+                JSONObject jsonObj = getJSONfromURL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + ","
+                        + lng + "&sensor=true");
+                String Status = jsonObj.getString("status");
+                if (Status.equalsIgnoreCase("OK")) {
+                    JSONArray Results = jsonObj.getJSONArray("results");
+                    JSONObject zero = Results.getJSONObject(0);
+                    JSONArray address_components = zero.getJSONArray("address_components");
+
+                    fullAddress = zero.getString("formatted_address");
+                    Log.v(TAG, "from async task : address is" + fullAddress);
+                    for (int i = 0; i < address_components.length(); i++) {
+                        JSONObject zero2 = address_components.getJSONObject(i);
+                        String long_name = zero2.getString("long_name");
+                        JSONArray mtypes = zero2.getJSONArray("types");
+                        String Type = mtypes.getString(0);
+
+                        if (TextUtils.isEmpty(long_name) == false || !long_name.equals(null) || long_name.length() > 0 || long_name != "") {
+                            if (Type.equalsIgnoreCase("street_number")) {
+                                Address1 += long_name;
+                            } else if (Type.equalsIgnoreCase("route")) {
+                                Address1 += " "+long_name;
+                            } else if (Type.equalsIgnoreCase("sublocality_level_2")) {
+                                Address2 = long_name;
+                            } else if (Type.equalsIgnoreCase("sublocality_level_1")){
+                                Address2 += " "+long_name;
+                                SharedPrefs.save(getActivity(),SharedPrefs.MY_LOCALITY,long_name);
+                            } else if (Type.equalsIgnoreCase("locality")) {
+                                // Address2 = Address2 + long_name + ", ";
+                                City = long_name;
+                                SharedPrefs.save(getActivity(),SharedPrefs.MY_CITY, City);
+                            } else if (Type.equalsIgnoreCase("administrative_area_level_2")) {
+                                County = long_name;
+                            } else if (Type.equalsIgnoreCase("administrative_area_level_1")) {
+                                State = long_name;
+                            } else if (Type.equalsIgnoreCase("country")) {
+                                Country = long_name;
+                            } else if (Type.equalsIgnoreCase("postal_code")) {
+                                PIN = long_name;
+                                SharedPrefs.save(getActivity(),SharedPrefs.MY_PINCODE,PIN);
+                            }
+                        }
+
+                        SharedPrefs.save(getActivity(),SharedPrefs.MY_REGION,fullAddress);
+                        Log.v(TAG,"from asynctask "+fullAddress);
+                        // JSONArray mtypes = zero2.getJSONArray("types");
+                        // String Type = mtypes.getString(0);
+                        // Log.e(Type,long_name);
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return fullAddress;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            autoCompView.setText(s);
+            autoCompView.dismissDropDown();
+        }
+    }
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public boolean setCameraListener(){
+        map.setOnCameraChangeListener(this);
+        return true;
+    }
 
 }
