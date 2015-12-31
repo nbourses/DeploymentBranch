@@ -717,7 +717,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             autoCompView.dismissDropDown();
         }
     }
-    public boolean isNetworkAvailable() {
+    private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
