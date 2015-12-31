@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">Oyeok</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <string name="Oye">Oye</string>
+
+    <string name="QrCode">QrCode</string>
+    <string name="BrokerOk">BrokerOk</string>
+
+    <string name="signup">Signup</string>
+    <string name="PayTM">PayTM</string>
+    <string name="share_app">Share app</string>
+    
+
+
+    <string name="head1">Get Free Oyes!</string>
+    <string name="head2">Use Oyes to unlock features</string>
+    <string name="head3">Buy Oyes!</string>
+    <string name="text1">35</string>
+    <string name="text2">100</string>
+    <string name="text3">100</string>
+    <string name="text4">200</string>
+    <string name="text5">3000</string>
+    <string name="text6">2000</string>
+    <string name="text7">Save 60%</string>
+    <string name="text8">INR 1,550.00</string>
+    <string name="text9">INR 1500.00</string>
+    <string name="invite">Per friend invited</string>
+    <string name="follow">Follow</string>
+    <string name="tweet">Tweet</string>
+
+
+    <string name="memberinfo">Member /n Info</string>
+
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/Oye</item>
+
+        <item>@string/QrCode</item>
+        <item>@string/BrokerOk</item>
+
+        <item>@string/signup</item>
+        <item>@string/PayTM</item>
+        <item>@string/share_app</item>
+
+    </string-array>
+
+    <string name="title_messages">Messages</string>
+    <string name="title_friends">Friends</string>
+    <string name="title_home">Home</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_capture_activity_any_orientation">CaptureActivityAnyOrientation
+    </string>
+    <string name="title_activity_droom__chat_">Droom_Chat_Activity</string>
+
+    <string name="gcm_defaultSenderId">463092685367</string>
+    <string name="api_key">AIzaSyBCInmUgDWVq9NEXM5gjri8vudSd1jjyzQ</string>
+</resources>
