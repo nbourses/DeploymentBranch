@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -99,6 +101,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     Double lat, lng;
     String pincode, region, fullAddress;
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "";
+    Toolbar mToolbar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -118,8 +121,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         bPinLocation = (ImageButton)v.findViewById(R.id.bPinLocation);
         dbHelper=new DBHelper(getContext());
         earnOk = (Button) v.findViewById(R.id.earnOk);
-
-        if(!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+          if(!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
         {
             if(!dbHelper.getValue(DatabaseConstants.user).equals("Client"))
             {
@@ -224,6 +226,9 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         if(i==0) {
             m = AnimationUtils.loadAnimation(getActivity(),
                     R.anim.slide_down);
+
+
+                    //SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY)+","+SharedPrefs.getString(getActivity(),SharedPrefs.MY_CITY)
         }else {
 
             m = AnimationUtils.loadAnimation(getActivity(),
@@ -243,6 +248,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     @Override
     public void onResume() {
         super.onResume();
+
         ((MainActivity)getActivity()).hideResideMenu();
         ((MainActivity)getActivity()).showOpenMaps();
     }
@@ -725,8 +731,10 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
         @Override
         protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            Log.v(TAG,fullAddress);
+
+            MainActivity main = (MainActivity)getActivity();
+            main.setTitle(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) + "," + SharedPrefs.getString(getActivity(), SharedPrefs.MY_CITY));
+
             //TODO: set action bar title here
         }
     }

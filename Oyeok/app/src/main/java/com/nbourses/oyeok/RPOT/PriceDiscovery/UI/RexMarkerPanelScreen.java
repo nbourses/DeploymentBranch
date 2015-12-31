@@ -13,6 +13,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.google.android.gms.maps.model.CameraPosition;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.location.LocationManager;
 import android.text.TextUtils;
 import android.os.AsyncTask;
 import java.io.InputStream;
@@ -394,11 +398,17 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             }
         });
 
-
-
         return rootView;
     }
+    @Override
+    public void onResume() {
+        final LocationManager manager = (LocationManager)getActivity(). getSystemService( Context.LOCATION_SERVICE );
 
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            buildAlertMessageNoGps();
+        }
+        super.onResume();
+    }
     public void setPhasedSeekBar(){
         //View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
@@ -727,6 +737,23 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     public boolean setCameraListener(){
         map.setOnCameraChangeListener(this);
         return true;
+    }
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
 }
