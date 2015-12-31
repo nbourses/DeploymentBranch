@@ -31,14 +31,19 @@
             android:background="@drawable/my_button_shape"
             android:id="@+id/btn_1bh"
             android:textColor="#000000"
-            android:textSize="13sp"/>
+            android:textSize="13sp"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"/>
 
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="2 BHK"
-
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="3dp"
             android:layout_marginRight="5dp"
@@ -54,7 +59,9 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="3 BHK"
-
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="3dp"
             android:layout_marginRight="5dp"
@@ -90,14 +97,19 @@
             android:background="@drawable/my_button_shape"
             android:id="@+id/btn_35bhk"
             android:textColor="#000000"
-            android:textSize="13sp"/>
+            android:textSize="13sp"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"/>
 
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="4 BHK"
-
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="3dp"
             android:layout_marginRight="5dp"
@@ -113,7 +125,9 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="5 BHK"
-
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="3dp"
             android:layout_marginRight="5dp"
