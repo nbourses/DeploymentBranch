@@ -1,0 +1,384 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto">
+
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        >
+
+        <FrameLayout
+            android:id="@+id/ll_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/border_line">
+
+        <fragment
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment"
+            android:orientation="vertical"
+            tools:layout="@layout/abc_action_bar_title_item">
+        </fragment>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                >
+
+            <LinearLayout
+                android:id="@+id/ll_marker"
+                android:visibility="visible"
+                android:layout_width="fill_parent"
+                android:layout_height="56dp"
+                android:layout_marginLeft="@dimen/sixteen_dp"
+                android:layout_marginRight="@dimen/sixteen_dp"
+                android:orientation="horizontal"
+                android:background="@drawable/maker_bg"
+                >
+
+                <ImageView
+                    android:id="@+id/markersliderminus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_left_arrow_circle"
+                    android:layout_marginLeft="4dp"
+                    android:visibility="gone"
+                    android:layout_gravity="center_vertical" />
+
+
+                <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                    android:id="@+id/price_seekbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    app:dsb_min="2"
+                    app:dsb_max="15"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Non Serviceable Region"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/fourteen_sp"
+
+                        android:gravity="center" />
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-6dp"
+                        android:text="No Broker Available"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/fourteen_sp"
+                        android:gravity="center" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/markerpanelminmax"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/linearlayout_drooms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:text="Deal"
+                        android:paddingLeft="@dimen/eight_dp"
+                        android:paddingRight="@dimen/eight_dp"
+                        android:background="@drawable/deal_circle"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sixteen_sp"
+                        android:gravity="center_vertical" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:text="1200 Rs/sqft"
+                        android:id="@+id/tv_max"
+                        android:layout_marginLeft="@dimen/sixteen_dp"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/fourteen_sp"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:layout_toRightOf="@+id/linearlayout_drooms" />
+
+                    <View
+                        android:layout_width="12dp"
+                        android:layout_height="1dp"
+                        android:background="@color/white"
+                        android:layout_gravity="center_vertical"
+                        android:layout_centerInParent="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:text="2000 Rs/sqft"
+                        android:id="@+id/tv_min"
+                        android:layout_marginRight="@dimen/sixteen_dp"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/fourteen_sp"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical|right"
+                        android:layout_toLeftOf="@+id/newVisits" />
+
+                    <TextView
+                        android:id="@+id/newVisits"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:backgroundTint="@color/yellow"
+                        android:text="Oye"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:background="@drawable/deal_circle"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sixteen_sp"
+                        android:layout_alignParentRight="true" />
+
+                </RelativeLayout>
+
+
+
+                <ImageView
+                    android:id="@+id/markerpanelplus"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_right_arrow_circle"
+                    android:layout_marginRight="4dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="4dp" />
+
+            </LinearLayout>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_markerpin"
+                    android:layout_below="@id/ll_marker"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="-15dp" />
+
+            </RelativeLayout>
+
+
+            <com.github.clans.fab.FloatingActionMenu
+                android:id="@+id/menu2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                fab:menu_labels_style="@style/MenuLabelsStyle"
+                fab:menu_labels_showAnimation="@anim/jump_from_down"
+                fab:menu_labels_hideAnimation="@anim/jump_to_down"
+                fab:menu_animationDelayPerItem="0"
+                fab:menu_shadowColor="#444"
+                fab:menu_colorNormal="#FFB805"
+                fab:menu_colorPressed="#F2AB00"
+                fab:menu_colorRipple="#D99200"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp">
+
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_label="Menu item 1"
+                    style="@style/MenuButtonsStyle" />
+
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab22"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_label="Menu item 2"
+                    style="@style/MenuButtonsStyle" />
+
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab32"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/MenuButtonsStyle" />
+
+            </com.github.clans.fab.FloatingActionMenu>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/eight_dp"
+
+            android:background="@drawable/rectable_border_effect"
+            android:orientation="horizontal"
+            android:id="@+id/recordWorkout">
+
+            <LinearLayout
+                android:layout_width="24dp"
+                android:layout_height="fill_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="vertical"
+                android:weightSum="1"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="12dp"
+                android:id="@+id/lin">
+
+                <ImageView
+                    android:id="@+id/qrCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_qrcode" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="@color/white"
+                />
+
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="vertical"
+                android:layout_margin="@dimen/eight_dp"
+                android:weightSum="1"
+                android:id="@+id/route">
+
+
+                <AutoCompleteTextView android:id="@+id/inputSearch"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:hint="Search .."
+                    android:background="@color/greenish_blue"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white"
+                    android:textCursorDrawable="@color/white"
+                    android:drawableRight="@drawable/ic_search_24dp"
+                    android:inputType="textVisiblePassword"/>
+
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="@color/white"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_margin="@dimen/eight_dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_gps_fixed_24dp"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+<!-- 
+<<<<<<< HEAD
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/thirtysix_dp"
+                android:gravity="center"
+                android:layout_marginRight="@dimen/four_dp"
+                android:background="@drawable/button_greenishblue"
+                android:text="Oye A Broker"
+                android:id="@+id/newVisits"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sixteen_sp"
+                android:layout_weight="1" />
+
+
+            <Button
+                android:id="@+id/linearlayout_drooms"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/thirtysix_dp"
+                android:layout_marginLeft="@dimen/four_dp"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:background="#FFB74D"
+                android:text="Drooms"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sixteen_sp"
+                android:layout_weight="1" />
+
+            </LinearLayout>
+=======
+>>>>>>> 83a4472e498b9ce118288e01cbf3165a2fdef17f -->
+
+        <View
+            android:id="@+id/border_line"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            android:layout_above="@+id/seekbar_linearlayout"
+            />
+
+        <LinearLayout
+            android:id="@+id/seekbar_linearlayout"
+            android:paddingTop="@dimen/eight_dp"
+            android:paddingLeft="@dimen/eight_dp"
+            android:paddingRight="@dimen/eight_dp"
+            android:background="@color/dark_white"
+            android:layout_width="fill_parent"
+            android:layout_height="108dp"
+            android:orientation="vertical"
+            android:gravity="bottom"
+            android:baselineAligned="false"
+            android:foregroundGravity="bottom"
+            android:layout_alignParentBottom="true">
+
+            <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
+                android:id="@+id/phasedSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+
+
+
+
+</RelativeLayout>
