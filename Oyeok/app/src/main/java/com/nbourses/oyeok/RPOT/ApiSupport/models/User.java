@@ -95,8 +95,19 @@ public class User {
         @SerializedName("success")
         public String success;
 
-
+        @SerializedName("pincode")
         public String pincode;
+
+        public String getMyPhoto() {
+                return myPhoto;
+        }
+
+        public void setMyPhoto(String myPhoto) {
+                this.myPhoto = myPhoto;
+        }
+
+        @SerializedName("my_photo")
+        public String myPhoto;
 
         public class ResponseData{
                 @SerializedName("otp")

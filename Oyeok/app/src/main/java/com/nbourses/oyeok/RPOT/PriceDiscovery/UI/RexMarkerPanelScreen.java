@@ -329,8 +329,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     mMarkerpriceslider.setVisibility(View.GONE);
                     mMarkerPanel.setVisibility(View.VISIBLE);
                     mMarkerminmax.setVisibility(View.VISIBLE);
-                    /*getPrice();
-                    LatLng latlng = map.getCameraPosition().target;
+                    getPrice();
+                    /*LatLng latlng = map.getCameraPosition().target;
                     lat = latlng.latitude;
                     lng = latlng.longitude;
                     if (isNetworkAvailable()) {
@@ -621,17 +621,17 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     @Override
     public void onPositionSelected(int position, int count) {
 
-        Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
         if(count==2){
             if(position==0) {
                 brokerType = "rent";
                 dbHelper.save(DatabaseConstants.brokerType, "ll");
-                dbHelper.save("BrokerType","On Rent");
+                dbHelper.save("brokerType","On Rent");
             }
             else if(position==1) {
                 brokerType = "sale";
                 dbHelper.save(DatabaseConstants.brokerType, "or");
-                dbHelper.save("BrokerType","For Sale");
+                dbHelper.save("brokerType","For Sale");
             }
         }
         else{
@@ -684,7 +684,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
     //@Override
     public void onPositionSelected(int position) {
-        Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
     }
 
     protected class LocationUpdater extends AsyncTask<Double, Double, String>{

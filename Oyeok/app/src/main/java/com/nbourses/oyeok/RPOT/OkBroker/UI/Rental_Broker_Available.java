@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 
@@ -115,10 +116,26 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
                 e.printStackTrace();
             }
             try {
+                if(i%2==0)
+                    element.put("property_type","Home");
+                else
+                    element.put("property_type","Shop");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {if(i%2==0)
+                element.put("property_subtype",i+1+"bhk");
+            else
+                element.put("property_subtype",(i*10)+"seater");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
                 dummyData.put(i, element);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
         }
         /*values.add(6);
         values.add(3);
@@ -199,7 +216,9 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
         try {
             p=m;
             j=position;
+            DecimalFormat formatter = new DecimalFormat();
             rentText.setText("Price : Rs "+ m.getJSONObject(position).getString("price"));
+            //rentText.setText("Price : Rs "+ formatter.format(Double.parseDouble(m.getJSONObject(position).getString("price")))+"\n"+m.getJSONObject(position).getString("property_type")+"\n"+m.getJSONObject(position).getString("property_subtype"));
             /*oyeId=m.getJSONObject(position).getString("oye_id");
             oyeUserId= m.getJSONObject(position).getString("user_id");
             specCode=m.getJSONObject(position).getString("tt")+"-"+m.getJSONObject(position).getString("size")+"-"+m.getJSONObject(position).getString("price");

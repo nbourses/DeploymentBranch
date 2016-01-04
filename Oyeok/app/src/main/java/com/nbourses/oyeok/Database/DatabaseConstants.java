@@ -14,5 +14,5 @@ public class DatabaseConstants {
     public static String userId="UserId";
     public static String user="User";
     public static String region="Region";
-    public static String pinCode="PinCode";
+    public static String pinCode="PinCode",imageFilePath="ImageFilePath";
 }
