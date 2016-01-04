@@ -87,7 +87,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         inputSearch.setText(b.getString("Address"));
 
         dbHelper=new DBHelper(getContext());
-        rentSale=dbHelper.getValue("BrokerType");
+        rentSale=dbHelper.getValue("brokerType");
         rentOrSale.setText(rentSale);
         mOye = (Button) rootView.findViewById(R.id.bt_oye);
         homeImageView= (ImageView) rootView.findViewById(R.id.icon_home);
@@ -148,7 +148,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 Log.i("Debug",""+value);
                 String s = numToVal(value);
                 seekBar.setIndicatorFormatter(s);
-                budget = s;
+                budget = ""+value;
             }
 
             @Override

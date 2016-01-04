@@ -37,18 +37,23 @@
 
 
     <!-- navigation drawer item labels  -->
-    <string-array name="nav_drawer_labels">
-        <item>@string/Profile</item>
-        <item>@string/Oye</item>
-
-        <item>@string/QrCode</item>
-        <item>@string/BrokerOk</item>
-
+    <string-array name="nav_drawer_labels_no_signup">
         <item>@string/signup</item>
-        <item>@string/PayTM</item>
+
+        <item>@string/BrokerOk</item>
         <item>@string/share_app</item>
+    </string-array>
+    <string-array name="nav_drawer_labels_signup_client">
+        <item>@string/Profile</item>
 
+        <item>@string/BrokerOk</item>
+        <item>@string/share_app</item>
+    </string-array>
+    <string-array name="nav_drawer_labels_signup_broker">
+        <item>@string/Profile</item>
 
+        <item>@string/BrokerOk</item>
+        <item>@string/share_app</item>
     </string-array>
 
     <string name="title_messages">Messages</string>

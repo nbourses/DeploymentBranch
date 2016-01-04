@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -24,7 +23,6 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.GoogleCloudMessaging.RegistrationIntentService;
 import com.nbourses.oyeok.JPOT.SalaryDiscovery.UI.JexMarkerPanelScreen;
 import com.nbourses.oyeok.LPOT.PriceDiscoveryLoan.UI.LexMarkerPanelScreen;
-import com.nbourses.oyeok.PayTM.PayTMFragment;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
@@ -34,7 +32,6 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.resideMenu.ResideMenu;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.resideMenu.ResideMenuItem;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.User.Profile;
-import com.nbourses.oyeok.activity.MessagesFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -199,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
             changeFragment(new Ok_Broker_MainScreen(),null);
         else
-            displayView(1);
+            changeFragment(new RexMarkerPanelScreen(),null);
 
 
 
@@ -277,41 +274,36 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         switch (position) {
 
             case 0:
-                fragment = new Profile();
-                title = getString(R.string.title_home);
-                break;
-            case 1:
-                fragment = new RexMarkerPanelScreen();
-                title = getString(R.string.title_home);
-                break;
-//            case 1:
-//                fragment = new OyeIntentSpecs();
-//                title = getString(R.string.title_friends);
-//                break;
-            case 2:
-                fragment = new MessagesFragment();
-                title = getString(R.string.title_messages);
-                break;
-            case 3:
-               fragment = new Ok_Broker_MainScreen();
-                title = "Broker";
-                break;
-            case 4:
-//                List<KeyValuePair> list=dbHelper.getAllKeyValuePair();
-//                for (KeyValuePair k:list )
-//                    Log.i("DB", k.getKey()+"  "+k.getValue());
-                Bundle bundle=new Bundle();
+            if (dbHelper.getValue(DatabaseConstants.user).equals("null"))
+            {
+                Bundle bundle = new Bundle();
                 //bundle.putStringArray("propertySpecification",propertySpecification);
                 bundle.putString("lastFragment", "RexMarkerPanel");
                 fragment = new SignUpFragment();
                 fragment.setArguments(bundle);
-                title= "Sign Up";
+                title = "Sign Up";
+
+                drawerFragment = (FragmentDrawer)
+                        getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+                drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
+                drawerFragment.setDrawerListener(this);
                 break;
-            case 5:
-                fragment = new PayTMFragment();
-                title = "Pay";
+            }
+            else {
+                fragment = new Profile();
+                title = "Profile";
+
+                drawerFragment = (FragmentDrawer)
+                        getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+                drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
+                drawerFragment.setDrawerListener(this);
                 break;
-            case 6:
+            }
+            case 1:
+               fragment = new Ok_Broker_MainScreen();
+                title = "Broker";
+                break;
+            case 2:
                 shareReferralLink();
                 break;
 

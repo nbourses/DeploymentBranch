@@ -2,34 +2,16 @@ package com.nbourses.oyeok.RPOT.PriceDiscovery.UI;
 
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-//import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
-import com.nbourses.oyeok.Database.SharedPrefs;
-import com.google.android.gms.maps.model.CameraPosition;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.location.LocationManager;
-import android.text.TextUtils;
-import android.os.AsyncTask;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -101,6 +83,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import static android.support.v4.content.PermissionChecker.checkSelfPermission;
+
+//import com.nbourses.oyeok.R;
 
 //import com.nbourses.oyeok.R;
 
@@ -626,12 +610,12 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             if(position==0) {
                 brokerType = "rent";
                 dbHelper.save(DatabaseConstants.brokerType, "ll");
-                dbHelper.save("BrokerType","On Rent");
+                dbHelper.save("brokerType","On Rent");
             }
             else if(position==1) {
                 brokerType = "sale";
                 dbHelper.save(DatabaseConstants.brokerType, "or");
-                dbHelper.save("BrokerType","For Sale");
+                dbHelper.save("brokerType","For Sale");
             }
         }
         else{
