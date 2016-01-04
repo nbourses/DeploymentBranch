@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -169,8 +168,13 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                             RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
                             r.setPhasedSeekBar();
                         } catch (ClassCastException e) {
-                            Ok_Broker_MainScreen m = (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
-                            m.setPhasedSeekBar();
+                            try {
+                                Ok_Broker_MainScreen m = (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                                m.setPhasedSeekBar();
+                            }catch (ClassCastException e1)
+                            {
+
+                            }
                         }
                     /*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
                     r.setPhasedSeekBar();*/
@@ -183,8 +187,13 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                             RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
                             r.setPhasedSeekBar();
                         } catch (ClassCastException e) {
-                            Ok_Broker_MainScreen m = (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
-                            m.setPhasedSeekBar();
+                            try {
+                                Ok_Broker_MainScreen m = (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                                m.setPhasedSeekBar();
+                            }catch (ClassCastException e1)
+                            {
+
+                            }
                         }
                     /*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
                     r.setPhasedSeekBar();*/
