@@ -38,6 +38,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
 import com.nbourses.oyeok.User.UserProfileViewModel;
 import com.nbourses.oyeok.activity.MessagesFragment;
@@ -67,12 +68,14 @@ public class SignUpFragment extends Fragment {
     Dialog alertD;
     Context context;
 
+    MainActivity activity;
     DBHelper dbHelper;
 
     String picturePath, mobile;
     private static final int SELECT_PHOTO = 1;
     GoogleCloudMessaging gcm;
 
+    private FragmentDrawer drawerFragment;
     String regid, GCMID;
     String my_user_id;
     String PROJECT_NUMBER = "463092685367";
@@ -192,6 +195,7 @@ public class SignUpFragment extends Fragment {
             regid = userProfileViewModel.getGcmId();
             user.setGcmId(regid);
             user.setLongitude(Str_Lng);
+            user.setLocality("Locality");
             user.setLatitude(Str_Lat);
             user.setDeviceId("Hardware");
 
@@ -211,7 +215,7 @@ public class SignUpFragment extends Fragment {
             user.setMobileCode("+91");
             user.setUserRole(user_role);
             regid = UserCredentials.getString(context, UserCredentials.KEY_GCM_ID);*/
-            regid="abhi";
+            regid=SharedPrefs.getString(getActivity(),SharedPrefs.MY_GCM_ID);
             userProfileViewModel.setGcmId(regid);
             userProfileViewModel.setLng(Str_Lng);
             userProfileViewModel.setLat(Str_Lat);
@@ -368,7 +372,8 @@ public class SignUpFragment extends Fragment {
                             dbHelper.save(DatabaseConstants.user, "Client");
                         if (redirectToOyeIntentSpecs)
                             letsOye();
-
+                        activity=(MainActivity)getActivity();
+                        activity.refresh();
                         Fragment fragment = null;
                         if (lastFragment.equals("MainBroker"))
                             fragment = new Ok_Broker_MainScreen();

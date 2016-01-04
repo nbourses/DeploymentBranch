@@ -130,7 +130,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private TextView maxPrice;
     private TextView minPrice;
     private GeoFence geoFence;
-    private int permissionCheckForCamera;
+    private int permissionCheckForCamera,permissionCheckForLocation;
     private final int MY_PERMISSION_FOR_CAMERA=11;
     private CustomPhasedSeekBar mPhasedSeekBar;
     String brokerType;
@@ -167,7 +167,12 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
          permissionCheckForCamera = ContextCompat.checkSelfPermission(this.getActivity(),
                 Manifest.permission.CAMERA);
         dbHelper=new DBHelper(getContext());
+        permissionCheckForLocation = ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION);
         onPositionSelected(0,2);
+
+
+
 
 
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
@@ -192,7 +197,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             @Override
             public void onClick(View v) {
 
-                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(),null);
+                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null);
             }
         });
         mVisits.setOnClickListener(new View.OnClickListener() {
@@ -276,6 +281,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 mMarkerpriceslider.setRight(m + 1);
             }
         });
+
 
 
         CustomMapFragment customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
@@ -366,6 +372,13 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         };
 
         getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
+
+
+
+
+
+
+
 //        new GetCurrentLocation(getActivity(), new GetCurrentLocation.CurrentLocationCallback() {
 //            @Override
 //            public void onComplete(Location location) {
@@ -437,6 +450,9 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
         return rootView;
     }
+
+
+
     @Override
     public void onResume() {
         final LocationManager manager = (LocationManager)getActivity(). getSystemService( Context.LOCATION_SERVICE );
@@ -569,6 +585,19 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     // functionality that depends on this permission.
                 }
             }
+            case LOCATION_REQUEST:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+
+                break;
+
 
             // other 'case' lines to check for other
             // permissions this app might request
