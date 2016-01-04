@@ -218,6 +218,10 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         setUpMenuChangeUserRole();
 
+        if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+            changeFragment(new Ok_Broker_MainScreen(),null);
+        else
+            changeFragment(new RexMarkerPanelScreen(), null);
 
 
 
@@ -249,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         super.onStart();
         branch = Branch.getInstance(getApplicationContext());
         boolean isReferrable = false;
+
         branch.initSession(new Branch.BranchReferralInitListener() {
             @Override
             public void onInitFinished(JSONObject referringParams, BranchError error) {
@@ -372,13 +377,13 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private void shareReferralLink() {
         //TO-DO
         //get users contact number here
-        String mobile = "Get contact number here!";
+        String user_id = dbHelper.getValue(DatabaseConstants.userId);
         //JSONObject sessionParams = branch.getFirstReferringParams();
-        branch.setIdentity(mobile);
+        branch.setIdentity(user_id);
         
         branchUniversalObject = new BranchUniversalObject()
                 // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
-                .setCanonicalIdentifier(mobile);
+                .setCanonicalIdentifier(user_id);
 
         linkProperties = new LinkProperties()
                 .setChannel("sms")
