@@ -2,9 +2,12 @@ package com.nbourses.oyeok.RPOT.OkBroker.UI;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -20,7 +23,6 @@ import android.widget.TextView;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.OkBroker.CircularSeekBar.CircularSeekBarNew;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.AutoOkIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
@@ -28,8 +30,6 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 
 public class Sale_Broker_Available_new extends Fragment implements CircularSeekBarNew.imageAction {
@@ -47,6 +47,7 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
     JSONArray dummyData= new JSONArray();
     String oyeId,specCode,oyeUserId,reqAvl;
     JSONArray p= new JSONArray();
+    Ok_Broker_MainScreen ok_broker_mainScreen;
     int j;
 
 
@@ -139,8 +140,8 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
                     ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
                 }
                 else{
-                    AcceptOkCall a= new AcceptOkCall();
-                    a.acceptOk(p,j, dbHelper,getActivity());
+                    ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
+                    ok_broker_mainScreen.replaceWithSignUp(p,j);
                 }
             }
         });
@@ -160,6 +161,14 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
 
 
         return v;
+    }
+
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 

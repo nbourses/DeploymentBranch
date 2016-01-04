@@ -33,6 +33,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.MobileVerify;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
@@ -42,6 +43,9 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
 import com.nbourses.oyeok.User.UserProfileViewModel;
 import com.nbourses.oyeok.activity.MessagesFragment;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import butterknife.Bind;
 import retrofit.Callback;
@@ -78,8 +82,11 @@ public class SignUpFragment extends Fragment {
     private FragmentDrawer drawerFragment;
     String regid, GCMID;
     String my_user_id;
+    String jsonArray="";
+    JSONArray p;
     String PROJECT_NUMBER = "463092685367";
     TextView fbdata;
+    Boolean okBroker=false;
     Boolean success = false, is_role_selected=false, validation_success, email_success;
     String subphone=null;
     LocationManager mLocationManager;
@@ -109,10 +116,14 @@ public class SignUpFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b=getArguments();
+        redirectToOyeIntentSpecs=false;
+        okBroker=false;
         if(b.getString("lastFragment")!=null)
         if(b.getString("lastFragment")!=null)
         lastFragment=b.getString("lastFragment");
 
+        if(lastFragment.equals("RentalBrokerAvailable")||lastFragment.equals("RentalBrokerRequirement")||lastFragment.equals("SaleBrokerAvailable")||lastFragment.equals("SaleBrokerRequirement"))
+            okBroker=true;
         if(lastFragment.equals("OyeIntentSpecs")){
             Log.i("bundle_in",(b.getStringArray("propertySpecification"))[0]);
             redirectToOyeIntentSpecs=true;
@@ -373,10 +384,25 @@ public class SignUpFragment extends Fragment {
                             dbHelper.save(DatabaseConstants.user, "Client");
                         if (redirectToOyeIntentSpecs)
                             letsOye();
+                        else
+                        {
+                            if(okBroker){
+                                jsonArray=b.getString("JsonArray");
+                                try {
+                                    p=new JSONArray(jsonArray);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                int j=b.getInt("Position");
+                                AcceptOkCall a = new AcceptOkCall();
+                                a.acceptOk(p,j,dbHelper, getActivity());
+
+                            }
+                        }
                         activity=(MainActivity)getActivity();
                         activity.refresh();
                         Fragment fragment = null;
-                        if (lastFragment.equals("MainBroker"))
+                        if (okBroker)
                             fragment = new Ok_Broker_MainScreen();
                         else {
                             fragment = new RexMarkerPanelScreen();
