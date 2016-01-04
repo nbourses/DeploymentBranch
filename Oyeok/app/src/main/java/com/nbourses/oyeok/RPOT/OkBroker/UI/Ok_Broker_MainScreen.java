@@ -7,12 +7,15 @@ import android.graphics.Color;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,11 +27,13 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -51,10 +56,18 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import retrofit.Callback;
@@ -63,8 +76,9 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openMapsClicked,CustomPhasedListener {
+public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openMapsClicked,CustomPhasedListener, GoogleMap.OnCameraChangeListener {
 
+    private static final String TAG = Ok_Broker_MainScreen.class.getSimpleName();
     private ViewPager mPager;
     private SlidingTabLayout mTabs;
     private LinearLayout mHideShow;
@@ -79,7 +93,12 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     private ImageButton bPinLocation;
     private LatLng latlng;
     DBHelper dbHelper;
-    //View v;
+
+    Double lat, lng;
+    String pincode, region, fullAddress;
+    private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "";
+    Toolbar mToolbar;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,8 +118,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         bPinLocation = (ImageButton)v.findViewById(R.id.bPinLocation);
         dbHelper=new DBHelper(getContext());
         earnOk = (Button) v.findViewById(R.id.earnOk);
-
-        if(!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+          if(!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
         {
             if(!dbHelper.getValue(DatabaseConstants.user).equals("Client"))
             {
@@ -205,6 +223,9 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         if(i==0) {
             m = AnimationUtils.loadAnimation(getActivity(),
                     R.anim.slide_down);
+
+
+                    //SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY)+","+SharedPrefs.getString(getActivity(),SharedPrefs.MY_CITY)
         }else {
 
             m = AnimationUtils.loadAnimation(getActivity(),
@@ -224,6 +245,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     @Override
     public void onResume() {
         super.onResume();
+
         ((MainActivity)getActivity()).hideResideMenu();
         ((MainActivity)getActivity()).showOpenMaps();
     }
@@ -254,7 +276,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                             public void onMapReady(GoogleMap googleMap) {
                                 map = googleMap;
 
-                                map.setMyLocationEnabled(true);
+                                map.setMyLocationEnabled(false);
+                                setCameraListener();
                                 //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, map);
                                 //selectedLocation = map.getCameraPosition().target;
 
@@ -399,6 +422,17 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             }
         }
 
+    }
+
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+        if (isNetworkAvailable()) {
+            lat = cameraPosition.target.latitude;
+            lng = cameraPosition.target.longitude;
+            SharedPrefs.save(getActivity(),SharedPrefs.MY_LAT,lat+"");
+            SharedPrefs.save(getActivity(),SharedPrefs.MY_LNG,lng+"");
+            new LocationUpdater().execute();
+        }
     }
 
     class MyPagerAdapter extends FragmentPagerAdapter
@@ -590,4 +624,120 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         }
     }
 
+    protected class LocationUpdater extends AsyncTask<Double, Double, String> {
+        public JSONObject getJSONfromURL(String url) {
+
+            // initialize
+            InputStream is = null;
+            String result = "";
+            JSONObject jObject = null;
+
+            // http post
+            try {
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpPost httppost = new HttpPost(url);
+                HttpResponse response = httpclient.execute(httppost);
+                HttpEntity entity = response.getEntity();
+                is = entity.getContent();
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error in http connection " + e.toString());
+            }
+
+            // convert response to string
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                is.close();
+                result = sb.toString();
+            } catch (Exception e) {
+                Log.e(TAG, "Error converting result " + e.toString());
+            }
+
+            // try parse the string to a JSON object
+            try {
+                jObject = new JSONObject(result);
+            } catch (JSONException e) {
+                Log.e(TAG, "Error parsing data " + e.toString());
+            }
+
+            return jObject;
+        }
+        @Override
+        protected String doInBackground(Double[] objects) {
+            try {
+                JSONObject jsonObj = getJSONfromURL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + ","
+                        + lng + "&sensor=true");
+                String Status = jsonObj.getString("status");
+                if (Status.equalsIgnoreCase("OK")) {
+                    JSONArray Results = jsonObj.getJSONArray("results");
+                    JSONObject zero = Results.getJSONObject(0);
+                    JSONArray address_components = zero.getJSONArray("address_components");
+
+                    fullAddress = zero.getString("formatted_address");
+                    Log.v(TAG, "from async task : address is" + fullAddress);
+                    for (int i = 0; i < address_components.length(); i++) {
+                        JSONObject zero2 = address_components.getJSONObject(i);
+                        String long_name = zero2.getString("long_name");
+                        JSONArray mtypes = zero2.getJSONArray("types");
+                        String Type = mtypes.getString(0);
+
+                        if (TextUtils.isEmpty(long_name) == false || !long_name.equals(null) || long_name.length() > 0 || long_name != "") {
+                            if (Type.equalsIgnoreCase("street_number")) {
+                                Address1 += long_name;
+                            } else if (Type.equalsIgnoreCase("route")) {
+                                Address1 += " "+long_name;
+                            } else if (Type.equalsIgnoreCase("sublocality_level_2")) {
+                                Address2 = long_name;
+                            } else if (Type.equalsIgnoreCase("sublocality_level_1")){
+                                Address2 += " "+long_name;
+                                SharedPrefs.save(getActivity(),SharedPrefs.MY_LOCALITY,long_name);
+                            } else if (Type.equalsIgnoreCase("locality")) {
+                                // Address2 = Address2 + long_name + ", ";
+                                City = long_name;
+                                SharedPrefs.save(getActivity(),SharedPrefs.MY_CITY, City);
+                            } else if (Type.equalsIgnoreCase("administrative_area_level_2")) {
+                                County = long_name;
+                            } else if (Type.equalsIgnoreCase("administrative_area_level_1")) {
+                                State = long_name;
+                            } else if (Type.equalsIgnoreCase("country")) {
+                                Country = long_name;
+                            } else if (Type.equalsIgnoreCase("postal_code")) {
+                                PIN = long_name;
+                                SharedPrefs.save(getActivity(),SharedPrefs.MY_PINCODE,PIN);
+                            }
+                        }
+
+                        SharedPrefs.save(getActivity(),SharedPrefs.MY_REGION,fullAddress);
+                        Log.v(TAG,"from asynctask "+fullAddress);
+                        // JSONArray mtypes = zero2.getJSONArray("types");
+                        // String Type = mtypes.getString(0);
+                        // Log.e(Type,long_name);
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return fullAddress;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+            MainActivity main = (MainActivity)getActivity();
+            main.setTitle(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) + "," + SharedPrefs.getString(getActivity(), SharedPrefs.MY_CITY));
+
+            //TODO: set action bar title here
+        }
+    }
+
+    public boolean setCameraListener(){
+        map.setOnCameraChangeListener(this);
+        return true;
+    }
 }

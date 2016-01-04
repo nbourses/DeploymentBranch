@@ -1,6 +1,28 @@
 package com.nbourses.oyeok.RPOT.PriceDiscovery.UI;
 
 
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+//import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
+import com.nbourses.oyeok.Database.SharedPrefs;
+import com.google.android.gms.maps.model.CameraPosition;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.location.LocationManager;
+import android.text.TextUtils;
+import android.os.AsyncTask;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -429,19 +451,30 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             }
         });
 
-
-
         return rootView;
     }
+    @Override
+    public void onResume() {
+        final LocationManager manager = (LocationManager)getActivity(). getSystemService( Context.LOCATION_SERVICE );
 
 
+
+    
+    
+
+
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            buildAlertMessageNoGps();
+        }
+        super.onResume();
+    }
     @Override
     public void onDetach() {
         super.onDetach();
 
         getLocationActivity.setCallback(null);
-
     }
+
 
     public void setPhasedSeekBar(){
         //View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
@@ -763,7 +796,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             autoCompView.dismissDropDown();
         }
     }
-    public boolean isNetworkAvailable() {
+    private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
@@ -773,6 +806,23 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     public boolean setCameraListener(){
         map.setOnCameraChangeListener(this);
         return true;
+    }
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
 }
