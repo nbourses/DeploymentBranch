@@ -26,7 +26,7 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/buttonslayout"
+        android:layout_above="@+id/seekbar_linearlayout"
         >
 
     </android.support.v4.view.ViewPager>
@@ -47,29 +47,29 @@
 
         <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:id="@+id/buttonslayout"
-            android:layout_above="@+id/seekbar_linearlayout"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="50dp">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/buttonslayout"-->
+            <!--android:layout_above="@+id/seekbar_linearlayout"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="50dp">-->
 
-            <Button
-                android:id="@+id/earnOk"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:text="Earn Ok"
-                android:background="#69F0AE"
-                android:layout_height="match_parent" />
+            <!--<Button-->
+                <!--android:id="@+id/earnOk"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Earn Ok"-->
+                <!--android:background="#69F0AE"-->
+                <!--android:layout_height="match_parent" />-->
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:text="Droom"
-                android:background="#FFB74D"
-                android:layout_height="match_parent" />
+            <!--<Button-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Droom"-->
+                <!--android:background="#FFB74D"-->
+                <!--android:layout_height="match_parent" />-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
         <LinearLayout
             android:id="@+id/seekbar_linearlayout"

@@ -26,7 +26,6 @@ import com.nbourses.oyeok.LPOT.PriceDiscoveryLoan.UI.LexMarkerPanelScreen;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.ReferFragment.ReferFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.resideMenu.ResideMenu;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.resideMenu.ResideMenuItem;
@@ -221,12 +220,12 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         });
         Firebase.setAndroidContext(this);
 
-        refer = (Button) findViewById(R.id.refer);
-        refer.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                changeFragment(new ReferFragment(), null);
-            }
-        });
+        //refer = (Button) findViewById(R.id.refer);
+//        refer.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                changeFragment(new ReferFragment(), null);
+//            }
+//        });
         // display the first navigation drawer view on app launch
 
 
@@ -384,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
             Log.i("Change Fragment",f.toString());
             // set the toolbar title
-            getSupportActionBar().setTitle("Dealing rooms");
+           // getSupportActionBar().setTitle("Dealing rooms");
         }
 
     }

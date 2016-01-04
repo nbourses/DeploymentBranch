@@ -335,6 +335,7 @@ public class SignUpFragment extends Fragment {
         user.setLongitude(Str_Lng);
         user.setLatitude(Str_Lat);
         user.setDeviceId("deviceId");
+        user.setLocality("");
 
 		/*user.setUserRole(dbHelper.getValue("userRole");
         regid = UserProfileViewModel.getGcmId();

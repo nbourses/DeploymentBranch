@@ -47,7 +47,6 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
-import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Drooms_Client_new;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
@@ -192,7 +191,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             @Override
             public void onClick(View v) {
 
-                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(),null);
+               // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(),null);
             }
         });
         mVisits.setOnClickListener(new View.OnClickListener() {
@@ -313,7 +312,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     mMarkerpriceslider.setVisibility(View.GONE);
                     mMarkerPanel.setVisibility(View.VISIBLE);
                     mMarkerminmax.setVisibility(View.VISIBLE);
-                    /*getPrice();
+                    getPrice();
+                    /*
                     LatLng latlng = map.getCameraPosition().target;
                     lat = latlng.latitude;
                     lng = latlng.longitude;
