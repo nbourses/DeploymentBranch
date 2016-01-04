@@ -262,6 +262,7 @@ public class CustomPhasedSeekBar extends View {
             int availableWidth = this.getRight() - this.getLeft();
             int availableHeight = this.getBottom() - this.getTop();
             try {
+                if( i != mCurrentItem)
                 itemOff.draw(canvas);
             }catch (Exception e)
             {

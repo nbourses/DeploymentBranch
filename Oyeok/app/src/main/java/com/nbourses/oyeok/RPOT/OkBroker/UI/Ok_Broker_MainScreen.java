@@ -116,7 +116,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         mMapView = (FrameLayout) v.findViewById(R.id.mapView);
         bPinLocation = (ImageButton)v.findViewById(R.id.bPinLocation);
         dbHelper=new DBHelper(getContext());
-        earnOk = (Button) v.findViewById(R.id.earnOk);
+       // earnOk = (Button) v.findViewById(R.id.earnOk);
           if(!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
         {
             if(!dbHelper.getValue(DatabaseConstants.user).equals("Client"))
@@ -201,12 +201,12 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             }
         });
 
-        earnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity) getActivity()).changeFragment(new EarnOkFragment(), null);
-            }
-        });
+//        earnOk.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ((MainActivity) getActivity()).changeFragment(new EarnOkFragment(), null);
+//            }
+//        });
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable())
             preok();
 

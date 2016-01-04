@@ -119,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,7 +222,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
 
 
-
         openMaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -234,12 +232,12 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         });
         Firebase.setAndroidContext(this);
 
-        refer = (Button) findViewById(R.id.refer);
-        refer.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                changeFragment(new ReferFragment(), null);
-            }
-        });
+        //refer = (Button) findViewById(R.id.refer);
+//        refer.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                changeFragment(new ReferFragment(), null);
+//            }
+//        });
         // display the first navigation drawer view on app launch
 
 
@@ -418,6 +416,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
             Log.i("Change Fragment",f.toString());
             // set the toolbar title
+           // getSupportActionBar().setTitle("Dealing rooms");
         }
 
     }
