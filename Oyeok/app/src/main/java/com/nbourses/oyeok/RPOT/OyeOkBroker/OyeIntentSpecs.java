@@ -289,7 +289,6 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 fragOne.setArguments(arguments);
                 ft.replace(R.id.linearlayout_container, fragOne);
                 ft.commit();
-
             }
         });
 
@@ -411,10 +410,11 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
             oyeOk.setReqAvl(propertySpecification[3]);
             oyeOk.setUserId(dbHelper.getValue(DatabaseConstants.userId));
             oyeOk.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-            oyeOk.setLat(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LAT));
+            oyeOk.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
             oyeOk.setUserRole("client");
             oyeOk.setPropertyType(propertySpecification[0]);
             oyeOk.setPropertySubtype(propertySpecification[1]);
+            oyeOk.setGcmId(SharedPrefs.getString(getActivity(),SharedPrefs.MY_GCM_ID));
             Log.i("UserId", "saved in DB");
 
 
@@ -470,7 +470,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                                 }
 
                             }
-                            ((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null);
+                            ((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null,"");
                 /*}else
                 {
                     *//*Intent NextActivity = new Intent(context, MainActivity.class);
@@ -496,7 +496,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 }
             }else{
                 Toast.makeText(getContext(), "You are are using offline mode or you are not connected to internet", Toast.LENGTH_LONG).show();
-                ((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null);
+                ((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null,"");
             }
 
         }

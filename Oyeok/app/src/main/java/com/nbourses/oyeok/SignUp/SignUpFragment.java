@@ -33,14 +33,19 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.MobileVerify;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
 import com.nbourses.oyeok.User.UserProfileViewModel;
 import com.nbourses.oyeok.activity.MessagesFragment;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import butterknife.Bind;
 import retrofit.Callback;
@@ -67,16 +72,21 @@ public class SignUpFragment extends Fragment {
     Dialog alertD;
     Context context;
 
+    MainActivity activity;
     DBHelper dbHelper;
 
     String picturePath, mobile;
     private static final int SELECT_PHOTO = 1;
     GoogleCloudMessaging gcm;
 
+    private FragmentDrawer drawerFragment;
     String regid, GCMID;
     String my_user_id;
+    String jsonArray="";
+    JSONArray p;
     String PROJECT_NUMBER = "463092685367";
     TextView fbdata;
+    Boolean okBroker=false;
     Boolean success = false, is_role_selected=false, validation_success, email_success;
     String subphone=null;
     LocationManager mLocationManager;
@@ -106,10 +116,14 @@ public class SignUpFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         b=getArguments();
+        redirectToOyeIntentSpecs=false;
+        okBroker=false;
         if(b.getString("lastFragment")!=null)
         if(b.getString("lastFragment")!=null)
         lastFragment=b.getString("lastFragment");
 
+        if(lastFragment.equals("RentalBrokerAvailable")||lastFragment.equals("RentalBrokerRequirement")||lastFragment.equals("SaleBrokerAvailable")||lastFragment.equals("SaleBrokerRequirement"))
+            okBroker=true;
         if(lastFragment.equals("OyeIntentSpecs")){
             Log.i("bundle_in",(b.getStringArray("propertySpecification"))[0]);
             redirectToOyeIntentSpecs=true;
@@ -192,6 +206,7 @@ public class SignUpFragment extends Fragment {
             regid = userProfileViewModel.getGcmId();
             user.setGcmId(regid);
             user.setLongitude(Str_Lng);
+            user.setLocality("Locality");
             user.setLatitude(Str_Lat);
             user.setDeviceId("Hardware");
 
@@ -211,7 +226,7 @@ public class SignUpFragment extends Fragment {
             user.setMobileCode("+91");
             user.setUserRole(user_role);
             regid = UserCredentials.getString(context, UserCredentials.KEY_GCM_ID);*/
-            regid="abhi";
+            regid=SharedPrefs.getString(getActivity(),SharedPrefs.MY_GCM_ID);
             userProfileViewModel.setGcmId(regid);
             userProfileViewModel.setLng(Str_Lng);
             userProfileViewModel.setLat(Str_Lat);
@@ -331,7 +346,7 @@ public class SignUpFragment extends Fragment {
         user.setEmail(Semail);
         user.setName(Sname);
         user.setUserRole("client");
-        user.setGcmId(regid);
+        user.setGcmId(SharedPrefs.MY_GCM_ID);
         user.setLongitude(Str_Lng);
         user.setLatitude(Str_Lat);
         user.setDeviceId("deviceId");
@@ -369,9 +384,25 @@ public class SignUpFragment extends Fragment {
                             dbHelper.save(DatabaseConstants.user, "Client");
                         if (redirectToOyeIntentSpecs)
                             letsOye();
+                        else
+                        {
+                            if(okBroker){
+                                jsonArray=b.getString("JsonArray");
+                                try {
+                                    p=new JSONArray(jsonArray);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                int j=b.getInt("Position");
+                                AcceptOkCall a = new AcceptOkCall();
+                                a.acceptOk(p,j,dbHelper, getActivity());
 
+                            }
+                        }
+                        activity=(MainActivity)getActivity();
+                        activity.refresh();
                         Fragment fragment = null;
-                        if (lastFragment.equals("MainBroker"))
+                        if (okBroker)
                             fragment = new Ok_Broker_MainScreen();
                         else {
                             fragment = new RexMarkerPanelScreen();
@@ -474,15 +505,18 @@ public class SignUpFragment extends Fragment {
     public void letsOye()
     {
         Oyeok oyeOk = new Oyeok();
-        oyeOk.setSpecCode(propertySpecification[2] + "-" + propertySpecification[1] + "-" + propertySpecification[4]);
+        Log.i("tt="+propertySpecification[2]," size="+propertySpecification[1]+" price="+propertySpecification[4]+" req_avl="+propertySpecification[3]);
+        oyeOk.setTt(propertySpecification[2]);
+        oyeOk.setSize(propertySpecification[1]);
+        oyeOk.setPrice(propertySpecification[4]);
         oyeOk.setReqAvl(propertySpecification[3]);
         oyeOk.setUserId(dbHelper.getValue(DatabaseConstants.userId));
-        oyeOk.setUserRole(dbHelper.getValue(DatabaseConstants.userRole));
-        oyeOk.setLong(SharedPrefs.getString(getActivity().getBaseContext(),SharedPrefs.MY_LNG));
-        oyeOk.setLat(SharedPrefs.getString(getActivity().getBaseContext(), SharedPrefs.MY_LAT));
-        oyeOk.setRegion(SharedPrefs.getString(getActivity().getBaseContext(), SharedPrefs.MY_REGION));
-        oyeOk.setPincode(dbHelper.getValue(DatabaseConstants.pinCode));
-
+        oyeOk.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+        oyeOk.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+        oyeOk.setUserRole("client");
+        oyeOk.setPropertyType(propertySpecification[0]);
+        oyeOk.setPropertySubtype(propertySpecification[1]);
+        oyeOk.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         Log.i("UserId", "saved in DB");
 
 
@@ -494,7 +528,6 @@ public class SignUpFragment extends Fragment {
         oyeOk.setLat("17");
         oyeOk.setRegion("powai");
         oyeOk.setPincode("400058");*/
-        String off_mode = "NO";
         String API = "http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000";
         RestAdapter restAdapter1 = new RestAdapter.Builder().setEndpoint(API).build();
         restAdapter1.setLogLevel(RestAdapter.LogLevel.FULL);
@@ -514,20 +547,20 @@ public class SignUpFragment extends Fragment {
                                 Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);
                                 UserCredentials.saveString(context, PreferenceKeys.SUCCESSFUL_HAIL, "true");*/
-                                // Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
+                                 Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
                                 //finish();
 
                             } else if (s.equalsIgnoreCase("User already has an active oye. Pls end first")) {
                                 /*Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);*/
-                                // Toast.makeText(getContext(), "You already have an active oye. Pls end it first", Toast.LENGTH_LONG).show();
+                                 Toast.makeText(getContext(), "You already have an active oye. Pls end it first", Toast.LENGTH_LONG).show();
                                 //finish();
                             } else
 
                             {
                                 /*Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);*/
-                                // Toast.makeText(getContext(), "There is some error.", Toast.LENGTH_LONG).show();
+                                 Toast.makeText(getContext(), "There is some error.", Toast.LENGTH_LONG).show();
                                 //finish();
                             }
                         } catch (Exception e) {
@@ -536,7 +569,7 @@ public class SignUpFragment extends Fragment {
                         }
 
                     }
-                    ((MainActivity) getActivity()).changeFragment(new MessagesFragment(), null);
+                    ((MainActivity) getActivity()).changeFragment(new MessagesFragment(), null,"");
                 /*}else
                 {
                     *//*Intent NextActivity = new Intent(context, MainActivity.class);

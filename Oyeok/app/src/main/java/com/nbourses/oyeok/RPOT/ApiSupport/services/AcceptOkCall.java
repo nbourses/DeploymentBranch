@@ -9,6 +9,8 @@ import android.util.Log;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.Firebase.DroomChatFirebase;
+import com.nbourses.oyeok.Firebase.DroomDetails;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AcceptOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 
@@ -24,8 +26,10 @@ import retrofit.client.Response;
  * Created by DADDU_DON on 12/30/2015.
  */
 public class AcceptOkCall {
+    DroomChatFirebase droomChatFirebase;
     public void acceptOk(JSONArray m,int position, DBHelper dbHelper, FragmentActivity activity) {
         String oyeId=null,oyeUserId=null,tt = null,size=null,price=null,reqAvl=null;
+        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
         Log.i("mArray= ",m.toString());
         try {
              oyeId=m.getJSONObject(position).getString("oye_id");
@@ -69,6 +73,21 @@ public class AcceptOkCall {
                 @Override
                 public void success(AcceptOk acceptOk, Response response) {
                     Log.i("call chala", "nachoo");
+                    DroomDetails droomDetails=new DroomDetails();
+                    droomDetails.setTitle("Test Droom");
+                    droomDetails.setLastMessage("Test Last Message");
+                    droomDetails.setStatus("Test Message Not read");
+                    droomDetails.setTimestamp("Test TimeStamp");
+                    String userId1=acceptOk.responseData.getOkUserId();
+                    String userId2=acceptOk.responseData.getOyeUserId();
+                    String okId=acceptOk.responseData.getOkId();
+                    droomChatFirebase.createChatRoom(okId,userId1,userId2,droomDetails);
+                    droomDetails.setTitle("Droom");
+                    droomDetails.setLastMessage("Last Message");
+                    droomDetails.setStatus("Message Not read");
+                    droomDetails.setTimestamp("TimeStamp");
+                    droomChatFirebase.updateChatRoom(okId,userId1,userId2,droomDetails);
+
                 }
 
                 @Override

@@ -7,6 +7,8 @@ import com.google.gson.annotations.SerializedName;
  */
 public class AcceptOk {
 
+    public ResponseData responseData = new ResponseData();
+
     public class ResponseData{
         @SerializedName("time")
         String time;

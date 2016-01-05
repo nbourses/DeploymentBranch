@@ -129,7 +129,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private TextView maxPrice;
     private TextView minPrice;
     private GeoFence geoFence;
-    private int permissionCheckForCamera;
+    private int permissionCheckForCamera,permissionCheckForLocation;
     private final int MY_PERMISSION_FOR_CAMERA=11;
     private CustomPhasedSeekBar mPhasedSeekBar;
     String brokerType;
@@ -166,7 +166,12 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
          permissionCheckForCamera = ContextCompat.checkSelfPermission(this.getActivity(),
                 Manifest.permission.CAMERA);
         dbHelper=new DBHelper(getContext());
+        permissionCheckForLocation = ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION);
         onPositionSelected(0,2);
+
+
+
 
 
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
@@ -191,6 +196,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             @Override
             public void onClick(View v) {
 
+               // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null);
                // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(),null);
             }
         });
@@ -200,7 +206,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 Bundle args = new Bundle();
                 args.putString("BrokerType", brokerType);
                 args.putString("Address",SharedPrefs.getString(getActivity(),SharedPrefs.MY_REGION));
-                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(), args);
+                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(), args,"");
                 //OyeIntentSpecs oye = new OyeIntentSpecs();
 
                 //oye.setArguments(args);
@@ -275,6 +281,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 mMarkerpriceslider.setRight(m + 1);
             }
         });
+
 
 
         CustomMapFragment customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
@@ -569,6 +576,19 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     // functionality that depends on this permission.
                 }
             }
+            case LOCATION_REQUEST:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+
+                break;
+
 
             // other 'case' lines to check for other
             // permissions this app might request
@@ -605,7 +625,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     @Override
     public void onPositionSelected(int position, int count) {
 
-        Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
         if(count==2){
             if(position==0) {
                 brokerType = "rent";
@@ -668,7 +688,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
     //@Override
     public void onPositionSelected(int position) {
-        Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
     }
 
     protected class LocationUpdater extends AsyncTask<Double, Double, String>{

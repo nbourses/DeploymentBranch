@@ -109,6 +109,7 @@ public class GetCurrentLocation extends Activity implements LocationListener,Goo
         Log.d("currentLocation", "\n ======> init.Location : " + location);
 
         if ( location != null ) {
+            if(currentLocationCallback != null)
             currentLocationCallback.onComplete(location);
         }else{
             fusedLocationProviderApi.requestLocationUpdates(googleApiClient, locationRequest, this);
