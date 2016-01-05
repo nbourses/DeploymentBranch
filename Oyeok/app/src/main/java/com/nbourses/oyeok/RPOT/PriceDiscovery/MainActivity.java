@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                         try {
                             RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
                             r.setPhasedSeekBar();
-                        } catch (ClassCastException e) {
+                        } catch (ClassCastException x) {
                             Ok_Broker_MainScreen m = (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
                             m.setPhasedSeekBar();
                         }
@@ -200,7 +200,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                     }
                 }
         });
-
 
         setUpMenuChangeUserRole();
 
