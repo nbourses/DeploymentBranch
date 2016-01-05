@@ -2,9 +2,11 @@ package com.nbourses.oyeok.RPOT.OkBroker.UI;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -29,7 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 
 public class Rental_Broker_Requirement extends Fragment implements CircularSeekBarNew.imageAction {
 
@@ -47,6 +49,7 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
     String oyeId,specCode,oyeUserId,reqAvl;
     JSONArray p= new JSONArray();
     int j;
+    Ok_Broker_MainScreen ok_broker_mainScreen;
 
 
 
@@ -76,11 +79,19 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
 
                 if(mOkbutton.getText().toString().equals("Auto Ok"))
                 {
-                    ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                    ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
                 }
                 else{
-                    AcceptOkCall a= new AcceptOkCall();
-                    a.acceptOk(p,j, dbHelper, getActivity());
+                    if (!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+                    {
+                        ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
+                        ok_broker_mainScreen.replaceWithSignUp(p,j);
+                    }
+                    else
+                    {
+                        AcceptOkCall a = new AcceptOkCall();
+                        a.acceptOk(p,j,dbHelper, getActivity());
+                    }
                 }
             }
         });
@@ -160,6 +171,13 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
         return v;
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
 
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
@@ -193,6 +211,8 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
             p=m;
             j=position;
             rentText.setText("Price : Rs "+ m.getJSONObject(position).getString("price"));
+            DecimalFormat formatter = new DecimalFormat();
+            //rentText.setText("Price : Rs "+ formatter.format(Double.parseDouble(m.getJSONObject(position).getString("price")))+"\n"+m.getJSONObject(position).getString("property_type")+"\n"+m.getJSONObject(position).getString("property_subtype"));
             /*oyeId=m.getJSONObject(position).getString("oye_id");
             oyeUserId= m.getJSONObject(position).getString("user_id");
             specCode=m.getJSONObject(position).getString("tt")+"-"+m.getJSONObject(position).getString("size")+"-"+m.getJSONObject(position).getString("price");

@@ -39,9 +39,11 @@ import com.google.gson.JsonObject;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.SlidingTabLayout.PagerItem;
@@ -87,12 +89,12 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     private GoogleMap map;
     private MyPagerAdapter adapter;
     private CustomPhasedSeekBar mCustomPhasedSeekbar;
-    private int currentItem;
+    private int currentItem,currentCount;
     private Button earnOk;
     private ImageButton bPinLocation;
     private LatLng latlng;
     DBHelper dbHelper;
-
+    DroomChatFirebase droomChatFirebase;
     Double lat, lng;
     String pincode, region, fullAddress;
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "";
@@ -117,61 +119,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         bPinLocation = (ImageButton)v.findViewById(R.id.bPinLocation);
         dbHelper=new DBHelper(getContext());
        // earnOk = (Button) v.findViewById(R.id.earnOk);
-          if(!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
-        {
-            if(!dbHelper.getValue(DatabaseConstants.user).equals("Client"))
-            {
-                dbHelper.save(DatabaseConstants.userRole, "Broker");
-                Bundle bundle = new Bundle();
-                //bundle.putStringArray("propertySpecification",propertySpecification);
-                bundle.putString("lastFragment", "MainBroker");
-                Fragment fragment = null;
-                fragment = new SignUpFragment();
-                fragment.setArguments(bundle);
 
-                String title = "Sign Up";
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.container_body, fragment);
-                fragmentTransaction.commit();
-            }
-            else
-            {
-                dbHelper.save(DatabaseConstants.userRole, "Broker");
-                dbHelper.save(DatabaseConstants.user,"Broker");
-                String API="http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000";
-                //{"user_role":"broker","device_id":"device", "lat":89.2, "long":78.2, "user_role":"client", "gcm_id":"ping"}
-                RestAdapter restAdapter = new RestAdapter.Builder()
-                        .setEndpoint(API).setLogLevel(RestAdapter.LogLevel.FULL).build();
-                OyeokApiService service;
-
-                User user = new User();
-                user.setUserRole("broker");
-                user.setGcmId(dbHelper.getValue(DatabaseConstants.gcmId));
-                user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-                user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-                user.setDeviceId("deviceId");
-                if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
-                    try {
-                        UserApiService user1 = restAdapter.create(UserApiService.class);
-                        user1.userGps(user, new Callback<User>() {
-                            @Override
-                            public void success(User user, Response response) {
-                                Log.i("role changed to", "Broker");
-                            }
-
-                            @Override
-                            public void failure(RetrofitError error) {
-                                Log.i("to broker failed", error.getMessage());
-                            }
-                        });
-                    }
-                    catch (Exception e){
-                        Log.i("Exception","caught in user gps call");
-                    }
-                }
-            }
-        }
+        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
         mPager = (ViewPager) v.findViewById(R.id.pager);
         mTabs  = (SlidingTabLayout) v.findViewById(R.id.tabs);
         //mTabs.setDistributeEvenly(true);
@@ -182,13 +131,12 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         mTabs.setDistributeEvenly(true);
         mTabs.setBackgroundColor(Color.parseColor("#031625"));
         mPager.setAdapter(adapter);
-        mTabs.setViewPager(mPager);
+            mTabs.setViewPager(mPager);
 
 
 
-
-        mCustomPhasedSeekbar = (CustomPhasedSeekBar) v.findViewById(R.id.phasedSeekBar);
-        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
+            mCustomPhasedSeekbar = (CustomPhasedSeekBar) v.findViewById(R.id.phasedSeekBar);
+            if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{"Rental", "Sale"}));
         else
             mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.broker_type1_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.broker_type1_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Loan", "Auction"}));
@@ -259,6 +207,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
                     hideMap(0);
                     mMapView.setVisibility(View.GONE);
+                    preok();
+                    onPositionSelected(currentItem, currentCount);
 
                 } else {
                     mMapView.setVisibility(View.VISIBLE);
@@ -286,6 +236,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                         customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
                             @Override
                             public void onDrag(MotionEvent motionEvent) {
+                                //pin location
                                 latlng = map.getCameraPosition().target;
                                 if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
 
@@ -303,8 +254,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                                         new LocationUpdater().execute();
                                     }
                                 }
-                                //pin location
-
+                                
                             }
                         });
 
@@ -339,6 +289,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     @Override
     public void onPositionSelected(int position, int count) {
 
+        currentCount=count;
         if(count!=2) {
 
             if (position == 2) {
@@ -729,6 +680,74 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             main.setTitle(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) + "," + SharedPrefs.getString(getActivity(), SharedPrefs.MY_CITY));
 
             //TODO: set action bar title here
+        }
+    }
+
+    public void replaceWithSignUp(final JSONArray p, final int j){
+        if(!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+        {
+            if(!dbHelper.getValue(DatabaseConstants.user).equals("Client"))
+            {
+
+                dbHelper.save(DatabaseConstants.userRole, "Broker");
+                Bundle bundle = new Bundle();
+                //bundle.putStringArray("propertySpecification",propertySpecification);
+                bundle.putString("lastFragment", "RentalBrokerRequirement");
+                bundle.putString("JsonArray", p.toString());
+                bundle.putInt("Position",j);
+                Fragment fragment = null;
+                fragment = new SignUpFragment();
+                fragment.setArguments(bundle);
+
+                String title = "Sign Up";
+                FragmentManager fragmentManager = getFragmentManager();
+
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.container_body, fragment);
+                fragmentTransaction.commit();
+            }
+            else
+            {
+                dbHelper.save(DatabaseConstants.userRole, "Broker");
+                dbHelper.save(DatabaseConstants.user,"Broker");
+                String API="http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000";
+                //{"user_role":"broker","device_id":"device", "lat":89.2, "long":78.2, "user_role":"client", "gcm_id":"ping"}
+                RestAdapter restAdapter = new RestAdapter.Builder()
+                        .setEndpoint(API).setLogLevel(RestAdapter.LogLevel.FULL).build();
+                OyeokApiService service;
+
+                User user = new User();
+                user.setUserRole("broker");
+                user.setGcmId(dbHelper.getValue(DatabaseConstants.gcmId));
+                user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+                user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+                user.setDeviceId("deviceId");
+                if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
+                    try {
+                        UserApiService user1 = restAdapter.create(UserApiService.class);
+                        user1.userGps(user, new Callback<User>() {
+                            @Override
+                            public void success(User user, Response response) {
+                                Log.i("role changed to", "Broker");
+                                AcceptOkCall a = new AcceptOkCall();
+                                a.acceptOk(p,j,dbHelper, getActivity());
+
+
+
+
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+                                Log.i("to broker failed", error.getMessage());
+                            }
+                        });
+                    }
+                    catch (Exception e){
+                        Log.i("Exception","caught in user gps call");
+                    }
+                }
+            }
         }
     }
 

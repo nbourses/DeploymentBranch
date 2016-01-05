@@ -28,7 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 
 
 public class Loan_Broker_Available extends Fragment implements CircularSeekBarNew.imageAction {
@@ -67,7 +67,7 @@ public class Loan_Broker_Available extends Fragment implements CircularSeekBarNe
             public void onClick(View v) {
 
                 if (mOkbutton.getText().toString().equals("Auto Ok")) {
-                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
                 }
             }
         });
@@ -114,6 +114,21 @@ public class Loan_Broker_Available extends Fragment implements CircularSeekBarNe
                 element.put("user_role", "client");
             else
                 element.put("user_role","broker");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                if(i%2==0)
+                    element.put("property_type","Home");
+                else
+                    element.put("property_type","Shop");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {if(i%2==0)
+                element.put("property_subtype",i+1+"bhk");
+            else
+                element.put("property_subtype",(i*10)+"seater");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -178,6 +193,9 @@ public class Loan_Broker_Available extends Fragment implements CircularSeekBarNe
 //        yoPopup.inflateYo(getActivity(), "LL-3BHK-20K", "broker");
         try {
             rentText.setText("Loan : Rs "+ m.getJSONObject(position).getString("price"));
+            DecimalFormat formatter = new DecimalFormat();
+            //rentText.setText("Price : Rs "+ formatter.format(Double.parseDouble(m.getJSONObject(position).getString("price")))+"\n"+m.getJSONObject(position).getString("property_type")+"\n"+m.getJSONObject(position).getString("property_subtype"));
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

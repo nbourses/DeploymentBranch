@@ -2,9 +2,12 @@ package com.nbourses.oyeok.RPOT.OkBroker.UI;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -29,7 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+import java.text.DecimalFormat;
 
 public class Sale_Broker_Requirement_new extends Fragment implements CircularSeekBarNew.imageAction {
 
@@ -44,6 +47,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
     private JSONArray values = new JSONArray();
     JSONArray dummyData= new JSONArray();
     DBHelper dbHelper;
+    Ok_Broker_MainScreen ok_broker_mainScreen;
     String oyeId,specCode,oyeUserId,reqAvl;
     JSONArray p=new JSONArray();
     int j;
@@ -73,11 +77,19 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
             public void onClick(View v) {
 
                 if (mOkbutton.getText().toString().equals("Auto Ok")) {
-                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
                 }
                 else{
-                    AcceptOkCall a= new AcceptOkCall();
-                    a.acceptOk(p,j, dbHelper, getActivity());
+                    if (!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+                    {
+                        ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
+                        ok_broker_mainScreen.replaceWithSignUp(p,j);
+                    }
+                    else
+                    {
+                        AcceptOkCall a = new AcceptOkCall();
+                        a.acceptOk(p,j,dbHelper, getActivity());
+                    }
                 }
             }
         });
@@ -142,6 +154,21 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
                 e.printStackTrace();
             }
             try {
+                if(i%2==0)
+                    element.put("property_type","Home");
+                else
+                    element.put("property_type","Shop");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {if(i%2==0)
+                element.put("property_subtype",i+1+"bhk");
+            else
+                element.put("property_subtype",(i*10)+"seater");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
                 dummyData.put(i, element);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -156,6 +183,14 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
 
 
         return v;
+    }
+
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 
@@ -191,6 +226,8 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
             p=new JSONArray(m.toString());
             j=position;
             rentText.setText("Price : Rs "+ m.getJSONObject(position).getString("price"));
+            DecimalFormat formatter = new DecimalFormat();
+            //rentText.setText("Price : Rs "+ formatter.format(Double.parseDouble(m.getJSONObject(position).getString("price")))+"\n"+m.getJSONObject(position).getString("property_type")+"\n"+m.getJSONObject(position).getString("property_subtype"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -2,11 +2,14 @@ package com.nbourses.oyeok.RPOT.PriceDiscovery;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -53,14 +56,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private static final String[] CAMERA_PERMS={
             Manifest.permission.CAMERA
     };
-    private static final String[] CONTACTS_PERMS={
-            Manifest.permission.READ_CONTACTS
-    };
     private static final String[] LOCATION_PERMS={
             Manifest.permission.ACCESS_FINE_LOCATION
     };
-    private static final int INITIAL_REQUEST=1337;
-    private static final int LOCATION_REQUEST=INITIAL_REQUEST+3;
+    private static final int INITIAL_REQUEST=102;
+    private static final int LOCATION_REQUEST=INITIAL_REQUEST+3,CAMERA_REQUEST=INITIAL_REQUEST+7;
 
     private static String TAG = MainActivity.class.getSimpleName();
     private String firebaseUrl="https://resplendent-fire-6770.firebaseio.com/";
@@ -143,6 +143,21 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
+        }
+        else
+        {
+            if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+                changeFragment(new Ok_Broker_MainScreen(),null,"Broker HomeScreen");
+            else
+                changeFragment(new RexMarkerPanelScreen(),null,"Oye HomeScreen");
+        }
+
+
+
 
 
 
@@ -154,58 +169,58 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         switchOnOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if (buttonView.isShown()) {
-                    if (isChecked) {
-                        Toast.makeText(getBaseContext(), "offline mode",
-                                Toast.LENGTH_LONG).show();
-                        dbHelper.save(DatabaseConstants.offmode, "yes");
-                        Log.i("offmode entry", dbHelper.getValue(DatabaseConstants.offmode));
+                if (isChecked){
+                    Toast.makeText(getBaseContext(), "offline mode",
+                            Toast.LENGTH_LONG).show();
+                    dbHelper.save(DatabaseConstants.offmode, "yes");
+                    Log.i("offmode entry", dbHelper.getValue(DatabaseConstants.offmode));
+                    try {
+                        RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                        r.setPhasedSeekBar();
+                    }
+                    catch (ClassCastException e){
                         try {
                             RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
                             r.setPhasedSeekBar();
-                        } catch (ClassCastException e) {
-                            try {
-                                Ok_Broker_MainScreen m = (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
-                                m.setPhasedSeekBar();
-                            }catch (ClassCastException e1)
-                            {
-
-                            }
+                        } catch (ClassCastException x) {
+                            Ok_Broker_MainScreen m = (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                            m.setPhasedSeekBar();
                         }
+
+                    }
+
                     /*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
                     r.setPhasedSeekBar();*/
-                    } else {
-                        Toast.makeText(getBaseContext(), "online mode",
-                                Toast.LENGTH_LONG).show();
-                        dbHelper.save(DatabaseConstants.offmode, "null");
-                        Log.i("offmode entry", dbHelper.getValue(DatabaseConstants.offmode));
+                }
+                else{
+                    Toast.makeText(getBaseContext(), "online mode",
+                            Toast.LENGTH_LONG).show();
+                    dbHelper.save(DatabaseConstants.offmode, "null");
+                    Log.i("offmode entry", dbHelper.getValue(DatabaseConstants.offmode));
+                    try {
+                        RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                        r.setPhasedSeekBar();
+                    }
+                    catch (ClassCastException e){
                         try {
-                            RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
-                            r.setPhasedSeekBar();
-                        } catch (ClassCastException e) {
-                            try {
-                                Ok_Broker_MainScreen m = (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
-                                m.setPhasedSeekBar();
-                            }catch (ClassCastException e1)
-                            {
+                            Ok_Broker_MainScreen m= (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                            m.setPhasedSeekBar();
+                        }catch (ClassCastException x){
 
-                            }
                         }
                     /*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
                     r.setPhasedSeekBar();*/
                     }
+                    }
                 }
-            }
         });
-
 
         setUpMenuChangeUserRole();
 
         if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
-            changeFragment(new Ok_Broker_MainScreen(),null);
+            changeFragment(new Ok_Broker_MainScreen(),null,"Broker HomeScreen");
         else
-            changeFragment(new RexMarkerPanelScreen(), null);
+            changeFragment(new RexMarkerPanelScreen(), null,"Oye HomeScreen");
 
 
 
@@ -272,6 +287,35 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         this.setIntent(intent);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        switch (requestCode) {
+            case LOCATION_REQUEST:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED)
+                    {
+                        if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+                            changeFragment(new Ok_Broker_MainScreen(),null,"Broker HomeScreen");
+                        else
+                            changeFragment(new RexMarkerPanelScreen(),null,"Oye HomeScreen");
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+
+                break;
+
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+
+    }
 
     @Override
     public void onDrawerItemSelected(View view, int position) {
@@ -292,22 +336,14 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 fragment = new SignUpFragment();
                 fragment.setArguments(bundle);
                 title = "Sign Up";
-
-                drawerFragment = (FragmentDrawer)
-                        getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-                drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
-                drawerFragment.setDrawerListener(this);
                 break;
+
             }
             else {
                 fragment = new Profile();
                 title = "Profile";
-
-                drawerFragment = (FragmentDrawer)
-                        getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-                drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
-                drawerFragment.setDrawerListener(this);
                 break;
+
             }
             case 1:
                fragment = new Ok_Broker_MainScreen();
@@ -372,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     }
 
 
-    public void changeFragment(Fragment f, Bundle args)
+    public void changeFragment(Fragment f, Bundle args,String title)
     {
         Fragment fragment = f;
         if (fragment != null) {
@@ -380,11 +416,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.container_body, fragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.commitAllowingStateLoss();
 
             Log.i("Change Fragment",f.toString());
             // set the toolbar title
-           // getSupportActionBar().setTitle("Dealing rooms");
+           getSupportActionBar().setTitle(title);
         }
 
     }
@@ -454,7 +490,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if (view == resideMenuItems[0]){
             //Amplitude.getInstance().logEvent("resideMenuItems[0] clicked");
 
-            changeFragment(new RexMarkerPanelScreen(), null);
+            changeFragment(new RexMarkerPanelScreen(), null,"Oye HomeScreen");
             Toast.makeText(getApplicationContext(), "Real Exchange HAS STARTED",
                     Toast.LENGTH_LONG).show();
 
@@ -468,7 +504,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             resideMenuItems[1].tv_title.setTextColor(Color.BLUE);
             resideMenuItems[0].tv_title.setTextColor(Color.BLACK);
             resideMenuItems[2].tv_title.setTextColor(Color.BLACK);
-            changeFragment(new JexMarkerPanelScreen(), null);
+            changeFragment(new JexMarkerPanelScreen(), null,"Jex HomeScreen");
 
 
         }else if (view == resideMenuItems[2])
@@ -478,7 +514,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             resideMenuItems[2].tv_title.setTextColor(Color.BLUE);
             resideMenuItems[1].tv_title.setTextColor(Color.BLACK);
             resideMenuItems[0].tv_title.setTextColor(Color.BLACK);
-            changeFragment(new LexMarkerPanelScreen(), null);
+            changeFragment(new LexMarkerPanelScreen(), null,"Lex HomeScreen");
         }
         resideMenu.closeMenu();
     }
@@ -510,6 +546,13 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     public void hideOpenMaps()
     {
         openMaps.setVisibility(View.GONE);
+    }
+
+    public  void refresh(){
+        drawerFragment = (FragmentDrawer)
+                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+        drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
+        drawerFragment.setDrawerListener(this);
     }
 
     public void showOpenMaps()
