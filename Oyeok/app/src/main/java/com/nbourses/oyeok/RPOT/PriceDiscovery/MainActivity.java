@@ -42,6 +42,7 @@ import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
+import com.amplitude.api.Amplitude;
 //import com.rockerhieu.emojicon.EmojiconGridFragment;
 //import com.rockerhieu.emojicon.EmojiconsFragment;
 //import com.rockerhieu.emojicon.emoji.Emojicon;

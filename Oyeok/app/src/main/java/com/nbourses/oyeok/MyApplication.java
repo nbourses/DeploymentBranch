@@ -6,6 +6,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
+import com.amplitude.api.Amplitude;
 import com.crashlytics.android.Crashlytics;
 import com.nbourses.oyeok.GoogleCloudMessaging.RegistrationIntentService;
 
@@ -20,6 +21,7 @@ import io.branch.referral.Branch;
  */
 public class MyApplication extends MultiDexApplication {
 
+    private static final String AMPLITUDE_KEY = "28931796b17fc24d41e081bccf6dd344";
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
@@ -29,6 +31,8 @@ public class MyApplication extends MultiDexApplication {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
         Branch.getAutoInstance(this);
+        Amplitude.getInstance().initialize(this, AMPLITUDE_KEY)
+                .enableForegroundTracking(this);
 
     }
 }
