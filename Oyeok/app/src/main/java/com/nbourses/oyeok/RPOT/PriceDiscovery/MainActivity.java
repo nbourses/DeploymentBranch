@@ -29,7 +29,6 @@ import com.nbourses.oyeok.LPOT.PriceDiscoveryLoan.UI.LexMarkerPanelScreen;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.ReferFragment.ReferFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.resideMenu.ResideMenu;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.resideMenu.ResideMenuItem;
@@ -388,7 +387,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         linkProperties = new LinkProperties()
                 .setChannel("sms")
                 .setFeature("sharing")
-                .addControlParameter("user_name",mobile)
+                .addControlParameter("user_name",user_id)
                 .addControlParameter("$android_url", "https://www.dropbox.com/s/2ro7ae5y4xjte34/app-release.apk?dl=0")
                 .addControlParameter("$desktop_url","https://www.dropbox.com/s/2ro7ae5y4xjte34/app-release.apk?dl=0")
                 .addControlParameter("$always_deeplink", "true");
