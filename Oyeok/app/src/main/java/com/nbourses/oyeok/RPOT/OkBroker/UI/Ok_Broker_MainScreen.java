@@ -1,10 +1,13 @@
 package com.nbourses.oyeok.RPOT.OkBroker.UI;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -212,6 +215,17 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                     onPositionSelected(currentItem, currentCount);
 
                 } else {
+            final LocationManager manager = (LocationManager)getActivity(). getSystemService( Context.LOCATION_SERVICE );
+
+
+
+
+
+
+
+            if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+                buildAlertMessageNoGps();
+            }
                     mMapView.setVisibility(View.VISIBLE);
                     hideMap(1);
 
@@ -751,6 +765,22 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             }
         }
     }
-
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 
 }

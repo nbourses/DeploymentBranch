@@ -22,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="RETAIL"
+            android:text="RETAIL OUTLET"
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="3dp"
             android:layout_marginRight="5dp"
@@ -36,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="FOOD"
+            android:text="FOOD OUTLET"
 
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="3dp"
@@ -47,22 +47,51 @@
             android:textColor="#000000"
             android:textSize="13sp"/>
 
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/linearlayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="3dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="3dp"
+        >
+
+
         <Button
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Bank Office"
+            android:text="BANK"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/my_button_shape"
+            android:id="@+id/btn_bank"
+            android:textColor="#000000"
+            android:textSize="13sp"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="FOOD OFFICE"
 
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="3dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
-
             android:background="@drawable/my_button_shape"
-            android:id="@+id/btn_bank"
+            android:id="@+id/btn_office"
             android:textColor="#000000"
             android:textSize="13sp"/>
+
 
     </LinearLayout>
 </LinearLayout>
