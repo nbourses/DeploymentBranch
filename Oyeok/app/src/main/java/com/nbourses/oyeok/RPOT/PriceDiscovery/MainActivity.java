@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.os.Debug;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -169,51 +170,51 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         switchOnOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if (buttonView.isShown()) {
-                    if (isChecked) {
-                        Toast.makeText(getBaseContext(), "offline mode",
-                                Toast.LENGTH_LONG).show();
-                        dbHelper.save(DatabaseConstants.offmode, "yes");
-                        Log.i("offmode entry", dbHelper.getValue(DatabaseConstants.offmode));
+                if (isChecked){
+                    Toast.makeText(getBaseContext(), "offline mode",
+                            Toast.LENGTH_LONG).show();
+                    dbHelper.save(DatabaseConstants.offmode, "yes");
+                    Log.i("offmode entry", dbHelper.getValue(DatabaseConstants.offmode));
+                    try {
+                        RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                        r.setPhasedSeekBar();
+                    }
+                    catch (ClassCastException e){
                         try {
                             RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
                             r.setPhasedSeekBar();
-                        } catch (ClassCastException e) {
-                            try {
-                                Ok_Broker_MainScreen m = (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
-                                m.setPhasedSeekBar();
-                            }catch (ClassCastException e1)
-                            {
-
-                            }
+                        } catch (ClassCastException x) {
+                            Ok_Broker_MainScreen m = (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                            m.setPhasedSeekBar();
                         }
+
+                    }
+
                     /*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
                     r.setPhasedSeekBar();*/
-                    } else {
-                        Toast.makeText(getBaseContext(), "online mode",
-                                Toast.LENGTH_LONG).show();
-                        dbHelper.save(DatabaseConstants.offmode, "null");
-                        Log.i("offmode entry", dbHelper.getValue(DatabaseConstants.offmode));
+                }
+                else{
+                    Toast.makeText(getBaseContext(), "online mode",
+                            Toast.LENGTH_LONG).show();
+                    dbHelper.save(DatabaseConstants.offmode, "null");
+                    Log.i("offmode entry", dbHelper.getValue(DatabaseConstants.offmode));
+                    try {
+                        RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                        r.setPhasedSeekBar();
+                    }
+                    catch (ClassCastException e){
                         try {
-                            RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
-                            r.setPhasedSeekBar();
-                        } catch (ClassCastException e) {
-                            try {
-                                Ok_Broker_MainScreen m = (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
-                                m.setPhasedSeekBar();
-                            }catch (ClassCastException e1)
-                            {
+                            Ok_Broker_MainScreen m= (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                            m.setPhasedSeekBar();
+                        }catch (ClassCastException x){
 
-                            }
                         }
                     /*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
                     r.setPhasedSeekBar();*/
                     }
+                    }
                 }
-            }
         });
-
 
         setUpMenuChangeUserRole();
 

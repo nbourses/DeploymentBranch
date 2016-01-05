@@ -88,7 +88,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     private GoogleMap map;
     private MyPagerAdapter adapter;
     private CustomPhasedSeekBar mCustomPhasedSeekbar;
-    private int currentItem;
+    private int currentItem,currentCount;
     private Button earnOk;
     private ImageButton bPinLocation;
     private LatLng latlng;
@@ -204,6 +204,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
                     hideMap(0);
                     mMapView.setVisibility(View.GONE);
+                    preok();
+                    onPositionSelected(currentItem,currentCount);
 
                 } else {
                     mMapView.setVisibility(View.VISIBLE);
@@ -277,6 +279,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     @Override
     public void onPositionSelected(int position, int count) {
 
+        currentCount=count;
         if(count!=2) {
 
             if (position == 2) {

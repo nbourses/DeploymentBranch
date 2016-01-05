@@ -125,7 +125,7 @@
         android:gravity="center"
         android:background="@drawable/ic_pick_contact"
         android:layout_marginTop="30dp"
-        android:layout_marginRight="55dp"/>
+        android:layout_marginRight="70dp"/>
 
     <TextView
         android:id="@+id/contactText"
@@ -136,6 +136,6 @@
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
         android:layout_marginLeft="15dp"
-        android:text="Contact Name"/>
+        android:text="Select client's contact"/>
 
 </FrameLayout>

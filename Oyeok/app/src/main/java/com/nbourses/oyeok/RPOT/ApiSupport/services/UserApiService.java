@@ -5,6 +5,7 @@ import android.util.Log;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.MobileVerify;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateProfile;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 
 import retrofit.Callback;
@@ -107,8 +108,8 @@ import retrofit.http.POST;
 
 
 
-        @POST("/1/user/updatemydetails")
-        void updateUserDetails(@Body User user, Callback<User> callback);
+        @POST("/1/update/profile")
+        void userUpdateProfile(@Body User user, Callback<UpdateProfile> callback);
 
         @POST("/1/user/profile")
         void getUserProfile(@Body User user, Callback<User> callback);

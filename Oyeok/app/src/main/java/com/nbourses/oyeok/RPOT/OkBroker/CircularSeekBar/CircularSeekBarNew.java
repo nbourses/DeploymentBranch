@@ -24,6 +24,7 @@ import com.nbourses.oyeok.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static java.lang.Math.log10;
@@ -274,8 +275,9 @@ public class CircularSeekBarNew extends View {
         //start.setBounds(endx - (w / 2), starty - (h / 2), endx + (w / 2), starty + (h / 2));
 
         //start.draw(canvas);
-        canvas.drawText("min:" + minValue, mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height(), mCircleRangeColor);
-        canvas.drawText("max:" + maxvalue, mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height(), mCircleRangeColor);
+        DecimalFormat formatter = new DecimalFormat();
+        canvas.drawText("min:" + formatter.format(minValue), mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height(), mCircleRangeColor);
+        canvas.drawText("max:" + formatter.format(maxvalue), mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height(), mCircleRangeColor);
 
     }
 
@@ -308,7 +310,7 @@ public class CircularSeekBarNew extends View {
 
         Log.i("values length= ",Integer.toString(values.length()));
         if(values.length()==0){
-            Toast.makeText(mContext,"Sit back and relax",Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext,"We are looking for customers in your region. Sit back and relax",Toast.LENGTH_SHORT).show();
         }
 
         if(values.length()==1){
