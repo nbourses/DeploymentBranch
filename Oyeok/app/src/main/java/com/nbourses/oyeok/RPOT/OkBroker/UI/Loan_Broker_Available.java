@@ -29,7 +29,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 
 public class Loan_Broker_Available extends Fragment implements CircularSeekBarNew.imageAction {
@@ -68,7 +67,7 @@ public class Loan_Broker_Available extends Fragment implements CircularSeekBarNe
             public void onClick(View v) {
 
                 if (mOkbutton.getText().toString().equals("Auto Ok")) {
-                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
                 }
             }
         });

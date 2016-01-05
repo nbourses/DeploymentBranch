@@ -66,14 +66,14 @@ public class JexMarkerPanelScreen extends Fragment {
             @Override
             public void onClick(View v) {
 
-                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null);
+                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null,"");
             }
         });
         mVisits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(), null);
+                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(), null,"");
             }
         });
 

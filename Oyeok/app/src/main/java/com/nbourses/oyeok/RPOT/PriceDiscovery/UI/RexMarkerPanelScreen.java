@@ -2,27 +2,6 @@ package com.nbourses.oyeok.RPOT.PriceDiscovery.UI;
 
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-//import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
-import com.nbourses.oyeok.Database.SharedPrefs;
-import com.google.android.gms.maps.model.CameraPosition;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.location.LocationManager;
-import android.text.TextUtils;
-import android.os.AsyncTask;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -32,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -67,7 +47,6 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
-import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Drooms_Client_new;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
@@ -103,6 +82,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import static android.support.v4.content.PermissionChecker.checkSelfPermission;
+
+//import com.nbourses.oyeok.R;
 
 //import com.nbourses.oyeok.R;
 
@@ -225,7 +206,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 Bundle args = new Bundle();
                 args.putString("BrokerType", brokerType);
                 args.putString("Address",SharedPrefs.getString(getActivity(),SharedPrefs.MY_REGION));
-                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(), args);
+                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(), args,"");
                 //OyeIntentSpecs oye = new OyeIntentSpecs();
 
                 //oye.setArguments(args);

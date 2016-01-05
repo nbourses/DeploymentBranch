@@ -33,7 +33,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 public class Sale_Broker_Available_new extends Fragment implements CircularSeekBarNew.imageAction {
 
@@ -155,11 +154,19 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
             public void onClick(View v) {
 
                 if (mOkbutton.getText().toString().equals("Auto Ok")) {
-                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
                 }
                 else{
-                    ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
-                    ok_broker_mainScreen.replaceWithSignUp(p,j);
+                    if (!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+                    {
+                        ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
+                        ok_broker_mainScreen.replaceWithSignUp(p,j);
+                    }
+                    else
+                    {
+                        AcceptOkCall a = new AcceptOkCall();
+                        a.acceptOk(p,j,dbHelper, getActivity());
+                    }
                 }
             }
         });

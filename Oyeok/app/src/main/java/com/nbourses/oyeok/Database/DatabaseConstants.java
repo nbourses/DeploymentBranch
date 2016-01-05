@@ -4,6 +4,7 @@ package com.nbourses.oyeok.Database;
  * Created by Abhinandan on 11/26/2015.
  */
 public class DatabaseConstants {
+    public static String firebaseUrl="https://resplendent-fire-6770.firebaseio.com/";
     public static String name="Name";
     public static String email="Email";
     public static String gcmId="GcmId";

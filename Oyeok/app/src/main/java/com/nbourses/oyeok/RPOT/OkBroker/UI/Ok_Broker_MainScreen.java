@@ -39,6 +39,7 @@ import com.google.gson.JsonObject;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
@@ -93,7 +94,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     private ImageButton bPinLocation;
     private LatLng latlng;
     DBHelper dbHelper;
-
+    DroomChatFirebase droomChatFirebase;
     Double lat, lng;
     String pincode, region, fullAddress;
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "";
@@ -119,6 +120,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         dbHelper=new DBHelper(getContext());
        // earnOk = (Button) v.findViewById(R.id.earnOk);
 
+        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
         mPager = (ViewPager) v.findViewById(R.id.pager);
         mTabs  = (SlidingTabLayout) v.findViewById(R.id.tabs);
         //mTabs.setDistributeEvenly(true);
@@ -130,6 +132,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         mTabs.setBackgroundColor(Color.parseColor("#031625"));
         mPager.setAdapter(adapter);
             mTabs.setViewPager(mPager);
+
 
 
             mCustomPhasedSeekbar = (CustomPhasedSeekBar) v.findViewById(R.id.phasedSeekBar);
@@ -205,7 +208,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                     hideMap(0);
                     mMapView.setVisibility(View.GONE);
                     preok();
-                    onPositionSelected(currentItem,currentCount);
+                    onPositionSelected(currentItem, currentCount);
 
                 } else {
                     mMapView.setVisibility(View.VISIBLE);
@@ -731,6 +734,10 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                                 Log.i("role changed to", "Broker");
                                 AcceptOkCall a = new AcceptOkCall();
                                 a.acceptOk(p,j,dbHelper, getActivity());
+
+
+
+
                             }
 
                             @Override

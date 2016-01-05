@@ -470,7 +470,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                                 }
 
                             }
-                            ((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null);
+                            ((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null,"");
                 /*}else
                 {
                     *//*Intent NextActivity = new Intent(context, MainActivity.class);
@@ -496,7 +496,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 }
             }else{
                 Toast.makeText(getContext(), "You are are using offline mode or you are not connected to internet", Toast.LENGTH_LONG).show();
-                ((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null);
+                ((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null,"");
             }
 
         }

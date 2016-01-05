@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.OkBroker.CircularSeekBar.CircularSeekBarNew;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.AutoOkIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
@@ -160,12 +161,19 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
             public void onClick(View v) {
 
                 if (mOkbutton.getText().toString().equals("Auto Ok")) {
-                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null);
+                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
                 }
                 else{
-
-                    ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
-                    ok_broker_mainScreen.replaceWithSignUp(p,j);
+                    if (!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+                    {
+                        ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
+                        ok_broker_mainScreen.replaceWithSignUp(p,j);
+                    }
+                    else
+                    {
+                        AcceptOkCall a = new AcceptOkCall();
+                        a.acceptOk(p,j,dbHelper, getActivity());
+                    }
                 }
             }
         });

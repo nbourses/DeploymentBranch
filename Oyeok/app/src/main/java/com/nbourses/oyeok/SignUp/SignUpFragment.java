@@ -569,7 +569,7 @@ public class SignUpFragment extends Fragment {
                         }
 
                     }
-                    ((MainActivity) getActivity()).changeFragment(new MessagesFragment(), null);
+                    ((MainActivity) getActivity()).changeFragment(new MessagesFragment(), null,"");
                 /*}else
                 {
                     *//*Intent NextActivity = new Intent(context, MainActivity.class);

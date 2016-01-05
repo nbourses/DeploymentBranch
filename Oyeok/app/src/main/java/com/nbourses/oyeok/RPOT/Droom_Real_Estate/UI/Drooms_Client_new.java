@@ -55,7 +55,7 @@ public class Drooms_Client_new extends Fragment {
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).changeFragment(new StartDroomFragment(), null);
+                ((MainActivity)getActivity()).changeFragment(new StartDroomFragment(), null,"");
             }
         });
         //ExpandableListView mDroomsRecyclerView = (ExpandableListView) rootView.findViewById(R.id.list);

@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.os.Debug;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -152,9 +151,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         else
         {
             if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
-                changeFragment(new Ok_Broker_MainScreen(),null);
+                changeFragment(new Ok_Broker_MainScreen(),null,"Broker HomeScreen");
             else
-                changeFragment(new RexMarkerPanelScreen(),null);
+                changeFragment(new RexMarkerPanelScreen(),null,"Oye HomeScreen");
         }
 
 
@@ -219,9 +218,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         setUpMenuChangeUserRole();
 
         if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
-            changeFragment(new Ok_Broker_MainScreen(),null);
+            changeFragment(new Ok_Broker_MainScreen(),null,"Broker HomeScreen");
         else
-            changeFragment(new RexMarkerPanelScreen(), null);
+            changeFragment(new RexMarkerPanelScreen(), null,"Oye HomeScreen");
 
 
 
@@ -298,9 +297,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED)
                     {
                         if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
-                            changeFragment(new Ok_Broker_MainScreen(),null);
+                            changeFragment(new Ok_Broker_MainScreen(),null,"Broker HomeScreen");
                         else
-                            changeFragment(new RexMarkerPanelScreen(),null);
+                            changeFragment(new RexMarkerPanelScreen(),null,"Oye HomeScreen");
                     }
 
                 } else {
@@ -409,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     }
 
 
-    public void changeFragment(Fragment f, Bundle args)
+    public void changeFragment(Fragment f, Bundle args,String title)
     {
         Fragment fragment = f;
         if (fragment != null) {
@@ -421,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
             Log.i("Change Fragment",f.toString());
             // set the toolbar title
-           // getSupportActionBar().setTitle("Dealing rooms");
+           getSupportActionBar().setTitle(title);
         }
 
     }
@@ -491,7 +490,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if (view == resideMenuItems[0]){
             //Amplitude.getInstance().logEvent("resideMenuItems[0] clicked");
 
-            changeFragment(new RexMarkerPanelScreen(), null);
+            changeFragment(new RexMarkerPanelScreen(), null,"Oye HomeScreen");
             Toast.makeText(getApplicationContext(), "Real Exchange HAS STARTED",
                     Toast.LENGTH_LONG).show();
 
@@ -505,7 +504,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             resideMenuItems[1].tv_title.setTextColor(Color.BLUE);
             resideMenuItems[0].tv_title.setTextColor(Color.BLACK);
             resideMenuItems[2].tv_title.setTextColor(Color.BLACK);
-            changeFragment(new JexMarkerPanelScreen(), null);
+            changeFragment(new JexMarkerPanelScreen(), null,"Jex HomeScreen");
 
 
         }else if (view == resideMenuItems[2])
@@ -515,7 +514,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             resideMenuItems[2].tv_title.setTextColor(Color.BLUE);
             resideMenuItems[1].tv_title.setTextColor(Color.BLACK);
             resideMenuItems[0].tv_title.setTextColor(Color.BLACK);
-            changeFragment(new LexMarkerPanelScreen(), null);
+            changeFragment(new LexMarkerPanelScreen(), null,"Lex HomeScreen");
         }
         resideMenu.closeMenu();
     }
