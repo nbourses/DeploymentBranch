@@ -337,7 +337,6 @@ public class SignUpFragment extends Fragment {
         user.setDeviceId("deviceId");
         user.setLocality("");
 
-
 		/*user.setUserRole(dbHelper.getValue("userRole");
         regid = UserProfileViewModel.getGcmId();
         user.setGcmId(regid);
@@ -368,7 +367,6 @@ public class SignUpFragment extends Fragment {
                             dbHelper.save(DatabaseConstants.user, "Broker");
                         } else
                             dbHelper.save(DatabaseConstants.user, "Client");
-
                         if (redirectToOyeIntentSpecs)
                             letsOye();
 

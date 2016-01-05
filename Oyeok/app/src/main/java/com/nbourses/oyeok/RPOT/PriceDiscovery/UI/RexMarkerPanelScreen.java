@@ -24,7 +24,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -208,7 +210,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             @Override
             public void onClick(View v) {
 
-                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(),null);
+               // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(),null);
             }
         });
         mVisits.setOnClickListener(new View.OnClickListener() {
@@ -330,7 +332,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     mMarkerPanel.setVisibility(View.VISIBLE);
                     mMarkerminmax.setVisibility(View.VISIBLE);
                     getPrice();
-                    /*LatLng latlng = map.getCameraPosition().target;
+                    /*
+                    LatLng latlng = map.getCameraPosition().target;
                     lat = latlng.latitude;
                     lng = latlng.longitude;
                     if (isNetworkAvailable()) {

@@ -16,6 +16,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.nbourses.oyeok.Database.DBHelper;
+import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ public class FragmentDrawer extends Fragment {
     private DrawerLayout mDrawerLayout;
     private NavigationDrawerAdapter adapter;
     private View containerView;
+    private DBHelper dbHelper;
+    String userType="";
     private static String[] titles = null;
     private FragmentDrawerListener drawerListener;
 
@@ -61,7 +65,18 @@ public class FragmentDrawer extends Fragment {
         super.onCreate(savedInstanceState);
 
         // drawer labels
-        titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels);
+        dbHelper=new DBHelper(getActivity());
+        userType=dbHelper.getValue(DatabaseConstants.user);
+        if(userType.equals("Client"))
+            titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_signup_client);
+        else
+        {
+            if (userType.equals("Broker"))
+                titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_signup_broker);
+            else
+                titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_no_signup);
+        }
+
 
     }
 

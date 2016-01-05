@@ -12,12 +12,8 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
-
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
-
-import android.util.Log;
-
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -159,7 +155,7 @@ public class CustomPhasedSeekBar extends View {
         }
         mItemHalfWidth = widthHalf;
         mLinePaint = new Paint();
-        mLinePaint.setColor(Color.parseColor("#EEEEEE"));
+        mLinePaint.setColor(Color.parseColor("#757575"));
         mLinePaint.setStrokeWidth(5 * DPTOPX_SCALE);
 
 
@@ -168,7 +164,7 @@ public class CustomPhasedSeekBar extends View {
         mCirclePaint.setStyle(Paint.Style.FILL);
 
         mCircleStrokePaint = new Paint();
-        mCircleStrokePaint.setColor(Color.parseColor("#B0BEC5"));
+        mCircleStrokePaint.setColor(Color.parseColor("#9E9E9E"));
         mCircleStrokePaint.setStrokeWidth(2 * DPTOPX_SCALE);
         mCircleStrokePaint.setStyle(Paint.Style.STROKE);
 
@@ -236,8 +232,13 @@ public class CustomPhasedSeekBar extends View {
             stateListDrawable = mAdapter.getItem(i);
             stateListDrawable.setState(STATE_NORMAL);
             itemOff = stateListDrawable.getCurrent();
-            canvas.drawLine(mAnchors[i][0] - widthHalf, mAnchors[i][1], mAnchors[i][0] - (2 * widthHalf / 3), mAnchors[i][1], mLinePaint);
-            canvas.drawLine(mAnchors[i][0]+(2*widthHalf/3),mAnchors[i][1],mAnchors[i][0]+widthHalf,mAnchors[i][1],mLinePaint);
+            if(i != 0) {
+                canvas.drawLine(mAnchors[i][0] - widthHalf, mAnchors[i][1], mAnchors[i][0] - (2 * widthHalf / 3), mAnchors[i][1], mLinePaint);
+            }
+            if(i != count-1) {
+                canvas.drawLine(mAnchors[i][0] + (2 * widthHalf / 3), mAnchors[i][1], mAnchors[i][0] + widthHalf, mAnchors[i][1], mLinePaint);
+            }
+
             int width = itemOff.getIntrinsicWidth();
             int height = itemOff.getIntrinsicHeight();
             int m = 2*widthHalf/3;
@@ -261,6 +262,7 @@ public class CustomPhasedSeekBar extends View {
             int availableWidth = this.getRight() - this.getLeft();
             int availableHeight = this.getBottom() - this.getTop();
             try {
+                if( i != mCurrentItem)
                 itemOff.draw(canvas);
             }catch (Exception e)
             {
@@ -271,8 +273,12 @@ public class CustomPhasedSeekBar extends View {
             if((2*widthHalf/3)>height/2)
             {
 
-                canvas.drawLine(mAnchors[i][0] - (2 * widthHalf / 3), mAnchors[i][1], mAnchors[i][0] - ( height/2 ), mAnchors[i][1], mLinePaint);
-                canvas.drawLine(mAnchors[i][0]+(height/2),mAnchors[i][1],mAnchors[i][0]+(2 * widthHalf / 3),mAnchors[i][1],mLinePaint);
+                if( i != 0) {
+                    canvas.drawLine(mAnchors[i][0] - (2 * widthHalf / 3), mAnchors[i][1], mAnchors[i][0] - (height / 2), mAnchors[i][1], mLinePaint);
+                }
+                if(i != count-1) {
+                    canvas.drawLine(mAnchors[i][0] + (height / 2), mAnchors[i][1], mAnchors[i][0] + (2 * widthHalf / 3), mAnchors[i][1], mLinePaint);
+                }
 
 
             }

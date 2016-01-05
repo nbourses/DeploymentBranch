@@ -43,15 +43,9 @@
                     android:layout_marginTop="5dp"
                     android:textSize="12sp"
                     android:layout_gravity="center_horizontal"
-                    android:text="Missed :"/>
+                    android:text="Missed : 0 Red,0 Black"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_gravity="center"
-                    android:textSize="12sp"
-                    android:gravity="center_horizontal"
-                    android:text="22 Red,31 Black"
-                    android:layout_height="wrap_content" />
+
 
 
             </LinearLayout>
@@ -86,14 +80,15 @@
         android:layout_width="match_parent"
 
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:layout_height="match_parent"
         app:circlenew_color="#81C784"
+        android:layout_marginBottom="50dp"
         app:circlenew_stroke_width="5dp"/>
 
     <Button
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:background="#69F0AE"
         android:text="Auto Ok"
         android:layout_marginBottom="20dp"
