@@ -4,16 +4,20 @@ package com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
+import com.pubnub.api.Callback;
+import com.pubnub.api.Pubnub;
+import com.pubnub.api.PubnubError;
 import com.rockerhieu.emojicon.EmojiconTextView;
 import com.rockerhieu.emojicon.emoji.Emojicon;
 
@@ -34,11 +38,47 @@ public class Droom_Chat_New extends Fragment  {
     protected  float DPTOPX_SCALE =0;
 
 
+
+    Callback callback = new Callback() {
+        public void successCallback(String channel, Object response) {
+            //System.out.println(response.toString());
+            Log.i("chat history",response.toString());
+            String data= response.toString();
+            try {
+                //JSONObject rData= new JSONObject(data);
+                JSONArray aData= new JSONArray(data).getJSONArray(0);
+
+                /*for(int i=0;i<aData.length();i++) {
+                    JSONObject rData = aData.getJSONObject(i);
+                    Log.i("object"+i,rData.toString());
+                }*/
+                setAdapter(aData,true);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        public void errorCallback(String channel, PubnubError error) {
+            System.out.println(error.toString());
+        }
+    };
+
+
+
+    //pubnub.history("demo_tutorial1", 100, true, callback);
+
     public void setAdapter(JSONArray chats,boolean chat) {
         // Required empty public constructor
         mChats = chats;
         this.chat = chat;
-    }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setupview();
+            }
+        });}
+
+
 
     public Droom_Chat_New.itemClickListener getItemClickListener() {
         return mitemClickListener;
@@ -67,14 +107,18 @@ public class Droom_Chat_New extends Fragment  {
         View v =  inflater.inflate(R.layout.droom_chat_layout, container, false);
 
         mChatLayout = (LinearLayout) v.findViewById(R.id.chatlayout);
+
+        final Pubnub pubnub = new Pubnub("pub-c-da891650-b0d6-4cfc-901c-60ca47bfcf90", "sub-c-c85c5622-b36d-11e5-bd0b-02ee2ddab7fe");
+        pubnub.history("demo_tutorial1", 100, true, callback);
+
         mChatLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mitemClickListener.onClicked(-1,"hide");
+                mitemClickListener.onClicked(-1, "hide");
             }
         });
         Bundle args = getArguments();
-        if(args != null)
+        /*if(args != null)
         {
             try {
                 mChats = new JSONArray(args.getString("array"));
@@ -83,7 +127,7 @@ public class Droom_Chat_New extends Fragment  {
                 e.printStackTrace();
             }
             setupview();
-        }
+        }*/
 
 
 
@@ -98,17 +142,26 @@ public class Droom_Chat_New extends Fragment  {
             JSONObject chat_item = null;
             try {
                 chat_item = mChats.getJSONObject(i);
-                String direction = chat_item.get("direction").toString();
-                String text = chat_item.get("text").toString();
+                //String direction = chat_item.get("direction").toString();
+                //String text = chat_item.get("text").toString();
+
+                String senderId=chat_item.getString("sender_id");
+                String direction;
+                if(senderId.equalsIgnoreCase("pratik"))
+                    direction ="left";
+                else
+                    direction="right";
+                String receiverId=chat_item.getString("receiver_id");
+                String message=chat_item.getString("message");
                 final View inside_view = getActivity().getLayoutInflater().inflate(R.layout.droom_chat_item, null);
                 final RelativeLayout background = (RelativeLayout) inside_view.findViewById(R.id.background);
-                final LinearLayout showHide = (LinearLayout) inside_view.findViewById(R.id.showHide);
-                ImageView like = (ImageView) inside_view.findViewById(R.id.like);
-                ImageView dislike = (ImageView) inside_view.findViewById(R.id.dislike);
+                //final LinearLayout showHide = (LinearLayout) inside_view.findViewById(R.id.showHide);
+                /*ImageView like = (ImageView) inside_view.findViewById(R.id.like);
+                ImageView dislike = (ImageView) inside_view.findViewById(R.id.dislike);*/
 
 
                 final int pos = i;
-                like.setOnClickListener(new View.OnClickListener() {
+                /*like.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                       mitemClickListener.onClicked(pos,"liked");
@@ -154,10 +207,10 @@ public class Droom_Chat_New extends Fragment  {
                         //mChatLayout.removeView(inside_view);
                     }
                 });
+*/
 
-
-                TextView tv = (TextView) inside_view.findViewById(R.id.item);
-                tv.setText(text);
+                TextView tv = (TextView) inside_view.findViewById(R.id.itemChat);
+                tv.setText(message);
 
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)(200*DPTOPX_SCALE), LinearLayout.LayoutParams.WRAP_CONTENT);
                 if(direction.equals("left")) {
@@ -175,13 +228,14 @@ public class Droom_Chat_New extends Fragment  {
                 }else {
                     // inside_view.setGravity(Gravity.RIGHT);
                     params.gravity = Gravity.RIGHT;
-                    //params1.gravity = Gravity.RIGHT;
-                    //background.setLayoutParams(params1);
+                    FrameLayout.LayoutParams params1 = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                    params1.gravity = Gravity.RIGHT;
+                    background.setLayoutParams(params1);
                     background.setBackgroundResource(R.drawable.bubble_green);
                 }
                 inside_view.setLayoutParams(params);
 
-                if(chat)
+                /*if(chat)
                 {
                     inside_view.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
@@ -195,7 +249,7 @@ public class Droom_Chat_New extends Fragment  {
                             return true;
                         }
                     });
-                }
+                }*/
 
 
 
@@ -211,13 +265,13 @@ public class Droom_Chat_New extends Fragment  {
 
         final View inside_view = getActivity().getLayoutInflater().inflate(R.layout.droom_chat_item, null);
         final RelativeLayout background = (RelativeLayout) inside_view.findViewById(R.id.background);
-        final LinearLayout showHide = (LinearLayout) inside_view.findViewById(R.id.showHide);
-        ImageView like = (ImageView) inside_view.findViewById(R.id.like);
-        ImageView dislike = (ImageView) inside_view.findViewById(R.id.dislike);
+        //final LinearLayout showHide = (LinearLayout) inside_view.findViewById(R.id.showHide);
+        /*ImageView like = (ImageView) inside_view.findViewById(R.id.like);
+        ImageView dislike = (ImageView) inside_view.findViewById(R.id.dislike);*/
 
 
         final int pos = mChats.length();
-        like.setOnClickListener(new View.OnClickListener() {
+        /*like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mitemClickListener.onClicked(pos,"liked");
@@ -258,10 +312,10 @@ public class Droom_Chat_New extends Fragment  {
                 mChats = shiftArray;
                 mChatLayout.removeView(inside_view);
             }
-        });
+        });*/
 
 
-        TextView tv = (TextView) inside_view.findViewById(R.id.item);
+        TextView tv = (TextView) inside_view.findViewById(R.id.itemChat);
         tv.setText(m);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)(200*DPTOPX_SCALE), LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -288,9 +342,9 @@ public class Droom_Chat_New extends Fragment  {
     {
         final View inside_view = getActivity().getLayoutInflater().inflate(R.layout.droom_chat_item, null);
         final RelativeLayout background = (RelativeLayout) inside_view.findViewById(R.id.background);
-        final LinearLayout showHide = (LinearLayout) inside_view.findViewById(R.id.showHide);
-         showHide.setVisibility(View.GONE);
-        TextView tv = (TextView) inside_view.findViewById(R.id.item);
+        //final LinearLayout showHide = (LinearLayout) inside_view.findViewById(R.id.showHide);
+         //showHide.setVisibility(View.GONE);
+        TextView tv = (TextView) inside_view.findViewById(R.id.itemChat);
         String text = "";
         if(tag.equals("rejected"))
         {

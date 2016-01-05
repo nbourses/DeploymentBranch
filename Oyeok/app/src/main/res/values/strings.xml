@@ -13,6 +13,7 @@
     <string name="signup">Signup</string>
     <string name="PayTM">PayTM</string>
     <string name="share_app">Share app</string>
+    <string name="chat_list">chat_list</string>
     
 
 
@@ -42,18 +43,24 @@
 
         <item>@string/BrokerOk</item>
         <item>@string/share_app</item>
+        <item>@string/chat_list</item>
+
     </string-array>
     <string-array name="nav_drawer_labels_signup_client">
         <item>@string/Profile</item>
 
         <item>@string/BrokerOk</item>
         <item>@string/share_app</item>
+        <item>@string/chat_list</item>
+
     </string-array>
     <string-array name="nav_drawer_labels_signup_broker">
         <item>@string/Profile</item>
 
         <item>@string/BrokerOk</item>
         <item>@string/share_app</item>
+        <item>@string/chat_list</item>
+
     </string-array>
 
     <string name="title_messages">Messages</string>

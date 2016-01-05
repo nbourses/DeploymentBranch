@@ -1,15 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
-<LinearLayout
-    android:id="@+id/chatlayout"
-
-    android:orientation="vertical"
-    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent">
 
-</LinearLayout>
-</ScrollView>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+         >
+
+            <LinearLayout
+                android:id="@+id/chatlayout"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </LinearLayout>
+    </ScrollView>
+
+        <RelativeLayout
+            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom">
+            <EditText
+                android:id="@+id/et_send_message"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/bt_send_message"
+
+                />
+            <Button
+                android:id="@+id/bt_send_message"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+               android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
+    </FrameLayout>
+
+

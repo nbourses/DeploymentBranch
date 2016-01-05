@@ -506,10 +506,10 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         String API = "http://52.25.136.179:9000";
         User user = new User();
         user.setDeviceId("Hardware");
-        user.setGcmId("gliui");
+        user.setGcmId(SharedPrefs.MY_GCM_ID);
         user.setUserRole("client");
-        user.setLongitude("19.2");
-        user.setLatitude("72.45");
+        user.setLongitude(SharedPrefs.MY_LNG);
+        user.setLatitude(SharedPrefs.MY_LAT);
         user.setLocality("andheri west");
         user.setPincode("400058");
 		

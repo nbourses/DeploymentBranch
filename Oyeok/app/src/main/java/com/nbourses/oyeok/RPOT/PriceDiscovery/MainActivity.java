@@ -24,6 +24,7 @@ import com.nbourses.oyeok.GoogleCloudMessaging.RegistrationIntentService;
 import com.nbourses.oyeok.JPOT.SalaryDiscovery.UI.JexMarkerPanelScreen;
 import com.nbourses.oyeok.LPOT.PriceDiscoveryLoan.UI.LexMarkerPanelScreen;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
@@ -316,7 +317,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             case 2:
                 shareReferralLink();
                 break;
-
+            case 3:
+                fragment = new Droom_Chat_New();
+                title ="chat room";
         }
 
         if (fragment != null) {
