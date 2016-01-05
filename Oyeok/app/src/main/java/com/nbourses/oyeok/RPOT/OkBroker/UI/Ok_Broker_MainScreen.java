@@ -77,7 +77,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openMapsClicked,CustomPhasedListener, GoogleMap.OnCameraChangeListener {
+public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openMapsClicked,CustomPhasedListener {
 
     private static final String TAG = Ok_Broker_MainScreen.class.getSimpleName();
     private ViewPager mPager;
@@ -227,7 +227,6 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                                 map = googleMap;
 
                                 map.setMyLocationEnabled(false);
-                                setCameraListener();
                                 //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, map);
                                 //selectedLocation = map.getCameraPosition().target;
 
@@ -238,7 +237,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                         customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
                             @Override
                             public void onDrag(MotionEvent motionEvent) {
-
+                                //pin location
+                                latlng = map.getCameraPosition().target;
                                 if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
 
                                     //Toast.makeText(getActivity(), "Moved", Toast.LENGTH_LONG).show();
@@ -246,9 +246,16 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 
                                     Toast.makeText(getActivity(), "Up", Toast.LENGTH_LONG).show();
+                                    if (isNetworkAvailable()) {
+
+                                        lat = latlng.latitude;
+                                        lng = latlng.longitude;
+                                        SharedPrefs.save(getActivity(),SharedPrefs.MY_LAT,lat+"");
+                                        SharedPrefs.save(getActivity(),SharedPrefs.MY_LNG,lng+"");
+                                        new LocationUpdater().execute();
+                                    }
                                 }
-                                //pin location
-                                latlng = map.getCameraPosition().target;
+                                
                             }
                         });
 
@@ -375,16 +382,6 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
     }
 
-    @Override
-    public void onCameraChange(CameraPosition cameraPosition) {
-        if (isNetworkAvailable()) {
-            lat = cameraPosition.target.latitude;
-            lng = cameraPosition.target.longitude;
-            SharedPrefs.save(getActivity(),SharedPrefs.MY_LAT,lat+"");
-            SharedPrefs.save(getActivity(),SharedPrefs.MY_LNG,lng+"");
-            new LocationUpdater().execute();
-        }
-    }
 
     class MyPagerAdapter extends FragmentPagerAdapter
     {
@@ -755,8 +752,5 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         }
     }
 
-    public boolean setCameraListener(){
-        map.setOnCameraChangeListener(this);
-        return true;
-    }
+
 }
