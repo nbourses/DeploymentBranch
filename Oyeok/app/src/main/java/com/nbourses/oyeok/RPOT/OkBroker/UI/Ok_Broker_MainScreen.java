@@ -133,6 +133,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         mPager.setAdapter(adapter);
             mTabs.setViewPager(mPager);
 
+        Log.i("Test",droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId)).toString());
 
 
             mCustomPhasedSeekbar = (CustomPhasedSeekBar) v.findViewById(R.id.phasedSeekBar);
