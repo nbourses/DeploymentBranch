@@ -59,6 +59,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
     DiscreteSeekBar discreteSeekBar;
     //String off_mode;
     MyFragment myFragment;
+    private TextView pricevalue;
     public OyeIntentSpecs() {
         // Required empty public constructor
     }
@@ -104,7 +105,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         seeRadioButton= (RadioButton) rootView.findViewById(R.id.seeRadioButton);
         showRadioButton= (RadioButton) rootView.findViewById(R.id.showRadioButton);
         discreteSeekBar=(DiscreteSeekBar) rootView.findViewById(R.id.discreteSeekBar1);
-
+        pricevalue = (TextView) rootView.findViewById(R.id.textSelected);
         /*final FragmentManager fm = getChildFragmentManager();
         final FragmentTransaction ft = fm.beginTransaction();
         final Fragment fragOne = new MyFragment();*/
@@ -144,11 +145,12 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                /* if (fromUser) {
                     settings.setTextZoom(value);
                 }*/
-               //int val= seekBar.getProgress();
-             /*   Log.i("Debug",""+value);
+               int val= seekBar.getProgress();
+                Log.i("Debug",""+value);
                 String s = numToVal(value);
-                seekBar.setIndicatorFormatt er(s);
-                budget = ""+value;*/
+                //seekBar.setIndicatorFormatt er(s);
+                budget = ""+value;
+                pricevalue.setText(s);
             }
 
             @Override

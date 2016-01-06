@@ -6,7 +6,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,7 +90,7 @@ public class AutoCompletePlaces {
     }
 
     public static class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
-        private ArrayList<String> resultList;
+        private ArrayList<String> resultList = new ArrayList<String>();
 
         public GooglePlacesAutocompleteAdapter(Context context, int textViewResourceId) {
             super(context, textViewResourceId);
@@ -99,6 +98,7 @@ public class AutoCompletePlaces {
 
         @Override
         public int getCount() {
+
             return resultList.size();
         }
 
