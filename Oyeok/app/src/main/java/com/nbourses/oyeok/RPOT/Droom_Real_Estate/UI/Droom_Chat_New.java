@@ -24,7 +24,6 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.Firebase.DroomDetails;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubError;
@@ -51,6 +50,9 @@ public class Droom_Chat_New extends Fragment  {
     DBHelper dbHelper;
     private EditText sendMessageEditText;
     ScrollView scroll;
+    String okId="";
+    String userId1="";
+    String userId2="";
 
 
 
@@ -232,7 +234,7 @@ public class Droom_Chat_New extends Fragment  {
 
                 String senderId=chat_item.getString("sender_id");
                 String direction;
-                if(senderId.equalsIgnoreCase(userId2))
+                if(!senderId.equalsIgnoreCase(userId1))
                     direction ="left";
                 else
                     direction="right";

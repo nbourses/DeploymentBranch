@@ -121,8 +121,8 @@ public class AcceptOkCall {
                 public void failure(RetrofitError error) {
                     Log.i("accept error", error.getMessage());
                     Bundle args=new Bundle();
-                    args.putString("UserId1","lub8aesblzt8gnokdjlofy5b1xcoduae");
-                    args.putString("UserId2","yn4kiiqv91y1r6lrlzzrllypqv52552i");
+                    args.putString("UserId2","lub8aesblzt8gnokdjlofy5b1xcoduae");
+                    args.putString("UserId1","yn4kiiqv91y1r6lrlzzrllypqv52552i");
                     args.putString("OkId", "hep8bfkyigl0v4c");
                     if(mCallBack!=null)
                     {
@@ -131,8 +131,8 @@ public class AcceptOkCall {
                         droomDetails.setLastMessage("Test Last Message");
                         droomDetails.setStatus("Test Message Not read");
                         droomDetails.setTimestamp("Test TimeStamp");
-                        String userId1="lub8aesblzt8gnokdjlofy5b1xcoduae";
-                        String userId2="yn4kiiqv91y1r6lrlzzrllypqv52552i";
+                        String userId2="lub8aesblzt8gnokdjlofy5b1xcoduae";
+                        String userId1="yn4kiiqv91y1r6lrlzzrllypqv52552i";
                         String okId="hep8bfkyigl0v4c";
                         droomChatFirebase.createChatRoom(okId,userId1,userId2,droomDetails);
                         mCallBack.replaceFragment(args);
