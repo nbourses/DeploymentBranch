@@ -28,6 +28,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static java.lang.Math.log10;
+import static java.lang.Math.max;
 
 /**
  * Created by prathyush on 26/11/15.
@@ -310,6 +311,8 @@ public class CircularSeekBarNew extends View {
         Log.i("values length= ",Integer.toString(values.length()));
         if(values.length()==0){
             Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
+            minValue=0;
+            maxvalue=0;
         }
 
         if(values.length()==1){
