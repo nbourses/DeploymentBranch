@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nbourses.oyeok.Analytics.Analytics;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
@@ -39,8 +40,7 @@ public class Profile extends Fragment {
 
 
 
-
-
+    private static final String TAG = Profile.class.getSimpleName();
 
     private TextView role_txt,phoneTxt;
     private EditText emailTxt,username_txt;
@@ -183,5 +183,15 @@ public class Profile extends Fragment {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Analytics.logScreenVisit(TAG);
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        Analytics.logScreenExit(TAG);
+    }
 }

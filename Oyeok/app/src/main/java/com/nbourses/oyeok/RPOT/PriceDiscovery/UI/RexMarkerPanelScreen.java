@@ -40,6 +40,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.nbourses.oyeok.Analytics.Analytics;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
@@ -827,6 +828,17 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        Analytics.logScreenVisit(TAG);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Analytics.logScreenExit(TAG);
     }
 
 }

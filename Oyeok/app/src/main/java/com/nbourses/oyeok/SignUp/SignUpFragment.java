@@ -22,7 +22,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.core.Tag;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.nbourses.oyeok.Analytics.Analytics;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
@@ -46,6 +48,10 @@ import com.nbourses.oyeok.activity.MessagesFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.Bind;
 import retrofit.Callback;
@@ -53,6 +59,7 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 
 public class SignUpFragment extends Fragment {
+    private static final String TAG = SignUpFragment.class.getSimpleName() ;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
@@ -110,10 +117,10 @@ public class SignUpFragment extends Fragment {
     Bundle b;
     String lastFragment="";
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         b=getArguments();
         redirectToOyeIntentSpecs=false;
@@ -691,7 +698,15 @@ public class SignUpFragment extends Fragment {
     }
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Analytics.logScreenVisit(TAG);
+    }
 
-
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        Analytics.logScreenExit(TAG);
+    }
 }

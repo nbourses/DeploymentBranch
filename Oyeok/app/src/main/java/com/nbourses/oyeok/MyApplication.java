@@ -14,6 +14,9 @@ import io.fabric.sdk.android.Fabric;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import io.branch.referral.Branch;
 
 /**
@@ -21,6 +24,7 @@ import io.branch.referral.Branch;
  */
 public class MyApplication extends MultiDexApplication {
 
+    private final static String TAG = MyApplication.class.getSimpleName();
     private static final String AMPLITUDE_KEY = "28931796b17fc24d41e081bccf6dd344";
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -33,6 +37,5 @@ public class MyApplication extends MultiDexApplication {
         Branch.getAutoInstance(this);
         Amplitude.getInstance().initialize(this, AMPLITUDE_KEY)
                 .enableForegroundTracking(this);
-
     }
 }

@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.nbourses.oyeok.Analytics.Analytics;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
@@ -76,7 +77,6 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-
 public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openMapsClicked,CustomPhasedListener {
 
     private static final String TAG = Ok_Broker_MainScreen.class.getSimpleName();
@@ -104,6 +104,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // Inflate the layout for this fragment
 
 //        Display display = getActivity().getWindowManager().getDefaultDisplay();
@@ -751,5 +753,15 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Analytics.logScreenVisit(TAG);
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        Analytics.logScreenExit(TAG);
+    }
 }
