@@ -12,6 +12,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +26,8 @@ import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.OnAcceptOkSuccess;
+import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
 import com.nbourses.oyeok.RPOT.OkBroker.CircularSeekBar.CircularSeekBarNew;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.AutoOkIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
@@ -36,7 +40,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 
-public class Rental_Broker_Available extends Fragment implements CircularSeekBarNew.imageAction {
+public class Rental_Broker_Available extends Fragment implements CircularSeekBarNew.imageAction,OnAcceptOkSuccess {
 
     CircularSeekBarNew cbn;
     TextView mTitle;
@@ -283,4 +287,13 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
     }
 
 
+    @Override
+    public void replaceFragment(Bundle args) {
+        Fragment fragment = new Droom_chats_list();
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container_body, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
 }
