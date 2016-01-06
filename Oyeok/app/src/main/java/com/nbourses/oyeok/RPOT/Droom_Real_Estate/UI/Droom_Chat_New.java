@@ -24,6 +24,7 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.Firebase.DroomDetails;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubError;
@@ -50,7 +51,6 @@ public class Droom_Chat_New extends Fragment  {
     DBHelper dbHelper;
     private EditText sendMessageEditText;
     ScrollView scroll;
-    String okId="",userId1="",userId2="";
 
 
 
@@ -164,7 +164,7 @@ public class Droom_Chat_New extends Fragment  {
                 public void successCallback(String channel, Object message) {
                     //Toast.makeText(getActivity(), message.toString(), Toast.LENGTH_LONG).show();
                     try {
-                        mChats.put(mChats.length(),message.toString());
+                        mChats.put(new JSONObject(message.toString()));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -198,28 +198,19 @@ public class Droom_Chat_New extends Fragment  {
                 pubnub.publish(okId, o, new Callback() {
                 });
                 try {
-                    mChats.put(mChats.length(),o);
+                    mChats.put(mChats.length(), o);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 setAdapter(mChats, true);
                 sendMessageEditText.setText("");
-                scroll.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scroll.fullScroll(View.FOCUS_DOWN);
-                    }
-                });
                 hideSoftKeyboard(getActivity());
+
+
             }
         });
 
-        scroll.post(new Runnable() {
-            @Override
-            public void run() {
-                scroll.fullScroll(View.FOCUS_DOWN);
-            }
-        });
+
         return v;
     }
 
@@ -352,6 +343,12 @@ public class Droom_Chat_New extends Fragment  {
                 e.printStackTrace();
             }
         }
+        scroll.post(new Runnable() {
+            @Override
+            public void run() {
+                scroll.fullScroll(View.FOCUS_DOWN);
+            }
+        });
     }
 
     public void addvalue(String m)
