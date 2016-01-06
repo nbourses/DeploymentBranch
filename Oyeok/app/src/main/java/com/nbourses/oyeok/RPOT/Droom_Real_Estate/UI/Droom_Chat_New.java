@@ -20,9 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubError;
@@ -128,7 +126,7 @@ public class Droom_Chat_New extends Fragment  {
         scroll= (ScrollView) v.findViewById(R.id.chat_scroll_view);
 
         final Pubnub pubnub = new Pubnub("pub-c-da891650-b0d6-4cfc-901c-60ca47bfcf90", "sub-c-c85c5622-b36d-11e5-bd0b-02ee2ddab7fe");
-        pubnub.history("demo_tutorial1", 100, true, callback);
+        pubnub.history("demo_tutorial2", 100, true, callback);
 
         /*mChatLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,14 +148,16 @@ public class Droom_Chat_New extends Fragment  {
 
 
         try {
-            pubnub.subscribe("demo_tutorial1", new Callback() {
+            pubnub.subscribe("demo_tutorial2", new Callback() {
                 public void successCallback(String channel, Object message) {
                     //Toast.makeText(getActivity(), message.toString(), Toast.LENGTH_LONG).show();
+
                     try {
-                        mChats.put(mChats.length(),message.toString());
+                        mChats.put(new JSONObject(message.toString()));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
                     setAdapter(mChats,true);
                 }
 
@@ -173,43 +173,34 @@ public class Droom_Chat_New extends Fragment  {
             @Override
             public void onClick(View v) {
                 JSONObject o = new JSONObject();
-                if (!sendMessageEditText.getText().toString().equalsIgnoreCase("")){
+                if (!sendMessageEditText.getText().toString().equalsIgnoreCase("")) {
                     try {
                         //o.put("sender_id",dbHelper.getValue(DatabaseConstants.userId));
-                        o.put("sender_id", "pratik");
+                        o.put("sender_id", "prathyush");
                         o.put("message", sendMessageEditText.getText().toString());
-                        o.put("receiver_id", "pratyush");
+                        o.put("receiver_id", "pratik");
                     } catch (Exception e) {
                         Log.i("exception in", "publish message");
                     }
                 }
 
                 //o.put("receiver_id",);
-                pubnub.publish("demo_tutorial1", o, new Callback() {
+                pubnub.publish("demo_tutorial2", o, new Callback() {
                 });
                 try {
-                    mChats.put(mChats.length(),o);
+                    mChats.put(mChats.length(), o);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 setAdapter(mChats, true);
                 sendMessageEditText.setText("");
-                scroll.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scroll.fullScroll(View.FOCUS_DOWN);
-                    }
-                });
                 hideSoftKeyboard(getActivity());
+
+
             }
         });
 
-        scroll.post(new Runnable() {
-            @Override
-            public void run() {
-                scroll.fullScroll(View.FOCUS_DOWN);
-            }
-        });
+
         return v;
     }
 
@@ -342,6 +333,12 @@ public class Droom_Chat_New extends Fragment  {
                 e.printStackTrace();
             }
         }
+        scroll.post(new Runnable() {
+            @Override
+            public void run() {
+                scroll.fullScroll(View.FOCUS_DOWN);
+            }
+        });
     }
 
     public void addvalue(String m)
