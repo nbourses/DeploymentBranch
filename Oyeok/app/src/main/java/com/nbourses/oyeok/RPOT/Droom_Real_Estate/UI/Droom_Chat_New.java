@@ -21,8 +21,9 @@ import android.widget.Toast;
 
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
+import com.nbourses.oyeok.Firebase.DroomChatFirebase;
+import com.nbourses.oyeok.Firebase.DroomDetails;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubError;
@@ -49,6 +50,7 @@ public class Droom_Chat_New extends Fragment  {
     DBHelper dbHelper;
     private EditText sendMessageEditText;
     ScrollView scroll;
+    String okId="",userId1="",userId2="";
 
 
 
@@ -127,8 +129,16 @@ public class Droom_Chat_New extends Fragment  {
         sendMessageEditText= (EditText)v.findViewById(R.id.et_send_message);
         scroll= (ScrollView) v.findViewById(R.id.chat_scroll_view);
 
+        Bundle b=getArguments();
+        DroomDetails droomDetails=new DroomDetails();
+        DroomChatFirebase droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
+        okId= (String) b.get("OkId");
+        userId1= (String) b.get("UserId1");
+        userId2= (String) b.get("UserId2");
+       /* droomDetails=droomChatFirebase.getChatRoom(okId,userId1);*/
         final Pubnub pubnub = new Pubnub("pub-c-da891650-b0d6-4cfc-901c-60ca47bfcf90", "sub-c-c85c5622-b36d-11e5-bd0b-02ee2ddab7fe");
-        pubnub.history("demo_tutorial1", 100, true, callback);
+        pubnub.history(okId, 100, true, callback);
+
 
         /*mChatLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,7 +160,7 @@ public class Droom_Chat_New extends Fragment  {
 
 
         try {
-            pubnub.subscribe("demo_tutorial1", new Callback() {
+            pubnub.subscribe(okId, new Callback() {
                 public void successCallback(String channel, Object message) {
                     //Toast.makeText(getActivity(), message.toString(), Toast.LENGTH_LONG).show();
                     try {
@@ -176,16 +186,16 @@ public class Droom_Chat_New extends Fragment  {
                 if (!sendMessageEditText.getText().toString().equalsIgnoreCase("")){
                     try {
                         //o.put("sender_id",dbHelper.getValue(DatabaseConstants.userId));
-                        o.put("sender_id", "pratik");
+                        o.put("sender_id", userId1);
                         o.put("message", sendMessageEditText.getText().toString());
-                        o.put("receiver_id", "pratyush");
+                        o.put("receiver_id", userId2);
                     } catch (Exception e) {
                         Log.i("exception in", "publish message");
                     }
                 }
 
                 //o.put("receiver_id",);
-                pubnub.publish("demo_tutorial1", o, new Callback() {
+                pubnub.publish(okId, o, new Callback() {
                 });
                 try {
                     mChats.put(mChats.length(),o);
@@ -231,7 +241,7 @@ public class Droom_Chat_New extends Fragment  {
 
                 String senderId=chat_item.getString("sender_id");
                 String direction;
-                if(senderId.equalsIgnoreCase(""))
+                if(senderId.equalsIgnoreCase(userId2))
                     direction ="left";
                 else
                     direction="right";

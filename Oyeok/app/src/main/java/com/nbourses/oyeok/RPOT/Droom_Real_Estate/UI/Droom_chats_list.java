@@ -1,9 +1,9 @@
 package com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI;
 
-import android.support.v4.app.Fragment;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +15,6 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
-import com.nbourses.oyeok.Database.DatabaseConstants;
-import com.nbourses.oyeok.Firebase.DroomChatFirebase;
-import com.nbourses.oyeok.Firebase.DroomDetails;
 import com.nbourses.oyeok.R;
 
 import java.util.ArrayList;
@@ -38,19 +35,13 @@ public class Droom_chats_list extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_droom_chats_list, container, false);
         SwipeMenuListView listView= (SwipeMenuListView) rootView.findViewById(R.id.listView);
-        Bundle b=getArguments();
-        DroomDetails droomDetails=new DroomDetails();
-        DroomChatFirebase droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
-        okId= (String) b.get("OkId");
-        userId1= (String) b.get("UserId1");
-        userId2= (String) b.get("UserId2");
-        droomDetails=droomChatFirebase.getChatRoom(okId,userId1);
 
-        Title t = new Title();
-        t.setLastMessage(droomDetails.getLastMessage());
-        t.setTitle(droomDetails.getTitle());
-        pObj.add(0,t);
-
+        for(int i=0;i<5;i++){
+            Title t = new Title();
+            t.setLastMessage("hi");
+            t.setTitle("title"+i);
+            pObj.add(i,t);
+        }
         mAdapter = new AppAdapter();
         listView.setAdapter(mAdapter);
 

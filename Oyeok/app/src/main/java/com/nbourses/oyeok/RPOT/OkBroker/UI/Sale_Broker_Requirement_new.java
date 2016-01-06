@@ -12,8 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +25,6 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OnAcceptOkSuccess;
-import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
 import com.nbourses.oyeok.RPOT.OkBroker.CircularSeekBar.CircularSeekBarNew;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.AutoOkIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
@@ -67,7 +64,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
         rentText = (TextView) v.findViewById(R.id.rentText);
         displayOkText = (TextView) v.findViewById(R.id.displayOkText);
         mOkbutton = (Button) v.findViewById(R.id.okButton);
-
+        ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
 
         pickContact = (Button) v.findViewById(R.id.pickContact);
         contactName = (TextView) v.findViewById(R.id.contactText);
@@ -275,11 +272,6 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
 
     @Override
     public void replaceFragment(Bundle args) {
-        Fragment fragment = new Droom_chats_list();
-        fragment.setArguments(args);
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container_body, fragment);
-        fragmentTransaction.commitAllowingStateLoss();
+        ok_broker_mainScreen.openChat(args);
     }
 }

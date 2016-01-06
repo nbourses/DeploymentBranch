@@ -12,8 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +25,6 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OnAcceptOkSuccess;
-import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
 import com.nbourses.oyeok.RPOT.OkBroker.CircularSeekBar.CircularSeekBarNew;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.AutoOkIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
@@ -60,136 +57,136 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout   ®for this fragment
-        View v= inflater.inflate(R.layout.fragment_rental_ok__broker, container, false);
+            // Inflate the layout   ®for this fragment
+            View v= inflater.inflate(R.layout.fragment_rental_ok__broker, container, false);
 
-        mTitle = (TextView) v.findViewById(R.id.title);
-        mNotClicked = (LinearLayout) v.findViewById(R.id.notClicked);
-        rentText = (TextView) v.findViewById(R.id.rentText);
-        displayOkText = (TextView) v.findViewById(R.id.displayOkText);
-        mOkbutton = (Button) v.findViewById(R.id.okButton);
-        dbHelper=new DBHelper(getContext());
+            mTitle = (TextView) v.findViewById(R.id.title);
+            mNotClicked = (LinearLayout) v.findViewById(R.id.notClicked);
+            rentText = (TextView) v.findViewById(R.id.rentText);
+            displayOkText = (TextView) v.findViewById(R.id.displayOkText);
+            mOkbutton = (Button) v.findViewById(R.id.okButton);
+            dbHelper=new DBHelper(getContext());
+        ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
+            pickContact = (Button) v.findViewById(R.id.pickContact);
+            contactName = (TextView) v.findViewById(R.id.contactText);
 
-        pickContact = (Button) v.findViewById(R.id.pickContact);
-        contactName = (TextView) v.findViewById(R.id.contactText);
-
-        rentText.setText("Price : Rs 50L");
-        cbn = (CircularSeekBarNew) v.findViewById(R.id.circularseekbar);
-        cbn.setmImageAction(this);
-
-
-        for(int i=0;i<3;i++) {
-            JSONObject element = new JSONObject();
-            try {
-                element.put("oye_id", "vhdhCMSDMz");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                element.put("req_avl", "req");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                element.put("size", i+1+"bhk");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                element.put("price", (i+3)*200000);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                if(i%2==0)
-                    element.put("oye_status", "active");
-                else
-                    element.put("oye_status","inactive");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                element.put("user_id", "vhdhCMSDMz");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {if(i%2==0)
-                element.put("user_role", "client");
-            else
-                element.put("user_role","broker");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                if(i%2==0)
-                    element.put("property_type","Home");
-                else
-                    element.put("property_type","Shop");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {if(i%2==0)
-                element.put("property_subtype",i+1+"bhk");
-            else
-                element.put("property_subtype",(i*10)+"seater");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                dummyData.put(i, element);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        /*values.add(6);
-        values.add(3);
-        values.add(15);
-        values.add(16);
-
-        cbn.setValues(values);*/
-        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
-            cbn.setValues(dbHelper.getValue(DatabaseConstants.reqOr));
-        else
-            cbn.setValues(dummyData.toString());
+            rentText.setText("Price : Rs 50L");
+            cbn = (CircularSeekBarNew) v.findViewById(R.id.circularseekbar);
+            cbn.setmImageAction(this);
 
 
-        mOkbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (mOkbutton.getText().toString().equals("Auto Ok")) {
-                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
+            for(int i=0;i<3;i++) {
+                JSONObject element = new JSONObject();
+                try {
+                    element.put("oye_id", "vhdhCMSDMz");
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                else{
-                    if (!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
-                    {
-                        ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
-                        ok_broker_mainScreen.replaceWithSignUp(p,j);
-                    }
+                try {
+                    element.put("req_avl", "req");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    element.put("size", i+1+"bhk");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    element.put("price", (i+3)*200000);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    if(i%2==0)
+                        element.put("oye_status", "active");
                     else
-                    {
-                        AcceptOkCall a = new AcceptOkCall();
-                        a.acceptOk(p,j,dbHelper, getActivity());
-                    }
+                        element.put("oye_status","inactive");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    element.put("user_id", "vhdhCMSDMz");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {if(i%2==0)
+                    element.put("user_role", "client");
+                else
+                    element.put("user_role","broker");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    if(i%2==0)
+                        element.put("property_type","Home");
+                    else
+                        element.put("property_type","Shop");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {if(i%2==0)
+                    element.put("property_subtype",i+1+"bhk");
+                else
+                    element.put("property_subtype",(i*10)+"seater");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    dummyData.put(i, element);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-        });
+            /*values.add(6);
+            values.add(3);
+            values.add(15);
+            values.add(16);
+
+            cbn.setValues(values);*/
+            if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
+                cbn.setValues(dbHelper.getValue(DatabaseConstants.reqOr));
+            else
+                cbn.setValues(dummyData.toString());
 
 
-        pickContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            mOkbutton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (mOkbutton.getText().toString().equals("Auto Ok")) {
+                        ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
+                    }
+                    else{
+                        if (!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+                        {
+                            ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
+                            ok_broker_mainScreen.replaceWithSignUp(p,j);
+                        }
+                        else
+                        {
+                            AcceptOkCall a = new AcceptOkCall();
+                            a.acceptOk(p,j,dbHelper, getActivity());
+                        }
+                    }
+                }
+            });
 
 
-                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-
-                getActivity().startActivityForResult(intent, 302);
-
-            }
-        });
+            pickContact.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
 
-        return v;
+                    Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+
+                    getActivity().startActivityForResult(intent, 302);
+
+                }
+            });
+
+
+            return v;
     }
 
 
@@ -283,11 +280,6 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
 
     @Override
     public void replaceFragment(Bundle args) {
-        Fragment fragment = new Droom_chats_list();
-        fragment.setArguments(args);
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container_body, fragment);
-        fragmentTransaction.commitAllowingStateLoss();
+        ok_broker_mainScreen.openChat(args);
     }
 }

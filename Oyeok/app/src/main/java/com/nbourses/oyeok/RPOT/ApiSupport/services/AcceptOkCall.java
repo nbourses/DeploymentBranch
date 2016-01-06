@@ -50,6 +50,7 @@ public class AcceptOkCall {
         }
         catch (JSONException e){
             e.printStackTrace();
+            Log.i("Munni","null hai");
         }
 
 
@@ -57,7 +58,7 @@ public class AcceptOkCall {
         Oyeok acceptOk = new Oyeok();
         //DBHelper dbHelper1= new DBHelper();
         acceptOk.setDeviceId("Hardware");
-        acceptOk.setGcmId(dbHelper.getValue(DatabaseConstants.gcmId));
+        acceptOk.setGcmId(SharedPrefs.getString(activity,SharedPrefs.MY_GCM_ID));
         acceptOk.setUserRole("broker");
         //acceptOk.setUserRole("broker");
         acceptOk.setLong(SharedPrefs.getString(activity.getBaseContext(), SharedPrefs.MY_LNG));
@@ -119,6 +120,24 @@ public class AcceptOkCall {
                 @Override
                 public void failure(RetrofitError error) {
                     Log.i("accept error", error.getMessage());
+                    Bundle args=new Bundle();
+                    args.putString("UserId1","lub8aesblzt8gnokdjlofy5b1xcoduae");
+                    args.putString("UserId2","yn4kiiqv91y1r6lrlzzrllypqv52552i");
+                    args.putString("OkId", "hep8bfkyigl0v4c");
+                    if(mCallBack!=null)
+                    {
+                        DroomDetails droomDetails=new DroomDetails();
+                        droomDetails.setTitle("Test Droom");
+                        droomDetails.setLastMessage("Test Last Message");
+                        droomDetails.setStatus("Test Message Not read");
+                        droomDetails.setTimestamp("Test TimeStamp");
+                        String userId1="lub8aesblzt8gnokdjlofy5b1xcoduae";
+                        String userId2="yn4kiiqv91y1r6lrlzzrllypqv52552i";
+                        String okId="hep8bfkyigl0v4c";
+                        droomChatFirebase.createChatRoom(okId,userId1,userId2,droomDetails);
+                        mCallBack.replaceFragment(args);
+                    }
+
                 }
             });
         }catch (Exception e){
