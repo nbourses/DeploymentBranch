@@ -33,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amplitude.api.Amplitude;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -188,6 +189,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         autoCompView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Analytics.localitySearched(fullAddress);
                 autoCompView.showDropDown();
             }
         });
@@ -196,7 +198,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         mDrooms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Analytics.logButtonClick(mDrooms.getText().toString(),TAG);
                // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null);
                // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(),null);
             }
@@ -204,6 +206,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         mVisits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Analytics.logButtonClick(mVisits.getText().toString(),TAG);
                 Bundle args = new Bundle();
                 args.putString("BrokerType", brokerType);
                 args.putString("Address",SharedPrefs.getString(getActivity(),SharedPrefs.MY_REGION));
@@ -219,6 +222,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         mQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Analytics.logButtonClick("QRcode",TAG);
                 if (ContextCompat.checkSelfPermission(getContext(),
                         Manifest.permission.CAMERA)
                         != PackageManager.PERMISSION_GRANTED) {

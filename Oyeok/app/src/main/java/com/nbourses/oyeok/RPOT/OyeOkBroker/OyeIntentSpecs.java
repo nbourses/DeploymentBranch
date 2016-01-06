@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appyvet.rangebar.RangeBar;
+import com.nbourses.oyeok.Analytics.Analytics;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
@@ -43,6 +44,7 @@ import static java.lang.Math.log10;
 
 public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInteractionListener {
 
+    public static final String TAG = OyeIntentSpecs.class.getSimpleName();
     DBHelper dbHelper;
     private Button mOye;
     public static String data="";
@@ -184,7 +186,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         homeImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Analytics.logButtonClick("homeImageView", TAG);
                 homeImageView.setSelected(true);
                 shopImageView.setSelected(false);
                 industrialImageView.setSelected(false);
@@ -220,7 +222,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         shopImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Analytics.logButtonClick("shopImageView",TAG);
                 homeImageView.setSelected(false);
                 shopImageView.setSelected(true);
                 industrialImageView.setSelected(false);
@@ -267,7 +269,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         officeImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Analytics.logButtonClick("officeImageView",TAG);
                 homeImageView.setSelected(false);
                 shopImageView.setSelected(false);
                 industrialImageView.setSelected(false);
@@ -296,7 +298,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
             @Override
             public void onClick(View v) {
 
-
+                Analytics.logButtonClick("industrialImageView",TAG);
                 homeImageView.setSelected(false);
                 shopImageView.setSelected(false);
                 industrialImageView.setSelected(true);
@@ -325,7 +327,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
             @Override
             public void onClick(View v) {
 
-
+                Analytics.logButtonClick("othersImageView",TAG);
                 homeImageView.setSelected(false);
                 shopImageView.setSelected(false);
                 industrialImageView.setSelected(false);
@@ -354,6 +356,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         mOye.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Analytics.logButtonClick(mOye.getText().toString(),TAG);
                 String[] temp=dataFromMyFragment.split(" ");
                 if(temp.length<=1)
                 {
@@ -602,5 +605,15 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         //Log.i("Gfrag",""+data);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Analytics.logScreenVisit(TAG);
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        Analytics.logScreenExit(TAG);
+    }
 }

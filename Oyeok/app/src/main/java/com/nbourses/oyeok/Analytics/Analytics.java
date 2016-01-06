@@ -20,6 +20,7 @@ public final class Analytics {
             e.printStackTrace();
         }
         Amplitude.getInstance().logEvent(buttonText,eventProperties);
+        Log.v(TAG,buttonText+" from "+screenName+" clicked");
     }
     public static void logScreenVisit(String screenName){
         Amplitude.getInstance().logEvent(screenName);
@@ -36,13 +37,19 @@ public final class Analytics {
         Amplitude.getInstance().logEvent(screenName);
     }
     public static void localitySearched(String locality){
-
+        JSONObject eventProperties = new JSONObject();
+        try {
+            eventProperties.put("locality",locality );
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Amplitude.getInstance().logEvent("Locality from Rex",eventProperties);
     }
     public static void logDayTime(){
 
     }
     private static long calcScreenTime(long start,long end){
-        return (end - start)/3;
+        return (end - start)/1000;
     }
     /*
     # of times : screen visited
