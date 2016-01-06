@@ -166,7 +166,9 @@ public class Droom_Chat_New extends Fragment  {
                 public void successCallback(String channel, Object message) {
                     //Toast.makeText(getActivity(), message.toString(), Toast.LENGTH_LONG).show();
                     try {
-                        mChats.put(new JSONObject(message.toString()));
+                        JSONObject a = new JSONObject(message.toString());
+                        if(!userId1.equalsIgnoreCase(a.getString("sender_id")))
+                            mChats.put(new JSONObject(message.toString()));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -185,7 +187,7 @@ public class Droom_Chat_New extends Fragment  {
             @Override
             public void onClick(View v) {
                 JSONObject o = new JSONObject();
-                if (!sendMessageEditText.getText().toString().equalsIgnoreCase("")){
+                if (!sendMessageEditText.getText().toString().equalsIgnoreCase("")) {
                     try {
                         //o.put("sender_id",dbHelper.getValue(DatabaseConstants.userId));
                         o.put("sender_id", userId1);
