@@ -33,16 +33,33 @@ public class DroomChatFirebase {
     }
 
     public void updateChatRoom(String okId,String userId1,String userId2,DroomDetails droomDetails){
-        Map<String,Object> map= new HashMap<String, Object>();
-        map.put("title",droomDetails.getTitle());
-        map.put("timestamp",droomDetails.getTimestamp());
-        map.put("lastMessage",droomDetails.getLastMessage());
-        map.put("status",droomDetails.getStatus());
+        Map<String,Object> map1= new HashMap<String, Object>();
+        map1.put("title",droomDetails.getTitle());
+        map1.put("timestamp",droomDetails.getTimestamp());
+        map1.put("lastMessage",droomDetails.getLastMessage());
+        map1.put("status",droomDetails.getStatus());
+        Map<String,Object> map2= new HashMap<String, Object>();
+        map2.put("title",droomDetails.getTitle());
+        map2.put("timestamp",droomDetails.getTimestamp());
+        map2.put("lastMessage",droomDetails.getLastMessage());
+        map2.put("status","Unread");
         Firebase chatFirebaseReference1,chatFirebaseReference2;
         chatFirebaseReference1=firebaseReference.child(userId1);
         chatFirebaseReference2=firebaseReference.child(userId2);
-        chatFirebaseReference1.child(okId).updateChildren(map);
-        chatFirebaseReference2.child(okId).updateChildren(map);
+        chatFirebaseReference1.child(okId).updateChildren(map1);
+        chatFirebaseReference2.child(okId).updateChildren(map2);
+    }
+
+    public void updateUserChat(String okId,String userId,DroomDetails droomDetails){
+        Map<String,Object> map1= new HashMap<String, Object>();
+        map1.put("title",droomDetails.getTitle());
+        map1.put("timestamp",droomDetails.getTimestamp());
+        map1.put("lastMessage",droomDetails.getLastMessage());
+        map1.put("status",droomDetails.getStatus());
+        Firebase chatFirebaseReference1,chatFirebaseReference2;
+        chatFirebaseReference1=firebaseReference.child(userId);
+        chatFirebaseReference1.child(okId).updateChildren(map1);
+
     }
 
 

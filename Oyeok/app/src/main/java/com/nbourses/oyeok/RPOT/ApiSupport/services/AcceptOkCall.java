@@ -3,6 +3,7 @@ package com.nbourses.oyeok.RPOT.ApiSupport.services;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
@@ -27,9 +28,17 @@ import retrofit.client.Response;
  */
 public class AcceptOkCall {
     DroomChatFirebase droomChatFirebase;
+
+    public void setmCallBack(OnAcceptOkSuccess mCallBack) {
+        this.mCallBack = mCallBack;
+    }
+
+    OnAcceptOkSuccess mCallBack;
     public void acceptOk(JSONArray m,int position, DBHelper dbHelper, FragmentActivity activity) {
         String oyeId=null,oyeUserId=null,tt = null,size=null,price=null,reqAvl=null;
         droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
+
+
         Log.i("mArray= ",m.toString());
         try {
              oyeId=m.getJSONObject(position).getString("oye_id");
@@ -49,7 +58,7 @@ public class AcceptOkCall {
         //DBHelper dbHelper1= new DBHelper();
         acceptOk.setDeviceId("Hardware");
         acceptOk.setGcmId(dbHelper.getValue(DatabaseConstants.gcmId));
-        acceptOk.setUserRole(dbHelper.getValue(DatabaseConstants.userRole));
+        acceptOk.setUserRole("broker");
         //acceptOk.setUserRole("broker");
         acceptOk.setLong(SharedPrefs.getString(activity.getBaseContext(), SharedPrefs.MY_LNG));
         acceptOk.setLat(SharedPrefs.getString(activity.getBaseContext(), SharedPrefs.MY_LAT));
@@ -73,7 +82,24 @@ public class AcceptOkCall {
                 @Override
                 public void success(AcceptOk acceptOk, Response response) {
                     Log.i("call chala", "nachoo");
-                    DroomDetails droomDetails=new DroomDetails();
+                    Bundle args=new Bundle();
+                    args.putString("UserId1",acceptOk.responseData.getOkUserId());
+                    args.putString("UserId2",acceptOk.responseData.getOyeUserId());
+                    args.putString("OkId",acceptOk.responseData.getOkId());
+                    if(mCallBack!=null)
+                    {
+                        DroomDetails droomDetails=new DroomDetails();
+                        droomDetails.setTitle("Test Droom");
+                        droomDetails.setLastMessage("Test Last Message");
+                        droomDetails.setStatus("Test Message Not read");
+                        droomDetails.setTimestamp("Test TimeStamp");
+                        String userId1=acceptOk.responseData.getOkUserId();
+                        String userId2=acceptOk.responseData.getOyeUserId();
+                        String okId=acceptOk.responseData.getOkId();
+                        droomChatFirebase.createChatRoom(okId,userId1,userId2,droomDetails);
+                        mCallBack.replaceFragment(args);
+                    }
+                    /*DroomDetails droomDetails=new DroomDetails();
                     droomDetails.setTitle("Test Droom");
                     droomDetails.setLastMessage("Test Last Message");
                     droomDetails.setStatus("Test Message Not read");
@@ -86,7 +112,7 @@ public class AcceptOkCall {
                     droomDetails.setLastMessage("Last Message");
                     droomDetails.setStatus("Message Not read");
                     droomDetails.setTimestamp("TimeStamp");
-                    droomChatFirebase.updateChatRoom(okId,userId1,userId2,droomDetails);
+                    droomChatFirebase.updateChatRoom(okId,userId1,userId2,droomDetails);*/
 
                 }
 

@@ -15,6 +15,9 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.nbourses.oyeok.Database.DatabaseConstants;
+import com.nbourses.oyeok.Firebase.DroomChatFirebase;
+import com.nbourses.oyeok.Firebase.DroomDetails;
 import com.nbourses.oyeok.R;
 
 import java.util.ArrayList;
@@ -26,7 +29,7 @@ public class Droom_chats_list extends Fragment {
     //private List<ApplicationInfo> mAppList;
     private ArrayList<Title> pObj=new ArrayList<>();
     private AppAdapter mAdapter;
-
+    private String okId="",userId1="",userId2="";
 
 
     @Override
@@ -35,12 +38,19 @@ public class Droom_chats_list extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_droom_chats_list, container, false);
         SwipeMenuListView listView= (SwipeMenuListView) rootView.findViewById(R.id.listView);
-        for(int i=0;i<5;i++){
-            Title t = new Title();
-            t.setLastMessage("hi");
-            t.setTitle("title"+i);
-            pObj.add(i,t);
-        }
+        Bundle b=getArguments();
+        DroomDetails droomDetails=new DroomDetails();
+        DroomChatFirebase droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
+        okId= (String) b.get("OkId");
+        userId1= (String) b.get("UserId1");
+        userId2= (String) b.get("UserId2");
+        droomDetails=droomChatFirebase.getChatRoom(okId,userId1);
+
+        Title t = new Title();
+        t.setLastMessage(droomDetails.getLastMessage());
+        t.setTitle(droomDetails.getTitle());
+        pObj.add(0,t);
+
         mAdapter = new AppAdapter();
         listView.setAdapter(mAdapter);
 

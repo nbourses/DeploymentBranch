@@ -276,8 +276,8 @@ public class CircularSeekBarNew extends View {
 
         //start.draw(canvas);
         DecimalFormat formatter = new DecimalFormat();
-        canvas.drawText("min:" + formatter.format(minValue), mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height()+10*DPTOPX_SCALE, mCircleRangeColor);
-        canvas.drawText("max:" + formatter.format(maxvalue), mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height()+10*DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("min:" + formatter.format(minValue), mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("max:" + formatter.format(maxvalue), mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
 
     }
 
@@ -345,31 +345,33 @@ public class CircularSeekBarNew extends View {
         }
         else{
             int totalPrice = 0,min=9999999,max=0;
-            try {
-                 min=Integer.parseInt(values.getJSONObject(0).getString("price"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                 max=Integer.parseInt(values.getJSONObject(0).getString("price"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            for(int i=0;i<values.length();i++) {
-                int j= 0;
+            if(values.length() != 0) {
                 try {
-                    j = Integer.parseInt(values.getJSONObject(i).getString("price"));
+                    min = Integer.parseInt(values.getJSONObject(0).getString("price"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if(min>j)
-                        min=j;
-                else if(max<j)
-                        max=j;
-                totalPrice+=j;
+                try {
+                    max = Integer.parseInt(values.getJSONObject(0).getString("price"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                for (int i = 0; i < values.length(); i++) {
+                    int j = 0;
+                    try {
+                        j = Integer.parseInt(values.getJSONObject(i).getString("price"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (min > j)
+                        min = j;
+                    else if (max < j)
+                        max = j;
+                    totalPrice += j;
+                }
+                minValue = min - (min / 2);
+                maxvalue = max + max / 2;
             }
-            minValue=min-(min/2);
-            maxvalue=max+max/2;
         }
     }
 

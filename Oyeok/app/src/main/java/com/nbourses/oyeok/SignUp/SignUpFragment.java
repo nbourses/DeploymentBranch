@@ -202,7 +202,11 @@ public class SignUpFragment extends Fragment {
             user.setEmail(Semail);
             user.setMobileNo(Snumber);
             user.setMobileCode("+91");
-            user.setUserRole("Client");
+            if(okBroker)
+                user.setUserRole("broker");
+            else
+                user.setUserRole("client");
+
             regid = userProfileViewModel.getGcmId();
             user.setGcmId(regid);
             user.setLongitude(Str_Lng);
@@ -345,6 +349,9 @@ public class SignUpFragment extends Fragment {
         user.setMobileCode("+91");
         user.setEmail(Semail);
         user.setName(Sname);
+        if(okBroker)
+        user.setUserRole("broker");
+        else
         user.setUserRole("client");
         user.setGcmId(SharedPrefs.MY_GCM_ID);
         user.setLongitude(Str_Lng);
