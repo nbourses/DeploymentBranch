@@ -45,6 +45,8 @@ public class DroomChatFirebase {
         chatFirebaseReference2.child(okId).updateChildren(map);
     }
 
+
+
     public DroomDetails getChatRoom(String okId,String userId1){
         final DroomDetails[] droomDetails = new DroomDetails[1];
         Firebase firebaseReference1=firebaseReference.child(userId1).child(okId);

@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
@@ -53,6 +54,7 @@ public class CustomPhasedSeekBar extends View {
     private boolean mFixPoint = true;
     protected CustomPhasedListener mListener;
     protected Paint mCircleStrokePaint;
+    Paint paint;
 
 
     public CustomPhasedSeekBar(Context context) {
@@ -167,6 +169,14 @@ public class CustomPhasedSeekBar extends View {
         mCircleStrokePaint.setColor(Color.parseColor("#9E9E9E"));
         mCircleStrokePaint.setStrokeWidth(2 * DPTOPX_SCALE);
         mCircleStrokePaint.setStyle(Paint.Style.STROKE);
+
+         paint = new Paint();
+        //Typeface tp = Typeface.create()
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
+
+//            int brokerlength = (int) (6 * 15 *DPTOPX_SCALE)/2;
+        paint.setColor(Color.BLACK);
 
     }
 
@@ -288,11 +298,7 @@ public class CustomPhasedSeekBar extends View {
             //int length = (int) (s.length() * 15 *DPTOPX_SCALE)/2;
             String brokerName = mAdapter.getBrokerDetails(i);
             //int timelength = (int) (brokerName.length() * 15 *DPTOPX_SCALE)/2;
-            Paint paint = new Paint();
-            paint.setStyle(Paint.Style.FILL);
 
-//            int brokerlength = (int) (6 * 15 *DPTOPX_SCALE)/2;
-            paint.setColor(Color.BLACK);
             double textSize=42 / count;
             if(count==4) {
                 textSize = 42 / count;

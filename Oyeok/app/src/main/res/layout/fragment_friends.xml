@@ -343,15 +343,26 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp">
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="BUDGET"
             android:textSize="15sp"
             android:layout_gravity="left"
             android:textColor="#000000"
             android:layout_above="@+id/discreteSeekBar1"
-            android:layout_centerHorizontal="true"
+            android:layout_alignParentLeft="true"
             android:id="@+id/textView3" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="40k"
+            android:textSize="15sp"
+            android:layout_centerVertical="true"
+            android:textColor="#000000"
+            android:layout_above="@+id/discreteSeekBar1"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/textSelected" />
 
         <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
             android:layout_width="wrap_content"
@@ -359,6 +370,8 @@
             android:id="@+id/discreteSeekBar1"
             app:dsb_min="40000"
             app:dsb_max="100000000"
+
+            app:dsb_indicatorPopupEnabled="false"
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@+id/textView"
             android:layout_toLeftOf="@+id/textView2"

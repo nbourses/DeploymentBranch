@@ -183,10 +183,13 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
         autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
         autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));		        autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
-        autoCompView.setOnItemClickListener(this);		        autoCompView.setOnItemClickListener(this);
+        autoCompView.setOnItemClickListener(this);
+        //autoCompView.setOnItemClickListener(this);
         autoCompView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                autoCompView.clearListSelection();
+                autoCompView.setText("");
                 autoCompView.showDropDown();
             }
         });
@@ -617,6 +620,9 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             //Intent intent = new Intent(this, MainActivity.class);
             //startActivity(intent);
 
+
+
+
             Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
         }
 
@@ -644,7 +650,10 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+
+
 
     }
 

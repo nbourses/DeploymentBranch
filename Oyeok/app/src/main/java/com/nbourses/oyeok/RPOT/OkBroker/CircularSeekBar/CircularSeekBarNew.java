@@ -28,7 +28,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static java.lang.Math.log10;
-import static java.lang.Math.min;
 
 /**
  * Created by prathyush on 26/11/15.
@@ -49,7 +48,7 @@ public class CircularSeekBarNew extends View {
     private int mWidth = 0;
     private int mHeight = 0;
     private int minValue = 0;
-    private int maxvalue = 20;
+    private int maxvalue = 0;
     private ArrayList<Double> theta = new ArrayList<>();
     private ArrayList<Rect> imagesRect = new ArrayList<Rect>();
     private imageAction mImageAction = null;
@@ -276,8 +275,8 @@ public class CircularSeekBarNew extends View {
 
         //start.draw(canvas);
         DecimalFormat formatter = new DecimalFormat();
-        canvas.drawText("min:" + formatter.format(minValue), mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height(), mCircleRangeColor);
-        canvas.drawText("max:" + formatter.format(maxvalue), mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height(), mCircleRangeColor);
+        canvas.drawText("min:" + formatter.format(minValue), mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height()+10*DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("max:" + formatter.format(maxvalue), mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height()+10*DPTOPX_SCALE, mCircleRangeColor);
 
     }
 
@@ -310,7 +309,7 @@ public class CircularSeekBarNew extends View {
 
         Log.i("values length= ",Integer.toString(values.length()));
         if(values.length()==0){
-            Toast.makeText(mContext,"We are looking for customers in your region. Sit back and relax",Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
         }
 
         if(values.length()==1){
