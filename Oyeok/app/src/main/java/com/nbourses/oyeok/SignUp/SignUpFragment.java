@@ -43,7 +43,6 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
 import com.nbourses.oyeok.User.UserProfileViewModel;
-import com.nbourses.oyeok.activity.MessagesFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -577,7 +576,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                         }
 
                     }
-                    ((MainActivity) getActivity()).changeFragment(new MessagesFragment(), null,"");
+                    //((MainActivity) getActivity()).changeFragment(new MessagesFragment(), null,"");
                 /*}else
                 {
                     *//*Intent NextActivity = new Intent(context, MainActivity.class);
