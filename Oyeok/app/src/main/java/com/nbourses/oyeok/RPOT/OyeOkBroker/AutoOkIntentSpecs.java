@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.nbourses.oyeok.Analytics.Analytics;
 import com.nbourses.oyeok.R;
 
 /**
@@ -15,6 +16,7 @@ import com.nbourses.oyeok.R;
  */
 public class AutoOkIntentSpecs extends Fragment {
 
+    private static final String TAG = AutoOkIntentSpecs.class.getSimpleName();
     private Button mAutoOk;
     //String off_mode;
 
@@ -36,8 +38,8 @@ public class AutoOkIntentSpecs extends Fragment {
         mAutoOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Analytics.logButtonClick(mAutoOk.getText().toString(), TAG);
                 autoOk();
-
             }
         });
 

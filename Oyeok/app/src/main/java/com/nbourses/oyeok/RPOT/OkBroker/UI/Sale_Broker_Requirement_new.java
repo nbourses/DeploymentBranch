@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nbourses.oyeok.Analytics.Analytics;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
@@ -36,6 +37,7 @@ import java.text.DecimalFormat;
 
 public class Sale_Broker_Requirement_new extends Fragment implements CircularSeekBarNew.imageAction {
 
+    private static final String TAG = Sale_Broker_Requirement_new.class.getSimpleName();
     CircularSeekBarNew cbn;
     TextView mTitle;
     LinearLayout mNotClicked;
@@ -75,6 +77,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
         mOkbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Analytics.logButtonClick(mOkbutton.getText().toString(),TAG);
 
                 if (mOkbutton.getText().toString().equals("Auto Ok")) {
                     ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
@@ -97,8 +100,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
         pickContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                Analytics.logButtonClick("Pick Contact",TAG);
                 Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
 
                 getActivity().startActivityForResult(intent, 302);

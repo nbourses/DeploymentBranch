@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,6 +22,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.nbourses.oyeok.Analytics.Analytics;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.GoogleCloudMessaging.RegistrationIntentService;
@@ -79,7 +81,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     Branch branch;
     BranchUniversalObject branchUniversalObject;
     LinkProperties linkProperties;
-
+    DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     public void setMapsClicked(openMapsClicked mapsClicked) {
         this.mapsClicked = mapsClicked;
@@ -135,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
             @Override
             public void onClick(View v) {
+                Analytics.logButtonClick("Reside menu",TAG);
                 openRightMenu();
             }
         });
@@ -164,7 +168,26 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        /*mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+
+            *//** Called when a drawer has settled in a completely closed state. *//*
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getActionBar().setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            *//** Called when a drawer has settled in a completely open state. *//*
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getActionBar().setTitle(mDrawerTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };*/
+
+        drawerFragment.setUp(R.id.fragment_navigation_drawer,drawerLayout , mToolbar);
         drawerFragment.setDrawerListener(this);
         switchOnOff= (Switch) findViewById(R.id.switch_onoffmode);
         switchOnOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -229,6 +252,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         openMaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Analytics.logButtonClick("Open Maps", "Ok_Broker_MainScreen");
+
                 if (mapsClicked != null) {
                     mapsClicked.clicked();
                 }
@@ -322,7 +347,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     public void onDrawerItemSelected(View view, int position) {
         displayView(position);
     }
-
     private void displayView(int position) {
         Fragment fragment = null;
         String title = getString(R.string.app_name);
@@ -552,7 +576,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     public  void refresh(){
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        drawerFragment.setUp(R.id.fragment_navigation_drawer, drawerLayout, mToolbar);
         drawerFragment.setDrawerListener(this);
     }
 

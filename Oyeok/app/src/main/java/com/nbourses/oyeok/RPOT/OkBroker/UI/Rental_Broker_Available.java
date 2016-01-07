@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nbourses.oyeok.Analytics.Analytics;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 
 public class Rental_Broker_Available extends Fragment implements CircularSeekBarNew.imageAction {
 
+    private static final String TAG = Rental_Broker_Available.class.getSimpleName();
     CircularSeekBarNew cbn;
     TextView mTitle;
     LinearLayout mNotClicked;
@@ -159,7 +161,7 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
         mOkbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Analytics.logButtonClick(mOkbutton.getText().toString(), TAG);
                 if (mOkbutton.getText().toString().equals("Auto Ok")) {
                     ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
                 }
@@ -183,7 +185,7 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
         pickContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Analytics.logButtonClick("Pick Contact",TAG);
 
                 Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
 
