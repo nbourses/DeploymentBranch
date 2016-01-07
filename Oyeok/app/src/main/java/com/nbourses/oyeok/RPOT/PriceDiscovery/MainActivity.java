@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -19,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -81,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     Branch branch;
     BranchUniversalObject branchUniversalObject;
     LinkProperties linkProperties;
+    ImageView profileImage;
 
 
     public void setMapsClicked(openMapsClicked mapsClicked) {
@@ -143,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         dbHelper=new DBHelper(getBaseContext());
 
 
+
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -168,11 +173,17 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
+        profileImage = (ImageView)findViewById(R.id.profile_image_main);
+        if(!dbHelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
+            Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbHelper.getValue(DatabaseConstants.imageFilePath));
+            profileImage.setImageBitmap(yourSelectedImage);
+        }
         switchOnOff= (Switch) findViewById(R.id.switch_onoffmode);
+        dbHelper.save(DatabaseConstants.offmode, "null");
         switchOnOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
+                if (isChecked) {
                     Toast.makeText(getBaseContext(), "offline mode",
                             Toast.LENGTH_LONG).show();
                     dbHelper.save(DatabaseConstants.offmode, "yes");
@@ -180,8 +191,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                     try {
                         RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
                         r.setPhasedSeekBar();
-                    }
-                    catch (ClassCastException e){
+                    } catch (ClassCastException e) {
                         try {
                             RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
                             r.setPhasedSeekBar();
@@ -194,8 +204,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
                     /*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
                     r.setPhasedSeekBar();*/
-                }
-                else{
+                } else {
                     Toast.makeText(getBaseContext(), "online mode",
                             Toast.LENGTH_LONG).show();
                     dbHelper.save(DatabaseConstants.offmode, "null");
@@ -203,19 +212,18 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                     try {
                         RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
                         r.setPhasedSeekBar();
-                    }
-                    catch (ClassCastException e){
+                    } catch (ClassCastException e) {
                         try {
-                            Ok_Broker_MainScreen m= (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
+                            Ok_Broker_MainScreen m = (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
                             m.setPhasedSeekBar();
-                        }catch (ClassCastException x){
+                        } catch (ClassCastException x) {
 
                         }
                     /*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
                     r.setPhasedSeekBar();*/
                     }
-                    }
                 }
+            }
         });
 
         setUpMenuChangeUserRole();

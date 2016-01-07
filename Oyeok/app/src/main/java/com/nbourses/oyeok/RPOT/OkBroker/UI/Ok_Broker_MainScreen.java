@@ -122,7 +122,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         bPinLocation = (ImageButton)v.findViewById(R.id.bPinLocation);
         dbHelper=new DBHelper(getContext());
        // earnOk = (Button) v.findViewById(R.id.earnOk);
-
+        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable())
+            preok();
         droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
         mPager = (ViewPager) v.findViewById(R.id.pager);
         mTabs  = (SlidingTabLayout) v.findViewById(R.id.tabs);
@@ -134,7 +135,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         mTabs.setDistributeEvenly(true);
         mTabs.setBackgroundColor(Color.parseColor("#031625"));
         mPager.setAdapter(adapter);
-            mTabs.setViewPager(mPager);
+        mTabs.setViewPager(mPager);
 
         Log.i("Test",droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId)).toString());
 
@@ -158,8 +159,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 //                ((MainActivity) getActivity()).changeFragment(new EarnOkFragment(), null);
 //            }
 //        });
-        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable())
-            preok();
+
 
 
 
@@ -559,6 +559,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                         dbHelper.save(DatabaseConstants.avlOr, avlOr.toString());
                         //
                         //  Log.i("req_ll from db: ", dbHelper.getValue(DatabaseConstants.reqLl));
+                        onPositionSelected(currentItem,currentCount);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

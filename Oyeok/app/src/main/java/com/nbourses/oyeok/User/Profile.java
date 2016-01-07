@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateProfile;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -45,7 +47,7 @@ public class Profile extends Fragment {
     private TextView role_txt,phoneTxt;
     private EditText emailTxt,username_txt;
     private Button updateProfile;
-    private ImageView profileImage;
+    private ImageView profileImage,profileImageMain;
     DBHelper dbhelper;
     String filePath="";
 
@@ -166,6 +168,16 @@ public class Profile extends Fragment {
                             @Override
                             public void success(UpdateProfile updateProfile, Response response) {
                                 Log.i("update profile", "success");
+                                dbhelper.save(DatabaseConstants.email, emailTxt.getText().toString());
+                                dbhelper.save(DatabaseConstants.name,username_txt.getText().toString());
+                                dbhelper.save(DatabaseConstants.imageFilePath,filePath);
+                                //drawerFragment = (FragmentDrawer) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+
+                                profileImageMain = (ImageView)getActivity().findViewById(R.id.profile_image_main);
+                                if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
+                                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbhelper.getValue(DatabaseConstants.imageFilePath));
+                                    profileImageMain.setImageBitmap(yourSelectedImage);
+                                }
                             }
 
                             @Override
