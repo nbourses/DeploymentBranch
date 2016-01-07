@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Drooms_Client_new;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 
 
 public class MessagesFragment extends Fragment {
@@ -34,7 +32,7 @@ public class MessagesFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null,"");
+            //    ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null,"");
             }
         });
         // Inflate the layout for this fragment

@@ -21,7 +21,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Drooms_Client_new;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
@@ -66,7 +65,7 @@ public class JexMarkerPanelScreen extends Fragment {
             @Override
             public void onClick(View v) {
 
-                ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null,"");
+              //  ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null,"");
             }
         });
         mVisits.setOnClickListener(new View.OnClickListener() {

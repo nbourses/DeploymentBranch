@@ -195,11 +195,10 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                         r.setPhasedSeekBar();
                     } catch (ClassCastException e) {
                         try {
-                            RexMarkerPanelScreen r = (RexMarkerPanelScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
-                            r.setPhasedSeekBar();
-                        } catch (ClassCastException x) {
                             Ok_Broker_MainScreen m = (Ok_Broker_MainScreen) getSupportFragmentManager().findFragmentById(R.id.container_body);
                             m.setPhasedSeekBar();
+                        } catch (ClassCastException x) {
+
                         }
 
                     }

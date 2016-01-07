@@ -4,6 +4,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,35 +18,51 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.nbourses.oyeok.Database.DBHelper;
+import com.nbourses.oyeok.Database.DatabaseConstants;
+import com.nbourses.oyeok.Firebase.ChatList;
+import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.R;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
-public class Droom_chats_list extends Fragment {
+public class Droom_chats_list extends Fragment implements ChatList {
 
 
     //private List<ApplicationInfo> mAppList;
     private ArrayList<Title> pObj=new ArrayList<>();
     private AppAdapter mAdapter;
-    private String okId="",userId1="",userId2="";
-
+    private String okId="",userId1="",userId2="",listString="";
+    DBHelper dbHelper;
+    DroomChatFirebase droomChatFirebase;
+    HashMap<String,HashMap<String,String>> list;
+    JSONObject jsonObject;
+    SwipeMenuListView listView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_droom_chats_list, container, false);
-        SwipeMenuListView listView= (SwipeMenuListView) rootView.findViewById(R.id.listView);
-
-        for(int i=0;i<5;i++){
-            Title t = new Title();
-            t.setLastMessage("hi");
-            t.setTitle("title"+i);
-            pObj.add(i,t);
-        }
+        listView= (SwipeMenuListView) rootView.findViewById(R.id.listView);
         mAdapter = new AppAdapter();
-        listView.setAdapter(mAdapter);
+        dbHelper=new DBHelper(getActivity());
+        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
+        droomChatFirebase.setmCallBack(Droom_chats_list.this);
+        droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
+
+
+
+        //Log.i("Munni","In"+"   "+dbHelper.getValue(DatabaseConstants.userId)+"  "+list.toString());
+
+
+
 
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
@@ -88,7 +107,19 @@ public class Droom_chats_list extends Fragment {
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 switch (index) {
                     case 0:
+                        Title title=new Title();
+                        title=mAdapter.getItem(position);
+                        Fragment fragment = new Droom_Chat_New();
+                        Bundle bundle=new Bundle();
+                        bundle.putString("UserId1",dbHelper.getValue(DatabaseConstants.userId));
+                        bundle.putString("OkId",title.getOkId());
+                        fragment.setArguments(bundle);
+                        FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.container_body, fragment);
+                        fragmentTransaction.commitAllowingStateLoss();
                         // open
+
                         break;
                     case 1:
                         pObj.remove(position);
@@ -108,6 +139,38 @@ public class Droom_chats_list extends Fragment {
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
+    }
+
+    @Override
+    public void sendData(HashMap<String, HashMap<String, String>> hashMap) {
+
+        list=hashMap;
+        Iterator it = list.entrySet().iterator();
+        while (it.hasNext()) {
+            Title t=new Title();
+            Map.Entry pair = (Map.Entry)it.next();
+            Map<String,String> temp= new HashMap<String,String>();
+            t.setOkId((String) pair.getKey());
+            temp=(HashMap)pair.getValue();
+            Iterator tt = temp.entrySet().iterator();
+            while (tt.hasNext()) {
+                Map.Entry pair2 = (Map.Entry) tt.next();
+                Log.i("Munni",pair2.toString());
+                if(pair2.getKey().equals("title"))
+                    t.setTitle((String) pair2.getValue());
+
+                if (pair2.getKey().equals("lastMessage"))
+                    {t.setLastMessage((String) pair2.getValue());}
+
+                tt.remove();
+            }
+            it.remove(); // avoids a ConcurrentModificationException
+            Log.i("Munni", t.getTitle());
+            pObj.add(t);
+        }
+
+        mAdapter.notifyDataSetChanged();
+        listView.setAdapter(mAdapter);
     }
 
     class AppAdapter extends BaseAdapter {
@@ -171,6 +234,18 @@ public class Droom_chats_list extends Fragment {
         public String getLastMessage() {
             return lastMessage;
         }
+
+        public String getOkId() {
+            return okId;
+        }
+
+        public void setOkId(String okId) {
+            this.okId = okId;
+        }
+
+        private String okId;
+
+
 
         public void setLastMessage(String lastMessage) {
             this.lastMessage = lastMessage;

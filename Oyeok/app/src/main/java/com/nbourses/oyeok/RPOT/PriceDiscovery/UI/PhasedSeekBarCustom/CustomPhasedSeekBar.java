@@ -167,14 +167,14 @@ public class CustomPhasedSeekBar extends View {
 
         mCircleStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCircleStrokePaint.setColor(Color.parseColor("#9E9E9E"));
-        mCircleStrokePaint.setStrokeWidth(3 * DPTOPX_SCALE);
+        mCircleStrokePaint.setStrokeWidth(2 * DPTOPX_SCALE);
         mCircleStrokePaint.setStyle(Paint.Style.STROKE);
 
          paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         //Typeface tp = Typeface.create()
         paint.setStyle(Paint.Style.FILL);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
-
+        paint.setAntiAlias(true);
 //            int brokerlength = (int) (6 * 15 *DPTOPX_SCALE)/2;
         paint.setColor(Color.BLACK);
 

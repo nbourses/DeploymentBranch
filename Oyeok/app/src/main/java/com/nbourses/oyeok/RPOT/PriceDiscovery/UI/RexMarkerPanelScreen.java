@@ -18,6 +18,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -46,10 +48,12 @@ import com.google.zxing.integration.android.IntentResult;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
+import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
@@ -141,6 +145,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private FrameLayout ll_map;
     String pincode, region, fullAddress;
     Double lat, lng;
+    DroomChatFirebase droomChatFirebase;
 
     private GetCurrentLocation getLocationActivity;
     //View rootView;
@@ -156,6 +161,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                              Bundle savedInstanceState) {
       View  rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
+        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
         mDrooms = (TextView) rootView.findViewById(R.id.linearlayout_drooms);
        mVisits = (TextView) rootView.findViewById(R.id.newVisits);
         mQrCode = (ImageView) rootView.findViewById(R.id.qrCode);
@@ -205,6 +211,14 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         mDrooms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Fragment f=new Droom_chats_list();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.container_body, f);
+                fragmentTransaction.commitAllowingStateLoss();
+
+                Log.i("Change Fragment",f.toString());
+                // set the toolbar title
 
                // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null);
                // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(),null);

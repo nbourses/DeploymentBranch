@@ -2,6 +2,8 @@ package com.nbourses.oyeok.RPOT.ApiSupport.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 /**
  * Created by DADDU_DON on 12/30/2015.
  */
@@ -11,7 +13,9 @@ public class AcceptOk {
 
     public class ResponseData{
         @SerializedName("time")
-        String time;
+
+        ArrayList<String> time = new ArrayList<String>();
+
 
         @SerializedName("message")
         String message;
@@ -60,7 +64,6 @@ public class AcceptOk {
         public void setOkId(String okId) {
             this.okId = okId;
         }
-
         public String getOkUserId() {
             return okUserId;
         }
@@ -101,12 +104,13 @@ public class AcceptOk {
             this.longitude = longitude;
         }
 
-        public String getTime() {
+        public ArrayList<String> getTime() {
             return time;
         }
 
 
-        public void setTime(String time) {
+
+        public void setTime(ArrayList<String> time) {
             this.time = time;
         }
     }

@@ -1,20 +1,32 @@
 package com.nbourses.oyeok.Firebase;
 
+import android.app.Activity;
 import android.util.Log;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.nbourses.oyeok.Database.DBHelper;
+import com.nbourses.oyeok.Database.DatabaseConstants;
+import com.nbourses.oyeok.Database.SharedPrefs;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Abhinandan on 1/5/2016.
  */
 public class DroomChatFirebase {
     Firebase firebaseReference;
+    HashMap<String,HashMap<String,String>> listOfChildren;
+
+    public void setmCallBack(ChatList mCallBack) {
+        this.mCallBack = mCallBack;
+    }
+
+    ChatList mCallBack;
     public DroomChatFirebase(String url){
         this.firebaseReference=new Firebase(url);
         firebaseReference=firebaseReference.child("DroomChat");
@@ -70,7 +82,7 @@ public class DroomChatFirebase {
         firebaseReference1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                droomDetails[0] =(DroomDetails)snapshot.getValue();
+                droomDetails[0] = (DroomDetails) snapshot.getValue();
             }
 
             @Override
@@ -81,9 +93,35 @@ public class DroomChatFirebase {
         return droomDetails[0];
     }
 
-    public HashMap<String,HashMap<String,String>> getDroomList(String userId){
+    public void getChatList(final Activity activity){
+        final Set<String> chatList = null;
+        final DBHelper dbHelper =new DBHelper(activity);
+        Firebase firebaseReference1=firebaseReference.child(dbHelper.getValue(DatabaseConstants.userId));
+        //final JSONObject[] jsonObject = new JSONObject[1];
+        firebaseReference1.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                int i=0;
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    chatList.add(child.getKey());
+                    i++;
+                }
+                Log.i("Test3", listOfChildren.toString());
+                SharedPrefs.save(activity,"ChatList",chatList);
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+    }
+
+    public void getDroomList(String userId,Activity activity){
         Firebase firebaseReference1=firebaseReference.child(userId);
-        final HashMap<String,HashMap<String,String>> listOfChildren=new HashMap<String,HashMap<String,String>>();
+        listOfChildren=new HashMap<String,HashMap<String,String>>();
         firebaseReference1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -94,6 +132,8 @@ public class DroomChatFirebase {
                     i++;
                 }
                 Log.i("Test3",listOfChildren.toString());
+                mCallBack.sendData(listOfChildren);
+
             }
 
             @Override
@@ -101,6 +141,5 @@ public class DroomChatFirebase {
 
             }
         });
-        return listOfChildren;
     }
 }
