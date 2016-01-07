@@ -156,21 +156,21 @@ public class CustomPhasedSeekBar extends View {
             mAnchors[i][1] =  mPivotY;
         }
         mItemHalfWidth = widthHalf;
-        mLinePaint = new Paint();
+        mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mLinePaint.setColor(Color.parseColor("#757575"));
         mLinePaint.setStrokeWidth(5 * DPTOPX_SCALE);
 
 
-        mCirclePaint = new Paint();
+        mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCirclePaint.setColor(Color.parseColor("#FFFFFF"));
         mCirclePaint.setStyle(Paint.Style.FILL);
 
-        mCircleStrokePaint = new Paint();
+        mCircleStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCircleStrokePaint.setColor(Color.parseColor("#9E9E9E"));
         mCircleStrokePaint.setStrokeWidth(3 * DPTOPX_SCALE);
         mCircleStrokePaint.setStyle(Paint.Style.STROKE);
 
-         paint = new Paint();
+         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         //Typeface tp = Typeface.create()
         paint.setStyle(Paint.Style.FILL);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
@@ -299,15 +299,15 @@ public class CustomPhasedSeekBar extends View {
             String brokerName = mAdapter.getBrokerDetails(i);
             //int timelength = (int) (brokerName.length() * 15 *DPTOPX_SCALE)/2;
 
-            double textSize=42 / count;
+            double textSize=52 / count;
             if(count==4) {
-                textSize = 42 / count;
+                textSize = 52 / count;
             }
             else if (count==3){
-                textSize=10.5;
+                textSize=13;
             }
             else if (count==2){
-                textSize=10.5;
+                textSize=13;
             }
             paint.setTextSize((float) (textSize * DPTOPX_SCALE));
 
@@ -316,7 +316,7 @@ public class CustomPhasedSeekBar extends View {
             canvas.drawText(brokerName, mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
                     24 * DPTOPX_SCALE, paint);
 
-            canvas.drawText("broker", mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
+            canvas.drawText("Broker", mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
                     2 * mAnchors[i][1] - 10 * DPTOPX_SCALE, paint);
 
 

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class Sale_Broker_Available extends Fragment implements LineSeekBar.imageAction {
 
     LineSeekBar cbn;
-    TextView mTitle;
+    //TextView mTitle;
     LinearLayout mNotClicked;
     TextView rentText;
     TextView displayOkText;
@@ -44,7 +44,7 @@ public class Sale_Broker_Available extends Fragment implements LineSeekBar.image
         // Inflate the layout for this fragment
         View v= inflater.inflate(R.layout.fragment_sale_ok__broker, container, false);
 
-        mTitle = (TextView) v.findViewById(R.id.title);
+        //mTitle = (TextView) v.findViewById(R.id.title);
         mNotClicked = (LinearLayout) v.findViewById(R.id.notClicked);
         rentText = (TextView) v.findViewById(R.id.rentText);
         displayOkText = (TextView) v.findViewById(R.id.displayOkText);
@@ -123,7 +123,7 @@ public class Sale_Broker_Available extends Fragment implements LineSeekBar.image
         if(show.equals("show"))
         {
             mNotClicked.setVisibility(View.GONE);
-            mTitle.setVisibility(View.VISIBLE);
+            //mTitle.setVisibility(View.VISIBLE);
             //mOkbutton.setBackgroundColor(Color.parseColor("#B2DFDB"));
             mOkbutton.setText("Ok(4290)");
             rentText.setVisibility(View.VISIBLE);
@@ -134,7 +134,7 @@ public class Sale_Broker_Available extends Fragment implements LineSeekBar.image
         }else if(show.equals("hide"))
         {
             mNotClicked.setVisibility(View.VISIBLE);
-            mTitle.setVisibility(View.GONE);
+            //mTitle.setVisibility(View.GONE);
             //mOkbutton.setBackgroundColor(Color.parseColor("#E0E0E0"));
             mOkbutton.setText("Auto Ok");
             rentText.setVisibility(View.GONE);
@@ -145,7 +145,7 @@ public class Sale_Broker_Available extends Fragment implements LineSeekBar.image
         }else
         {
             mNotClicked.setVisibility(View.GONE);
-            mTitle.setVisibility(View.VISIBLE);
+            //mTitle.setVisibility(View.VISIBLE);
             //mOkbutton.setBackgroundColor(Color.parseColor("#E0E0E0"));
             rentText.setVisibility(View.VISIBLE);
             displayOkText.setVisibility(View.VISIBLE);

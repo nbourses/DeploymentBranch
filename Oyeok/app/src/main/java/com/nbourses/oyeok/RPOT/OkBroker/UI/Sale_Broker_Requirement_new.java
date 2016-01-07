@@ -235,7 +235,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
         if(show.equals("show"))
         {
             mNotClicked.setVisibility(View.GONE);
-            mTitle.setVisibility(View.VISIBLE);
+            //mTitle.setVisibility(View.VISIBLE);
             //mOkbutton.setBackgroundColor(Color.parseColor("#B2DFDB"));
             mOkbutton.setText("Ok(4290)");
             rentText.setVisibility(View.VISIBLE);
@@ -246,7 +246,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
         }else if(show.equals("hide"))
         {
             mNotClicked.setVisibility(View.VISIBLE);
-            mTitle.setVisibility(View.GONE);
+            //mTitle.setVisibility(View.GONE);
             //mOkbutton.setBackgroundColor(Color.parseColor("#E0E0E0"));
             rentText.setVisibility(View.GONE);
             displayOkText.setVisibility(View.GONE);
@@ -257,7 +257,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
         }else
         {
             mNotClicked.setVisibility(View.GONE);
-            mTitle.setVisibility(View.VISIBLE);
+            //mTitle.setVisibility(View.VISIBLE);
             //mOkbutton.setBackgroundColor(Color.parseColor("#E0E0E0"));
             rentText.setVisibility(View.VISIBLE);
             displayOkText.setVisibility(View.VISIBLE);

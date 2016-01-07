@@ -39,6 +39,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.vision.barcode.Barcode;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nbourses.oyeok.Database.DBHelper;
@@ -358,7 +360,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
                     if(isNetworkAvailable()) {
                         try {
-                            getRegion();
+                            //getRegion();
                         } catch (Exception e) {
                             Log.i("Exception", "caught in get region");
                         }
@@ -521,11 +523,12 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         String API = "http://52.25.136.179:9000";
         User user = new User();
         user.setDeviceId("Hardware");
-        user.setGcmId(SharedPrefs.MY_GCM_ID);
+        user.setGcmId(SharedPrefs.getString(getActivity(),SharedPrefs.MY_GCM_ID));
         user.setUserRole("client");
-        user.setLongitude(SharedPrefs.MY_LNG);
-        user.setLatitude(SharedPrefs.MY_LAT);
-        user.setLocality("andheri west");
+        user.setLongitude(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LNG));
+        user.setLatitude(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LAT));
+        user.setLocality(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
+        Log.i("my_locality",SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
         user.setPincode("400058");
 		
         /*user.setDeviceId(dbHelper.getValue("deviceId"));
@@ -611,8 +614,6 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                          lat = location.getLatitude();
                          lng = location.getLongitude();
                         LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-
-
                         map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
                         map.animateCamera(CameraUpdateFactory.zoomTo(16));
 
@@ -658,8 +659,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         ll_map.setAlpha(1f);
-
-
+        //Log.i("pratik","location");
+        getLocationFromAddress(autoCompView.getText().toString());
     }
 
     public void getRegion() {
@@ -841,6 +842,33 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public void getLocationFromAddress(String strAddress){
+
+        Geocoder coder = new Geocoder(getActivity());
+        List<Address> address;
+        //GeoPoint p1 = null;
+
+        try {
+            address = coder.getFromLocationName(strAddress,5);
+            if (address==null) {
+                //return null;
+            }
+            Address location=address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+            Log.i("lat="+location.getLatitude()," long="+location.getLongitude());
+            /*p1 = new GeoPoint((int) (location.getLatitude() * 1E6),
+                    (int) (location.getLongitude() * 1E6));*/
+            LatLng l=new LatLng(location.getLatitude(),location.getLongitude());
+            //map.addMarker(new MarkerOptions().position(l));
+            map.moveCamera(CameraUpdateFactory.newLatLng(l));
+            map.animateCamera(CameraUpdateFactory.zoomTo(15));
+            //return p1;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

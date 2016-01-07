@@ -97,7 +97,7 @@ public class CircularSeekBarNew extends View {
     protected void initAttributes(TypedArray attrArray) {
         mRadius = attrArray.getDimension(R.styleable.CircularSeekBarNew_radius, 30f * DPTOPX_SCALE);
         mCircleColor = attrArray.getColor(R.styleable.CircularSeekBarNew_circlenew_color, DEFAULT_CIRCLE_COLOR);
-        mCircleColor = Color.parseColor("#FF9800");
+        mCircleColor = Color.parseColor("#2DC4B6");
         mCircleStrokeWidth = attrArray.getDimension(R.styleable.CircularSeekBarNew_circlenew_stroke_width, DEFAULT_CIRCLE_STROKE_WIDTH * DPTOPX_SCALE);
 
 
@@ -115,7 +115,7 @@ public class CircularSeekBarNew extends View {
     }
 
     protected void initPaints() {
-        mCirclePaint = new Paint();
+        mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCirclePaint.setAntiAlias(true);
         mCirclePaint.setDither(true);
         mCirclePaint.setColor(mCircleColor);
@@ -127,12 +127,12 @@ public class CircularSeekBarNew extends View {
         mCircleTextColor = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCircleTextColor.setColor(Color.parseColor("#000000"));
         //mCircleTextColor.setStyle(Paint.Style.FILL);
-        mCircleTextColor.setTextSize(10 * DPTOPX_SCALE);
+        mCircleTextColor.setTextSize(14 * DPTOPX_SCALE);
 
         mCircleRangeColor = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCircleRangeColor.setColor(Color.parseColor("#000000"));
         //mCircleTextColor.setStyle(Paint.Style.FILL);
-        mCircleRangeColor.setTextSize(12*DPTOPX_SCALE);
+        mCircleRangeColor.setTextSize(14*DPTOPX_SCALE);
 
         mEndLinecolor = new Paint(Paint.ANTI_ALIAS_FLAG);
         mEndLinecolor.setColor(mCircleColor);
@@ -143,7 +143,7 @@ public class CircularSeekBarNew extends View {
 
 
 
-         paint = new Paint();
+         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
        // icon = BitmapFactory.decodeResource(mContext.getResources(),
@@ -199,7 +199,7 @@ public class CircularSeekBarNew extends View {
                 }
             }else
             {
-                d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#81C784"), PorterDuff.Mode.SRC_ATOP));
+                d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#2DC4B6"), PorterDuff.Mode.SRC_ATOP));
 
             }
 
@@ -275,9 +275,8 @@ public class CircularSeekBarNew extends View {
 
         //start.draw(canvas);
         DecimalFormat formatter = new DecimalFormat();
-        canvas.drawText("min:" + formatter.format(minValue), mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
-        canvas.drawText("max:" + formatter.format(maxvalue), mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
-
+        canvas.drawText("min: Rs " + formatter.format(minValue), mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 10 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("max: Rs " + formatter.format(maxvalue), mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 10 * DPTOPX_SCALE, mCircleRangeColor);
     }
 
     @Override
