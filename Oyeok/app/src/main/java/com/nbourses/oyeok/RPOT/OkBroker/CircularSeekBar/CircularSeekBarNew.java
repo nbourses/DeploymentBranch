@@ -28,7 +28,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static java.lang.Math.log10;
-import static java.lang.Math.max;
 
 /**
  * Created by prathyush on 26/11/15.
@@ -289,7 +288,7 @@ public class CircularSeekBarNew extends View {
         float top = 0;
         float left = 0;
         int arcDiameter = 0;
-        arcDiameter =  min- (int)(90*DPTOPX_SCALE);
+        arcDiameter =  min- (int)(60*DPTOPX_SCALE);
         mWidth = arcDiameter /2 ;
         top = height / 2 - (arcDiameter / 2)+getPaddingTop();
         left = width / 2 - (arcDiameter / 2)+getPaddingLeft();
@@ -440,6 +439,14 @@ public class CircularSeekBarNew extends View {
                         invalidate();
                      break;
 
+                    }else
+                    {
+                        index = -1;
+                        if(mImageAction != null)
+                        {
+                            mImageAction.onclick(i,values,"hide");
+                        }
+                        invalidate();
                     }
                 }
                 return true;

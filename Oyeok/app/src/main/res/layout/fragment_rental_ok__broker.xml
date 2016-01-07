@@ -141,22 +141,22 @@
     <TextView
         android:id="@+id/rentText"
         android:visibility="gone"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
         android:text="50L Rs"/>
 
 
     <Button
         android:id="@+id/pickContact"
-        android:visibility="gone"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+android:visibility="gone"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_gravity="center"
-        android:gravity="center"
         android:background="@drawable/ic_pick_contact"
-        android:layout_marginTop="30dp"
+        android:layout_marginBottom="50dp"
         android:layout_marginRight="70dp"/>
 
     <TextView
@@ -166,8 +166,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="25dp"
         android:text="Select client's contact"/>
 
 </FrameLayout>
