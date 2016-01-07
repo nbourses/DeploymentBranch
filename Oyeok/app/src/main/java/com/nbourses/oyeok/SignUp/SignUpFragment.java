@@ -150,20 +150,22 @@ public class SignUpFragment extends Fragment {
 
         firebaseUrl="https://resplendent-fire-6770.firebaseio.com/";
         userProfileViewModel=new UserProfileViewModel();
-        Button sendOtp=(Button)view.findViewById(R.id.sendotp);
+        final Button sendOtp=(Button)view.findViewById(R.id.sendotp);
         sendOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // do something
+                Analytics.logButtonClick(sendOtp.getText().toString(),TAG);
                 sendOtp();
             }
         });
 
-        Button submit=(Button)view.findViewById(R.id.submitprofile);
+        final Button submit=(Button)view.findViewById(R.id.submitprofile);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // do something
+                Analytics.logButtonClick(submit.getText().toString(),TAG);
                 submitButton();
             }
         });

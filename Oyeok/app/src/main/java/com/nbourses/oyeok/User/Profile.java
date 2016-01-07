@@ -95,12 +95,14 @@ public class Profile extends Fragment {
         updateProfile= (Button) layout.findViewById(R.id.update_profile);
         updateProfile.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
+                Analytics.logButtonClick(updateProfile.getText().toString(),TAG);
                 updateProfile();
             }
         });
 
                 profileImage.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
+                        Analytics.logButtonClick("profileImage",TAG);
                         Intent intent = new Intent(Intent.ACTION_PICK);
                         intent.setType("image/*");
                         //intent.putExtra("crop","true");
