@@ -134,7 +134,7 @@ public class Droom_Chat_New extends Fragment  {
         DroomChatFirebase droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
         okId= (String) b.get("OkId");
         userId1= (String) b.get("UserId1");
-        userId2= (String) b.get("UserId2");
+        //userId2= (String) b.get("UserId2");
        /* droomDetails=droomChatFirebase.getChatRoom(okId,userId1);*/
         final Pubnub pubnub = new Pubnub("pub-c-da891650-b0d6-4cfc-901c-60ca47bfcf90", "sub-c-c85c5622-b36d-11e5-bd0b-02ee2ddab7fe");
         pubnub.history(okId, 100, true, callback);
@@ -190,7 +190,7 @@ public class Droom_Chat_New extends Fragment  {
                         //o.put("sender_id",dbHelper.getValue(DatabaseConstants.userId));
                         o.put("sender_id", userId1);
                         o.put("message", sendMessageEditText.getText().toString());
-                        o.put("receiver_id", userId2);
+                        //o.put("receiver_id", userId2);
                     } catch (Exception e) {
                         Log.i("exception in", "publish message");
                     }

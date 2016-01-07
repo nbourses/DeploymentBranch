@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -105,7 +107,19 @@ public class Droom_chats_list extends Fragment implements ChatList {
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 switch (index) {
                     case 0:
+                        Title title=new Title();
+                        title=mAdapter.getItem(position);
+                        Fragment fragment = new Droom_Chat_New();
+                        Bundle bundle=new Bundle();
+                        bundle.putString("UserId1",dbHelper.getValue(DatabaseConstants.userId));
+                        bundle.putString("OkId",title.getOkId());
+                        fragment.setArguments(bundle);
+                        FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.container_body, fragment);
+                        fragmentTransaction.commitAllowingStateLoss();
                         // open
+
                         break;
                     case 1:
                         pObj.remove(position);
@@ -136,6 +150,7 @@ public class Droom_chats_list extends Fragment implements ChatList {
             Title t=new Title();
             Map.Entry pair = (Map.Entry)it.next();
             Map<String,String> temp= new HashMap<String,String>();
+            t.setOkId((String) pair.getKey());
             temp=(HashMap)pair.getValue();
             Iterator tt = temp.entrySet().iterator();
             while (tt.hasNext()) {
@@ -146,6 +161,7 @@ public class Droom_chats_list extends Fragment implements ChatList {
 
                 if (pair2.getKey().equals("lastMessage"))
                     {t.setLastMessage((String) pair2.getValue());}
+
                 tt.remove();
             }
             it.remove(); // avoids a ConcurrentModificationException
@@ -218,6 +234,18 @@ public class Droom_chats_list extends Fragment implements ChatList {
         public String getLastMessage() {
             return lastMessage;
         }
+
+        public String getOkId() {
+            return okId;
+        }
+
+        public void setOkId(String okId) {
+            this.okId = okId;
+        }
+
+        private String okId;
+
+
 
         public void setLastMessage(String lastMessage) {
             this.lastMessage = lastMessage;
