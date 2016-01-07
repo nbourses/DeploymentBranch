@@ -167,14 +167,14 @@ public class CustomPhasedSeekBar extends View {
 
         mCircleStrokePaint = new Paint();
         mCircleStrokePaint.setColor(Color.parseColor("#9E9E9E"));
-        mCircleStrokePaint.setStrokeWidth(3 * DPTOPX_SCALE);
+        mCircleStrokePaint.setStrokeWidth(2 * DPTOPX_SCALE);
         mCircleStrokePaint.setStyle(Paint.Style.STROKE);
 
          paint = new Paint();
         //Typeface tp = Typeface.create()
         paint.setStyle(Paint.Style.FILL);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
-
+        paint.setAntiAlias(true);
 //            int brokerlength = (int) (6 * 15 *DPTOPX_SCALE)/2;
         paint.setColor(Color.BLACK);
 
@@ -316,7 +316,7 @@ public class CustomPhasedSeekBar extends View {
             canvas.drawText(brokerName, mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
                     24 * DPTOPX_SCALE, paint);
 
-            canvas.drawText("broker", mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
+            canvas.drawText("Broker", mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
                     2 * mAnchors[i][1] - 10 * DPTOPX_SCALE, paint);
 
 
