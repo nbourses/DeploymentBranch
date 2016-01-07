@@ -1,10 +1,10 @@
 package com.nbourses.oyeok.RPOT.ApiSupport.services;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.nbourses.oyeok.Database.DBHelper;
@@ -34,7 +34,7 @@ public class AcceptOkCall {
     }
 
     OnAcceptOkSuccess mCallBack;
-    public void acceptOk(JSONArray m,int position, DBHelper dbHelper, FragmentActivity activity) {
+    public void acceptOk(JSONArray m,int position, DBHelper dbHelper, Activity activity) {
         String oyeId=null,oyeUserId=null,tt = null,size=null,price=null,reqAvl=null;
         droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
 
@@ -91,6 +91,7 @@ public class AcceptOkCall {
                     {
                         DroomDetails droomDetails=new DroomDetails();
                         droomDetails.setTitle("Test Droom");
+                        Log.i("call chala","nacho2");
                         droomDetails.setLastMessage("Test Last Message");
                         droomDetails.setStatus("Test Message Not read");
                         droomDetails.setTimestamp("Test TimeStamp");
@@ -145,7 +146,7 @@ public class AcceptOkCall {
         }
     }
 
-    private boolean isNetworkAvailable(FragmentActivity activity) {
+    private boolean isNetworkAvailable(Activity activity) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();

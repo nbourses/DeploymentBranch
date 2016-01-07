@@ -311,11 +311,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
                 pagerItems.add(new PagerItem("Loan Seekers", new Loan_Broker_Requirement()));
                 pagerItems.add(new PagerItem("Loan Lenders", new Loan_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 2;
+                if(isAdded()) {
+                    adapter.setPagerItems(pagerItems);
+                    adapter.notifyDataSetChanged();
+                    mTabs.settabData();
+                    mTabs.setDistributeEvenly(true);
+                    currentItem = 2;
+                }
                 //mTabs.notifyAll();
 
                 //mPager.invalidate();
@@ -325,11 +327,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
                 pagerItems.add(new PagerItem("Seekers", new Sale_Broker_Requirement_new()));
                 pagerItems.add(new PagerItem("Owners", new Sale_Broker_Available_new()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 1;
+                if(isAdded()) {
+                    adapter.setPagerItems(pagerItems);
+                    adapter.notifyDataSetChanged();
+                    mTabs.settabData();
+                    mTabs.setDistributeEvenly(true);
+                    currentItem = 1;
+                }
                 //mTabs.notifyAll();
 
                 //mPager.invalidate();
@@ -339,11 +343,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
                 pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
                 pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 0;
+                if(isAdded()) {
+                    adapter.setPagerItems(pagerItems);
+                    adapter.notifyDataSetChanged();
+                    mTabs.settabData();
+                    mTabs.setDistributeEvenly(true);
+                    currentItem = 0;
+                }
                 //mTabs.notifyAll();
 
                 //mPager.invalidate();
@@ -353,11 +359,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
                 pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
                 pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 3;
+                if(isAdded()) {
+                    adapter.setPagerItems(pagerItems);
+                    adapter.notifyDataSetChanged();
+                    mTabs.settabData();
+                    mTabs.setDistributeEvenly(true);
+                    currentItem = 3;
+                }
                 //mTabs.notifyAll();
 
                 //mPager.invalidate();
@@ -369,11 +377,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
                 pagerItems.add(new PagerItem("Seekers", new Sale_Broker_Requirement_new()));
                 pagerItems.add(new PagerItem("Owners", new Sale_Broker_Available_new()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 1;
+                if(isAdded()) {
+                    adapter.setPagerItems(pagerItems);
+                    adapter.notifyDataSetChanged();
+                    mTabs.settabData();
+                    mTabs.setDistributeEvenly(true);
+                    currentItem = 1;
+                }
                 //mTabs.notifyAll();
 
                 //mPager.invalidate();
@@ -383,11 +393,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
                 pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
                 pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 0;
+                if(isAdded()) {
+                    adapter.setPagerItems(pagerItems);
+                    adapter.notifyDataSetChanged();
+                    mTabs.settabData();
+                    mTabs.setDistributeEvenly(true);
+                    currentItem = 0;
+                }
                 //mTabs.notifyAll();
 
                 //mPager.invalidate();

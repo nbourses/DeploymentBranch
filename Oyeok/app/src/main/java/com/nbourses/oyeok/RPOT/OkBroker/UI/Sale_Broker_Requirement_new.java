@@ -89,7 +89,9 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
                     else
                     {
                         AcceptOkCall a = new AcceptOkCall();
+                        a.setmCallBack(Sale_Broker_Requirement_new.this);
                         a.acceptOk(p,j,dbHelper, getActivity());
+
                     }
                 }
             }

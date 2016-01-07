@@ -34,9 +34,10 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.OnAcceptOkSuccess;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
-import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
+import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
@@ -52,7 +53,7 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 
-public class SignUpFragment extends Fragment {
+public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
@@ -402,6 +403,7 @@ public class SignUpFragment extends Fragment {
                                 }
                                 int j=b.getInt("Position");
                                 AcceptOkCall a = new AcceptOkCall();
+                                a.setmCallBack(SignUpFragment.this);
                                 a.acceptOk(p,j,dbHelper, getActivity());
 
                             }
@@ -409,16 +411,15 @@ public class SignUpFragment extends Fragment {
                         activity=(MainActivity)getActivity();
                         activity.refresh();
                         Fragment fragment = null;
-                        if (okBroker)
-                            fragment = new Ok_Broker_MainScreen();
-                        else {
+                        if (!okBroker) {
                             fragment = new RexMarkerPanelScreen();
-                        }
 
-                        FragmentManager fragmentManager = getFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.container_body, fragment);
-                        fragmentTransaction.commit();
+
+                            FragmentManager fragmentManager = getFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.container_body, fragment);
+                            fragmentTransaction.commit();
+                        }
                         // Toast.makeText(getContext(), "signup success", Toast.LENGTH_LONG).show();
                     /*if (redirectToOyeIntentSpecs)
                     {
@@ -698,7 +699,15 @@ public class SignUpFragment extends Fragment {
     }
 
 
+    @Override
+    public void replaceFragment(Bundle args) {
 
+        Fragment fragment = new Droom_Chat_New();
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container_body, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
 
-
+    }
 }

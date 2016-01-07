@@ -173,6 +173,7 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
                     else
                     {
                         AcceptOkCall a = new AcceptOkCall();
+                        a.setmCallBack(Rental_Broker_Available.this);
                         a.acceptOk(p,j,dbHelper, getActivity());
                     }
                 }
