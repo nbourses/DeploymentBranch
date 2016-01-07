@@ -166,6 +166,7 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
                         else
                         {
                             AcceptOkCall a = new AcceptOkCall();
+                            a.setmCallBack(Sale_Broker_Available_new.this);
                             a.acceptOk(p,j,dbHelper, getActivity());
                         }
                     }

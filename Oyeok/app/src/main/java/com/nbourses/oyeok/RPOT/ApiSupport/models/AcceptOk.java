@@ -13,7 +13,9 @@ public class AcceptOk {
 
     public class ResponseData{
         @SerializedName("time")
+
         ArrayList<String> time = new ArrayList<String>();
+
 
         @SerializedName("lat")
         String latitude;
@@ -94,6 +96,8 @@ public class AcceptOk {
         public ArrayList<String> getTime() {
             return time;
         }
+
+
 
         public void setTime(ArrayList<String> time) {
             this.time = time;
