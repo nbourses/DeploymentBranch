@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -135,6 +136,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     String brokerType;
     private Geocoder geocoder;
     private GetCurrentLocation.CurrentLocationCallback mcallback;
+    private FrameLayout ll_map;
     String pincode, region, fullAddress;
     Double lat, lng;
 
@@ -166,6 +168,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
          permissionCheckForCamera = ContextCompat.checkSelfPermission(this.getActivity(),
                 Manifest.permission.CAMERA);
         dbHelper=new DBHelper(getContext());
+        ll_map = (FrameLayout) rootView.findViewById(R.id.ll_map);
         permissionCheckForLocation = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
         onPositionSelected(0,2);
@@ -191,6 +194,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 autoCompView.clearListSelection();
                 autoCompView.setText("");
                 autoCompView.showDropDown();
+                ll_map.setAlpha(0.5f);
+
             }
         });
 
@@ -652,7 +657,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-
+        ll_map.setAlpha(1f);
 
 
     }

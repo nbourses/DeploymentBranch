@@ -167,7 +167,7 @@ public class CustomPhasedSeekBar extends View {
 
         mCircleStrokePaint = new Paint();
         mCircleStrokePaint.setColor(Color.parseColor("#9E9E9E"));
-        mCircleStrokePaint.setStrokeWidth(2 * DPTOPX_SCALE);
+        mCircleStrokePaint.setStrokeWidth(3 * DPTOPX_SCALE);
         mCircleStrokePaint.setStyle(Paint.Style.STROKE);
 
          paint = new Paint();

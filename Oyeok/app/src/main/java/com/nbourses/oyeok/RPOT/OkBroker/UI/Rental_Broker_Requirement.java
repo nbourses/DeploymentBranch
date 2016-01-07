@@ -213,7 +213,7 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
         try {
             p=m;
             j=position;
-            rentText.setText("Price : Rs "+ m.getJSONObject(position).getString("price"));
+            rentText.setText("Rent : Rs "+ m.getJSONObject(position).getString("price")+" /month");
             DecimalFormat formatter = new DecimalFormat();
             //rentText.setText("Price : Rs "+ formatter.format(Double.parseDouble(m.getJSONObject(position).getString("price")))+"\n"+m.getJSONObject(position).getString("property_type")+"\n"+m.getJSONObject(position).getString("property_subtype"));
             /*oyeId=m.getJSONObject(position).getString("oye_id");
