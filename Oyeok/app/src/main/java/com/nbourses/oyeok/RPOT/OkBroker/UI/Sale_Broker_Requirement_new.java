@@ -52,6 +52,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
     String oyeId,specCode,oyeUserId,reqAvl;
     JSONArray p=new JSONArray();
     int j;
+    Button droom;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
         displayOkText = (TextView) v.findViewById(R.id.displayOkText);
         mOkbutton = (Button) v.findViewById(R.id.okButton);
         ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
-
+        droom = (Button) v.findViewById(R.id.droom);
         pickContact = (Button) v.findViewById(R.id.pickContact);
         contactName = (TextView) v.findViewById(R.id.contactText);
         rentText.setText("Price : Rs 50L");
@@ -92,6 +93,13 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
                         a.acceptOk(p,j,dbHelper, getActivity());
                     }
                 }
+            }
+        });
+        droom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ok_broker_mainScreen.openDroomList();
             }
         });
 

@@ -49,6 +49,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
+import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.SlidingTabLayout.PagerItem;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.SlidingTabLayout.SlidingTabLayout;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
@@ -137,7 +138,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         mPager.setAdapter(adapter);
         mTabs.setViewPager(mPager);
 
-        Log.i("Test",droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId)).toString());
+        //Log.i("Test",droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId)).toString());
 
 
             mCustomPhasedSeekbar = (CustomPhasedSeekBar) v.findViewById(R.id.phasedSeekBar);
@@ -311,11 +312,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
                 pagerItems.add(new PagerItem("Loan Seekers", new Loan_Broker_Requirement()));
                 pagerItems.add(new PagerItem("Loan Lenders", new Loan_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 2;
+                if(isAdded()) {
+                    adapter.setPagerItems(pagerItems);
+                    adapter.notifyDataSetChanged();
+                    mTabs.settabData();
+                    mTabs.setDistributeEvenly(true);
+                    currentItem = 2;
+                }
                 //mTabs.notifyAll();
 
                 //mPager.invalidate();
@@ -325,11 +328,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
                 pagerItems.add(new PagerItem("Seekers", new Sale_Broker_Requirement_new()));
                 pagerItems.add(new PagerItem("Owners", new Sale_Broker_Available_new()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 1;
+                if(isAdded()) {
+                    adapter.setPagerItems(pagerItems);
+                    adapter.notifyDataSetChanged();
+                    mTabs.settabData();
+                    mTabs.setDistributeEvenly(true);
+                    currentItem = 1;
+                }
                 //mTabs.notifyAll();
 
                 //mPager.invalidate();
@@ -339,11 +344,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
                 pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
                 pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 0;
+                if(isAdded()) {
+                    adapter.setPagerItems(pagerItems);
+                    adapter.notifyDataSetChanged();
+                    mTabs.settabData();
+                    mTabs.setDistributeEvenly(true);
+                    currentItem = 0;
+                }
                 //mTabs.notifyAll();
 
                 //mPager.invalidate();
@@ -353,11 +360,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
                 pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
                 pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 3;
+                if(isAdded()) {
+                    adapter.setPagerItems(pagerItems);
+                    adapter.notifyDataSetChanged();
+                    mTabs.settabData();
+                    mTabs.setDistributeEvenly(true);
+                    currentItem = 3;
+                }
                 //mTabs.notifyAll();
 
                 //mPager.invalidate();
@@ -369,11 +378,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
                 pagerItems.add(new PagerItem("Seekers", new Sale_Broker_Requirement_new()));
                 pagerItems.add(new PagerItem("Owners", new Sale_Broker_Available_new()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 1;
+                if(isAdded()) {
+                    adapter.setPagerItems(pagerItems);
+                    adapter.notifyDataSetChanged();
+                    mTabs.settabData();
+                    mTabs.setDistributeEvenly(true);
+                    currentItem = 1;
+                }
                 //mTabs.notifyAll();
 
                 //mPager.invalidate();
@@ -383,11 +394,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
                 pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
                 pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
-                adapter.setPagerItems(pagerItems);
-                adapter.notifyDataSetChanged();
-                mTabs.settabData();
-                mTabs.setDistributeEvenly(true);
-                currentItem = 0;
+                if(isAdded()) {
+                    adapter.setPagerItems(pagerItems);
+                    adapter.notifyDataSetChanged();
+                    mTabs.settabData();
+                    mTabs.setDistributeEvenly(true);
+                    currentItem = 0;
+                }
                 //mTabs.notifyAll();
 
                 //mPager.invalidate();
@@ -446,6 +459,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
         }
 
+
         public void setTitleAndPosition(String[] titles,int position)
         {
             this.title = titles;
@@ -462,6 +476,15 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             return mPagerItems.size();
         }
     }
+
+    public void openDroomList(){
+        Fragment fragment = new Droom_chats_list();
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container_body, fragment);
+        fragmentTransaction.commit();
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -42,7 +42,7 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
     LinearLayout mNotClicked;
     TextView rentText;
     TextView displayOkText;
-    Button mOkbutton;
+    Button mOkbutton,droom;
     private Button pickContact;
     private TextView contactName;
     private JSONArray values = new JSONArray();
@@ -69,7 +69,7 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
         ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
             pickContact = (Button) v.findViewById(R.id.pickContact);
             contactName = (TextView) v.findViewById(R.id.contactText);
-
+            droom= (Button) v.findViewById(R.id.droom);
             rentText.setText("Price : Rs 50L");
             cbn = (CircularSeekBarNew) v.findViewById(R.id.circularseekbar);
             cbn.setmImageAction(this);
@@ -172,6 +172,13 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
                 }
             });
 
+        droom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ok_broker_mainScreen.openDroomList();
+            }
+        });
 
             pickContact.setOnClickListener(new View.OnClickListener() {
                 @Override

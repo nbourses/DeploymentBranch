@@ -51,6 +51,7 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
     JSONArray p= new JSONArray();
     int j;
     Ok_Broker_MainScreen ok_broker_mainScreen;
+    Button droom;
 
 
 
@@ -72,7 +73,7 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
         rentText.setText("Rent : 50k Rs/month");
         dbHelper = new DBHelper(getContext());
 
-
+        droom= (Button) v.findViewById(R.id.droom);
 
         mOkbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,6 +97,13 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
                         a.acceptOk(p,j,dbHelper, getActivity());
                     }
                 }
+            }
+        });
+        droom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ok_broker_mainScreen.openDroomList();
             }
         });
 
