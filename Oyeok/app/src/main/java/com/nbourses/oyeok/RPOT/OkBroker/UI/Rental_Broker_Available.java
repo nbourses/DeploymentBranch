@@ -53,6 +53,7 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
     String oyeId,specCode,oyeUserId,reqAvl;
     JSONArray p= new JSONArray();
     int j;
+    Button droom;
     Ok_Broker_MainScreen ok_broker_mainScreen;
 
 
@@ -71,6 +72,7 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
         ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
         pickContact = (Button) v.findViewById(R.id.pickContact);
         contactName = (TextView) v.findViewById(R.id.contactText);
+        droom = (Button) v.findViewById(R.id.droom);
         dbHelper=new DBHelper(getContext());
 
 
@@ -177,6 +179,13 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
                         a.acceptOk(p,j,dbHelper, getActivity());
                     }
                 }
+            }
+        });
+        droom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ok_broker_mainScreen.openDroomList();
             }
         });
 

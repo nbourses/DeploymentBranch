@@ -49,6 +49,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
+import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.SlidingTabLayout.PagerItem;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.SlidingTabLayout.SlidingTabLayout;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
@@ -137,7 +138,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         mPager.setAdapter(adapter);
         mTabs.setViewPager(mPager);
 
-        Log.i("Test",droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId)).toString());
+        //Log.i("Test",droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId)).toString());
 
 
             mCustomPhasedSeekbar = (CustomPhasedSeekBar) v.findViewById(R.id.phasedSeekBar);
@@ -458,6 +459,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
         }
 
+
         public void setTitleAndPosition(String[] titles,int position)
         {
             this.title = titles;
@@ -474,6 +476,15 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             return mPagerItems.size();
         }
     }
+
+    public void openDroomList(){
+        Fragment fragment = new Droom_chats_list();
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container_body, fragment);
+        fragmentTransaction.commit();
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

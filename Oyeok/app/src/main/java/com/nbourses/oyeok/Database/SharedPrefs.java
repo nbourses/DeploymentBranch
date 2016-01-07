@@ -3,6 +3,8 @@ package com.nbourses.oyeok.Database;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Set;
+
 /**
  * Created by YASH_SHAH on 29/12/2015.
  */
@@ -28,6 +30,11 @@ public class SharedPrefs {
     //Strings
     public static void save(Context context, String key, String value) {
         getPrefs(context).edit().putString(key, value).commit();
+
+    }
+    public static void save(Context context, String key, Set<String> value) {
+        getPrefs(context).edit().putStringSet(key,value).commit();
+
     }
 
     public static String getString(Context context, String key) {

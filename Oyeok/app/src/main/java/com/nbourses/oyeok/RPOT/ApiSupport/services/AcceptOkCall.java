@@ -99,6 +99,7 @@ public class AcceptOkCall {
                         String userId2=acceptOk.responseData.getOyeUserId();
                         String okId=acceptOk.responseData.getOkId();
                         droomChatFirebase.createChatRoom(okId,userId1,userId2,droomDetails);
+                        Log.i("Andhar bhi aaya","nachoo");
                         mCallBack.replaceFragment(args);
                     }
                     /*DroomDetails droomDetails=new DroomDetails();

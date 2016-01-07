@@ -50,9 +50,7 @@ public class Droom_Chat_New extends Fragment  {
     DBHelper dbHelper;
     private EditText sendMessageEditText;
     ScrollView scroll;
-    String okId="";
-    String userId1="";
-    String userId2="";
+    String okId="",userId1="",userId2="";
 
 
 
