@@ -12,6 +12,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -29,6 +30,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -92,18 +94,27 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     private CustomMapFragment customMapFragment;
     private GoogleMap map;
     private MyPagerAdapter adapter;
+    private int mInterval = 5000; // 5 seconds by default, can be changed later
+    private Handler mHandler;
+    protected float DPTOPX_SCALE;// = getResources().getDisplayMetrics().density;
+
     private CustomPhasedSeekBar mCustomPhasedSeekbar;
     private int currentItem,currentCount;
     private Button earnOk;
+    private int totalTime=100,currentTime=0;
     private ImageButton bPinLocation;
     private LatLng latlng;
     DBHelper dbHelper;
+    int intervalCount=0;
     DroomChatFirebase droomChatFirebase;
     Double lat, lng;
     String pincode, region, fullAddress;
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "";
     Toolbar mToolbar;
-
+    ImageView hourGlass1,hourGlass2,hourGlass3,hourGlass4,hourGlass5;
+    ImageView aboveImageView,aboveImageView1,aboveImageView2,aboveImageView3,aboveImageView4,aboveImageView5;
+    ImageView belowImageView,belowImageView1,belowImageView2,belowImageView3,belowImageView4,belowImageView5;
+    ImageView aboveAboveImageView,aboveAboveImageView1,aboveAboveImageView2,aboveAboveImageView3,aboveAboveImageView4,aboveAboveImageView5;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -121,6 +132,33 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         //mHideShow = (LinearLayout) v.findViewById(R.id.showMap);
         mMapView = (FrameLayout) v.findViewById(R.id.mapView);
         bPinLocation = (ImageButton)v.findViewById(R.id.bPinLocation);
+
+        hourGlass1= (ImageView) v.findViewById(R.id.hglass_imageView1);
+        aboveImageView1= (ImageView) v.findViewById(R.id.imageView_above1);
+        belowImageView1= (ImageView) v.findViewById(R.id.imageView_below1);
+        aboveAboveImageView1= (ImageView) v.findViewById(R.id.imageView_above_above1);
+
+        hourGlass2= (ImageView) v.findViewById(R.id.hglass_imageView2);
+        aboveImageView2= (ImageView) v.findViewById(R.id.imageView_above2);
+        belowImageView2= (ImageView) v.findViewById(R.id.imageView_below2);
+        aboveAboveImageView2= (ImageView) v.findViewById(R.id.imageView_above_above2);
+
+        hourGlass3= (ImageView) v.findViewById(R.id.hglass_imageView3);
+        aboveImageView3= (ImageView) v.findViewById(R.id.imageView_above3);
+        belowImageView3= (ImageView) v.findViewById(R.id.imageView_below3);
+        aboveAboveImageView3= (ImageView) v.findViewById(R.id.imageView_above_above3);
+
+        hourGlass4= (ImageView) v.findViewById(R.id.hglass_imageView4);
+        aboveImageView4= (ImageView) v.findViewById(R.id.imageView_above4);
+        belowImageView4= (ImageView) v.findViewById(R.id.imageView_below4);
+        aboveAboveImageView4= (ImageView) v.findViewById(R.id.imageView_above_above4);
+
+        hourGlass5= (ImageView) v.findViewById(R.id.hglass_imageView5);
+        aboveImageView5= (ImageView) v.findViewById(R.id.imageView_above5);
+        belowImageView5= (ImageView) v.findViewById(R.id.imageView_below5);
+        aboveAboveImageView5= (ImageView) v.findViewById(R.id.imageView_above_above5);
+
+
         dbHelper=new DBHelper(getContext());
        // earnOk = (Button) v.findViewById(R.id.earnOk);
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable())
@@ -137,7 +175,10 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         mTabs.setBackgroundColor(Color.parseColor("#031625"));
         mPager.setAdapter(adapter);
         mTabs.setViewPager(mPager);
-
+        //fillHourGlasses(0, 99);
+        /*for(int i=0;i<100;i++) {
+            fillHourGlasses(0, i);
+        }*/
         //Log.i("Test",droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId)).toString());
 
 
@@ -154,6 +195,10 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             }
         });
 
+
+
+
+
 //        earnOk.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -161,10 +206,31 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 //            }
 //        });
 
+        mHandler = new Handler();
+        startRepeatingTask();
+
 
 
 
         return v;
+    }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+                //fillHourGlasses(0, intervalCount * mInterval / 1000);
+            if((intervalCount*mInterval/1000)<(totalTime*5))
+                calculateFillingQuantity(intervalCount*mInterval/1000);
+                //updateStatus(); //this function can change value of mInterval.
+                intervalCount++;
+                mHandler.postDelayed(mStatusChecker, mInterval);
+
+
+        }
+    };
+
+    public void calculateFillingQuantity(int time){
+        fillHourGlasses(time/totalTime,time%totalTime);
     }
 
     private void hideMap(int i) {
@@ -200,6 +266,10 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
         ((MainActivity)getActivity()).hideResideMenu();
         ((MainActivity)getActivity()).showOpenMaps();
+    }
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
     }
 
     @Override
@@ -300,6 +370,93 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
 
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        DPTOPX_SCALE = getResources().getDisplayMetrics().density;
+
+    }
+
+    public void fillHourGlasses(int wholeNumber, final int percentageToBeFilled){
+        final int originalHeight=hourGlass1.getLayoutParams().height/2;
+        final int calculatedHeight=((percentageToBeFilled  * originalHeight)/100);
+
+        switch (wholeNumber)
+        {
+            case 0:
+                LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) aboveAboveImageView1.getLayoutParams();
+                params1.height                    = calculatedHeight;
+                aboveAboveImageView1.setLayoutParams(params1);
+
+                LinearLayout.LayoutParams params11 = (LinearLayout.LayoutParams) aboveImageView1.getLayoutParams();
+                params11.height                    = originalHeight-calculatedHeight;
+                aboveImageView1.setLayoutParams(params11);
+
+                LinearLayout.LayoutParams params12 = (LinearLayout.LayoutParams) belowImageView1.getLayoutParams();
+                params12.height                    = originalHeight-calculatedHeight;
+                belowImageView1.setLayoutParams(params12);
+                break;
+            case 1:
+                LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) aboveAboveImageView2.getLayoutParams();
+                params2.height                    = calculatedHeight;
+                aboveAboveImageView2.setLayoutParams(params2);
+
+                LinearLayout.LayoutParams params21 = (LinearLayout.LayoutParams) aboveImageView2.getLayoutParams();
+                params21.height                    = originalHeight-calculatedHeight;
+                aboveImageView2.setLayoutParams(params21);
+
+                LinearLayout.LayoutParams params22 = (LinearLayout.LayoutParams) belowImageView2.getLayoutParams();
+                params22.height                    = originalHeight-calculatedHeight;
+                belowImageView2.setLayoutParams(params22);
+                break;
+            case 2:
+
+                LinearLayout.LayoutParams params3 = (LinearLayout.LayoutParams) aboveAboveImageView3.getLayoutParams();
+                params3.height                    = calculatedHeight;
+                aboveAboveImageView3.setLayoutParams(params3);
+
+                LinearLayout.LayoutParams params31 = (LinearLayout.LayoutParams) aboveImageView3.getLayoutParams();
+                params31.height                    = originalHeight-calculatedHeight;
+                aboveImageView3.setLayoutParams(params31);
+
+                LinearLayout.LayoutParams params32 = (LinearLayout.LayoutParams) belowImageView3.getLayoutParams();
+                params32.height                    = originalHeight-calculatedHeight;
+                belowImageView3.setLayoutParams(params32);
+                break;
+            case 3:
+
+                LinearLayout.LayoutParams params4 = (LinearLayout.LayoutParams) aboveAboveImageView4.getLayoutParams();
+                params4.height                    = calculatedHeight;
+                aboveAboveImageView4.setLayoutParams(params4);
+
+                LinearLayout.LayoutParams params41 = (LinearLayout.LayoutParams) aboveImageView4.getLayoutParams();
+                params41.height                    = originalHeight-calculatedHeight;
+                aboveImageView4.setLayoutParams(params41);
+
+                LinearLayout.LayoutParams params42 = (LinearLayout.LayoutParams) belowImageView4.getLayoutParams();
+                params42.height                    = originalHeight-calculatedHeight;
+                belowImageView4.setLayoutParams(params42);
+                break;
+            case 4:
+
+                LinearLayout.LayoutParams params5 = (LinearLayout.LayoutParams) aboveAboveImageView5.getLayoutParams();
+                params5.height                    = calculatedHeight;
+                aboveAboveImageView5.setLayoutParams(params5);
+
+                LinearLayout.LayoutParams params51 = (LinearLayout.LayoutParams) aboveImageView5.getLayoutParams();
+                params51.height                    = originalHeight-calculatedHeight;
+                aboveImageView5.setLayoutParams(params51);
+
+                LinearLayout.LayoutParams params52 = (LinearLayout.LayoutParams) belowImageView5.getLayoutParams();
+                params52.height                    = originalHeight-calculatedHeight;
+                belowImageView5.setLayoutParams(params52);
+                break;
+
+                //Log.i("Mnni", originalHeight + "   " + calculatedHeight + "  " + percentageToBeFilled);
+
+        }
     }
 
     @Override

@@ -238,6 +238,7 @@ public class Droom_Chat_New extends Fragment  {
                     direction ="left";
                 else
                     direction="right";
+                //String receiverId=chat_item.getString("receiver_id");
                 //String receiverId=chat_item.getString("iver_id");
                 String message=chat_item.getString("message");
                 final View inside_view = getActivity().getLayoutInflater().inflate(R.layout.droom_chat_item, null);
