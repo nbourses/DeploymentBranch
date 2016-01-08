@@ -114,6 +114,10 @@
             android:orientation="vertical"
             >
         </fragment>
+        <!--<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change Location"/>-->
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -130,6 +134,13 @@
             android:layout_marginRight="15dp"
             android:background="#40000000"
             android:src="@drawable/ic_gps_fixed_24dp"
+            android:layout_gravity="bottom|right"/>
+        <TextView
+            android:id="@+id/tv_change_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change Location"
+            android:layout_marginRight="100dp"
             android:layout_gravity="bottom|right"/>
     </FrameLayout>
 

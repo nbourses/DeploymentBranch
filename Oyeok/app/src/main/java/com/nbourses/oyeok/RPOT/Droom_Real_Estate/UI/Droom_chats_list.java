@@ -265,7 +265,4 @@ public class Droom_chats_list extends Fragment implements ChatList {
 
     }
 
-
-
-
 }

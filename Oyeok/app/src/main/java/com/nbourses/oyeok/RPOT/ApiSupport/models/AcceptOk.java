@@ -17,6 +17,9 @@ public class AcceptOk {
         ArrayList<String> time = new ArrayList<String>();
 
 
+        @SerializedName("message")
+        String message;
+
         @SerializedName("lat")
         String latitude;
 
@@ -37,6 +40,14 @@ public class AcceptOk {
 
         @SerializedName("oye_user_id")
         String oyeUserId;
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
 
         public String getOyeId() {
             return oyeId;

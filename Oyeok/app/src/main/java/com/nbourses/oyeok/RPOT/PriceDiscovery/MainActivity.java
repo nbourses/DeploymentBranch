@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     BranchUniversalObject branchUniversalObject;
     LinkProperties linkProperties;
     ImageView profileImage;
+    TextView changeRegion;
 
 
     public void setMapsClicked(openMapsClicked mapsClicked) {
@@ -135,10 +137,10 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         resideMenuButton = (Button) mToolbar.findViewById(R.id.residemenu_rightmenu_titlebar);
         openMaps  = (Button) mToolbar.findViewById(R.id.openmaps);
+        changeRegion = (TextView) mToolbar.findViewById(R.id.tv_change_region);
         hideOpenMaps();
         bringResideMenu();
         resideMenuButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 openRightMenu();
@@ -245,14 +247,14 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         });
         Firebase.setAndroidContext(this);
 
-        //refer = (Button) findViewById(R.id.refer);
-//        refer.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                changeFragment(new ReferFragment(), null);
-//            }
-//        });
-        // display the first navigation drawer view on app launch
-
+       /* refer = (Button) findViewById(R.id.refer);
+        refer.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                changeFragment(new ReferFragment(), null);
+            }
+        });
+         display the first navigation drawer view on app launch
+*/
 
 
     }
@@ -558,6 +560,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     public void hideOpenMaps()
     {
         openMaps.setVisibility(View.GONE);
+        changeRegion.setVisibility(View.GONE);
     }
 
     public  void refresh(){
@@ -571,6 +574,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     {
 
         openMaps.setVisibility(View.VISIBLE);
+        changeRegion.setVisibility(View.VISIBLE);
         Log.v(TAG, "opened maps");
     }
     //- End Implementing Reside Menu

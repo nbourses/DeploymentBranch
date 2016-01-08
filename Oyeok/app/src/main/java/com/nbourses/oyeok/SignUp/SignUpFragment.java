@@ -353,9 +353,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         user.setUserRole("broker");
         else
         user.setUserRole("client");
-        user.setGcmId(SharedPrefs.MY_GCM_ID);
-        user.setLongitude(Str_Lng);
-        user.setLatitude(Str_Lat);
+        user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+        user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+        user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
         user.setDeviceId("deviceId");
         user.setLocality("");
 

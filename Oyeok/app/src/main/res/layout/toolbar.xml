@@ -28,6 +28,15 @@
         android:layout_width="24dp"
         android:layout_height="24dp" />
 
+    <TextView
+        android:id="@+id/tv_change_region"
+        android:layout_gravity="right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set\nLocation"
+        android:textStyle="bold"
+        android:layout_marginRight="30dp"
+        android:visibility="gone"/>
     <!--<Button-->
         <!--android:id="@+id/refer"-->
         <!--android:layout_gravity="right"-->
