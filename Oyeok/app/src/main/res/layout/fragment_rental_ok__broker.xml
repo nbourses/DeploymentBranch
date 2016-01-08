@@ -168,6 +168,6 @@ android:visibility="gone"
         android:layout_gravity="center"
         android:layout_marginBottom="50dp"
         android:layout_marginLeft="25dp"
-        android:text="Select client's contact"/>
+        android:text="Select\nclient'scontact"/>
 
 </FrameLayout>

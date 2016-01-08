@@ -364,9 +364,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             case 2:
                 shareReferralLink();
                 break;
-            case 3:
-                fragment = new Droom_Chat_New();
-                title ="chat room";
         }
 
         if (fragment != null) {

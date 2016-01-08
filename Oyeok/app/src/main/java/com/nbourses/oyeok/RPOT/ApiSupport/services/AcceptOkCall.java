@@ -121,7 +121,7 @@ public class AcceptOkCall {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Log.i("accept error", error.getMessage());
+                    /*Log.i("accept error", error.getMessage());
                     Bundle args=new Bundle();
                     args.putString("UserId2","lub8aesblzt8gnokdjlofy5b1xcoduae");
                     args.putString("UserId1","yn4kiiqv91y1r6lrlzzrllypqv52552i");
@@ -138,7 +138,7 @@ public class AcceptOkCall {
                         String okId="hep8bfkyigl0v4c";
                         droomChatFirebase.createChatRoom(okId,userId1,userId2,droomDetails);
                         mCallBack.replaceFragment(args);
-                    }
+                    }*/
 
                 }
             });

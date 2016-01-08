@@ -48,6 +48,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.Firebase.ChatList;
 import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
@@ -80,6 +81,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -102,7 +104,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;*/
 
 
-public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener {
+public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList {
 
     private final String TAG = RexMarkerPanelScreen.class.getSimpleName();
     private static final String[] INITIAL_PERMS = {
@@ -149,6 +151,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
     private GetCurrentLocation getLocationActivity;
     //View rootView;
+    HashMap<String, HashMap<String, String>> chatListData;
 
     View rootView;
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "";
@@ -171,6 +174,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         mMarkerpriceslider = (DiscreteSeekBar) rootView.findViewById(R.id.price_seekbar);
        mMarkerminmax = (RelativeLayout) rootView.findViewById(R.id.markerpanelminmax);
         //ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
+
         maxPrice = (TextView) rootView.findViewById(R.id.tv_max);
         minPrice = (TextView) rootView.findViewById(R.id.tv_min);
          permissionCheckForCamera = ContextCompat.checkSelfPermission(this.getActivity(),
@@ -180,6 +184,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         permissionCheckForLocation = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
         onPositionSelected(0,2);
+
 
 
 
@@ -211,16 +216,19 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         mDrooms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle b = new Bundle();
+                b.putSerializable("HashMap",chatListData);
                 Fragment f=new Droom_chats_list();
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                f.setArguments(b);
                 fragmentTransaction.replace(R.id.container_body, f);
                 fragmentTransaction.commitAllowingStateLoss();
 
                 Log.i("Change Fragment",f.toString());
                 // set the toolbar title
 
-               // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null);
+               // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), nugetll);
                // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(),null);
             }
         });
@@ -452,7 +460,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
 
-                 }
+            }
 
             @Override
             public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
@@ -465,6 +473,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 map.animateCamera(CameraUpdateFactory.zoomTo(12));
             }
         });
+        if(!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
+            droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
 
         return rootView;
     }
@@ -655,12 +665,12 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         if(count==2){
             if(position==0) {
                 brokerType = "rent";
-                dbHelper.save(DatabaseConstants.brokerType, "ll");
+                dbHelper.save(DatabaseConstants.brokerType, "LL");
                 dbHelper.save("brokerType","On Rent");
             }
             else if(position==1) {
                 brokerType = "sale";
-                dbHelper.save(DatabaseConstants.brokerType, "or");
+                dbHelper.save(DatabaseConstants.brokerType, "OR");
                 dbHelper.save("brokerType","For Sale");
             }
         }
@@ -674,6 +684,9 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     {
         ll_map.setAlpha(1f);
         //Log.i("pratik","location");
+
+        map.animateCamera(CameraUpdateFactory.zoomTo(12));
+        autoCompView.clearListSelection();
         getLocationFromAddress(autoCompView.getText().toString());
     }
 
@@ -718,6 +731,12 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     //@Override
     public void onPositionSelected(int position) {
         //Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void sendData(HashMap<String, HashMap<String, String>> hashMap) {
+        chatListData=hashMap;
+        Log.i("chatdata in rex",chatListData.toString());
     }
 
     protected class LocationUpdater extends AsyncTask<Double, Double, String>{
@@ -878,7 +897,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             LatLng l=new LatLng(location.getLatitude(),location.getLongitude());
             //map.addMarker(new MarkerOptions().position(l));
             map.moveCamera(CameraUpdateFactory.newLatLng(l));
-            map.animateCamera(CameraUpdateFactory.zoomTo(15));
+            map.animateCamera(CameraUpdateFactory.zoomTo(16));
             //return p1;
         } catch (IOException e) {
             e.printStackTrace();

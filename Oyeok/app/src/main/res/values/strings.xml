@@ -43,7 +43,7 @@
 
         <item>@string/BrokerOk</item>
         <item>@string/share_app</item>
-        <item>@string/chat_list</item>
+
 
     </string-array>
     <string-array name="nav_drawer_labels_signup_client">
@@ -51,15 +51,14 @@
 
         <item>@string/BrokerOk</item>
         <item>@string/share_app</item>
-        <item>@string/chat_list</item>
+
 
     </string-array>
     <string-array name="nav_drawer_labels_signup_broker">
         <item>@string/Profile</item>
-
         <item>@string/BrokerOk</item>
         <item>@string/share_app</item>
-        <item>@string/chat_list</item>
+
 
     </string-array>
 
