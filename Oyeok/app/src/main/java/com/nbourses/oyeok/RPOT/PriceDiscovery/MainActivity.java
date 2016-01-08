@@ -53,7 +53,6 @@ import io.branch.referral.util.LinkProperties;
 //import com.rockerhieu.emojicon.EmojiconsFragment;
 //import com.rockerhieu.emojicon.emoji.Emojicon;
 
-
 public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener, View.OnClickListener{
 
     private static final String[] INITIAL_PERMS={
@@ -103,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         OyeIntentSpecs.data=s;
     }*/
 
-
     public interface openMapsClicked{
         public void clicked();
     }
@@ -111,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     /*public void onFragmentInteraction(Uri uri){
         //you can leave it empty
     }*/
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -148,8 +145,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         });
         dbHelper=new DBHelper(getBaseContext());
 
-
-
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -158,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
         }
+
         else
         {
             if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
@@ -165,11 +161,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             else
                 changeFragment(new RexMarkerPanelScreen(),null,"Oye HomeScreen");
         }
-
-
-
-
-
 
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
