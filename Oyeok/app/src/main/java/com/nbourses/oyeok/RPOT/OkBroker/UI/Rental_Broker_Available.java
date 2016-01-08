@@ -57,6 +57,7 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
     Ok_Broker_MainScreen ok_broker_mainScreen;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
