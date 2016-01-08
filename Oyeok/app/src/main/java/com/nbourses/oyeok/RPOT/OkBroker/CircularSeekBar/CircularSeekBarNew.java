@@ -97,7 +97,7 @@ public class CircularSeekBarNew extends View {
     protected void initAttributes(TypedArray attrArray) {
         mRadius = attrArray.getDimension(R.styleable.CircularSeekBarNew_radius, 30f * DPTOPX_SCALE);
         mCircleColor = attrArray.getColor(R.styleable.CircularSeekBarNew_circlenew_color, DEFAULT_CIRCLE_COLOR);
-        mCircleColor = Color.parseColor("#FF9800");
+        mCircleColor = Color.parseColor("#2DC4B6");
         mCircleStrokeWidth = attrArray.getDimension(R.styleable.CircularSeekBarNew_circlenew_stroke_width, DEFAULT_CIRCLE_STROKE_WIDTH * DPTOPX_SCALE);
 
 
