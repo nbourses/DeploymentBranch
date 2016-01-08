@@ -29,6 +29,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -103,6 +104,9 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     String pincode, region, fullAddress;
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "";
     Toolbar mToolbar;
+    ImageView hourGlass1,hourGlass2,hourGlass3,hourGlass4,hourGlass5;
+    ImageView aboveImageView1,aboveImageView2,aboveImageView3,aboveImageView4,aboveImageView5;
+    ImageView belowImageView1,belowImageView2,belowImageView3,belowImageView4,belowImageView5;
 
 
     @Override
@@ -121,6 +125,28 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         //mHideShow = (LinearLayout) v.findViewById(R.id.showMap);
         mMapView = (FrameLayout) v.findViewById(R.id.mapView);
         bPinLocation = (ImageButton)v.findViewById(R.id.bPinLocation);
+
+        hourGlass1= (ImageView) v.findViewById(R.id.hglass_imageView1);
+        aboveImageView1= (ImageView) v.findViewById(R.id.imageView_above1);
+        belowImageView1= (ImageView) v.findViewById(R.id.imageView_below1);
+
+        hourGlass2= (ImageView) v.findViewById(R.id.hglass_imageView2);
+        aboveImageView2= (ImageView) v.findViewById(R.id.imageView_above2);
+        belowImageView2= (ImageView) v.findViewById(R.id.imageView_below2);
+
+        hourGlass3= (ImageView) v.findViewById(R.id.hglass_imageView3);
+        aboveImageView3= (ImageView) v.findViewById(R.id.imageView_above3);
+        belowImageView3= (ImageView) v.findViewById(R.id.imageView_below3);
+
+        hourGlass4= (ImageView) v.findViewById(R.id.hglass_imageView4);
+        aboveImageView4= (ImageView) v.findViewById(R.id.imageView_above4);
+        belowImageView4= (ImageView) v.findViewById(R.id.imageView_below4);
+
+        hourGlass5= (ImageView) v.findViewById(R.id.hglass_imageView5);
+        aboveImageView5= (ImageView) v.findViewById(R.id.imageView_above5);
+        belowImageView5= (ImageView) v.findViewById(R.id.imageView_below5);
+
+
         dbHelper=new DBHelper(getContext());
        // earnOk = (Button) v.findViewById(R.id.earnOk);
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable())
@@ -137,7 +163,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         mTabs.setBackgroundColor(Color.parseColor("#031625"));
         mPager.setAdapter(adapter);
         mTabs.setViewPager(mPager);
-
+        fillHourGlasses(0, 30);
         //Log.i("Test",droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId)).toString());
 
 
@@ -300,6 +326,19 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
 
 
+    }
+
+    public void fillHourGlasses(int wholeNumber,int percentageToBeFilled){
+        switch (wholeNumber)
+        {
+            case 0:
+                int originalHeight=aboveImageView1.getLayoutParams().height;
+                int calculatedHeight=(int)percentageToBeFilled/100*originalHeight;
+                aboveImageView1.getLayoutParams().height=calculatedHeight;
+                Log.i("Mnni",originalHeight+"   "+calculatedHeight);
+                //belowImageView1.getLayoutParams().height=originalHeight-calculatedHeight;
+                break;
+        }
     }
 
     @Override
