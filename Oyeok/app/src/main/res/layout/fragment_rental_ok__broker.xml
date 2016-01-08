@@ -78,9 +78,8 @@
     <com.nbourses.oyeok.RPOT.OkBroker.CircularSeekBar.CircularSeekBarNew
         android:id="@+id/circularseekbar"
         android:layout_width="match_parent"
-
+        android:layout_marginTop="30dp"
         android:layout_gravity="center"
-        android:layout_marginTop="45dp"
         android:layout_height="match_parent"
         app:circlenew_color="#81C784"
         android:layout_marginBottom="60dp"

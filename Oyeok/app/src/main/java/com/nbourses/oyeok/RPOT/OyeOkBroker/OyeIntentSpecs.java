@@ -534,9 +534,9 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         propertySpecification[2]=dbHelper.getValue(DatabaseConstants.brokerType);
 
         if(seeRadioButton.isChecked())
-            propertySpecification[3]="Req";
+            propertySpecification[3]="req";
         else
-            propertySpecification[3]="Avl";
+            propertySpecification[3]="avl";
 
         propertySpecification[4]=budget;
     }
