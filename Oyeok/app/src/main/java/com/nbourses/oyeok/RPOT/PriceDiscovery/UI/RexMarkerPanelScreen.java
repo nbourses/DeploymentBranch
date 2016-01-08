@@ -539,6 +539,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         user.setUserRole("client");
         user.setLongitude(SharedPrefs.MY_LNG);
         user.setLatitude(SharedPrefs.MY_LAT);
+        Log.i("locality",SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
         user.setLocality("andheri west");
         user.setPincode("400058");
 		
