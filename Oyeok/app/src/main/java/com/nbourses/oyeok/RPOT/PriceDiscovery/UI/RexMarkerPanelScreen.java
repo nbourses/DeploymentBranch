@@ -1,8 +1,8 @@
 package com.nbourses.oyeok.RPOT.PriceDiscovery.UI;
 
 
-
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +16,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,6 +28,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
@@ -151,6 +154,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     View rootView;
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "";
     AutoCompleteTextView autoCompView;
+    private RelativeLayout errorView;
+    private TextView errorText;
 
 
 
@@ -177,6 +182,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         ll_map = (FrameLayout) rootView.findViewById(R.id.ll_map);
         permissionCheckForLocation = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
+        errorView = (RelativeLayout) rootView.findViewById(R.id.alertLayout);
+        errorText = (TextView) rootView.findViewById(R.id.errorText);
         onPositionSelected(0,2);
 
 
@@ -215,7 +222,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 fragmentTransaction.replace(R.id.container_body, f);
                 fragmentTransaction.commitAllowingStateLoss();
 
-                Log.i("Change Fragment",f.toString());
+                Log.i("Change Fragment", f.toString());
                 // set the toolbar title
 
                // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null);
@@ -464,6 +471,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             }
         });
 
+
+
         return rootView;
     }
     @Override
@@ -488,6 +497,15 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         getLocationActivity.setCallback(null);
     }
 
+    @Override
+    public void onAttach(Activity a) {
+        super.onAttach(a);
+        mHandler = new Handler();
+        mHandler.postDelayed(mStatusChecker1,5000);
+
+        //getLocationActivity.setCallback(null);
+    }
+
 
     public void setPhasedSeekBar(){
         //View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
@@ -504,6 +522,61 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             Toast.makeText(getActivity(), toast, Toast.LENGTH_LONG).show();
             toast = null;
         }
+    }
+
+    private Handler mHandler;
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            //fillHourGlasses(0, intervalCount * mInterval / 1000);
+
+            hideMap(0);
+            errorView.setVisibility(View.GONE);
+
+
+        }
+    };
+
+    Runnable mStatusChecker1 = new Runnable() {
+        @Override
+        public void run() {
+            //fillHourGlasses(0, intervalCount * mInterval / 1000);
+
+            showInfoMessage("Sample information test");
+
+
+        }
+    };
+
+    public void showInfoMessage(String message)
+    {
+        errorView.setVisibility(View.VISIBLE);
+        errorText.setText(message);
+        hideMap(1);
+        mHandler.postDelayed(mStatusChecker, 5000);
+
+    }
+
+    private void hideMap(int i) {
+
+        Animation m = null;
+
+        if(isAdded())
+
+            //Load animation
+            if(i==0) {
+                m = AnimationUtils.loadAnimation(getActivity(),
+                        R.anim.slide_down);
+
+
+                //SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY)+","+SharedPrefs.getString(getActivity(),SharedPrefs.MY_CITY)
+            }else {
+
+                m = AnimationUtils.loadAnimation(getActivity(),
+                        R.anim.slide_up);
+            }
+
+            errorView.setAnimation(m);
     }
 
     @Override
