@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.amplitude.api.Amplitude;
 import com.crashlytics.android.Crashlytics;
+import com.nbourses.oyeok.Analytics.Analytics;
 import com.nbourses.oyeok.GoogleCloudMessaging.RegistrationIntentService;
 
 import io.fabric.sdk.android.Fabric;
@@ -37,5 +38,6 @@ public class MyApplication extends MultiDexApplication {
         Branch.getAutoInstance(this);
         Amplitude.getInstance().initialize(this, AMPLITUDE_KEY)
                 .enableForegroundTracking(this);
+        Analytics.recordLoginTime();
     }
 }

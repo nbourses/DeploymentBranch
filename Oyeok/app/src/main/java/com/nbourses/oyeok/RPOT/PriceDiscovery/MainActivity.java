@@ -169,23 +169,23 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        /*mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                R.drawable.title_bar_menu, R.string.drawer_open, R.string.drawer_close) {
 
-            *//** Called when a drawer has settled in a completely closed state. *//*
+            /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getActionBar().setTitle(mTitle);
+                Analytics.logButtonClick("Fragment Drawer[opened]",TAG);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
-            *//** Called when a drawer has settled in a completely open state. *//*
+            /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getActionBar().setTitle(mDrawerTitle);
+                Analytics.logButtonClick("Fragment Drawer[closed]", TAG);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
-        };*/
+        };
 
         drawerFragment.setUp(R.id.fragment_navigation_drawer,drawerLayout , mToolbar);
         drawerFragment.setDrawerListener(this);
@@ -290,6 +290,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                     try {
                         referrer = referringParams.getString("user_name");
                         Log.v(TAG, "Refferer is " + referrer);
+                        Analytics.organicUser(false);
                         //put referrer rewarding mechanism here
                     } catch (JSONException e) {
                         e.printStackTrace();
