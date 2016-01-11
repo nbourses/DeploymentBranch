@@ -407,10 +407,10 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     }
     public void initialFill(int noOfHourGlass) {
         int i=1;
-        if(i<=noOfHourGlass)
+        for(i=1;i<=noOfHourGlass;i++)
         {
             fillHourGlasses(i-1,99);
-            i++;
+
         }
     }
 
