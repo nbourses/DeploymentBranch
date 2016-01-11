@@ -21,6 +21,8 @@
                 android:id="@+id/toolbar"
                 layout="@layout/toolbar" />
         </LinearLayout>
+
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -29,15 +31,24 @@
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             />
+
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:id="@+id/toastLayout"
+            android:visibility="gone"
+            android:layout_height="50dp"
+            android:background="#ff9f1c">
             <TextView
+                android:id="@+id/toastText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
                 android:text="Abhinandan"/>
         </LinearLayout>
+
     </FrameLayout>
 
 

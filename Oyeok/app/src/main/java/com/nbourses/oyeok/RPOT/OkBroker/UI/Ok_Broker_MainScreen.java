@@ -44,6 +44,8 @@ import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.Firebase.DroomChatFirebase;
+import com.nbourses.oyeok.Firebase.HourGlassDetails;
+import com.nbourses.oyeok.Firebase.HourGlassFirebase;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
@@ -106,6 +108,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     private LatLng latlng;
     DBHelper dbHelper;
     int intervalCount=0;
+    HourGlassDetails hourGlassDetails;
+    int leftHourGlasses=0;
+    HourGlassFirebase hourGlassFirebase;
+    String coolOffString="";
+    int filledHourGlass=5;
+    int percentage=0;
+    int coolOff=0;
     DroomChatFirebase droomChatFirebase;
     Double lat, lng;
     String pincode, region, fullAddress;
@@ -158,8 +167,28 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         belowImageView5= (ImageView) v.findViewById(R.id.imageView_below5);
         aboveAboveImageView5= (ImageView) v.findViewById(R.id.imageView_above_above5);
 
+        hourGlassFirebase=new HourGlassFirebase(getActivity(),DatabaseConstants.firebaseUrl);
 
         dbHelper=new DBHelper(getContext());
+
+
+        if(!dbHelper.getValue(DatabaseConstants.userId).equals("null"))
+        {
+            hourGlassDetails=hourGlassFirebase.getHourGlassDetails();
+            filledHourGlass=hourGlassDetails.getWholeHourGlass();
+            percentage=hourGlassDetails.getPercentage();
+
+        }
+        initialFill(4);
+        fillHourGlasses(4,50);
+        leftHourGlasses=500-filledHourGlass*100-percentage;
+        if(!dbHelper.getValue(DatabaseConstants.coolOff).equals("null")) {
+            // coolOffString=dbHelper.getValue(DatabaseConstants.coolOff);
+            coolOff=Integer.parseInt(dbHelper.getValue(DatabaseConstants.coolOff));
+            totalTime=coolOff*100/leftHourGlasses;
+            currentTime=totalTime*filledHourGlass;
+            currentTime+=percentage*totalTime/100;
+        }
        // earnOk = (Button) v.findViewById(R.id.earnOk);
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable())
             preok();
@@ -207,7 +236,6 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 //        });
 
         mHandler = new Handler();
-        startRepeatingTask();
 
 
 
@@ -219,11 +247,10 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         @Override
         public void run() {
                 //fillHourGlasses(0, intervalCount * mInterval / 1000);
-            if((intervalCount*mInterval/1000)<(totalTime*5))
-                calculateFillingQuantity(intervalCount*mInterval/1000);
+            if((leftHourGlasses!=0))
+                calculateFillingQuantity(currentTime);
                 //updateStatus(); //this function can change value of mInterval.
-                intervalCount++;
-                mHandler.postDelayed(mStatusChecker, mInterval);
+                mHandler.postDelayed(mStatusChecker, 5000);
 
 
         }
@@ -378,10 +405,22 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         DPTOPX_SCALE = getResources().getDisplayMetrics().density;
 
     }
+    public void initialFill(int noOfHourGlass) {
+        int i=1;
+        if(i<=noOfHourGlass)
+        {
+            fillHourGlasses(i-1,99);
+            i++;
+        }
+    }
 
     public void fillHourGlasses(int wholeNumber, final int percentageToBeFilled){
         final int originalHeight=hourGlass1.getLayoutParams().height/2;
         final int calculatedHeight=((percentageToBeFilled  * originalHeight)/100);
+        if(percentageToBeFilled>=100)
+        {
+            leftHourGlasses-=100;
+        }
 
         switch (wholeNumber)
         {
@@ -726,13 +765,16 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                     try {
                         JSONObject ne = new JSONObject(k.toString());
                         Log.i("preok response", ne.toString());
-
+                        JSONObject response1 = ne.getJSONObject("responseData");
+                        String coolOffPeriod = response1.getString("cool_off");
+                        Log.i("cool_off=", coolOffPeriod);
                         JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
                         JSONArray reqLl = neighbours.getJSONArray("req_ll");
                         JSONArray reqOr = neighbours.getJSONArray("req_or");
                         JSONArray avlLl = neighbours.getJSONArray("avl_ll");
                         JSONArray avlOr = neighbours.getJSONArray("avl_or");
                         //   Log.i("oye_id=", reqLl.getJSONObject(0).getString("oye_id"));
+                        dbHelper.save(DatabaseConstants.coolOff,coolOffPeriod);
                         dbHelper.save(DatabaseConstants.reqLl, reqLl.toString());
                         dbHelper.save(DatabaseConstants.reqOr, reqOr.toString());
                         dbHelper.save(DatabaseConstants.avlLl, avlLl.toString());

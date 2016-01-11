@@ -146,6 +146,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private FrameLayout ll_map;
     String pincode, region, fullAddress;
     Double lat, lng;
+    MainActivity mainActivity;
     DroomChatFirebase droomChatFirebase;
 
     private GetCurrentLocation getLocationActivity;
@@ -178,6 +179,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         minPrice = (TextView) rootView.findViewById(R.id.tv_min);
          permissionCheckForCamera = ContextCompat.checkSelfPermission(this.getActivity(),
                 Manifest.permission.CAMERA);
+        mainActivity=(MainActivity)getActivity();
         dbHelper=new DBHelper(getContext());
         ll_map = (FrameLayout) rootView.findViewById(R.id.ll_map);
         permissionCheckForLocation = ContextCompat.checkSelfPermission(getActivity(),
@@ -726,11 +728,13 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         //Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
         if(count==2){
             if(position==0) {
+
                 brokerType = "rent";
                 dbHelper.save(DatabaseConstants.brokerType, "ll");
                 dbHelper.save("brokerType","On Rent");
             }
             else if(position==1) {
+
                 brokerType = "sale";
                 dbHelper.save(DatabaseConstants.brokerType, "or");
                 dbHelper.save("brokerType","For Sale");
