@@ -181,7 +181,6 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         }*/
         //Log.i("Test",droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId)).toString());
 
-
             mCustomPhasedSeekbar = (CustomPhasedSeekBar) v.findViewById(R.id.phasedSeekBar);
             if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{"Rental", "Sale"}));
@@ -195,10 +194,6 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             }
         });
 
-
-
-
-
 //        earnOk.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -208,9 +203,6 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
         mHandler = new Handler();
         startRepeatingTask();
-
-
-
 
         return v;
     }
