@@ -42,8 +42,10 @@ public class Droom_chats_list extends Fragment implements ChatList {
     DBHelper dbHelper;
     DroomChatFirebase droomChatFirebase;
     HashMap<String,HashMap<String,String>> list;
+    HashMap<String,HashMap<String,String>> listBundle;
     JSONObject jsonObject;
     SwipeMenuListView listView;
+    String lastFragment="null";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,9 +56,20 @@ public class Droom_chats_list extends Fragment implements ChatList {
         mAdapter = new AppAdapter();
         dbHelper=new DBHelper(getActivity());
         droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
-        droomChatFirebase.setmCallBack(Droom_chats_list.this);
-        droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
 
+        Log.i("tb getDroomList", String.valueOf(System.currentTimeMillis()));
+        Bundle b = getArguments();
+        if(b.getString("lastFragment")!=null)
+            lastFragment=b.getString("lastFragment");
+        listBundle = (HashMap<String, HashMap<String, String>>) b.getSerializable("HashMap");
+        if(listBundle!=null) {
+            Log.i("chatlistdata=",listBundle.toString());
+            setChatListData(listBundle);
+        }
+        else {
+            droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
+            droomChatFirebase.setmCallBack(Droom_chats_list.this);
+        }
 
 
         //Log.i("Munni","In"+"   "+dbHelper.getValue(DatabaseConstants.userId)+"  "+list.toString());
@@ -146,6 +159,7 @@ public class Droom_chats_list extends Fragment implements ChatList {
 
         list=hashMap;
         Iterator it = list.entrySet().iterator();
+        Log.i("time befor iteration", String.valueOf(System.currentTimeMillis()));
         while (it.hasNext()) {
             Title t=new Title();
             Map.Entry pair = (Map.Entry)it.next();
@@ -168,9 +182,54 @@ public class Droom_chats_list extends Fragment implements ChatList {
             Log.i("Munni", t.getTitle());
             pObj.add(t);
         }
-
-        mAdapter.notifyDataSetChanged();
+        if(lastFragment.equalsIgnoreCase("oyeIntentSpecs")){
+            Title p = new Title();
+            p.setOkId("");
+            p.setLastMessage("we are looking for a broker for you");
+            p.setTitle("recent oye published");
+            pObj.add(p);
+        }
+        Log.i("time after iteration", String.valueOf(System.currentTimeMillis()));
         listView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    public void setChatListData(HashMap<String, HashMap<String, String>> hashMap){
+        list=hashMap;
+        Iterator it = list.entrySet().iterator();
+        Log.i("time befor iteration", String.valueOf(System.currentTimeMillis()));
+        while (it.hasNext()) {
+            Title t=new Title();
+            Map.Entry pair = (Map.Entry)it.next();
+            Map<String,String> temp= new HashMap<String,String>();
+            t.setOkId((String) pair.getKey());
+            temp=(HashMap)pair.getValue();
+            Iterator tt = temp.entrySet().iterator();
+            while (tt.hasNext()) {
+                Map.Entry pair2 = (Map.Entry) tt.next();
+                Log.i("Munni",pair2.toString());
+                if(pair2.getKey().equals("title"))
+                    t.setTitle((String) pair2.getValue());
+
+                if (pair2.getKey().equals("lastMessage"))
+                {t.setLastMessage((String) pair2.getValue());}
+
+                tt.remove();
+            }
+            it.remove(); // avoids a ConcurrentModificationException
+            Log.i("Munni", t.getTitle());
+            pObj.add(t);
+        }
+        if(lastFragment.equalsIgnoreCase("oyeIntentSpecs")){
+            Title p = new Title();
+            p.setOkId("");
+            p.setLastMessage("we are looking for a broker for you");
+            p.setTitle("recent oye published");
+            pObj.add(p);
+        }
+        Log.i("time after iteration", String.valueOf(System.currentTimeMillis()));
+        listView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
     }
 
     class AppAdapter extends BaseAdapter {

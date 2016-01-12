@@ -41,7 +41,7 @@ import org.json.JSONObject;
  */
 public class Droom_Chat_New extends Fragment  {
 
-    private JSONArray mChats;
+    private JSONArray mChats= new JSONArray();
     private LinearLayout mChatLayout;
     private boolean chat;
     private itemClickListener mitemClickListener;
@@ -239,6 +239,7 @@ public class Droom_Chat_New extends Fragment  {
                 else
                     direction="right";
                 //String receiverId=chat_item.getString("receiver_id");
+                //String receiverId=chat_item.getString("iver_id");
                 String message=chat_item.getString("message");
                 final View inside_view = getActivity().getLayoutInflater().inflate(R.layout.droom_chat_item, null);
                 final RelativeLayout background = (RelativeLayout) inside_view.findViewById(R.id.background);
