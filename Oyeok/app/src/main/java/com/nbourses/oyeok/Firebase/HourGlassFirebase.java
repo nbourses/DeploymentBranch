@@ -55,7 +55,6 @@ public class HourGlassFirebase {
 
                 }
                 Log.i("Test3", "");
-
             }
 
             @Override

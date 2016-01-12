@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +28,7 @@ import org.json.JSONException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import static java.lang.Math.getExponent;
 import static java.lang.Math.log10;
 
 /**
@@ -70,7 +72,6 @@ public class CircularSeekBarNew extends View {
         super(context, attrs);
         mContext = context;
         init(attrs, 0);
-
     }
 
     public CircularSeekBarNew(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -90,7 +91,6 @@ public class CircularSeekBarNew extends View {
 
         //initRects();
 
-
         initPaths();
     }
 
@@ -99,8 +99,6 @@ public class CircularSeekBarNew extends View {
         mCircleColor = attrArray.getColor(R.styleable.CircularSeekBarNew_circlenew_color, DEFAULT_CIRCLE_COLOR);
         mCircleColor = Color.parseColor("#2DC4B6");
         mCircleStrokeWidth = attrArray.getDimension(R.styleable.CircularSeekBarNew_circlenew_stroke_width, DEFAULT_CIRCLE_STROKE_WIDTH * DPTOPX_SCALE);
-
-
     }
 
     public void setmImageAction(imageAction mImageAction) {
@@ -109,9 +107,7 @@ public class CircularSeekBarNew extends View {
 
     public interface imageAction
     {
-
         public void onclick(int position,JSONArray m,String show);
-
     }
 
     protected void initPaints() {
@@ -309,7 +305,12 @@ public class CircularSeekBarNew extends View {
 
         Log.i("values length= ",Integer.toString(values.length()));
         if(values.length()==0){
-            Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
+
+            ((MainActivity)mContext).showToastMessage("Sit back and relax while we find clients for you");
+            //Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
+            //showToastMessage("Sit back and relax while we find clients for you");
+            //mActivity.showToastMessage("Sit back and relax while we find clients for you");
+
             minValue=0;
             maxvalue=0;
         }

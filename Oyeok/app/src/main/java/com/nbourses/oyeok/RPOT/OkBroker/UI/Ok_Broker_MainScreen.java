@@ -124,6 +124,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     ImageView aboveImageView,aboveImageView1,aboveImageView2,aboveImageView3,aboveImageView4,aboveImageView5;
     ImageView belowImageView,belowImageView1,belowImageView2,belowImageView3,belowImageView4,belowImageView5;
     ImageView aboveAboveImageView,aboveAboveImageView1,aboveAboveImageView2,aboveAboveImageView3,aboveAboveImageView4,aboveAboveImageView5;
+    //MainActivity mActivity = new MainActivity();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -185,7 +186,14 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         if(!dbHelper.getValue(DatabaseConstants.coolOff).equals("null")) {
             // coolOffString=dbHelper.getValue(DatabaseConstants.coolOff);
             coolOff=Integer.parseInt(dbHelper.getValue(DatabaseConstants.coolOff));
-            totalTime=coolOff*100/leftHourGlasses;
+
+            if(leftHourGlasses != 0 ) {
+                totalTime = coolOff * 100 / leftHourGlasses;
+            }
+            else
+            {
+                totalTime = 0;
+            }
             currentTime=totalTime*filledHourGlass;
             currentTime+=percentage*totalTime/100;
         }
@@ -346,10 +354,14 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                                 if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
 
                                     //Toast.makeText(getActivity(), "Moved", Toast.LENGTH_LONG).show();
+                                    //mActivity.showToastMessage("Moved");
+                                    ((MainActivity)getActivity()).showToastMessage("Moved");
 
                                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 
-                                    Toast.makeText(getActivity(), "Up", Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getActivity(), "Up", Toast.LENGTH_LONG).show();
+                                    //mActivity.showToastMessage("Up");
+                                    ((MainActivity)getActivity()).showToastMessage("Up");
                                     if (isNetworkAvailable()) {
 
                                         lat = latlng.latitude;

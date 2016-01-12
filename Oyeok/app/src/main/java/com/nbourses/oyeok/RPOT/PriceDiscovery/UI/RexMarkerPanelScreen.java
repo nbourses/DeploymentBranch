@@ -529,6 +529,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private void displayToast(String toast) {
         if (getActivity() != null && toast != null) {
             Toast.makeText(getActivity(), toast, Toast.LENGTH_LONG).show();
+            ((MainActivity)getActivity()).showToastMessage(toast);
             toast = null;
         }
     }
@@ -551,9 +552,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         public void run() {
             //fillHourGlasses(0, intervalCount * mInterval / 1000);
 
-            showInfoMessage("Sample information test");
-
-
+            //showInfoMessage("Sample information test");
         }
     };
 
@@ -723,7 +722,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
 
 
-            Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
+            //Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
+            ((MainActivity)getActivity()).showToastMessage("Offline Mode");
         }
 
     }
