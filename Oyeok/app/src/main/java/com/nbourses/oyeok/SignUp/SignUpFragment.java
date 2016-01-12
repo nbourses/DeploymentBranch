@@ -26,6 +26,8 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.Firebase.HourGlassDetails;
+import com.nbourses.oyeok.Firebase.HourGlassFirebase;
 import com.nbourses.oyeok.Firebase.UserProfileFirebase;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
@@ -38,6 +40,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.OnAcceptOkSuccess;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
+import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
@@ -338,7 +341,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
 
         Log.i("inside","signup");
-        String API="http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000";
+        //String API="http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000"
+        String API = "http://52.25.136.179:9000";
         my_user_id = "icroi614g4su7pxts6p4w2nt7891jm4u";
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(API).setLogLevel(RestAdapter.LogLevel.FULL).build();
@@ -379,9 +383,15 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                         Log.i("TAG", "Inside signup success");
                         my_user_id = signUp.responseData.getUserId();
                         dbHelper.save(DatabaseConstants.userId, my_user_id);
+                        SharedPrefs.save(getActivity(), "UserId", my_user_id);
                         Log.i("Firebase", userProfileViewModel.getUserProfile().toString());
                         userProfileFirebase = new UserProfileFirebase(firebaseUrl, my_user_id);
                         userProfileFirebase.setUserProfileValues(userProfileViewModel.getUserProfile());
+                        HourGlassDetails hourGlassDetails=new HourGlassDetails();
+                        hourGlassDetails.setPercentage(0);
+                        hourGlassDetails.setWholeHourGlass(5);
+                        HourGlassFirebase hourGlassFirebase=new HourGlassFirebase(getActivity(),DatabaseConstants.firebaseUrl);
+                        hourGlassFirebase.saveHourGlassDetails(hourGlassDetails);
                         dbHelper.save(DatabaseConstants.name, Sname);
                         dbHelper.save(DatabaseConstants.email,Semail);
                         dbHelper.save(DatabaseConstants.mobileNumber,Snumber);
@@ -554,6 +564,16 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);
                                 UserCredentials.saveString(context, PreferenceKeys.SUCCESSFUL_HAIL, "true");*/
+                                Bundle b = new Bundle();
+                                b.putString("lastFragment","oyeIntentSpecs");
+                                Fragment f=new Droom_chats_list();
+                                FragmentManager fragmentManager = getChildFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                f.setArguments(b);
+                                fragmentTransaction.replace(R.id.container_body, f);
+                                fragmentTransaction.commit();
+
+                                Log.i("Change Fragment", f.toString());
                                  Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
                                 //finish();
 

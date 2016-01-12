@@ -12,6 +12,8 @@ public class AcceptOk {
     public ResponseData responseData = new ResponseData();
 
     public class ResponseData{
+
+
         @SerializedName("time")
 
         ArrayList<String> time = new ArrayList<String>();

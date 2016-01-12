@@ -29,6 +29,7 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
+import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
@@ -452,7 +453,16 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                                 UserCredentials.saveString(context, PreferenceKeys.SUCCESSFUL_HAIL, "true");*/
                                         Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
                                         //finish();
+                                        Bundle b = new Bundle();
+                                        b.putString("lastFragment","oyeIntentSpecs");
+                                        Fragment f=new Droom_chats_list();
+                                        FragmentManager fragmentManager = getFragmentManager();
+                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                        f.setArguments(b);
+                                        fragmentTransaction.replace(R.id.container_body, f);
+                                        fragmentTransaction.commit();
 
+                                        Log.i("Change Fragment", f.toString());
                                     } else if (s.equalsIgnoreCase("User already has an active oye. Pls end first")) {
                                 /*Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);*/
@@ -472,7 +482,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                                 }
 
                             }
-                            ((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null,"");
+                            //((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null,"");
                 /*}else
                 {
                     *//*Intent NextActivity = new Intent(context, MainActivity.class);

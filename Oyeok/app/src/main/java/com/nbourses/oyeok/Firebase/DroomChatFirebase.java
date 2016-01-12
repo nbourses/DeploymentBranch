@@ -35,6 +35,7 @@ public class DroomChatFirebase {
 
 
     public void createChatRoom(String okId,String userId1,String userId2,DroomDetails droomDetails){
+        Log.i("Mmmi",""+userId1+"  "+userId2+"  "+okId);
         Firebase chatFirebaseReference1,chatFirebaseReference2;
         chatFirebaseReference1=firebaseReference.child(userId1);
         chatFirebaseReference2=firebaseReference.child(userId2);
@@ -125,14 +126,17 @@ public class DroomChatFirebase {
         firebaseReference1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                int i=0;
+                int i = 0;
+                Log.i("tb onDataChange", String.valueOf(System.currentTimeMillis()));
                 for (DataSnapshot child : snapshot.getChildren()) {
                     listOfChildren.put(child.getKey(), (HashMap) child.getValue());
                     Log.i("Test2", "" + listOfChildren.size());
                     i++;
                 }
-                Log.i("Test3",listOfChildren.toString());
-                mCallBack.sendData(listOfChildren);
+                Log.i("Test3", listOfChildren.toString());
+                Log.i("time after getDroomList", String.valueOf(System.currentTimeMillis()));
+                if(mCallBack!=null)
+                    mCallBack.sendData(listOfChildren);
 
             }
 
@@ -141,5 +145,6 @@ public class DroomChatFirebase {
 
             }
         });
+
     }
 }
