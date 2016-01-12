@@ -185,7 +185,12 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         if(!dbHelper.getValue(DatabaseConstants.coolOff).equals("null")) {
             // coolOffString=dbHelper.getValue(DatabaseConstants.coolOff);
             coolOff=Integer.parseInt(dbHelper.getValue(DatabaseConstants.coolOff));
-            totalTime=coolOff*100/leftHourGlasses;
+            if(leftHourGlasses != 0 ) {
+                totalTime = coolOff * 100 / leftHourGlasses;
+            }else
+            {
+                totalTime = 0;
+            }
             currentTime=totalTime*filledHourGlass;
             currentTime+=percentage*totalTime/100;
         }
