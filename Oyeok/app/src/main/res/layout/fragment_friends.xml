@@ -85,19 +85,33 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                >
             <TextView
                 android:id="@+id/textforoye"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="HEY BROKER I WANT TO"
                 android:textColor="@color/colorPrimaryDark"
-                android:layout_marginTop="5dp"
-                android:layout_weight="50"
+
+                android:layout_weight=".5"
                 android:textSize="15sp"
                 android:gravity="left"
-
                 />
-
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/mySwitch"
+                    app:showText="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".5"
+                    android:textOn="SHOW"
+                    android:textOff="SEE"
+                     />
+            </LinearLayout>
             <RadioGroup
                 android:id="@+id/RadioBtnGroupSeeShow"
                 android:layout_width="match_parent"
