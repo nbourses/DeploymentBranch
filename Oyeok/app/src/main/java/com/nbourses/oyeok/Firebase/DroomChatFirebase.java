@@ -35,6 +35,7 @@ public class DroomChatFirebase {
 
 
     public void createChatRoom(String okId,String userId1,String userId2,DroomDetails droomDetails){
+        Log.i("Mmmi",""+userId1+"  "+userId2+"  "+okId);
         Firebase chatFirebaseReference1,chatFirebaseReference2;
         chatFirebaseReference1=firebaseReference.child(userId1);
         chatFirebaseReference2=firebaseReference.child(userId2);
