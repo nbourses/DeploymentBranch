@@ -131,9 +131,6 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private ImageView mQrCode;
     private LinearLayout mMarkerPanel;
 
-    private ImageView mMarkerpanelminus;
-    private ImageView mMarkerpanelplus;
-    private DiscreteSeekBar mMarkerpriceslider;
     private RelativeLayout mMarkerminmax;
     private GoogleMap map;
     private LinearLayout ll_marker;
@@ -174,9 +171,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
        mVisits = (TextView) rootView.findViewById(R.id.newVisits);
         mQrCode = (ImageView) rootView.findViewById(R.id.qrCode);
         mMarkerPanel = (LinearLayout) rootView.findViewById(R.id.ll_marker);
-        mMarkerpanelminus = (ImageView) rootView.findViewById(R.id.markersliderminus);
-        mMarkerpanelplus = (ImageView) rootView.findViewById(R.id.markerpanelplus);
-        mMarkerpriceslider = (DiscreteSeekBar) rootView.findViewById(R.id.price_seekbar);
+
        mMarkerminmax = (RelativeLayout) rootView.findViewById(R.id.markerpanelminmax);
         //ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
         maxPrice = (TextView) rootView.findViewById(R.id.tv_max);
@@ -297,28 +292,11 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void onClick(View v) {
 
                 mMarkerminmax.setVisibility(View.GONE);
-                mMarkerpanelminus.setVisibility(View.VISIBLE);
-                mMarkerpanelplus.setVisibility(View.VISIBLE);
-                mMarkerpriceslider.setVisibility(View.VISIBLE);
+
 
             }
         });
 
-        mMarkerpanelminus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int m = mMarkerpriceslider.getLeft();
-                mMarkerpriceslider.setLeft(m - 1);
-
-            }
-        });
-        mMarkerpanelplus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int m = mMarkerpriceslider.getRight();
-                mMarkerpriceslider.setRight(m + 1);
-            }
-        });
 
 
 
@@ -343,18 +321,12 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void onDrag(MotionEvent motionEvent) {
 
                 if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                    mMarkerpanelminus.setVisibility(View.GONE);
-                    mMarkerpanelplus.setVisibility(View.GONE);
-                    mMarkerpriceslider.setVisibility(View.GONE);
                     mMarkerminmax.setVisibility(View.GONE);
                     mMarkerPanel.setVisibility(View.INVISIBLE);
 
 
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 
-                    mMarkerpanelminus.setVisibility(View.GONE);
-                    mMarkerpanelplus.setVisibility(View.GONE);
-                    mMarkerpriceslider.setVisibility(View.GONE);
                     mMarkerPanel.setVisibility(View.VISIBLE);
                     mMarkerminmax.setVisibility(View.VISIBLE);
                     getPrice();
@@ -462,23 +434,6 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         // Inflate the layout for this fragment
 
 
-        mMarkerpriceslider.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
-            @Override
-            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-                //Toast.makeText(getActivity(),"test",Toast.LENGTH_LONG).show();
-                map.animateCamera(CameraUpdateFactory.zoomTo(12));
-            }
-        });
         if(!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
             droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
 

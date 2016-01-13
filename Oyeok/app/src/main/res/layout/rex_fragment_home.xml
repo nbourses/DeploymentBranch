@@ -44,26 +44,6 @@
                 android:background="@drawable/maker_bg"
                 >
 
-                <ImageView
-                    android:id="@+id/markersliderminus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_left_arrow_circle"
-                    android:layout_marginLeft="4dp"
-                    android:visibility="gone"
-                    android:layout_gravity="center_vertical" />
-
-
-                <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-                    android:id="@+id/price_seekbar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    app:dsb_min="2"
-                    app:dsb_max="15"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:visibility="gone"
-                    />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -158,17 +138,6 @@
 
                 </RelativeLayout>
 
-
-
-                <ImageView
-                    android:id="@+id/markerpanelplus"
-                    android:visibility="gone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_right_arrow_circle"
-                    android:layout_marginRight="4dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="4dp" />
 
             </LinearLayout>
 
