@@ -446,7 +446,6 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                             String s = letsOye.getResponseData();
                             if (!s.equals("")) {
                                 try {
-
                                     if (s.equalsIgnoreCase("Your Oye is published")) {
                                 /*FirebaseClass.setOyebookRecord(UserCredentials.getString(EnterConfigActivity.this, PreferenceKeys.MY_SHORTMOBILE_KEY), reNt, show, lng.toString(), lat.toString(), user_id, bhkval + "BHK", msg4, UserCredentials.getString(EnterConfigActivity.this, PreferenceKeys.CURRENT_LOC_KEY));
                                 Intent NextActivity = new Intent(context, MainActivity.class);
@@ -487,7 +486,6 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                                     e.printStackTrace();
 
                                 }
-
                             }
                             //((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null,"");
                 /*}else

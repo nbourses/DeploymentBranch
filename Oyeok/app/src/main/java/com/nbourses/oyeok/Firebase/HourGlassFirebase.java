@@ -46,10 +46,10 @@ public class HourGlassFirebase {
                 for (DataSnapshot child : snapshot.getChildren()) {
                     switch (child.getKey()) {
                         case "wholeHourGlass":
-                            hourGlassDetails.setWholeHourGlass((Integer) child.getValue());
+                            hourGlassDetails.setWholeHourGlass(Integer.valueOf(child.getValue().toString()));
                             break;
                         case "percentage":
-                            hourGlassDetails.setPercentage((Integer) child.getValue());
+                            hourGlassDetails.setPercentage(Integer.valueOf(child.getValue().toString()));
                             break;
                     }
 
@@ -59,12 +59,9 @@ public class HourGlassFirebase {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-
             }
         });
 
         return hourGlassDetails;
     }
-
-
 }
