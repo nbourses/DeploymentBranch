@@ -196,7 +196,7 @@ public class Loan_Broker_Requirement extends Fragment implements CircularSeekBar
 
 
     @Override
-    public void onclick(int position, JSONArray m,String show) {
+    public void onclick(int position, JSONArray m, String show, int x_c, int y_c) {
         // Toast.makeText(getActivity(),"The value is"+m.get(position),Toast.LENGTH_LONG).show();
 //        YoPopup yoPopup = new YoPopup();
 //        yoPopup.inflateYo(getActivity(), "LL-3BHK-20K", "broker");

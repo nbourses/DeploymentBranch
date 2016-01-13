@@ -5,6 +5,7 @@ package com.nbourses.oyeok.Database;
  */
 public class DatabaseConstants {
     public static String firebaseUrl="https://resplendent-fire-6770.firebaseio.com/";
+    public static String serverUrl="https://ssl.hailyo.com";
     public static String name="Name";
     public static String email="Email";
     public static String gcmId="GcmId";

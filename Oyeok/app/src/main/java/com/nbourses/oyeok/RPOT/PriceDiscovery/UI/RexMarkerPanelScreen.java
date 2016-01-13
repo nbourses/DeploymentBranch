@@ -612,14 +612,16 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     public void getPrice() {
 
         //getRegion();
-        String API = "http://52.25.136.179:9000";
+        String API = DatabaseConstants.serverUrl;
         User user = new User();
         user.setDeviceId("Hardware");
-        user.setGcmId(SharedPrefs.getString(getActivity(),SharedPrefs.MY_GCM_ID));
+        user.setPushToken(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+        user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         user.setUserRole("client");
-        user.setLongitude(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LNG));
-        user.setLatitude(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LAT));
-        user.setLocality(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
+        user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+        user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+        user.setLocality(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+        user.setPlatform("android");
         Log.i("my_locality",SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
         user.setPincode("400058");
 		

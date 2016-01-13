@@ -196,7 +196,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
             Str_Lng = UserCredentials.getString(this, PreferenceKeys.MY_CUR_LNG);*/ //FirebaseClass.getString(this,FirebaseClass.MY_CUR_LNG);
             Str_Lat = SharedPrefs.getString(getActivity(),SharedPrefs.MY_LAT);
             Str_Lng = SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG);
-            String API = "http://52.25.136.179:9000";
+            String API = DatabaseConstants.serverUrl;
 
             User user = new User();
             user.setName(Sname);
@@ -209,10 +209,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 user.setUserRole("client");
 
             regid = userProfileViewModel.getGcmId();
-            user.setGcmId(regid);
+            user.setPushToken(regid);
+            user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
             user.setLongitude(Str_Lng);
-            user.setLocality("Locality");
+            user.setLocality(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
             user.setLatitude(Str_Lat);
+            user.setPlatform("android");
             user.setDeviceId("Hardware");
 
 
@@ -340,7 +342,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
         Log.i("inside","signup");
         //String API="http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000"
-        String API = "http://52.25.136.179:9000";
+        String API = DatabaseConstants.serverUrl;
         my_user_id = "icroi614g4su7pxts6p4w2nt7891jm4u";
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(API).setLogLevel(RestAdapter.LogLevel.FULL).build();
@@ -355,11 +357,13 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         user.setUserRole("broker");
         else
         user.setUserRole("client");
+        user.setPushToken(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
         user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
         user.setDeviceId("deviceId");
-        user.setLocality("");
+        user.setPlatform("android");
+        user.setLocality(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
 
 		/*user.setUserRole(dbHelper.getValue("userRole");
         regid = UserProfileViewModel.getGcmId();
@@ -526,6 +530,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         oyeOk.setPropertyType(propertySpecification[0]);
         oyeOk.setPropertySubtype(propertySpecification[1]);
         oyeOk.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+        oyeOk.setPushToken(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+        oyeOk.setPlatform("android");
         Log.i("UserId", "saved in DB");
 
 
@@ -537,7 +543,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         oyeOk.setLat("17");
         oyeOk.setRegion("powai");
         oyeOk.setPincode("400058");*/
-        String API = "http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000";
+        String API = DatabaseConstants.serverUrl;
         RestAdapter restAdapter1 = new RestAdapter.Builder().setEndpoint(API).build();
         restAdapter1.setLogLevel(RestAdapter.LogLevel.FULL);
         OyeokApiService oyeok = restAdapter1.create(OyeokApiService.class);

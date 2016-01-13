@@ -92,18 +92,9 @@
         android:orientation="horizontal"
         android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/wallet"
-            android:textColor="@color/white"
-            android:text="OkWallet"
-            android:background="#40C4FF"
 
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content" />
 
         <Button
-
             android:layout_width="0dp"
             android:layout_weight="1"
             android:background="#69F0AE"
@@ -141,6 +132,7 @@
         android:id="@+id/rentText"
         android:visibility="gone"
         android:gravity="center"
+        android:textSize="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -150,13 +142,13 @@
 
     <Button
         android:id="@+id/pickContact"
-android:visibility="gone"
+        android:visibility="gone"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center"
         android:background="@drawable/ic_pick_contact"
         android:layout_marginBottom="50dp"
-        android:layout_marginRight="70dp"/>
+        android:layout_marginRight="30dp"/>
 
     <TextView
         android:id="@+id/contactText"
@@ -167,6 +159,6 @@ android:visibility="gone"
         android:layout_gravity="center"
         android:layout_marginBottom="50dp"
         android:layout_marginLeft="25dp"
-        android:text="Select\nclient'scontact"/>
+        android:text="Select\nClient"/>
 
 </FrameLayout>

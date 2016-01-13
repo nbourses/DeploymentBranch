@@ -17,6 +17,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.nbourses.oyeok.R;
@@ -59,6 +60,7 @@ public class CircularSeekBarNew extends View {
     private Bitmap icon;
     private int index = -1;
     private Paint mEndLinecolor;
+    private PopupWindow pw;
 
     public CircularSeekBarNew(Context context) {
         super(context);
@@ -109,9 +111,7 @@ public class CircularSeekBarNew extends View {
 
     public interface imageAction
     {
-
-        public void onclick(int position,JSONArray m,String show);
-
+        public void onclick(int position, JSONArray m, String show, int x_c, int y_c);
     }
 
     protected void initPaints() {
@@ -246,15 +246,19 @@ public class CircularSeekBarNew extends View {
 //            int textwidth = left+(width/2);
             d.draw(canvas);
             int plusheight=0;
-            if (i % 2 == 0) {
-                Drawable m = getResources().getDrawable(R.drawable.ic_add_24dp);
-                plusheight = m.getIntrinsicHeight();
-                int pluswidth = m.getIntrinsicWidth();
+            try {
+                if (values.getJSONObject(i).getString("user_role").equalsIgnoreCase("broker")) {
+                    Drawable m = getResources().getDrawable(R.drawable.ic_add_24dp);
+                    plusheight = m.getIntrinsicHeight();
+                    int pluswidth = m.getIntrinsicWidth();
 
 
-                m.setBounds((int)(house_image_left-pluswidth+DPTOPX_SCALE),house_image_top-(height/2)-plusheight,(int)(house_image_left+DPTOPX_SCALE),house_image_top-(height/2));
+                    m.setBounds((int)(house_image_left-pluswidth+DPTOPX_SCALE),house_image_top-(height/2)-plusheight,(int)(house_image_left+DPTOPX_SCALE),house_image_top-(height/2));
 
-                m.draw(canvas);
+                    m.draw(canvas);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
             imagesRect.add(i, new Rect(house_image_left, house_image_top - height, house_image_left + width, house_image_top));
 //
@@ -424,18 +428,25 @@ public class CircularSeekBarNew extends View {
                             index = -1;
                             if(mImageAction != null)
                             {
-                                mImageAction.onclick(i,values,"hide");
+                                mImageAction.onclick(i,values,"hide",x_c,y_c);
                             }
                         }else
                         {
                             index = i;
-                            if(i % 2 ==0) {
-                                mImageAction.onclick(i, values, "showHalf");
-                            }else
-                            {
-                                mImageAction.onclick(i, values, "show");
+                            try {
+                                if(values.getJSONObject(i).getString("user_role").equalsIgnoreCase("client")) {
+                                    mImageAction.onclick(i, values, "showHalf",x_c,y_c);
+                                }else
+                                {
+                                    mImageAction.onclick(i, values, "show",x_c,y_c);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
+                        //pw = new PopupWindow(, 300, 470, true);
+                        // display the popup in the center
+                       //pw.showAtLocation(R.id.circularseekbar, Gravity.CENTER, 0, 0);
                         invalidate();
                      break;
 
@@ -444,7 +455,7 @@ public class CircularSeekBarNew extends View {
                         index = -1;
                         if(mImageAction != null)
                         {
-                            mImageAction.onclick(i,values,"hide");
+                            mImageAction.onclick(i,values,"hide", x_c, y_c);
                         }
                         invalidate();
                     }
