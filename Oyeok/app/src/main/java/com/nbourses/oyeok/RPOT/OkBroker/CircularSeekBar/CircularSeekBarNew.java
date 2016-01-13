@@ -21,6 +21,7 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -313,7 +314,8 @@ public class CircularSeekBarNew extends View {
 
         Log.i("values length= ",Integer.toString(values.length()));
         if(values.length()==0){
-            Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
+            ((MainActivity)mContext).showToastMessage("Sit back and relax while we find clients for you");
             minValue=0;
             maxvalue=0;
         }
