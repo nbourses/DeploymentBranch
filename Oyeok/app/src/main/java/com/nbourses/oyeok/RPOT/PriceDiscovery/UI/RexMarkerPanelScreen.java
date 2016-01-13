@@ -68,6 +68,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.QrCode.CaptureActivityAnyOrientation;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.HorizontalPicker.HorizontalPicker;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.apache.http.HttpEntity;
@@ -134,8 +135,6 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private RelativeLayout mMarkerminmax;
     private GoogleMap map;
     private LinearLayout ll_marker;
-    private TextView maxPrice;
-    private TextView minPrice;
     private GeoFence geoFence;
     private int permissionCheckForCamera,permissionCheckForLocation;
     private final int MY_PERMISSION_FOR_CAMERA=11;
@@ -158,6 +157,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     AutoCompleteTextView autoCompView;
     private RelativeLayout errorView;
     private TextView errorText;
+    private HorizontalPicker horizontalPicker;
 
 
 
@@ -174,8 +174,6 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
        mMarkerminmax = (RelativeLayout) rootView.findViewById(R.id.markerpanelminmax);
         //ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
-        maxPrice = (TextView) rootView.findViewById(R.id.tv_max);
-        minPrice = (TextView) rootView.findViewById(R.id.tv_min);
          permissionCheckForCamera = ContextCompat.checkSelfPermission(this.getActivity(),
                 Manifest.permission.CAMERA);
         mainActivity=(MainActivity)getActivity();
@@ -185,12 +183,23 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 Manifest.permission.ACCESS_FINE_LOCATION);
         errorView = (RelativeLayout) rootView.findViewById(R.id.alertLayout);
         errorText = (TextView) rootView.findViewById(R.id.errorText);
-        onPositionSelected(0,2);
+        onPositionSelected(0, 2);
 
 
+        horizontalPicker = (HorizontalPicker)rootView.findViewById(R.id.picker);
+        horizontalPicker.setSelectedItem(2);
+        horizontalPicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+            }
+        });
+        horizontalPicker.setOnItemSelectedListener(new HorizontalPicker.OnItemSelected() {
+            @Override
+            public void onItemSelected(int index) {
 
-
+            }
+        });
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{"Rental", "Sale"}));
@@ -291,7 +300,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             @Override
             public void onClick(View v) {
 
-                mMarkerminmax.setVisibility(View.GONE);
+                //mMarkerminmax.setVisibility(View.GONE);
 
 
             }
@@ -598,8 +607,6 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void success(GetPrice getPrice, Response response) {
                 //Toast.makeText(getContext(), "get price success", Toast.LENGTH_LONG).show();
                 Log.i("getPrice", "success");
-                minPrice.setText(getPrice.responseData.getOr_max());
-                maxPrice.setText(getPrice.responseData.getOr_min());
 
             }
 

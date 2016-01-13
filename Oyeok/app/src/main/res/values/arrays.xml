@@ -295,4 +295,10 @@
         <item></item>
         <item>Min</item>
     </string-array>
+    <string-array name="hpicker">
+        <item>500</item>
+        <item>1000</item>
+        <item>1500</item>
+        <item>2000</item>
+    </string-array>
 </resources>
