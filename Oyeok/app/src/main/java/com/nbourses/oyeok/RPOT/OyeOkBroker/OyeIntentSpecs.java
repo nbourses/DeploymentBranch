@@ -418,7 +418,9 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
             oyeOk.setUserRole("client");
             oyeOk.setPropertyType(propertySpecification[0]);
             oyeOk.setPropertySubtype(propertySpecification[1]);
-            oyeOk.setGcmId(SharedPrefs.getString(getActivity(),SharedPrefs.MY_GCM_ID));
+            oyeOk.setPushToken(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+            oyeOk.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+            oyeOk.setPlatform("android");
             Log.i("UserId", "saved in DB");
 
 
@@ -431,7 +433,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         oyeOk.setRegion("powai");
         oyeOk.setPincode("400058");*/
             String off_mode = "NO";
-            String API = "http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000";
+            String API = DatabaseConstants.serverUrl;
             RestAdapter restAdapter1 = new RestAdapter.Builder().setEndpoint(API).build();
             restAdapter1.setLogLevel(RestAdapter.LogLevel.FULL);
             OyeokApiService oyeok = restAdapter1.create(OyeokApiService.class);

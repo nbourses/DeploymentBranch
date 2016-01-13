@@ -17,10 +17,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +28,6 @@ import org.json.JSONException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import static java.lang.Math.getExponent;
 import static java.lang.Math.log10;
 
 /**
@@ -61,6 +60,7 @@ public class CircularSeekBarNew extends View {
     private Bitmap icon;
     private int index = -1;
     private Paint mEndLinecolor;
+    private PopupWindow pw;
 
     public CircularSeekBarNew(Context context) {
         super(context);
@@ -72,6 +72,7 @@ public class CircularSeekBarNew extends View {
         super(context, attrs);
         mContext = context;
         init(attrs, 0);
+
     }
 
     public CircularSeekBarNew(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -91,6 +92,7 @@ public class CircularSeekBarNew extends View {
 
         //initRects();
 
+
         initPaths();
     }
 
@@ -99,6 +101,8 @@ public class CircularSeekBarNew extends View {
         mCircleColor = attrArray.getColor(R.styleable.CircularSeekBarNew_circlenew_color, DEFAULT_CIRCLE_COLOR);
         mCircleColor = Color.parseColor("#2DC4B6");
         mCircleStrokeWidth = attrArray.getDimension(R.styleable.CircularSeekBarNew_circlenew_stroke_width, DEFAULT_CIRCLE_STROKE_WIDTH * DPTOPX_SCALE);
+
+
     }
 
     public void setmImageAction(imageAction mImageAction) {
@@ -107,7 +111,7 @@ public class CircularSeekBarNew extends View {
 
     public interface imageAction
     {
-        public void onclick(int position,JSONArray m,String show);
+        public void onclick(int position, JSONArray m, String show, int x_c, int y_c);
     }
 
     protected void initPaints() {
@@ -242,15 +246,19 @@ public class CircularSeekBarNew extends View {
 //            int textwidth = left+(width/2);
             d.draw(canvas);
             int plusheight=0;
-            if (i % 2 == 0) {
-                Drawable m = getResources().getDrawable(R.drawable.ic_add_24dp);
-                plusheight = m.getIntrinsicHeight();
-                int pluswidth = m.getIntrinsicWidth();
+            try {
+                if (values.getJSONObject(i).getString("user_role").equalsIgnoreCase("broker")) {
+                    Drawable m = getResources().getDrawable(R.drawable.ic_add_24dp);
+                    plusheight = m.getIntrinsicHeight();
+                    int pluswidth = m.getIntrinsicWidth();
 
 
-                m.setBounds((int)(house_image_left-pluswidth+DPTOPX_SCALE),house_image_top-(height/2)-plusheight,(int)(house_image_left+DPTOPX_SCALE),house_image_top-(height/2));
+                    m.setBounds((int)(house_image_left-pluswidth+DPTOPX_SCALE),house_image_top-(height/2)-plusheight,(int)(house_image_left+DPTOPX_SCALE),house_image_top-(height/2));
 
-                m.draw(canvas);
+                    m.draw(canvas);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
             imagesRect.add(i, new Rect(house_image_left, house_image_top - height, house_image_left + width, house_image_top));
 //
@@ -305,12 +313,7 @@ public class CircularSeekBarNew extends View {
 
         Log.i("values length= ",Integer.toString(values.length()));
         if(values.length()==0){
-
-            ((MainActivity)mContext).showToastMessage("Sit back and relax while we find clients for you");
-            //Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
-            //showToastMessage("Sit back and relax while we find clients for you");
-            //mActivity.showToastMessage("Sit back and relax while we find clients for you");
-
+            Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
             minValue=0;
             maxvalue=0;
         }
@@ -425,18 +428,25 @@ public class CircularSeekBarNew extends View {
                             index = -1;
                             if(mImageAction != null)
                             {
-                                mImageAction.onclick(i,values,"hide");
+                                mImageAction.onclick(i,values,"hide",x_c,y_c);
                             }
                         }else
                         {
                             index = i;
-                            if(i % 2 ==0) {
-                                mImageAction.onclick(i, values, "showHalf");
-                            }else
-                            {
-                                mImageAction.onclick(i, values, "show");
+                            try {
+                                if(values.getJSONObject(i).getString("user_role").equalsIgnoreCase("client")) {
+                                    mImageAction.onclick(i, values, "showHalf",x_c,y_c);
+                                }else
+                                {
+                                    mImageAction.onclick(i, values, "show",x_c,y_c);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
+                        //pw = new PopupWindow(, 300, 470, true);
+                        // display the popup in the center
+                       //pw.showAtLocation(R.id.circularseekbar, Gravity.CENTER, 0, 0);
                         invalidate();
                      break;
 
@@ -445,7 +455,7 @@ public class CircularSeekBarNew extends View {
                         index = -1;
                         if(mImageAction != null)
                         {
-                            mImageAction.onclick(i,values,"hide");
+                            mImageAction.onclick(i,values,"hide", x_c, y_c);
                         }
                         invalidate();
                     }

@@ -88,14 +88,37 @@ public class Oyeok {
     @SerializedName("lat")
     private String lat;
 
-    @SerializedName("gcm_id")
-    private String gcmId;
+    @SerializedName("push_token")
+    private String pushToken;
 
     @SerializedName("name")
     private String name;
 
     @SerializedName("email")
     private String email;
+
+    public String getGcmId() {
+        return gcmId;
+    }
+
+    public void setGcmId(String gcmId) {
+        this.gcmId = gcmId;
+    }
+
+    @SerializedName("gcm_id")
+    private String gcmId;
+
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
+    @SerializedName("platform")
+    public String platform;
 
     /**
      * End hail command taker
@@ -243,12 +266,12 @@ public class Oyeok {
         this.mobileCode=mobileCode;
     }
 
-    public String getGcmId(){
-        return gcmId;
+    public String getPushToken(){
+        return pushToken;
     }
 
-    public void setGcmId(String gcmId){
-        this.gcmId=gcmId;
+    public void setPushToken(String pushToken){
+        this.pushToken=pushToken;
     }
 
     public String getDeviceIdd(){

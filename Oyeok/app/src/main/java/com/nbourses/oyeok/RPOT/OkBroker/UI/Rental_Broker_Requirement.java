@@ -11,12 +11,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.Database.DBHelper;
@@ -52,6 +55,8 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
     int j;
     Ok_Broker_MainScreen ok_broker_mainScreen;
     Button droom;
+   // View popup;
+   // private PopupWindow pw;
 
 
 
@@ -72,6 +77,10 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
         contactName = (TextView) v.findViewById(R.id.contactText);
         rentText.setText("Rent : 50k Rs/month");
         dbHelper = new DBHelper(getContext());
+
+        //popup = inflater.inflate(R.layout.ok_popup,container,false);
+        //circularSeekBar= v.findViewById(R.id.circularseekbar);
+        //pw = new PopupWindow(popup, 30, 47, true);
 
         droom= (Button) v.findViewById(R.id.droom);
 
@@ -214,15 +223,16 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
 
 
     @Override
-    public void onclick(int position, JSONArray m,String show) {
+    public void onclick(int position, JSONArray m, String show, int x_c, int y_c) {
         // Toast.makeText(getActivity(),"The value is"+m.get(position),Toast.LENGTH_LONG).show();
 //        YoPopup yoPopup = new YoPopup();
 //        yoPopup.inflateYo(getActivity(), "LL-3BHK-20K", "broker");
         try {
             p=m;
             j=position;
-            rentText.setText("Rent : Rs "+ m.getJSONObject(position).getString("price")+" /month");
+            rentText.setText("Rs "+ m.getJSONObject(position).getString("price")+" /per m");
             DecimalFormat formatter = new DecimalFormat();
+            //pw.showAtLocation(cbn, Gravity.CENTER,x_c,y_c);
             //rentText.setText("Price : Rs "+ formatter.format(Double.parseDouble(m.getJSONObject(position).getString("price")))+"\n"+m.getJSONObject(position).getString("property_type")+"\n"+m.getJSONObject(position).getString("property_subtype"));
             /*oyeId=m.getJSONObject(position).getString("oye_id");
             oyeUserId= m.getJSONObject(position).getString("user_id");
@@ -242,6 +252,7 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
             pickContact.setVisibility(View.GONE);
             contactName.setVisibility(View.GONE);
 
+
         }else if(show.equals("hide"))
         {
             mNotClicked.setVisibility(View.VISIBLE);
@@ -252,6 +263,7 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
             pickContact.setVisibility(View.GONE);
             contactName.setVisibility(View.GONE);
             mOkbutton.setText("Auto Ok");
+            //pw.dismiss();
 
         }else
         {

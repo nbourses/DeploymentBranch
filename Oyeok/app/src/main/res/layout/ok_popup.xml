@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup_element"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="10px"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="OK Screen" />
+
+    <!--<TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="Status" />
+
+    <TextView android:id="@+id/server_status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Awaiting answer..."
+        android:paddingLeft="10sp" />-->
+    <TextView
+        android:id="@+id/displayOkText"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:layout_marginBottom="3dp"
+        android:text="5 oks will be used"/>
+
+    <TextView
+        android:id="@+id/rentText"
+
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:text="50L Rs"/>
+
+    <Button
+        android:id="@+id/pickContact"
+        android:visibility="gone"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:background="@drawable/ic_pick_contact"
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="70dp"/>
+
+    <TextView
+        android:id="@+id/contactText"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="25dp"
+        android:text="Select\nclient'scontact"/>
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:background="#69F0AE"
+        android:layout_marginLeft="5dp"
+        android:text="Auto Ok"
+        android:layout_height="wrap_content"
+        android:id="@+id/okButton"
+        android:textColor="@color/white" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal|bottom">
+
+
+    </LinearLayout>
+</LinearLayout>

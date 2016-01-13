@@ -147,7 +147,7 @@ public class Profile extends Fragment {
                 };
 
                 public void updateProfile() {
-                    String API = "http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000";
+                    String API = DatabaseConstants.serverUrl;
                     User user = new User();
                     user.setMobileNo(phoneTxt.getText().toString());
                     user.setEmail(emailTxt.getText().toString());
@@ -155,6 +155,7 @@ public class Profile extends Fragment {
                     user.setUserRole((String) role_txt.getText());
                     user.setUserId(dbhelper.getValue(DatabaseConstants.userId));
                     user.setMyPhoto(filePath);
+                    user.setPlatform("android");
                     user.setSeeWhat("all");
 
 

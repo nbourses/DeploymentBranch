@@ -91,6 +91,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     private ViewPager mPager;
     private SlidingTabLayout mTabs;
     private LinearLayout mHideShow;
+    private LinearLayout popup;
     private FrameLayout mMapView;
     private boolean mFirst = false;
     private CustomMapFragment customMapFragment;
@@ -167,6 +168,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         aboveImageView5= (ImageView) v.findViewById(R.id.imageView_above5);
         belowImageView5= (ImageView) v.findViewById(R.id.imageView_below5);
         aboveAboveImageView5= (ImageView) v.findViewById(R.id.imageView_above_above5);
+        popup= (LinearLayout) v.findViewById(R.id.popup_element);
 
         hourGlassFirebase=new HourGlassFirebase(getActivity(),DatabaseConstants.firebaseUrl);
 
@@ -746,16 +748,18 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     }
 
     public void preok() {
-        String API = "http://52.25.136.179:9000";
+        String API = DatabaseConstants.serverUrl;
         Oyeok preok = new Oyeok();
         preok.setDeviceId("Hardware");
         //preok.setGcmId("gliui");
         preok.setUserRole("broker");
         //preok.setLong("72.1456");
         //preok.setLat("19.2344");
-        preok.setGcmId(dbHelper.getValue(DatabaseConstants.gcmId));
+        preok.setPushToken(dbHelper.getValue(DatabaseConstants.gcmId));
+        preok.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         preok.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
         preok.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+        preok.setPlatform("android");
 
 
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API).build();
@@ -952,7 +956,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             {
                 dbHelper.save(DatabaseConstants.userRole, "Broker");
                 dbHelper.save(DatabaseConstants.user,"Broker");
-                String API="http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000";
+                String API=DatabaseConstants.serverUrl;
                 //{"user_role":"broker","device_id":"device", "lat":89.2, "long":78.2, "user_role":"client", "gcm_id":"ping"}
                 RestAdapter restAdapter = new RestAdapter.Builder()
                         .setEndpoint(API).setLogLevel(RestAdapter.LogLevel.FULL).build();
@@ -960,10 +964,12 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
                 User user = new User();
                 user.setUserRole("broker");
-                user.setGcmId(dbHelper.getValue(DatabaseConstants.gcmId));
+                user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+                user.setPushToken(dbHelper.getValue(DatabaseConstants.gcmId));
                 user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
                 user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
                 user.setDeviceId("deviceId");
+                user.setPlatform("android");
                 if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
                     try {
                         UserApiService user1 = restAdapter.create(UserApiService.class);

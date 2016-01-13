@@ -54,11 +54,13 @@ public class AcceptOkCall {
         }
 
 
-        String API = "http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000";
+        String API = DatabaseConstants.serverUrl;
         Oyeok acceptOk = new Oyeok();
         //DBHelper dbHelper1= new DBHelper();
         acceptOk.setDeviceId("Hardware");
-        acceptOk.setGcmId(SharedPrefs.getString(activity,SharedPrefs.MY_GCM_ID));
+        acceptOk.setGcmId(SharedPrefs.getString(activity, SharedPrefs.MY_GCM_ID));
+        acceptOk.setPushToken(SharedPrefs.getString(activity, SharedPrefs.MY_GCM_ID));
+        acceptOk.setPlatform("android");
         acceptOk.setUserRole("broker");
         //acceptOk.setUserRole("broker");
         acceptOk.setLong(SharedPrefs.getString(activity.getBaseContext(), SharedPrefs.MY_LNG));

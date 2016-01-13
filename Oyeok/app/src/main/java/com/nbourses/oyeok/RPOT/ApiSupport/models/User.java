@@ -73,8 +73,8 @@ public class User {
         // System Generated and System Specific Variables
         @SerializedName("user_id")
         private String userId;
-        @SerializedName("gcm_id")
-        private String GcmId;
+        @SerializedName("push_token")
+        private String pushToken;
         @SerializedName("login_at")
         private String LoginAt;
         @SerializedName("published_at")
@@ -97,6 +97,27 @@ public class User {
 
         @SerializedName("pincode")
         public String pincode;
+
+    public String getGcmId() {
+        return gcmId;
+    }
+
+    public void setGcmId(String gcmId) {
+        this.gcmId = gcmId;
+    }
+    @SerializedName("gcm_id")
+    public String gcmId;
+
+        public String getPlatform() {
+                return platform;
+        }
+
+        public void setPlatform(String platform) {
+                this.platform = platform;
+        }
+
+        @SerializedName("platform")
+        public String platform;
 
         public String getMyPhoto() {
                 return myPhoto;
@@ -366,18 +387,18 @@ public class User {
          * The GcmId
          */
         //@JsonProperty("gcm_id")
-        public String getGcmId() {
-                return GcmId;
+        public String getPushToken() {
+                return pushToken;
         }
 
         /**
          *
-         * @param GcmId
+         * @param pushToken
          * The Gcm_Id
          */
         //@JsonProperty("gcm_id")
-        public void setGcmId(String GcmId) {
-                this.GcmId = GcmId;
+        public void setPushToken(String pushToken) {
+                this.pushToken = pushToken;
         }
 
         /**
