@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,9 +20,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,10 +87,14 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     Switch switchOnOff;
     DBHelper dbHelper;
     Branch branch;
+    private int mInterval=5000;
     BranchUniversalObject branchUniversalObject;
     LinkProperties linkProperties;
     ImageView profileImage;
     TextView changeRegion;
+    TextView toastText;
+    LinearLayout toastLayout;
+    private Handler mHandler;
 
 
     public void setMapsClicked(openMapsClicked mapsClicked) {
@@ -134,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        toastLayout= (LinearLayout) findViewById(R.id.toastLayout);
         resideMenuButton = (Button) mToolbar.findViewById(R.id.residemenu_rightmenu_titlebar);
         openMaps  = (Button) mToolbar.findViewById(R.id.openmaps);
         changeRegion = (TextView) mToolbar.findViewById(R.id.tv_change_region);
@@ -147,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             }
         });
         dbHelper=new DBHelper(getBaseContext());
-
+        toastText= (TextView) findViewById(R.id.toastText);
 
 
         setSupportActionBar(mToolbar);
@@ -227,6 +235,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             }
         });
 
+
+
         setUpMenuChangeUserRole();
 
         if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
@@ -246,6 +256,10 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             }
         });
         Firebase.setAndroidContext(this);
+        mHandler = new Handler();
+        //startRepeatingTask();
+
+
 
        /* refer = (Button) findViewById(R.id.refer);
         refer.setOnClickListener(new View.OnClickListener() {
@@ -257,6 +271,51 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 */
 
 
+    }
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            //fillHourGlasses(0, intervalCount * mInterval / 1000);
+
+           hideToastMessage();
+
+
+        }
+    };
+
+    public void showToastMessage(String message){
+        toastText.setText(message);
+        toastLayout.setVisibility(View.VISIBLE);
+        hideMap(1);
+        mHandler.postDelayed(mStatusChecker, 5000);
+    }
+    public void hideToastMessage(){
+        hideMap(0);
+        toastLayout.setVisibility(View.INVISIBLE);
+    }
+
+    private void hideMap(int i) {
+
+        Animation m = null;
+
+        //Load animation
+        if(i==0) {
+            m = AnimationUtils.loadAnimation(this,
+                    R.anim.slide_up);
+
+
+            //SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY)+","+SharedPrefs.getString(getActivity(),SharedPrefs.MY_CITY)
+        }else {
+
+            m = AnimationUtils.loadAnimation(this,
+                    R.anim.slide_down_toast_layout);
+        }
+
+        toastLayout.setAnimation(m);
     }
 
     @Override

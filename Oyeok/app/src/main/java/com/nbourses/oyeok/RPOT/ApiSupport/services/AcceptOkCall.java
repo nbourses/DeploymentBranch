@@ -84,26 +84,26 @@ public class AcceptOkCall {
             user1.acceptOk(acceptOk, new Callback<AcceptOk>() {
                 @Override
                 public void success(AcceptOk acceptOk, Response response) {
-                    Log.i("call chala", "nachoo");
-                    Bundle args=new Bundle();
-                    args.putString("UserId1",acceptOk.responseData.getOkUserId());
-                    args.putString("UserId2",acceptOk.responseData.getOyeUserId());
-                    args.putString("OkId",acceptOk.responseData.getOkId());
-                    if(mCallBack!=null)
-                    {
-                        DroomDetails droomDetails=new DroomDetails();
-                        droomDetails.setTitle("Test Droom");
-                        Log.i("call chala","nacho2");
-                        droomDetails.setLastMessage("Test Last Message");
-                        droomDetails.setStatus("Test Message Not read");
-                        droomDetails.setTimestamp("Test TimeStamp");
-                        String userId1=acceptOk.responseData.getOkUserId();
-                        String userId2=acceptOk.responseData.getOyeUserId();
-                        String okId=acceptOk.responseData.getOkId();
-                        droomChatFirebase.createChatRoom(okId,userId1,userId2,droomDetails);
-                        Log.i("Andhar bhi aaya","nachoo");
-                        mCallBack.replaceFragment(args);
-                    }
+                    if(acceptOk.responseData.getMessage()==null) {
+                        Log.i("call chala", "nachoo");
+                        Bundle args = new Bundle();
+                        args.putString("UserId1", acceptOk.responseData.getOkUserId());
+                        args.putString("UserId2", acceptOk.responseData.getOyeUserId());
+                        args.putString("OkId", acceptOk.responseData.getOkId());
+                        if (mCallBack != null) {
+                            DroomDetails droomDetails = new DroomDetails();
+                            droomDetails.setTitle("Test Droom");
+                            Log.i("call chala", "nacho2");
+                            droomDetails.setLastMessage("Test Last Message");
+                            droomDetails.setStatus("Test Message Not read");
+                            droomDetails.setTimestamp("Test TimeStamp");
+                            String userId1 = acceptOk.responseData.getOkUserId();
+                            String userId2 = acceptOk.responseData.getOyeUserId();
+                            String okId = acceptOk.responseData.getOkId();
+                            droomChatFirebase.createChatRoom(okId, userId1, userId2, droomDetails);
+                            Log.i("Andhar bhi aaya", "nachoo");
+                            mCallBack.replaceFragment(args);
+                        }
                     /*DroomDetails droomDetails=new DroomDetails();
                     droomDetails.setTitle("Test Droom");
                     droomDetails.setLastMessage("Test Last Message");
@@ -118,6 +118,9 @@ public class AcceptOkCall {
                     droomDetails.setStatus("Message Not read");
                     droomDetails.setTimestamp("TimeStamp");
                     droomChatFirebase.updateChatRoom(okId,userId1,userId2,droomDetails);*/
+                    }
+                    else
+                        Log.i("message=",acceptOk.responseData.getMessage());
 
                 }
 
