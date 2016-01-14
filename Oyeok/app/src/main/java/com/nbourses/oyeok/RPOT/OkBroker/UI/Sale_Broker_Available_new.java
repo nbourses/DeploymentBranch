@@ -262,7 +262,7 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
             mNotClicked.setVisibility(View.GONE);
             //mTitle.setVisibility(View.VISIBLE);
             //mOkbutton.setBackgroundColor(Color.parseColor("#B2DFDB"));
-            mOkbutton.setText("Ok(4290)");
+            //mOkbutton.setText("Ok(4290)");
             rentText.setVisibility(View.VISIBLE);
             displayOkText.setVisibility(View.VISIBLE);
             pickContact.setVisibility(View.GONE);
@@ -277,7 +277,7 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
             displayOkText.setVisibility(View.GONE);
             pickContact.setVisibility(View.GONE);
             contactName.setVisibility(View.GONE);
-            mOkbutton.setText("Auto Ok");
+            //mOkbutton.setText("Auto Ok");
 
         }else
         {
@@ -286,7 +286,7 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
             //mOkbutton.setBackgroundColor(Color.parseColor("#E0E0E0"));
             rentText.setVisibility(View.VISIBLE);
             displayOkText.setVisibility(View.VISIBLE);
-            mOkbutton.setText("Auto Ok");
+           // mOkbutton.setText("Auto Ok");
             pickContact.setVisibility(View.VISIBLE);
             contactName.setVisibility(View.VISIBLE);
 

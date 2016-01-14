@@ -271,7 +271,7 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
             mNotClicked.setVisibility(View.GONE);
             //mTitle.setVisibility(View.VISIBLE);
             //mOkbutton.setBackgroundColor(Color.parseColor("#B2DFDB"));
-            mOkbutton.setText("Ok(4290)");
+            //mOkbutton.setText("Ok(4290)");
             rentText.setVisibility(View.VISIBLE);
             displayOkText.setVisibility(View.VISIBLE);
             pickContact.setVisibility(View.GONE);
@@ -286,7 +286,7 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
             displayOkText.setVisibility(View.GONE);
             pickContact.setVisibility(View.GONE);
             contactName.setVisibility(View.GONE);
-            mOkbutton.setText("Auto Ok");
+            //mOkbutton.setText("Auto Ok");
 
         }else
         {
@@ -295,7 +295,7 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
             //mOkbutton.setBackgroundColor(Color.parseColor("#E0E0E0"));
             rentText.setVisibility(View.VISIBLE);
             displayOkText.setVisibility(View.VISIBLE);
-            mOkbutton.setText("Auto Ok");
+            //mOkbutton.setText("Auto Ok");
             pickContact.setVisibility(View.VISIBLE);
             contactName.setVisibility(View.VISIBLE);
 
