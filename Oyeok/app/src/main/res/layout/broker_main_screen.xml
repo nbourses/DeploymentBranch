@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="bottom"
     android:layout_width="match_parent"
@@ -328,11 +329,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
-            android:src="@drawable/deal_circle"
+            android:src="@drawable/ic_add_24dp"
             android:layout_alignBottom="@+id/pager"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="86dp" />
+            android:layout_marginBottom="86dp"
+            app:fab_colorNormal="#2DC4B6"
+            app:fab_showShadow="true"
+            app:fab_shadowColor="#66000000"
+            app:fab_shadowRadius="4dp"
+            app:fab_shadowXOffset="1dp"
+            app:fab_shadowYOffset="3dp"
+            app:fab_size="normal"
+
+            />
 
 
 
@@ -361,8 +371,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Auto OK"
+            android:text="Auto Ok"
             android:id="@+id/tv_auto_ok"
+            android:layout_marginRight="5dp"
             android:layout_above="@+id/fab"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />

@@ -60,7 +60,7 @@ public class Droom_chats_list extends Fragment implements ChatList {
         Log.i("tb getDroomList", String.valueOf(System.currentTimeMillis()));
         Bundle b = getArguments();
         try {
-            String lastFragment = b.getString("lastFragment");
+             lastFragment = b.getString("lastFragment");
         }catch (Exception e){
             Log.i("last f","exception null");
         }

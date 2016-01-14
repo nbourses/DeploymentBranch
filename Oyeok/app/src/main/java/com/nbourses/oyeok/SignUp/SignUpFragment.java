@@ -582,15 +582,18 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 fragmentTransaction.replace(R.id.container_body, f);
                                 fragmentTransaction.commit();*/
                                 //(MainActivity)getActivity().changeFragment(new Droom_chats_list(),null,"Broker HomeScreen");
-                                ((MainActivity) getActivity()).changeFragment(new Droom_chats_list(), b,"");
+                                //if(isAdded()) {
+                                    activity.showToastMessage("Oye published.Sit back and relax while we find a broker for you");
+                                    activity.changeFragment(new Droom_chats_list(), b, "");
+                                //}
                                 //Log.i("Change Fragment", f.toString());
                                  //Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
                                 //finish();
                                 //fragmentTransaction.commit();
 
-                                Log.i("Change Fragment", f.toString());
+                                //Log.i("Change Fragment", f.toString());
                                  //Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
-                                ((MainActivity)getActivity()).showToastMessage("Oye published.Sit back and relax while we find a broker for you");
+
                                 /// /finish();
 
                             } else if (s.equalsIgnoreCase("User already has an active oye. Pls end first")) {
