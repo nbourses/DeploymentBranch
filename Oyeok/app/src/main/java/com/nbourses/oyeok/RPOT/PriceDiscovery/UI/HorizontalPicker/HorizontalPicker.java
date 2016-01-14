@@ -41,6 +41,9 @@ import android.widget.OverScroller;
 import com.nbourses.oyeok.R;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -79,8 +82,8 @@ public class HorizontalPicker extends View {
 
     private int mTouchSlop;
 
-    private CharSequence[] mValues;
-    private BoringLayout[] mLayouts;
+    private ArrayList<CharSequence> mValues;
+    private ArrayList<BoringLayout> mLayouts;
 
     private TextPaint mTextPaint;
     private BoringLayout.Metrics mBoringMetrics;
@@ -143,7 +146,7 @@ public class HorizontalPicker extends View {
                 defStyle, 0
         );
 
-        CharSequence[] values;
+        ArrayList<CharSequence> values;
         int ellipsize = 3; // END default value
         int sideItems = mSideItems;
 
@@ -153,7 +156,10 @@ public class HorizontalPicker extends View {
                 mTextColor = ColorStateList.valueOf(0xFF000000);
             }
 
-            values = a.getTextArray(R.styleable.HorizontalPicker_values);
+            CharSequence[] x = a.getTextArray(R.styleable.HorizontalPicker_values);
+            List<CharSequence> newList = Arrays.asList(x);
+            values = new ArrayList<CharSequence>();
+            values.addAll(newList);
             ellipsize = a.getInt(R.styleable.HorizontalPicker_android_ellipsize, ellipsize);
             mMarqueeRepeatLimit = a.getInt(R.styleable.HorizontalPicker_android_marqueeRepeatLimit, mMarqueeRepeatLimit);
             mDividerSize = a.getDimension(R.styleable.HorizontalPicker_dividerSize, mDividerSize);
@@ -243,6 +249,7 @@ public class HorizontalPicker extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        Log.v(TAG,"before onDraw");
         int saveCount = canvas.getSaveCount();
         canvas.save();
 
@@ -253,14 +260,17 @@ public class HorizontalPicker extends View {
         // translate horizontal to center
         canvas.translate(itemWithPadding * mSideItems, 0);
 
-        if (mValues != null) {
-            for (int i = 0; i < mValues.length; i++) {
+        if (!mValues.isEmpty()) {
+            for (int i = 0; i < mValues.size(); i++) {
 
                 // set text color for item
                 mTextPaint.setColor(getTextColor(i));
-
+                BoringLayout layout;
                 // get text layout
-                BoringLayout layout = mLayouts[i];
+//                if(mLayouts.size()!=0)
+                    layout = mLayouts.get(i);
+  //              else
+    //                layout = new BoringLayout();
 
                 int saveCountHeight = canvas.getSaveCount();
                 canvas.save();
@@ -269,7 +279,7 @@ public class HorizontalPicker extends View {
 
                 float lineWidth = layout.getLineWidth(0);
                 if (lineWidth > mItemWidth) {
-                    if (isRtl(mValues[i])) {
+                    if (isRtl(mValues.get(i))) {
                         x += (lineWidth - mItemWidth) / 2;
                     } else {
                         x -= (lineWidth - mItemWidth) / 2;
@@ -313,6 +323,8 @@ public class HorizontalPicker extends View {
 
         drawEdgeEffect(canvas, mLeftEdgeEffect, 270);
         drawEdgeEffect(canvas, mRightEdgeEffect, 90);
+        Log.v(TAG, "after onDraw");
+
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -366,9 +378,9 @@ public class HorizontalPicker extends View {
 
     private void remakeLayout() {
 
-        if (mLayouts != null && mLayouts.length > 0 && getWidth() > 0)  {
-            for (int i = 0; i < mLayouts.length; i++) {
-                mLayouts[i].replaceOrMake(mValues[i], mTextPaint, mItemWidth,
+        if (mLayouts != null && mLayouts.size() > 0 && getWidth() > 0)  {
+            for (int i = 0; i < mLayouts.size(); i++) {
+                mLayouts.get(i).replaceOrMake(mValues.get(i), mTextPaint, mItemWidth,
                         Layout.Alignment.ALIGN_CENTER, 1f, 1f, mBoringMetrics, false, mEllipsize,
                         mItemWidth);
             }
@@ -461,7 +473,7 @@ public class HorizontalPicker extends View {
                 int deltaMoveX = (int) (mLastDownEventX - currentMoveX);
 
                 if(mScrollingX ||
-                        (Math.abs(deltaMoveX) > mTouchSlop) && mValues != null && mValues.length > 0) {
+                        (Math.abs(deltaMoveX) > mTouchSlop) && mValues.size()!=0 && mValues.size() > 0) {
 
                     if(!mScrollingX) {
                         deltaMoveX = 0;
@@ -522,7 +534,7 @@ public class HorizontalPicker extends View {
 
                 if(mScrollingX && Math.abs(initialVelocityX) > mMinimumFlingVelocity) {
                     flingX(initialVelocityX);
-                } else if (mValues != null) {
+                } else if (!mValues.isEmpty()) {
                     float positionX = event.getX();
                     if(!mScrollingX) {
 
@@ -666,7 +678,7 @@ public class HorizontalPicker extends View {
     /**
      * @return
      */
-    public CharSequence[] getValues() {
+    public ArrayList<CharSequence> getValues() {
         return mValues;
     }
 
@@ -674,19 +686,19 @@ public class HorizontalPicker extends View {
      * Sets values to choose from
      * @param values New values to choose from
      */
-    public void setValues(CharSequence[] values) {
+    public void setValues(ArrayList<CharSequence> values) {
 
         if (mValues != values) {
             mValues = values;
 
-            if (mValues != null) {
-                mLayouts = new BoringLayout[mValues.length];
-                for (int i = 0; i < mLayouts.length; i++) {
-                    mLayouts[i] = new BoringLayout(mValues[i], mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
-                            1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth);
+            if (!mValues.isEmpty()) {
+                mLayouts = new ArrayList<BoringLayout>(mValues.size());
+                for (int i = 0; i < mValues.size(); i++) {
+                    mLayouts.add(new BoringLayout(mValues.get(i), mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
+                            1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
                 }
             } else {
-                mLayouts = new BoringLayout[0];
+                mLayouts = new ArrayList<BoringLayout>(1);
             }
 
             // start marque only if has already been measured
@@ -774,6 +786,7 @@ public class HorizontalPicker extends View {
 
     private void computeScrollX() {
         OverScroller scroller = mFlingScrollerX;
+        //mValues.add(500*mValues.size()+"");
         if(scroller.isFinished()) {
             scroller = mAdjustScrollerX;
             if(scroller.isFinished()) {
@@ -812,7 +825,7 @@ public class HorizontalPicker extends View {
 
         mPreviousScrollerX = Integer.MIN_VALUE;
         mFlingScrollerX.fling(getScrollX(), getScrollY(), -velocityX, 0, 0,
-                (int) (mItemWidth + mDividerSize) * (mValues.length - 1), 0, 0, getWidth() / 2, 0);
+                (int) (mItemWidth + mDividerSize) * (mValues.size() - 1), 0, 0, getWidth() / 2, 0);
 
         invalidate();
     }
@@ -824,8 +837,8 @@ public class HorizontalPicker extends View {
 
         if(item < 0) {
             item = 0;
-        } else if(item > mValues.length) {
-            item = mValues.length;
+        } else if(item > mValues.size()) {
+            item = mValues.size();
         }
 
         mSelectedItem = item;
@@ -882,11 +895,11 @@ public class HorizontalPicker extends View {
 
         int item = getSelectedItem();
 
-        if (mLayouts != null && mLayouts.length > item) {
-            Layout layout = mLayouts[item];
+        if (mLayouts != null && mLayouts.size() > item) {
+            Layout layout = mLayouts.get(item);
             if (mEllipsize == TextUtils.TruncateAt.MARQUEE
                     && mItemWidth < layout.getLineWidth(0)) {
-                mMarquee = new Marquee(this, layout, isRtl(mValues[item]));
+                mMarquee = new Marquee(this, layout, isRtl(mValues.get(item)));
                 mMarquee.start(mMarqueeRepeatLimit);
             }
         }
@@ -998,18 +1011,41 @@ public class HorizontalPicker extends View {
 
         if(x < 0) {
             x = 0;
-        } else if(x > ((mItemWidth + (int) mDividerSize) * (mValues.length - 1))) {
-            x = ((mItemWidth + (int) mDividerSize) * (mValues.length - 1));
+        } else if(x > ((mItemWidth + (int) mDividerSize) * (mValues.size() - 1))) {
+            x = ((mItemWidth + (int) mDividerSize) * (mValues.size() - 1));
         }
         return x;
     }
 
     private int getScrollRange() {
         int scrollRange = 0;
-        if(mValues != null && mValues.length != 0) {
-            scrollRange = Math.max(0, ((mItemWidth + (int) mDividerSize) * (mValues.length - 1)));
+        if(mValues != null && mValues.size() != 0) {
+            scrollRange = Math.max(0, ((mItemWidth + (int) mDividerSize) * (mValues.size() - 1)));
         }
         return scrollRange;
+    }
+    public int getArraySize(){
+        if(mValues!=null)
+            return mValues.size();
+        return 0;
+    }
+    public void addValues(int index) {
+        /*size = horizontalPicker.getArraySize();
+                if(index>size-4) {
+                    horizontalPicker.addValue(500 * (size+1));
+        }*/
+        int size = getArraySize();
+        if (index > size - 8) {
+            if (mValues == null)
+                mValues = new ArrayList<CharSequence>();
+            while (size - 8 <= index) {
+                String newValue = 500 * (size+1) + "";
+                mValues.add(newValue);
+                mLayouts.add(new BoringLayout(newValue, mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
+                        1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
+                size++;
+            }
+        }
     }
 
     public interface OnItemSelected {
@@ -1245,7 +1281,7 @@ public class HorizontalPicker extends View {
 
             float item = position / itemWidth;
 
-            if (item < 0 || item > mPicker.mValues.length) {
+            if (item < 0 || item > mPicker.mValues.size()) {
                 return INVALID_ID;
             }
 
@@ -1270,8 +1306,8 @@ public class HorizontalPicker extends View {
             if (first < 0) {
                 items += first;
                 first = 0;
-            } else if (first + items > mPicker.mValues.length) {
-                items = mPicker.mValues.length - first;
+            } else if (first + items > mPicker.mValues.size()) {
+                items = mPicker.mValues.size() - first;
             }
 
             for (int i = 0; i < items; i++) {
@@ -1282,7 +1318,7 @@ public class HorizontalPicker extends View {
 
         @Override
         protected void onPopulateEventForVirtualView(int virtualViewId, AccessibilityEvent event) {
-            event.setContentDescription(mPicker.mValues[virtualViewId]);
+            event.setContentDescription(mPicker.mValues.get(virtualViewId));
         }
 
         @Override
@@ -1294,7 +1330,7 @@ public class HorizontalPicker extends View {
             int left = (int) (virtualViewId * itemWidth - scrollOffset);
             int right = left + mPicker.mItemWidth;
 
-            node.setContentDescription(mPicker.mValues[virtualViewId]);
+            node.setContentDescription(mPicker.mValues.get(virtualViewId));
             node.setBoundsInParent(new Rect(left, 0, right, mPicker.getHeight()));
             node.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
 

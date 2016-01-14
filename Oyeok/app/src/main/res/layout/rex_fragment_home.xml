@@ -37,7 +37,7 @@
                 android:id="@+id/ll_marker"
                 android:visibility="visible"
                 android:layout_width="fill_parent"
-                android:layout_height="56dp"
+                android:layout_height="60dp"
                 android:layout_marginLeft="@dimen/sixteen_dp"
                 android:layout_marginRight="@dimen/sixteen_dp"
                 android:orientation="horizontal"
@@ -58,7 +58,6 @@
                         android:text="Non Serviceable Region"
                         android:textColor="@color/white"
                         android:textSize="@dimen/fourteen_sp"
-
                         android:gravity="center" />
                     <TextView
                         android:layout_width="fill_parent"
@@ -92,9 +91,10 @@
                     <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.HorizontalPicker.HorizontalPicker
                         android:id="@+id/picker"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="50dp"
+                        android:layout_marginBottom="0dp"
                         android:layout_toRightOf="@id/linearlayout_drooms"
                         android:textColor="@android:color/white"
                         android:background="@android:color/black"
@@ -112,9 +112,14 @@
                     <TextView
                         android:id="@+id/tvRate"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="psf"
-                        android:layout_toRightOf="@id/picker"/>
+                        android:textColor="@color/yellow"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@id/picker"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="8dp"/>
                     <TextView
                         android:id="@+id/newVisits"
                         android:layout_width="wrap_content"

@@ -164,7 +164,9 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.v(TAG,"Before inflating xml");
       View  rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
+        Log.v(TAG,"After inflating xml");
         requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
         droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
         mDrooms = (TextView) rootView.findViewById(R.id.linearlayout_drooms);
@@ -195,9 +197,10 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             }
         });
         horizontalPicker.setOnItemSelectedListener(new HorizontalPicker.OnItemSelected() {
+            int size;
             @Override
             public void onItemSelected(int index) {
-
+                horizontalPicker.addValues(index);
             }
         });
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
