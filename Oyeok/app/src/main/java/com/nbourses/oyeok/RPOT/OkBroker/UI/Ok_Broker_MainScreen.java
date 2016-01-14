@@ -32,7 +32,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -121,6 +121,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     String pincode, region, fullAddress;
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "";
     Toolbar mToolbar;
+    TextView timeCount1,timeCount2,timeCount3,timeCount4,timeCount5,totalTimeTextView;
     ImageView hourGlass1,hourGlass2,hourGlass3,hourGlass4,hourGlass5;
     ImageView aboveImageView,aboveImageView1,aboveImageView2,aboveImageView3,aboveImageView4,aboveImageView5;
     ImageView belowImageView,belowImageView1,belowImageView2,belowImageView3,belowImageView4,belowImageView5;
@@ -144,30 +145,38 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         mMapView = (FrameLayout) v.findViewById(R.id.mapView);
         bPinLocation = (ImageButton)v.findViewById(R.id.bPinLocation);
 
+
         hourGlass1= (ImageView) v.findViewById(R.id.hglass_imageView1);
         aboveImageView1= (ImageView) v.findViewById(R.id.imageView_above1);
         belowImageView1= (ImageView) v.findViewById(R.id.imageView_below1);
         aboveAboveImageView1= (ImageView) v.findViewById(R.id.imageView_above_above1);
+        timeCount1= (TextView) v.findViewById(R.id.timeCount1);
 
         hourGlass2= (ImageView) v.findViewById(R.id.hglass_imageView2);
         aboveImageView2= (ImageView) v.findViewById(R.id.imageView_above2);
         belowImageView2= (ImageView) v.findViewById(R.id.imageView_below2);
         aboveAboveImageView2= (ImageView) v.findViewById(R.id.imageView_above_above2);
+        timeCount2= (TextView) v.findViewById(R.id.timeCount2);
 
         hourGlass3= (ImageView) v.findViewById(R.id.hglass_imageView3);
         aboveImageView3= (ImageView) v.findViewById(R.id.imageView_above3);
         belowImageView3= (ImageView) v.findViewById(R.id.imageView_below3);
         aboveAboveImageView3= (ImageView) v.findViewById(R.id.imageView_above_above3);
+        timeCount3= (TextView) v.findViewById(R.id.timeCount3);
 
         hourGlass4= (ImageView) v.findViewById(R.id.hglass_imageView4);
         aboveImageView4= (ImageView) v.findViewById(R.id.imageView_above4);
         belowImageView4= (ImageView) v.findViewById(R.id.imageView_below4);
         aboveAboveImageView4= (ImageView) v.findViewById(R.id.imageView_above_above4);
+        timeCount4= (TextView) v.findViewById(R.id.timeCount4);
 
         hourGlass5= (ImageView) v.findViewById(R.id.hglass_imageView5);
         aboveImageView5= (ImageView) v.findViewById(R.id.imageView_above5);
         belowImageView5= (ImageView) v.findViewById(R.id.imageView_below5);
         aboveAboveImageView5= (ImageView) v.findViewById(R.id.imageView_above_above5);
+        timeCount5= (TextView) v.findViewById(R.id.timeCount5);
+
+        totalTimeTextView= (TextView) v.findViewById(R.id.total_time_textView);
         popup= (LinearLayout) v.findViewById(R.id.popup_element);
 
         hourGlassFirebase=new HourGlassFirebase(getActivity(),DatabaseConstants.firebaseUrl);
@@ -182,8 +191,17 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             percentage=hourGlassDetails.getPercentage();
 
         }
-        initialFill(4);
-        fillHourGlasses(4,50);
+
+        timeCount1.setText("" + totalTime);
+        timeCount2.setText(""+ totalTime);
+        timeCount3.setText(""+totalTime);
+        timeCount4.setText(""+totalTime);
+        timeCount5.setText("" + totalTime);
+
+        initialFill(filledHourGlass);
+        fillHourGlasses(filledHourGlass, 50);
+        updateTotalTime();
+
         leftHourGlasses=500-filledHourGlass*100-percentage;
         if(!dbHelper.getValue(DatabaseConstants.coolOff).equals("null")) {
             // coolOffString=dbHelper.getValue(DatabaseConstants.coolOff);
@@ -199,6 +217,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             currentTime=totalTime*filledHourGlass;
             currentTime+=percentage*totalTime/100;
         }
+
        // earnOk = (Button) v.findViewById(R.id.earnOk);
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable())
             preok();
@@ -280,6 +299,10 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         }
 
         mMapView.setAnimation(m);
+    }
+
+    public void updateTotalTime(){
+        totalTimeTextView.setText("Total time left is : "+(Integer.parseInt((String) timeCount1.getText())+Integer.parseInt((String) timeCount2.getText())+Integer.parseInt((String) timeCount3.getText())+Integer.parseInt((String) timeCount4.getText())+Integer.parseInt((String) timeCount5.getText())));
     }
 
     @Override
@@ -416,7 +439,29 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         for(i=1;i<=noOfHourGlass;i++)
         {
             fillHourGlasses(i-1,99);
-
+        }
+        switch (noOfHourGlass)
+        {
+            case 1:timeCount1.setText("0");
+                break;
+            case 2:timeCount1.setText("0");
+                timeCount2.setText("0");
+                break;
+            case 3:timeCount1.setText("0");
+                timeCount2.setText("0");
+                timeCount3.setText("0");
+                break;
+            case 4:timeCount1.setText("0");
+                timeCount2.setText("0");
+                timeCount3.setText("0");
+                timeCount4.setText("0");
+                break;
+            case 5:timeCount1.setText("0");
+                timeCount2.setText("0");
+                timeCount3.setText("0");
+                timeCount4.setText("0");
+                timeCount5.setText("0");
+                break;
         }
     }
 
@@ -442,6 +487,11 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 LinearLayout.LayoutParams params12 = (LinearLayout.LayoutParams) belowImageView1.getLayoutParams();
                 params12.height                    = originalHeight-calculatedHeight;
                 belowImageView1.setLayoutParams(params12);
+
+
+                timeCount1.setText("" + percentageToBeFilled * totalTime / 100);
+                updateTotalTime();
+
                 break;
             case 1:
                 LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) aboveAboveImageView2.getLayoutParams();
@@ -455,6 +505,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 LinearLayout.LayoutParams params22 = (LinearLayout.LayoutParams) belowImageView2.getLayoutParams();
                 params22.height                    = originalHeight-calculatedHeight;
                 belowImageView2.setLayoutParams(params22);
+                timeCount2.setText("" + percentageToBeFilled * totalTime / 100);
+                updateTotalTime();
                 break;
             case 2:
 
@@ -469,6 +521,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 LinearLayout.LayoutParams params32 = (LinearLayout.LayoutParams) belowImageView3.getLayoutParams();
                 params32.height                    = originalHeight-calculatedHeight;
                 belowImageView3.setLayoutParams(params32);
+                timeCount3.setText("" + percentageToBeFilled * totalTime / 100);
+                updateTotalTime();
                 break;
             case 3:
 
@@ -483,6 +537,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 LinearLayout.LayoutParams params42 = (LinearLayout.LayoutParams) belowImageView4.getLayoutParams();
                 params42.height                    = originalHeight-calculatedHeight;
                 belowImageView4.setLayoutParams(params42);
+                timeCount4.setText("" + percentageToBeFilled * totalTime / 100);
+                updateTotalTime();
                 break;
             case 4:
 
@@ -497,6 +553,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 LinearLayout.LayoutParams params52 = (LinearLayout.LayoutParams) belowImageView5.getLayoutParams();
                 params52.height                    = originalHeight-calculatedHeight;
                 belowImageView5.setLayoutParams(params52);
+                timeCount5.setText(""+percentageToBeFilled*totalTime/100);
+                updateTotalTime();
                 break;
 
                 //Log.i("Mnni", originalHeight + "   " + calculatedHeight + "  " + percentageToBeFilled);
