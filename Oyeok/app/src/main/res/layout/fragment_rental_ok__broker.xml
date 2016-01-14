@@ -138,8 +138,6 @@
         android:layout_gravity="center"
         android:layout_marginBottom="10dp"
         android:text="50L Rs"/>
-
-
     <Button
         android:id="@+id/pickContact"
         android:visibility="gone"

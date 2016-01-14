@@ -18,18 +18,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.PopupWindow;
-import android.widget.Toast;
-
 import com.nbourses.oyeok.R;
-
+import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
 import static java.lang.Math.log10;
-
 /**
  * Created by prathyush on 26/11/15.
  */
@@ -197,14 +192,11 @@ public class CircularSeekBarNew extends View {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }else
+            }
+            else
             {
                 d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#81C784"), PorterDuff.Mode.SRC_ATOP));
-
             }
-
-
-
             int house_image_left;
             int house_image_top;
             int height = d.getIntrinsicHeight();
@@ -281,7 +273,6 @@ public class CircularSeekBarNew extends View {
         DecimalFormat formatter = new DecimalFormat();
         canvas.drawText("min:" + formatter.format(minValue), mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
         canvas.drawText("max:" + formatter.format(maxvalue), mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
-
     }
 
     @Override
@@ -313,7 +304,8 @@ public class CircularSeekBarNew extends View {
 
         Log.i("values length= ",Integer.toString(values.length()));
         if(values.length()==0){
-            Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
+            ((MainActivity)mContext).showToastMessage("Sit back and relax while we find clients for you");
             minValue=0;
             maxvalue=0;
         }

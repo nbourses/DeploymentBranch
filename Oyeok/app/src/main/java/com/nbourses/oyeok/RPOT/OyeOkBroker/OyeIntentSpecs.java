@@ -52,7 +52,7 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
     Bundle b;
     RadioGroup seeShowGrp;
     RadioButton seeRadioButton,showRadioButton;
-
+    //MainActivity mActivity = new MainActivity();
     private ImageView homeImageView,shopImageView,officeImageView,industrialImageView,othersImageView;
     RangeBar priceRangeBar;
     String dataFromMyFragment="",seeOrShow="";
@@ -360,7 +360,8 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 String[] temp=dataFromMyFragment.split(" ");
                 if(temp.length<=1)
                 {
-                    Toast.makeText(getActivity(),"Please enter all the fields",Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getActivity(),"Please enter all the fields",Toast.LENGTH_LONG).show();
+                    ((MainActivity)getActivity()).showToastMessage("Please enter all the fields");
                 }
                 else
                 letsOye();
@@ -447,13 +448,14 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                             String s = letsOye.getResponseData();
                             if (!s.equals("")) {
                                 try {
-
                                     if (s.equalsIgnoreCase("Your Oye is published")) {
                                 /*FirebaseClass.setOyebookRecord(UserCredentials.getString(EnterConfigActivity.this, PreferenceKeys.MY_SHORTMOBILE_KEY), reNt, show, lng.toString(), lat.toString(), user_id, bhkval + "BHK", msg4, UserCredentials.getString(EnterConfigActivity.this, PreferenceKeys.CURRENT_LOC_KEY));
                                 Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);
                                 UserCredentials.saveString(context, PreferenceKeys.SUCCESSFUL_HAIL, "true");*/
-                                        Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
+                                        //Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
+                                        //mActivity.showToastMessage("Oye published.Sit back and relax while we find a broker for you");
+                                        ((MainActivity)getActivity()).showToastMessage("Oye published.Sit back and relax while we find a broker for you");
                                         //finish();
                                         Bundle b = new Bundle();
                                         b.putString("lastFragment","oyeIntentSpecs");
@@ -468,21 +470,24 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                                     } else if (s.equalsIgnoreCase("User already has an active oye. Pls end first")) {
                                 /*Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);*/
-                                        Toast.makeText(getContext(), "You already have an active oye. Pls end it first", Toast.LENGTH_LONG).show();
-                                        //finish();
+                                        //Toast.makeText(getContext(), "You already have an active oye. Pls end it first", Toast.LENGTH_LONG).show();
+                                        //mActivity.showToastMessage("You already have an active oye. Pls end it first");
+                                        ((MainActivity)getActivity()).showToastMessage("You already have an active oye. Pls end it first");
+                                        /// /finish();
                                     } else
 
                                     {
                                 /*Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);*/
-                                        Toast.makeText(getContext(), "There is some error.", Toast.LENGTH_LONG).show();
+                                        //Toast.makeText(getContext(), "There is some error.", Toast.LENGTH_LONG).show();
+                                        //mActivity.showToastMessage("There is some error.");
+                                        ((MainActivity)getActivity()).showToastMessage("There is some error");
                                         //finish();
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
 
                                 }
-
                             }
                             //((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null,"");
                 /*}else
@@ -496,8 +501,9 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
 
                         @Override
                         public void failure(RetrofitError error) {
-                            Toast.makeText(getContext(), "lets oye call failed in enter config",
-                                    Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "lets oye call failed in enter config", Toast.LENGTH_LONG).show();
+                            //mActivity.showToastMessage("lets oye call failed in enter config");
+                            ((MainActivity)getActivity()).showToastMessage("lets oye call failed in enter config");
                             // FirebaseClass.setOyebookRecord(UserCredentials.getString(EnterConfigActivity.this,PreferenceKeys.MY_SHORTMOBILE_KEY),reNt,show,lng,lat,user_id,bhkval+"BHK",msg4,UserCredentials.getString(EnterConfigActivity.this,PreferenceKeys.CURRENT_LOC_KEY));
                             //Intent NextActivity = new Intent(context, MainActivity.class);
                             //startActivity(NextActivity);finish();
@@ -509,7 +515,8 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                     Log.i("Exception", "caught in lets oye");
                 }
             }else{
-                Toast.makeText(getContext(), "You are are using offline mode or you are not connected to internet", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getContext(), "You are are using offline mode or you are not connected to internet", Toast.LENGTH_LONG).show();
+                ((MainActivity) getActivity()).showToastMessage("You are are using offline mode or you are not connected to internet");
                 ((MainActivity) getActivity()).changeFragment(new RexMarkerPanelScreen(), null,"");
             }
 

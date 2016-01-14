@@ -34,7 +34,7 @@ public class AcceptOkCall {
     }
 
     OnAcceptOkSuccess mCallBack;
-    public void acceptOk(JSONArray m,int position, DBHelper dbHelper, Activity activity) {
+    public void acceptOk(JSONArray m,int position, final DBHelper dbHelper, Activity activity) {
         String oyeId=null,oyeUserId=null,tt = null,size=null,price=null,reqAvl=null;
         droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
 
@@ -86,11 +86,15 @@ public class AcceptOkCall {
                 public void success(AcceptOk acceptOk, Response response) {
                     if(acceptOk.responseData.getMessage()==null) {
                         Log.i("call chala", "nachoo");
+                        String coolOffString =acceptOk.responseData.getCoolOff();
+                        int coolOff=Integer.parseInt(coolOffString);
                         Bundle args = new Bundle();
                         args.putString("UserId1", acceptOk.responseData.getOkUserId());
                         args.putString("UserId2", acceptOk.responseData.getOyeUserId());
                         args.putString("OkId", acceptOk.responseData.getOkId());
                         if (mCallBack != null) {
+                            dbHelper.save(DatabaseConstants.coolOff,coolOffString);
+                            dbHelper.save("Time",acceptOk.responseData.getTime().toString());
                             DroomDetails droomDetails = new DroomDetails();
                             droomDetails.setTitle("Test Droom");
                             Log.i("call chala", "nacho2");

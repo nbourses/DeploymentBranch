@@ -15,9 +15,19 @@ public class AcceptOk {
 
 
         @SerializedName("time")
-
         ArrayList<String> time = new ArrayList<String>();
 
+
+        public String getCoolOff() {
+            return coolOff;
+        }
+
+        public void setCoolOff(String coolOff) {
+            this.coolOff = coolOff;
+        }
+
+        @SerializedName("cooloff")
+        String coolOff;
 
         @SerializedName("message")
         String message;
