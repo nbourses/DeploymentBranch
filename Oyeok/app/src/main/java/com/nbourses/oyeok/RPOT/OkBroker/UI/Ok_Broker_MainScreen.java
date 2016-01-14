@@ -105,7 +105,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     private CustomPhasedSeekBar mCustomPhasedSeekbar;
     private int currentItem,currentCount;
     private Button earnOk;
-    private int totalTime=100,currentTime=0;
+    private int totalTime=100000,currentTime=0;
     private ImageButton bPinLocation;
     private LatLng latlng;
     DBHelper dbHelper;
@@ -193,14 +193,14 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
         }
 
-        timeCount1.setText("" + totalTime);
-        timeCount2.setText(""+ totalTime);
-        timeCount3.setText(""+totalTime);
-        timeCount4.setText(""+totalTime);
-        timeCount5.setText("" + totalTime);
+        timeCount1.setText("" + totalTime/1000);
+        timeCount2.setText(""+ totalTime/1000);
+        timeCount3.setText(""+totalTime/1000);
+        timeCount4.setText(""+totalTime/1000);
+        timeCount5.setText("" + totalTime/1000);
 
-        initialFill(filledHourGlass-2);
-        fillHourGlasses(filledHourGlass-2, 50);
+        initialFill(filledHourGlass);
+        fillHourGlasses(filledHourGlass, percentage);
         updateTotalTime();
 
         leftHourGlasses=500-filledHourGlass*100-percentage;
@@ -209,15 +209,16 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             coolOff=Integer.parseInt(dbHelper.getValue(DatabaseConstants.coolOff));
 
             if(leftHourGlasses != 0 ) {
-                totalTime = coolOff * 100 / leftHourGlasses;
+                //totalTime = coolOff * 100 / leftHourGlasses;
             }
             else
             {
-                totalTime = 0;
+                //totalTime = 0;
             }
-            currentTime=totalTime*filledHourGlass;
-            currentTime+=percentage*totalTime/100;
+
         }
+        currentTime=totalTime*filledHourGlass;
+        currentTime+=percentage*totalTime/100;
 
        // earnOk = (Button) v.findViewById(R.id.earnOk);
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable())
@@ -261,7 +262,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 //        });
 
         mHandler = new Handler();
-        mHandler.postDelayed(mStatusChecker, 2000);
+        startRepeatingTask();
         return v;
     }
 
@@ -272,14 +273,17 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             if((leftHourGlasses!=0))
                 calculateFillingQuantity(currentTime);
                 //updateStatus(); //this function can change value of mInterval.
+                currentTime+=2000;
                 mHandler.postDelayed(mStatusChecker, 2000);
+            Log.i("HourGlasses","aaya");
 
 
         }
     };
 
     public void calculateFillingQuantity(int time){
-        fillHourGlasses(time/totalTime,time%totalTime);
+        fillHourGlasses(time/totalTime,(time%totalTime)/1000);
+        Log.i("Hg",""+time/totalTime+"   "+(time%totalTime)/1000+"  "+time+"  "+totalTime);
     }
 
     private void hideMap(int i) {
@@ -470,7 +474,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     public void fillHourGlasses(int wholeNumber, final int percentageToBeFilled){
         final int originalHeight=hourGlass1.getLayoutParams().height/2;
         final int calculatedHeight=((percentageToBeFilled  * originalHeight)/100);
-        if(percentageToBeFilled>=100)
+        if(percentageToBeFilled>=98)
         {
             leftHourGlasses-=100;
         }
@@ -491,7 +495,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 belowImageView1.setLayoutParams(params12);
 
 
-                timeCount1.setText("" + percentageToBeFilled * totalTime / 100);
+                timeCount1.setText("" +(100- percentageToBeFilled )* totalTime / 100000);
                 updateTotalTime();
 
                 break;
@@ -507,7 +511,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 LinearLayout.LayoutParams params22 = (LinearLayout.LayoutParams) belowImageView2.getLayoutParams();
                 params22.height                    = originalHeight-calculatedHeight;
                 belowImageView2.setLayoutParams(params22);
-                timeCount2.setText("" + percentageToBeFilled * totalTime / 100);
+                timeCount2.setText("" + (100- percentageToBeFilled ) * totalTime / 100000);
                 updateTotalTime();
                 break;
             case 2:
@@ -523,7 +527,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 LinearLayout.LayoutParams params32 = (LinearLayout.LayoutParams) belowImageView3.getLayoutParams();
                 params32.height                    = originalHeight-calculatedHeight;
                 belowImageView3.setLayoutParams(params32);
-                timeCount3.setText("" + percentageToBeFilled * totalTime / 100);
+                timeCount3.setText("" + (100- percentageToBeFilled ) * totalTime / 100000);
                 updateTotalTime();
                 break;
             case 3:
@@ -539,7 +543,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 LinearLayout.LayoutParams params42 = (LinearLayout.LayoutParams) belowImageView4.getLayoutParams();
                 params42.height                    = originalHeight-calculatedHeight;
                 belowImageView4.setLayoutParams(params42);
-                timeCount4.setText("" + percentageToBeFilled * totalTime / 100);
+                timeCount4.setText("" + percentageToBeFilled * totalTime / 100000);
                 updateTotalTime();
                 break;
             case 4:
@@ -555,7 +559,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 LinearLayout.LayoutParams params52 = (LinearLayout.LayoutParams) belowImageView5.getLayoutParams();
                 params52.height                    = originalHeight-calculatedHeight;
                 belowImageView5.setLayoutParams(params52);
-                timeCount5.setText(""+percentageToBeFilled*totalTime/100);
+                timeCount5.setText(""+(100- percentageToBeFilled )*totalTime/100000);
                 updateTotalTime();
                 break;
 
