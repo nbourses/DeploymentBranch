@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     LinearLayout toastLayout;
     private Handler mHandler;
 
-
     public void setMapsClicked(openMapsClicked mapsClicked) {
         this.mapsClicked = mapsClicked;
     }
@@ -104,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private openMapsClicked mapsClicked;
 
     Button refer;
+
 
   /*  @Override
     public void onFragmentInteraction(String s) {
@@ -188,8 +188,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbHelper.getValue(DatabaseConstants.imageFilePath));
             profileImage.setImageBitmap(yourSelectedImage);
         }
-        switchOnOff= (Switch) findViewById(R.id.switch_onoffmode);
+        //switchOnOff= (Switch) findViewById(R.id.switch_onoffmode);
         dbHelper.save(DatabaseConstants.offmode, "null");
+/*
         switchOnOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -211,8 +212,10 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
                     }
 
-                    /*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
-                    r.setPhasedSeekBar();*/
+                    */
+/*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
+                    r.setPhasedSeekBar();*//*
+
                 } else {
                     //Toast.makeText(getBaseContext(), "online mode", Toast.LENGTH_LONG).show();
                     showToastMessage("Online Mode");
@@ -228,12 +231,15 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                         } catch (ClassCastException x) {
 
                         }
-                    /*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
-                    r.setPhasedSeekBar();*/
+                    */
+/*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
+                    r.setPhasedSeekBar();*//*
+
                     }
                 }
             }
         });
+*/
 
 
 
@@ -405,7 +411,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 fragment.setArguments(bundle);
                 title = "Sign Up";
                 break;
-
             }
             else {
                 fragment = new Profile();

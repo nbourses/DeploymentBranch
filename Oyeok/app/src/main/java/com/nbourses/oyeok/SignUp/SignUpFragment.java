@@ -147,7 +147,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         llotp = (LinearLayout)view.findViewById(R.id.llotp);
         llotp.setVisibility(View.GONE);
 
+        String role_of_user = dbHelper.getValue(DatabaseConstants.userRole);
+
         firebaseUrl="https://resplendent-fire-6770.firebaseio.com/";
+
+        ((MainActivity)getActivity()).showToastMessage("Signing up as "+role_of_user);
+
         userProfileViewModel=new UserProfileViewModel();
         Button sendOtp=(Button)view.findViewById(R.id.sendotp);
         sendOtp.setOnClickListener(new View.OnClickListener() {

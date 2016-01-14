@@ -481,6 +481,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         if(!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
             droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
 
+        dbHelper.save(DatabaseConstants.userRole,"Client");
+
         return rootView;
     }
     @Override

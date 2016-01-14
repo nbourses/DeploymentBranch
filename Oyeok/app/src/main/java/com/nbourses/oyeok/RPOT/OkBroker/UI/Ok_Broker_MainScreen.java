@@ -272,8 +272,6 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 calculateFillingQuantity(currentTime);
                 //updateStatus(); //this function can change value of mInterval.
                 mHandler.postDelayed(mStatusChecker, 5000);
-
-
         }
     };
 
