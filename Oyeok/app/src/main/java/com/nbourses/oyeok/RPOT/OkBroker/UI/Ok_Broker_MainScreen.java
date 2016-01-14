@@ -300,7 +300,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     }
 
     public void updateTotalTime(){
-        totalTimeTextView.setText("Total time left is : "+(Integer.parseInt((String) timeCount1.getText())+Integer.parseInt((String) timeCount2.getText())+Integer.parseInt((String) timeCount3.getText())+Integer.parseInt((String) timeCount4.getText())+Integer.parseInt((String) timeCount5.getText())));
+        totalTimeTextView.setText("Total time left is : " + (Integer.parseInt((String) timeCount1.getText()) + Integer.parseInt((String) timeCount2.getText()) + Integer.parseInt((String) timeCount3.getText()) + Integer.parseInt((String) timeCount4.getText()) + Integer.parseInt((String) timeCount5.getText())));
     }
 
     @Override
@@ -736,9 +736,12 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     }
 
     public void openDroomList(){
+        Bundle b= new Bundle();
+        b.putString("lastFragment","okBrokerMainScreen");
         Fragment fragment = new Droom_chats_list();
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragment.setArguments(b);
         fragmentTransaction.replace(R.id.container_body, fragment);
         fragmentTransaction.commit();
     }

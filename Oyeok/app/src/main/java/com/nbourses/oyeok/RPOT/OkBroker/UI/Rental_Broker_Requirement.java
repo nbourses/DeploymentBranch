@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
@@ -55,6 +56,7 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
     int j;
     Ok_Broker_MainScreen ok_broker_mainScreen;
     Button droom;
+    FloatingActionButton autoOk;
    // View popup;
    // private PopupWindow pw;
 
@@ -72,27 +74,27 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
         displayOkText = (TextView) v.findViewById(R.id.displayOkText);
         mOkbutton = (Button) v.findViewById(R.id.okButton);
 
+
         ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
         pickContact = (Button) v.findViewById(R.id.pickContact);
         contactName = (TextView) v.findViewById(R.id.contactText);
         rentText.setText("Rent : 50k Rs/month");
         dbHelper = new DBHelper(getContext());
-
-        //popup = inflater.inflate(R.layout.ok_popup,container,false);
-        //circularSeekBar= v.findViewById(R.id.circularseekbar);
-        //pw = new PopupWindow(popup, 30, 47, true);
-
         droom= (Button) v.findViewById(R.id.droom);
+        View z= inflater.inflate(R.layout.broker_main_screen,container,false);
+        autoOk= (FloatingActionButton) z.findViewById(R.id.fab);
+
+        autoOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
+            }
+        });
 
         mOkbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(mOkbutton.getText().toString().equals("Auto Ok"))
-                {
-                    ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
-                }
-                else{
                     if (!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
                     {
                         ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
@@ -106,7 +108,6 @@ public class Rental_Broker_Requirement extends Fragment implements CircularSeekB
                         a.acceptOk(p,j,dbHelper, getActivity());
                     }
                 }
-            }
         });
         droom.setOnClickListener(new View.OnClickListener() {
             @Override

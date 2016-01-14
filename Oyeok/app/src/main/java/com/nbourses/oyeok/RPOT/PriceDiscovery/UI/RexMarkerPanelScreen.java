@@ -223,6 +223,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 b.putSerializable("HashMap",chatListData);
+                b.putString("lastFragment","rexMrakerPanel");
                 Fragment f=new Droom_chats_list();
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -761,7 +762,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
 
             //Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
-            ((MainActivity)getActivity()).showToastMessage("Offline Mode");
+            ((MainActivity) getActivity()).showToastMessage("Offline Mode");
         }
 
     }

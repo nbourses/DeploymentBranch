@@ -99,7 +99,7 @@
             android:layout_weight="1"
             android:background="#69F0AE"
             android:layout_marginLeft="5dp"
-            android:text="Auto Ok"
+            android:text="Ok"
             android:layout_height="wrap_content"
             android:id="@+id/okButton"
             android:textColor="@color/white" />

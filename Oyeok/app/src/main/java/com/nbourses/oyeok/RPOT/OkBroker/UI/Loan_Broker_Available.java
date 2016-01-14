@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
@@ -43,6 +44,7 @@ public class Loan_Broker_Available extends Fragment implements CircularSeekBarNe
     private TextView contactName;
     private JSONArray values = new JSONArray();
     DBHelper dbHelper;
+    FloatingActionButton autoOk;
 
 
     @Override
@@ -60,9 +62,11 @@ public class Loan_Broker_Available extends Fragment implements CircularSeekBarNe
         dbHelper = new DBHelper(getContext());
         pickContact = (Button) v.findViewById(R.id.pickContact);
         contactName = (TextView) v.findViewById(R.id.contactText);
+        View z= inflater.inflate(R.layout.broker_main_screen,container,false);
+        autoOk= (FloatingActionButton) z.findViewById(R.id.fab);
 
 
-        mOkbutton.setOnClickListener(new View.OnClickListener() {
+        autoOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

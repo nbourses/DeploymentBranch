@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
@@ -54,6 +55,7 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
     JSONArray p= new JSONArray();
     int j;
     Button droom;
+    FloatingActionButton autoOk;
     Ok_Broker_MainScreen ok_broker_mainScreen;
 
 
@@ -74,6 +76,8 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
         pickContact = (Button) v.findViewById(R.id.pickContact);
         contactName = (TextView) v.findViewById(R.id.contactText);
         droom = (Button) v.findViewById(R.id.droom);
+        View z= inflater.inflate(R.layout.broker_main_screen,container,false);
+        autoOk= (FloatingActionButton) z.findViewById(R.id.fab);
         dbHelper=new DBHelper(getContext());
 
 
@@ -160,25 +164,30 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
         }
 
 
+
+
+        autoOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null, "");
+            }
+        });
+
         mOkbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (mOkbutton.getText().toString().equals("Auto Ok")) {
-                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
+                if (!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+                {
+                    ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
+                    ok_broker_mainScreen.replaceWithSignUp(p, j);
                 }
-                else{
-                    if (!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
-                    {
-                        ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
-                        ok_broker_mainScreen.replaceWithSignUp(p,j);
-                    }
-                    else
-                    {
-                        AcceptOkCall a = new AcceptOkCall();
-                        a.setmCallBack(Rental_Broker_Available.this);
-                        a.acceptOk(p,j,dbHelper, getActivity());
-                    }
+                else
+                {
+
+                    AcceptOkCall a = new AcceptOkCall();
+                    a.setmCallBack(Rental_Broker_Available.this);
+                    a.acceptOk(p,j,dbHelper, getActivity());
                 }
             }
         });
