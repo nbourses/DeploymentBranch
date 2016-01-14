@@ -41,6 +41,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
+import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
@@ -571,15 +572,16 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 startActivity(NextActivity);
                                 UserCredentials.saveString(context, PreferenceKeys.SUCCESSFUL_HAIL, "true");*/
                                 Bundle b = new Bundle();
-                                b.putString("lastFragment","oyeIntentSpecs");
-                                Fragment f=new Droom_chats_list();
+                                b.putString("lastFragment", "oyeIntentSpecs");
+                                /*Fragment f=new Droom_chats_list();
                                 FragmentManager fragmentManager = getChildFragmentManager();
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                 f.setArguments(b);
                                 fragmentTransaction.replace(R.id.container_body, f);
-                                fragmentTransaction.commit();
-
-                                Log.i("Change Fragment", f.toString());
+                                fragmentTransaction.commit();*/
+                                //(MainActivity)getActivity().changeFragment(new Droom_chats_list(),null,"Broker HomeScreen");
+                                ((MainActivity) getActivity()).changeFragment(new Droom_chats_list(), b,"");
+                                //Log.i("Change Fragment", f.toString());
                                  Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
                                 //finish();
 

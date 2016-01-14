@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="bottom"
     android:layout_width="match_parent"
@@ -331,6 +331,18 @@
                 <!--android:layout_height="match_parent" />-->
 
         <!--</LinearLayout>-->
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:src="@drawable/deal_circle"
+            android:layout_alignBottom="@+id/pager"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="86dp" />
+
+
 
         <LinearLayout
             android:id="@+id/seekbar_linearlayout"
@@ -353,8 +365,15 @@
                 android:layout_height="match_parent"/>
         </LinearLayout>
 
-
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Auto OK"
+            android:id="@+id/tv_auto_ok"
+            android:layout_above="@+id/fab"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
 
     </RelativeLayout>
