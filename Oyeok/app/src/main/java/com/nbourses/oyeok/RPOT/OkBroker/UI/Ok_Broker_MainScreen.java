@@ -111,7 +111,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     DBHelper dbHelper;
     int intervalCount=0;
     HourGlassDetails hourGlassDetails;
-    int leftHourGlasses=0;
+    int leftHourGlasses=2;
     HourGlassFirebase hourGlassFirebase;
     String coolOffString="";
     int filledHourGlass=5;
@@ -198,8 +198,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         timeCount4.setText(""+totalTime);
         timeCount5.setText("" + totalTime);
 
-        initialFill(filledHourGlass);
-        fillHourGlasses(filledHourGlass, 50);
+        initialFill(filledHourGlass-2);
+        fillHourGlasses(filledHourGlass-2, 50);
         updateTotalTime();
         leftHourGlasses=500-filledHourGlass*100-percentage;
         if(!dbHelper.getValue(DatabaseConstants.coolOff).equals("null")) {
@@ -440,6 +440,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         {
             fillHourGlasses(i-1,99);
         }
+        leftHourGlasses=5-noOfHourGlass;
         switch (noOfHourGlass)
         {
             case 1:timeCount1.setText("0");
