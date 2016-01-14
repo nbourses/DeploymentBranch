@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
@@ -53,6 +54,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
     JSONArray p=new JSONArray();
     int j;
     Button droom;
+    FloatingActionButton autoOk;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,29 +73,31 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
         contactName = (TextView) v.findViewById(R.id.contactText);
         rentText.setText("Price : Rs 50L");
         dbHelper = new DBHelper(getContext());
+        View z= inflater.inflate(R.layout.broker_main_screen,container,false);
+        autoOk= (FloatingActionButton) z.findViewById(R.id.fab);
 
-
+        autoOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
+            }
+        });
 
         mOkbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (mOkbutton.getText().toString().equals("Auto Ok")) {
-                    ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
+                if (!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+                {
+                    ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
+                    ok_broker_mainScreen.replaceWithSignUp(p, j);
                 }
-                else{
-                    if (!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
-                    {
-                        ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
-                        ok_broker_mainScreen.replaceWithSignUp(p,j);
-                    }
-                    else
-                    {
-                        AcceptOkCall a = new AcceptOkCall();
-                        a.setmCallBack(Sale_Broker_Requirement_new.this);
-                        a.acceptOk(p,j,dbHelper, getActivity());
+                else
+                {
 
-                    }
+                    AcceptOkCall a = new AcceptOkCall();
+                    a.setmCallBack(Sale_Broker_Requirement_new.this);
+                    a.acceptOk(p,j,dbHelper, getActivity());
                 }
             }
         });
@@ -247,7 +251,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
             mNotClicked.setVisibility(View.GONE);
             //mTitle.setVisibility(View.VISIBLE);
             //mOkbutton.setBackgroundColor(Color.parseColor("#B2DFDB"));
-            mOkbutton.setText("Ok(4290)");
+            //mOkbutton.setText("Ok(4290)");
             rentText.setVisibility(View.VISIBLE);
             displayOkText.setVisibility(View.VISIBLE);
             pickContact.setVisibility(View.GONE);
@@ -262,7 +266,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
             displayOkText.setVisibility(View.GONE);
             pickContact.setVisibility(View.GONE);
             contactName.setVisibility(View.GONE);
-            mOkbutton.setText("Auto Ok");
+            //mOkbutton.setText("Auto Ok");
 
         }else
         {
@@ -271,7 +275,7 @@ public class Sale_Broker_Requirement_new extends Fragment implements CircularSee
             //mOkbutton.setBackgroundColor(Color.parseColor("#E0E0E0"));
             rentText.setVisibility(View.VISIBLE);
             displayOkText.setVisibility(View.VISIBLE);
-            mOkbutton.setText("Auto Ok");
+            //mOkbutton.setText("Auto Ok");
             pickContact.setVisibility(View.VISIBLE);
             contactName.setVisibility(View.VISIBLE);
 
