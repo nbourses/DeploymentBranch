@@ -271,8 +271,8 @@ public class CircularSeekBarNew extends View {
 
         //start.draw(canvas);
         DecimalFormat formatter = new DecimalFormat();
-        canvas.drawText("min:" + formatter.format(minValue), mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
-        canvas.drawText("max:" + formatter.format(maxvalue), mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("min: Rs " + formatter.format(minValue), mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("max: Rs " + formatter.format(maxvalue), mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
     }
 
     @Override
@@ -283,9 +283,9 @@ public class CircularSeekBarNew extends View {
         float top = 0;
         float left = 0;
         int arcDiameter = 0;
-        arcDiameter =  min- (int)(40*DPTOPX_SCALE);
+        arcDiameter =  min- (int)(54*DPTOPX_SCALE);
         mWidth = arcDiameter /2 ;
-        top = height / 2 - (arcDiameter / 2)+getPaddingTop();
+        top = height / 2 - (arcDiameter / 2)+getPaddingTop()+10*DPTOPX_SCALE;
         left = width / 2 - (arcDiameter / 2)+getPaddingLeft();
         mCircleRectF.set(left, top, left + arcDiameter, top + (arcDiameter));
 

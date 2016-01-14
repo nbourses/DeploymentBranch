@@ -248,7 +248,7 @@ public class Rental_Broker_Available extends Fragment implements CircularSeekBar
             p=m;
             j=position;
             DecimalFormat formatter = new DecimalFormat();
-            rentText.setText("Rs "+ m.getJSONObject(position).getString("price")+"/per m");
+            rentText.setText("Rs "+ m.getJSONObject(position).getString("price")+"/m");
             //rentText.setText("Price : Rs "+ formatter.format(Double.parseDouble(m.getJSONObject(position).getString("price")))+"\n"+m.getJSONObject(position).getString("property_type")+"\n"+m.getJSONObject(position).getString("property_subtype"));
             /*oyeId=m.getJSONObject(position).getString("oye_id");
             oyeUserId= m.getJSONObject(position).getString("user_id");
