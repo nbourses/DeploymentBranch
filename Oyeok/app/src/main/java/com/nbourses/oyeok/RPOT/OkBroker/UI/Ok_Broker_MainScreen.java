@@ -192,6 +192,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             percentage=hourGlassDetails.getPercentage();
 
         }
+
         timeCount1.setText("" + totalTime);
         timeCount2.setText(""+ totalTime);
         timeCount3.setText(""+totalTime);
@@ -201,6 +202,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         initialFill(filledHourGlass-2);
         fillHourGlasses(filledHourGlass-2, 50);
         updateTotalTime();
+
         leftHourGlasses=500-filledHourGlass*100-percentage;
         if(!dbHelper.getValue(DatabaseConstants.coolOff).equals("null")) {
             // coolOffString=dbHelper.getValue(DatabaseConstants.coolOff);
@@ -216,7 +218,6 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             currentTime=totalTime*filledHourGlass;
             currentTime+=percentage*totalTime/100;
         }
-
 
        // earnOk = (Button) v.findViewById(R.id.earnOk);
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable())
@@ -489,8 +490,10 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 params12.height                    = originalHeight-calculatedHeight;
                 belowImageView1.setLayoutParams(params12);
 
+
                 timeCount1.setText("" + percentageToBeFilled * totalTime / 100);
                 updateTotalTime();
+
                 break;
             case 1:
                 LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) aboveAboveImageView2.getLayoutParams();
