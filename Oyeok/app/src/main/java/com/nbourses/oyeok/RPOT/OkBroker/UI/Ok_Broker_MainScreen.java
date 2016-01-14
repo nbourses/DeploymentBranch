@@ -96,6 +96,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     private boolean mFirst = false;
     private CustomMapFragment customMapFragment;
     private GoogleMap map;
+    public int noOfOkRequired=0;
     private MyPagerAdapter adapter;
     private int mInterval = 5000; // 5 seconds by default, can be changed later
     private Handler mHandler;
@@ -259,7 +260,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 //        });
 
         mHandler = new Handler();
-
+        mHandler.postDelayed(mStatusChecker, 2000);
         return v;
     }
 
@@ -270,7 +271,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
             if((leftHourGlasses!=0))
                 calculateFillingQuantity(currentTime);
                 //updateStatus(); //this function can change value of mInterval.
-                mHandler.postDelayed(mStatusChecker, 5000);
+                mHandler.postDelayed(mStatusChecker, 2000);
 
 
         }
