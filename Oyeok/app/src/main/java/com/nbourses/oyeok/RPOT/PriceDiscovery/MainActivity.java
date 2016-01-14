@@ -194,8 +194,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    Toast.makeText(getBaseContext(), "offline mode",
-                            Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getBaseContext(), "offline mode",Toast.LENGTH_LONG).show();
+                    showToastMessage("offline Mode");
                     dbHelper.save(DatabaseConstants.offmode, "yes");
                     Log.i("offmode entry", dbHelper.getValue(DatabaseConstants.offmode));
                     try {
@@ -214,8 +214,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                     /*RexMarkerPanelScreen r=new RexMarkerPanelScreen();
                     r.setPhasedSeekBar();*/
                 } else {
-                    Toast.makeText(getBaseContext(), "online mode",
-                            Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getBaseContext(), "online mode", Toast.LENGTH_LONG).show();
+                    showToastMessage("Online Mode");
                     dbHelper.save(DatabaseConstants.offmode, "null");
                     Log.i("offmode entry", dbHelper.getValue(DatabaseConstants.offmode));
                     try {
@@ -282,8 +282,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             //fillHourGlasses(0, intervalCount * mInterval / 1000);
 
            hideToastMessage();
-
-
         }
     };
 
@@ -306,7 +304,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if(i==0) {
             m = AnimationUtils.loadAnimation(this,
                     R.anim.slide_up);
-
 
             //SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY)+","+SharedPrefs.getString(getActivity(),SharedPrefs.MY_CITY)
         }else {
@@ -561,16 +558,15 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             //Amplitude.getInstance().logEvent("resideMenuItems[0] clicked");
 
             changeFragment(new RexMarkerPanelScreen(), null,"Oye HomeScreen");
-            Toast.makeText(getApplicationContext(), "Real Exchange HAS STARTED",
-                    Toast.LENGTH_LONG).show();
-
+            //Toast.makeText(getApplicationContext(), "Real Exchange HAS STARTED", Toast.LENGTH_LONG).show();
+            showToastMessage("Real Exchange HAS STARTED");
             resideMenuItems[0].tv_title.setTextColor(Color.BLUE);
             resideMenuItems[1].tv_title.setTextColor(Color.BLACK);
             resideMenuItems[2].tv_title.setTextColor(Color.BLACK);
         }else if (view == resideMenuItems[1]){
             //Amplitude.getInstance().logEvent("resideMenuItems[1] clicked");
-            Toast.makeText(getApplicationContext(), "Jobs Exchange HAS STARTED",
-                    Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "Jobs Exchange HAS STARTED", Toast.LENGTH_LONG).show();
+            showToastMessage("Jobs Exchange HAS STARTED");
             resideMenuItems[1].tv_title.setTextColor(Color.BLUE);
             resideMenuItems[0].tv_title.setTextColor(Color.BLACK);
             resideMenuItems[2].tv_title.setTextColor(Color.BLACK);
@@ -579,8 +575,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         }else if (view == resideMenuItems[2])
         {
-            Toast.makeText(getApplicationContext(), "Loans Exchange HAS STARTED",
-                    Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "Loans Exchange HAS STARTED", Toast.LENGTH_LONG).show();
+            showToastMessage("Loans Exchange HAS STARTED");
             resideMenuItems[2].tv_title.setTextColor(Color.BLUE);
             resideMenuItems[1].tv_title.setTextColor(Color.BLACK);
             resideMenuItems[0].tv_title.setTextColor(Color.BLACK);
@@ -594,12 +590,14 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         @Override
         public void openMenu() {
-            Toast.makeText(getApplicationContext(), "Menu is opened!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Menu is opened!", Toast.LENGTH_SHORT).show();
+            showToastMessage("Menu is Opened!");
         }
 
         @Override
         public void closeMenu() {
-            Toast.makeText(getApplicationContext(), "Menu is closed!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Menu is closed!", Toast.LENGTH_SHORT).show();
+            showToastMessage("Menu is Closed!");
         }
     };
 

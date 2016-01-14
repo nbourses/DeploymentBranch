@@ -24,6 +24,7 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.Firebase.DroomDetails;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubError;
@@ -52,7 +53,7 @@ public class Droom_Chat_New extends Fragment  {
     ScrollView scroll;
     String okId="",userId1="",userId2="";
 
-
+    MainActivity mActivity = new MainActivity();
 
     Callback callback = new Callback() {
         public void successCallback(String channel, Object response) {
@@ -163,6 +164,7 @@ public class Droom_Chat_New extends Fragment  {
             pubnub.subscribe(okId, new Callback() {
                 public void successCallback(String channel, Object message) {
                     //Toast.makeText(getActivity(), message.toString(), Toast.LENGTH_LONG).show();
+                    mActivity.showToastMessage(message.toString());
                     try {
                         JSONObject a = new JSONObject(message.toString());
                         if(!userId1.equalsIgnoreCase(a.getString("sender_id")))
@@ -174,7 +176,8 @@ public class Droom_Chat_New extends Fragment  {
                 }
 
                 public void errorCallback(String channel, PubnubError error) {
-                    Toast.makeText(getActivity(), error.getErrorString(), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getActivity(), error.getErrorString(), Toast.LENGTH_LONG).show();
+                    mActivity.showToastMessage(error.getErrorString());
                 }
             });
         } catch (PubnubException e) {
