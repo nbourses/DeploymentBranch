@@ -96,6 +96,8 @@ public class CustomPhasedSeekBar extends View {
 
     }
 
+
+
     public int getNavBarHeight(Context c) {
         int result = 0;
         boolean hasMenuKey = ViewConfiguration.get(c).hasPermanentMenuKey();
@@ -127,6 +129,8 @@ public class CustomPhasedSeekBar extends View {
     }
 
 
+
+
     protected void configure(Canvas canvas) {
 
         int m=getNavBarHeight(mContext);
@@ -141,21 +145,32 @@ public class CustomPhasedSeekBar extends View {
                 (int) (getHeight() - mBackgroundPaddingRect.bottom));
 
 
+        //initially current and center elements cordinates are same
+
         mCurrentX = mPivotX = getWidth() / 2;
         mCurrentY = mPivotY = (getHeight())/2;
 
-
+        //count of items in adapter
         int count = getCount();
+
+        //width of each item to occupy
         int widthBase = rect.width() / count;
+
+        //to make calculations from center for each item calculated width base same for height
          widthHalf = widthBase / 2;
         int heightBase = rect.height() / count;
          heightHalf = heightBase / 2;
+
+        //Integer array for storing each and every items co-ordinates
         mAnchors = new int[count][2];
         for (int i = 0, j = 1; i < count; i++, j++) {
             mAnchors[i][0] =  widthBase * j - widthHalf + rect.left;
             mAnchors[i][1] =  mPivotY;
         }
         mItemHalfWidth = widthHalf;
+
+
+        //Initialize paint objects
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mLinePaint.setColor(Color.parseColor("#757575"));
         mLinePaint.setStrokeWidth(5 * DPTOPX_SCALE);
@@ -212,6 +227,8 @@ public class CustomPhasedSeekBar extends View {
         int count = getCount();
 
         if (!mUpdateFromPosition) {
+
+            //Updating the current item while dragging or touch (but not on pointer up).Calculated according to which is the closest item.
             int distance;
             int minIndex = 0;
             int minDistance = Integer.MAX_VALUE;
@@ -224,8 +241,10 @@ public class CustomPhasedSeekBar extends View {
             }
 
             setCurrentItem(minIndex);
+            //get the latest drawable state(differs for unselected,selected and focused)
             stateListDrawable = mAdapter.getItem(minIndex);
         } else {
+            //If not dragging change currentx and current y to current items coordinates stored in integer array
             mUpdateFromPosition = false;
             mCurrentX = mAnchors[mCurrentItem][0];
             mCurrentY = mAnchors[mCurrentItem][1];
@@ -243,9 +262,12 @@ public class CustomPhasedSeekBar extends View {
             stateListDrawable.setState(STATE_NORMAL);
             itemOff = stateListDrawable.getCurrent();
             if(i != 0) {
+
+                //Draw lines before drawables if i not equal to one
                 canvas.drawLine(mAnchors[i][0] - widthHalf, mAnchors[i][1], mAnchors[i][0] - (2 * widthHalf / 3), mAnchors[i][1], mLinePaint);
             }
             if(i != count-1) {
+                //draw lines after the image unless i is last element
                 canvas.drawLine(mAnchors[i][0] + (2 * widthHalf / 3), mAnchors[i][1], mAnchors[i][0] + widthHalf, mAnchors[i][1], mLinePaint);
             }
 
