@@ -123,6 +123,7 @@ public class HorizontalPicker extends View {
     private TextDirectionHeuristicCompat mTextDir;
 
     private final PickerTouchHelper mTouchHelper;
+    private OnScrollChanged mOnScrollChanged;
 
     public HorizontalPicker(Context context) {
         this(context, null);
@@ -640,6 +641,9 @@ public class HorizontalPicker extends View {
     public void setOnItemClickedListener(OnItemClicked onItemClicked) {
         mOnItemClicked = onItemClicked;
     }
+    public void setOnScrollChangedListener(OnScrollChanged onScrollChanged){
+        mOnScrollChanged = onScrollChanged;
+    }
 
     public int getSelectedItem() {
         int x = getScrollX();
@@ -1058,6 +1062,10 @@ public class HorizontalPicker extends View {
 
         public void onItemClicked(int index);
 
+    }
+
+    public interface OnScrollChanged {
+        public void onScrollChanged();
     }
 
     private static final class Marquee extends Handler {

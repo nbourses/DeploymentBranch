@@ -158,6 +158,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private RelativeLayout errorView;
     private TextView errorText;
     private HorizontalPicker horizontalPicker;
+    private TextView tvRate;
 
 
 
@@ -189,18 +190,25 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
 
         horizontalPicker = (HorizontalPicker)rootView.findViewById(R.id.picker);
+        tvRate = (TextView)rootView.findViewById(R.id.tvRate);
         horizontalPicker.setSelectedItem(2);
         horizontalPicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                tvRate.setVisibility(View.VISIBLE);
             }
         });
         horizontalPicker.setOnItemSelectedListener(new HorizontalPicker.OnItemSelected() {
-            int size;
             @Override
             public void onItemSelected(int index) {
                 horizontalPicker.addValues(index);
+                tvRate.setVisibility(View.VISIBLE);
+            }
+        });
+        horizontalPicker.setOnScrollChangedListener(new HorizontalPicker.OnScrollChanged() {
+            @Override
+            public void onScrollChanged() {
+                tvRate.setVisibility(View.GONE);
             }
         });
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
@@ -333,9 +341,9 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void onDrag(MotionEvent motionEvent) {
 
                 if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                    mMarkerminmax.setVisibility(View.GONE);
-                    mMarkerPanel.setVisibility(View.INVISIBLE);
-
+                    //mMarkerminmax.setVisibility(View.GONE);
+                    //mMarkerPanel.setVisibility(View.INVISIBLE);
+                    horizontalPicker.callOnClick();
 
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 
