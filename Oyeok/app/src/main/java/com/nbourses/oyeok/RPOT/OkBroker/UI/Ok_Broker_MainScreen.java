@@ -199,9 +199,9 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         timeCount4.setText("" + totalTime / 1000);
         timeCount5.setText("" + totalTime / 1000);
 
-//        initialFill(filledHourGlass);
-//        fillHourGlasses(filledHourGlass, percentage);
-//        updateTotalTime();
+        initialFill(filledHourGlass);
+        fillHourGlasses(filledHourGlass, percentage);
+        updateTotalTime();
 
         leftHourGlasses=500-filledHourGlass*100-percentage;
 
@@ -870,15 +870,15 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                         JSONObject ne = new JSONObject(k.toString());
                         Log.i("preok response", ne.toString());
                         JSONObject response1 = ne.getJSONObject("responseData");
-                        String coolOffPeriod = response1.getString("cool_off");
-                        Log.i("cool_off=", coolOffPeriod);
+                        //String coolOffPeriod = response1.getString("cool_off");
+                        //Log.i("cool_off=", coolOffPeriod);
                         JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
                         JSONArray reqLl = neighbours.getJSONArray("req_ll");
                         JSONArray reqOr = neighbours.getJSONArray("req_or");
                         JSONArray avlLl = neighbours.getJSONArray("avl_ll");
                         JSONArray avlOr = neighbours.getJSONArray("avl_or");
                         //   Log.i("oye_id=", reqLl.getJSONObject(0).getString("oye_id"));
-                        dbHelper.save(DatabaseConstants.coolOff,coolOffPeriod);
+                        //dbHelper.save(DatabaseConstants.coolOff,coolOffPeriod);
                         dbHelper.save(DatabaseConstants.reqLl, reqLl.toString());
                         dbHelper.save(DatabaseConstants.reqOr, reqOr.toString());
                         dbHelper.save(DatabaseConstants.avlLl, avlLl.toString());
@@ -1057,7 +1057,6 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 RestAdapter restAdapter = new RestAdapter.Builder()
                         .setEndpoint(API).setLogLevel(RestAdapter.LogLevel.FULL).build();
                 OyeokApiService service;
-
                 User user = new User();
                 user.setUserRole("broker");
                 user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
