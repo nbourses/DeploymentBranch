@@ -143,5 +143,4 @@ dependencies {
     compile files('libs/pgsdk.jar')
     compile 'com.baoyz.swipemenulistview:library:1.3.0'
     compile 'com.pubnub:pubnub-android:3.7.5'
-
 }
