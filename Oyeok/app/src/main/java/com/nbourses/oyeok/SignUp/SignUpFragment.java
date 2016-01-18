@@ -29,6 +29,7 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.Firebase.HourGlassDetails;
 import com.nbourses.oyeok.Firebase.HourGlassFirebase;
 import com.nbourses.oyeok.Firebase.UserProfileFirebase;
+import com.nbourses.oyeok.Manifest;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.MobileVerify;
@@ -41,6 +42,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
+import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
@@ -49,6 +51,8 @@ import com.nbourses.oyeok.User.UserProfileViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.util.MissingFormatArgumentException;
 
 import butterknife.Bind;
 import retrofit.Callback;
@@ -144,7 +148,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         llotp = (LinearLayout)view.findViewById(R.id.llotp);
         llotp.setVisibility(View.GONE);
 
+        String role_of_user = dbHelper.getValue(DatabaseConstants.userRole);
+
         firebaseUrl="https://resplendent-fire-6770.firebaseio.com/";
+
+        ((MainActivity)getActivity()).showToastMessage("Signing up as "+role_of_user);
+
         userProfileViewModel=new UserProfileViewModel();
         Button sendOtp=(Button)view.findViewById(R.id.sendotp);
         sendOtp.setOnClickListener(new View.OnClickListener() {
@@ -256,8 +265,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
                         public void success(MobileVerify mobileVerify, retrofit.client.Response response) {
                             Log.i("TAG", "Inside Authentication success");
-                            Toast.makeText(getContext(), "Authentication success",
-                                    Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getContext(), "Authentication success", Toast.LENGTH_LONG).show();
+                            ((MainActivity)getActivity()).showToastMessage("Authentication success");
                             //tv.setText(user.responseData.getUserId() + "hua");
 
 
@@ -269,8 +278,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                         @Override
                         public void failure(RetrofitError error) {
                             //tv.setText(error.getMessage());
-                            Toast.makeText(getContext(), error.getMessage(),
-                                    Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                            ((MainActivity)getActivity()).showToastMessage(error.getMessage());
                             Log.i("TAG", "Inside authentication Failure");
                             Log.i("TAG", "error" + error.getMessage());
                         }
@@ -280,8 +289,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 }
             }
             else{
-                Toast.makeText(getContext(), "mobile verification in offline mode done",
-                        Toast.LENGTH_LONG).show();
+                //Toast.makeText(getContext(), "mobile verification in offline mode done", Toast.LENGTH_LONG).show();
+                ((MainActivity)getActivity()).showToastMessage("mobile verification in offline mode done");
             }
             }
         }
@@ -328,10 +337,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 }
             }
             else{
-                Toast.makeText(
-                        getContext(),
-                        "otp validation in offline mode done",
-                        Toast.LENGTH_LONG).show();
+                //Toast.makeText(getContext(), "otp validation in offline mode done", Toast.LENGTH_LONG).show();
+                ((MainActivity)getActivity()).showToastMessage("otp validation in offline mode done");
             }
         }}
 
@@ -475,7 +482,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
             }
         }
         else{
-            Toast.makeText(getContext(), "signup success in offline mode", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getContext(), "signup success in offline mode", Toast.LENGTH_LONG).show();
+            ((MainActivity)getActivity()).showToastMessage("signup success in offline mode");
         }
 
 
@@ -571,29 +579,41 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 startActivity(NextActivity);
                                 UserCredentials.saveString(context, PreferenceKeys.SUCCESSFUL_HAIL, "true");*/
                                 Bundle b = new Bundle();
-                                b.putString("lastFragment","oyeIntentSpecs");
-                                Fragment f=new Droom_chats_list();
+                                b.putString("lastFragment", "oyeIntentSpecs");
+                                /*Fragment f=new Droom_chats_list();
                                 FragmentManager fragmentManager = getChildFragmentManager();
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                 f.setArguments(b);
                                 fragmentTransaction.replace(R.id.container_body, f);
-                                fragmentTransaction.commit();
-
-                                Log.i("Change Fragment", f.toString());
-                                 Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
+                                fragmentTransaction.commit();*/
+                                //(MainActivity)getActivity().changeFragment(new Droom_chats_list(),null,"Broker HomeScreen");
+                                //if(isAdded()) {
+                                    activity.showToastMessage("Oye published.Sit back and relax while we find a broker for you");
+                                    activity.changeFragment(new Droom_chats_list(), b, "");
+                                //}
+                                //Log.i("Change Fragment", f.toString());
+                                 //Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
                                 //finish();
+                                //fragmentTransaction.commit();
+
+                                //Log.i("Change Fragment", f.toString());
+                                 //Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
+
+                                /// /finish();
 
                             } else if (s.equalsIgnoreCase("User already has an active oye. Pls end first")) {
                                 /*Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);*/
-                                 Toast.makeText(getContext(), "You already have an active oye. Pls end it first", Toast.LENGTH_LONG).show();
+                                 //Toast.makeText(getContext(), "You already have an active oye. Pls end it first", Toast.LENGTH_LONG).show();
+                                ((MainActivity)getActivity()).showToastMessage("You already have an active oye. Pls end it first");
                                 //finish();
                             } else
 
                             {
                                 /*Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);*/
-                                 Toast.makeText(getContext(), "There is some error.", Toast.LENGTH_LONG).show();
+                                // Toast.makeText(getContext(), "There is some error.", Toast.LENGTH_LONG).show();
+                                ((MainActivity)getActivity()).showToastMessage("There is some error");
                                 //finish();
                             }
                         } catch (Exception e) {
@@ -635,10 +655,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         else
         {
             //Toast.makeText(context,"Please enter a valid email address",Toast.LENGTH_LONG).show();
-            Toast.makeText(
-                    getContext(),
-                    "Please enter a valid email address",
-                    Toast.LENGTH_LONG).show();
+            //Toast.makeText(getContext(), "Please enter a valid email address", Toast.LENGTH_LONG).show();
+            ((MainActivity)getActivity()).showToastMessage("Please enter a valid email address");
             return false;
         }
     }
@@ -647,8 +665,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         if(Snumber.length()==10)
             return true;
         else{
-            Toast.makeText(getContext(),"please entera valid mobile number",Toast.LENGTH_LONG).show();
-
+            //Toast.makeText(getContext(),"please entera valid mobile number",Toast.LENGTH_LONG).show();
+            ((MainActivity)getActivity()).showToastMessage("please entera valid mobile number");
             return false;
         }
     }

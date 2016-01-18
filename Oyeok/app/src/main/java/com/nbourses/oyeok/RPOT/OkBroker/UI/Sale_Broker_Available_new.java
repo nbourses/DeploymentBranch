@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
@@ -51,6 +52,7 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
     String oyeId,specCode,oyeUserId,reqAvl;
     JSONArray p= new JSONArray();
     Ok_Broker_MainScreen ok_broker_mainScreen;
+    FloatingActionButton autoOk;
     int j;
 
 
@@ -73,6 +75,8 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
             rentText.setText("Price : Rs 50L");
             cbn = (CircularSeekBarNew) v.findViewById(R.id.circularseekbar);
             cbn.setmImageAction(this);
+            View z= inflater.inflate(R.layout.broker_main_screen,container,false);
+            autoOk= (FloatingActionButton) z.findViewById(R.id.fab);
 
 
             for(int i=0;i<3;i++) {
@@ -150,28 +154,33 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
                 cbn.setValues(dummyData.toString());
 
 
-            mOkbutton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
-                    if (mOkbutton.getText().toString().equals("Auto Ok")) {
-                        ((MainActivity) getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
-                    }
-                    else{
-                        if (!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
-                        {
-                            ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
-                            ok_broker_mainScreen.replaceWithSignUp(p,j);
-                        }
-                        else
-                        {
-                            AcceptOkCall a = new AcceptOkCall();
-                            a.setmCallBack(Sale_Broker_Available_new.this);
-                            a.acceptOk(p,j,dbHelper, getActivity());
-                        }
-                    }
+
+        autoOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).changeFragment(new AutoOkIntentSpecs(), null,"");
+            }
+        });
+
+        mOkbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+                {
+                    ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
+                    ok_broker_mainScreen.replaceWithSignUp(p, j);
                 }
-            });
+                else
+                {
+
+                    AcceptOkCall a = new AcceptOkCall();
+                    a.setmCallBack(Sale_Broker_Available_new.this);
+                    a.acceptOk(p,j,dbHelper, getActivity());
+                }
+            }
+        });
 
         droom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -253,7 +262,7 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
             mNotClicked.setVisibility(View.GONE);
             //mTitle.setVisibility(View.VISIBLE);
             //mOkbutton.setBackgroundColor(Color.parseColor("#B2DFDB"));
-            mOkbutton.setText("Ok(4290)");
+            //mOkbutton.setText("Ok(4290)");
             rentText.setVisibility(View.VISIBLE);
             displayOkText.setVisibility(View.VISIBLE);
             pickContact.setVisibility(View.GONE);
@@ -268,7 +277,7 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
             displayOkText.setVisibility(View.GONE);
             pickContact.setVisibility(View.GONE);
             contactName.setVisibility(View.GONE);
-            mOkbutton.setText("Auto Ok");
+            //mOkbutton.setText("Auto Ok");
 
         }else
         {
@@ -277,7 +286,7 @@ public class Sale_Broker_Available_new extends Fragment implements CircularSeekB
             //mOkbutton.setBackgroundColor(Color.parseColor("#E0E0E0"));
             rentText.setVisibility(View.VISIBLE);
             displayOkText.setVisibility(View.VISIBLE);
-            mOkbutton.setText("Auto Ok");
+           // mOkbutton.setText("Auto Ok");
             pickContact.setVisibility(View.VISIBLE);
             contactName.setVisibility(View.VISIBLE);
 

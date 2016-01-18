@@ -88,7 +88,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="15dp"
         android:orientation="horizontal"
         android:layout_height="wrap_content">
 
@@ -99,7 +99,7 @@
             android:layout_weight="1"
             android:background="#69F0AE"
             android:layout_marginLeft="5dp"
-            android:text="Auto Ok"
+            android:text="Ok"
             android:layout_height="wrap_content"
             android:id="@+id/okButton"
             android:textColor="@color/white" />
@@ -125,7 +125,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:gravity="center"
-        android:layout_marginBottom="3dp"
+        android:textSize="12sp"
         android:text="5 oks will be used"/>
 
     <TextView
@@ -138,8 +138,6 @@
         android:layout_gravity="center"
         android:layout_marginBottom="10dp"
         android:text="50L Rs"/>
-
-
     <Button
         android:id="@+id/pickContact"
         android:visibility="gone"

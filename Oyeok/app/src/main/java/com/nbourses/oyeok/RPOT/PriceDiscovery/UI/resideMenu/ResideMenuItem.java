@@ -40,7 +40,7 @@ public class ResideMenuItem extends LinearLayout {
     public ResideMenuItem(Context context, int icon, String title) {
         super(context);
         initViews(context);
-        iv_icon.setImageResource(icon);
+        //iv_icon.setImageResource(icon);
         tv_title.setText(title);
         tv_title.setTextColor(Color.BLACK);
         tv_title.setTextSize(15);

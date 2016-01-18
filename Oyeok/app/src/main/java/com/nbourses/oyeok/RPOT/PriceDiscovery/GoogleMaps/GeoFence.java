@@ -216,8 +216,10 @@ import java.util.ArrayList;
             if (contains)
                 break;
         }
-        if(contains == true)
+
+        if(contains == true){
             Toast.makeText(context, "You are in serviceable region", Toast.LENGTH_SHORT).show();
+        }
         else
             Toast.makeText(context, "You are not in serviceable region", Toast.LENGTH_SHORT).show();}
 

@@ -18,18 +18,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.PopupWindow;
-import android.widget.Toast;
-
 import com.nbourses.oyeok.R;
-
+import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
 import static java.lang.Math.log10;
-
 /**
  * Created by prathyush on 26/11/15.
  */
@@ -114,6 +109,10 @@ public class CircularSeekBarNew extends View {
         public void onclick(int position, JSONArray m, String show, int x_c, int y_c);
     }
 
+    /*
+    Initializing paint objects required to paint the view onto the canvas
+     */
+
     protected void initPaints() {
         mCirclePaint = new Paint();
         mCirclePaint.setAntiAlias(true);
@@ -159,13 +158,21 @@ public class CircularSeekBarNew extends View {
         mCirclePath.addArc(mCircleRectF, 180f, 0f);
     }
 
+    /*
+    Before going through onDraw please refer onMeasure function for radius measurment.
+     */
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         int [] drawables = {R.drawable.ic_broker_home,R.drawable.ic_industrial_oye_intent_specs,R.drawable.ic_shop,R.drawable.ic_loans};
 
+
+        //Draw an arc with 300 sweep angle with mcirclepaint
         canvas.drawArc(mCircleRectF, 120f, 300f, false, mCirclePaint);
+
+        //This calculation is for placing the bluebubble at the start of the arc.These values give you the starting point of the arc.(Trignometry calculations )
         int startx = (int)(mCircleRectF.left+(mCircleRectF.width() / 2) - mWidth * (0.5));
 
         int starty = (int)(mCircleRectF.top+(mCircleRectF.height()/2) + mWidth * (0.866));
@@ -177,6 +184,8 @@ public class CircularSeekBarNew extends View {
         int w = start.getIntrinsicWidth();
         start.setBounds(startx - (w / 2), starty - (h / 2), startx + (w / 2), starty + (h / 2));
         start.draw(canvas);
+
+        //This is for the L-shaped line at the nd of the arc which looks like an arrow
         canvas.drawLine(endx, starty - 20 * DPTOPX_SCALE, endx, starty, mEndLinecolor);
         canvas.drawLine(endx, starty, endx + 20 * DPTOPX_SCALE, starty, mEndLinecolor);
 
@@ -184,10 +193,12 @@ public class CircularSeekBarNew extends View {
         //int count = 0;
         for(int i=0;i<theta.size();i++)
         {
+            //Get drawables according to property type.Needs to be worked on
             Drawable d = getResources().getDrawable(drawables[i % 4]);
 
             if(i!=index) {
                 try {
+                    //checking the oye_status and changing the color of icon to grey or red(inactive and active)
                     if (values.getJSONObject(i).getString("oye_status").equalsIgnoreCase("active")) {
 
                         d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#E53935"), PorterDuff.Mode.SRC_ATOP));
@@ -197,14 +208,12 @@ public class CircularSeekBarNew extends View {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }else
-            {
-                d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#81C784"), PorterDuff.Mode.SRC_ATOP));
-
             }
-
-
-
+            else
+            {
+                //This is if the icon is clicked or selected
+                d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#81C784"), PorterDuff.Mode.SRC_ATOP));
+            }
             int house_image_left;
             int house_image_top;
             int height = d.getIntrinsicHeight();
@@ -222,11 +231,15 @@ public class CircularSeekBarNew extends View {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            //Needs to be worked on get OKS from server and update it.
             String o = i + " Oks";
 
             double angle = 0.0;
 
                 angle = theta.get(i);
+
+            //get left and top cordinates to place the icon(Trignometry calculations.Find the point from centre of the rectangle with respect to angle calculated)
             house_image_left = (int)(mCircleRectF.left+(mCircleRectF.width() / 2) - mWidth * (0.5*Math.cos(angle)+ 0.866 * Math.sin(angle)));
             house_image_top  = (int)(mCircleRectF.top+(mCircleRectF.height()/2) + mWidth * (-0.5*Math.sin(angle)+ 0.866 * Math.cos(angle)));
 //            int left = (int)(mCircleRectF.left+(mCircleRectF.width() / 2) - mWidth * Math.cos(angle));
@@ -270,19 +283,19 @@ public class CircularSeekBarNew extends View {
             canvas.drawText(o, house_image_left-width / 2, house_image_top, mCircleTextColor);
 //            canvas.drawText("Min:"+minValue,mCircleRectF.left+10*DPTOPX_SCALE,mCircleRectF.top+mCircleRectF.height()/2,mCircleTextColor);
 //            canvas.drawText("Max:"+maxvalue,mCircleRectF.right-60*DPTOPX_SCALE,mCircleRectF.top+mCircleRectF.height()/2,mCircleTextColor);
-
-
-
         }
 
         //start.setBounds(endx - (w / 2), starty - (h / 2), endx + (w / 2), starty + (h / 2));
-
         //start.draw(canvas);
         DecimalFormat formatter = new DecimalFormat();
-        canvas.drawText("min:" + formatter.format(minValue), mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
-        canvas.drawText("max:" + formatter.format(maxvalue), mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
-
+        canvas.drawText("min: Rs " + formatter.format(minValue), mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("max: Rs " + formatter.format(maxvalue), mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
     }
+
+    /*
+    Here the arcdiameter is calculated as the minimum of height and width available minus some value to make rendering proper
+
+     */
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -292,15 +305,20 @@ public class CircularSeekBarNew extends View {
         float top = 0;
         float left = 0;
         int arcDiameter = 0;
-        arcDiameter =  min- (int)(40*DPTOPX_SCALE);
+        arcDiameter =  min- (int)(54*DPTOPX_SCALE);
         mWidth = arcDiameter /2 ;
-        top = height / 2 - (arcDiameter / 2)+getPaddingTop();
+        top = height / 2 - (arcDiameter / 2)+getPaddingTop()+10*DPTOPX_SCALE;
         left = width / 2 - (arcDiameter / 2)+getPaddingLeft();
         mCircleRectF.set(left, top, left + arcDiameter, top + (arcDiameter));
 
         draw();
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
+
+
+    /*
+    Here minimum and maximum are found out taking the size of values into account so that they get spreaded uniformly
+     */
 
     public void setValues(String m)
     {
@@ -313,7 +331,8 @@ public class CircularSeekBarNew extends View {
 
         Log.i("values length= ",Integer.toString(values.length()));
         if(values.length()==0){
-            Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
+            ((MainActivity)mContext).showToastMessage("Sit back and relax while we find clients for you");
             minValue=0;
             maxvalue=0;
         }
@@ -406,6 +425,8 @@ public class CircularSeekBarNew extends View {
 
 
     }
+
+    //Interface for handling icon clicks.Remove clicked item if already clicked or anywhere else on the view
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

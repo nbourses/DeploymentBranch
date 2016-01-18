@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
@@ -43,6 +44,7 @@ public class Loan_Broker_Requirement extends Fragment implements CircularSeekBar
     private TextView contactName;
     private JSONArray values = new JSONArray();
     DBHelper dbHelper;
+    FloatingActionButton autoOk;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,8 +63,10 @@ public class Loan_Broker_Requirement extends Fragment implements CircularSeekBar
         pickContact = (Button) v.findViewById(R.id.pickContact);
         contactName = (TextView) v.findViewById(R.id.contactText);
         dbHelper= new DBHelper(getContext());
+        View z= inflater.inflate(R.layout.broker_main_screen,container,false);
+        autoOk= (FloatingActionButton) z.findViewById(R.id.fab);
 
-        mOkbutton.setOnClickListener(new View.OnClickListener() {
+        autoOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -213,7 +217,7 @@ public class Loan_Broker_Requirement extends Fragment implements CircularSeekBar
             mNotClicked.setVisibility(View.GONE);
             //mTitle.setVisibility(View.VISIBLE);
             //mOkbutton.setBackgroundColor(Color.parseColor("#B2DFDB"));
-            mOkbutton.setText("Ok(4290)");
+            //mOkbutton.setText("Ok(4290)");
             rentText.setVisibility(View.VISIBLE);
             displayOkText.setVisibility(View.VISIBLE);
             pickContact.setVisibility(View.GONE);
@@ -228,7 +232,7 @@ public class Loan_Broker_Requirement extends Fragment implements CircularSeekBar
             displayOkText.setVisibility(View.GONE);
             pickContact.setVisibility(View.GONE);
             contactName.setVisibility(View.GONE);
-            mOkbutton.setText("Auto Ok");
+            //mOkbutton.setText("Auto Ok");
 
         }else
         {
@@ -237,7 +241,7 @@ public class Loan_Broker_Requirement extends Fragment implements CircularSeekBar
             //mOkbutton.setBackgroundColor(Color.parseColor("#E0E0E0"));
             rentText.setVisibility(View.VISIBLE);
             displayOkText.setVisibility(View.VISIBLE);
-            mOkbutton.setText("Auto Ok");
+            //mOkbutton.setText("Auto Ok");
             pickContact.setVisibility(View.VISIBLE);
             contactName.setVisibility(View.VISIBLE);
 

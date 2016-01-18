@@ -1,7 +1,6 @@
 package com.nbourses.oyeok.RPOT.PriceDiscovery.UI;
 
 
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -231,6 +230,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 b.putSerializable("HashMap",chatListData);
+                b.putString("lastFragment","rexMrakerPanel");
                 Fragment f=new Droom_chats_list();
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -452,6 +452,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         if(!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
             droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
 
+        dbHelper.save(DatabaseConstants.userRole,"Client");
+
         return rootView;
     }
     @Override
@@ -479,8 +481,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     @Override
     public void onAttach(Activity a) {
         super.onAttach(a);
-        mHandler = new Handler();
-        mHandler.postDelayed(mStatusChecker1,5000);
+//        mHandler = new Handler();
+//        mHandler.postDelayed(mStatusChecker1,5000);
 
         //getLocationActivity.setCallback(null);
     }
@@ -499,9 +501,44 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private void displayToast(String toast) {
         if (getActivity() != null && toast != null) {
             Toast.makeText(getActivity(), toast, Toast.LENGTH_LONG).show();
+            ((MainActivity)getActivity()).showToastMessage(toast);
             toast = null;
         }
     }
+
+
+//    private Handler mHandler;
+//    Runnable mStatusChecker = new Runnable() {
+//        @Override
+//        public void run() {
+//            //fillHourGlasses(0, intervalCount * mInterval / 1000);
+//
+//            hideMap(0);
+//            errorView.setVisibility(View.GONE);
+//
+//
+//        }
+//    };
+//
+//    Runnable mStatusChecker1 = new Runnable() {
+//        @Override
+//        public void run() {
+//            //fillHourGlasses(0, intervalCount * mInterval / 1000);
+//
+//            showInfoMessage("Sample information test");
+//
+//
+//        }
+//    };
+//
+//    public void showInfoMessage(String message)
+//    {
+//        errorView.setVisibility(View.VISIBLE);
+//        errorText.setText(message);
+//        hideMap(1);
+//        mHandler.postDelayed(mStatusChecker, 5000);
+//
+//    }
 
     private Handler mHandler;
     Runnable mStatusChecker = new Runnable() {
@@ -521,9 +558,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         public void run() {
             //fillHourGlasses(0, intervalCount * mInterval / 1000);
 
-            showInfoMessage("Sample information test");
-
-
+            //showInfoMessage("Sample information test");
         }
     };
 
@@ -535,6 +570,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         mHandler.postDelayed(mStatusChecker, 5000);
 
     }
+
 
     private void hideMap(int i) {
 
@@ -693,7 +729,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
 
 
-            Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
+            //Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
+            ((MainActivity) getActivity()).showToastMessage("Offline Mode");
         }
 
     }
