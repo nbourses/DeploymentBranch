@@ -37,6 +37,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.EdgeEffect;
 import android.widget.OverScroller;
+import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
 
@@ -124,6 +125,8 @@ public class HorizontalPicker extends View {
 
     private final PickerTouchHelper mTouchHelper;
     private OnScrollChanged mOnScrollChanged;
+    private TextView tvRate;
+    private boolean endlessScroll;
 
     public HorizontalPicker(Context context) {
         this(context, null);
@@ -206,6 +209,7 @@ public class HorizontalPicker extends View {
         // initialize constants
         ViewConfiguration configuration = ViewConfiguration.get(context);
         mTouchSlop = configuration.getScaledTouchSlop();
+        Log.v(TAG,"Touch slope is: "+mTouchSlop);
         mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
         mMaximumFlingVelocity = configuration.getScaledMaximumFlingVelocity()
                 / SELECTOR_MAX_FLING_VELOCITY_ADJUSTMENT;
@@ -242,15 +246,12 @@ public class HorizontalPicker extends View {
                 height = heightText;
             }
         }
-
         setMeasuredDimension(width, height);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        Log.v(TAG,"before onDraw");
         int saveCount = canvas.getSaveCount();
         canvas.save();
 
@@ -324,8 +325,10 @@ public class HorizontalPicker extends View {
 
         drawEdgeEffect(canvas, mLeftEdgeEffect, 270);
         drawEdgeEffect(canvas, mRightEdgeEffect, 90);
-        Log.v(TAG, "after onDraw");
 
+        if(endlessScroll){
+            keepScrolling();
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -454,12 +457,84 @@ public class HorizontalPicker extends View {
         calculateItemSize(w, h);
     }
 
+    public void keepScrolling() {
+        endlessScroll = true;
+
+            OverScroller scroller = mFlingScrollerX;
+            if (!isEnabled()) {
+                return;
+            }
+            if (mVelocityTracker == null) {
+                mVelocityTracker = VelocityTracker.obtain();
+            }
+            int deltaMoveX = 33;
+
+            if (mScrollingX ||
+                    (Math.abs(deltaMoveX) > mTouchSlop) && mValues.size() != 0 && mValues.size() > 0) {
+
+                if (!mScrollingX) {
+                    deltaMoveX = 0;
+                    mPressedItem = -1;
+                    mScrollingX = true;
+                    stopMarqueeIfNeeded();
+                }
+
+                final int range = getScrollRange();
+
+                if (overScrollBy(deltaMoveX, 0, getScrollX(), 0, range, 0,
+                        mOverscrollDistance, 0, true)) {
+                    mVelocityTracker.clear();
+                }
+
+                final float pulledToX = getScrollX() + deltaMoveX;
+                if (pulledToX < 0) {
+                    mLeftEdgeEffect.onPull((float) deltaMoveX / getWidth());
+                    if (!mRightEdgeEffect.isFinished()) {
+                        mRightEdgeEffect.onRelease();
+                    }
+                } else if (pulledToX > range) {
+                    mRightEdgeEffect.onPull((float) deltaMoveX / getWidth());
+                    if (!mLeftEdgeEffect.isFinished()) {
+                        mLeftEdgeEffect.onRelease();
+                    }
+                }
+                this.addValues(getSelectedItem());
+                mLastDownEventX = scroller.getCurrX();
+                adjustToNearestItem();
+                invalidate();
+
+            }
+        }
+
+    private void adjustToNearestItem() {
+        int x = getScrollX();
+        int item = Math.round(x / (mItemWidth + mDividerSize * 1f));
+
+        if(item < 0) {
+            item = 0;
+        } else if(item > mValues.size()) {
+            item = mValues.size();
+        }
+
+        mSelectedItem = item;
+
+        int itemX = (mItemWidth + (int) mDividerSize) * item;
+
+        int deltaX = itemX - x;
+
+        mAdjustScrollerX.startScroll(x, 0, deltaX, 0, SELECTOR_ADJUSTMENT_DURATION_MILLIS);
+        invalidate();
+    }
+
+    public void stopScrolling(){
+        endlessScroll = false;
+    }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(!isEnabled()) {
             return false;
         }
-
+        tvRate.setVisibility(View.GONE);
         if (mVelocityTracker == null) {
             mVelocityTracker = VelocityTracker.obtain();
         }
@@ -472,6 +547,7 @@ public class HorizontalPicker extends View {
                 float currentMoveX = event.getX();
 
                 int deltaMoveX = (int) (mLastDownEventX - currentMoveX);
+                Log.v(TAG,"DMX is: "+deltaMoveX);
 
                 if(mScrollingX ||
                         (Math.abs(deltaMoveX) > mTouchSlop) && mValues.size()!=0 && mValues.size() > 0) {
@@ -590,6 +666,10 @@ public class HorizontalPicker extends View {
         adjustToNearestItemX();
     }
 
+    private void showTvRate() {
+        tvRate.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -626,6 +706,7 @@ public class HorizontalPicker extends View {
 
     @Override
     public void computeScroll() {
+
         computeScrollX();
     }
 
@@ -790,7 +871,6 @@ public class HorizontalPicker extends View {
 
     private void computeScrollX() {
         OverScroller scroller = mFlingScrollerX;
-        //mValues.add(500*mValues.size()+"");
         if(scroller.isFinished()) {
             scroller = mAdjustScrollerX;
             if(scroller.isFinished()) {
@@ -852,6 +932,7 @@ public class HorizontalPicker extends View {
         int deltaX = itemX - x;
 
         mAdjustScrollerX.startScroll(x, 0, deltaX, 0, SELECTOR_ADJUSTMENT_DURATION_MILLIS);
+        showTvRate();
         invalidate();
     }
 
@@ -891,6 +972,7 @@ public class HorizontalPicker extends View {
                 }
             });
         }
+
     }
 
     private void startMarqueeIfNeeded() {
@@ -1034,22 +1116,23 @@ public class HorizontalPicker extends View {
         return 0;
     }
     public void addValues(int index) {
-        /*size = horizontalPicker.getArraySize();
-                if(index>size-4) {
-                    horizontalPicker.addValue(500 * (size+1));
-        }*/
+
         int size = getArraySize();
         if (index > size - 8) {
             if (mValues == null)
                 mValues = new ArrayList<CharSequence>();
             while (size - 8 <= index) {
-                String newValue = 500 * (size+1) + "";
+                String newValue = 0.5 * (size+1) + "k";
                 mValues.add(newValue);
                 mLayouts.add(new BoringLayout(newValue, mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
                         1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
                 size++;
             }
         }
+    }
+
+    public void setTvRate(TextView psf){
+        tvRate = psf;
     }
 
     public interface OnItemSelected {

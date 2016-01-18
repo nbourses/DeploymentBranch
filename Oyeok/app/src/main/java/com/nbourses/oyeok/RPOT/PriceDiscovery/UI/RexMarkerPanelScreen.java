@@ -165,9 +165,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.v(TAG,"Before inflating xml");
+
       View  rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
-        Log.v(TAG,"After inflating xml");
         requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
         droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
         mDrooms = (TextView) rootView.findViewById(R.id.linearlayout_drooms);
@@ -191,24 +190,17 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
         horizontalPicker = (HorizontalPicker)rootView.findViewById(R.id.picker);
         tvRate = (TextView)rootView.findViewById(R.id.tvRate);
+        horizontalPicker.setTvRate(tvRate);
         horizontalPicker.setSelectedItem(2);
         horizontalPicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tvRate.setVisibility(View.VISIBLE);
             }
         });
         horizontalPicker.setOnItemSelectedListener(new HorizontalPicker.OnItemSelected() {
             @Override
             public void onItemSelected(int index) {
                 horizontalPicker.addValues(index);
-                tvRate.setVisibility(View.VISIBLE);
-            }
-        });
-        horizontalPicker.setOnScrollChangedListener(new HorizontalPicker.OnScrollChanged() {
-            @Override
-            public void onScrollChanged() {
-                tvRate.setVisibility(View.GONE);
             }
         });
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
@@ -343,12 +335,13 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
                     //mMarkerminmax.setVisibility(View.GONE);
                     //mMarkerPanel.setVisibility(View.INVISIBLE);
-                    horizontalPicker.callOnClick();
-
+                    tvRate.setVisibility(View.GONE);
+                    horizontalPicker.keepScrolling();
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-
                     mMarkerPanel.setVisibility(View.VISIBLE);
                     mMarkerminmax.setVisibility(View.VISIBLE);
+                    horizontalPicker.stopScrolling();
+                    tvRate.setVisibility(View.VISIBLE);
                     getPrice();
                     /*
                     LatLng latlng = map.getCameraPosition().target;
@@ -361,8 +354,10 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                             Log.i("Exception", "caught in get region");
                         }
                     }*/
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    tvRate.setVisibility(View.GONE);
+                    horizontalPicker.keepScrolling();
                 }
-
                 SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                 SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
 
@@ -751,8 +746,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         for(int i=0; i<addresses.get(0).getMaxAddressLineIndex(); i++){
             fullAddress += addresses.get(0).getAddressLine(i);
         }
-        SharedPrefs.save(getActivity(),SharedPrefs.MY_REGION, fullAddress);
-        Log.v(TAG, fullAddress);
+        SharedPrefs.save(getActivity(), SharedPrefs.MY_REGION, fullAddress);
         if (addresses.size() > 0) {
             pincode = addresses.get(0).getPostalCode();
 
@@ -841,7 +835,6 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     JSONArray address_components = zero.getJSONArray("address_components");
 
                     fullAddress = zero.getString("formatted_address");
-                    Log.v(TAG, "from async task : address is" + fullAddress);
                     for (int i = 0; i < address_components.length(); i++) {
                         JSONObject zero2 = address_components.getJSONObject(i);
                         String long_name = zero2.getString("long_name");
@@ -874,8 +867,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                             }
                         }
 
-                        SharedPrefs.save(getActivity(),SharedPrefs.MY_REGION,fullAddress);
-                        Log.v(TAG,"from asynctask "+fullAddress);
+                        SharedPrefs.save(getActivity(), SharedPrefs.MY_REGION, fullAddress);
                         // JSONArray mtypes = zero2.getJSONArray("types");
                         // String Type = mtypes.getString(0);
                         // Log.e(Type,long_name);
