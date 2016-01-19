@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto">
 
 
@@ -41,29 +41,7 @@
                 android:layout_marginLeft="@dimen/sixteen_dp"
                 android:layout_marginRight="@dimen/sixteen_dp"
                 android:orientation="horizontal"
-                android:background="@drawable/maker_bg"
-                >
-
-                <ImageView
-                    android:id="@+id/markersliderminus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_left_arrow_circle"
-                    android:layout_marginLeft="4dp"
-                    android:visibility="gone"
-                    android:layout_gravity="center_vertical" />
-
-
-                <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-                    android:id="@+id/price_seekbar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    app:dsb_min="2"
-                    app:dsb_max="15"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:visibility="gone"
-                    />
+                android:background="@drawable/maker_bg">
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -80,7 +58,6 @@
                         android:text="Non Serviceable Region"
                         android:textColor="@color/white"
                         android:textSize="@dimen/fourteen_sp"
-
                         android:gravity="center" />
                     <TextView
                         android:layout_width="fill_parent"
@@ -109,41 +86,42 @@
                         android:background="@drawable/deal_circle"
                         android:textColor="@color/white"
                         android:textSize="@dimen/sixteen_sp"
-                        android:gravity="center_vertical" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:text="1200 Rs/sqft"
-                        android:id="@+id/tv_max"
-                        android:layout_marginLeft="@dimen/sixteen_dp"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/fourteen_sp"
-                        android:layout_gravity="center_vertical"
                         android:gravity="center_vertical"
-                        android:layout_toRightOf="@+id/linearlayout_drooms" />
-
-                    <View
-                        android:layout_width="12dp"
-                        android:layout_height="1dp"
-                        android:background="@color/white"
-                        android:layout_gravity="center_vertical"
-                        android:layout_centerInParent="true" />
-
-                    <TextView
+                        android:layout_alignParentLeft="true"/>
+                    <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.HorizontalPicker.HorizontalPicker
+                        android:id="@+id/picker"
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:text="2000 Rs/sqft"
-                        android:id="@+id/tv_min"
-                        android:layout_marginRight="@dimen/sixteen_dp"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/fourteen_sp"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center_vertical|right"
-                        android:layout_toLeftOf="@+id/newVisits" />
-
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="50dp"
+                        android:layout_marginBottom="0dp"
+                        android:layout_toRightOf="@id/linearlayout_drooms"
+                        android:textColor="@android:color/white"
+                        android:background="@android:color/black"
+                        android:textSize="22sp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="1"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_centerHorizontal="true"
+                        app:values="@array/hpicker"
+                        app:dividerSize="10dp"
+                        app:sideItems="@integer/sideItems"/>
+                    <TextView
+                        android:id="@+id/tvRate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="psf"
+                        android:textColor="@color/yellow"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@id/picker"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="-5dp"
+                        android:layout_marginRight="120dp"/>
                     <TextView
                         android:id="@+id/newVisits"
-
                         android:layout_width="wrap_content"
                         android:layout_height="fill_parent"
                         android:backgroundTint="@color/yellow"
@@ -158,17 +136,6 @@
 
                 </RelativeLayout>
 
-
-
-                <ImageView
-                    android:id="@+id/markerpanelplus"
-                    android:visibility="gone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_right_arrow_circle"
-                    android:layout_marginRight="4dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="4dp" />
 
             </LinearLayout>
 

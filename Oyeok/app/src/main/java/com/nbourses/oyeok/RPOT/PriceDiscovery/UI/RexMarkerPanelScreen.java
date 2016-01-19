@@ -67,6 +67,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.QrCode.CaptureActivityAnyOrientation;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.HorizontalPicker.HorizontalPicker;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.apache.http.HttpEntity;
@@ -130,14 +131,9 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private ImageView mQrCode;
     private LinearLayout mMarkerPanel;
 
-    private ImageView mMarkerpanelminus;
-    private ImageView mMarkerpanelplus;
-    private DiscreteSeekBar mMarkerpriceslider;
     private RelativeLayout mMarkerminmax;
     private GoogleMap map;
     private LinearLayout ll_marker;
-    private TextView maxPrice;
-    private TextView minPrice;
     private GeoFence geoFence;
     private int permissionCheckForCamera,permissionCheckForLocation;
     private final int MY_PERMISSION_FOR_CAMERA=11;
@@ -160,12 +156,15 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     AutoCompleteTextView autoCompView;
     private RelativeLayout errorView;
     private TextView errorText;
+    private HorizontalPicker horizontalPicker;
+    private TextView tvRate;
 
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
       View  rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
         droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
@@ -173,13 +172,9 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
        mVisits = (TextView) rootView.findViewById(R.id.newVisits);
         mQrCode = (ImageView) rootView.findViewById(R.id.qrCode);
         mMarkerPanel = (LinearLayout) rootView.findViewById(R.id.ll_marker);
-        mMarkerpanelminus = (ImageView) rootView.findViewById(R.id.markersliderminus);
-        mMarkerpanelplus = (ImageView) rootView.findViewById(R.id.markerpanelplus);
-        mMarkerpriceslider = (DiscreteSeekBar) rootView.findViewById(R.id.price_seekbar);
+
        mMarkerminmax = (RelativeLayout) rootView.findViewById(R.id.markerpanelminmax);
         //ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
-        maxPrice = (TextView) rootView.findViewById(R.id.tv_max);
-        minPrice = (TextView) rootView.findViewById(R.id.tv_min);
          permissionCheckForCamera = ContextCompat.checkSelfPermission(this.getActivity(),
                 Manifest.permission.CAMERA);
         mainActivity=(MainActivity)getActivity();
@@ -189,12 +184,24 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 Manifest.permission.ACCESS_FINE_LOCATION);
         errorView = (RelativeLayout) rootView.findViewById(R.id.alertLayout);
         errorText = (TextView) rootView.findViewById(R.id.errorText);
-        onPositionSelected(0,2);
+        onPositionSelected(0, 2);
 
 
-
-
-
+        horizontalPicker = (HorizontalPicker)rootView.findViewById(R.id.picker);
+        tvRate = (TextView)rootView.findViewById(R.id.tvRate);
+        horizontalPicker.setTvRate(tvRate);
+        horizontalPicker.setSelectedItem(2);
+        horizontalPicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
+        horizontalPicker.setOnItemSelectedListener(new HorizontalPicker.OnItemSelected() {
+            @Override
+            public void onItemSelected(int index) {
+                horizontalPicker.addValues(index);
+            }
+        });
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{"Rental", "Sale"}));
@@ -296,29 +303,12 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             @Override
             public void onClick(View v) {
 
-                mMarkerminmax.setVisibility(View.GONE);
-                mMarkerpanelminus.setVisibility(View.VISIBLE);
-                mMarkerpanelplus.setVisibility(View.VISIBLE);
-                mMarkerpriceslider.setVisibility(View.VISIBLE);
+                //mMarkerminmax.setVisibility(View.GONE);
+
 
             }
         });
 
-        mMarkerpanelminus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int m = mMarkerpriceslider.getLeft();
-                mMarkerpriceslider.setLeft(m - 1);
-
-            }
-        });
-        mMarkerpanelplus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int m = mMarkerpriceslider.getRight();
-                mMarkerpriceslider.setRight(m + 1);
-            }
-        });
 
 
 
@@ -343,20 +333,15 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void onDrag(MotionEvent motionEvent) {
 
                 if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                    mMarkerpanelminus.setVisibility(View.GONE);
-                    mMarkerpanelplus.setVisibility(View.GONE);
-                    mMarkerpriceslider.setVisibility(View.GONE);
-                    mMarkerminmax.setVisibility(View.GONE);
-                    mMarkerPanel.setVisibility(View.INVISIBLE);
-
-
+                    //mMarkerminmax.setVisibility(View.GONE);
+                    //mMarkerPanel.setVisibility(View.INVISIBLE);
+                    tvRate.setVisibility(View.GONE);
+                    horizontalPicker.keepScrolling();
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-
-                    mMarkerpanelminus.setVisibility(View.GONE);
-                    mMarkerpanelplus.setVisibility(View.GONE);
-                    mMarkerpriceslider.setVisibility(View.GONE);
                     mMarkerPanel.setVisibility(View.VISIBLE);
                     mMarkerminmax.setVisibility(View.VISIBLE);
+                    horizontalPicker.stopScrolling();
+                    tvRate.setVisibility(View.VISIBLE);
                     getPrice();
                     /*
                     LatLng latlng = map.getCameraPosition().target;
@@ -369,8 +354,10 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                             Log.i("Exception", "caught in get region");
                         }
                     }*/
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    tvRate.setVisibility(View.GONE);
+                    horizontalPicker.keepScrolling();
                 }
-
                 SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                 SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
 
@@ -462,23 +449,6 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         // Inflate the layout for this fragment
 
 
-        mMarkerpriceslider.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
-            @Override
-            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-                //Toast.makeText(getActivity(),"test",Toast.LENGTH_LONG).show();
-                map.animateCamera(CameraUpdateFactory.zoomTo(12));
-            }
-        });
         if(!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
             droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
 
@@ -679,8 +649,6 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void success(GetPrice getPrice, Response response) {
                 //Toast.makeText(getContext(), "get price success", Toast.LENGTH_LONG).show();
                 Log.i("getPrice", "success");
-                minPrice.setText(getPrice.responseData.getOr_max());
-                maxPrice.setText(getPrice.responseData.getOr_min());
 
             }
 
@@ -815,8 +783,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         for(int i=0; i<addresses.get(0).getMaxAddressLineIndex(); i++){
             fullAddress += addresses.get(0).getAddressLine(i);
         }
-        SharedPrefs.save(getActivity(),SharedPrefs.MY_REGION, fullAddress);
-        Log.v(TAG, fullAddress);
+        SharedPrefs.save(getActivity(), SharedPrefs.MY_REGION, fullAddress);
         if (addresses.size() > 0) {
             pincode = addresses.get(0).getPostalCode();
 
@@ -905,7 +872,6 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     JSONArray address_components = zero.getJSONArray("address_components");
 
                     fullAddress = zero.getString("formatted_address");
-                    Log.v(TAG, "from async task : address is" + fullAddress);
                     for (int i = 0; i < address_components.length(); i++) {
                         JSONObject zero2 = address_components.getJSONObject(i);
                         String long_name = zero2.getString("long_name");
@@ -938,8 +904,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                             }
                         }
 
-                        SharedPrefs.save(getActivity(),SharedPrefs.MY_REGION,fullAddress);
-                        Log.v(TAG,"from asynctask "+fullAddress);
+                        SharedPrefs.save(getActivity(), SharedPrefs.MY_REGION, fullAddress);
                         // JSONArray mtypes = zero2.getJSONArray("types");
                         // String Type = mtypes.getString(0);
                         // Log.e(Type,long_name);
