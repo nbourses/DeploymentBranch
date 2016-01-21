@@ -1125,31 +1125,32 @@ public class HorizontalPicker extends View {
     public void addValues(int index) {
 
         int size = getArraySize();
+        CharSequence cValue = mValues.get(0);
+        int value = Integer.parseInt(cValue.toString());
+        int interval = getInterval();
+
         if (index > (size - 10)) {
             if (mValues == null)
                 mValues = new ArrayList<CharSequence>();
-            int intervalValue = getInterval();
             while (size - 10 <= index) {
                 CharSequence previousValue = mValues.get(size-1);
-                String newValue = Integer.valueOf(previousValue.toString()) + intervalValue + "";
+                String newValue = Integer.valueOf(previousValue.toString()) + interval + "";
                 mValues.add(newValue);
                 mLayouts.add(new BoringLayout("Rs "+newValue, mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
                         1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
                 size++;
             }
-        } else if (index<10) {
+        } else if (value>interval && index<10) {
             if (mValues == null)
                 mValues = new ArrayList<CharSequence>();
-            CharSequence cValue = mValues.get(0);
-            int value = Integer.parseInt(cValue.toString());
+
             int count = 10;
-            int interval = getInterval();
             String newValue;
             while ( value>interval && count>0 ) {
                 value -= interval;
                 newValue = value+"";
                 mValues.add(0,newValue);
-                mLayouts.add(0,new BoringLayout(newValue, mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
+                mLayouts.add(0,new BoringLayout("Rs "+newValue, mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
                         1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
                 count--;
             }
