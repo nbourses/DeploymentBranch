@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.nbourses.oyeok.Database.DBHelper;
@@ -29,7 +28,6 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.Firebase.HourGlassDetails;
 import com.nbourses.oyeok.Firebase.HourGlassFirebase;
 import com.nbourses.oyeok.Firebase.UserProfileFirebase;
-import com.nbourses.oyeok.Manifest;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.MobileVerify;
@@ -42,7 +40,6 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
-import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
@@ -51,8 +48,6 @@ import com.nbourses.oyeok.User.UserProfileViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-
-import java.util.MissingFormatArgumentException;
 
 import butterknife.Bind;
 import retrofit.Callback;
@@ -173,6 +168,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
             }
         });
 
+        ((MainActivity)getActivity()).changeDrawerToggle(false,"SignUp");
 
         return view;
 

@@ -63,13 +63,12 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GeoFence;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MapWrapperLayout;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.HorizontalPicker.HorizontalPicker;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.QrCode.CaptureActivityAnyOrientation;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.HorizontalPicker.HorizontalPicker;
 
-import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -310,6 +309,9 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         });
 
 
+        ((MainActivity)getActivity()).changeDrawerToggle(true,"MarkerPanelScreen");
+
+
 
 
         CustomMapFragment customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
@@ -431,7 +433,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 //        });
 
 
-        ((MainActivity) getActivity()).bringResideMenu();
+       // ((MainActivity) getActivity()).bringResideMenu();
 
 
 //        PhasedSeekBar psbHorizontal = (PhasedSeekBar) rootView.findViewById(R.id.psb_hor);

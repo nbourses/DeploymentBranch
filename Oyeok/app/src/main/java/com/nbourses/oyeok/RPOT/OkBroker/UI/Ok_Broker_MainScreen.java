@@ -265,6 +265,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
         }
 
+        ((MainActivity)getActivity()).changeDrawerToggle(true,"DashBoard");
+
 
         return v;
     }
@@ -326,7 +328,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     public void onResume() {
         super.onResume();
 
-        ((MainActivity)getActivity()).hideResideMenu();
+        //((MainActivity)getActivity()).hideResideMenu();
         ((MainActivity)getActivity()).showOpenMaps();
     }
 

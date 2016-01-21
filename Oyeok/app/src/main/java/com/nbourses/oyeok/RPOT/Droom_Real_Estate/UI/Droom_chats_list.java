@@ -23,6 +23,7 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Firebase.ChatList;
 import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 
 import org.json.JSONObject;
 
@@ -75,6 +76,8 @@ public class Droom_chats_list extends Fragment implements ChatList {
             droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
             droomChatFirebase.setmCallBack(Droom_chats_list.this);
         }
+
+        ((MainActivity)getActivity()).changeDrawerToggle(false,"Deals");
 
 
         //Log.i("Munni","In"+"   "+dbHelper.getValue(DatabaseConstants.userId)+"  "+list.toString());

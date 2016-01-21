@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,7 +111,7 @@ public class FragmentDrawer extends Fragment {
     public void setUp(int fragmentId, DrawerLayout drawerLayout, final Toolbar toolbar) {
         containerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
-        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
+        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -138,6 +139,18 @@ public class FragmentDrawer extends Fragment {
             }
         });
 
+    }
+
+
+
+    public void setmDrawerToggle(boolean string)
+    {
+        mDrawerToggle.setDrawerIndicatorEnabled(string);
+
+    }
+
+    public boolean handle(MenuItem item) {
+        return mDrawerToggle.onOptionsItemSelected(item);
     }
 
     public static interface ClickListener {

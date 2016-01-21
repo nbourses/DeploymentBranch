@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,11 +24,10 @@ import android.widget.TextView;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateProfile;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -111,7 +109,7 @@ public class Profile extends Fragment {
                     }
                 });
 
-
+        ((MainActivity)getActivity()).changeDrawerToggle(false,"Profile");
 
         return layout;
     }

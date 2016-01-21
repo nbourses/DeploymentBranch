@@ -36,6 +36,8 @@ import com.nbourses.oyeok.SignUp.SignUpFragment;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
+import java.text.DecimalFormat;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -140,6 +142,11 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
 
 
 
+
+        ((MainActivity)getActivity()).changeDrawerToggle(false,"OyeABroker");
+
+
+
         discreteSeekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
@@ -148,10 +155,12 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
                 }*/
                int val= seekBar.getProgress();
                 Log.i("Debug",""+value);
-                String s = numToVal(value);
+
+                DecimalFormat formatter = new DecimalFormat();
+                //String s = numToVal(value);
                 //seekBar.setIndicatorFormatt er(s);
                 budget = ""+value;
-                pricevalue.setText(s);
+                pricevalue.setText("Rs "+ formatter.format(value));
             }
 
             @Override

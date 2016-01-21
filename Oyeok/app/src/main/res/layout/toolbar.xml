@@ -13,6 +13,7 @@
     <Button
         android:layout_width="28dp"
         android:layout_height="28dp"
+        android:visibility="gone"
         android:background="@drawable/ic_menu_24dp"
         android:id="@+id/residemenu_rightmenu_titlebar"
         android:layout_gravity="right|center_vertical"

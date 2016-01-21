@@ -19,16 +19,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.nbourses.oyeok.Database.DBHelper;
@@ -37,7 +36,6 @@ import com.nbourses.oyeok.GoogleCloudMessaging.RegistrationIntentService;
 import com.nbourses.oyeok.JPOT.SalaryDiscovery.UI.JexMarkerPanelScreen;
 import com.nbourses.oyeok.LPOT.PriceDiscoveryLoan.UI.LexMarkerPanelScreen;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
@@ -82,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     //VARIABLES: Reside Menu for User Role Change */
     ResideMenu resideMenu;
     ResideMenuItem[] resideMenuItems;
-    private Button resideMenuButton;
+    //private Button resideMenuButton;
     private Button openMaps;
     Switch switchOnOff;
     DBHelper dbHelper;
@@ -143,23 +141,25 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         startService(intent);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         toastLayout= (LinearLayout) findViewById(R.id.toastLayout);
-        resideMenuButton = (Button) mToolbar.findViewById(R.id.residemenu_rightmenu_titlebar);
+        //resideMenuButton = (Button) mToolbar.findViewById(R.id.residemenu_rightmenu_titlebar);
         openMaps  = (Button) mToolbar.findViewById(R.id.openmaps);
         changeRegion = (TextView) mToolbar.findViewById(R.id.tv_change_region);
         hideOpenMaps();
-        bringResideMenu();
-        resideMenuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openRightMenu();
-            }
-        });
+        //bringResideMenu();
+//        resideMenuButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openRightMenu();
+//            }
+//        });
         dbHelper=new DBHelper(getBaseContext());
         toastText= (TextView) findViewById(R.id.toastText);
 
 
         setSupportActionBar(mToolbar);
+
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
         {
@@ -276,6 +276,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
          display the first navigation drawer view on app launch
 */
 
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
     }
     void startRepeatingTask() {
@@ -302,6 +304,27 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         toastLayout.setVisibility(View.INVISIBLE);
     }
 
+
+
+
+    public void changeDrawerToggle(boolean string,String title)
+    {
+//        if(string)
+//        {
+//            //getSupportActionBar().setIcon(null);
+//            getSupportActionBar().setTitle(title);
+//        }else
+//        {
+//           //getSupportActionBar().setIcon(R.drawable.ic_arrow_back_24dp);
+//            getSupportActionBar().setTitle(title);
+//        }
+        drawerFragment.setmDrawerToggle(string);
+        getSupportActionBar().setTitle(title);
+
+    }
+
+
+
     private void hideMap(int i) {
 
         Animation m = null;
@@ -319,6 +342,27 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         }
 
         toastLayout.setAnimation(m);
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(drawerFragment.handle(item))
+        {
+            return true;
+        }
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                //Do stuff
+                //Toast.makeText(this,"getscalled",Toast.LENGTH_LONG).show();
+                changeFragment(new RexMarkerPanelScreen(),null,"MarkerPanel");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -606,15 +650,15 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         }
     };
 
-    public void hideResideMenu()
-    {
-        resideMenuButton.setVisibility(View.GONE);
-    }
-
-    public void bringResideMenu()
-    {
-        resideMenuButton.setVisibility(View.VISIBLE);
-    }
+//    public void hideResideMenu()
+//    {
+//        resideMenuButton.setVisibility(View.GONE);
+//    }
+//
+//    public void bringResideMenu()
+//    {
+//        resideMenuButton.setVisibility(View.VISIBLE);
+//    }
 
     public void hideOpenMaps()
     {
