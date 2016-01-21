@@ -391,7 +391,7 @@ public class HorizontalPicker extends View {
 
         if (mLayouts != null && mLayouts.size() > 0 && getWidth() > 0)  {
             for (int i = 0; i < mLayouts.size(); i++) {
-                mLayouts.get(i).replaceOrMake(mValues.get(i), mTextPaint, mItemWidth,
+                mLayouts.get(i).replaceOrMake("Rs "+mValues.get(i), mTextPaint, mItemWidth,
                         Layout.Alignment.ALIGN_CENTER, 1f, 1f, mBoringMetrics, false, mEllipsize,
                         mItemWidth);
             }
@@ -786,7 +786,7 @@ public class HorizontalPicker extends View {
             if (!mValues.isEmpty()) {
                 mLayouts = new ArrayList<BoringLayout>(mValues.size());
                 for (int i = 0; i < mValues.size(); i++) {
-                    mLayouts.add(new BoringLayout(mValues.get(i), mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
+                    mLayouts.add(new BoringLayout("Rs "+mValues.get(i), mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
                             1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
                 }
             } else {
@@ -1133,7 +1133,7 @@ public class HorizontalPicker extends View {
                 CharSequence previousValue = mValues.get(size-1);
                 String newValue = Integer.valueOf(previousValue.toString()) + intervalValue + "";
                 mValues.add(newValue);
-                mLayouts.add(new BoringLayout(newValue, mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
+                mLayouts.add(new BoringLayout("Rs "+newValue, mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
                         1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
                 size++;
             }

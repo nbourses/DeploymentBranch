@@ -183,13 +183,14 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 Manifest.permission.ACCESS_FINE_LOCATION);
         errorView = (RelativeLayout) rootView.findViewById(R.id.alertLayout);
         errorText = (TextView) rootView.findViewById(R.id.errorText);
-        onPositionSelected(0, 2);
+
 
 
         horizontalPicker = (HorizontalPicker)rootView.findViewById(R.id.picker);
         tvRate = (TextView)rootView.findViewById(R.id.tvRate);
         horizontalPicker.setTvRate(tvRate);
         horizontalPicker.setSelectedItem(2);
+        onPositionSelected(0, 2);
         horizontalPicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -751,13 +752,13 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         //Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
         if(count==2){
             if(position==0) {
-
+                tvRate.setText("pmon");
                 brokerType = "rent";
                 dbHelper.save(DatabaseConstants.brokerType, "LL");
                 dbHelper.save("brokerType","On Rent");
             }
             else if(position==1) {
-
+                tvRate.setText("psf");
                 brokerType = "sale";
                 dbHelper.save(DatabaseConstants.brokerType, "OR");
                 dbHelper.save("brokerType","For Sale");
