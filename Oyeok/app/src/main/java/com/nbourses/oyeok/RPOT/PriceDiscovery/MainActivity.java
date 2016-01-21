@@ -358,7 +358,12 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             case android.R.id.home:
                 //Do stuff
                 //Toast.makeText(this,"getscalled",Toast.LENGTH_LONG).show();
-                changeFragment(new RexMarkerPanelScreen(),null,"MarkerPanel");
+                if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+                {
+                    changeFragment(new Ok_Broker_MainScreen(), null, "MarkerPanel");
+                }else {
+                    changeFragment(new RexMarkerPanelScreen(), null, "MarkerPanel");
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
