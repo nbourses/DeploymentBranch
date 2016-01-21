@@ -93,17 +93,6 @@ import retrofit.client.Response;
 
 import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
-//import com.nbourses.oyeok.R;
-
-//import com.nbourses.oyeok.R;
-
-/*import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;*/
-
 
 public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList {
 
@@ -249,8 +238,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void onClick(View v) {
                 Bundle args = new Bundle();
                 args.putString("BrokerType", brokerType);
-                args.putString("Address",SharedPrefs.getString(getActivity(),SharedPrefs.MY_REGION));
-                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(), args,"");
+                args.putString("Address", SharedPrefs.getString(getActivity(), SharedPrefs.MY_REGION));
+                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(), args, "");
                 //OyeIntentSpecs oye = new OyeIntentSpecs();
 
                 //oye.setArguments(args);
@@ -309,7 +298,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         });
 
 
-        ((MainActivity)getActivity()).changeDrawerToggle(true,"MarkerPanelScreen");
+        ((MainActivity)getActivity()).changeDrawerToggle(true, "MarkerPanelScreen");
 
 
 
@@ -651,6 +640,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void success(GetPrice getPrice, Response response) {
                 //Toast.makeText(getContext(), "get price success", Toast.LENGTH_LONG).show();
                 Log.i("getPrice", "success");
+                horizontalPicker.setInterval(1,10,10,HorizontalPicker.THOUSANDS);
 
             }
 
