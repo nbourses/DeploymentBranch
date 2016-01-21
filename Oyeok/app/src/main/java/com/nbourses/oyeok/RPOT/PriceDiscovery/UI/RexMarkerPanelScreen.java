@@ -195,6 +195,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void onClick(View view) {
             }
         });
+
         horizontalPicker.setOnItemSelectedListener(new HorizontalPicker.OnItemSelected() {
             @Override
             public void onItemSelected(int index) {
@@ -634,14 +635,14 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         user.setPlatform("android");
         Log.i("my_locality",SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
         user.setPincode("400058");
-		
+
         /*user.setDeviceId(dbHelper.getValue("deviceId"));
         user.setGcmId(dbHelper.getValue("dcmId"));
         user.setUserRole(dbHelper.getValue("userRole"));
         user.setLongitude(Double.parseDouble(dbHelper.getValue("currentLng")));
         user.setLatitude(Double.parseDouble(dbHelper.getValue("currentLat")));
         user.setLocality(region);
-		user.setPincode(pincode);*/
+        user.setPincode(pincode);*/
 
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
@@ -651,6 +652,13 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void success(GetPrice getPrice, Response response) {
                 //Toast.makeText(getContext(), "get price success", Toast.LENGTH_LONG).show();
                 Log.i("getPrice", "success");
+                //minPrice.setText(getPrice.responseData.getOr_max());
+                //maxPrice.setText(getPrice.responseData.getOr_min());
+                String min = getPrice.responseData.getOr_min();
+                String max = getPrice.responseData.getOr_max();
+                if(horizontalPicker!=null)
+                    horizontalPicker.setInterval(Integer.parseInt(min),Integer.parseInt(max),
+                            10,HorizontalPicker.THOUSANDS);
 
             }
 
