@@ -14,6 +14,7 @@ import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.Firebase.DroomDetails;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AcceptOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +35,7 @@ public class AcceptOkCall {
     }
 
     OnAcceptOkSuccess mCallBack;
-    public void acceptOk(JSONArray m,int position, final DBHelper dbHelper, Activity activity) {
+    public void acceptOk(JSONArray m,int position, final DBHelper dbHelper, final Activity activity) {
         String oyeId=null,oyeUserId=null,tt = null,size=null,price=null,reqAvl=null;
         droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
 
@@ -124,7 +125,8 @@ public class AcceptOkCall {
                     droomChatFirebase.updateChatRoom(okId,userId1,userId2,droomDetails);*/
                     }
                     else
-                        Log.i("message=",acceptOk.responseData.getMessage());
+                        ( (MainActivity)activity).showToastMessage(acceptOk.responseData.getMessage());
+                       // Log.i("message=",acceptOk.responseData.getMessage());
 
                 }
 
@@ -148,6 +150,8 @@ public class AcceptOkCall {
                         droomChatFirebase.createChatRoom(okId,userId1,userId2,droomDetails);
                         mCallBack.replaceFragment(args);
                     }*/
+
+                    ( (MainActivity)activity).showToastMessage(error.getMessage());
 
                 }
             });
