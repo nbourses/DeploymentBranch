@@ -46,6 +46,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.lang.Math.log10;
+
 /**
  * Created by YASH_SHAH on 13/01/2016.
  */
@@ -150,10 +152,10 @@ public class HorizontalPicker extends View {
 
     private float textSize;
 
-    private Integer interval;
-    private Integer minValue;
-    private Integer maxValue;
-    private String rupeeUnit;
+    private Integer interval = 500;
+    private Integer minValue = 0;
+    private Integer maxValue = 0;
+    private String rupeeUnit = "Rs";
 
 
     public HorizontalPicker(Context context) {
@@ -434,7 +436,8 @@ public class HorizontalPicker extends View {
         if (mLayouts != null && mLayouts.size() > 0 && getWidth() > 0)  {
             for (int i = 0; i < mLayouts.size(); i++) {
 
-                    mLayouts.get(i).replaceOrMake(mValues.get(i), mTextPaint, mItemWidth,
+                    int m = Integer.parseInt(mValues.get(i).toString());
+                    mLayouts.get(i).replaceOrMake(numToVal(m), mTextPaint, mItemWidth,
                             Layout.Alignment.ALIGN_CENTER, 1f, 1f, mBoringMetrics, false, mEllipsize,
                             mItemWidth);
 
@@ -838,7 +841,8 @@ public class HorizontalPicker extends View {
                 mLayouts = new ArrayList<BoringLayout>(mValues.size());
                 for (int i = 0; i < mValues.size(); i++) {
 
-                        mLayouts.add(new BoringLayout(mValues.get(i), mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
+                        int m = Integer.valueOf(mValues.get(i).toString());
+                        mLayouts.add(new BoringLayout(numToVal(m), mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
                                 1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
 
                     }
@@ -1187,9 +1191,10 @@ public class HorizontalPicker extends View {
                 mValues = new ArrayList<CharSequence>();
             while (size - 10 <= index) {
                 CharSequence previousValue = mValues.get(size-1);
-                String newValue = Integer.valueOf(previousValue.toString()) + interval + "";
-                mValues.add(newValue);
-                mLayouts.add(new BoringLayout(newValue, mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
+                int newValue = Integer.valueOf(previousValue.toString()) + interval ;
+
+                mValues.add(String.valueOf(newValue));
+                mLayouts.add(new BoringLayout(numToVal(newValue), mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
                         1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
                 size++;
             }
@@ -1198,12 +1203,12 @@ public class HorizontalPicker extends View {
                 mValues = new ArrayList<CharSequence>();
 
             int count = 10;
-            String newValue;
+            int newValue;
             while ( value>interval && count>0 ) {
                 value -= interval;
-                newValue = value+"";
-                mValues.add(0,newValue);
-                mLayouts.add(0,new BoringLayout("Rs "+newValue, mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
+                newValue = value;
+                mValues.add(0,String.valueOf(newValue));
+                mLayouts.add(0,new BoringLayout(numToVal(newValue), mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
                         1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
                 count--;
             }
@@ -1538,6 +1543,75 @@ public class HorizontalPicker extends View {
             return false;
         }
 
+    }
+
+
+    String numToVal(int no){
+        String str = "",v = "";
+
+        int twoWord = 0,val = 1;
+
+        int c = (no == 0 ? 1 : (int)(log10(no)+1));
+
+        if (c > 8) {
+
+            c = 8;
+        }
+        if (c%2 == 1){
+
+            c--;
+        }
+
+        c--;
+        //   int q = Int(pow(Double(10),Double(c)))
+        switch(c)
+        {
+            case 7:
+//            if(propertyType)
+                val = no/10000000;
+//            else
+//                val = no/100000;
+                no = no%10000000;
+                String formatted = String.format("%07d", no);
+
+                v = val+"."+formatted;
+                str = v+"cr";
+
+
+                twoWord++;
+                break;
+
+            case 5:
+
+                val = no/100000;
+
+                v = val+"";
+                no = no%100000;
+                String s2 = String.format("%05d", no);
+
+                if (val != 0){
+                    str = str+v+"."+s2+"l";
+                    twoWord++;
+                }
+
+                    break;
+
+            case 3:
+                val = no/1000;
+                v = val+"";
+                no = no%1000;
+                String.format("%05d", no);
+                String s3 = String.format("%03d", no);
+                s3 = s3.substring(0,1);
+                if (val != 0) {
+                    str = str+v+"."+s3+"k";
+                }
+                break;
+            default :
+                // print("noToWord Default")
+                break;
+        }
+        return str;
     }
 
 }

@@ -37,7 +37,7 @@ public class AcceptOkCall {
     OnAcceptOkSuccess mCallBack;
     public void acceptOk(JSONArray m,int position, final DBHelper dbHelper, final Activity activity) {
         String oyeId=null,oyeUserId=null,tt = null,size=null,price=null,reqAvl=null;
-        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
+        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl,activity);
 
 
         Log.i("mArray= ",m.toString());

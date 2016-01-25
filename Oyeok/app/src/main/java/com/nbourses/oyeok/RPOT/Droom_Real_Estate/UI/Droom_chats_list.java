@@ -56,7 +56,7 @@ public class Droom_chats_list extends Fragment implements ChatList {
         listView= (SwipeMenuListView) rootView.findViewById(R.id.listView);
         mAdapter = new AppAdapter();
         dbHelper=new DBHelper(getActivity());
-        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
+        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl,getActivity());
 
         Log.i("tb getDroomList", String.valueOf(System.currentTimeMillis()));
         Bundle b = getArguments();
@@ -128,12 +128,12 @@ public class Droom_chats_list extends Fragment implements ChatList {
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 switch (index) {
                     case 0:
-                        Title title=new Title();
-                        title=mAdapter.getItem(position);
+                        Title title = new Title();
+                        title = mAdapter.getItem(position);
                         Fragment fragment = new Droom_Chat_New();
-                        Bundle bundle=new Bundle();
-                        bundle.putString("UserId1",dbHelper.getValue(DatabaseConstants.userId));
-                        bundle.putString("OkId",title.getOkId());
+                        Bundle bundle = new Bundle();
+                        bundle.putString("UserId1", dbHelper.getValue(DatabaseConstants.userId));
+                        bundle.putString("OkId", title.getOkId());
                         fragment.setArguments(bundle);
                         FragmentManager fragmentManager = getFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -151,6 +151,9 @@ public class Droom_chats_list extends Fragment implements ChatList {
                 return false;
             }
         });
+
+
+        ((MainActivity)getActivity()).changeDrawerToggle(true, "ChatRoom");
 
 
 

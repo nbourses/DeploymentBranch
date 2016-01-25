@@ -64,6 +64,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MapWrapperLayout;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.HorizontalPicker.HorizontalPicker;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
@@ -105,7 +106,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;*/
 
 
-public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList,HorizontalPicker.pickerPriceSelected {
+public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList,HorizontalPicker.pickerPriceSelected,FragmentDrawer.MDrawerListener {
 
     private final String TAG = RexMarkerPanelScreen.class.getSimpleName();
     private static final String[] INITIAL_PERMS = {
@@ -167,7 +168,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
       View  rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
-        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
+        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl,getActivity());
         mDrooms = (TextView) rootView.findViewById(R.id.linearlayout_drooms);
        mVisits = (TextView) rootView.findViewById(R.id.newVisits);
         mQrCode = (ImageView) rootView.findViewById(R.id.qrCode);
@@ -465,6 +466,9 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
         dbHelper.save(DatabaseConstants.userRole,"Client");
 
+
+        ((MainActivity) getActivity()).setListener(this);
+
         rupeesymbol.bringToFront();
         tvRate.bringToFront();
         ll_marker.bringToFront();
@@ -522,38 +526,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     }
 
 
-//    private Handler mHandler;
-//    Runnable mStatusChecker = new Runnable() {
-//        @Override
-//        public void run() {
-//            //fillHourGlasses(0, intervalCount * mInterval / 1000);
-//
-//            hideMap(0);
-//            errorView.setVisibility(View.GONE);
-//
-//
-//        }
-//    };
-//
-//    Runnable mStatusChecker1 = new Runnable() {
-//        @Override
-//        public void run() {
-//            //fillHourGlasses(0, intervalCount * mInterval / 1000);
-//
-//            showInfoMessage("Sample information test");
-//
-//
-//        }
-//    };
-//
-//    public void showInfoMessage(String message)
-//    {
-//        errorView.setVisibility(View.VISIBLE);
-//        errorText.setText(message);
-//        hideMap(1);
-//        mHandler.postDelayed(mStatusChecker, 5000);
-//
-//    }
+
 
     private Handler mHandler;
     Runnable mStatusChecker = new Runnable() {
@@ -843,6 +816,13 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     public void priceSelected(String val) {
 
         map.animateCamera(CameraUpdateFactory.zoomTo(12));
+
+    }
+
+    @Override
+    public void drawerOpened() {
+
+        horizontalPicker.stopScrolling();
 
     }
 

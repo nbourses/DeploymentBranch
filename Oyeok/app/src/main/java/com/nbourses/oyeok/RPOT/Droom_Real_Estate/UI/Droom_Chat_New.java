@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
@@ -132,7 +131,7 @@ public class Droom_Chat_New extends Fragment  {
 
         Bundle b=getArguments();
         DroomDetails droomDetails=new DroomDetails();
-        DroomChatFirebase droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
+        DroomChatFirebase droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl,getActivity());
         okId= (String) b.get("OkId");
         userId1= (String) b.get("UserId1");
         //userId2= (String) b.get("UserId2");

@@ -2,6 +2,7 @@ package com.nbourses.oyeok.RPOT.PriceDiscovery;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +38,7 @@ import com.nbourses.oyeok.GoogleCloudMessaging.RegistrationIntentService;
 import com.nbourses.oyeok.JPOT.SalaryDiscovery.UI.JexMarkerPanelScreen;
 import com.nbourses.oyeok.LPOT.PriceDiscoveryLoan.UI.LexMarkerPanelScreen;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
@@ -75,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private String firebaseUrl="https://resplendent-fire-6770.firebaseio.com/";
     private Toolbar mToolbar;
     private FragmentDrawer drawerFragment;
+    private Button help;
 
 
     //VARIABLES: Reside Menu for User Role Change */
@@ -144,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         //resideMenuButton = (Button) mToolbar.findViewById(R.id.residemenu_rightmenu_titlebar);
         openMaps  = (Button) mToolbar.findViewById(R.id.openmaps);
         changeRegion = (TextView) mToolbar.findViewById(R.id.tv_change_region);
+        help     = (Button) mToolbar.findViewById(R.id.help);
         hideOpenMaps();
         //bringResideMenu();
 //        resideMenuButton.setOnClickListener(new View.OnClickListener() {
@@ -241,7 +246,22 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         });
 */
 
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 
+                Fragment fragment = new Droom_Chat_New();
+                Bundle bundle=new Bundle();
+                bundle.putString("UserId1",dbHelper.getValue(DatabaseConstants.userId));
+                bundle.putString("OkId",telephonyManager.getDeviceId());
+                fragment.setArguments(bundle);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.container_body, fragment);
+                fragmentTransaction.commitAllowingStateLoss();
+            }
+        });
 
         setUpMenuChangeUserRole();
 
@@ -682,6 +702,11 @@ toastLayout.setOnClickListener(new View.OnClickListener() {
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
+    }
+
+    public void setListener(FragmentDrawer.MDrawerListener mDrawerListener)
+    {
+          drawerFragment.setmDrawerListener(mDrawerListener);
     }
 
     public void showOpenMaps()

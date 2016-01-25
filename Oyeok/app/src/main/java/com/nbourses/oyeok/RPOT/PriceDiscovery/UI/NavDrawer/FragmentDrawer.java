@@ -39,6 +39,16 @@ public class FragmentDrawer extends Fragment {
     String userType="";
     private static String[] titles = null;
     private FragmentDrawerListener drawerListener;
+    public MDrawerListener mDrawerListener;
+
+    public void setmDrawerListener(MDrawerListener mDrawerListener) {
+        this.mDrawerListener = mDrawerListener;
+    }
+
+    public interface MDrawerListener
+    {
+        public void drawerOpened();
+    }
 
     public FragmentDrawer() {
 
@@ -116,12 +126,20 @@ public class FragmentDrawer extends Fragment {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 getActivity().invalidateOptionsMenu();
+                if(mDrawerListener != null )
+                {
+                    mDrawerListener.drawerOpened();
+                }
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 getActivity().invalidateOptionsMenu();
+                if(mDrawerListener != null )
+                {
+                    mDrawerListener.drawerOpened();
+                }
             }
 
             @Override

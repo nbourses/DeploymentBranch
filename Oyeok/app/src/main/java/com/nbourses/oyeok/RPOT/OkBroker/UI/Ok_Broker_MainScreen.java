@@ -209,7 +209,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
        // earnOk = (Button) v.findViewById(R.id.earnOk);
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable())
             preok();
-        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl);
+        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl,getActivity());
         mPager = (ViewPager) v.findViewById(R.id.pager);
         mTabs  = (SlidingTabLayout) v.findViewById(R.id.tabs);
         //mTabs.setDistributeEvenly(true);

@@ -1,6 +1,8 @@
 package com.nbourses.oyeok.Firebase;
 
 import android.app.Activity;
+import android.content.Context;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.firebase.client.DataSnapshot;
@@ -27,12 +29,38 @@ public class DroomChatFirebase {
     }
 
     ChatList mCallBack;
-    public DroomChatFirebase(String url){
+    public DroomChatFirebase(String url,Activity activity){
+        TelephonyManager telephonyManager = (TelephonyManager)activity.getSystemService(Context.TELEPHONY_SERVICE);
+
         this.firebaseReference=new Firebase(url);
         firebaseReference=firebaseReference.child("DroomChat");
+        createHelpChatRoom(telephonyManager.getDeviceId());
 
     }
 
+
+    public void createHelpChatRoom(String deviceid)
+    {
+        Log.i("device",deviceid);
+        DroomDetails droomdetails=new DroomDetails();
+        droomdetails.setTitle("OyeOK Support Team");
+        droomdetails.setLastMessage("Please chat for any queries");
+        droomdetails.setStatus("Unread");
+        droomdetails.setTimestamp(System.currentTimeMillis()+"");
+        Firebase chatFirebaseReference1;
+        chatFirebaseReference1=firebaseReference.child(deviceid).child(deviceid);
+
+
+
+        chatFirebaseReference1.setValue(droomdetails);
+
+
+    }
+
+    public void getHelpChatRoom(String deviceid)
+    {
+
+    }
 
     public void createChatRoom(String okId,String userId1,String userId2,DroomDetails droomDetails){
         Log.i("Mmmi",""+userId1+"  "+userId2+"  "+okId);
@@ -122,29 +150,59 @@ public class DroomChatFirebase {
 
     public void getDroomList(String userId,Activity activity){
         Firebase firebaseReference1=firebaseReference.child(userId);
+        TelephonyManager telephonyManager = (TelephonyManager)activity.getSystemService(Context.TELEPHONY_SERVICE);
+        Firebase firebaseReference2=firebaseReference.child(telephonyManager.getDeviceId());
         listOfChildren=new HashMap<String,HashMap<String,String>>();
-        firebaseReference1.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                int i = 0;
-                Log.i("tb onDataChange", String.valueOf(System.currentTimeMillis()));
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    listOfChildren.put(child.getKey(), (HashMap) child.getValue());
-                    Log.i("Test2", "" + listOfChildren.size());
-                    i++;
+        DBHelper dbHelper=new DBHelper(activity);
+        if(!dbHelper.getValue(DatabaseConstants.userId).equals("null"))
+        {
+            firebaseReference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    int i = 0;
+                    Log.i("tb onDataChange", String.valueOf(System.currentTimeMillis()));
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        listOfChildren.put(child.getKey(), (HashMap) child.getValue());
+                        Log.i("Test2", "" + listOfChildren.size());
+                        i++;
+                    }
+                    Log.i("Test3", listOfChildren.toString());
+                    Log.i("time after getDroomList", String.valueOf(System.currentTimeMillis()));
+                    if (mCallBack != null)
+                        mCallBack.sendData(listOfChildren);
+
                 }
-                Log.i("Test3", listOfChildren.toString());
-                Log.i("time after getDroomList", String.valueOf(System.currentTimeMillis()));
-                if(mCallBack!=null)
-                    mCallBack.sendData(listOfChildren);
 
-            }
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
+                }
+            });
+        }
+        else {
+            firebaseReference2.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    int i = 0;
+                    Log.i("tb onDataChange", String.valueOf(System.currentTimeMillis()));
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        listOfChildren.put(child.getKey(), (HashMap) child.getValue());
+                        Log.i("Test2", "" + listOfChildren.size());
+                        i++;
+                    }
+                    Log.i("Test3", listOfChildren.toString());
+                    Log.i("time after getDroomList", String.valueOf(System.currentTimeMillis()));
+                    if (mCallBack != null)
+                        mCallBack.sendData(listOfChildren);
 
-            }
-        });
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+        }
 
     }
 }
