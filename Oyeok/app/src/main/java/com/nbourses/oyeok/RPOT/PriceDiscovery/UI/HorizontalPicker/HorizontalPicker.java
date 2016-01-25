@@ -52,6 +52,8 @@ import java.util.List;
 public class HorizontalPicker extends View {
 
     public static final String TAG = "HorizontalTimePicker";
+    protected final float DPTOPX_SCALE = getResources().getDisplayMetrics().density;
+
 
     /**
      * The coefficient by which to adjust (divide) the max fling velocity.
@@ -86,6 +88,7 @@ public class HorizontalPicker extends View {
     private ArrayList<BoringLayout> mLayouts;
 
     private TextPaint mTextPaint;
+    private TextPaint mSelectedTextPaint;
     private BoringLayout.Metrics mBoringMetrics;
     private TextUtils.TruncateAt mEllipsize;
 
@@ -113,6 +116,17 @@ public class HorizontalPicker extends View {
     private EdgeEffect mLeftEdgeEffect;
     private EdgeEffect mRightEdgeEffect;
 
+    public void setMpicker(pickerPriceSelected mpicker) {
+        this.mpicker = mpicker;
+    }
+
+    public interface pickerPriceSelected
+    {
+        public void priceSelected(String val);
+    }
+
+    private pickerPriceSelected mpicker;
+
     private Marquee mMarquee;
     private int mMarqueeRepeatLimit = 3;
 
@@ -125,7 +139,9 @@ public class HorizontalPicker extends View {
     private final PickerTouchHelper mTouchHelper;
     private OnScrollChanged mOnScrollChanged;
     private TextView tvRate;
+    private TextView rupeeText;
     private boolean endlessScroll;
+    private float textSize;
 
     public HorizontalPicker(Context context) {
         this(context, null);
@@ -143,6 +159,11 @@ public class HorizontalPicker extends View {
         paint.setAntiAlias(true);
         mTextPaint = paint;
 
+        TextPaint paint1 = new TextPaint();
+        paint1.setAntiAlias(true);
+        paint1.setTextSize(18*DPTOPX_SCALE);
+
+        mSelectedTextPaint = paint1;
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.HorizontalPicker,
@@ -168,7 +189,7 @@ public class HorizontalPicker extends View {
             mDividerSize = a.getDimension(R.styleable.HorizontalPicker_dividerSize, mDividerSize);
             sideItems = a.getInt(R.styleable.HorizontalPicker_sideItems, sideItems);
 
-            float textSize = a.getDimension(R.styleable.HorizontalPicker_android_textSize, -1);
+            textSize = a.getDimension(R.styleable.HorizontalPicker_android_textSize, -1);
             if(textSize > -1) {
                 setTextSize(textSize);
             }
@@ -266,10 +287,22 @@ public class HorizontalPicker extends View {
 
                 // set text color for item
                 mTextPaint.setColor(getTextColor(i));
+                if(i!=selectedItem)
+                {
+                    setTextSize(textSize);
+                }else
+                {
+                    mTextPaint.setTextSize(17*DPTOPX_SCALE);
+                }
                 BoringLayout layout;
                 // get text layout
 //                if(mLayouts.size()!=0)
                     layout = mLayouts.get(i);
+
+
+
+
+
   //              else
     //                layout = new BoringLayout();
 
@@ -383,9 +416,11 @@ public class HorizontalPicker extends View {
 
         if (mLayouts != null && mLayouts.size() > 0 && getWidth() > 0)  {
             for (int i = 0; i < mLayouts.size(); i++) {
-                mLayouts.get(i).replaceOrMake("Rs "+mValues.get(i), mTextPaint, mItemWidth,
-                        Layout.Alignment.ALIGN_CENTER, 1f, 1f, mBoringMetrics, false, mEllipsize,
-                        mItemWidth);
+
+                    mLayouts.get(i).replaceOrMake(mValues.get(i), mTextPaint, mItemWidth,
+                            Layout.Alignment.ALIGN_CENTER, 1f, 1f, mBoringMetrics, false, mEllipsize,
+                            mItemWidth);
+
             }
         }
 
@@ -534,6 +569,7 @@ public class HorizontalPicker extends View {
             return false;
         }
         tvRate.setVisibility(View.GONE);
+        rupeeText.setVisibility(View.GONE);
         if (mVelocityTracker == null) {
             mVelocityTracker = VelocityTracker.obtain();
         }
@@ -636,6 +672,11 @@ public class HorizontalPicker extends View {
                     mRightEdgeEffect.onRelease();
                 }
 
+                if(mpicker != null)
+                {
+                    mpicker.priceSelected(String.valueOf(getSelectedItem()));
+                }
+
             case MotionEvent.ACTION_CANCEL:
                 mPressedItem = -1;
                 invalidate();
@@ -667,6 +708,7 @@ public class HorizontalPicker extends View {
 
     private void showTvRate() {
         tvRate.setVisibility(View.VISIBLE);
+        rupeeText.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -778,9 +820,11 @@ public class HorizontalPicker extends View {
             if (!mValues.isEmpty()) {
                 mLayouts = new ArrayList<BoringLayout>(mValues.size());
                 for (int i = 0; i < mValues.size(); i++) {
-                    mLayouts.add(new BoringLayout("Rs "+mValues.get(i), mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
-                            1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
-                }
+
+                        mLayouts.add(new BoringLayout(mValues.get(i), mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
+                                1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
+
+                    }
             } else {
                 mLayouts = new ArrayList<BoringLayout>(1);
             }
@@ -1123,15 +1167,16 @@ public class HorizontalPicker extends View {
             while (size - 8 <= index) {
                 String newValue = 0.5 * (size+1) + "k";
                 mValues.add(newValue);
-                mLayouts.add(new BoringLayout("Rs "+newValue, mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
+                mLayouts.add(new BoringLayout(newValue, mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
                         1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
                 size++;
             }
         }
     }
 
-    public void setTvRate(TextView psf){
+    public void setTvRate(TextView psf, TextView rupeesymbol){
         tvRate = psf;
+        rupeeText = rupeesymbol;
     }
 
     public interface OnItemSelected {

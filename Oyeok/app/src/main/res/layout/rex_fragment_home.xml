@@ -88,19 +88,30 @@
                         android:textSize="@dimen/sixteen_sp"
                         android:gravity="center_vertical"
                         android:layout_alignParentLeft="true"/>
+
+                    <TextView
+                        android:id="@+id/rupeesymbol"
+                        android:layout_width="wrap_content"
+                        android:text="@string/Rs"
+                        android:layout_marginLeft="130dp"
+                        android:layout_marginBottom="4dp"
+                        android:textColor="@color/yellow"
+                        android:layout_height="wrap_content"
+                        />
+
                     <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.HorizontalPicker.HorizontalPicker
                         android:id="@+id/picker"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="35dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="50dp"
-                        android:layout_marginBottom="0dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_centerInParent="true"
                         android:layout_toRightOf="@id/linearlayout_drooms"
                         android:textColor="@android:color/white"
                         android:background="@android:color/black"
-                        android:textSize="15sp"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="16dp"
+                        android:textSize="13sp"
+
                         android:ellipsize="marquee"
                         android:marqueeRepeatLimit="1"
                         android:focusable="true"
@@ -116,10 +127,10 @@
                         android:text="psf"
                         android:textColor="@color/yellow"
                         android:layout_alignParentBottom="true"
-                        android:layout_below="@id/picker"
+
                         android:textSize="12sp"
                         android:layout_alignParentRight="true"
-                        android:layout_marginTop="-5dp"
+
                         android:layout_marginRight="120dp"/>
                     <TextView
                         android:id="@+id/newVisits"

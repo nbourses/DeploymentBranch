@@ -105,7 +105,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;*/
 
 
-public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList {
+public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList,HorizontalPicker.pickerPriceSelected {
 
     private final String TAG = RexMarkerPanelScreen.class.getSimpleName();
     private static final String[] INITIAL_PERMS = {
@@ -157,6 +157,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private TextView errorText;
     private HorizontalPicker horizontalPicker;
     private TextView tvRate;
+    private TextView rupeesymbol;
 
 
 
@@ -173,7 +174,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         mMarkerPanel = (LinearLayout) rootView.findViewById(R.id.ll_marker);
 
        mMarkerminmax = (RelativeLayout) rootView.findViewById(R.id.markerpanelminmax);
-        //ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
+        ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
          permissionCheckForCamera = ContextCompat.checkSelfPermission(this.getActivity(),
                 Manifest.permission.CAMERA);
         mainActivity=(MainActivity)getActivity();
@@ -184,11 +185,12 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         errorView = (RelativeLayout) rootView.findViewById(R.id.alertLayout);
         errorText = (TextView) rootView.findViewById(R.id.errorText);
 
-
+        rupeesymbol = (TextView) rootView.findViewById(R.id.rupeesymbol);
 
         horizontalPicker = (HorizontalPicker)rootView.findViewById(R.id.picker);
+       horizontalPicker.setMpicker(this);
         tvRate = (TextView)rootView.findViewById(R.id.tvRate);
-        horizontalPicker.setTvRate(tvRate);
+        horizontalPicker.setTvRate(tvRate,rupeesymbol);
         horizontalPicker.setSelectedItem(2);
         onPositionSelected(0, 2);
         horizontalPicker.setOnClickListener(new View.OnClickListener() {
@@ -339,13 +341,16 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     //mMarkerminmax.setVisibility(View.GONE);
                     //mMarkerPanel.setVisibility(View.INVISIBLE);
                     tvRate.setVisibility(View.GONE);
+                    rupeesymbol.setVisibility(View.GONE);
                     horizontalPicker.keepScrolling();
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     mMarkerPanel.setVisibility(View.VISIBLE);
                     mMarkerminmax.setVisibility(View.VISIBLE);
                     horizontalPicker.stopScrolling();
                     tvRate.setVisibility(View.VISIBLE);
+                    rupeesymbol.setVisibility(View.VISIBLE);
                     getPrice();
+                    map.animateCamera(CameraUpdateFactory.zoomTo(16));
                     /*
                     LatLng latlng = map.getCameraPosition().target;
                     lat = latlng.latitude;
@@ -359,7 +364,9 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     }*/
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     tvRate.setVisibility(View.GONE);
+                    rupeesymbol.setVisibility(View.GONE);
                     horizontalPicker.keepScrolling();
+
                 }
                 SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                 SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
@@ -456,6 +463,10 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
 
         dbHelper.save(DatabaseConstants.userRole,"Client");
+
+        rupeesymbol.bringToFront();
+        tvRate.bringToFront();
+        ll_marker.bringToFront();
 
         return rootView;
     }
@@ -744,13 +755,13 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         //Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
         if(count==2){
             if(position==0) {
-                tvRate.setText("pmon");
+                tvRate.setText("/ month");
                 brokerType = "rent";
                 dbHelper.save(DatabaseConstants.brokerType, "LL");
                 dbHelper.save("brokerType","On Rent");
             }
             else if(position==1) {
-                tvRate.setText("psf");
+                tvRate.setText("/ sq.ft");
                 brokerType = "sale";
                 dbHelper.save(DatabaseConstants.brokerType, "OR");
                 dbHelper.save("brokerType","For Sale");
@@ -818,6 +829,13 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     public void sendData(HashMap<String, HashMap<String, String>> hashMap) {
         chatListData=hashMap;
         Log.i("chatdata in rex",chatListData.toString());
+    }
+
+    @Override
+    public void priceSelected(String val) {
+
+        map.animateCamera(CameraUpdateFactory.zoomTo(12));
+
     }
 
     protected class LocationUpdater extends AsyncTask<Double, Double, String>{

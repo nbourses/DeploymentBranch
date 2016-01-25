@@ -265,7 +265,13 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         mHandler = new Handler();
         //startRepeatingTask();
 
-
+toastLayout.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        mHandler.removeCallbacks(mStatusChecker);
+        hideToastMessage();
+    }
+});
 
        /* refer = (Button) findViewById(R.id.refer);
         refer.setOnClickListener(new View.OnClickListener() {
@@ -297,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         toastText.setText(message);
         toastLayout.setVisibility(View.VISIBLE);
         hideMap(1);
-        mHandler.postDelayed(mStatusChecker, 5000);
+        mHandler.postDelayed(mStatusChecker, 2000);
     }
     public void hideToastMessage(){
         hideMap(0);
