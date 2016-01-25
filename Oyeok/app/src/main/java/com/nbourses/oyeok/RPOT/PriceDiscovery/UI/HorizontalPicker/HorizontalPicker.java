@@ -52,8 +52,14 @@ import java.util.List;
 public class HorizontalPicker extends View {
 
     public static final String TAG = "HorizontalTimePicker";
+
     protected final float DPTOPX_SCALE = getResources().getDisplayMetrics().density;
 
+
+
+    public static final String LACS = "L";
+    public static final String THOUSANDS = "K";
+    public static final String CRORES = "Cr";
 
     /**
      * The coefficient by which to adjust (divide) the max fling velocity.
@@ -141,19 +147,28 @@ public class HorizontalPicker extends View {
     private TextView tvRate;
     private TextView rupeeText;
     private boolean endlessScroll;
+
     private float textSize;
+
+    private Integer interval;
+    private Integer minValue;
+    private Integer maxValue;
+    private String rupeeUnit;
+
 
     public HorizontalPicker(Context context) {
         this(context, null);
+        rupeeUnit = "";
     }
 
     public HorizontalPicker(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.horizontalPickerStyle);
+        rupeeUnit = "";
     }
 
     public HorizontalPicker(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
+        rupeeUnit="";
         // create the selector wheel paint
         TextPaint paint = new TextPaint();
         paint.setAntiAlias(true);
@@ -297,6 +312,7 @@ public class HorizontalPicker extends View {
                 BoringLayout layout;
                 // get text layout
 //                if(mLayouts.size()!=0)
+
                     layout = mLayouts.get(i);
 
 
@@ -305,6 +321,7 @@ public class HorizontalPicker extends View {
 
   //              else
     //                layout = new BoringLayout();
+
 
                 int saveCountHeight = canvas.getSaveCount();
                 canvas.save();
@@ -494,51 +511,51 @@ public class HorizontalPicker extends View {
     public void keepScrolling() {
         endlessScroll = true;
 
-            OverScroller scroller = mFlingScrollerX;
-            if (!isEnabled()) {
-                return;
-            }
-            if (mVelocityTracker == null) {
-                mVelocityTracker = VelocityTracker.obtain();
-            }
-            int deltaMoveX = 33;
-
-            if (mScrollingX ||
-                    (Math.abs(deltaMoveX) > mTouchSlop) && mValues.size() != 0 && mValues.size() > 0) {
-
-                if (!mScrollingX) {
-                    deltaMoveX = 0;
-                    mPressedItem = -1;
-                    mScrollingX = true;
-                    stopMarqueeIfNeeded();
-                }
-
-                final int range = getScrollRange();
-
-                if (overScrollBy(deltaMoveX, 0, getScrollX(), 0, range, 0,
-                        mOverscrollDistance, 0, true)) {
-                    mVelocityTracker.clear();
-                }
-
-                final float pulledToX = getScrollX() + deltaMoveX;
-                if (pulledToX < 0) {
-                    mLeftEdgeEffect.onPull((float) deltaMoveX / getWidth());
-                    if (!mRightEdgeEffect.isFinished()) {
-                        mRightEdgeEffect.onRelease();
-                    }
-                } else if (pulledToX > range) {
-                    mRightEdgeEffect.onPull((float) deltaMoveX / getWidth());
-                    if (!mLeftEdgeEffect.isFinished()) {
-                        mLeftEdgeEffect.onRelease();
-                    }
-                }
-                this.addValues(getSelectedItem());
-                mLastDownEventX = scroller.getCurrX();
-                adjustToNearestItem();
-                invalidate();
-
-            }
+        OverScroller scroller = mFlingScrollerX;
+        if (!isEnabled()) {
+            return;
         }
+        if (mVelocityTracker == null) {
+            mVelocityTracker = VelocityTracker.obtain();
+        }
+        int deltaMoveX = 33;
+
+        if (mScrollingX ||
+                (Math.abs(deltaMoveX) > mTouchSlop) && mValues.size() != 0 && mValues.size() > 0) {
+
+            if (!mScrollingX) {
+                deltaMoveX = 0;
+                mPressedItem = -1;
+                mScrollingX = true;
+                stopMarqueeIfNeeded();
+            }
+
+            final int range = getScrollRange();
+
+            if (overScrollBy(deltaMoveX, 0, getScrollX(), 0, range, 0,
+                    mOverscrollDistance, 0, true)) {
+                mVelocityTracker.clear();
+            }
+
+            final float pulledToX = getScrollX() + deltaMoveX;
+            if (pulledToX < 0) {
+                mLeftEdgeEffect.onPull((float) deltaMoveX / getWidth());
+                if (!mRightEdgeEffect.isFinished()) {
+                    mRightEdgeEffect.onRelease();
+                }
+            } else if (pulledToX > range) {
+                mRightEdgeEffect.onPull((float) deltaMoveX / getWidth());
+                if (!mLeftEdgeEffect.isFinished()) {
+                    mLeftEdgeEffect.onRelease();
+                }
+            }
+            this.addValues(getSelectedItem());
+            mLastDownEventX = scroller.getCurrX();
+            adjustToNearestItem();
+            invalidate();
+
+        }
+    }
 
     private void adjustToNearestItem() {
         int x = getScrollX();
@@ -812,8 +829,8 @@ public class HorizontalPicker extends View {
      * Sets values to choose from
      * @param values New values to choose from
      */
-    public void setValues(ArrayList<CharSequence> values) {
-
+    private void setValues(ArrayList<CharSequence> values) {
+        String unit = getRupeeUnit();
         if (mValues != values) {
             mValues = values;
 
@@ -1161,15 +1178,34 @@ public class HorizontalPicker extends View {
     public void addValues(int index) {
 
         int size = getArraySize();
-        if (index > size - 8) {
+        CharSequence cValue = mValues.get(0);
+        int value = Integer.parseInt(cValue.toString());
+        int interval = getInterval();
+
+        if (index > (size - 10)) {
             if (mValues == null)
                 mValues = new ArrayList<CharSequence>();
-            while (size - 8 <= index) {
-                String newValue = 0.5 * (size+1) + "k";
+            while (size - 10 <= index) {
+                CharSequence previousValue = mValues.get(size-1);
+                String newValue = Integer.valueOf(previousValue.toString()) + interval + "";
                 mValues.add(newValue);
                 mLayouts.add(new BoringLayout(newValue, mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
                         1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
                 size++;
+            }
+        } else if (value>interval && index<10) {
+            if (mValues == null)
+                mValues = new ArrayList<CharSequence>();
+
+            int count = 10;
+            String newValue;
+            while ( value>interval && count>0 ) {
+                value -= interval;
+                newValue = value+"";
+                mValues.add(0,newValue);
+                mLayouts.add(0,new BoringLayout("Rs "+newValue, mTextPaint, mItemWidth, Layout.Alignment.ALIGN_CENTER,
+                        1f, 1f, mBoringMetrics, false, mEllipsize, mItemWidth));
+                count--;
             }
         }
     }
@@ -1177,6 +1213,32 @@ public class HorizontalPicker extends View {
     public void setTvRate(TextView psf, TextView rupeesymbol){
         tvRate = psf;
         rupeeText = rupeesymbol;
+    }
+
+    public void setInterval(int min, int max, int nIntervals, String rupeeUnit){
+        minValue = min;
+        maxValue = max;
+        interval = Integer.valueOf((max - min)/nIntervals);
+        setRupeeUnit(rupeeUnit);
+        ArrayList<CharSequence> valueList = new ArrayList<CharSequence>();
+        int value = minValue;
+        CharSequence object;
+        while(value <= max){
+            value += interval;
+            object = value+"";
+            valueList.add(object);
+        }
+        setValues(valueList);
+        setSelectedItem((int)(nIntervals/2));
+    }
+    public Integer getInterval(){
+        return interval;
+    }
+    public void setRupeeUnit(String rupeeUnit1){
+        rupeeUnit = rupeeUnit1;
+    }
+    public String getRupeeUnit() {
+        return rupeeUnit;
     }
 
     public interface OnItemSelected {
