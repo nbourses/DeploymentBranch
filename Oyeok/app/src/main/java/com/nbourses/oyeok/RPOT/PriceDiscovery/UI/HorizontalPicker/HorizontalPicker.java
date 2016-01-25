@@ -1572,7 +1572,7 @@ public class HorizontalPicker extends View {
 //            else
 //                val = no/100000;
                 no = no%10000000;
-                String formatted = String.format("%07d", no);
+                String formatted = String.format("%05d", no);
 
                 v = val+"."+formatted;
                 str = v+"cr";
@@ -1587,7 +1587,7 @@ public class HorizontalPicker extends View {
 
                 v = val+"";
                 no = no%100000;
-                String s2 = String.format("%05d", no);
+                String s2 = String.format("%03d", no);
 
                 if (val != 0){
                     str = str+v+"."+s2+"l";
