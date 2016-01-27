@@ -27,7 +27,7 @@ android {
 
     defaultConfig {
         applicationId "com.nbourses.oyeok"
-        minSdkVersion 16
+        minSdkVersion 18
         multiDexEnabled true
         targetSdkVersion 23
         versionCode 12
