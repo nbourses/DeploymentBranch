@@ -126,6 +126,25 @@ public class Droom_chats_list extends Fragment implements ChatList {
         listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                /*if(index==0)
+                {
+                    pObj.remove(position);
+                    mAdapter.notifyDataSetChanged();
+                }
+                else
+                {
+                    Title title = new Title();
+                    title = mAdapter.getItem(position);
+                    Fragment fragment = new Droom_Chat_New();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("UserId1", dbHelper.getValue(DatabaseConstants.userId));
+                    bundle.putString("OkId", title.getOkId());
+                    fragment.setArguments(bundle);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.container_body, fragment);
+                    fragmentTransaction.commitAllowingStateLoss();
+                }*/
                 switch (index) {
                     case 0:
                         Title title = new Title();

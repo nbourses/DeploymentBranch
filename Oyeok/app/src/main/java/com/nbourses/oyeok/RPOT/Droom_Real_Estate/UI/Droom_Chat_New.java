@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -45,7 +46,7 @@ public class Droom_Chat_New extends Fragment  {
     private LinearLayout mChatLayout;
     private boolean chat;
     private itemClickListener mitemClickListener;
-    private Button sendMessageButton;
+    private ImageView sendMessageButton;
     protected  float DPTOPX_SCALE =0;
     DBHelper dbHelper;
     private EditText sendMessageEditText;
@@ -125,7 +126,7 @@ public class Droom_Chat_New extends Fragment  {
         View v =  inflater.inflate(R.layout.droom_chat_layout, container, false);
         final DBHelper dbHelper= new DBHelper(getActivity());
         mChatLayout = (LinearLayout) v.findViewById(R.id.chatlayout);
-        sendMessageButton = (Button) v.findViewById(R.id.bt_send_message);
+        sendMessageButton = (ImageView)v.findViewById(R.id.bt_send_message);
         sendMessageEditText= (EditText)v.findViewById(R.id.et_send_message);
         scroll= (ScrollView) v.findViewById(R.id.chat_scroll_view);
 
