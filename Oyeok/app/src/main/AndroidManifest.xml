@@ -89,7 +89,7 @@
             android:windowSoftInputMode="stateAlwaysHidden" >
         </activity>
 
-        <service android:name="com.nbourses.oyeok.NotificationListener.NotificationService"
+        <!--<service android:name="com.nbourses.oyeok.NotificationListener.NotificationService"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
 
@@ -99,7 +99,7 @@
 
             </intent-filter>
 
-        </service>
+        </service>-->
         <activity
             android:name="com.paytm.pgsdk.PaytmPGActivity"
             android:screenOrientation="portrait"
