@@ -55,8 +55,8 @@ public class NotificationService extends NotificationListenerService {
         String pack = sbn.getPackageName();
         String ticker = sbn.getNotification().tickerText.toString();
         Bundle extras = sbn.getNotification().extras;
-        String title = extras.getString("android.title");
-        String text = extras.getCharSequence("android.text").toString();
+        String title = extras.getString("android.title").toLowerCase();
+        String text = extras.getCharSequence("android.text").toString().toLowerCase();
 //
 //        Log.i("Package", pack);
 //        Log.i("Ticker",ticker);
@@ -71,7 +71,9 @@ public class NotificationService extends NotificationListenerService {
 //
 //        LocalBroadcastManager.getInstance(context).sendBroadcast(msgrcv);
 
-
+        if(title.contains("bhk")||text.contains("BHK")){
+            //TODO: send msg to server
+        }
 
 
         Log.i("nllistener","**********  onNotificationPosted");
