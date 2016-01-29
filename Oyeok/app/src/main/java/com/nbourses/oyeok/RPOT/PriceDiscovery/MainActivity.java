@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.RPOT.PriceDiscovery;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,6 +38,7 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.GoogleCloudMessaging.RegistrationIntentService;
 import com.nbourses.oyeok.JPOT.SalaryDiscovery.UI.JexMarkerPanelScreen;
 import com.nbourses.oyeok.LPOT.PriceDiscoveryLoan.UI.LexMarkerPanelScreen;
+import com.nbourses.oyeok.NotificationListener.NotificationService;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
@@ -150,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         changeRegion = (TextView) mToolbar.findViewById(R.id.tv_change_region);
         help     = (Button) mToolbar.findViewById(R.id.help);
         hideOpenMaps();
+        isNLServiceRunning();
         //bringResideMenu();
 //        resideMenuButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -735,4 +738,30 @@ toastLayout.setOnClickListener(new View.OnClickListener() {
         alert.show();
     }
     //refer button onclick
+    private boolean isNLServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (NotificationService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+
+        }
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Do you want to enable notification listening?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+        return false;
+    }
 }
