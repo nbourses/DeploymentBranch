@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -177,7 +178,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getExtras() != null){
-                txtFilterValue.setText(intent.getExtras().getString("filterValue"));
+                txtFilterValue.setText(Html.fromHtml(intent.getExtras().getString("filterValue")));
             }
         }
     };
@@ -354,7 +355,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         };
 
 
-
         if(!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
             droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
 
@@ -363,6 +363,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         rupeesymbol.bringToFront();
         tvRate.bringToFront();
         ll_marker.bringToFront();
+        txtFilterValue.setText(Html.fromHtml(getResources().getString(R.string.default_2_bhk)));
 
         /**
          * animate views

@@ -125,7 +125,8 @@
                 android:paddingBottom="8dp"
                 app:dsb_indicatorPopupEnabled="false"
                 app:dsb_max="100000000"
-                app:dsb_min="40000"/>
+                app:dsb_min="40000"
+                app:dsb_progressColor="@color/greenish_blue"/>
 
         </LinearLayout>
 

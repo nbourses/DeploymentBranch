@@ -82,5 +82,6 @@
     <string name="oye_rental_avail">I am Owner</string>
     <string name="oye_sale_req">I am Buyer</string>
     <string name="oye_sale_avail">I am Seller</string>
+    <string name="default_2_bhk"><![CDATA[2<sub><small>BHK</small></sub>]]></string>
 
 </resources>

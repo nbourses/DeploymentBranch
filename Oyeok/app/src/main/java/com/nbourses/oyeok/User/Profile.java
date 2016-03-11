@@ -27,6 +27,7 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateProfile;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
+import com.nbourses.oyeok.helpers.AppConstants;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -132,7 +133,7 @@ public class Profile extends Fragment {
     };
 
     public void updateProfile() {
-        String API = DatabaseConstants.serverUrl;
+        String API = AppConstants.SERVER_BASE_URL;
         User user = new User();
         user.setMobileNo(phoneTxt.getText().toString());
         user.setEmail(emailTxt.getText().toString());

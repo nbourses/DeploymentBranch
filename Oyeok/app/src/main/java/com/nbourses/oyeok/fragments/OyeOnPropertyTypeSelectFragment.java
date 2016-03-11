@@ -26,6 +26,8 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     private View rootView;
     private TextView txtPreviousTextView;
     private static final String propertyTypeDefaultColor = "#FFFFFF";
+    private String bhkNumber = "2";
+    private String bhkNumberValue = "BHK";
 
     public OyeOnPropertyTypeSelectFragment() {
         // Required empty public constructor
@@ -70,7 +72,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
                 txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
                 AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
                 AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
-                onFilterValueUpdate(txtPreviousTextView.getText().toString());
+                onFilterValueUpdate(bhkNumber+"<sub><small>"+bhkNumberValue+"</small></sub>");
                 break;
             case "shop":
                 rootView = inflater.inflate(R.layout.fragment_shop_click, container, false);
@@ -98,7 +100,33 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
         AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
         AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
-        onFilterValueUpdate(txtPreviousTextView.getText().toString());
+//        onFilterValueUpdate(txtPreviousTextView.getText().toString());
+
+        if (v.getId() == R.id.txt1Rk) {
+            bhkNumber = "1";
+            bhkNumberValue = "RK";
+        }
+        else if (v.getId() == R.id.txt1Bhk) {
+            bhkNumber = "1";
+            bhkNumberValue = "BHK";
+        }
+        else if (v.getId() == R.id.txt2Bhk) {
+            bhkNumber = "2";
+            bhkNumberValue = "BHK";
+        }
+        else if (v.getId() == R.id.txt3Bhk) {
+            bhkNumber = "3";
+            bhkNumberValue = "BHK";
+        }
+        else if (v.getId() == R.id.txt4Bhk) {
+            bhkNumber = "4";
+            bhkNumberValue = "BHK";
+        }
+        else if (v.getId() == R.id.txtAbove4Bhk) {
+            bhkNumber = "4";
+            bhkNumberValue = "BHK+";
+        }
+        onFilterValueUpdate(bhkNumber+"<sub><small>"+bhkNumberValue+"</small></sub>");
     }
 
     @Nullable

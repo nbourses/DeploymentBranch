@@ -84,7 +84,6 @@ public class CustomPhasedSeekBar extends View {
             TypedArray a = getContext().obtainStyledAttributes(
                     attrs, R.styleable.CustomPhasedSeekBar, defStyleAttr, 0);
 
-
             mBackgroundPaddingRect.left = a.getDimension(R.styleable.CustomPhasedSeekBar_custom_phasedseekbar_marginLeft, 0.0f);
             mBackgroundPaddingRect.top = a.getDimension(R.styleable.CustomPhasedSeekBar_custom_phasedseekbar_marginTop, 0.0f);
             mBackgroundPaddingRect.right = a.getDimension(R.styleable.CustomPhasedSeekBar_custom_phasedseekbar_marginRight, 0.0f);
@@ -296,25 +295,21 @@ public class CustomPhasedSeekBar extends View {
             try {
                 if( i != mCurrentItem)
                 itemOff.draw(canvas);
-            }catch (Exception e)
-            {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
 
 
             if((2*widthHalf/3)>height/2)
             {
-
                 if( i != 0) {
                     canvas.drawLine(mAnchors[i][0] - (2 * widthHalf / 3), mAnchors[i][1], mAnchors[i][0] - (height / 2), mAnchors[i][1], mLinePaint);
                 }
                 if(i != count-1) {
                     canvas.drawLine(mAnchors[i][0] + (height / 2), mAnchors[i][1], mAnchors[i][0] + (2 * widthHalf / 3), mAnchors[i][1], mLinePaint);
                 }
-
-
             }
-
 
             String s = mAdapter.getTimeDetails(i);
             //int length = (int) (s.length() * 15 *DPTOPX_SCALE)/2;

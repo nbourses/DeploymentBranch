@@ -104,7 +104,7 @@ import retrofit.http.POST;
 
 
 
-        @POST("/1/update/profile")
+        @POST("/update/profile")
         void userUpdateProfile(@Body User user, Callback<UpdateProfile> callback);
 
         @POST("/1/user/profile")
