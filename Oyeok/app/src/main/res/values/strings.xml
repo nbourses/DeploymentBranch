@@ -4,21 +4,18 @@
     <string name="action_search">Search</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
-    <string name="Profile">Profile</string>
+    <string name="profile">Profile</string>
     <string name="Oye">Oye</string>
 
-
     <string name="Rs">\u20B9</string>
-
     <string name="QrCode">QrCode</string>
-    <string name="BrokerOk">BrokerOk</string>
-
+    <string name="brokerOk">Become Broker</string>
+    <string name="useAsClient">Use as a Client</string>
     <string name="signup">Signup</string>
     <string name="PayTM">PayTM</string>
-    <string name="share_app">Share app</string>
+    <string name="shareApp">Share App</string>
     <string name="chat_list">chat_list</string>
-    
-
+    <string name="supportChat">Support Chat</string>
 
     <string name="head1">Get Free Oyes!</string>
     <string name="head2">Use Oyes to unlock features</string>
@@ -42,27 +39,25 @@
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels_no_signup">
-        <item>@string/signup</item>
-
-        <item>@string/BrokerOk</item>
-        <item>@string/share_app</item>
-
-
+        <!--<item>@string/signup</item>-->
+        <item>@string/useAsClient</item>
+        <item>@string/brokerOk</item>
+        <item>@string/shareApp</item>
+        <item>@string/supportChat</item>
     </string-array>
+
     <string-array name="nav_drawer_labels_signup_client">
-        <item>@string/Profile</item>
-
-        <item>@string/BrokerOk</item>
-        <item>@string/share_app</item>
-
-
+        <item>@string/profile</item>
+        <!--<item>@string/brokerOk</item>-->
+        <item>@string/shareApp</item>
+        <item>@string/supportChat</item>
     </string-array>
+
     <string-array name="nav_drawer_labels_signup_broker">
-        <item>@string/Profile</item>
-        <item>@string/BrokerOk</item>
-        <item>@string/share_app</item>
-
-
+        <item>@string/profile</item>
+        <!--<item>@string/brokerOk</item>-->
+        <item>@string/shareApp</item>
+        <item>@string/supportChat</item>
     </string-array>
 
     <string name="title_messages">Messages</string>
@@ -75,6 +70,17 @@
     </string>
     <string name="title_activity_droom__chat_">Droom_Chat_Activity</string>
 
+    <string name="type_your_message">Type your message</string>
+
     <string name="gcm_defaultSenderId">463092685367</string>
     <string name="api_key">AIzaSyBCInmUgDWVq9NEXM5gjri8vudSd1jjyzQ</string>
+
+    <string name="no_active_deal">No Active Deal</string>
+    <string name="no_internet_connection">Please check your internet connection.</string>
+
+    <string name="oye_rental_req">I am Tenant</string>
+    <string name="oye_rental_avail">I am Owner</string>
+    <string name="oye_sale_req">I am Buyer</string>
+    <string name="oye_sale_avail">I am Seller</string>
+
 </resources>

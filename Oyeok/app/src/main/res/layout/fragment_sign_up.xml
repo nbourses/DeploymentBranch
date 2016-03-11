@@ -14,6 +14,15 @@
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_margin="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign Up"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                android:layout_gravity="center_horizontal"/>
+
             <LinearLayout
                 android:id="@+id/llsignup"
                 android:layout_width="match_parent"

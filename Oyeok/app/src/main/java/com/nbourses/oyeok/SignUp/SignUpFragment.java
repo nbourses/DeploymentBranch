@@ -1,7 +1,10 @@
 package com.nbourses.oyeok.SignUp;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -29,9 +32,7 @@ import com.nbourses.oyeok.Firebase.HourGlassDetails;
 import com.nbourses.oyeok.Firebase.HourGlassFirebase;
 import com.nbourses.oyeok.Firebase.UserProfileFirebase;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.MobileVerify;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
@@ -39,12 +40,15 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.OnAcceptOkSuccess;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
-import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
+import com.nbourses.oyeok.RPOT.Utils.Constant;
 import com.nbourses.oyeok.User.UserProfileViewModel;
+import com.nbourses.oyeok.activities.BrokerDealsListActivity;
+import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,6 +61,8 @@ import retrofit.RetrofitError;
 public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    private static final String TAG = "SignUpFragment";
 
     @Bind(R.id.submitprofile)
     Button submitBut;
@@ -74,7 +80,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     Dialog alertD;
     Context context;
 
-    MainActivity activity;
+//    ClientMainActivity activity;
     DBHelper dbHelper;
 
     String picturePath, mobile;
@@ -102,7 +108,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     //final String[] otpReceived = {""};
     //String otpReceived;
     final String[] otpReceived = {""};
-    private String firebaseUrl;
+    //private String firebaseUrl;
     EditText name,email,number,vcode;
     UserProfileFirebase userProfileFirebase;
     LinearLayout llsignup;
@@ -111,7 +117,15 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     Boolean redirectToOyeIntentSpecs=false;
     Bundle b;
     String lastFragment="";
+    private String role_of_user;
+    private Activity activity;
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        activity = getActivity();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -121,18 +135,26 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         redirectToOyeIntentSpecs=false;
         okBroker=false;
         if(b.getString("lastFragment")!=null)
-        if(b.getString("lastFragment")!=null)
-        lastFragment=b.getString("lastFragment");
+            if(b.getString("lastFragment")!=null)
+                lastFragment=b.getString("lastFragment");
+        Log.d(TAG, "lastFragment "+lastFragment);
 
-        if(lastFragment.equals("RentalBrokerAvailable")||lastFragment.equals("RentalBrokerRequirement")||lastFragment.equals("SaleBrokerAvailable")||lastFragment.equals("SaleBrokerRequirement"))
-            okBroker=true;
-        if(lastFragment.equals("OyeIntentSpecs")){
+        redirectToOyeIntentSpecs=true;
+
+        if(lastFragment.equals("RentalBrokerAvailable")||lastFragment.equals("RentalBrokerRequirement")||
+                lastFragment.equals("SaleBrokerAvailable")||lastFragment.equals("SaleBrokerRequirement") ||
+                lastFragment.equals("BrokerPreokFragment")) {
+            okBroker = true;
+            redirectToOyeIntentSpecs = false;
+        }
+
+        if(lastFragment.equals("OyeIntentSpecs") &&
+                b.getStringArray("propertySpecification") != null){
             Log.i("bundle_in",(b.getStringArray("propertySpecification"))[0]);
             redirectToOyeIntentSpecs=true;
             propertySpecification=b.getStringArray("propertySpecification");
         }
-        View view = inflater.inflate(R.layout.fragment_sign_up,
-                container, false);
+        View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
         dbHelper=new DBHelper(getActivity());
 
         name= (EditText) view.findViewById(R.id.etname);
@@ -143,11 +165,14 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         llotp = (LinearLayout)view.findViewById(R.id.llotp);
         llotp.setVisibility(View.GONE);
 
-        String role_of_user = dbHelper.getValue(DatabaseConstants.userRole);
+        role_of_user = dbHelper.getValue(DatabaseConstants.userRole);
+//        ((DashboardActivity) getActivity()).showToastMessage("Signing up as " + role_of_user);
 
-        firebaseUrl="https://resplendent-fire-6770.firebaseio.com/";
-
-        ((MainActivity)getActivity()).showToastMessage("Signing up as "+role_of_user);
+        SnackbarManager.show(
+                Snackbar.with(getActivity())
+                        .position(Snackbar.SnackbarPosition.TOP)
+                        .text("Signing up as " + role_of_user)
+                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
         userProfileViewModel=new UserProfileViewModel();
         Button sendOtp=(Button)view.findViewById(R.id.sendotp);
@@ -168,7 +193,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
             }
         });
 
-        ((MainActivity)getActivity()).changeDrawerToggle(false,"SignUp");
+//        ((MainActivity)getActivity()).changeDrawerToggle(false,"SignUp");
+
+//        redirectToOyeIntentSpecs = true;
 
         return view;
 
@@ -176,8 +203,6 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
 
     public void sendOtp(){
-
-
 
         Sname = name.getText().toString();
         Semail = email.getText().toString();
@@ -262,8 +287,13 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                         public void success(MobileVerify mobileVerify, retrofit.client.Response response) {
                             Log.i("TAG", "Inside Authentication success");
                             //Toast.makeText(getContext(), "Authentication success", Toast.LENGTH_LONG).show();
-                            ((MainActivity)getActivity()).showToastMessage("Authentication success");
+//                            ((ClientMainActivity)getActivity()).showToastMessage("Authentication success");
                             //tv.setText(user.responseData.getUserId() + "hua");
+                            SnackbarManager.show(
+                                    com.nispok.snackbar.Snackbar.with(getActivity())
+                                            .position(Snackbar.SnackbarPosition.TOP)
+                                            .text("Please enter valid OTP number")
+                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
 
                             Log.i("otp test", "My otp in  is:" + mobileVerify.getSuccess() + mobileVerify.responseData.getOtp());
@@ -275,9 +305,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                         public void failure(RetrofitError error) {
                             //tv.setText(error.getMessage());
                             //Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                            ((MainActivity)getActivity()).showToastMessage(error.getMessage());
-                            Log.i("TAG", "Inside authentication Failure");
-                            Log.i("TAG", "error" + error.getMessage());
+//                            ((ClientMainActivity)getActivity()).showToastMessage(error.getMessage());
+                            SnackbarManager.show(
+                                    Snackbar.with(getActivity())
+                                            .position(Snackbar.SnackbarPosition.TOP)
+                                            .text(error.getMessage())
+                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
                         }
                     });
                 }catch (Exception e){
@@ -286,10 +319,15 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
             }
             else{
                 //Toast.makeText(getContext(), "mobile verification in offline mode done", Toast.LENGTH_LONG).show();
-                ((MainActivity)getActivity()).showToastMessage("mobile verification in offline mode done");
-            }
+//                ((ClientMainActivity)getActivity()).showToastMessage("mobile verification in offline mode done");
+                SnackbarManager.show(
+                        Snackbar.with(getActivity())
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text("Mobile verification in offline mode done")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
             }
         }
+    }
 
 
     public void submitButton() {
@@ -334,7 +372,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
             }
             else{
                 //Toast.makeText(getContext(), "otp validation in offline mode done", Toast.LENGTH_LONG).show();
-                ((MainActivity)getActivity()).showToastMessage("otp validation in offline mode done");
+//                ((ClientMainActivity)getActivity()).showToastMessage("otp validation in offline mode done");
+                SnackbarManager.show(
+                        Snackbar.with(getActivity())
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text("Otp validation in offline mode done")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
             }
         }}
 
@@ -359,9 +402,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         user.setEmail(Semail);
         user.setName(Sname);
         if(okBroker)
-        user.setUserRole("broker");
+            user.setUserRole("broker");
         else
-        user.setUserRole("client");
+            user.setUserRole("client");
         user.setPushToken(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
@@ -389,10 +432,17 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                     public void success(SignUp signUp, retrofit.client.Response response) {
                         Log.i("TAG", "Inside signup success");
                         my_user_id = signUp.responseData.getUserId();
+
+                        //store user_id in shared preferences
+                        General.setSharedPreferences(getActivity(), AppConstants.USER_ID, my_user_id);
+                        General.setSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER, "yes");
+                        General.setSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
+
+
                         dbHelper.save(DatabaseConstants.userId, my_user_id);
                         SharedPrefs.save(getActivity(), "UserId", my_user_id);
                         Log.i("Firebase", userProfileViewModel.getUserProfile().toString());
-                        userProfileFirebase = new UserProfileFirebase(firebaseUrl, my_user_id);
+                        userProfileFirebase = new UserProfileFirebase(Constant.FIREBASE_URL, my_user_id);
                         userProfileFirebase.setUserProfileValues(userProfileViewModel.getUserProfile());
                         HourGlassDetails hourGlassDetails=new HourGlassDetails();
                         hourGlassDetails.setPercentage(0);
@@ -406,6 +456,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                             dbHelper.save(DatabaseConstants.user, "Broker");
                         } else
                             dbHelper.save(DatabaseConstants.user, "Client");
+
                         if (redirectToOyeIntentSpecs)
                             letsOye();
                         else
@@ -424,18 +475,18 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
                             }
                         }
-                        activity=(MainActivity)getActivity();
+
+                        /*activity=(DashboardActivity)getActivity();
                         activity.refresh();
                         Fragment fragment = null;
                         if (!okBroker) {
                             fragment = new RexMarkerPanelScreen();
-
-
                             FragmentManager fragmentManager = getFragmentManager();
                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.container_body, fragment);
+                            fragmentTransaction.replace(R.id.container_map, fragment);
                             fragmentTransaction.commit();
-                        }
+                        }*/
+
                         // Toast.makeText(getContext(), "signup success", Toast.LENGTH_LONG).show();
                     /*if (redirectToOyeIntentSpecs)
                     {
@@ -468,7 +519,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                             String title = "Oye Specifications";
                             FragmentManager fragmentManager = getFragmentManager();
                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.container_body, fragment);
+                            fragmentTransaction.replace(R.id.container_map, fragment);
                             fragmentTransaction.commit();
                         }
                     }
@@ -479,7 +530,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         }
         else{
             //Toast.makeText(getContext(), "signup success in offline mode", Toast.LENGTH_LONG).show();
-            ((MainActivity)getActivity()).showToastMessage("signup success in offline mode");
+//            ((ClientMainActivity)getActivity()).showToastMessage("signup success in offline mode");
+            SnackbarManager.show(
+                    Snackbar.with(getActivity())
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("Signup success in offline mode")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
         }
 
 
@@ -504,12 +560,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         if (user_role.equalsIgnoreCase("client")) {
             Log.i("TAG", "Starting Client activity");
 
-
 //            Intent NextActivity = new Intent(context, MainActivity.class);
 //            startActivity(NextActivity);
 //            finish();
-
-
             /*Intent returnIntent = new Intent();
             if(pass==0) {
                 setResult(Activity.RESULT_OK, returnIntent);
@@ -517,19 +570,26 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
             {
                 setResult(Activity.RESULT_CANCELED, returnIntent);
             }*/
-
-
         }
-
-
-
-
-
     }
 
     public void letsOye()
     {
-        Oyeok oyeOk = new Oyeok();
+        Log.d(TAG, "start letsOye");
+
+        //after successful login let user role in shared preference
+//        General.setSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
+
+        if (role_of_user.equalsIgnoreCase("client"))
+            General.publishOye(getActivity());
+        else {
+            //open deals listing of broker
+            Intent openBrokerDealsListing = new Intent(context, BrokerDealsListActivity.class);
+            openBrokerDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(openBrokerDealsListing);
+        }
+
+        /*Oyeok oyeOk = new Oyeok();
         Log.i("tt="+propertySpecification[2]," size="+propertySpecification[1]+" price="+propertySpecification[4]+" req_avl="+propertySpecification[3]);
         oyeOk.setTt(propertySpecification[2]);
         oyeOk.setSize(propertySpecification[1]);
@@ -547,14 +607,14 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         Log.i("UserId", "saved in DB");
 
 
-        /*oyeOk.setSpecCode("LL-3BHK-9Cr");
+        *//*oyeOk.setSpecCode("LL-3BHK-9Cr");
         oyeOk.setReqAvl("req");
         oyeOk.setUserId("egtgxhr02ai31a2uzu82ps2bysljv43n");
         oyeOk.setUserRole("client");
         oyeOk.setLong("19");
         oyeOk.setLat("17");
         oyeOk.setRegion("powai");
-        oyeOk.setPincode("400058");*/
+        oyeOk.setPincode("400058");*//*
         String API = DatabaseConstants.serverUrl;
         RestAdapter restAdapter1 = new RestAdapter.Builder().setEndpoint(API).build();
         restAdapter1.setLogLevel(RestAdapter.LogLevel.FULL);
@@ -570,22 +630,22 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                         try {
 
                             if (s.equalsIgnoreCase("Your Oye is published")) {
-                                /*FirebaseClass.setOyebookRecord(UserCredentials.getString(EnterConfigActivity.this, PreferenceKeys.MY_SHORTMOBILE_KEY), reNt, show, lng.toString(), lat.toString(), user_id, bhkval + "BHK", msg4, UserCredentials.getString(EnterConfigActivity.this, PreferenceKeys.CURRENT_LOC_KEY));
+                                *//*FirebaseClass.setOyebookRecord(UserCredentials.getString(EnterConfigActivity.this, PreferenceKeys.MY_SHORTMOBILE_KEY), reNt, show, lng.toString(), lat.toString(), user_id, bhkval + "BHK", msg4, UserCredentials.getString(EnterConfigActivity.this, PreferenceKeys.CURRENT_LOC_KEY));
                                 Intent NextActivity = new Intent(context, MainActivity.class);
                                 startActivity(NextActivity);
-                                UserCredentials.saveString(context, PreferenceKeys.SUCCESSFUL_HAIL, "true");*/
+                                UserCredentials.saveString(context, PreferenceKeys.SUCCESSFUL_HAIL, "true");*//*
                                 Bundle b = new Bundle();
                                 b.putString("lastFragment", "oyeIntentSpecs");
-                                /*Fragment f=new Droom_chats_list();
+                                *//*Fragment f=new Droom_chats_list();
                                 FragmentManager fragmentManager = getChildFragmentManager();
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                 f.setArguments(b);
                                 fragmentTransaction.replace(R.id.container_body, f);
-                                fragmentTransaction.commit();*/
+                                fragmentTransaction.commit();*//*
                                 //(MainActivity)getActivity().changeFragment(new Droom_chats_list(),null,"Broker HomeScreen");
                                 //if(isAdded()) {
                                     activity.showToastMessage("Oye published.Sit back and relax while we find a broker for you");
-                                    activity.changeFragment(new Droom_chats_list(), b, "");
+//                                    activity.changeFragment(new Droom_chats_list(), b, "");
                                 //}
                                 //Log.i("Change Fragment", f.toString());
                                  //Toast.makeText(getContext(), "Oye published.Sit back and relax while we find a broker for you", Toast.LENGTH_LONG).show();
@@ -598,18 +658,18 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 /// /finish();
 
                             } else if (s.equalsIgnoreCase("User already has an active oye. Pls end first")) {
-                                /*Intent NextActivity = new Intent(context, MainActivity.class);
-                                startActivity(NextActivity);*/
+                                *//*Intent NextActivity = new Intent(context, MainActivity.class);
+                                startActivity(NextActivity);*//*
                                  //Toast.makeText(getContext(), "You already have an active oye. Pls end it first", Toast.LENGTH_LONG).show();
-                                ((MainActivity)getActivity()).showToastMessage("You already have an active oye. Pls end it first");
+                                ((DashboardActivity)getActivity()).showToastMessage("You already have an active oye. Pls end it first");
                                 //finish();
                             } else
 
                             {
-                                /*Intent NextActivity = new Intent(context, MainActivity.class);
-                                startActivity(NextActivity);*/
+                                *//*Intent NextActivity = new Intent(context, MainActivity.class);
+                                startActivity(NextActivity);*//*
                                 // Toast.makeText(getContext(), "There is some error.", Toast.LENGTH_LONG).show();
-                                ((MainActivity)getActivity()).showToastMessage("There is some error");
+                                ((DashboardActivity)getActivity()).showToastMessage("There is some error");
                                 //finish();
                             }
                         } catch (Exception e) {
@@ -619,19 +679,19 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
                     }
                     //((MainActivity) getActivity()).changeFragment(new MessagesFragment(), null,"");
-                /*}else
+                *//*}else
                 {
-                    *//*Intent NextActivity = new Intent(context, MainActivity.class);
-                    startActivity(NextActivity);*//*
+                    *//**//*Intent NextActivity = new Intent(context, MainActivity.class);
+                    startActivity(NextActivity);*//**//*
                     Toast.makeText(getContext(), "In offline mode.Done", Toast.LENGTH_LONG).show();
                     //finish();
-                }*/
+                }*//*
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
-               /* Toast.makeText(getContext(), "lets oye call failed in enter config",
-                        Toast.LENGTH_LONG).show();*/
+               *//* Toast.makeText(getContext(), "lets oye call failed in enter config",
+                        Toast.LENGTH_LONG).show();*//*
                     // FirebaseClass.setOyebookRecord(UserCredentials.getString(EnterConfigActivity.this,PreferenceKeys.MY_SHORTMOBILE_KEY),reNt,show,lng,lat,user_id,bhkval+"BHK",msg4,UserCredentials.getString(EnterConfigActivity.this,PreferenceKeys.CURRENT_LOC_KEY));
                     //Intent NextActivity = new Intent(context, MainActivity.class);
                     //startActivity(NextActivity);finish();
@@ -639,7 +699,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                     Log.i("TAG", "inside error" + error.getMessage());
                 }
             });
-        }
+        }*/
     }
 
 
@@ -652,7 +712,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         {
             //Toast.makeText(context,"Please enter a valid email address",Toast.LENGTH_LONG).show();
             //Toast.makeText(getContext(), "Please enter a valid email address", Toast.LENGTH_LONG).show();
-            ((MainActivity)getActivity()).showToastMessage("Please enter a valid email address");
+//            ((ClientMainActivity)getActivity()).showToastMessage("Please enter a valid email address");
+            SnackbarManager.show(
+                    Snackbar.with(activity)
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("Please enter a valid email address")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
             return false;
         }
     }
@@ -662,7 +727,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
             return true;
         else{
             //Toast.makeText(getContext(),"please entera valid mobile number",Toast.LENGTH_LONG).show();
-            ((MainActivity)getActivity()).showToastMessage("please entera valid mobile number");
+//            ((ClientMainActivity)getActivity()).showToastMessage("please entera valid mobile number");
+            SnackbarManager.show(
+                    Snackbar.with(activity)
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("Please enter a valid mobile number")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
             return false;
         }
     }
@@ -745,7 +815,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         fragment.setArguments(args);
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container_body, fragment);
+        fragmentTransaction.replace(R.id.container_map, fragment);
         fragmentTransaction.commitAllowingStateLoss();
 
     }

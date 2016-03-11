@@ -11,11 +11,15 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.view.WindowManager;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
+import com.nbourses.oyeok.activities.BrokerMainActivity;
+import com.nbourses.oyeok.activities.ClientMainActivity;
+import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
+
+import org.json.JSONObject;
 
 /**
  * Created by YASH_SHAH on 28/12/2015.
@@ -37,6 +41,26 @@ public class MyGcmListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
         String title = data.getString("title");
         String message = data.getString("message");
+        String okId = null;
+
+        Log.d(TAG, "Message: " + message);
+
+        Log.d(TAG, "ROLE_OF_USER: " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
+
+        if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equals("client")) {
+            try {
+                JSONObject jsonObjectMsg = new JSONObject(data.getString("message"));
+                message = jsonObjectMsg.getString("text");
+                okId = jsonObjectMsg.getString("ok_id");
+                General.setSharedPreferences(getApplicationContext(), AppConstants.CLIENT_OK_ID, okId);
+
+                Log.d(TAG, "CLIENT_OK_ID: " + General.getSharedPreferences(getApplicationContext(), AppConstants.CLIENT_OK_ID));
+
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Title: "+ title);
         Log.d(TAG, "Message: " + message);
@@ -86,10 +110,21 @@ public class MyGcmListenerService extends GcmListenerService {
             PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"MyCpuLock");
             wl_cpu.acquire(10000);
         }
-        Intent intent = new Intent(this, MainActivity.class);
+//        Intent intent = new Intent(this, DashboardActivity.class);
+
+        Intent intent = null;
+        if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
+                General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("broker")) {
+            intent = new Intent(context, BrokerMainActivity.class);
+        }
+        else {
+            intent = new Intent(context, ClientMainActivity.class);
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         int requestID = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, requestID /* Request code */, intent,
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, requestID, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

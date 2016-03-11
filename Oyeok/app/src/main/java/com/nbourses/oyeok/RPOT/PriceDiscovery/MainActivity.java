@@ -40,10 +40,10 @@ import com.nbourses.oyeok.LPOT.PriceDiscoveryLoan.UI.LexMarkerPanelScreen;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
+import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.resideMenu.ResideMenu;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.resideMenu.ResideMenuItem;
+import com.nbourses.oyeok.widgets.resideMenu.ResideMenu;
+import com.nbourses.oyeok.widgets.resideMenu.ResideMenuItem;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.User.Profile;
 
@@ -467,7 +467,7 @@ toastLayout.setOnClickListener(new View.OnClickListener() {
     }
 
     @Override
-    public void onDrawerItemSelected(View view, int position) {
+    public void onDrawerItemSelected(View view, int position, String itemTitle) {
         displayView(position);
     }
 

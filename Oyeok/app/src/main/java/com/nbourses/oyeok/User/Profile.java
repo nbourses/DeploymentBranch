@@ -27,7 +27,6 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateProfile;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -36,12 +35,6 @@ import retrofit.client.Response;
 
 
 public class Profile extends Fragment {
-
-
-
-
-
-
     private TextView role_txt,phoneTxt;
     private EditText emailTxt,username_txt;
     private Button updateProfile;
@@ -49,17 +42,12 @@ public class Profile extends Fragment {
     DBHelper dbhelper;
     String filePath="";
 
-
-
     public Profile() {
-
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
@@ -99,93 +87,91 @@ public class Profile extends Fragment {
             }
         });
 
-                profileImage.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View arg0) {
-                        Intent intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        //intent.putExtra("crop","true");
-                        //intent.setAction(Intent.ACTION_GET_CONTENT);
-                        startActivityForResult(intent, 1);
-                    }
-                });
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                //intent.putExtra("crop","true");
+                //intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, 1);
+            }
+        });
 
-        ((MainActivity)getActivity()).changeDrawerToggle(false,"Profile");
+//        ((MainActivity)getActivity()).changeDrawerToggle(false,"Profile");
 
         return layout;
     }
 
-                        // TODO: Rename method, update argument and hook method into UI event
+    // TODO: Rename method, update argument and hook method into UI event
 
-                public void onActivityResult(int requestCode, int resultCode, Intent data)
-                {
-                    super.onActivityResult(requestCode, resultCode, data);
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
 
-                    //switch(requestCode) {
+        //switch(requestCode) {
                         /*case 1234:*/
-                            if(resultCode == Activity.RESULT_OK){
-                                Uri selectedImage = data.getData();
-                                //String WholeId
-                                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        if(resultCode == Activity.RESULT_OK){
+            Uri selectedImage = data.getData();
+            //String WholeId
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-                                Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                                cursor.moveToFirst();
+            Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
 
-                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                                filePath = cursor.getString(columnIndex);
-                                cursor.close();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            filePath = cursor.getString(columnIndex);
+            cursor.close();
 
 
-                                Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-                                Log.i("selected image",filePath);
-                                profileImage.setImageBitmap(yourSelectedImage);
+            Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
+            Log.i("selected image",filePath);
+            profileImage.setImageBitmap(yourSelectedImage);
                                     /* Now you have choosen image in Bitmap format in object "yourSelectedImage". You can use it in way you want! */
-                            //}
-                    }
+            //}
+        }
+    };
 
-                };
+    public void updateProfile() {
+        String API = DatabaseConstants.serverUrl;
+        User user = new User();
+        user.setMobileNo(phoneTxt.getText().toString());
+        user.setEmail(emailTxt.getText().toString());
+        user.setName((username_txt.getText().toString()));
+        user.setUserRole((String) role_txt.getText());
+        user.setUserId(dbhelper.getValue(DatabaseConstants.userId));
+        user.setMyPhoto(filePath);
+        user.setPlatform("android");
+        user.setSeeWhat("all");
+        user.setAdditionalProperty(null, null);
 
-                public void updateProfile() {
-                    String API = DatabaseConstants.serverUrl;
-                    User user = new User();
-                    user.setMobileNo(phoneTxt.getText().toString());
-                    user.setEmail(emailTxt.getText().toString());
-                    user.setName((username_txt.getText().toString()));
-                    user.setUserRole((String) role_txt.getText());
-                    user.setUserId(dbhelper.getValue(DatabaseConstants.userId));
-                    user.setMyPhoto(filePath);
-                    user.setPlatform("android");
-                    user.setSeeWhat("all");
+        //{"email":"nvew@xyz", "user_role":"broker", "name": "New","my_photo":"smiles", "user_id":"a03ap69xm641mfoldqjlx15h1a27vy07"}
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API).build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        UserApiService userApiService = restAdapter.create(UserApiService.class);
+        //if (dbhelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
+        userApiService.userUpdateProfile(user, new Callback<UpdateProfile>() {
 
+            @Override
+            public void success(UpdateProfile updateProfile, Response response) {
+                Log.i("update profile", "success");
+                dbhelper.save(DatabaseConstants.email, emailTxt.getText().toString());
+                dbhelper.save(DatabaseConstants.name,username_txt.getText().toString());
+                dbhelper.save(DatabaseConstants.imageFilePath,filePath);
+                //drawerFragment = (FragmentDrawer) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
 
-                    //{"email":"nvew@xyz", "user_role":"broker", "name": "New","my_photo":"smiles", "user_id":"a03ap69xm641mfoldqjlx15h1a27vy07"}
-                    RestAdapter restAdapter1 = new RestAdapter.Builder().setEndpoint(API).build();
-                    restAdapter1.setLogLevel(RestAdapter.LogLevel.FULL);
-                    UserApiService user1 = restAdapter1.create(UserApiService.class);
-                    //if (dbhelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
-                        user1.userUpdateProfile(user, new Callback<UpdateProfile>() {
+                profileImageMain = (ImageView)getActivity().findViewById(R.id.profile_image_main);
+                if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
+                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbhelper.getValue(DatabaseConstants.imageFilePath));
+                    profileImageMain.setImageBitmap(yourSelectedImage);
+                }
+            }
 
-                            @Override
-                            public void success(UpdateProfile updateProfile, Response response) {
-                                Log.i("update profile", "success");
-                                dbhelper.save(DatabaseConstants.email, emailTxt.getText().toString());
-                                dbhelper.save(DatabaseConstants.name,username_txt.getText().toString());
-                                dbhelper.save(DatabaseConstants.imageFilePath,filePath);
-                                //drawerFragment = (FragmentDrawer) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-
-                                profileImageMain = (ImageView)getActivity().findViewById(R.id.profile_image_main);
-                                if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
-                                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbhelper.getValue(DatabaseConstants.imageFilePath));
-                                    profileImageMain.setImageBitmap(yourSelectedImage);
-                                }
-                            }
-
-                            @Override
-                            public void failure(RetrofitError error) {
-                                Log.i("update profile", "failed");
-                            }
-                        });
-                    }
-                //}
+            @Override
+            public void failure(RetrofitError error) {
+                Log.i("update profile", "failed");
+            }
+        });
+    }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
@@ -193,6 +179,4 @@ public class Profile extends Fragment {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-
-
 }

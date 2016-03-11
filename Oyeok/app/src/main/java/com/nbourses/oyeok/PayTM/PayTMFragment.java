@@ -79,7 +79,8 @@ public class PayTMFragment extends Fragment implements View.OnClickListener {
 
 
         PaytmOrder paytmOrder = new PaytmOrder(paramMap);
-        PaytmMerchant Merchant = new PaytmMerchant("http://dev.42trips.com/paytm/checksum", "http://dev.42trips.com/paytm/checksum_verification");
+        PaytmMerchant Merchant = new PaytmMerchant("http://dev.42trips.com/paytm/checksum",
+                                "http://dev.42trips.com/paytm/checksum_verification");
         PaytmClientCertificate certificate = null;
 
         service.initialize(paytmOrder, Merchant, certificate);

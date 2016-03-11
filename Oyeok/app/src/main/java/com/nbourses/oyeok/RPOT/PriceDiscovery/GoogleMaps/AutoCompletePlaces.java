@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,11 +25,10 @@ import java.util.ArrayList;
  */
 public class AutoCompletePlaces {
 
-    private static final String LOG_TAG = "Google Places Autocomplete";
+    private static final String TAG = "AutoCompletePlaces";
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
-
     private static final String API_KEY = "AIzaSyCLWLri_ZzN0udt86teXNF55vza44uoRJs";
 
 
@@ -47,8 +47,10 @@ public class AutoCompletePlaces {
             sb.append("?key=" + API_KEY);
             //sb.append("&components=country:gr");
             sb.append("&input=" + URLEncoder.encode(input, "utf8"));
+            Log.d(TAG, "sb " + sb);
 
             URL url = new URL(sb.toString());
+            Log.d(TAG, "url.getPath "+url.getPath());
             conn = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
 
@@ -58,13 +60,18 @@ public class AutoCompletePlaces {
             while ((read = in.read(buff)) != -1) {
                 jsonResults.append(buff, 0, read);
             }
-        } catch (MalformedURLException e) {
+        }
+        catch (MalformedURLException e) {
             //Log.e(LOG_TAG, "Error processing Places API URL", e);
+            e.printStackTrace();
             return resultList;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             // Log.e(LOG_TAG, "Error connecting to Places API", e);
+            e.printStackTrace();
             return resultList;
-        } finally {
+        }
+        finally {
             if (conn != null) {
                 conn.disconnect();
             }
@@ -82,7 +89,9 @@ public class AutoCompletePlaces {
                 System.out.println("============================================================");
                 resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
             }
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
             //Log.e(LOG_TAG, "Cannot process JSON results", e);
         }
 
@@ -98,7 +107,6 @@ public class AutoCompletePlaces {
 
         @Override
         public int getCount() {
-
             return resultList.size();
         }
 
@@ -116,6 +124,7 @@ public class AutoCompletePlaces {
                     if (constraint != null) {
                         // Retrieve the autocomplete results.
                         resultList = autocomplete(constraint.toString());
+                        Log.d(TAG, "resultList "+resultList);
 
                         // Assign the data to the FilterResults
                         filterResults.values = resultList;
@@ -136,9 +145,5 @@ public class AutoCompletePlaces {
             return filter;
         }
     }
-
-
-
-
 }
 

@@ -46,7 +46,7 @@
                 android:layout_gravity="center_vertical"
                 android:gravity="center_horizontal"
                 android:textAlignment="center"
-                android:text="Abhinandan"/>
+                android:text="Test"/>
         </LinearLayout>
 
     </FrameLayout>
@@ -57,7 +57,7 @@
 
     <fragment
         android:id="@+id/fragment_navigation_drawer"
-        android:name="com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer"
+        android:name="com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer"
         android:layout_width="@dimen/nav_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"

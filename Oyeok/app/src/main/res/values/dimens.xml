@@ -20,6 +20,8 @@
 
     <dimen name="seventytwo_dp">72dp</dimen>
 
+    <dimen name="dp_56">56dp</dimen>
+
     <dimen name="eighty">80dp</dimen>
 
     <dimen name="eightyeight">88dp</dimen>

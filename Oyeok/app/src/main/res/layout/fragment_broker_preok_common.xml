@@ -1,0 +1,114 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <LinearLayout
+            android:id="@+id/notClicked"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_height="match_parent">
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.nbourses.oyeok.RPOT.OkBroker.CircularSeekBar.CircularSeekBarNew
+        android:id="@+id/circularSeekbar"
+        android:layout_width="match_parent"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        android:layout_height="match_parent"
+        app:circlenew_color="#81C784"
+        android:layout_marginBottom="60dp"
+        app:circlenew_stroke_width="5dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@color/greenish_blue"
+            android:layout_marginLeft="5dp"
+            android:text="Ok"
+            android:layout_height="wrap_content"
+            android:id="@+id/okButton"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/deal"
+            android:textColor="@color/white"
+            android:text="Deal"
+            android:background="@color/yellow"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/displayOkText"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:text="5 oks will be used"/>
+
+    <TextView
+        android:id="@+id/rentText"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textSize="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:text="50L Rs"/>
+    <Button
+        android:id="@+id/pickContact"
+        android:visibility="gone"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:background="@drawable/ic_pick_contact"
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="30dp"/>
+
+    <TextView
+        android:id="@+id/contactText"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="25dp"
+        android:text="Select\nClient"/>
+
+</FrameLayout>

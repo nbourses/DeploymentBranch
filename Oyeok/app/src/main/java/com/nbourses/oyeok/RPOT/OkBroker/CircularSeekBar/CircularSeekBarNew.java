@@ -18,12 +18,18 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.PopupWindow;
+
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
+import com.nbourses.oyeok.helpers.AppConstants;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
 import static java.lang.Math.log10;
 /**
  * Created by prathyush on 26/11/15.
@@ -56,6 +62,7 @@ public class CircularSeekBarNew extends View {
     private int index = -1;
     private Paint mEndLinecolor;
     private PopupWindow pw;
+    private static final String TAG = "CircularSeekBarNew";
 
     public CircularSeekBarNew(Context context) {
         super(context);
@@ -165,8 +172,9 @@ public class CircularSeekBarNew extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        Log.d(TAG, "onDraw called");
 
-        int [] drawables = {R.drawable.ic_broker_home,R.drawable.ic_industrial_oye_intent_specs,R.drawable.ic_shop,R.drawable.ic_loans};
+        int [] drawables = {R.drawable.ic_broker_home, R.drawable.ic_industrial_oye_intent_specs, R.drawable.ic_shop, R.drawable.ic_loans};
 
 
         //Draw an arc with 300 sweep angle with mcirclepaint
@@ -191,7 +199,7 @@ public class CircularSeekBarNew extends View {
 
         imagesRect.clear();
         //int count = 0;
-        for(int i=0;i<theta.size();i++)
+        for(int i=0; i<theta.size(); i++)
         {
             //Get drawables according to property type.Needs to be worked on
             Drawable d = getResources().getDrawable(drawables[i % 4]);
@@ -200,12 +208,12 @@ public class CircularSeekBarNew extends View {
                 try {
                     //checking the oye_status and changing the color of icon to grey or red(inactive and active)
                     if (values.getJSONObject(i).getString("oye_status").equalsIgnoreCase("active")) {
-
                         d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#E53935"), PorterDuff.Mode.SRC_ATOP));
                     } else {
                         d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));
                     }
-                } catch (JSONException e) {
+                }
+                catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
@@ -226,14 +234,16 @@ public class CircularSeekBarNew extends View {
                 e.printStackTrace();
             }
             String l = null;
+            String o = null;
             try {
                 l = numToVal(Integer.parseInt(values.getJSONObject(i).getString("price")));
+                o = values.getJSONObject(i).getString("ok_price") + " Oks";
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
             //Needs to be worked on get OKS from server and update it.
-            String o = i + " Oks";
+//            String o = i + " Oks";
 
             double angle = 0.0;
 
@@ -264,10 +274,7 @@ public class CircularSeekBarNew extends View {
                     Drawable m = getResources().getDrawable(R.drawable.ic_add_24dp);
                     plusheight = m.getIntrinsicHeight();
                     int pluswidth = m.getIntrinsicWidth();
-
-
                     m.setBounds((int)(house_image_left-pluswidth+DPTOPX_SCALE),house_image_top-(height/2)-plusheight,(int)(house_image_left+DPTOPX_SCALE),house_image_top-(height/2));
-
                     m.draw(canvas);
                 }
             } catch (JSONException e) {
@@ -288,8 +295,8 @@ public class CircularSeekBarNew extends View {
         //start.setBounds(endx - (w / 2), starty - (h / 2), endx + (w / 2), starty + (h / 2));
         //start.draw(canvas);
         DecimalFormat formatter = new DecimalFormat();
-        canvas.drawText("min: Rs " + formatter.format(minValue), mCircleRectF.left - 30 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
-        canvas.drawText("max: Rs " + formatter.format(maxvalue), mCircleRectF.right - 60 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("min: Rs " + formatter.format(minValue), mCircleRectF.left * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("max: Rs " + formatter.format(maxvalue), mCircleRectF.right - 120 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
     }
 
     /*
@@ -299,6 +306,7 @@ public class CircularSeekBarNew extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Log.d(TAG, "onMeasure called");
         int height = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
         int width = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
         final int min = Math.min(width, height);
@@ -322,17 +330,22 @@ public class CircularSeekBarNew extends View {
 
     public void setValues(String m)
     {
-
         try {
             values=new JSONArray(m);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Log.i("values length= ",Integer.toString(values.length()));
         if(values.length()==0){
             //Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
-            ((MainActivity)mContext).showToastMessage("Sit back and relax while we find clients for you");
+//            ((DashboardActivity)mContext).showToastMessage("Sit back and relax while we find clients for you");
+
+            SnackbarManager.show(
+                    Snackbar.with(mContext)
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("Sit back and relax while we find clients for you")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
             minValue=0;
             maxvalue=0;
         }
@@ -357,8 +370,6 @@ public class CircularSeekBarNew extends View {
                     price1=price2;
                     price2=temp;
                 }
-
-                Log.i("price1= "+price1,"  price2= "+price2);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -366,7 +377,7 @@ public class CircularSeekBarNew extends View {
             maxvalue=price2+(price2/2);
         }
         else{
-            int totalPrice = 0,min=9999999,max=0;
+            int totalPrice = 0, min=9999999, max=0;
             if(values.length() != 0) {
                 try {
                     min = Integer.parseInt(values.getJSONObject(0).getString("price"));

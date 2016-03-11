@@ -14,7 +14,7 @@ public class SimpleCustomPhasedAdapter implements CustomPhasedAdapter {
     protected String [] mBrokers;
     protected String [] time;
 
-    public SimpleCustomPhasedAdapter(Resources resources, int[] items,String [] brokers,String [] time) {
+    public SimpleCustomPhasedAdapter(Resources resources, int[] items, String [] brokers, String [] time) {
         int size = items.length;
         mItems = new StateListDrawable[size];
         mBrokers = new String[size];

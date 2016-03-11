@@ -32,9 +32,10 @@ public class DroomChatFirebase {
     public DroomChatFirebase(String url,Activity activity){
         TelephonyManager telephonyManager = (TelephonyManager)activity.getSystemService(Context.TELEPHONY_SERVICE);
 
-        this.firebaseReference=new Firebase(url);
+        this.firebaseReference = new Firebase(url);
         firebaseReference=firebaseReference.child("DroomChat");
-        createHelpChatRoom(telephonyManager.getDeviceId());
+//        createHelpChatRoom(telephonyManager.getDeviceId());
+        createHelpChatRoom("123456789");
 
     }
 
@@ -151,7 +152,8 @@ public class DroomChatFirebase {
     public void getDroomList(String userId,Activity activity){
         Firebase firebaseReference1=firebaseReference.child(userId);
         TelephonyManager telephonyManager = (TelephonyManager)activity.getSystemService(Context.TELEPHONY_SERVICE);
-        Firebase firebaseReference2=firebaseReference.child(telephonyManager.getDeviceId());
+//        Firebase firebaseReference2=firebaseReference.child(telephonyManager.getDeviceId());
+        Firebase firebaseReference2=firebaseReference.child("123456789");
         listOfChildren=new HashMap<String,HashMap<String,String>>();
         DBHelper dbHelper=new DBHelper(activity);
         if(!dbHelper.getValue(DatabaseConstants.userId).equals("null"))
