@@ -374,16 +374,18 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isFlipped()) {
-                            mFlipAnimator.reverse();
-                        } else {
-                            mFlipAnimator.start();
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isFlipped()) {
+                                mFlipAnimator.reverse();
+                            } else {
+                                mFlipAnimator.start();
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }, 2000, 2000);
 

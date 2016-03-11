@@ -101,7 +101,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     private String strTenants = "Tenants";
     private String strOwners = "Owners";
-    private String strSeekers = "Seekers";
+    private String strSeekers = "Buyer";
+    private String strSeller = "Seller";
 
     private final int currentCount = 2; //TODO: need to discuss with team
     private int currentSeekbarPosition = 0; //default is rental
@@ -238,6 +239,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             //rental
             //Tenants, Owners
             txtOption1.setText(strTenants);
+            txtOption2.setText(strOwners);
 
             if (currentOptionSelectedString.equalsIgnoreCase(strSeekers))
                 currentOptionSelectedString = strTenants;
@@ -249,15 +251,16 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         }
         else if (position == 1) {
             //sale
-            //Seekers, Owners
+            //Buyer, Seller
             txtOption1.setText(strSeekers);
+            txtOption2.setText(strSeller);
 
             if (currentOptionSelectedString.equalsIgnoreCase(strTenants))
                 currentOptionSelectedString = strSeekers;
 
             if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers))
                 circularSeekbar.setValues(jsonArrayReqOr.toString());
-            else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strOwners))
+            else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller))
                 circularSeekbar.setValues(jsonArrayAvlOr.toString());
         }
 
