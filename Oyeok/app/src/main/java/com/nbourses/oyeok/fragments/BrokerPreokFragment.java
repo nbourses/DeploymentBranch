@@ -132,7 +132,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(),
                 new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
                 new String[]{"30", "15"},
-                new String[]{"Rental", "Sale"
+                new String[]{"Rental", "Resale"
                 }));
         mCustomPhasedSeekbar.setListener(this);
 
@@ -193,6 +193,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                             jsonArrayReqOr = jsonArrayPreokRecent;
                             jsonArrayAvlOr = jsonArrayPreokRecent;
                         }
+
 
                         onPositionSelected(currentSeekbarPosition, currentCount);
                     }

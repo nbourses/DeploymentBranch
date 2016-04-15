@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:rsv="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/off"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:rsv="http://schemas.android.com/apk/res-auto"
     android:id="@+id/homeArea"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_horizontal">
 
-        <TextView
+     <!--   <TextView
             android:id="@+id/txt1Rk"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:padding="4dp"
             android:text="1RK"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/twelve_sp"/>
+            android:textSize="@dimen/twelve_sp"/>  -->
 
         <TextView
             android:id="@+id/txt1Bhk"
@@ -67,3 +78,13 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/twelve_sp"/>
 </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Seater Office"
+        android:gravity="center_horizontal"
+        android:visibility="invisible" />
+
+
+    </LinearLayout>

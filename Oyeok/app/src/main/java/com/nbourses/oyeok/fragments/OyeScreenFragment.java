@@ -11,6 +11,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,16 +31,16 @@ import butterknife.OnClick;
 public class OyeScreenFragment extends Fragment {
 
     @Bind(R.id.txtHome)
-    TextView txtHome;
+    ImageView txtHome;
 
     @Bind(R.id.txtShop)
-    TextView txtShop;
+    ImageView txtShop;
 
     @Bind(R.id.txtIndustry)
-    TextView txtIndustry;
+    ImageView txtIndustry;
 
     @Bind(R.id.txtOffice)
-    TextView txtOffice;
+    ImageView txtOffice;
 
     /*@Bind(R.id.txtOthers)
     TextView txtOthers;*/
@@ -56,13 +57,14 @@ public class OyeScreenFragment extends Fragment {
     @Bind(R.id.budgetSeekBar)
     DiscreteSeekBar budgetSeekBar;
 
+
     @Bind(R.id.txtSelected)
     TextView txtSelected;
 
     @Bind(R.id.requestType)
     TextView requestType;
 
-    private TextView txtPreviouslySelectedPropertyType;
+    private ImageView txtPreviouslySelectedPropertyType;
     private static final String propertyTypeDefaultColor = "#FFFFFF";
     private TextView txtPreviouslySelectedOption;
     private Bundle bundle;
@@ -105,6 +107,7 @@ public class OyeScreenFragment extends Fragment {
         budgetSeekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+
                 DecimalFormat formatter = new DecimalFormat();
                 txtSelected.setText(formatter.format(value));
                 AppConstants.letsOye.setPrice("" + value);
@@ -165,7 +168,7 @@ public class OyeScreenFragment extends Fragment {
         if(txtPreviouslySelectedPropertyType != null)
             txtPreviouslySelectedPropertyType.setBackgroundColor(Color.parseColor(propertyTypeDefaultColor));
 
-        txtPreviouslySelectedPropertyType = (TextView) v;
+        txtPreviouslySelectedPropertyType = (ImageView) v;
 
         if (txtHome.getId() == v.getId()) {
             txtHome.setBackgroundResource(R.drawable.buy_option_circle);
@@ -193,6 +196,7 @@ public class OyeScreenFragment extends Fragment {
      * set min and max value for seek bar
      */
     private void setMinMaxValueForDiscreteSeekBar() {
+
         if (bundle != null) {
 
             requestType.setText(bundle.getString("brokerType").toUpperCase());

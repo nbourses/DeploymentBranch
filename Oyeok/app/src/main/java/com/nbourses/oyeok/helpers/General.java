@@ -1,5 +1,6 @@
 package com.nbourses.oyeok.helpers;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,11 +36,16 @@ import retrofit.mime.TypedByteArray;
 /**
  * Created by rohit on 09/02/16.
  */
-public class General {
+public class General extends BroadcastReceiver{
 
     public static HashMap<String, String> oyeDataHolder = new HashMap<String, String>();
     public static final String TAG = "General";
+    private NetworkInterface networkInfo;
 
+//    public General(NetworkInterface networkInfo)
+//    {
+//        this.networkInfo = networkInfo;
+//    }
     public static String getSampleDealsJsonData(Context contex) {
         return getRawString(contex, "sample_deals_data");
     }
@@ -68,6 +74,8 @@ public class General {
 
     public static String getSharedPreferences(Context context, String prefName) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Log.i("TRACE", "rt" + prefName);
+
         return prefs.getString(prefName, "");
     }
 
@@ -75,23 +83,30 @@ public class General {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        Log.i("TRACE","activeNetworkInfo" +activeNetworkInfo);
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+
+
     public static void publishOye(final Context context) {
         try {
-
+            Log.i("TRACE", "in publishOye");
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
             String json = gson.toJson(AppConstants.letsOye);
+
             Log.d(TAG, "AppConstants.letsOye "+json);
+            Log.i("TRACE", "AppConstants.letsOye " + json);
 
             if (isNetworkAvailable(context)) {
+                Log.i("TRACE", "is networking available nik" + General.getSharedPreferences(context, AppConstants.USER_ID));
 
                 //set userId
                 AppConstants.letsOye.setUserId(General.getSharedPreferences(context, AppConstants.USER_ID));
                 //set gcmId
                 AppConstants.letsOye.setGcmId(SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
 
+                Log.i("TRACE", "is networking available" + SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
                 RestAdapter restAdapter = new RestAdapter
                                             .Builder()
                                             .setEndpoint(AppConstants.SERVER_BASE_URL)
@@ -103,8 +118,11 @@ public class General {
                 oyeokApiService.publishOye(AppConstants.letsOye, new Callback<PublishLetsOye>() {
                     @Override
                     public void success(PublishLetsOye letsOye, Response response) {
+                        Log.i("TRACE", "in success");
                         String strResponse =  new String(((TypedByteArray)response.getBody()).getBytes());
                         Log.e(TAG, "RETROFIT SUCCESS " + strResponse);
+
+                        Log.i("TRACE", "Response" + strResponse);
 
                         //now user is logged in user
                         General.setSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER, "yes");
@@ -114,9 +132,11 @@ public class General {
                         String formattedDate = df.format(c.getTime());
 
                         try {
+                            Log.i("TRACE", "in try toast response");
 
                             JSONObject jsonResponse = new JSONObject(strResponse);
                             JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
+
                             Toast.makeText(context, ""+jsonResponseData.getString("message"), Toast.LENGTH_LONG).show();
 
                             if (jsonResponseData.getInt("code") == 1) {
@@ -127,7 +147,7 @@ public class General {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
+                        Log.i("TRACE", "open intent deal listing");
                         //open deals listing
                         Intent openDealsListing = new Intent(context, ClientDealsListActivity.class);
                         openDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -140,12 +160,51 @@ public class General {
                     @Override
                     public void failure(RetrofitError error) {
                         Log.e(TAG, "error " + error.getMessage());
+                        Log.i("TRACE", "RetrofitError");
                     }
                 });
             }
         }
         catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+//        String networkStr = NetworkUtils.g
+        Log.d("TRACE", "action: "
+                + intent.getAction());
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+//        networkInfo.NetworkStatusChanged("esfrghatheth===");
+
+
+        if(haveConnectedMobile) {
+            Log.i("TRACE", "MOBILE NETWORK AVAILABLE ");
+//            Toast.makeText(context,"NETWORK AVAILABLE",Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(context,"NO NETWORK AVAILABLE",Toast.LENGTH_SHORT).show();
+            Log.i("TRACE", "MOBILE NETWORK NOT AVAILABLE ");
+        }
+
+        if(haveConnectedWifi)
+            Log.i("TRACE","WIFI NETWORK AVAILABLE ");
+        else {
+            Toast.makeText(context,"NO WIFI AVAILABLE",Toast.LENGTH_SHORT).show();
+            Log.i("TRACE", "WIFI NETWORK NOT AVAILABLE ");
         }
     }
 }

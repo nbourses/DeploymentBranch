@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/rootWrapper">
+        android:id="@+id/rootWrapper"
+        android:weightSum="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -68,6 +69,167 @@
                 android:textColor="#FFFFFF"/>
 
         </LinearLayout>
+
+
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/oye_select"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textForRentSale"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:paddingTop="2dp">
+
+            <LinearLayout
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/txtHome"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/home" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:text="HOME"
+                    android:textSize="10dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/txtShop"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/shop" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:text="SHOP"
+                    android:textSize="10dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/txtIndustry"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/industry" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:text="INDUSTRY"
+                    android:textSize="10dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/txtOffice"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:paddingLeft="10dp"
+
+                    android:paddingRight="10dp"
+                    android:src="@drawable/office" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:text="OFFICE"
+                    android:textSize="10dp" />
+            </LinearLayout>
+
+     <!--       <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/icon_others"
+                    android:layout_width="60dp"
+
+                    android:layout_height="60dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:src="@drawable/ic_others_oye_intent_specs_selector" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingBottom="5dp"
+                    android:scrollHorizontally="true"
+                    android:text="OTHERS" />
+            </LinearLayout>   -->
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/loadContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/twelve_dp"
+            android:paddingLeft="@dimen/eight_dp"
+            android:paddingRight="@dimen/eight_dp">
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -130,6 +292,10 @@
 
         </LinearLayout>
 
+
+
+        <!--
+
         <LinearLayout
             android:id="@+id/propertyTypeWrapper"
             android:layout_width="match_parent"
@@ -138,14 +304,15 @@
             android:orientation="horizontal"
             android:layout_marginTop="@dimen/action_button_content_margin"
             android:paddingLeft="@dimen/eight_dp"
-            android:paddingRight="@dimen/eight_dp">
+            android:paddingRight="@dimen/eight_dp"
+            android:layout_weight="3.75">
 
             <TextView
                 android:id="@+id/txtHome"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:padding="4dp"
-                android:text="Home"
+                android:text="Homie"
                 android:textSize="18sp"
                 android:textColor="@color/colorPrimaryDark"/>
 
@@ -179,7 +346,7 @@
                 android:textSize="18sp"
                 android:textColor="@color/colorPrimaryDark"/>
 
-            <!--<TextView
+            <TextView
                 android:id="@+id/txtOthers"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
@@ -188,17 +355,14 @@
                 android:text="Others"
                 android:textSize="18sp"
                 android:textColor="@color/colorPrimaryDark"/>-->
-        </LinearLayout>
+     <!--   </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/loadContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="@dimen/twelve_dp"
-            android:paddingLeft="@dimen/eight_dp"
-            android:paddingRight="@dimen/eight_dp">
-        </LinearLayout>
+    -->
+
+
+
+
+
 
     </LinearLayout>
 </RelativeLayout>

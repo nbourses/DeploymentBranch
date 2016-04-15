@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.models.BrokerDeals;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 
@@ -18,6 +21,7 @@ import java.util.ArrayList;
  */
 public class BrokerDealsListAdapter extends BaseAdapter {
     private ArrayList<BrokerDeals> dealses;
+    private boolean default_deal;
     private Context context;
 
     public BrokerDealsListAdapter(ArrayList<BrokerDeals> dealses, Context context) {
@@ -25,6 +29,19 @@ public class BrokerDealsListAdapter extends BaseAdapter {
         this.context = context;
 
     }
+    public BrokerDealsListAdapter(boolean flag , Context context) throws JSONException {
+        Log.i("default deal ","value "+flag);
+        this.default_deal = true;
+
+        ArrayList<BrokerDeals> Al = new ArrayList<BrokerDeals>();
+        Al.set(0,new BrokerDeals());
+        this.dealses = Al;
+        this.context = context;
+
+    }
+
+
+
 
     @Override
     public int getCount() {
@@ -45,33 +62,49 @@ public class BrokerDealsListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = null;
         ViewHolder holder;
-        BrokerDeals deal = dealses.get(position);
 
-        if (convertView == null) {
-            v = LayoutInflater.from(context).inflate(R.layout.broker_deal_item, parent, false);
-            holder = new ViewHolder();
+Log.i("inside brokerdeals view","flag check "+this.default_deal);
+            if (convertView == null) {
+                v = LayoutInflater.from(context).inflate(R.layout.broker_deal_item, parent, false);
+                holder = new ViewHolder();
 
-            holder.txtTitle = (TextView) v.findViewById(R.id.txtTitle);
-            holder.txtDescription = (TextView) v.findViewById(R.id.txtDescription);
-            holder.txtTime = (TextView) v.findViewById(R.id.txtTime);
-            holder.txtFirstChar = (TextView) v.findViewById(R.id.txtFirstChar);
+                holder.txtTitle = (TextView) v.findViewById(R.id.txtTitle);
+                holder.txtDescription = (TextView) v.findViewById(R.id.txtDescription);
+                holder.txtTime = (TextView) v.findViewById(R.id.txtTime);
+                holder.txtFirstChar = (TextView) v.findViewById(R.id.txtFirstChar);
 
-            v.setTag(holder);
+                v.setTag(holder);
+            } else {
+                v = convertView;
+                holder = (ViewHolder) v.getTag();
+            }
+        if(dealses.size()>0) {
+
+            BrokerDeals deal = dealses.get(position);
+
+            String userName = (!deal.getSpecCode().equals("")) ? deal.getSpecCode() : "None";
+            holder.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
+
+            String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
+            holder.txtTitle.setText(name);
+
+            holder.txtDescription.setText(deal.getMobileNo());
+
+            holder.txtTime.setText("23.11");
         }
-        else {
-            v = convertView;
-            holder = (ViewHolder) v.getTag();
+        else if(this.default_deal)
+        {
+            Log.i("inside BrokersDeals","--------");
+            String userName = "A";
+            holder.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
+
+            String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
+            holder.txtTitle.setText(name);
+
+            holder.txtDescription.setText("");
+
+            holder.txtTime.setText("23.11");
         }
-
-        String userName = (!deal.getSpecCode().equals("")) ? deal.getSpecCode() : "None";
-        holder.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
-
-        String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
-        holder.txtTitle.setText(name);
-
-        holder.txtDescription.setText(deal.getMobileNo());
-
-        holder.txtTime.setText("23.11");
 
         return v;
     }

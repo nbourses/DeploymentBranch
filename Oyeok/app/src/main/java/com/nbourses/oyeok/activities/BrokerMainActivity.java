@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,13 +12,18 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.fragments.BrokerPreokFragment;
 import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,6 +38,7 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
     Toolbar mToolbar;
 
     private FragmentDrawer drawerFragment;
+    private WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,22 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
 
         setContentView(R.layout.activity_agent_main);
         ButterKnife.bind(this);
+
+        if (General.isNetworkAvailable(getApplicationContext())) {
+
+            Log.i("TRACE", "network availabe");
+        }
+
+            else
+
+            {
+                Log.i("TRACE", "network not availabile");
+                SnackbarManager.show(
+                        Snackbar.with(this)
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text("No internet connection ,please check your settings")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+            }
 
         init();
     }
@@ -98,11 +121,36 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
         else if (itemTitle.equals(getString(R.string.shareApp))) {
             shareReferralLink();
         }
-        else if (itemTitle.equals(getString(R.string.supportChat))) {
+     /*   else if (itemTitle.equals(getString(R.string.supportChat))) {
             //TODO: integration is pending
+        } */
+
+        else if (itemTitle.equals(getString(R.string.notifications))) {
+            Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
+            startActivity(openDealsListing);
+        }
+        else if (itemTitle.equals(getString(R.string.likeOnFb))) {
+           // setContentView(R.layout.browser);
+            webView = (WebView) findViewById(R.id.webView);
+            webView.setVisibility(View.VISIBLE);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.loadUrl("http://www.facebook.com/nexchanges");
+
+
+        }
+        else if (itemTitle.equals(getString(R.string.aboutUs))) {
+            //setContentView(R.layout.browser);
+            webView = (WebView) findViewById(R.id.webView);
+            webView.setVisibility(View.VISIBLE);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.loadUrl("http://www.hioyeok.com/blog");
+
+
         }
 
-        if (fragment != null) {
+       if (fragment != null) {
             loadFragment(fragment, null, R.id.container_map, title);
         }
     }
@@ -114,6 +162,9 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
 
         return false;
     }
+
+
+
 
     private void shareReferralLink() {
         DBHelper dbHelper=new DBHelper(getApplicationContext());
@@ -147,5 +198,20 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(webView != null){
+            webView = null;
+           Intent back = new Intent(this, BrokerMainActivity.class);
+            startActivity(back);
+
+        }
+        else{
+
+                super.onBackPressed();
+
+        }
     }
 }

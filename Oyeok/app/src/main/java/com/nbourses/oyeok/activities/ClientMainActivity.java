@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,10 +38,13 @@ import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.fragments.OyeScreenFragment;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.helpers.NetworkInterface;
 import com.nbourses.oyeok.interfaces.OnOyeClick;
 import com.nbourses.oyeok.models.PublishLetsOye;
 import com.nbourses.oyeok.services.DeviceRegisterService;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import butterknife.Bind;
@@ -49,7 +55,7 @@ import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
 
-public class ClientMainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener, OnOyeClick {
+public class ClientMainActivity extends AppCompatActivity implements NetworkInterface, FragmentDrawer.FragmentDrawerListener, OnOyeClick {
 
     boolean isShowing = false;
     private static final String TAG = "DashboardActivity";
@@ -80,6 +86,8 @@ public class ClientMainActivity extends AppCompatActivity implements FragmentDra
     @Bind(R.id.btnOnOyeClick)
     Button btnOnOyeClick;
 
+    private WebView webView;
+
     public interface openMapsClicked{
         public void clicked();
     }
@@ -104,6 +112,22 @@ public class ClientMainActivity extends AppCompatActivity implements FragmentDra
 
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
+
+        if (General.isNetworkAvailable(getApplicationContext())) {
+
+            Log.i("TRACE", "network available");
+        }
+        else
+
+        {
+            Log.i("TRACE", "network not availabile");
+            SnackbarManager.show(
+                    Snackbar.with(this)
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("No internet connection ,please check your settings")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+        }
+
 
         init();
     }
@@ -246,6 +270,7 @@ public class ClientMainActivity extends AppCompatActivity implements FragmentDra
     @Override
     public void onDrawerItemSelected(View view, int position, String itemTitle) {
         Fragment fragment = null;
+        Fragment frag = null;
         String title = getString(R.string.app_name);
 
         if (itemTitle.equals(getString(R.string.useAsClient))) {
@@ -262,9 +287,42 @@ public class ClientMainActivity extends AppCompatActivity implements FragmentDra
         else if (itemTitle.equals(getString(R.string.shareApp))) {
             shareReferralLink();
         }
-        else if (itemTitle.equals(getString(R.string.supportChat))) {
+   /*     else if (itemTitle.equals(getString(R.string.supportChat))) {
             //TODO: integration is pending
+        } */
+
+        else if (itemTitle.equals(getString(R.string.notifications))) {
+            Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
+            startActivity(openDealsListing);
         }
+       else if (itemTitle.equals(getString(R.string.likeOnFb))) {
+            // setContentView(R.layout.browser);
+            webView = (WebView) findViewById(R.id.webView);
+            webView.setVisibility(View.VISIBLE);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.loadUrl("http://www.facebook.com/nexchanges");
+
+        }
+        else if (itemTitle.equals(getString(R.string.aboutUs))) {
+            //setContentView(R.layout.browser);
+            webView = (WebView) findViewById(R.id.webView);
+            webView.setVisibility(View.VISIBLE);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.setWebViewClient(new WebViewClient());
+
+            webView.loadUrl("http://www.hioyeok.com/blog");
+
+
+        }
+        else if (itemTitle.equals(getString(R.string.updateProfile))) {
+            //setContentView(R.layout.browser);
+            loadFragment(frag, null, R.id.container_map, title);
+        }
+
+
+
 
         if (fragment != null) {
             loadFragment(fragment, null, R.id.container_map, title);
@@ -334,7 +392,7 @@ public class ClientMainActivity extends AppCompatActivity implements FragmentDra
         }
     }
 
-    public void showToastMessage(String message){
+    public void showToastMessage(String message) {
         toastText.setText(message);
         toastLayout.setVisibility(View.VISIBLE);
         hideMap(1);
@@ -361,7 +419,9 @@ public class ClientMainActivity extends AppCompatActivity implements FragmentDra
 
     @OnClick(R.id.btnOnOyeClick)
     public void submitOyeOk(View v) {
+        Log.i("TRACE =", "oyebutton baher");
         if (General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+            Log.i("TRACE =", "clicked oyebutton if");
             //show sign up screen
             Bundle bundle = new Bundle();
             bundle.putStringArray("propertySpecification", null);
@@ -369,10 +429,13 @@ public class ClientMainActivity extends AppCompatActivity implements FragmentDra
 
             SignUpFragment signUpFragment = new SignUpFragment();
             loadFragment(signUpFragment, bundle, R.id.container_oye, "");
+            Log.i("Signup called =", "Sign up");
+
 
             btnOnOyeClick.setVisibility(View.GONE);
         }
         else {
+            Log.i("TRACE =", "clicked oyebutton else");
             //create new deal
             General.publishOye(getApplicationContext());
             closeOyeScreen();
@@ -388,11 +451,29 @@ public class ClientMainActivity extends AppCompatActivity implements FragmentDra
         } else {
             super.onBackPressed();
         }
+        if(webView != null){
+            Intent back = new Intent(this, ClientMainActivity.class);
+            startActivity(back);
+        }
+
     }
+
+
 
     @OnClick(R.id.btnMyDeals)
     public void onBtnMyDealsClick(View v) {
         Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
         startActivity(openDealsListing);
     }
+
+    ////////////////// Network method implementation //////////
+
+    public void NetworkStatusChanged(String status)
+    {
+        Log.i("TRACE NETWORK","status ");
+    }
+
 }
+
+
+

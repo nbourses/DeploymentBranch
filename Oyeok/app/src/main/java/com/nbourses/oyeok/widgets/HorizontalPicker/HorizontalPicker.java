@@ -1217,26 +1217,42 @@ public class HorizontalPicker extends View {
     public void setInterval(int min, int max, int nIntervals, String rupeeUnit){
         minValue = min;
         maxValue = max;
-        interval = Integer.valueOf((max - min)/nIntervals);
+       // interval = Integer.valueOf((max - min)/nIntervals);
+        int interval = 500;
         setRupeeUnit(rupeeUnit);
         /*Log.d(TAG, "minValue " + minValue);
         Log.d(TAG, "maxValue "+maxValue);
         Log.d(TAG, "interval "+interval);
         Log.d(TAG, "rupeeUnit "+rupeeUnit);*/
 
-        if (minValue != 0 && maxValue != 0 && interval != 0) {
+        Log.i("TRACE", "min"+minValue);
+        Log.i("TRACE", "max"+maxValue);
+       if (minValue != 0 && maxValue != 0 && interval != 0) {
             ArrayList<CharSequence> valueList = new ArrayList<CharSequence>();
             int value = minValue;
             CharSequence object;
             while (true) {
                 value += interval;
+                Log.i("TRACE", "Value"+value);
                 object = value + "";
+               // Log.i("TRACE", "object"+object);
                 if (value <= maxValue) {
                     valueList.add(object);
                 }
                 else
                     break;
             }
+      /*  ArrayList<CharSequence> valueList = new ArrayList<CharSequence>();
+         for(int i= minValue;i <= maxValue; i=i+500){
+             int value = i;
+             CharSequence object;
+             object = value + "";
+             valueList.add(object);
+
+         } */
+           Log.i("TRACE", "valueList"+valueList);
+
+
             setValues(valueList);
             /*Log.d(TAG, "index " + ((int) (nIntervals / 2)));
             Log.d(TAG, "valueList index " + valueList.get((int) (nIntervals / 2)));*/

@@ -11,71 +11,79 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="-4dp"
+        android:layout_marginBottom="-3dp"
         android:gravity="center_horizontal">
+        <!--android:layout_marginTop="-2.5dp"
+        android:layout_marginBottom="-4.5dp" -->
 
         <TextView
             android:id="@+id/txtColdStorage"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
-            android:padding="4dp"
             android:text="Cold Storage"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:padding="4dp" />
 
         <TextView
             android:id="@+id/txtKitchen"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_marginLeft="@dimen/eight_dp"
-            android:padding="4dp"
             android:text="Kitchen"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:padding="4dp" />
 
         <TextView
-            android:id="@+id/txtWarehouse"
+            android:id="@+id/txtManufacturing"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/eight_dp"
-            android:padding="4dp"
-            android:text="Warehouse"
+            android:text="Manufacturing"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:padding="4dp" />
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="-3dp"
+        android:layout_marginBottom="-4dp"
+
         android:gravity="center_horizontal">
 
-        <TextView
+    <!--  <TextView
             android:id="@+id/txtOfficeSpace"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
-            android:padding="4dp"
             android:text="Office Space"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:padding="4dp" />  -->
 
         <TextView
-            android:id="@+id/txtManufacturing"
+            android:id="@+id/txtWarehouse"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/eight_dp"
-            android:padding="4dp"
-            android:text="Manufacturing"
+            android:text="Warehouse"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:padding="4dp" />
 
-    <TextView
+        <TextView
         android:id="@+id/txtWorkshop"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:layout_marginLeft="@dimen/eight_dp"
-        android:padding="4dp"
         android:text="Workshop"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="12sp"/>
+        android:textSize="12sp"
+        android:padding="4dp" />
     </LinearLayout>
 </LinearLayout>

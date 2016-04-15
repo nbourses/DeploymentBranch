@@ -24,6 +24,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.digits.sdk.android.AuthCallback;
+import com.digits.sdk.android.Digits;
+import com.digits.sdk.android.DigitsAuthButton;
+import com.digits.sdk.android.DigitsException;
+import com.digits.sdk.android.DigitsSession;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
@@ -58,7 +63,19 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 
+//digits
+//digits end
+
 public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
+
+     //digits
+
+    //digits
+
+
+
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
@@ -80,7 +97,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     Dialog alertD;
     Context context;
 
-//    ClientMainActivity activity;
+    //    ClientMainActivity activity;
     DBHelper dbHelper;
 
     String picturePath, mobile;
@@ -119,12 +136,21 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     String lastFragment="";
     private String role_of_user;
     private Activity activity;
+////////////////////////////////////////////////////
+    // Variables defined for digits authentication
+////////////////////////////////////////////////////
+    private AuthCallback authCallback;
+    private String mobile_number="";
+
+
+    private static final String TWITTER_KEY = "CE00enRZ4tIG82OJp6vKib8YS";
+    private static final String TWITTER_SECRET = "5AMXDHAXG0luBuuHzSrDLD0AvwP8GzF06klXFgcwnzAVurXUoS";
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         activity = getActivity();
+
     }
 
     @Override
@@ -154,16 +180,89 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
             redirectToOyeIntentSpecs=true;
             propertySpecification=b.getStringArray("propertySpecification");
         }
+        Log.i("Signup called =", "view assigned");
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
         dbHelper=new DBHelper(getActivity());
 
+        Log.i("Signup called =", "view assigned");
+       //digits//
+
+
+//        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+//        Fabric.with(this,new Digits());
+
+        Digits.getSessionManager().clearActiveSession();
+        authCallback = new AuthCallback() {
+            @Override
+            public void success(DigitsSession session, String phoneNumber) {
+                // Do something with the session
+                System.out.println("isValidUser " + session.isValidUser());
+                System.out.println("phoneNumber " + phoneNumber);
+                System.out.println("getPhoneNumber " + session.getPhoneNumber());
+                mobile_number = session.getPhoneNumber();
+            }
+
+            @Override
+            public void failure(DigitsException exception) {
+                // Do something on failure
+                exception.printStackTrace();
+            }
+        };
+
+
+        DigitsAuthButton digitsButton = (DigitsAuthButton) view.findViewById(R.id.auth_button);
+
+        digitsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                System.out.println("inside button getPhoneNumber "+mobile_number);
+
+            }
+        });
+
+        digitsButton.setCallback(authCallback);
+        //digits//
+
+        /*TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new TwitterCore(authConfig), new Digits());
+
+        DigitsAuthButton digitsButton = (DigitsAuthButton) view.findViewById(R.id.auth_button);
+        digitsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        digitsButton.setCallback(authCallback);*/
+
+       /* DigitsAuthButton digitsButton = (DigitsAuthButton) view.findViewById(R.id.auth_button);
+        digitsButton.setCallback(new AuthCallback() {
+            @Override
+            public void success(DigitsSession session, String phoneNumber) {
+                // TODO: associate the session userID with your user model
+//                Toast.makeText(getContext(), "Authentication successful for "
+//                        + phoneNumber, Toast.LENGTH_LONG).show();
+                        mobile_number = session.getPhoneNumber();
+                System.out.println("phoneNumber " + phoneNumber);
+              Log.d("Mobile no from digits", mobile_number);
+            }
+
+            @Override
+            public void failure(DigitsException exception) {
+                Log.d("Digits", "Sign in with Digits failure", exception);
+            }
+        });
+*/
+
         name= (EditText) view.findViewById(R.id.etname);
         email= (EditText) view.findViewById(R.id.etemail);
-        number= (EditText) view.findViewById(R.id.etnumber);
-        vcode= (EditText) view.findViewById(R.id.etvcode);
+       // number= (EditText) view.findViewById(R.id.etnumber);
+       // vcode= (EditText) view.findViewById(R.id.etvcode);
         llsignup = (LinearLayout)view.findViewById(R.id.llsignup);
         llotp = (LinearLayout)view.findViewById(R.id.llotp);
-        llotp.setVisibility(View.GONE);
+        //llotp.setVisibility(View.GONE);
 
         role_of_user = dbHelper.getValue(DatabaseConstants.userRole);
 //        ((DashboardActivity) getActivity()).showToastMessage("Signing up as " + role_of_user);
@@ -175,20 +274,21 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                         .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
         userProfileViewModel=new UserProfileViewModel();
-        Button sendOtp=(Button)view.findViewById(R.id.sendotp);
+  /*  Button sendOtp=(Button)view.findViewById(R.id.sendotp);
         sendOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // do something
                 sendOtp();
             }
-        });
+        });   */
 
         Button submit=(Button)view.findViewById(R.id.submitprofile);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // do something
+                Log.i("TRACE","inside submitprofile button");
                 submitButton();
             }
         });
@@ -203,6 +303,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
 
     public void sendOtp(){
+
+       Log.i("TRACE","inside send otp");
 
         Sname = name.getText().toString();
         Semail = email.getText().toString();
@@ -332,8 +434,23 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
     public void submitButton() {
 
+       Log.i("TRACE inside sb","mobile_number");
+        Log.i("TRACE inside sb",mobile_number);
+
+        if(mobile_number.length()>0)
+            mobile_number = mobile_number.substring(4,12);
+//        else
+//        mobi
+        Sname = name.getText().toString();
+        Semail = email.getText().toString();
+
+
+       Log.i("TRACE","inside submit");
+
         validationCheck();
-        //validation_success = roleSelected();
+        Log.i("TRACE", "after validationCheck");
+
+       // //validation_success = roleSelected();
         email_success = isEmailValid(Semail);
         context = getContext();
         InputMethodManager imm = (InputMethodManager)context
@@ -342,12 +459,87 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
 
 
-        if (validation_success && email_success) {
+        if (!mobile_number.isEmpty() && email_success) {
 
-            Sname = name.getText().toString();
-            Semail = email.getText().toString();
+         Log.i("TRACE","in nomail ntempty");
 
-            Svcode = vcode.getText().toString();
+       ////     Sname = name.getText().toString();
+      ////      Semail = email.getText().toString();
+
+   ////         Svcode = vcode.getText().toString();
+
+
+
+
+
+            //UserCredentials.saveString(this, PreferenceKeys.MY_SHORTMOBILE_KEY, Snumber);
+            userProfileViewModel.setName(Sname);
+            userProfileViewModel.setEmailId(Semail);
+            userProfileViewModel.setMobileNumber(mobile_number);
+            /*Str_Lat = UserCredentials.getString(this, PreferenceKeys.MY_CUR_LAT);    //FirebaseClass.getString(this,FirebaseClass.MY_CUR_LAT);
+            Str_Lng = UserCredentials.getString(this, PreferenceKeys.MY_CUR_LNG);*/ //FirebaseClass.getString(this,FirebaseClass.MY_CUR_LNG);
+            Str_Lat = SharedPrefs.getString(getActivity(),SharedPrefs.MY_LAT);
+            Str_Lng = SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG);
+            Log.i("TRACE","Lat is" +Str_Lat);
+            Log.i("TRACE","Long is" +Str_Lng);
+
+            String API = DatabaseConstants.serverUrl;
+
+            User user = new User();
+            user.setName(Sname);
+            user.setEmail(Semail);
+            user.setMobileNo(mobile_number);
+            user.setMobileCode("+91");
+            if(okBroker)
+                user.setUserRole("broker");
+            else
+                user.setUserRole("client");
+
+            regid = userProfileViewModel.getGcmId();
+            user.setPushToken(regid);
+            user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+            user.setLongitude(Str_Lng);
+            user.setLocality(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
+            user.setLatitude(Str_Lat);
+            user.setPlatform("android");
+            user.setDeviceId("Hardware");
+
+
+            /*user.setUserRole(dbHelper.getValue("userRole");
+            regid = UserProfileViewModel.getGcmId();
+            user.setGcmId(regid);
+            user.setLongitude(Double.parseDouble(dbHelper.getValue("currentLng")));
+            user.setLatitude(Double.parseDouble(dbHelper.getValue("currentLat")));
+            user.setDeviceId(dbHelper.getValue("deviceId"));*/
+
+            //User user = new User();
+            //////////////////////////////////////////////////
+            /*user.setName(Sname);
+            user.setEmail(Semail);
+            user.setMobileNo(Snumber);
+            user.setMobileCode("+91");
+            user.setUserRole(user_role);
+            regid = UserCredentials.getString(context, UserCredentials.KEY_GCM_ID);*/
+            regid=SharedPrefs.getString(getActivity(),SharedPrefs.MY_GCM_ID);
+            userProfileViewModel.setGcmId(regid);
+            userProfileViewModel.setLng(Str_Lng);
+            userProfileViewModel.setLat(Str_Lat);
+            userProfileViewModel.setDeviceId("Hardware");
+            //user.setDeviceId(FirebaseClass.getString(context,FirebaseClass.DEVICE_ID));
+
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setEndpoint(API).build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+            UserApiService user1 = restAdapter.create(UserApiService.class);
+
+
+
+
+
+
+
+
+
 
             /*Log.i("error", "Sending post request");
 
@@ -359,7 +551,10 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                         getApplicationContext(),
                         "Please enable location services",
                         Toast.LENGTH_LONG).show();*/
-            if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")) {
+
+            signup_success();
+
+    /*   ////     if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")) {
                 if (otpReceived[0].equals(Svcode)) {
                     signup_success();
                     Log.i("", "Validation success");
@@ -367,9 +562,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 /*Toast.makeText(
                         getContext(),
                         "Please Enter Otp as mentioned in the SMS"+Svcode,
-                        Toast.LENGTH_LONG).show();*/
+                        Toast.LENGTH_LONG).show();
                 }
-            }
+      ////      }
             else{
                 //Toast.makeText(getContext(), "otp validation in offline mode done", Toast.LENGTH_LONG).show();
 //                ((ClientMainActivity)getActivity()).showToastMessage("otp validation in offline mode done");
@@ -378,7 +573,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 .position(Snackbar.SnackbarPosition.TOP)
                                 .text("Otp validation in offline mode done")
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
-            }
+            } */
         }}
 
 
@@ -386,7 +581,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
 
         /*TelephonyManager tm = (TelephonyManager) context.getSystemService();*/
-
+       Log.i("TRACE","in SinSuc");
 
         Log.i("inside","signup");
         //String API="http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000"
@@ -397,7 +592,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         OyeokApiService service;
 
         User user = new User();
-        user.setMobileNo(Snumber);
+        user.setMobileNo(mobile_number);
         user.setMobileCode("+91");
         user.setEmail(Semail);
         user.setName(Sname);
@@ -431,14 +626,17 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                     @Override
                     public void success(SignUp signUp, retrofit.client.Response response) {
                         Log.i("TAG", "Inside signup success");
+
                         my_user_id = signUp.responseData.getUserId();
+
+                        Log.i("TRACE", "Userid" +my_user_id);
 
                         //store user_id in shared preferences
                         General.setSharedPreferences(getActivity(), AppConstants.USER_ID, my_user_id);
                         General.setSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER, "yes");
                         General.setSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
 
-
+                      Log.i("TRACE", "bef saveDb");
                         dbHelper.save(DatabaseConstants.userId, my_user_id);
                         SharedPrefs.save(getActivity(), "UserId", my_user_id);
                         Log.i("Firebase", userProfileViewModel.getUserProfile().toString());
@@ -451,7 +649,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                         hourGlassFirebase.saveHourGlassDetails(hourGlassDetails);
                         dbHelper.save(DatabaseConstants.name, Sname);
                         dbHelper.save(DatabaseConstants.email,Semail);
-                        dbHelper.save(DatabaseConstants.mobileNumber,Snumber);
+                        dbHelper.save(DatabaseConstants.mobileNumber,mobile_number);
                         if (dbHelper.getValue(DatabaseConstants.userRole).equals("Broker")) {
                             dbHelper.save(DatabaseConstants.user, "Broker");
                         } else
@@ -507,6 +705,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
                     @Override
                     public void failure(RetrofitError error) {
+
+                        Log.i("TRACE","in signup failure");
 
                         Log.i("TAG", "Inside signup Failure" + error.getMessage());
                         if (redirectToOyeIntentSpecs) {
@@ -576,13 +776,18 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     public void letsOye()
     {
         Log.d(TAG, "start letsOye");
+        Log.i("TRACE", "in LetsOye");
 
         //after successful login let user role in shared preference
 //        General.setSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
 
-        if (role_of_user.equalsIgnoreCase("client"))
+        if (role_of_user.equalsIgnoreCase("client")) {
+            Log.i("TRACE", "in Client");
             General.publishOye(getActivity());
+
+        }
         else {
+            Log.i("TRACE", "in Broker");
             //open deals listing of broker
             Intent openBrokerDealsListing = new Intent(context, BrokerDealsListActivity.class);
             openBrokerDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -706,6 +911,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
 
     private boolean isEmailValid(CharSequence email) {
+
+      Log.i("TRACE","in isEmailvalid");
         if(android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches())
             return true;
         else
@@ -723,7 +930,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     }
 
     private boolean numberValidation(){
-        if(Snumber.length()==10)
+
+
+        if(mobile_number.length()==10)
             return true;
         else{
             //Toast.makeText(getContext(),"please entera valid mobile number",Toast.LENGTH_LONG).show();
@@ -740,8 +949,11 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
     private void validationCheck() {
 
+        Log.i("TRACE","inside validCheck");
+
         if (name.getText().toString().trim().equalsIgnoreCase("")) {
             name.setError("Please enter name");
+            Log.i("TRACE", "Plz enter name");
             return;
         }
 
@@ -750,6 +962,19 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
         if (email.getText().toString().trim().equalsIgnoreCase("")) {
             email.setError("Please enter email-id");
+            Log.i("TRACE", "Plz enter email");
+            return;
+        }
+
+        if (mobile_number.isEmpty()){
+            //Toast.makeText(getContext(),"s", Toast.LENGTH_SHORT).show();
+            SnackbarManager.show(
+                    Snackbar.with(activity)
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("Please Click on USE MY PHONE NO to proceed.")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
+
+            Log.i("TRACE", "Plz enter submit number");
             return;
         }
 
@@ -801,6 +1026,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     }
 
     private boolean isNetworkAvailable() {
+  Log.i("TRACE","inside netAvail");
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
@@ -811,6 +1037,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     @Override
     public void replaceFragment(Bundle args) {
 
+        Log.i("TRACE","in ReplaceFrag");
+
         Fragment fragment = new Droom_Chat_New();
         fragment.setArguments(args);
         FragmentManager fragmentManager = getFragmentManager();
@@ -819,4 +1047,5 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         fragmentTransaction.commitAllowingStateLoss();
 
     }
+
 }

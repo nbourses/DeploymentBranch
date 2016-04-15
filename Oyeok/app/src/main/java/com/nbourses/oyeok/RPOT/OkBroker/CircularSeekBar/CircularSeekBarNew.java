@@ -26,9 +26,11 @@ import com.nispok.snackbar.SnackbarManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static java.lang.Math.log10;
 /**
@@ -63,6 +65,8 @@ public class CircularSeekBarNew extends View {
     private Paint mEndLinecolor;
     private PopupWindow pw;
     private static final String TAG = "CircularSeekBarNew";
+    private int difference;
+    private JSONArray tempvalues = new JSONArray();
 
     public CircularSeekBarNew(Context context) {
         super(context);
@@ -85,6 +89,8 @@ public class CircularSeekBarNew extends View {
 
     protected void init(AttributeSet attrs, int defStyle) {
         final TypedArray attrArray = getContext().obtainStyledAttributes(attrs, R.styleable.CircularSeekBarNew, defStyle, 0);
+
+
 
         initAttributes(attrArray);
 
@@ -199,10 +205,15 @@ public class CircularSeekBarNew extends View {
 
         imagesRect.clear();
         //int count = 0;
+
+        Log.i("TRACE","theta" +theta);
+
         for(int i=0; i<theta.size(); i++)
         {
             //Get drawables according to property type.Needs to be worked on
             Drawable d = getResources().getDrawable(drawables[i % 4]);
+
+            Log.i("TRACE","d" +d);
 
             if(i!=index) {
                 try {
@@ -229,7 +240,8 @@ public class CircularSeekBarNew extends View {
 
             String s = null;
             try {
-                s = values.getJSONObject(i).getString("size");
+                s = values.getJSONObject(i).getString("property_subtype");
+                Log.i("TRACE","property_subtype" +s);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -248,6 +260,7 @@ public class CircularSeekBarNew extends View {
             double angle = 0.0;
 
                 angle = theta.get(i);
+            Log.i("TRACE","angle" +angle);
 
             //get left and top cordinates to place the icon(Trignometry calculations.Find the point from centre of the rectangle with respect to angle calculated)
             house_image_left = (int)(mCircleRectF.left+(mCircleRectF.width() / 2) - mWidth * (0.5*Math.cos(angle)+ 0.866 * Math.sin(angle)));
@@ -256,6 +269,9 @@ public class CircularSeekBarNew extends View {
 //            int top  = (int)(mCircleRectF.top+(mCircleRectF.height()/2) - mWidth * Math.sin(angle));
 //
 //
+            Log.i("TRACE","house_image_left" +house_image_left);
+            Log.i("TRACE","house_image_top" +house_image_top);
+
            int house_image_centerx  =  house_image_left;
             int house_image_centery =  house_image_top;
 
@@ -264,6 +280,7 @@ public class CircularSeekBarNew extends View {
             d.setBounds(house_image_left, house_image_top - height, house_image_left + width, house_image_top);
 //                canvas.drawBitmap(icon,house_image_left,house_image_top-height,paint);
 
+            Log.i("TRACE","d" +d);
 //
 //
 //            int textwidth = left+(width/2);
@@ -284,9 +301,12 @@ public class CircularSeekBarNew extends View {
 //
 //            imagesRect.add(i, new Rect(left, top - height - plusheight, left + width, top));
 //
-//
+            Log.i("TRACE", "mCircleTextColor" + s);
+        //  Log.i("TRACE", "mCircleTextColor" + value.getJSONObject(0));
+
+
             canvas.drawText(l, house_image_left + width / 2 + DPTOPX_SCALE, house_image_top - height, mCircleTextColor);
-            canvas.drawText(s, house_image_left+width / 2, house_image_top, mCircleTextColor);
+        //    canvas.drawText(s, house_image_left+width / 2, house_image_top, mCircleTextColor);
             canvas.drawText(o, house_image_left-width / 2, house_image_top, mCircleTextColor);
 //            canvas.drawText("Min:"+minValue,mCircleRectF.left+10*DPTOPX_SCALE,mCircleRectF.top+mCircleRectF.height()/2,mCircleTextColor);
 //            canvas.drawText("Max:"+maxvalue,mCircleRectF.right-60*DPTOPX_SCALE,mCircleRectF.top+mCircleRectF.height()/2,mCircleTextColor);
@@ -330,8 +350,141 @@ public class CircularSeekBarNew extends View {
 
     public void setValues(String m)
     {
+
+        Log.i("TRACE", "m" + m);
+
         try {
             values=new JSONArray(m);
+
+                     Log.i("TRACE","values" +values.getJSONObject(0));
+
+
+            int[] arrayTemp = new int[values.length()];
+
+                if(values.length()==3) {
+                    arrayTemp[0] = Integer.parseInt(values.getJSONObject(0).getString("price"));
+                    arrayTemp[1] = Integer.parseInt(values.getJSONObject(1).getString("price"));
+                    arrayTemp[2] = Integer.parseInt(values.getJSONObject(2).getString("price"));
+                /*    arrayTemp[0] =15000;
+                    arrayTemp[1] =500000;
+                    arrayTemp[2] =15000; */
+
+                    JSONObject j1;
+
+                    // values.getJSONObject(i).getString("oye_status").equalsIgnoreCase("active"))
+
+                    if (arrayTemp[0] != arrayTemp[1] && arrayTemp[0] != arrayTemp[2] && arrayTemp[1] != arrayTemp[2])
+                    {
+
+                        if (arrayTemp[0] < arrayTemp[1]) {
+                            if (arrayTemp[0] < arrayTemp[2]) {
+                                //a is least
+                                if (arrayTemp[1] < arrayTemp[2]) {
+                                    //a<b<c
+                                    Log.i("TRACE", "budgets are already sorted");
+
+
+                                } else {
+                                    //a<c<b
+                                    j1 = values.getJSONObject(1);
+                                    values.put(1, values.getJSONObject(2));
+                                    values.put(2, j1);
+                                    j1 = values.getJSONObject(0);
+                                    values.put(0, values.getJSONObject(1));
+                                    values.put(1, j1);
+                                }
+
+                            } else {
+                                //c<a<b
+                                j1 = values.getJSONObject(1);
+                                values.put(1, values.getJSONObject(2));
+                                values.put(2, j1);
+
+                            }
+                        } else if (arrayTemp[0] < arrayTemp[2]) {
+                            //b<a<c
+                            j1 = values.getJSONObject(0);
+                            values.put(0, values.getJSONObject(1));
+                            values.put(1, j1);
+
+                        } else if (arrayTemp[1] > arrayTemp[2]) {
+                            //c<b<a
+                            j1 = values.getJSONObject(0);
+                            values.put(0, values.getJSONObject(2));
+                            values.put(2, j1);
+                        } else {
+                            //b<c<a
+                            j1 = values.getJSONObject(0);
+                            values.put(0, values.getJSONObject(2));
+                            values.put(2, j1);
+                            j1 = values.getJSONObject(0);
+                            values.put(0, values.getJSONObject(1));
+                            values.put(1, j1);
+                        }
+
+
+                    }
+                    else if(arrayTemp[0] == arrayTemp[1])
+                    {
+                        if(arrayTemp[0] > arrayTemp[2])
+                        {
+                            j1 = values.getJSONObject(0);
+                            values.put(0, values.getJSONObject(2));
+                            values.put(2, j1);
+                        }
+                        else
+                        {
+                            Log.i("TRACE","budgets are already sorted");
+                        }
+                    }
+                    else if(arrayTemp[1] == arrayTemp[2])
+                    {
+                        if(arrayTemp[0] > arrayTemp[2])
+                        {
+                            j1 = values.getJSONObject(0);
+                            values.put(0, values.getJSONObject(2));
+                            values.put(2, j1);
+
+                        }
+                    }
+                    else if (arrayTemp[0] == arrayTemp[2])
+                    {
+                        if(arrayTemp[0] > arrayTemp[1])
+                        {
+                            j1 = values.getJSONObject(0);
+                            values.put(0, values.getJSONObject(1));
+                            values.put(1, j1);
+                        }
+                        else if(arrayTemp[0] < arrayTemp[1])
+                        {
+                            j1 = values.getJSONObject(1);
+                            values.put(1, values.getJSONObject(2));
+                            values.put(2, j1);
+                        }
+                    }
+
+                }
+           else if(values.length()==2) {
+                arrayTemp[0] = Integer.parseInt(values.getJSONObject(0).getString("price"));
+                arrayTemp[1] = Integer.parseInt(values.getJSONObject(1).getString("price"));
+                Arrays.sort(arrayTemp);
+                JSONObject j1;
+                if(arrayTemp[1]>arrayTemp[2])
+                {
+                    j1 = values.getJSONObject(0);
+                    values.put(0, values.getJSONObject(2));
+                    values.put(2, j1);
+                }
+                else
+                {
+                    Log.i("TRACE","budgets are already sorted");
+                }
+
+
+            }
+
+          Log.i("TRACE","values sorted" +values);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -343,9 +496,8 @@ public class CircularSeekBarNew extends View {
             SnackbarManager.show(
                     Snackbar.with(mContext)
                             .position(Snackbar.SnackbarPosition.TOP)
-                            .text("Sit back and relax while we find clients for you")
+                            .text("You are too late ,all the leads are taken care of. Please try again.")
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-
             minValue=0;
             maxvalue=0;
         }
@@ -369,12 +521,42 @@ public class CircularSeekBarNew extends View {
                     int temp= price1;
                     price1=price2;
                     price2=temp;
+
+
+
+//                    Collections.swap(values, 0, 1);
+
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             minValue=price1-(price1/2);
-            maxvalue=price2+(price2/2);
+
+            int[] priceArray = new int[values.length()];
+
+            for(int i=0;i<values.length();i++) {
+                int price;
+                try {
+                    price = Integer.parseInt(values.getJSONObject(i).getString("price"));
+                    priceArray[i] = price;
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            Arrays.sort(priceArray);
+
+
+            if(priceArray[1] - priceArray[0] >= 100000 ){
+                difference = 50000;
+            }
+            else{
+                difference = 5000;
+            }
+
+            maxvalue=price2+(price2/2)+ difference;
         }
         else{
             int totalPrice = 0, min=9999999, max=0;
@@ -403,25 +585,108 @@ public class CircularSeekBarNew extends View {
                     totalPrice += j;
                 }
                 minValue = min - (min / 2);
-                maxvalue = max + max / 2;
+                // 15 is adjustment done to max to avoid max overlapping with plotted third property in worst case.
+
+                int[] priceArray = new int[values.length()];
+
+                for(int i=0;i<values.length();i++) {
+                    int price;
+                    try {
+                        price = Integer.parseInt(values.getJSONObject(i).getString("price"));
+                        priceArray[i] = price;
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Arrays.sort(priceArray);
+
+                if((priceArray[2] - priceArray[1] >= 100000) || priceArray[1] - priceArray[0] >= 100000 ){
+                    difference = 50000;
+                }
+                else{
+                    difference = 5000;
+                }
+
+                maxvalue = max + (max / 2) + difference;
             }
         }
     }
 
     public void draw()
     {
+
+
         //requestLayout();
         theta.clear();
+
+        Log.i("TRACE", "values.sorted" + values);
+
+      int[] priceArray = new int[values.length()];
+
+       Log.i("TRACE", "values.length" + values.length());
+
+
         for(int i=0;i<values.length();i++)
         {
+            int price;
             try {
-                drawpic(Integer.parseInt(values.getJSONObject(i).getString("price")));
+                price = Integer.parseInt(values.getJSONObject(i).getString("price"));
+                priceArray[i] = price;
+                Log.i("TRACE", "Drawpic called with" + priceArray[i] + i);
+
+                //drawpic(Integer.parseInt(values.getJSONObject(i).getString("price")));
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+        Arrays.sort(priceArray);
+
+
+        for(int i=0;i<values.length();i++){
+            Log.i("TRACE", "sorted array" + priceArray[i] +i);
+        }
+
+
+        if (priceArray.length == 3) {
+
+            priceArray[2] = priceArray[2] + 2 * difference;
+            priceArray[1] = priceArray[1] + difference;
+            drawpic(priceArray[0]);
+            drawpic(priceArray[1]);
+            drawpic(priceArray[2]);
+
+        }
+        else if (priceArray.length == 2) {
+
+          priceArray[1] = priceArray[1] + 5000;
+
+            drawpic(priceArray[0]);
+            drawpic(priceArray[1]);
+
+        }
+        else if(priceArray.length == 1){
+
+            drawpic(priceArray[0]);
+
+        }
+        else{
+//            Log.i("TRACE","abnormal Oks recieved" +priceArray.length);SnackbarManager.show(
+//                    Snackbar.with(mContext)
+//                            .position(Snackbar.SnackbarPosition.TOP)
+//                            .text("Sit back and relax while we find clients for you")
+//                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+        }
+
+
         invalidate();
     }
+
+
+
+
+
 
     public void drawpic(int value)
     {

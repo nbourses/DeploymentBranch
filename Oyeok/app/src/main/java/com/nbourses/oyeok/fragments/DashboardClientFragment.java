@@ -236,7 +236,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
-            mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{"Rental", "Sale"}));
+            mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{"Rental", "Resale"}));
         else
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
         mPhasedSeekBar.setListener(this);
@@ -505,12 +505,25 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             public void success(GetPrice getPrice, Response response) {
                 if (getPrice.responseData.getLl_min() != null &&
                         !getPrice.responseData.getLl_min().equals("")) {
-
+                    Log.i("TRACE","RESPONSEDATAr" +response);
                     llMin = Integer.parseInt(getPrice.responseData.getLl_min());
                     llMax = Integer.parseInt(getPrice.responseData.getLl_max());
+                    Log.i("TRACE","RESPONSEDATAr" +llMin);
+                    Log.i("TRACE","RESPONSEDATAr" +llMax);
+                    llMin = 5*(Math.round(llMin/5));
+                    llMax =  5*(Math.round(llMax/5));
+                    Log.i("TRACE","RESPONSEDATAr" +llMin);
+                    Log.i("TRACE","RESPONSEDATAr" +llMax);
 
                     orMin = Integer.parseInt(getPrice.responseData.getOr_min());
                     orMax = Integer.parseInt(getPrice.responseData.getOr_max());
+                    Log.i("TRACE","RESPONSEDATAr" +orMin);
+                    Log.i("TRACE","RESPONSEDATAr" +orMax);
+                    orMin = 500*(Math.round(orMin/500));
+                    orMax = 500*(Math.round(orMax/500));
+                    Log.i("TRACE","RESPONSEDATAr" +orMin);
+                    Log.i("TRACE","RESPONSEDATAr" +orMax);
+
 
                     updateHorizontalPicker();
 
@@ -539,8 +552,10 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
         if (horizontalPicker != null) {
             if (brokerType.equals("rent"))
-                horizontalPicker.setInterval((llMin*1000), (llMax*1000), 10, HorizontalPicker.THOUSANDS);
+             //   horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
+                horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
             else
+
                 horizontalPicker.setInterval(orMin, orMax, 10, HorizontalPicker.THOUSANDS);
         }
     }
@@ -632,7 +647,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             }
             else if(position==1) {
                 tvRate.setText("/ sq.ft");
-                brokerType = "sale";
+                brokerType = "resale";
                 dbHelper.save(DatabaseConstants.brokerType, "OR");
                 dbHelper.save("brokerType","For Sale");
 

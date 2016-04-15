@@ -25,6 +25,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     private String selectedPropertyType;
     private View rootView;
     private TextView txtPreviousTextView;
+
     private static final String propertyTypeDefaultColor = "#FFFFFF";
     private String bhkNumber = "2";
     private String bhkNumberValue = "BHK";
@@ -69,7 +70,9 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
 
                 //by default 2 BHK is selected
                 txtPreviousTextView = (TextView) rootView.findViewById(R.id.txt2Bhk);
-                txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
+                txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
+
+     //         txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
                 AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
                 AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
                 onFilterValueUpdate(bhkNumber+"<sub><small>"+bhkNumberValue+"</small></sub>");
@@ -93,20 +96,23 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     }
 
     @Nullable
-    @OnClick({R.id.txt1Rk, R.id.txt1Bhk, R.id.txt2Bhk, R.id.txt3Bhk, R.id.txt4Bhk, R.id.txtAbove4Bhk})
+    @OnClick({R.id.txt1Bhk, R.id.txt2Bhk, R.id.txt3Bhk, R.id.txt4Bhk, R.id.txtAbove4Bhk})
     public void onBhkClick(View v) {
         clean();
         txtPreviousTextView = (TextView) v;
-        txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
-        AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
+        txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
+            //    txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
+                AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
         AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
 //        onFilterValueUpdate(txtPreviousTextView.getText().toString());
 
-        if (v.getId() == R.id.txt1Rk) {
+     /*   if (v.getId() == R.id.txt1Rk) {
             bhkNumber = "1";
             bhkNumberValue = "RK";
         }
-        else if (v.getId() == R.id.txt1Bhk) {
+        else
+
+        */ if (v.getId() == R.id.txt1Bhk) {
             bhkNumber = "1";
             bhkNumberValue = "BHK";
         }
@@ -130,40 +136,43 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     }
 
     @Nullable
-    @OnClick({R.id.txtRetailOutlet, R.id.txtFoodOutlet, R.id.txtBank, R.id.txtFoodOffice})
+    @OnClick({R.id.txtRetailShop, R.id.txtFoodOutlet, R.id.txtBank})
     public void onShopClick(View v) {
         clean();
         txtPreviousTextView = (TextView) v;
-        txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
+        txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
+        //txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
         AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
         AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
     }
 
     @Nullable
-    @OnClick({R.id.txtColdStorage, R.id.txtKitchen, R.id.txtWarehouse,
-                R.id.txtOfficeSpace, R.id.txtManufacturing, R.id.txtWorkshop})
+    @OnClick({R.id.txtColdStorage, R.id.txtKitchen, R.id.txtWarehouse, R.id.txtManufacturing, R.id.txtWorkshop})
     public void onIndustryClick(View v) {
         clean();
         txtPreviousTextView = (TextView) v;
-        txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
+        txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
+        //txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
         AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
         AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
     }
 
     @Nullable
-    @OnClick({R.id.txt5, R.id.txt10, R.id.txt20,
+    @OnClick({R.id.txt10, R.id.txt20,
             R.id.txt50, R.id.txt100, R.id.txt200})
     public void onOfficeClick(View v) {
         clean();
         txtPreviousTextView = (TextView) v;
-        txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
+        txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
+        //txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
         AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
         AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
     }
 
     private void clean() {
         if (txtPreviousTextView != null)
-            txtPreviousTextView.setBackgroundColor(Color.parseColor(propertyTypeDefaultColor));
+         //   txtPreviousTextView.setBackgroundColor(Color.parseColor(propertyTypeDefaultColor));
+            txtPreviousTextView.setTextColor(Color.parseColor("black"));
     }
 
     private void onFilterValueUpdate(String filterValue) {

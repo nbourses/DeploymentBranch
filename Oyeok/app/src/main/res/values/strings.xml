@@ -16,6 +16,11 @@
     <string name="shareApp">Share App</string>
     <string name="chat_list">chat_list</string>
     <string name="supportChat">Support Chat</string>
+    <string name="notifications">Notifications</string>
+    <string name="likeOnFb">Like us on Facebook</string>
+    <string name="aboutUs">About us</string>
+    <string name="updateProfile">Update Profile</string>
+
 
     <string name="head1">Get Free Oyes!</string>
     <string name="head2">Use Oyes to unlock features</string>
@@ -37,27 +42,45 @@
     <string name="memberinfo">Member /n Info</string>
 
 
+    <string-array name="searchingbrokers">
+        <item>Sit back, we are searching brokers for you.</item>
+    </string-array>
+
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels_no_signup">
         <!--<item>@string/signup</item>-->
         <item>@string/useAsClient</item>
         <item>@string/brokerOk</item>
         <item>@string/shareApp</item>
-        <item>@string/supportChat</item>
+      <!--  <item>@string/supportChat</item> -->
+        <item>@string/notifications</item>
+        <item>@string/likeOnFb</item>
+        <item>@string/aboutUs</item>
+     <!--   <item>@string/updateProfile</item> -->
+
     </string-array>
 
     <string-array name="nav_drawer_labels_signup_client">
         <item>@string/profile</item>
         <!--<item>@string/brokerOk</item>-->
         <item>@string/shareApp</item>
-        <item>@string/supportChat</item>
+        <!--  <item>@string/supportChat</item> -->
+        <item>@string/notifications</item>
+        <item>@string/likeOnFb</item>
+        <item>@string/aboutUs</item>
+        <!--   <item>@string/updateProfile</item> -->
+
     </string-array>
 
     <string-array name="nav_drawer_labels_signup_broker">
         <item>@string/profile</item>
         <!--<item>@string/brokerOk</item>-->
         <item>@string/shareApp</item>
-        <item>@string/supportChat</item>
+        <!--  <item>@string/supportChat</item> -->
+        <item>@string/notifications</item>
+        <item>@string/likeOnFb</item>
+        <item>@string/aboutUs</item>
+        <!--   <item>@string/updateProfile</item> -->
     </string-array>
 
     <string name="title_messages">Messages</string>
@@ -83,5 +106,9 @@
     <string name="oye_sale_req">I am Buyer</string>
     <string name="oye_sale_avail">I am Seller</string>
     <string name="default_2_bhk"><![CDATA[2<sub><small>BHK</small></sub>]]></string>
+
+    <string name="title_activity_browser">browser</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>
