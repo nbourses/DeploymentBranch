@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
@@ -17,6 +18,8 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.models.PublishLetsOye;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.json.JSONObject;
 
@@ -196,15 +199,28 @@ public class General extends BroadcastReceiver{
 //            Toast.makeText(context,"NETWORK AVAILABLE",Toast.LENGTH_SHORT).show();
         }
         else {
-            Toast.makeText(context,"NO NETWORK AVAILABLE",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,"MOBILE NETWORK NOT AVAILABLE",Toast.LENGTH_LONG).show();
             Log.i("TRACE", "MOBILE NETWORK NOT AVAILABLE ");
+            SnackbarManager.show(
+                    Snackbar.with(context)
+                            .position(Snackbar.SnackbarPosition.BOTTOM)
+                            .text("MOBILE NETWORK NOT AVAILABLE")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+
         }
 
         if(haveConnectedWifi)
             Log.i("TRACE","WIFI NETWORK AVAILABLE ");
         else {
-            Toast.makeText(context,"NO WIFI AVAILABLE",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,"WIFI NETWORK NOT AVAILABLE",Toast.LENGTH_LONG).show();
             Log.i("TRACE", "WIFI NETWORK NOT AVAILABLE ");
+            SnackbarManager.show(
+                    Snackbar.with(context)
+                            .position(Snackbar.SnackbarPosition.BOTTOM)
+                            .text("WIFI NETWORK NOT AVAILABLE")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
         }
     }
 }

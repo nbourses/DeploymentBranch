@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -16,6 +17,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RatingBar;
+import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -41,7 +45,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DealConversationActivity extends AppCompatActivity {
+public class DealConversationActivity extends AppCompatActivity implements OnRatingBarChangeListener {
 
     @Bind(R.id.edtTypeMsg)
     TextView edtTypeMsg;
@@ -61,6 +65,15 @@ public class DealConversationActivity extends AppCompatActivity {
     @Bind(R.id.suggestionList)
     ListView suggestionList;
 
+    @Bind(R.id.spinnerProgress)
+    ProgressBar spinnerProgress;
+
+    @Bind(R.id.ratingBar)
+    RatingBar ratingBar;
+  //  @Bind(R.id.texRating)
+  //  ProgressBar texrating;
+  private TextView texrating;
+
     private static final String TAG = "DealConversationActivity";
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 2;
@@ -68,6 +81,7 @@ public class DealConversationActivity extends AppCompatActivity {
     private String channel_name = "";
     private ChatListAdapter listAdapter;
     private ArrayList<ChatMessage> chatMessages;
+
 
     private String userRole = "client";
     private static final String[] suggestionsForClientArray = {"How can I use this app?", "How can I find property?", "Is it free of cost to get broker?"};
@@ -81,10 +95,12 @@ public class DealConversationActivity extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             if (edtTypeMsg.getText().toString().equals("")) {
+                //when nothing is typed shows attachement symbol
                 imgSendMsg.setImageResource(R.drawable.attachment);
                 imgSendMsg.setTag("attachment");
             }
             else {
+                //when somethingg is typed shows send arrow symbol
                 imgSendMsg.setImageResource(R.drawable.ic_chat_send_active);
                 imgSendMsg.setTag("message");
             }
@@ -101,6 +117,8 @@ public class DealConversationActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_deal_conversation);
         ButterKnife.bind(this);
+       texrating = (TextView) findViewById(R.id.texRating);
+        ratingBar.setOnRatingBarChangeListener(this);
 
         init();
     }
@@ -124,6 +142,7 @@ public class DealConversationActivity extends AppCompatActivity {
         edtTypeMsg.addTextChangedListener(edtTypeMsgListener);
 
         chatMessages = new ArrayList<>();
+        Log.d("TRACE", "DealConversationActivity,Chat messages are"+chatMessages);
 
         listAdapter = new ChatListAdapter(chatMessages, this);
         chatListView.setAdapter(listAdapter);
@@ -133,6 +152,7 @@ public class DealConversationActivity extends AppCompatActivity {
         userRole = bundle.getString("userRole");
 
         ArrayAdapter<String> adapterSuggestions = null;
+        //userRole.equals("other") then load simple_list_item_2
         if (userRole.equals("client"))
             adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsForClientArray);
         else
@@ -396,5 +416,11 @@ public class DealConversationActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             getWindow().getDecorView().clearFocus();
         }
+    }
+
+    @Override
+    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+        texrating.setText("Rating: "+rating);
+
     }
 }

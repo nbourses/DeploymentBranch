@@ -211,7 +211,56 @@ public class CircularSeekBarNew extends View {
         for(int i=0; i<theta.size(); i++)
         {
             //Get drawables according to property type.Needs to be worked on
-            Drawable d = getResources().getDrawable(drawables[i % 4]);
+            //Drawable d = getResources().getDrawable(drawables[i % 4]);
+            Drawable d = null;
+            String ptype = null;
+            String pstype;
+            try {
+                pstype = values.getJSONObject(i).getString("property_subtype");
+
+                if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
+                    ptype = "home";
+                }
+                else if(pstype.equals("retail shop") || pstype.equals("food outlet") || pstype.equals("shop")){
+                    ptype = "shop";
+                }
+                else if(pstype.equals("cold storage") || pstype.equals("kitchen") || pstype.equals("manufacturing") || pstype.equals("warehouse") || pstype.equals("workshop")){
+                    ptype = "industrial";
+                }
+                else if(pstype.equals("<15") || pstype.equals("<35") || pstype.equals("<50") || pstype.equals("<100") || pstype.equals("100+")){
+                    ptype = "office";
+                }
+
+                Log.i("TRACE","Ptype decided: "+ptype);
+                //ptype = values.getJSONObject(i).getString("property_type");
+
+                if(ptype.equals("home")){
+                    d = getResources().getDrawable(drawables[0]);
+                    Log.i("TRACE","image selected "+getResources().getDrawable(drawables[0]));
+                    Log.i("TRACE","image selected "+drawables[0]);
+                }
+                else if(ptype.equals("industrial")){
+                    d = getResources().getDrawable(drawables[1]);
+                    Log.i("TRACE","image selected "+getResources().getDrawable(drawables[1]));
+                    Log.i("TRACE","image selected "+drawables[1]);
+                }
+                else if(ptype.equals("shop")){
+                    d = getResources().getDrawable(drawables[2]);
+                    Log.i("TRACE","image selected "+getResources().getDrawable(drawables[2]));
+                    Log.i("TRACE","image selected "+drawables[2]);
+                }
+                else if(ptype.equals("office")){
+                    d = getResources().getDrawable(drawables[3]);
+                    Log.i("TRACE","image selected "+getResources().getDrawable(drawables[3]));
+                    Log.i("TRACE","image selected "+drawables[3]);
+                }
+                else{
+                    Log.i("TRACE","kuchh to gadbad hai daya");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+           // Log.i("TRACE","Property type" + values.getJSONObject(0).getString("price"));
 
             Log.i("TRACE","d" +d);
 
@@ -219,9 +268,9 @@ public class CircularSeekBarNew extends View {
                 try {
                     //checking the oye_status and changing the color of icon to grey or red(inactive and active)
                     if (values.getJSONObject(i).getString("oye_status").equalsIgnoreCase("active")) {
-                        d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#E53935"), PorterDuff.Mode.SRC_ATOP));
+                        d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#E53935"), PorterDuff.Mode.SRC_ATOP)); //Red
                     } else {
-                        d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));
+                        d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));  // Gray
                     }
                 }
                 catch (JSONException e) {
@@ -231,7 +280,7 @@ public class CircularSeekBarNew extends View {
             else
             {
                 //This is if the icon is clicked or selected
-                d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#81C784"), PorterDuff.Mode.SRC_ATOP));
+                d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#81C784"), PorterDuff.Mode.SRC_ATOP)); //Light green
             }
             int house_image_left;
             int house_image_top;

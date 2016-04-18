@@ -70,6 +70,11 @@
 
     </LinearLayout>
 
+
+
+
+
+
     <TextView
         android:id="@+id/displayOkText"
         android:visibility="gone"
@@ -77,22 +82,51 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:gravity="center"
-        android:textSize="12sp"
+        android:textSize="13dp"
         android:text="5 oks will be used"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/texPtype"
+            android:visibility="gone"
+            android:gravity="center"
+            android:textSize="13dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:text="Property Type: Shop"/>
+
+        <TextView
+        android:id="@+id/texPstype"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textSize="13dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:text="Property Subtype: Food Outlet"/>
 
     <TextView
         android:id="@+id/rentText"
         android:visibility="gone"
         android:gravity="center"
-        android:textSize="10dp"
+        android:textSize="13dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="10dp"
         android:text="50L Rs"/>
-    <Button
+  <!--  <Button
         android:id="@+id/pickContact"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center"
@@ -102,13 +136,13 @@
 
     <TextView
         android:id="@+id/contactText"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_gravity="center"
         android:layout_marginBottom="50dp"
         android:layout_marginLeft="25dp"
-        android:text="Select\nClient"/>
-
+        android:text="Select\nClient"/> -->
+    </LinearLayout>
 </FrameLayout>

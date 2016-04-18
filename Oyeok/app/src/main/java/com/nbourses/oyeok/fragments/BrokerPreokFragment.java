@@ -72,11 +72,17 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     @Bind(R.id.rentText)
     TextView rentText;
 
-    @Bind(R.id.contactText)
-    TextView contactText;
+    @Bind(R.id.texPtype)
+    TextView texPtype;
 
-    @Bind(R.id.pickContact)
-    Button pickContact;
+    @Bind(R.id.texPstype)
+    TextView texPstype;
+
+   // @Bind(R.id.contactText)
+   // TextView contactText;
+
+   // @Bind(R.id.pickContact)
+   // Button pickContact;
 
     @Bind(R.id.okButton)
     Button okButton;
@@ -223,10 +229,15 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         if (v.getId() == txtOption1.getId()) {
             txtOption1.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption1.getText().toString();
+
         }
         else if (v.getId() == txtOption2.getId()) {
             txtOption2.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption2.getText().toString();
+            rentText.setVisibility(View.GONE);
+            displayOkText.setVisibility(View.GONE);
+            texPtype.setVisibility(View.GONE);
+            texPstype.setVisibility(View.GONE);
         }
 
         onPositionSelected(currentSeekbarPosition, currentCount);
@@ -281,6 +292,26 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         try {
             jsonObjectArray = m;
             selectedItemPosition = position;
+            String ptype = null;
+            String pstype;
+            pstype = jsonObjectArray.getJSONObject(position).getString("property_subtype");
+
+            if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
+                ptype = "home";
+            }
+            else if(pstype.equals("retail shop") || pstype.equals("food outlet") || pstype.equals("shop")){
+                ptype = "shop";
+            }
+            else if(pstype.equals("cold storage") || pstype.equals("kitchen") || pstype.equals("manufacturing") || pstype.equals("warehouse") || pstype.equals("workshop")){
+                ptype = "industrial";
+            }
+            else if(pstype.equals("<15") || pstype.equals("<35") || pstype.equals("<50") || pstype.equals("<100") || pstype.equals("100+")){
+                ptype = "office";
+            }
+
+
+            texPtype.setText("Property Type: "+ptype);
+            texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype"));
             rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /per m");
             displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used");
 
@@ -288,22 +319,29 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                 notClicked.setVisibility(View.GONE);
                 rentText.setVisibility(View.VISIBLE);
                 displayOkText.setVisibility(View.VISIBLE);
-                pickContact.setVisibility(View.GONE);
-                contactText.setVisibility(View.GONE);
+                texPtype.setVisibility(View.VISIBLE);
+                texPstype.setVisibility(View.VISIBLE);
+
+               // pickContact.setVisibility(View.GONE);
+               // contactText.setVisibility(View.GONE);
             }
             else if(show.equals("hide")) {
                 notClicked.setVisibility(View.VISIBLE);
                 rentText.setVisibility(View.GONE);
                 displayOkText.setVisibility(View.GONE);
-                pickContact.setVisibility(View.GONE);
-                contactText.setVisibility(View.GONE);
+                texPtype.setVisibility(View.GONE);
+                texPstype.setVisibility(View.GONE);
+               // pickContact.setVisibility(View.GONE);
+               // contactText.setVisibility(View.GONE);
             }
             else {
                 notClicked.setVisibility(View.GONE);
                 rentText.setVisibility(View.VISIBLE);
                 displayOkText.setVisibility(View.VISIBLE);
-                pickContact.setVisibility(View.VISIBLE);
-                contactText.setVisibility(View.VISIBLE);
+                texPtype.setVisibility(View.VISIBLE);
+                texPstype.setVisibility(View.VISIBLE);
+              //  pickContact.setVisibility(View.VISIBLE);
+              //  contactText.setVisibility(View.VISIBLE);
             }
         }
         catch (JSONException e) {
@@ -314,7 +352,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         }
     }
 
-    @OnClick({R.id.okButton, R.id.deal, R.id.pickContact})
+ //   @OnClick({R.id.okButton, R.id.deal, R.id.pickContact})
+ @OnClick({R.id.okButton, R.id.deal})
     public void onButtonsClick(View v) {
         if (okButton.getId() == v.getId()) {
             if (jsonObjectArray == null) {
@@ -353,10 +392,10 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             Intent openDealsListing = new Intent(getActivity(), BrokerDealsListActivity.class);
             startActivity(openDealsListing);
         }
-        else if (pickContact.getId() == v.getId()) {
-            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-            getActivity().startActivityFromFragment(this, intent, REQUEST_CODE_TO_SELECT_CLIENT);
-        }
+//        else if (pickContact.getId() == v.getId()) {
+//            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+//            getActivity().startActivityFromFragment(this, intent, REQUEST_CODE_TO_SELECT_CLIENT);
+//        }
     }
 
     @Override
@@ -369,8 +408,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                 if (c.moveToFirst()) {
                     String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                     // TODO Fetch other Contact details as you want to use
-                    contactText.setText(name);
-                    contactText.setPadding(8, 0, 0, 0);
+                  //  contactText.setText(name);
+                  //  contactText.setPadding(8, 0, 0, 0);
                 }
             }
         }

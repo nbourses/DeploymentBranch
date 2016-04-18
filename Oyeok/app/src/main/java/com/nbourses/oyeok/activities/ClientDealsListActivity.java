@@ -267,7 +267,7 @@ public class ClientDealsListActivity extends AppCompatActivity {
         txtNoActiveDeal.setVisibility(View.GONE);
         listViewDeals.setVisibility(View.VISIBLE);
     }*/
-
+//
     @OnClick(R.id.dealItemRoot)
     public void onClickDealItemRoot(View v) {
         Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);

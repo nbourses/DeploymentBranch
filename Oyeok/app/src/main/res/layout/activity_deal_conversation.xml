@@ -5,11 +5,14 @@
     android:weightSum="100"
     android:orientation="vertical">
 
+    <include layout="@layout/default_chat" />
+    <include layout="@layout/ratingbar" />
     <RelativeLayout
         android:id="@+id/conversationRootView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="100">
+
 
         <ListView
             android:id="@+id/chat_list_view"
