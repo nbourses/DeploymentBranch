@@ -42,9 +42,12 @@ import android.widget.TextView;
 import com.nbourses.oyeok.R;
 
 import java.lang.ref.WeakReference;
+import java.text.Format;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import static java.lang.Math.log10;
 
@@ -60,7 +63,7 @@ public class HorizontalPicker extends View {
 
 
     public static final String LACS = "L";
-    public static final String THOUSANDS = "K";
+    public static final String THOUSANDS = "";
     public static final String CRORES = "Cr";
 
     /**
@@ -155,7 +158,7 @@ public class HorizontalPicker extends View {
     private Integer interval = 500;
     private Integer minValue = 0;
     private Integer maxValue = 0;
-    private String rupeeUnit = "Rs";
+    private String rupeeUnit = "";
 
 
     public HorizontalPicker(Context context) {
@@ -181,11 +184,7 @@ public class HorizontalPicker extends View {
         paint1.setTextSize(18*DPTOPX_SCALE);
 
         mSelectedTextPaint = paint1;
-        TypedArray a = context.getTheme().obtainStyledAttributes(
-                attrs,
-                R.styleable.HorizontalPicker,
-                defStyle, 0
-        );
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs,R.styleable.HorizontalPicker, defStyle, 0);
 
         ArrayList<CharSequence> values;
         int ellipsize = 3; // END default value
@@ -1590,8 +1589,16 @@ public class HorizontalPicker extends View {
         switch(c)
         {
             case 7:
+
+
+                val=no;
+                Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+                str=format1.format(val);
+                String strWithoutSymbol2 = "";
+                strWithoutSymbol2 = str.substring(3,str.length());
+                str= strWithoutSymbol2;
 //            if(propertyType)
-                val = no/10000000;
+               /* val = no/10000000;
 //            else
 //                val = no/100000;
                 no = no%10000000;
@@ -1599,37 +1606,53 @@ public class HorizontalPicker extends View {
                 formatted = formatted.substring(0, 5);
 
                 v = val+"."+formatted;
-                str = v+"Cr";
+                str = v+"Cr";*/
 
 
                 twoWord++;
                 break;
 
             case 5:
+                val=no;
+                Format format2 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
 
-                val = no/100000;
+               /* val = no/100000;
 
                 v = val+"";
                 no = no%100000;
                 String s2 = String.format("%05d", no);
                 s2 = s2.substring(0, 3);
 
+               */
                 if (val != 0){
-                    str = str+v+"."+s2+"L";
+                    str=format2.format(val);
+                    String strWithoutSymbol1 = "";
+                    strWithoutSymbol1 = str.substring(3,str.length());
+                    str= strWithoutSymbol1;
+                  //  str = str+v+"."+s2+"L";
                     twoWord++;
                 }
 
                     break;
 
             case 3:
-                val = no/1000;
+                val=no;
+                Format format = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+
+                //v = val+"
+                // ";
+               /* val = no;
                 v = val+"";
-                no = no%1000;
+               // no = no%1000;
                 String.format("%05d", no);
                 String s3 = String.format("%03d", no);
-                s3 = s3.substring(0,1);
+                s3 = s3.substring(0,1);*/
                 if (val != 0) {
-                    str = str+v+"."+s3+"K";
+                    str = format.format(val);
+                    String strWithoutSymbol = "";
+                    strWithoutSymbol = str.substring(3,str.length());
+                    str= strWithoutSymbol;
+                   // str = str+v+"."+s3+"K";
                 }
                 break;
             default :
