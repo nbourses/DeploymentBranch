@@ -161,7 +161,8 @@
                                 android:background="@drawable/deal_circle"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/twelve_sp"
-                                android:layout_alignParentRight="true"/>
+                                android:layout_alignParentRight="true"
+                                android:paddingTop="5dp" />
 
                         </RelativeLayout>
 

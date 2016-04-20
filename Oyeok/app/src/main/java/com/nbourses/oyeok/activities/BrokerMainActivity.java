@@ -127,6 +127,7 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
 
         else if (itemTitle.equals(getString(R.string.notifications))) {
             Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
+            openDealsListing.putExtra("default_deal_flag",false);
             startActivity(openDealsListing);
         }
         else if (itemTitle.equals(getString(R.string.likeOnFb))) {

@@ -216,12 +216,12 @@ public class CircularSeekBarNew extends View {
             String ptype = null;
             String pstype;
             try {
-                pstype = values.getJSONObject(i).getString("property_subtype");
+          /*      pstype = values.getJSONObject(i).getString("property_subtype");
 
                 if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
                     ptype = "home";
                 }
-                else if(pstype.equals("retail shop") || pstype.equals("food outlet") || pstype.equals("shop")){
+                else if(pstype.equals("retail outlet") || pstype.equals("food outlet") || pstype.equals("bank")){
                     ptype = "shop";
                 }
                 else if(pstype.equals("cold storage") || pstype.equals("kitchen") || pstype.equals("manufacturing") || pstype.equals("warehouse") || pstype.equals("workshop")){
@@ -230,6 +230,9 @@ public class CircularSeekBarNew extends View {
                 else if(pstype.equals("<15") || pstype.equals("<35") || pstype.equals("<50") || pstype.equals("<100") || pstype.equals("100+")){
                     ptype = "office";
                 }
+            */
+
+                ptype = values.getJSONObject(i).getString("property_type");
 
                 Log.i("TRACE","Ptype decided: "+ptype);
                 //ptype = values.getJSONObject(i).getString("property_type");
@@ -269,9 +272,9 @@ public class CircularSeekBarNew extends View {
                     //checking the oye_status and changing the color of icon to grey or red(inactive and active)
                     if (values.getJSONObject(i).getString("oye_status").equalsIgnoreCase("active")) {
                         d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP)); //Gray
-                    } else {
+                    } /*else {
                         d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));  // Gray
-                    }
+                    }*/
                 }
                 catch (JSONException e) {
                     e.printStackTrace();

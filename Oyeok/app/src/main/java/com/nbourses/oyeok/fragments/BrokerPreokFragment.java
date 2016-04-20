@@ -184,11 +184,11 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                         JSONObject ne = new JSONObject(k.toString());
                         JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
 
-                        jsonArrayReqLl = neighbours.getJSONArray("req_ll");
-                        jsonArrayAvlLl = neighbours.getJSONArray("avl_ll");
+                        jsonArrayReqLl = neighbours.getJSONArray("recent");;//neighbours.getJSONArray("req_ll");
+                        jsonArrayAvlLl = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_ll");
 
-                        jsonArrayReqOr = neighbours.getJSONArray("req_or");
-                        jsonArrayAvlOr = neighbours.getJSONArray("avl_or");
+                        jsonArrayReqOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("req_or");
+                        jsonArrayAvlOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_or");
 
                         jsonArrayPreokRecent = neighbours.getJSONArray("recent");
                         //if all values are empty then show from resent

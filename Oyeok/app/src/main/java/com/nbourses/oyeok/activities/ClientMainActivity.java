@@ -293,6 +293,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
         else if (itemTitle.equals(getString(R.string.notifications))) {
             Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
+            openDealsListing.putExtra("default_deal_flag",false);
             startActivity(openDealsListing);
         }
        else if (itemTitle.equals(getString(R.string.likeOnFb))) {
@@ -320,7 +321,6 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             //setContentView(R.layout.browser);
             loadFragment(frag, null, R.id.container_map, title);
         }
-
 
 
 
@@ -463,6 +463,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @OnClick(R.id.btnMyDeals)
     public void onBtnMyDealsClick(View v) {
         Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
+        openDealsListing.putExtra("defaul_deal_flag","false");
         startActivity(openDealsListing);
     }
 

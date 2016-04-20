@@ -81,7 +81,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
                 rootView = inflater.inflate(R.layout.fragment_shop_click, container, false);
                 onFilterValueUpdate("SHO");
                 break;
-            case "industry":
+            case "industrial":
                 rootView = inflater.inflate(R.layout.fragment_industry_click, container, false);
                 onFilterValueUpdate("IND");
                 break;
@@ -136,7 +136,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     }
 
     @Nullable
-    @OnClick({R.id.txtRetailShop, R.id.txtFoodOutlet, R.id.txtBank})
+    @OnClick({R.id.txtRetailOutlet, R.id.txtFoodOutlet, R.id.txtBank})
     public void onShopClick(View v) {
         clean();
         txtPreviousTextView = (TextView) v;

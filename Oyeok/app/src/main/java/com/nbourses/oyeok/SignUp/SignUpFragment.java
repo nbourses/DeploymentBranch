@@ -437,8 +437,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
        Log.i("TRACE inside sb","mobile_number");
         Log.i("TRACE inside sb",mobile_number);
 
-        if(mobile_number.length()>0)
-            mobile_number = mobile_number.substring(4,12);
+//        if(mobile_number.length()>0)
+//            mobile_number = mobile_number.substring(3,12);
 //        else
 //        mobi
         Sname = name.getText().toString();
