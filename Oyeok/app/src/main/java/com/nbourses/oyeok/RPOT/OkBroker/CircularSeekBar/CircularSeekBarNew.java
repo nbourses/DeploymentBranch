@@ -268,7 +268,7 @@ public class CircularSeekBarNew extends View {
                 try {
                     //checking the oye_status and changing the color of icon to grey or red(inactive and active)
                     if (values.getJSONObject(i).getString("oye_status").equalsIgnoreCase("active")) {
-                        d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#E53935"), PorterDuff.Mode.SRC_ATOP)); //Red
+                        d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP)); //Gray
                     } else {
                         d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));  // Gray
                     }
