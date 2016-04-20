@@ -28,6 +28,8 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -43,7 +45,11 @@ public class General extends BroadcastReceiver{
 
     public static HashMap<String, String> oyeDataHolder = new HashMap<String, String>();
     public static final String TAG = "General";
+    public static Set<String> set;
     private NetworkInterface networkInfo;
+
+
+  //  private static Set<String> defaultDeals ;
 
 //    public General(NetworkInterface networkInfo)
 //    {
@@ -68,11 +74,48 @@ public class General extends BroadcastReceiver{
         return null;
     }
 
+
+    public static boolean saveArray(String[] array, String arrayName, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences("preferencename", 0);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(arrayName +"_size", array.length);
+        for(int i=0;i<array.length;i++)
+            editor.putString(arrayName + "_" + i, array[i]);
+        return editor.commit();
+    }
+
+
+
+    public static String[] loadArray(String arrayName, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences("preferencename", 0);
+        int size = prefs.getInt(arrayName + "_size", 0);
+        String array[] = new String[size];
+        for(int i=0;i<size;i++)
+            array[i] = prefs.getString(arrayName + "_" + i, null);
+        return array;
+    }
+
     public static void setSharedPreferences(Context context, String prefName, String value) {
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(prefName, value);
         editor.commit();
+    }
+
+    public static void saveDefaultDeals(Context context, Set<String> value) {
+        Log.i("TRACE", "save default deal inside" + value);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putStringSet("default_deals", value);
+        editor.commit();
+    }
+
+    public static Set<String> getDefaultDeals(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+//        Log.i("TRACE", "rt" + prefName);
+
+        return prefs.getStringSet("default_deals", null);
     }
 
     public static String getSharedPreferences(Context context, String prefName) {
@@ -94,12 +137,88 @@ public class General extends BroadcastReceiver{
 
     public static void publishOye(final Context context) {
         try {
+            String tt;
+            String pstype;
+            String price;
+            String speccode;
             Log.i("TRACE", "in publishOye");
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
             String json = gson.toJson(AppConstants.letsOye);
 
             Log.d(TAG, "AppConstants.letsOye "+json);
             Log.i("TRACE", "AppConstants.letsOye " + json);
+
+            JSONObject jsonObj = new JSONObject(json);
+            tt = jsonObj.getString("tt");
+            pstype = jsonObj.getString("property_subtype");
+            price = jsonObj.getString("price");
+            speccode = tt + "-" + pstype + "-" + price;
+            Log.i("TRACE", "speccode is" + speccode);
+
+            General.setSharedPreferences(context, "MY_SPEC_CODE", speccode);
+            General.getSharedPreferences(context, "MY_SPEC_CODE");
+            Log.i("TRACE", "Spec code got from shared prefs" + General.getSharedPreferences(context, "MY_SPEC_CODE"));
+
+           // String[] array;                   // <--declared statement
+//            String[] array = new String[100];
+//            Log.i("TRACE", "zala be");
+//            saveArray(array, speccode, context);
+//            Log.i("TRACE", "zala be1");
+//
+//            Log.i("TRACE", "zala be2" + loadArray(speccode,context));
+             //Set<String> set;
+
+       // Set defaultDeals = new HashSet<>();
+         //   private List<Issue> issues = new ArrayList<>();
+//            String elements[] = {"a"};
+   ////           Set<String> set = new HashSet();
+//            Set<String> set = new HashSet<>(Arrays.asList(elements));
+      //        Log.i("TRACE", "abc");
+    //          set = getDefaultDeals(context);
+//            Log.i("TRACE", "zala be1");
+//          //  Log.i("TRACE", "Set is:-" + set);
+     //       set.add(speccode);
+     //    Log.i("TRACE", "efg");
+//            Log.i("TRACE", "set is:" + speccode);
+     //      saveDefaultDeals(context, set);
+     //       Log.i("TRACE", "Saved");
+//            Log.i("TRACE", "Get default deal" + defaultDeals);
+//            if(speccode != null) {
+//                set.add(speccode);
+//                Log.i("TRACE", "Get default deal" + getDefaultDeals(context));
+//                saveDefaultDeals(context, set);
+//            }
+//            else {
+//
+//                saveDefaultDeals(context, );
+//            }
+
+
+
+
+            //set = new HashSet<String>();
+            Log.i("TRACE", "speccode:" + speccode);
+            //set = new HashSet<String>(Arrays.asList("speccode"));
+
+//            set = new HashSet<String>(Arrays.asList(new String[]{
+//                    "a", "b"
+//            }));
+            Log.i("TRACE", "efg" + set);
+            Log.i("TRACE", "abc ");
+
+            set = getDefaultDeals(context);
+
+            if(set == null)
+            {
+                set = new HashSet<String>();
+            }
+
+            Log.i("TRACE", "efg" + set);
+            set.add(speccode);
+            Log.i("TRACE", "efg");
+
+            saveDefaultDeals(context, set);
+            Log.i("TRACE", "Saved");
 
             if (isNetworkAvailable(context)) {
                 Log.i("TRACE", "is networking available nik" + General.getSharedPreferences(context, AppConstants.USER_ID));
@@ -121,11 +240,14 @@ public class General extends BroadcastReceiver{
                 oyeokApiService.publishOye(AppConstants.letsOye, new Callback<PublishLetsOye>() {
                     @Override
                     public void success(PublishLetsOye letsOye, Response response) {
-                        Log.i("TRACE", "in success");
+                        Log.i("TRACE", "in success"+response);
                         String strResponse =  new String(((TypedByteArray)response.getBody()).getBytes());
                         Log.e(TAG, "RETROFIT SUCCESS " + strResponse);
 
                         Log.i("TRACE", "Response" + strResponse);
+
+                        //
+                        //
 
                         //now user is logged in user
                         General.setSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER, "yes");
@@ -153,6 +275,7 @@ public class General extends BroadcastReceiver{
                         Log.i("TRACE", "open intent deal listing");
                         //open deals listing
                         Intent openDealsListing = new Intent(context, ClientDealsListActivity.class);
+                        openDealsListing.putExtra("default_deal_flag",true);
                         openDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(openDealsListing);
 

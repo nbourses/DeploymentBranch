@@ -1,16 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+
+
+
+
+
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+
+
+
+
+    android:layout_height="80dp"
+    android:orientation="horizontal"
+    android:id="@+id/dealItemRoot">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_centerVertical="true"
+        android:id="@+id/wrapperFirstChat">
+
+        <TextView
+            android:id="@+id/txtFirstChar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/shape_circle"
+            android:gravity="center"
+            android:text="O"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:visibility="visible" />
+
+
+    </RelativeLayout>
 
 
     <TextView
-        android:layout_margin="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
+        android:layout_height="wrap_content"
+        android:text="Searching Brokers for you"
+        android:textSize="16sp"
         android:id="@+id/textView4"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:textColor="#020202" />
-</RelativeLayout>
+        android:textColor="#000000"
+        android:maxLines="2"
+        android:lines="2"
+        android:layout_toRightOf="@+id/wrapperFirstChat"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:id="@+id/txtDescription"
+        android:layout_below="@+id/textView4"
+        android:layout_toRightOf="@+id/wrapperFirstChat"
+        android:layout_marginLeft="12dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="8dp"
+        android:text="Need help. Chat with us now."/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentRight="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:id="@+id/txtTime"
+            android:layout_marginRight="8dp"
+            android:text=""/>
+
+    </LinearLayout>
+
+
+
+
+
+
+   <!-- android:layout_height="match_parent"> -->
+
+    <!--
+        <TextView
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/textView4"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:textColor="#020202" />
+
+          -->
+
+
+    </RelativeLayout>

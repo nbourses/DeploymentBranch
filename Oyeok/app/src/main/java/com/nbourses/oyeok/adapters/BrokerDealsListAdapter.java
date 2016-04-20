@@ -11,8 +11,6 @@ import android.widget.TextView;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.models.BrokerDeals;
 
-import org.json.JSONException;
-
 import java.util.ArrayList;
 
 
@@ -21,6 +19,7 @@ import java.util.ArrayList;
  */
 public class BrokerDealsListAdapter extends BaseAdapter {
     private ArrayList<BrokerDeals> dealses;
+    private ArrayList<String> deals;
     private boolean default_deal;
     private Context context;
 
@@ -29,7 +28,7 @@ public class BrokerDealsListAdapter extends BaseAdapter {
         this.context = context;
 
     }
-    public BrokerDealsListAdapter(boolean flag , Context context) throws JSONException {
+   /* public BrokerDealsListAdapter(boolean flag , Context context) throws JSONException {
         Log.i("default deal ","value "+flag);
         this.default_deal = true;
 
@@ -39,17 +38,30 @@ public class BrokerDealsListAdapter extends BaseAdapter {
         this.context = context;
 
     }
+*/
 
+    public BrokerDealsListAdapter(Context context,boolean flag,ArrayList<String> deals){
+        this.deals =deals;
+        this.context =context;
+        default_deal = flag;
+
+    }
 
 
 
     @Override
     public int getCount() {
-        return dealses.size();
+        if(!default_deal)
+            return dealses.size();
+
+        return deals.size();
     }
 
     @Override
     public Object getItem(int position) {
+        if(default_deal)
+            return deals.get(position);
+
         return dealses.get(position);
     }
 

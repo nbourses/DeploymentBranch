@@ -27,6 +27,7 @@ import com.nbourses.oyeok.models.PublishLetsOye;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -49,6 +50,9 @@ public class ClientDealsListActivity extends AppCompatActivity {
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
+    private boolean default_deal_flag;
+    private ArrayList<BrokerDeals> default_deals;
+    private BrokerDeals deals;
 
     //private ListView listViewDeals;
 
@@ -68,6 +72,10 @@ public class ClientDealsListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_deals_list);
        // listViewDeals = (ListView) findViewById(R.id.listViewDeals);
       //  listViewDeals.setAdapter(new SearchingBrokersAdapter(this));
+
+        Intent myIntent = getIntent();
+        default_deal_flag = myIntent.getExtras().getBoolean("default_deal_flag");
+
         ButterKnife.bind(this);
 
         init();
@@ -83,10 +91,43 @@ public class ClientDealsListActivity extends AppCompatActivity {
         progressBar.startAnimation();*/
 
         //call API to load deals for broker
-        loadBrokerDeals();
+
+        if(default_deal_flag) {
+            //Log.i("TRACE", "Spec code from shared prefs" + General.getSharedPreferences(this, "MY_SPEC_CODE"));
+            Log.i("TRACE", "Set from shared" + General.getDefaultDeals(this));
+            default_deals = new ArrayList<BrokerDeals>();
+            Iterator it = General.getDefaultDeals(this).iterator();
+
+            while (it.hasNext()) {
+                //System.out.println(it.next());
+                String s= it.next().toString();
+                Log.i("TRACE", "element of set Set from shared == " + s);
+               deals = new BrokerDeals(s);
+//                Log.i("TRACE", "element of set Set from shared" + deals);
+                default_deals.add(deals);
+               // Log.i("TRACE", "element of set Set from shared tostring" + it.next().toString());
+            }
+            Log.i("TRACE", "ele"+default_deals);
+            //deals = new BrokerDeals(General.getSharedPreferences(this, "MY_SPEC_CODE"));
+            Log.i("TRACE", "ment");
+
+
+
+
+        BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
+            listViewDeals.setAdapter(listAdapter);
+            Log.i("inside adapter ", "object " + listAdapter);
+
+
+            //save default deal
+        }//Log.i("TRACE", "Get default deal" + General.getDefaultDeals(this));
+
+
+    loadBrokerDeals();
 
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("My Deals");
+
+    getSupportActionBar().setTitle("My Deals");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -124,15 +165,6 @@ public class ClientDealsListActivity extends AppCompatActivity {
        // JSONObject jsonObj = new JSONObject("{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"LL-200+-15000\"}],\"for_oks\":[]}");
 
 
-
-
-
-
-
-
-
-
-
     Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
         RestAdapter restAdapter = new RestAdapter
@@ -156,15 +188,16 @@ public class ClientDealsListActivity extends AppCompatActivity {
         hdRooms.setDeviceId(deviceId);
 
 
-
-
-
-
         Log.i("TRACE","in LOad broker deals");
         OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
         oyeokApiService.seeHdRooms(hdRooms, new Callback<PublishLetsOye>() {
             @Override
             public void success(PublishLetsOye letsOye, Response response) {
+
+
+
+
+
                 Log.i("TRACE","in successs");
                 String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                 try {
@@ -195,15 +228,32 @@ public class ClientDealsListActivity extends AppCompatActivity {
 
                            }
                        });  */
-                        if(listBrokerDeals.size()< 0)
+
+                       /* if(listBrokerDeals.size()<= 0)
                         {
-                            Log.i("inside default deal","=======");
-                            BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(true, getApplicationContext());
-                            Log.i("inside adapter ","object "+listAdapter);
+                            Log.i("TRACE","inside default deal");
+
+                            BrokerDeals deals = new BrokerDeals();
+                            ArrayList bdeals = new ArrayList<BrokerDeals>();
+                            bdeals.add(deals);
+                            BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(bdeals,getApplicationContext());
                             listViewDeals.setAdapter(listAdapter);
-                        }
+                            Log.i("TRACE","Default deal is "+bdeals);
+
+                        } */
+
+                    /*    if(listBrokerDeals.size()<= 0)
+                        {
+                            Log.i("TRACE","inside default deal");
+
+                            listViewDeals = (ListView) findViewById(R.id.listViewDeals);
+                            listViewDeals.setAdapter(new SearchingBrokersAdapter(getApplicationContext()));
+
+                        }   */
 
                         if (listBrokerDeals.size() > 0) {
+
+                            Log.i("TRACE","NOT inside default deal");
 //                            displayListView();
                             //final int firstListItemPosition = listViewDeals.getFirstVisiblePosition();
                            // String[] FirstItem = {"Searching brokers for you."};
@@ -215,11 +265,21 @@ public class ClientDealsListActivity extends AppCompatActivity {
                            //listViewDeals.setAdapter(Adapter);
                             //list all broker deals
 
-                           BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(listBrokerDeals, getApplicationContext());
+                            ArrayList<BrokerDeals> total_deals = new ArrayList<BrokerDeals>();;
+                            if(default_deal_flag)
+                            {
+                                //append default_deals with listBrokerDeals
+//                                total_deals.addAll(default_deals);
+                                   total_deals.addAll(listBrokerDeals);
+//
+                            }
+
+                           BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
                             listViewDeals.setAdapter(listAdapter);
                             listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
 
                                     BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
 
@@ -248,6 +308,7 @@ public class ClientDealsListActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
+                Log.i("TRACE","in failure");
 //                dismissProgressBar();
 //                displayTextMessage(getString(R.string.no_internet_connection));
             }
@@ -323,8 +384,8 @@ public class ClientDealsListActivity extends AppCompatActivity {
     }*/
 }
 
-/*
 
+/*
 class SearchingBrokerItem
 {
    String txt;
@@ -368,19 +429,18 @@ class SearchingBrokersAdapter extends BaseAdapter
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflator.inflate(R.layout.searching_brokers_row, parent, false); //Row contains relative layout
-        TextView txt = (TextView) row.findViewById(R.id.textView4);
-
-        SearchingBrokerItem temp = list.get(0);
-        txt.setText(temp.txt);
-
-        Animation anim = new AlphaAnimation(0.0f, 1.0f);
-        anim.setDuration(1000); //You can manage the blinking time with this parameter
-        anim.setStartOffset(20);
-        anim.setRepeatMode(Animation.REVERSE);
-        anim.setRepeatCount(Animation.INFINITE);
-        txt.startAnimation(anim);
+//        TextView txt = (TextView) row.findViewById(R.id.textView4);
+//
+//        SearchingBrokerItem temp = list.get(0);
+//        txt.setText(temp.txt);
+//
+//        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+//        anim.setDuration(1000); //You can manage the blinking time with this parameter
+//        anim.setStartOffset(20);
+//        anim.setRepeatMode(Animation.REVERSE);
+//        anim.setRepeatCount(Animation.INFINITE);
+//        txt.startAnimation(anim);
         return row;  //Return modified relativelayout object
     }
 }
-
 */

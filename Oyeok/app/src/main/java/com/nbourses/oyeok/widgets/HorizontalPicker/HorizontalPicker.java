@@ -42,9 +42,12 @@ import android.widget.TextView;
 import com.nbourses.oyeok.R;
 
 import java.lang.ref.WeakReference;
+import java.text.Format;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import static java.lang.Math.log10;
 
@@ -1224,14 +1227,15 @@ public class HorizontalPicker extends View {
         Log.d(TAG, "maxValue "+maxValue);
         Log.d(TAG, "interval "+interval);
         Log.d(TAG, "rupeeUnit "+rupeeUnit);*/
-
+        nIntervals = 0;
         Log.i("TRACE", "min"+minValue);
         Log.i("TRACE", "max"+maxValue);
-       if (minValue != 0 && maxValue != 0 && interval != 0) {
+       if (minValue != 0 && maxValue != 0 /*&& interval != 0 */) {
             ArrayList<CharSequence> valueList = new ArrayList<CharSequence>();
             int value = minValue;
             CharSequence object;
             while (true) {
+                nIntervals++;
                 value += interval;
                 Log.i("TRACE", "Value"+value);
                 object = value + "";
@@ -1242,6 +1246,7 @@ public class HorizontalPicker extends View {
                 else
                     break;
             }
+           Log.i("TRACE","nintervals"+nIntervals);
       /*  ArrayList<CharSequence> valueList = new ArrayList<CharSequence>();
          for(int i= minValue;i <= maxValue; i=i+500){
              int value = i;
@@ -1257,6 +1262,7 @@ public class HorizontalPicker extends View {
             /*Log.d(TAG, "index " + ((int) (nIntervals / 2)));
             Log.d(TAG, "valueList index " + valueList.get((int) (nIntervals / 2)));*/
             setSelectedItem(((int) (nIntervals / 2)));
+           Log.i("TRACE", "nintervals center" + nIntervals/2);
         }
     }
     public Integer getInterval(){
@@ -1591,7 +1597,11 @@ public class HorizontalPicker extends View {
         {
             case 7:
 //            if(propertyType)
-                val = no/10000000;
+                val=no;
+                Log.i("TRACE","inside numtoval7 "+no);
+                Format format = NumberFormat.getCurrencyInstance(new Locale("en","IN"));
+                Log.i("TRACE","inside numtoval format"+format);
+              /*  val = no/10000000;
 //            else
 //                val = no/100000;
                 no = no%10000000;
@@ -1599,43 +1609,62 @@ public class HorizontalPicker extends View {
                 formatted = formatted.substring(0, 5);
 
                 v = val+"."+formatted;
-                str = v+"Cr";
-
+                str = v+"Cr";*/
+                str= format.format(val);
+                String strWithoutSymbol2="";
+                strWithoutSymbol2 = str.substring(2,str.length());
+                str = strWithoutSymbol2;
+                Log.i("TRACE","inside numtoval str"+str);
 
                 twoWord++;
                 break;
 
             case 5:
-
-                val = no/100000;
+                val=no;
+                Log.i("TRACE","inside numtoval5 "+no);
+                Format format1 = NumberFormat.getCurrencyInstance(new Locale("en","IN"));
+                /*val = no/100000;
 
                 v = val+"";
                 no = no%100000;
                 String s2 = String.format("%05d", no);
-                s2 = s2.substring(0, 3);
+                s2 = s2.substring(0, 3);*/
 
                 if (val != 0){
-                    str = str+v+"."+s2+"L";
+                  //  str = str+v+"."+s2+"L";
+                    str= format1.format(val);
+                    String strWithoutSymbol1="";
+                    strWithoutSymbol1 = str.substring(2,str.length());
+                    str = strWithoutSymbol1;
                     twoWord++;
                 }
 
                     break;
 
             case 3:
-                val = no/1000;
+                Log.i("TRACE","inside numtoval3 "+no);
+                val=no;
+                Format format2 = NumberFormat.getCurrencyInstance(new Locale("en","IN"));
+                /*val = no/1000;
                 v = val+"";
                 no = no%1000;
                 String.format("%05d", no);
                 String s3 = String.format("%03d", no);
-                s3 = s3.substring(0,1);
+                s3 = s3.substring(0,1);*/
                 if (val != 0) {
-                    str = str+v+"."+s3+"K";
+                    //str = str+v+"."+s3+"K";
+                    str= format2.format(val);
+                    String strWithoutSymbol="";
+                    strWithoutSymbol = str.substring(2,str.length());
+                    str = strWithoutSymbol;
+
                 }
                 break;
             default :
                 // print("noToWord Default")
                 break;
         }
+        Log.i("TRACE","budget string"+str);
         return str;
     }
 

@@ -19,6 +19,10 @@ public class SharedPrefs {
     public static String MY_CITY = "myCity";
     public static String MY_PINCODE = "myPincode";
     public static String MY_REGION = "myRegion";
+    public static String MY_SPEC_CODE = "mySpecCode";
+    //public static String MY_PROPERTY_SUBTYPE = "myPropertySubtype";
+    //public static String MY_TT = "myTT";
+    //public static String MY_Price = "myPrice";
 
     //get the SharedPreferences object instance
     //create SharedPreferences file if not present

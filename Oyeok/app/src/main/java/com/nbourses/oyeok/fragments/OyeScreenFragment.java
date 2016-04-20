@@ -36,8 +36,8 @@ public class OyeScreenFragment extends Fragment {
     @Bind(R.id.txtShop)
     ImageView txtShop;
 
-    @Bind(R.id.txtIndustry)
-    ImageView txtIndustry;
+    @Bind(R.id.txtIndustrial)
+    ImageView txtIndustrial;
 
     @Bind(R.id.txtOffice)
     ImageView txtOffice;
@@ -162,7 +162,7 @@ public class OyeScreenFragment extends Fragment {
     }
 
     @Nullable
-    @OnClick({R.id.txtHome, R.id.txtShop, R.id.txtIndustry, R.id.txtOffice})
+    @OnClick({R.id.txtHome, R.id.txtShop, R.id.txtIndustrial, R.id.txtOffice})
     public void onPropertyTypeClick(View v) {
 
         if(txtPreviouslySelectedPropertyType != null)
@@ -180,10 +180,10 @@ public class OyeScreenFragment extends Fragment {
             AppConstants.letsOye.setPropertyType("shop");
             loadHomeOptionView("shop");
         }
-        else if(txtIndustry.getId() == v.getId()) {
-            txtIndustry.setBackgroundResource(R.drawable.buy_option_circle);
-            AppConstants.letsOye.setPropertyType("industry");
-            loadHomeOptionView("industry");
+        else if(txtIndustrial.getId() == v.getId()) {
+            txtIndustrial.setBackgroundResource(R.drawable.buy_option_circle);
+            AppConstants.letsOye.setPropertyType("industrial");
+            loadHomeOptionView("industrial");
         }
         else if(txtOffice.getId() == v.getId()) {
             txtOffice.setBackgroundResource(R.drawable.buy_option_circle);

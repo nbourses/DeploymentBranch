@@ -6,7 +6,13 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by rohit on 16/02/16.
  */
+
 public class BrokerDeals {
+
+
+
+
+
     @Expose
     @SerializedName("ok_id")
     private String okId;
@@ -30,6 +36,14 @@ public class BrokerDeals {
     @Expose
     @SerializedName("spec_code")
     private String specCode;
+
+    public BrokerDeals(String specs)
+    { // Constructor for default deal
+        this.okId = "default_id";
+        this.specCode = specs;
+        this.name = "Deepti";
+
+    }
 
     public String getOkId() {
         return okId;
