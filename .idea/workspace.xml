@@ -1,32 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="72eee987-c422-42ec-8275-641253420ec3" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/adapters/BrokerDealsListAdapter.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/adapters/BrokerDealsListAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/activities/BrokerMainActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/activities/BrokerMainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/activities/ClientDealsListActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/activities/ClientDealsListActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/activities/ClientMainActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/activities/ClientMainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/helpers/General.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/helpers/General.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/RPOT/PriceDiscovery/MainActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/RPOT/PriceDiscovery/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/MyApplication.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/MyApplication.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/fragments/OyeOnPropertyTypeSelectFragment.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/fragments/OyeOnPropertyTypeSelectFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/fragments/OyeScreenFragment.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/fragments/OyeScreenFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/SignUp/SignUpFragment.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/SignUp/SignUpFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/activity_dashboard.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/activity_dashboard.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/app.iml" afterPath="$PROJECT_DIR$/Oyeok/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/res/values/attrs.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/values/attrs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/build.gradle" afterPath="$PROJECT_DIR$/Oyeok/app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/fragment_home_click.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/fragment_home_click.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/fragment_industry_click.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/fragment_industry_click.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/fragment_office_click.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/fragment_office_click.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/fragment_oye_screen.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/fragment_oye_screen.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/fragment_shop_click.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/fragment_shop_click.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/fragment_sign_up.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/fragment_sign_up.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/rex_fragment_home.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/rex_fragment_home.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/values/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/res/values/styles.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/values/styles.xml" />
-    </list>
+    <list default="true" id="72eee987-c422-42ec-8275-641253420ec3" name="Default" comment="" />
     <ignored path="DeploymentBranch.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -83,6 +58,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -97,15 +73,14 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane" />
-      <pane id="Scratches" />
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Oyeok" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
@@ -212,25 +187,26 @@
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Fabric" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24959612" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24918033" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
