@@ -909,7 +909,7 @@ public class Ok_Broker_MainScreen extends Fragment implements ClientMainActivity
                 HttpClient httpclient = new DefaultHttpClient();
                 HttpPost httppost = new HttpPost(url);
                 HttpResponse response = httpclient.execute(httppost);
-                HttpEntity entity = response.getEntity();
+                 HttpEntity entity = response.getEntity();
                 is = entity.getContent();
 
             } catch (Exception e) {

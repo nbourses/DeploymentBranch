@@ -29,8 +29,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.text.Format;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 import static java.lang.Math.log10;
 /**
@@ -216,7 +219,7 @@ public class CircularSeekBarNew extends View {
             String ptype = null;
             String pstype;
             try {
-          /*      pstype = values.getJSONObject(i).getString("property_subtype");
+                pstype = values.getJSONObject(i).getString("property_subtype");
 
                 if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
                     ptype = "home";
@@ -230,7 +233,7 @@ public class CircularSeekBarNew extends View {
                 else if(pstype.equals("<15") || pstype.equals("<35") || pstype.equals("<50") || pstype.equals("<100") || pstype.equals("100+")){
                     ptype = "office";
                 }
-            */
+
 
                 ptype = values.getJSONObject(i).getString("property_type");
 
@@ -350,16 +353,16 @@ public class CircularSeekBarNew extends View {
                 e.printStackTrace();
             }
             imagesRect.add(i, new Rect(house_image_left, house_image_top - height, house_image_left + width, house_image_top));
-//
+
 //            imagesRect.add(i, new Rect(left, top - height - plusheight, left + width, top));
 //
             Log.i("TRACE", "mCircleTextColor" + s);
         //  Log.i("TRACE", "mCircleTextColor" + value.getJSONObject(0));
 
-
-            canvas.drawText(l, house_image_left + width / 2 + DPTOPX_SCALE, house_image_top - height, mCircleTextColor);
+//canvas.drawText();
+            canvas.drawText(s, house_image_left , house_image_top - height, mCircleTextColor);
         //    canvas.drawText(s, house_image_left+width / 2, house_image_top, mCircleTextColor);
-            canvas.drawText(o, house_image_left-width / 2, house_image_top, mCircleTextColor);
+            canvas.drawText(l, house_image_left, house_image_top, mCircleTextColor);
 //            canvas.drawText("Min:"+minValue,mCircleRectF.left+10*DPTOPX_SCALE,mCircleRectF.top+mCircleRectF.height()/2,mCircleTextColor);
 //            canvas.drawText("Max:"+maxvalue,mCircleRectF.right-60*DPTOPX_SCALE,mCircleRectF.top+mCircleRectF.height()/2,mCircleTextColor);
         }
@@ -367,8 +370,8 @@ public class CircularSeekBarNew extends View {
         //start.setBounds(endx - (w / 2), starty - (h / 2), endx + (w / 2), starty + (h / 2));
         //start.draw(canvas);
         DecimalFormat formatter = new DecimalFormat();
-        canvas.drawText("min: Rs " + formatter.format(minValue), mCircleRectF.left * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
-        canvas.drawText("max: Rs " + formatter.format(maxvalue), mCircleRectF.right - 120 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("Min: ₹ " + formatter.format(minValue), mCircleRectF.left * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("Max: ₹ " + formatter.format(maxvalue), mCircleRectF.right - 120 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
     }
 
     /*
@@ -439,7 +442,9 @@ public class CircularSeekBarNew extends View {
                                 } else {
                                     //a<c<b
                                     j1 = values.getJSONObject(1);
+
                                     values.put(1, values.getJSONObject(2));
+                                   // values.p
                                     values.put(2, j1);
                                     j1 = values.getJSONObject(0);
                                     values.put(0, values.getJSONObject(1));
@@ -785,10 +790,19 @@ public class CircularSeekBarNew extends View {
                             try {
                                 if(values.getJSONObject(i).getString("user_role").equalsIgnoreCase("client")) {
                                     mImageAction.onclick(i, values, "showHalf",x_c,y_c);
+                                    //remember changes
+
                                 }else
-                                {
+                                {//remember changes
                                     mImageAction.onclick(i, values, "show",x_c,y_c);
+                                    if(mImageAction != null)
+                                    {
+                                        mImageAction.onclick(i,values,"hide", x_c, y_c);
+                                    }
+                                    invalidate();
+
                                 }
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -837,35 +851,94 @@ public class CircularSeekBarNew extends View {
         switch(c)
         {
             case 7:
-//            if(propertyType)
-                val = no/10000000;
+
+               /* val=no;
+
+
+                Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+                str=format1.format(val);
+                String strWithoutSymbol2 = "";
+
+                strWithoutSymbol2 = str.substring(0,str.length());
+                str= strWithoutSymbol2;*/
+            //if(propertyType)
+               /* val = no/10000000;
 //            else
 //                val = no/100000;
 
                 v = val+"";
-                str = v+"CR";
+               // str = v+"CR";
+                str = v;
                 no = no%10000000;
+                Log.i("TRACE","s");
+                int s2=Integer.parseInt(str);
+                Log.i("TRACE","s2"+s2);
+                s2=s2*10000000;*/
+                val=no;
+                Format format = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+                str=format.format(val);
+                String strWithoutSymbol = "";
 
+                strWithoutSymbol = str.substring(3,str.length()-3);
+                str= strWithoutSymbol;
+                twoWord++;
                 twoWord++;
 
             case 5:
+               /* Format format2 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+                if (val != 0){
+                    str=format2.format(val);
+                    String strWithoutSymbol1 = "";
 
-                val = no/100000;
+                    strWithoutSymbol1 = str.substring(0,str.length());
+                    str= strWithoutSymbol1;
+                    //str = str+v+"L ";
+                    twoWord++;
+                }*/
+               /* val = no/100000;
 
                 v = val+"";
-                no = no%100000;
-                if (val != 0){
-                    str = str+v+"L ";
+                no = no%100000;*/
+                val= no;
+                if (val != 0) {
+                    //str = str+v+"L ";
+                   /* str = str+v;
+                    int s=Integer.parseInt(str);
+                    s=s*100000;*/
+                    Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+                    str=format1.format(val);
+                    String strWithoutSymbol1 = "";
+
+                    strWithoutSymbol1 = str.substring(3,str.length()-3);
+                    str= "₹"+strWithoutSymbol1;
                     twoWord++;
                 }
+
+
                 if (twoWord == 2){
                     break;}
 
             case 3:
-                val = no/1000;
-                v = val+"";
+               // val = no/1000;
+                //v = val+"";
+               /* Format format = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+                str=format.format(val);
+                String strWithoutSymbol = "";
+
+                strWithoutSymbol = str.substring(0,str.length());
+                str= strWithoutSymbol;*/
+                val=no;
                 if (val != 0) {
-                    str = str+v+"K";
+                   //str = str+v+"K";
+                   // str = str+v;
+                 /* int s1=  Integer.parseInt(str);
+                      s1=s1*1000;*/
+                    Format format2 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+                    str=format2.format(val);
+                    String strWithoutSymbol2 = "";
+
+                    strWithoutSymbol2 = str.substring(3,str.length()-3);
+                    str= "₹"+strWithoutSymbol2;
                 }
                 break;
             default :
