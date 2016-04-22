@@ -311,9 +311,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 
             texPtype.setText("Property Type: "+ptype);
-            texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype"));
-            rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /per m");
-            displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used");
+            texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
+            rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /m.");
+            displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used.");
 
             if(show.equals("show")) {
                 notClicked.setVisibility(View.GONE);
