@@ -296,10 +296,10 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             String pstype;
             pstype = jsonObjectArray.getJSONObject(position).getString("property_subtype");
 
-            if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
+          /*  if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
                 ptype = "home";
             }
-            else if(pstype.equals("retail shop") || pstype.equals("food outlet") || pstype.equals("shop")){
+            else if(pstype.equals("retail outlet") || pstype.equals("food outlet") || pstype.equals("shop")){
                 ptype = "shop";
             }
             else if(pstype.equals("cold storage") || pstype.equals("kitchen") || pstype.equals("manufacturing") || pstype.equals("warehouse") || pstype.equals("workshop")){
@@ -308,8 +308,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             else if(pstype.equals("<15") || pstype.equals("<35") || pstype.equals("<50") || pstype.equals("<100") || pstype.equals("100+")){
                 ptype = "office";
             }
+            */
 
-
+            ptype = jsonObjectArray.getJSONObject(position).getString("property_type");
             texPtype.setText("Property Type: "+ptype);
             texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype"));
             rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /per m");

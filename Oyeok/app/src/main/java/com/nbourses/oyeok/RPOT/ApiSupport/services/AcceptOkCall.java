@@ -50,10 +50,13 @@ public class AcceptOkCall {
 
         Log.i("mArray= ",m.toString());
         try {
+             Log.i("OKACCPET","position is" +position);
              oyeId=m.getJSONObject(position).getString("oye_id");
+            Log.i("OKACCEPT","oyeId is" +oyeId);
+
              oyeUserId= m.getJSONObject(position).getString("user_id");
             tt=m.getJSONObject(position).getString("tt");
-            size=m.getJSONObject(position).getString("size");
+            //size=m.getJSONObject(position).getString("size");
             price=m.getJSONObject(position).getString("price");
             reqAvl = m.getJSONObject(position).getString("req_avl");
         }
@@ -74,7 +77,7 @@ public class AcceptOkCall {
         acceptOk.setLong(SharedPrefs.getString(activity.getBaseContext(), SharedPrefs.MY_LNG));
         acceptOk.setLat(SharedPrefs.getString(activity.getBaseContext(), SharedPrefs.MY_LAT));
         acceptOk.setTt(tt);
-        acceptOk.setSize(size);
+        //acceptOk.setSize(size);
         acceptOk.setPrice(price);
         acceptOk.setReqAvl(reqAvl);
         acceptOk.setOyeId(oyeId);
@@ -94,18 +97,18 @@ public class AcceptOkCall {
                     public void success(AcceptOk acceptOk, Response response) {
                         if (acceptOk.responseData.getMessage() == null) {
 
-                            Log.d(TAG, "getOyeId " + acceptOk.responseData.getOyeId());
+                           // Log.d(TAG, "getOyeId " + acceptOk.responseData.getOyeId());
                             Log.d(TAG, "getOkId " + acceptOk.responseData.getOkId());
 
-                            String coolOffString = acceptOk.responseData.getCoolOff();
-                            int coolOff = Integer.parseInt(coolOffString);
+                            //String coolOffString = acceptOk.responseData.getCoolOff();
+                            //int coolOff = Integer.parseInt(coolOffString);
                             Bundle args = new Bundle();
                             args.putString("UserId1", acceptOk.responseData.getOkUserId()); //broker
                             args.putString("UserId2", acceptOk.responseData.getOyeUserId()); //client
                             args.putString("OkId", acceptOk.responseData.getOkId()); //channel id
                             if (mCallBack != null) {
-                                dbHelper.save(DatabaseConstants.coolOff, coolOffString);
-                                dbHelper.save("Time", acceptOk.responseData.getTime().toString());
+                               // dbHelper.save(DatabaseConstants.coolOff, coolOffString);
+                     //           dbHelper.save("Time", acceptOk.responseData.getTime().toString());
                                 DroomDetails droomDetails = new DroomDetails();
                                 droomDetails.setTitle("Test Droom");
                                 Log.i("call chala", "nacho2");

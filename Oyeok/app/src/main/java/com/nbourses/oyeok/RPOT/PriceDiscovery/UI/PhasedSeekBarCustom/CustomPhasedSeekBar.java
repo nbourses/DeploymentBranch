@@ -253,6 +253,7 @@ public class CustomPhasedSeekBar extends View {
         itemOn = stateListDrawable.getCurrent();
 
 
+
         for (int i = 0; i < count; i++) {
            // if ( i == mCurrentItem) continue;
 

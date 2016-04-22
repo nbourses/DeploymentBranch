@@ -17,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.RelativeLayout;
@@ -65,8 +64,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     @Bind(R.id.suggestionList)
     ListView suggestionList;
 
-    @Bind(R.id.spinnerProgress)
-    ProgressBar spinnerProgress;
+  //  @Bind(R.id.spinnerProgress)
+   // ProgressBar spinnerProgress;
 
     @Bind(R.id.ratingBar)
     RatingBar ratingBar;

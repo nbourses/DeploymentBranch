@@ -77,8 +77,9 @@ public class BrokerDealsListAdapter extends BaseAdapter {
 
 Log.i("inside brokerdeals view","flag check "+this.default_deal);
             if (convertView == null) {
-                v = LayoutInflater.from(context).inflate(R.layout.broker_deal_item, parent, false);
-                holder = new ViewHolder();
+
+                   v = LayoutInflater.from(context).inflate(R.layout.broker_deal_item, parent, false);
+               holder = new ViewHolder();
 
                 holder.txtTitle = (TextView) v.findViewById(R.id.txtTitle);
                 holder.txtDescription = (TextView) v.findViewById(R.id.txtDescription);

@@ -74,7 +74,7 @@
         android:layout_height="32dp"
         android:layout_marginLeft="@dimen/eight_dp"
         android:padding="4dp"
-        android:text="4BHK+"
+        android:text="4+BHK"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/twelve_sp"/>
 </LinearLayout>

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
@@ -54,8 +55,20 @@ public class ChatListAdapter extends BaseAdapter {
         ChatMessage message = chatMessages.get(position);
         ViewHolder1 holder1;
         ViewHolder2 holder2;
+        ViewHolder3 holder3;
+        if(position == 0){
+            v = LayoutInflater.from(context).inflate(R.layout.default_chat, null, false);
+            holder3 = new ViewHolder3();
+            holder3.spinnerProgress = (ProgressBar) v.findViewById(R.id.spinnerProgress);
+            holder3.messageTextView = (TextView) v.findViewById(R.id.message_text);
+            holder3.timeTextView = (TextView) v.findViewById(R.id.time_text);
+            holder3.chatReplyAuthor = (TextView) v.findViewById(R.id.chat_reply_author);
+            holder3.txtFirstChar = (TextView) v.findViewById(R.id.txt_first_char);
 
-        if (message.getUserType() == ChatMessageUserType.SELF) {
+            v.setTag(holder3);
+        }
+
+        else if (message.getUserType() == ChatMessageUserType.SELF) {
             if (convertView == null) {
                 v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
                 holder1 = new ViewHolder1();
@@ -136,5 +149,13 @@ public class ChatListAdapter extends BaseAdapter {
         public TextView messageTextView;
         public TextView timeTextView;
 
+    }
+
+    private class ViewHolder3 {
+        public ProgressBar spinnerProgress;
+        public TextView messageTextView;
+        public TextView timeTextView;
+        public TextView chatReplyAuthor;
+        public TextView txtFirstChar;
     }
 }

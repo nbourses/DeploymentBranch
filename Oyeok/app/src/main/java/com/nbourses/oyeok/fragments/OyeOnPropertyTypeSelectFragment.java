@@ -129,8 +129,8 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
             bhkNumberValue = "BHK";
         }
         else if (v.getId() == R.id.txtAbove4Bhk) {
-            bhkNumber = "4";
-            bhkNumberValue = "BHK+";
+            bhkNumber = "4+";
+            bhkNumberValue = "BHK";
         }
         onFilterValueUpdate(bhkNumber+"<sub><small>"+bhkNumberValue+"</small></sub>");
     }

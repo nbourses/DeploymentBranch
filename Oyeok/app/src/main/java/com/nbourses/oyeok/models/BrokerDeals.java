@@ -41,7 +41,7 @@ public class BrokerDeals {
     { // Constructor for default deal
         this.okId = "default_id";
         this.specCode = specs;
-        this.name = "Deepti";
+        this.name = "deepti";
 
     }
 

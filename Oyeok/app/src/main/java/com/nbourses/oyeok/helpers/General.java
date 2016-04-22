@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
@@ -14,12 +13,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.models.PublishLetsOye;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.SnackbarManager;
 
 import org.json.JSONObject;
 
@@ -28,7 +26,6 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 import retrofit.Callback;
@@ -47,6 +44,7 @@ public class General extends BroadcastReceiver{
     public static final String TAG = "General";
     public static Set<String> set;
     private NetworkInterface networkInfo;
+
 
 
   //  private static Set<String> defaultDeals ;
@@ -75,6 +73,46 @@ public class General extends BroadcastReceiver{
     }
 
 
+    public static void saveDefaultDeals(Context context, String value) {
+
+            Log.i("TRACE", "save default deal inside" + value);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("DefaultDeals", value);
+            editor.commit();
+
+    }
+
+
+    public static String getDefaultDeals(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+//        Log.i("TRACE", "rt" + prefName);
+
+        return prefs.getString("DefaultDeals", null);
+    }
+
+
+   /* public static void saveDefaultDeals(Context context,String key, String value) {
+
+
+        Log.i("TRACE", "save default deal inside" + value);
+        SharedPreferences defaultdeals = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = defaultdeals.edit();
+        editor.putString(key, value);
+        editor.commit();
+
+    }
+    */
+
+  /*  public static Map<String,?> getDefaultDeals(Context context) {
+        SharedPreferences defaultdeals = PreferenceManager.getDefaultSharedPreferences(context);
+//        Log.i("TRACE", "rt" + prefName);
+        Set<String> set = new HashSet<String>();
+       // set = defaultdeals.getAll();
+        Map<String, ?> default_deals_map = defaultdeals.getAll();
+        return default_deals_map;
+    }  */
+
     public static boolean saveArray(String[] array, String arrayName, Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences("preferencename", 0);
         SharedPreferences.Editor editor = prefs.edit();
@@ -96,27 +134,33 @@ public class General extends BroadcastReceiver{
     }
 
     public static void setSharedPreferences(Context context, String prefName, String value) {
-
+        Log.i("TRACE","inside shared pref "+prefName +value);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(prefName, value);
         editor.commit();
     }
 
+
+    /*
     public static void saveDefaultDeals(Context context, Set<String> value) {
-        Log.i("TRACE", "save default deal inside" + value);
+
+
+       Log.i("TRACE", "save default deal inside" + value);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putStringSet("default_deals", value);
         editor.commit();
-    }
 
-    public static Set<String> getDefaultDeals(Context context) {
+    }  */
+
+   /* public static Set<String> getDefaultDeals(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 //        Log.i("TRACE", "rt" + prefName);
 
         return prefs.getStringSet("default_deals", null);
     }
+    */
 
     public static String getSharedPreferences(Context context, String prefName) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -140,9 +184,10 @@ public class General extends BroadcastReceiver{
             String tt;
             String pstype;
             String price;
-            String speccode;
+            final String speccode;
             Log.i("TRACE", "in publishOye");
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            //Made gson final to access it in success
+            final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
             String json = gson.toJson(AppConstants.letsOye);
 
             Log.d(TAG, "AppConstants.letsOye "+json);
@@ -203,10 +248,10 @@ public class General extends BroadcastReceiver{
 //            set = new HashSet<String>(Arrays.asList(new String[]{
 //                    "a", "b"
 //            }));
-            Log.i("TRACE", "efg" + set);
+    /*        Log.i("TRACE", "efg" + set);
             Log.i("TRACE", "abc ");
 
-            set = getDefaultDeals(context);
+          set = getDefaultDeals(context);
 
             if(set == null)
             {
@@ -218,10 +263,17 @@ public class General extends BroadcastReceiver{
             Log.i("TRACE", "efg");
 
             saveDefaultDeals(context, set);
-            Log.i("TRACE", "Saved");
+            */
+
+
+
+
+
+
+          //  Log.i("TRACE","Okid from shared prefs is " +General.getSharedPreferences(context, "OK_ID"));
 
             if (isNetworkAvailable(context)) {
-                Log.i("TRACE", "is networking available nik" + General.getSharedPreferences(context, AppConstants.USER_ID));
+                Log.i("TRACE", "is networking available" + General.getSharedPreferences(context, AppConstants.USER_ID));
 
                 //set userId
                 AppConstants.letsOye.setUserId(General.getSharedPreferences(context, AppConstants.USER_ID));
@@ -262,12 +314,78 @@ public class General extends BroadcastReceiver{
                             JSONObject jsonResponse = new JSONObject(strResponse);
                             JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
 
+                            Log.i("TRACE","Ok id from response is "+jsonResponseData.getString("ok_id"));
+                            Log.i("TRACE", "step2");
+                            General.setSharedPreferences(context, "OK_ID", jsonResponseData.getString("ok_id"));
+                            Log.i("TRACE", "ok id saved in shared pref");
+
+
                             Toast.makeText(context, ""+jsonResponseData.getString("message"), Toast.LENGTH_LONG).show();
 
-                            if (jsonResponseData.getInt("code") == 1) {
+                          //  if (jsonResponseData.getInt("code") == 1) {
                                 AppConstants.letsOye.setTime(formattedDate);
                                 AppConstants.letsOye.save();
+                          //  }
+
+                            // Create default deal here after letsoye success
+
+                            String speccode;
+                            speccode = General.getSharedPreferences(context, "MY_SPEC_CODE");
+                            String deals;
+                            deals = getDefaultDeals(context);
+                            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+                            HashMap<String, String> deals1 = gson.fromJson(deals, type);
+
+                            Log.i("TRACE", "hashmap:" + deals1);
+
+                            if(deals1 == null){
+                                deals1 = new HashMap<String, String>();
+
                             }
+                            // HashMap<String, String> hashMap = new HashMap<String, String>();
+                            Log.i("TRACE", "hashmap entry" +General.getSharedPreferences(context, "OK_ID"));
+
+                            //Check here if new default deal is redundant Uncomment to replace old oyes with new with same specs
+                   /*
+
+                            Collection d = deals1.values();
+                            Log.i("TRACE","values after jugad collection1" +d);
+
+                            Iterator it = d.iterator();
+                            while (it.hasNext()) {
+                                String s = it.next().toString();
+
+                                if(s.equals(speccode)){
+                                    Log.i("TRACE","redundant deals comparison " +s +speccode);
+                                    Log.i("TRACE","Removed entries for " +s);
+
+                                    deals1.values().removeAll(Collections.singleton(s));
+                                    Log.i("TRACE", "hashmap after removing redundant deals:" + deals1);
+                                    Toast.makeText(context, "Your old oye with same specs: " + speccode+" has been replaced with new one.", Toast.LENGTH_LONG).show();
+                                    SnackbarManager.show(
+                                            Snackbar.with(context)
+                                                    .position(Snackbar.SnackbarPosition.TOP)
+                                                    .text("Your old oye with same specs: " + speccode)
+                                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                }
+                                //   Log.i("TRACE", "element of set Set from shared == " + s);
+
+                            } */
+
+
+                            deals1.put(General.getSharedPreferences(context, "OK_ID"), speccode);
+                           // Log.i("TRACE", "hashmap" + deals1);
+
+                            Log.i("TRACE", "step1");
+
+                            //convert to string using gson
+                            Gson g = new Gson();
+                            String hashMapString = g.toJson(deals1);
+                            Log.i("TRACE", "hashmapstring" + hashMapString);
+
+                            saveDefaultDeals(context, hashMapString);
+                            Log.i("TRACE", "Saved");
+
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -324,11 +442,11 @@ public class General extends BroadcastReceiver{
         else {
             Toast.makeText(context,"MOBILE NETWORK NOT AVAILABLE",Toast.LENGTH_LONG).show();
             Log.i("TRACE", "MOBILE NETWORK NOT AVAILABLE ");
-            SnackbarManager.show(
-                    Snackbar.with(context)
-                            .position(Snackbar.SnackbarPosition.BOTTOM)
-                            .text("MOBILE NETWORK NOT AVAILABLE")
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+//            SnackbarManager.show(
+//                    Snackbar.with(context)
+//                            .position(Snackbar.SnackbarPosition.BOTTOM)
+//                            .text("MOBILE NETWORK NOT AVAILABLE")
+//                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
 
         }
@@ -338,11 +456,12 @@ public class General extends BroadcastReceiver{
         else {
             Toast.makeText(context,"WIFI NETWORK NOT AVAILABLE",Toast.LENGTH_LONG).show();
             Log.i("TRACE", "WIFI NETWORK NOT AVAILABLE ");
-            SnackbarManager.show(
-                    Snackbar.with(context)
-                            .position(Snackbar.SnackbarPosition.BOTTOM)
-                            .text("WIFI NETWORK NOT AVAILABLE")
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+            //Couldn't get Activity from the Snackbar's Context. Try calling #show(Snackbar, Activity) instead
+//            SnackbarManager.show(
+//                    Snackbar.with(context)
+//                            .position(Snackbar.SnackbarPosition.BOTTOM)
+//                            .text("WIFI NETWORK NOT AVAILABLE")
+//                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
         }
     }

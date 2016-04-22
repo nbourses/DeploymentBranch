@@ -180,7 +180,9 @@ public class CircularSeekBarNew extends View {
         super.onDraw(canvas);
         Log.d(TAG, "onDraw called");
 
-        int [] drawables = {R.drawable.ic_broker_home, R.drawable.ic_industrial_oye_intent_specs, R.drawable.ic_shop, R.drawable.ic_loans};
+      //  int [] drawables = {R.drawable.home, R.drawable.industry, R.drawable.shop, R.drawable.office};
+
+       int [] drawables = {R.drawable.ic_broker_home, R.drawable.ic_industrial_oye_intent_specs, R.drawable.ic_shop, R.drawable.ic_loans};
 
 
         //Draw an arc with 300 sweep angle with mcirclepaint
@@ -258,7 +260,7 @@ public class CircularSeekBarNew extends View {
                     Log.i("TRACE","image selected "+drawables[3]);
                 }
                 else{
-                    Log.i("TRACE","kuchh to gadbad hai daya");
+                    Log.i("TRACE","ptype not set");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -268,17 +270,17 @@ public class CircularSeekBarNew extends View {
             Log.i("TRACE","d" +d);
 
             if(i!=index) {
-                try {
-                    //checking the oye_status and changing the color of icon to grey or red(inactive and active)
-                    if (values.getJSONObject(i).getString("oye_status").equalsIgnoreCase("active")) {
-                        d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#E53935"), PorterDuff.Mode.SRC_ATOP)); //Red
-                    } else {
+//                try {
+//                    //checking the oye_status and changing the color of icon to grey or red(inactive and active)
+//                    if (values.getJSONObject(i).getString("oye_status").equalsIgnoreCase("active")) {
+//                        d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#E53935"), PorterDuff.Mode.SRC_ATOP)); //Red
+//                    } else {
                         d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));  // Gray
-                    }
-                }
-                catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//                    }
+//                }
+//                catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
             }
             else
             {
@@ -441,9 +443,9 @@ public class CircularSeekBarNew extends View {
                                     j1 = values.getJSONObject(1);
                                     values.put(1, values.getJSONObject(2));
                                     values.put(2, j1);
-                                    j1 = values.getJSONObject(0);
-                                    values.put(0, values.getJSONObject(1));
-                                    values.put(1, j1);
+                                   // j1 = values.getJSONObject(0);
+                                   // values.put(0, values.getJSONObject(1));
+                                   // values.put(1, j1);
                                 }
 
                             } else {
@@ -554,6 +556,8 @@ public class CircularSeekBarNew extends View {
             maxvalue=0;
         }
 
+
+/*   Adjusting price values to plot on circular seekbar so they wont overlap
         if(values.length()==1){
             int price= 0;
             try {
@@ -600,8 +604,10 @@ public class CircularSeekBarNew extends View {
             }
             Arrays.sort(priceArray);
 
-
-            if(priceArray[1] - priceArray[0] >= 100000 ){
+            if(priceArray[1] - priceArray[0] >= 10000000 ){
+                difference = 1000000;
+            }
+            else if(priceArray[1] - priceArray[0] >= 100000 ){
                 difference = 50000;
             }
             else{
@@ -612,6 +618,7 @@ public class CircularSeekBarNew extends View {
         }
         else{
             int totalPrice = 0, min=9999999, max=0;
+           //values.length() == 0 , means 0 deals recieved
             if(values.length() != 0) {
                 try {
                     min = Integer.parseInt(values.getJSONObject(0).getString("price"));
@@ -634,7 +641,7 @@ public class CircularSeekBarNew extends View {
                         min = j;
                     else if (max < j)
                         max = j;
-                    totalPrice += j;
+                    totalPrice += max;
                 }
                 minValue = min - (min / 2);
                 // 15 is adjustment done to max to avoid max overlapping with plotted third property in worst case.
@@ -646,6 +653,7 @@ public class CircularSeekBarNew extends View {
                     try {
                         price = Integer.parseInt(values.getJSONObject(i).getString("price"));
                         priceArray[i] = price;
+                        Log.i("TRACER","Pricearray is: "+priceArray[i]);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -653,16 +661,24 @@ public class CircularSeekBarNew extends View {
                 }
                 Arrays.sort(priceArray);
 
-                if((priceArray[2] - priceArray[1] >= 100000) || priceArray[1] - priceArray[0] >= 100000 ){
+
+
+                if((priceArray[2] - priceArray[1] >= 10000000) || priceArray[1] - priceArray[0] >= 10000000 ){
+                    Log.i("TRACER","Inside crore");
+                    difference = 5000000;
+                }
+                else if((priceArray[2] - priceArray[1] >= 100000) || priceArray[1] - priceArray[0] >= 100000 ){
+                    Log.i("TRACER","Inside lakh");
                     difference = 50000;
                 }
                 else{
+                    Log.i("TRACER","Inside thousand");
                     difference = 5000;
                 }
 
                 maxvalue = max + (max / 2) + difference;
             }
-        }
+        }   */
     }
 
     public void draw()
@@ -687,7 +703,7 @@ public class CircularSeekBarNew extends View {
                 priceArray[i] = price;
                 Log.i("TRACE", "Drawpic called with" + priceArray[i] + i);
 
-                //drawpic(Integer.parseInt(values.getJSONObject(i).getString("price")));
+               // drawpic(Integer.parseInt(values.getJSONObject(i).getString("price")));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -703,11 +719,30 @@ public class CircularSeekBarNew extends View {
 
         if (priceArray.length == 3) {
 
+            try {
+                priceArray[0] = Integer.parseInt(values.getJSONObject(0).getString("price"));
+                priceArray[1] = Integer.parseInt(values.getJSONObject(1).getString("price"));
+                priceArray[2] = Integer.parseInt(values.getJSONObject(2).getString("price"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             priceArray[2] = priceArray[2] + 2 * difference;
             priceArray[1] = priceArray[1] + difference;
-            drawpic(priceArray[0]);
-            drawpic(priceArray[1]);
-            drawpic(priceArray[2]);
+            Log.i("TRACER","Difference is" +difference);
+            Log.i("TRACER","pricearray is" +priceArray);
+
+
+        minValue = 0;
+        maxvalue = 12000000;
+
+
+
+
+
+            drawpic(2000000);
+            drawpic(6000000);
+            drawpic(10000000);
 
         }
         else if (priceArray.length == 2) {

@@ -24,9 +24,12 @@ import com.nbourses.oyeok.models.BrokerDeals;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.PublishLetsOye;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,7 +55,8 @@ public class ClientDealsListActivity extends AppCompatActivity {
     Toolbar mToolbar;
     private boolean default_deal_flag;
     private ArrayList<BrokerDeals> default_deals;
-    private BrokerDeals deals;
+    //private BrokerDeals deals;
+    private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     //private ListView listViewDeals;
 
@@ -92,11 +96,50 @@ public class ClientDealsListActivity extends AppCompatActivity {
 
         //call API to load deals for broker
 
-        if(default_deal_flag) {
+//        if(default_deal_flag)
+  //     {
             //Log.i("TRACE", "Spec code from shared prefs" + General.getSharedPreferences(this, "MY_SPEC_CODE"));
-            Log.i("TRACE", "Set from shared" + General.getDefaultDeals(this));
-            default_deals = new ArrayList<BrokerDeals>();
-            Iterator it = General.getDefaultDeals(this).iterator();
+          //  String OK_id= General.getSharedPreferences(this, "OK_ID");
+            String deals;
+            deals = General.getDefaultDeals(this);
+            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+            HashMap<String, String> deals1 = null;
+        if(deals != null) {
+            deals1 = gson.fromJson(deals, type);
+        }
+
+
+            Log.i("TRACE","values after " +deals1);
+            if(deals1 == null){
+                deals1 = new HashMap<String, String>();
+                Log.i("TRACE","values after initialization " +deals1);
+
+            }
+
+            if(deals1 != null) {
+                Collection d = deals1.values();
+                Log.i("TRACE", "values after jugad collection" + d);
+
+                Iterator it = d.iterator();
+                while (it.hasNext()) {
+                    // Log.i("TRACE", "values from hashmap " +it.next());
+                    String s = it.next().toString();
+                    Log.i("TRACE", "element of set Set from shared == " + s);
+                    BrokerDeals dealsa = new BrokerDeals(s);
+                    Log.i("TRACE", "*************");
+                    Log.i("TRACE", "ele" + default_deals);
+                    Log.i("TRACE", "element of set Set from shared" + dealsa);
+                    // Log.i("TRACE", "default_deals type" + dealswa.getClass().getName());
+                    // Log.i("TRACE", "default_deals type" + default_deals.getClass().getName());
+                    if (default_deals == null) {
+                        default_deals = new ArrayList<BrokerDeals>();
+                    }//default_deals.addAll(dealsa);
+                    default_deals.add(dealsa);
+                }
+            }
+
+   /*         default_deals = new ArrayList<BrokerDeals>();
+           Iterator it = General.getDefaultDeals(this).iterator();
 
             while (it.hasNext()) {
                 //System.out.println(it.next());
@@ -106,21 +149,43 @@ public class ClientDealsListActivity extends AppCompatActivity {
 //                Log.i("TRACE", "element of set Set from shared" + deals);
                 default_deals.add(deals);
                // Log.i("TRACE", "element of set Set from shared tostring" + it.next().toString());
-            }
+
+
+            } */
             Log.i("TRACE", "ele"+default_deals);
             //deals = new BrokerDeals(General.getSharedPreferences(this, "MY_SPEC_CODE"));
             Log.i("TRACE", "ment");
 
 
 
-
-        BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
+        if(default_deals != null) {
+            BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
             listViewDeals.setAdapter(listAdapter);
             Log.i("inside adapter ", "object " + listAdapter);
 
+            listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                    Log.i("TRACE","default deals adapter clicked" +position);
+
+
+                    BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
+
+                    Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+                    intent.putExtra("userRole", "client");
+                    intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                    Log.i("TRACE", "ment" + AppConstants.OK_ID);
+
+                    startActivity(intent);
+                }
+            });
+
+
+        }
 
             //save default deal
-        }//Log.i("TRACE", "Get default deal" + General.getDefaultDeals(this));
+ //       }//Log.i("TRACE", "Get default deal" + General.getDefaultDeals(this));
 
 
     loadBrokerDeals();
@@ -266,19 +331,30 @@ public class ClientDealsListActivity extends AppCompatActivity {
                             //list all broker deals
 
                             ArrayList<BrokerDeals> total_deals = new ArrayList<BrokerDeals>();;
-                            if(default_deal_flag)
-                            {
+                           // if(default_deal_flag)
+                           // {
                                 //append default_deals with listBrokerDeals
-//                                total_deals.addAll(default_deals);
+                                   total_deals.addAll(default_deals);
                                    total_deals.addAll(listBrokerDeals);
 //
-                            }
+                           // }
 
                            BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
                             listViewDeals.setAdapter(listAdapter);
                             listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                                    Log.i("TRACE","main deals adapter clicked" +position);
+
+
+                                    final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                                    String json = gson.toJson(AppConstants.letsOye);
+
+                                    Log.d(TAG, "AppConstants.letsOye "+json);
+                                    Log.i("TRACE", "AppConstants.letsOye " + json);
+
+
 
 
                                     BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
