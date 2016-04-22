@@ -63,7 +63,7 @@ public class HorizontalPicker extends View {
 
 
     public static final String LACS = "L";
-    public static final String THOUSANDS = "";
+    public static final String THOUSANDS = "k";
     public static final String CRORES = "Cr";
 
     /**
@@ -1594,16 +1594,22 @@ public class HorizontalPicker extends View {
             case 7:
 
 
-                val=no;
                 Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
                 str=format1.format(val);
                 String strWithoutSymbol2 = "";
+
+                strWithoutSymbol2 = str.substring(3,str.length()- 3);
+                str= strWithoutSymbol2;
+          /* if(propertyType)
+                val = no/10000000;
+=======
                 strWithoutSymbol2 = str.substring(3,str.length());
                 str= strWithoutSymbol2;
 //            if(propertyType)
 
                /* val = no/10000000;
 
+>>>>>>> 426bbb1a77894d57fa223202377e8e4c9af92440
 //            else
 //                val = no/100000;
                 no = no%10000000;
@@ -1611,7 +1617,8 @@ public class HorizontalPicker extends View {
                 formatted = formatted.substring(0, 5);
 
                 v = val+"."+formatted;
-                str = v+"Cr";*/
+<<<<<<< HEAD
+                str = v+"Cr"; */
 
 
                 twoWord++;
@@ -1622,13 +1629,22 @@ public class HorizontalPicker extends View {
 
                 Format format2 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
 
+               /* val = no/100000;
+
+                v = val+"";
+                no = no%100000;
+                String s2 = String.format("%05d", no);
+                s2 = s2.substring(0, 3);*/
 
                 if (val != 0){
-                  //  str = str+v+"."+s2+"L";
-                    str= format2.format(val);
-                    String strWithoutSymbol1="";
-                    strWithoutSymbol1 = str.substring(3,str.length());
-                    str = strWithoutSymbol1;
+                   // str = str+v+"."+s2+"L";
+
+
+                        str=format2.format(val);
+                        String strWithoutSymbol1 = "";
+                        strWithoutSymbol1 = str.substring(3,str.length()-3);
+
+                        str= strWithoutSymbol1;
 
                     twoWord++;
                 }
@@ -1640,9 +1656,9 @@ public class HorizontalPicker extends View {
                 val=no;
                 Format format = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
 
-                //v = val+"
-                // ";
-               /* val = no;
+
+               /* val = no/1000;
+
 
                 v = val+"";
                // no = no%1000;
@@ -1653,9 +1669,9 @@ public class HorizontalPicker extends View {
 
                     str = format.format(val);
                     String strWithoutSymbol = "";
-                    strWithoutSymbol = str.substring(3,str.length());
+                    strWithoutSymbol = str.substring(3,str.length()-3);
                     str= strWithoutSymbol;
-                   // str = str+v+"."+s3+"K";
+                    //str = str+v+"."+s3+"K";
 
                 }
                 break;
