@@ -81,6 +81,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
                 Log.i(TAG,"before deal "+deals1);
                 Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
+
                 while (iter.hasNext()) {
                     Map.Entry<String,String> entry = iter.next();
                     Log.d(TAG,"entry.getKey"+entry.getKey());
@@ -187,12 +188,9 @@ public class MyGcmListenerService extends GcmListenerService {
         }
 
 */
-
         Log.d(TAG,"OnMessageReceived MyGcmListenerService sending notification");
         this.sendNotification(title, message);
         Log.d(TAG, "After sendNotification");
-
-
 
         // [END_EXCLUDE]
     }

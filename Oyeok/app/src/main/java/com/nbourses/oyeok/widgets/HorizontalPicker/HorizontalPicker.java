@@ -1572,6 +1572,7 @@ public class HorizontalPicker extends View {
 
 
     String numToVal(int no){
+        Log.i("TRACED","no is"+no);
         String str = "",v = "";
 
         int twoWord = 0,val = 1;
@@ -1593,12 +1594,12 @@ public class HorizontalPicker extends View {
         {
             case 7:
 
-
+val=no;
                 Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
                 str=format1.format(val);
                 String strWithoutSymbol2 = "";
 
-                strWithoutSymbol2 = str.substring(3,str.length()- 3);
+                strWithoutSymbol2 = str.substring(0,str.length()- 3);
                 str= strWithoutSymbol2;
           /* if(propertyType)
                 val = no/10000000;
@@ -1629,6 +1630,7 @@ public class HorizontalPicker extends View {
 
                 Format format2 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
 
+
                /* val = no/100000;
 
                 v = val+"";
@@ -1642,7 +1644,7 @@ public class HorizontalPicker extends View {
 
                         str=format2.format(val);
                         String strWithoutSymbol1 = "";
-                        strWithoutSymbol1 = str.substring(3,str.length()-3);
+                        strWithoutSymbol1 = str.substring(0,str.length()-3);
 
                         str= strWithoutSymbol1;
 
@@ -1669,7 +1671,7 @@ public class HorizontalPicker extends View {
 
                     str = format.format(val);
                     String strWithoutSymbol = "";
-                    strWithoutSymbol = str.substring(3,str.length()-3);
+                    strWithoutSymbol = str.substring(0,str.length()-3);
                     str= strWithoutSymbol;
                     //str = str+v+"."+s3+"K";
 

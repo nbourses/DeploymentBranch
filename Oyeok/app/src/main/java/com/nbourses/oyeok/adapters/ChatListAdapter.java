@@ -100,7 +100,6 @@ public class ChatListAdapter extends BaseAdapter {
 
                 holder2 = new ViewHolder2();
 
-
                 holder2.messageTextView = (TextView) v.findViewById(R.id.message_text);
                 holder2.timeTextView = (TextView) v.findViewById(R.id.time_text);
                 holder2.messageStatus = (ImageView) v.findViewById(R.id.user_reply_status);

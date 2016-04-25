@@ -21,6 +21,7 @@ import android.widget.PopupWindow;
 
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
@@ -36,6 +37,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import static java.lang.Math.log10;
+
 /**
  * Created by prathyush on 26/11/15.
  */
@@ -183,9 +185,9 @@ public class CircularSeekBarNew extends View {
         super.onDraw(canvas);
         Log.d(TAG, "onDraw called");
 
-      //  int [] drawables = {R.drawable.home, R.drawable.industry, R.drawable.shop, R.drawable.office};
+     // int [] drawables = {R.drawable.home, R.drawable.industry, R.drawable.shop, R.drawable.office};
 
-       int [] drawables = {R.drawable.ic_broker_home, R.drawable.ic_industrial_oye_intent_specs, R.drawable.ic_shop, R.drawable.ic_loans};
+      int [] drawables = {R.drawable.ic_broker_home, R.drawable.ic_industrial_oye_intent_specs, R.drawable.ic_shop, R.drawable.ic_loans};
 
 
         //Draw an arc with 300 sweep angle with mcirclepaint
@@ -718,6 +720,21 @@ public class CircularSeekBarNew extends View {
         }
         Arrays.sort(priceArray);
 
+        if(General.getSharedPreferences(getContext(),"TT").equals("RENTAL")) {
+
+
+
+            minValue = 15000;
+            maxvalue =   12000000;
+            difference = 1000000;
+
+
+        }else if(General.getSharedPreferences(getContext(),"TT").equals("RESALE")) {
+
+            minValue = 7000000;
+            maxvalue =   1000000000;
+            difference = 100000000;
+        }
 
         for(int i=0;i<values.length();i++){
             Log.i("TRACE", "sorted array" + priceArray[i] +i);
@@ -734,35 +751,81 @@ public class CircularSeekBarNew extends View {
                 e.printStackTrace();
             }
 
-            priceArray[2] = priceArray[2] + 2 * difference;
-            priceArray[1] = priceArray[1] + difference;
-            Log.i("TRACER","Difference is" +difference);
-            Log.i("TRACER","pricearray is" +priceArray);
+//            priceArray[2] = priceArray[2] + 2 * difference;
+//            priceArray[1] = priceArray[1] + difference;
 
 
-        minValue = 0;
-        maxvalue = 12000000;
+            Log.i("ARC","left" +(minValue + difference));
+            Log.i("ARC", "center" + (maxvalue - minValue) / 2);
+            Log.i("ARC", "right" + (maxvalue - difference));
 
+//            drawpic(15000 + 1000000);
+//            drawpic((12000000 - 15000) / 2);
+//            drawpic(12000000 - 1000000);
 
+//            drawpic(minValue + difference);
+//            drawpic((maxvalue - minValue) / 2);
+//            drawpic(maxvalue - difference);
 
+            theta.add((133.68479376977845/306.0));
+            theta.add((799.1008547588506/306.0));
+            theta.add((1468.5274595610163/306.0));
 
+//            133.68479376977845
+//            306.0
+//
+//            799.1008547588506
+//            306.0
+//
+//            1468.5274595610163
+//            306.0
 
-            drawpic(2000000);
-            drawpic(6000000);
-            drawpic(10000000);
 
         }
         else if (priceArray.length == 2) {
 
-          priceArray[1] = priceArray[1] + 5000;
+            try {
+                priceArray[0] = Integer.parseInt(values.getJSONObject(0).getString("price"));
+                priceArray[1] = Integer.parseInt(values.getJSONObject(1).getString("price"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-            drawpic(priceArray[0]);
-            drawpic(priceArray[1]);
+
+//          priceArray[1] = priceArray[1] + 5000;
+
+//            drawpic(priceArray[0]);
+//            drawpic(priceArray[1]);
+
+//            drawpic(((maxvalue - minValue)/2) + 2*difference);
+//            drawpic(((maxvalue - minValue)/2) - 2*difference);
+
+            theta.add((534.7391750791138/306.0));
+            theta.add((1067.4730782516808/306.0));
+
+
+//            534.7391750791138
+//            306.0
+//            799.1008547588506
+//            306.0
+//            1067.4730782516808
+//            306.0
+
 
         }
         else if(priceArray.length == 1){
+            try {
+                priceArray[0] = Integer.parseInt(values.getJSONObject(0).getString("price"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-            drawpic(priceArray[0]);
+            //drawpic(priceArray[0]);
+
+
+           // drawpic((maxvalue - minValue)/2);
+            theta.add((799.1008547588506/306.0));
+
 
         }
         else{
@@ -780,8 +843,6 @@ public class CircularSeekBarNew extends View {
 
 
 
-
-
     public void drawpic(int value)
     {
       float d =  value - minValue;
@@ -789,8 +850,11 @@ public class CircularSeekBarNew extends View {
         double numerator   = ((5*Math.PI * mWidth) / (3*(maxvalue-minValue))) * d ;
         double denominator = mWidth;
 
-        theta.add((numerator/denominator));
+        Log.i("TRACE","numerator"+numerator);
+        Log.i("TRACE","denominator"+denominator);
 
+
+        theta.add((numerator/denominator));
 
 
 
@@ -832,11 +896,13 @@ public class CircularSeekBarNew extends View {
                                 }else
                                 {//remember changes
                                     mImageAction.onclick(i, values, "show",x_c,y_c);
-                                    if(mImageAction != null)
-                                    {
-                                        mImageAction.onclick(i,values,"hide", x_c, y_c);
-                                    }
-                                    invalidate();
+
+                                    // sushil comment
+//                                    if(mImageAction != null)
+//                                     {
+//                                        mImageAction.onclick(i,values,"hide", x_c, y_c);
+//                                    }
+                                  invalidate();
 
                                 }
 

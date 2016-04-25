@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -64,6 +65,7 @@ public class BrokerDealsListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_broker_deals_list);
 
         ButterKnife.bind(this);
+
         init();
     }
 
@@ -83,7 +85,9 @@ public class BrokerDealsListActivity extends AppCompatActivity {
         progressBar.startAnimation();*/
 
         //call API to load deals for broker
+        Log.i("TRACEOK","before loadbroker deals ");
         loadBrokerDeals();
+        Log.i("TRACEOK", "after loadbroker deals ");
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("My Deals");
@@ -120,6 +124,8 @@ public class BrokerDealsListActivity extends AppCompatActivity {
     }
 
     private void loadBrokerDeals() {
+        Log.i("TRACEOK","inside loadbroker deals ");
+
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
         RestAdapter restAdapter = new RestAdapter
@@ -128,9 +134,11 @@ public class BrokerDealsListActivity extends AppCompatActivity {
                 .setConverter(new GsonConverter(gson))
                 .build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        Log.i("TRACEOK", "hd rooms api call restAdapter " + restAdapter);
 
         String deviceId = Settings.Secure.getString(this.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
+        Log.i("TRACEOK", "device id is "+deviceId);
 
         //params
         HdRooms hdRooms = new HdRooms();
@@ -141,23 +149,39 @@ public class BrokerDealsListActivity extends AppCompatActivity {
         hdRooms.setLon("123456789");
         hdRooms.setDeviceId(deviceId);
 
+        Log.i("TRACEOK", "before hd rooms api call ");
+
+        Log.i("TRACEOK", "hd rooms api call " + hdRooms);
+
+        Log.i("TRACEOK", "hd rooms api call " + General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
+        Log.i("TRACEOK", "hd rooms api call " + SharedPrefs.getString(getApplicationContext(), SharedPrefs.MY_GCM_ID));
+
         OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
         oyeokApiService.seeHdRooms(hdRooms, new Callback<PublishLetsOye>() {
+
+
             @Override
             public void success(PublishLetsOye letsOye, Response response) {
+                Log.i("TRACEOK", "inside hdrooms api call success ");
                 String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+                Log.i("TRACEOK", "strResponse "+strResponse);
                 try {
+                    Log.i("TRACEOK", "inside try ");
                     JSONObject jsonObjectServer = new JSONObject(strResponse);
+                    Log.i("TRACEOK", "strResponse "+jsonObjectServer);
                     if (jsonObjectServer.getBoolean("success")) {
+                        Log.i("TRACEOK", "inside if ");
                         JSONObject jsonObjectResponseData = new JSONObject(jsonObjectServer.getString("responseData"));
+                        Log.i("TRACEOK","jsonObjectServer responseData "+jsonObjectServer.getString("responseData"));
 
                         Gson gsonForOks = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
                         ArrayList<BrokerDeals> listBrokerDeals= (ArrayList<BrokerDeals>)
                                             gsonForOks.fromJson(jsonObjectResponseData.getString("for_oks"),
                                             new TypeToken<ArrayList<BrokerDeals>>() {
                                             }.getType());
-
+                        Log.i("TRACEOK", "listbrokerdeals size is "+listBrokerDeals.size());
                         if (listBrokerDeals.size() > 0) {
+
 //                            displayListView();
 
                             //list all broker deals
@@ -196,6 +220,7 @@ public class BrokerDealsListActivity extends AppCompatActivity {
             public void failure(RetrofitError error) {
                 /*dismissProgressBar();
                 displayTextMessage(getString(R.string.no_internet_connection));*/
+                Log.i("TRACEOK", "hdrooms failure "+error);
             }
         });
     }

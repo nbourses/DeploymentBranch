@@ -13,6 +13,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.helpers.General;
 
 /**
  * Created by prathyush on 03/12/15.
@@ -199,10 +201,25 @@ public class CustomPhasedSeekBar extends View {
     }
 
     protected void setCurrentItem(int currentItem) {
+        String TT;
         if (mCurrentItem != currentItem && mListener != null) {
             mListener.onPositionSelected(currentItem,getCount());
         }
         mCurrentItem = currentItem;
+        Log.i("TRACE", "PHASED seekbar current" + mCurrentItem);
+
+        if(mCurrentItem == 0) {
+            TT = "RENTAL";
+        }
+        else{
+            TT = "RESALE";
+        }
+
+        General.setSharedPreferences(getContext(), "TT", TT);
+
+
+
+        //General.getSharedPreferences(getContext(), "TT");
     }
 
     public void setFirstDraw(boolean firstDraw) {

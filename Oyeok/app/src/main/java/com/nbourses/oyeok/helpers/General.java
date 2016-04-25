@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
@@ -18,6 +19,8 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.models.PublishLetsOye;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.json.JSONObject;
 
@@ -313,39 +316,58 @@ public class General extends BroadcastReceiver{
 
                             JSONObject jsonResponse = new JSONObject(strResponse);
                             JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
+                            Log.i("TRACE", "Response data"+jsonResponse.getString("responseData"));
+                            if("Exhausted your daily limit of Oyes today. Pls try tomorrow".equals(jsonResponseData.getString("message"))){
+                                Log.i("TRACE", "Hello user, "+jsonResponseData.getString("message"));
 
-                            Log.i("TRACE","Ok id from response is "+jsonResponseData.getString("ok_id"));
-                            Log.i("TRACE", "step2");
-                            General.setSharedPreferences(context, "OK_ID", jsonResponseData.getString("ok_id"));
-                            Log.i("TRACE", "ok id saved in shared pref");
+                                Toast.makeText(context, ""+jsonResponseData.getString("message"), Toast.LENGTH_LONG).show();
+                                SnackbarManager.show(
+                                        Snackbar.with(context)
+                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                .text("Your old oye with same specs: " +jsonResponseData.getString("message"))
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                            }
+                            else {
+                                Log.i("TRACE", "Ok id from response is " + jsonResponseData.getString("ok_id"));
+                                Log.i("TRACE", "step2");
+                                General.setSharedPreferences(context, "OK_ID", jsonResponseData.getString("ok_id"));
+                                Log.i("TRACE", "json response data" + jsonResponseData);
+                                Log.i("TRACE", "json response data message" + jsonResponseData.getString("message"));
 
 
-                            Toast.makeText(context, ""+jsonResponseData.getString("message"), Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "" + jsonResponseData.getString("message"), Toast.LENGTH_LONG).show();
+                                SnackbarManager.show(
+                                        Snackbar.with(context)
+                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                .text("Your old oye with same specs: " + jsonResponseData.getString("message"))
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
-                          //  if (jsonResponseData.getInt("code") == 1) {
+
+                                //  if (jsonResponseData.getInt("code") == 1) {
                                 AppConstants.letsOye.setTime(formattedDate);
                                 AppConstants.letsOye.save();
-                          //  }
+                                //  }
 
-                            // Create default deal here after letsoye success
+                                // Create default deal here after letsoye success
 
-                            String speccode;
-                            speccode = General.getSharedPreferences(context, "MY_SPEC_CODE");
-                            String deals;
-                            deals = getDefaultDeals(context);
-                            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-                            HashMap<String, String> deals1 = gson.fromJson(deals, type);
+                                String speccode;
+                                speccode = General.getSharedPreferences(context, "MY_SPEC_CODE");
+                                String deals;
+                                deals = getDefaultDeals(context);
+                                java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+                                }.getType();
+                                HashMap<String, String> deals1 = gson.fromJson(deals, type);
 
-                            Log.i("TRACE", "hashmap:" + deals1);
+                                Log.i("TRACE", "hashmap:" + deals1);
 
-                            if(deals1 == null){
-                                deals1 = new HashMap<String, String>();
+                                if (deals1 == null) {
+                                    deals1 = new HashMap<String, String>();
 
-                            }
-                            // HashMap<String, String> hashMap = new HashMap<String, String>();
-                            Log.i("TRACE", "hashmap entry" +General.getSharedPreferences(context, "OK_ID"));
+                                }
+                                // HashMap<String, String> hashMap = new HashMap<String, String>();
+                                Log.i("TRACE", "hashmap entry" + General.getSharedPreferences(context, "OK_ID"));
 
-                            //Check here if new default deal is redundant Uncomment to replace old oyes with new with same specs
+                                //Check here if new default deal is redundant Uncomment to replace old oyes with new with same specs
                    /*
 
                             Collection d = deals1.values();
@@ -373,20 +395,20 @@ public class General extends BroadcastReceiver{
                             } */
 
 
-                            deals1.put(General.getSharedPreferences(context, "OK_ID"), speccode);
-                           // Log.i("TRACE", "hashmap" + deals1);
+                                deals1.put(General.getSharedPreferences(context, "OK_ID"), speccode);
+                                // Log.i("TRACE", "hashmap" + deals1);
 
-                            Log.i("TRACE", "step1");
+                                Log.i("TRACE", "step1");
 
-                            //convert to string using gson
-                            Gson g = new Gson();
-                            String hashMapString = g.toJson(deals1);
-                            Log.i("TRACE", "hashmapstring" + hashMapString);
+                                //convert to string using gson
+                                Gson g = new Gson();
+                                String hashMapString = g.toJson(deals1);
+                                Log.i("TRACE", "hashmapstring" + hashMapString);
 
-                            saveDefaultDeals(context, hashMapString);
-                            Log.i("TRACE", "Saved");
+                                saveDefaultDeals(context, hashMapString);
+                                Log.i("TRACE", "Saved");
 
-
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

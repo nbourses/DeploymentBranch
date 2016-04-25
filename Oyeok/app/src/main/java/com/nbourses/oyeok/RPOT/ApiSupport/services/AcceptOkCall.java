@@ -14,7 +14,6 @@ import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.Firebase.DroomChatFirebase;
-import com.nbourses.oyeok.Firebase.DroomDetails;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AcceptOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
@@ -77,7 +76,7 @@ public class AcceptOkCall {
         acceptOk.setLong(SharedPrefs.getString(activity.getBaseContext(), SharedPrefs.MY_LNG));
         acceptOk.setLat(SharedPrefs.getString(activity.getBaseContext(), SharedPrefs.MY_LAT));
         acceptOk.setTt(tt);
-        //acceptOk.setSize(size);
+        acceptOk.setSize(size);
         acceptOk.setPrice(price);
         acceptOk.setReqAvl(reqAvl);
         acceptOk.setOyeId(oyeId);
@@ -89,13 +88,16 @@ public class AcceptOkCall {
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         OyeokApiService user1 = restAdapter.create(OyeokApiService.class);
+        Log.i("TRACEOK", "if called "+user1);
 //        if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable(activity))
         if (isNetworkAvailable(activity)) {
             try {
                 user1.acceptOk(acceptOk, new Callback<AcceptOk>() {
                     @Override
                     public void success(AcceptOk acceptOk, Response response) {
+                        Log.i("TRACEOK", "if called "+response);
                         if (acceptOk.responseData.getMessage() == null) {
+                            Log.i("TRACEOK", "if called "+response);
 
                            // Log.d(TAG, "getOyeId " + acceptOk.responseData.getOyeId());
                             Log.d(TAG, "getOkId " + acceptOk.responseData.getOkId());
@@ -106,20 +108,32 @@ public class AcceptOkCall {
                             args.putString("UserId1", acceptOk.responseData.getOkUserId()); //broker
                             args.putString("UserId2", acceptOk.responseData.getOyeUserId()); //client
                             args.putString("OkId", acceptOk.responseData.getOkId()); //channel id
+                            Log.i("call chala", "nacho2");
+                            Log.i("TRACEOK", "if called mCallBack"+mCallBack);
+
                             if (mCallBack != null) {
+                                Log.i("TRACEOK", "if called ");
+                                Log.i("TRACEOK", "if called " +acceptOk.responseData.getMessage());
+
                                // dbHelper.save(DatabaseConstants.coolOff, coolOffString);
                      //           dbHelper.save("Time", acceptOk.responseData.getTime().toString());
-                                DroomDetails droomDetails = new DroomDetails();
-                                droomDetails.setTitle("Test Droom");
-                                Log.i("call chala", "nacho2");
-                                droomDetails.setLastMessage("Test Last Message");
-                                droomDetails.setStatus("Test Message Not read");
-                                droomDetails.setTimestamp("Test TimeStamp");
-                                String userId1 = acceptOk.responseData.getOkUserId();
-                                String userId2 = acceptOk.responseData.getOyeUserId();
-                                String okId = acceptOk.responseData.getOkId();
-                                droomChatFirebase.createChatRoom(okId, userId1, userId2, droomDetails);
+
+
+
+                                /* Firebase thing excluded: Ritesh
+//                                DroomDetails droomDetails = new DroomDetails();
+//                                droomDetails.setTitle("Test Droom");
+//                                Log.i("call chala", "nacho2");
+//                                droomDetails.setLastMessage("Test Last Message");
+//                                droomDetails.setStatus("Test Message Not read");
+//                                droomDetails.setTimestamp("Test TimeStamp");
+//                                String userId1 = acceptOk.responseData.getOkUserId();
+//                                String userId2 = acceptOk.responseData.getOyeUserId();
+//                                String okId = acceptOk.responseData.getOkId();
+//                                droomChatFirebase.createChatRoom(okId, userId1, userId2, droomDetails); */
                                 mCallBack.replaceFragment(args);
+
+
                             }
                     /*DroomDetails droomDetails=new DroomDetails();
                     droomDetails.setTitle("Test Droom");
@@ -137,8 +151,12 @@ public class AcceptOkCall {
                     droomChatFirebase.updateChatRoom(okId,userId1,userId2,droomDetails);*/
                         }
                         else {
+                            Log.i("TRACE", "else called ");
+                            Log.i("TRACE","serverMessage "+acceptOk.responseData.getMessage());
+
                             Intent openDealsListing = new Intent(activity, BrokerDealsListActivity.class);
                             openDealsListing.putExtra("serverMessage", acceptOk.responseData.getMessage());
+                            Log.i("TRACEOK", "serverMessage " + acceptOk.responseData.getMessage());
                             activity.startActivity(openDealsListing);
                         }
 //                            ((ClientMainActivity) activity).showToastMessage(acceptOk.responseData.getMessage());
@@ -165,9 +183,12 @@ public class AcceptOkCall {
                         droomChatFirebase.createChatRoom(okId,userId1,userId2,droomDetails);
                         mCallBack.replaceFragment(args);
                     }*/
-
+                        Log.i("TRACEOK","serverMessage 1");
+                        Log.i("TRACEOK","serverMessage "+ error.getMessage());
+                        Log.i("TRACEOK","open broker deals list activity");
                         Intent openDealsListing = new Intent(activity, BrokerDealsListActivity.class);
                         openDealsListing.putExtra("serverMessage", error.getMessage());
+
                         activity.startActivity(openDealsListing);
 
 //                        ((ClientMainActivity) activity).showToastMessage(error.getMessage());
