@@ -38,14 +38,14 @@
                         android:background="@drawable/shape_circle"
                         android:gravity="center"/>
 
-                    <ProgressBar
+            <!--        <ProgressBar
                         android:id="@+id/spinnerProgress"
                         style="?android:attr/progressBarStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:visibility="visible"/>
-
+      -->
 
 
 

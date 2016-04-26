@@ -22,6 +22,8 @@ import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.adapters.ChatListAdapter;
 import com.nbourses.oyeok.enums.ChatMessageStatus;
@@ -73,7 +75,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
   //  ProgressBar texrating;
   private TextView texrating;
 
-    private static final String TAG = "DealConversationActivity";
+    private static final String TAG = "DealConversationActivit";
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 2;
     private Pubnub pubnub;
@@ -89,10 +91,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private final TextWatcher edtTypeMsgListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            Log.i(TAG,"before edtTypeMsg changed");
         }
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            Log.i(TAG,"on edtTypeMsg changed");
             if (edtTypeMsg.getText().toString().equals("")) {
                 //when nothing is typed shows attachement symbol
                 imgSendMsg.setImageResource(R.drawable.attachment);
@@ -107,6 +111,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         @Override
         public void afterTextChanged(Editable editable) {
+            Log.i(TAG,"after edtTypeMsg changed");
         }
     };
 
@@ -127,6 +132,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         super.onResume();
 
         if (!channel_name.equals(""))
+            Log.i(TAG, "chanel name was null");
             setupPubnub();
     }
 
@@ -141,14 +147,16 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         edtTypeMsg.addTextChangedListener(edtTypeMsgListener);
 
         chatMessages = new ArrayList<>();
-        Log.d("TRACE", "DealConversationActivity,Chat messages are"+chatMessages);
+        Log.i(TAG,"chatMessages are"+chatMessages);
 
         listAdapter = new ChatListAdapter(chatMessages, this);
         chatListView.setAdapter(listAdapter);
 
         Bundle bundle  = getIntent().getExtras();
         channel_name = bundle.getString(AppConstants.OK_ID);
+        Log.i(TAG,"channel_name"+channel_name);
         userRole = bundle.getString("userRole");
+        Log.i(TAG,"userRole is"+userRole);
 
         ArrayAdapter<String> adapterSuggestions = null;
         //userRole.equals("other") then load simple_list_item_2
@@ -228,6 +236,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         try {
             pubnub = new Pubnub(AppConstants.PUBNUB_PUBLISH_KEY, AppConstants.PUBNUB_SUBSCRIBE_KEY);
 
+            Log.i(TAG,"before loadHistoryFromPubnub");
             loadHistoryFromPubnub();
 
             pubnub.subscribe(channel_name, new Callback() {
@@ -246,6 +255,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         public void successCallback(String channel, final Object message) {
                             try {
                                 JSONObject jsonMsg = (JSONObject) message;
+                               Log.i(TAG,"pubnub setup success" +jsonMsg);
+
                                 displayMessage(jsonMsg);
                             }
                             catch (Exception e) {
@@ -295,6 +306,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      * @param jsonMsg
      */
     private void displayMessage(JSONObject jsonMsg) {
+        Log.i(TAG,"inside displayMessage"+ jsonMsg);
+
         String body = null;
         ChatMessageUserType userType = null;
         final ChatMessage message = new ChatMessage();
@@ -306,6 +319,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 if (jsonMsg.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER))){
                     userType = ChatMessageUserType.OTHER;
                 }
+
+               else if (jsonMsg.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), "DEFAULT"))){
+                    userType = ChatMessageUserType.DEFAULT;
+                }
+
                 else {
                     userType = ChatMessageUserType.SELF;
                 }
@@ -315,21 +333,29 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 message.setMessageText(body);
                 message.setUserType(userType);
                 message.setMessageTime(new Date().getTime());
+                Log.i(TAG, "message before adding to chatMessages" + message);
                 chatMessages.add(message);
+                Log.i(TAG, "message after adding to chatMessages" + chatMessages);
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (listAdapter != null)
+                        Log.i(TAG, "message runOnUiThread"+listAdapter);
+                        if (listAdapter != null) {
+                            Log.i(TAG, "message runOnUiThread  not null");
                             listAdapter.notifyDataSetChanged();
-
+                        }
+                        Log.i(TAG, "message runOnUiThread edtTypeMsg1");
                         edtTypeMsg.setText("");
+                        Log.i(TAG, "message runOnUiThread edtTypeMsg2");
                     }
                 });
             }
 
+
         } catch (Exception e) {
             e.printStackTrace();
+            Log.i(TAG,"caught in display message" +e);
         }
     }
 
@@ -339,14 +365,31 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      */
     private void sendMessage(final String messageText)
     {
+        Log.i(TAG,"Insidde send message");
         if(messageText.trim().length()==0)
             return;
+
+        // Ritesh find to?
+        String To = null;
+        String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
+        if(role.equals("broker"))
+            To = "client";
+        else if(role.equals("client"))
+            To = "broker";
+        else
+             Log.i(TAG,"Role is not properly saved in shared preferences"+ role);
+
+
 
         try {
             JSONObject jsonMsg = new JSONObject();
             jsonMsg.put("from", General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
-            jsonMsg.put("to", "client");
+            //jsonMsg.put("to", "client");
+            jsonMsg.put("to", To);
             jsonMsg.put("message", messageText);
+
+            Log.i("TRACE","messageText is "+messageText);
+            Log.i(TAG,"messageText is"+messageText);
 
             //publish message
             pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
@@ -360,6 +403,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      * load pubnub history
      */
     private void loadHistoryFromPubnub() {
+        Log.i(TAG,"inside loadHistoryFromPubnub");
         Callback callback = new Callback() {
             public void successCallback(String channel, Object response) {
                 try {
@@ -369,8 +413,43 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     if (jsonArrayHistory.length() > 0) {
                         for (int i = 0; i < jsonArrayHistoryLength; i++) {
                             JSONObject jsonMsg = jsonArrayHistory.getJSONObject(i);
+
+                            Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub" + jsonMsg);
                             displayMessage(jsonMsg);
+
                         }
+                    }
+                    else{
+
+
+                        JSONObject jsonMsg = new JSONObject();
+                        //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
+                        jsonMsg.put("from", "DEFAULT");
+                        //jsonMsg.put("to", "client");
+
+
+
+                        jsonMsg.put("to", "client");
+
+
+                        final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                        String json = gson.toJson(AppConstants.letsOye);
+                        JSONObject jsonResponse = new JSONObject(json);
+
+
+                        Log.d(TAG, "AppConstants.letsOye " + jsonResponse.getString("property_subtype"));
+
+
+
+                        jsonMsg.put("message", "You have initiated inquiry for requested "+jsonResponse.getString("property_subtype")+", "+jsonResponse.getString("property_type")+" property within budget "+jsonResponse.getString("price")+" Within a moment we are connecting you to our top 3 brokers.");
+                        //Log.i("TRACE","messageText is "+messageText);
+                        //Log.i(TAG,"messageText is"+messageText);
+                        //publish message
+                        pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+                        Log.i(TAG, "Default message published");
+
+
+
                     }
                 }
                 catch (Exception e) {
@@ -390,6 +469,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         Callback callback = new Callback() {
             public void successCallback(String channel, Object response) {
                 System.out.println("pubnubHereNow "+response.toString());
+                Log.i(TAG,"pubnubHereNow"+response.toString());
             }
             public void errorCallback(String channel, PubnubError error) {
                 System.out.println(error.toString());

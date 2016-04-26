@@ -2,12 +2,12 @@ package com.nbourses.oyeok.adapters;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
@@ -36,16 +36,20 @@ public class ChatListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+        Log.i("TRACE","in get count"+chatMessages.size());
         return chatMessages.size();
     }
 
     @Override
     public Object getItem(int position) {
+
+        Log.i("TRACE","in get posi"+chatMessages.get(position));
         return chatMessages.get(position);
     }
 
     @Override
     public long getItemId(int position) {
+        Log.i("TRACE","in get itemid"+position);
         return position;
     }
 
@@ -56,19 +60,36 @@ public class ChatListAdapter extends BaseAdapter {
         ViewHolder1 holder1;
         ViewHolder2 holder2;
         ViewHolder3 holder3;
-        if(position == 0){
-            v = LayoutInflater.from(context).inflate(R.layout.default_chat, null, false);
-            holder3 = new ViewHolder3();
-            holder3.spinnerProgress = (ProgressBar) v.findViewById(R.id.spinnerProgress);
-            holder3.messageTextView = (TextView) v.findViewById(R.id.message_text);
-            holder3.timeTextView = (TextView) v.findViewById(R.id.time_text);
-            holder3.chatReplyAuthor = (TextView) v.findViewById(R.id.chat_reply_author);
-            holder3.txtFirstChar = (TextView) v.findViewById(R.id.txt_first_char);
+        if (message.getUserType() == ChatMessageUserType.DEFAULT) {
+            if (convertView == null) {
+                v = LayoutInflater.from(context).inflate(R.layout.default_chat, null, false);
+                holder3 = new ViewHolder3();
+            //    holder3.spinnerProgress = (ProgressBar) v.findViewById(R.id.spinnerProgress);
+                holder3.messageTextView = (TextView) v.findViewById(R.id.message_text);
+                holder3.timeTextView = (TextView) v.findViewById(R.id.time_text);
+                holder3.chatReplyAuthor = (TextView) v.findViewById(R.id.chat_reply_author);
+                holder3.txtFirstChar = (TextView) v.findViewById(R.id.txt_first_char);
 
-            v.setTag(holder3);
+                v.setTag(holder3);
+            }
+            else {
+                v = convertView;
+                holder3 = (ViewHolder3) v.getTag();
+            }
+
+            String userName = message.getUserName();
+            //String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
+
+            holder3.messageTextView.setText(message.getMessageText());
+            holder3.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
+            holder3.chatReplyAuthor.setText("Welcome "+userName );
+            //holder3.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
+            holder3.txtFirstChar.setText("O");
+
         }
 
-        else if (message.getUserType() == ChatMessageUserType.SELF) {
+
+        if (message.getUserType() == ChatMessageUserType.SELF) {
             if (convertView == null) {
                 v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
                 holder1 = new ViewHolder1();
@@ -127,7 +148,7 @@ public class ChatListAdapter extends BaseAdapter {
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -151,7 +172,7 @@ public class ChatListAdapter extends BaseAdapter {
     }
 
     private class ViewHolder3 {
-        public ProgressBar spinnerProgress;
+     //   public ProgressBar spinnerProgress;
         public TextView messageTextView;
         public TextView timeTextView;
         public TextView chatReplyAuthor;
