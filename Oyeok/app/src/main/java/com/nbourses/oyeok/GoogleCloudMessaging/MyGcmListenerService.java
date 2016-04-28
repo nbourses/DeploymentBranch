@@ -36,6 +36,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
     public static int NOTIFICATION_ID = 1;
+    Boolean RefreshDrooms = false;
     /**
      * Called when message is received.
      *
@@ -50,7 +51,6 @@ public class MyGcmListenerService extends GcmListenerService {
         String title = data.getString("title");
         String message = data.getString("message");
         String okId = null;
-
         String deals;
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         deals = General.getDefaultDeals(this);
@@ -77,7 +77,6 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
                // Collection d = deals1.values();
-               // Log.d(TAG, "values after jugad collection1" + d);
 
                 Log.i(TAG,"before deal "+deals1);
                 Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
@@ -88,7 +87,10 @@ public class MyGcmListenerService extends GcmListenerService {
                     if(okId.equalsIgnoreCase(entry.getKey())){
                         iter.remove();
                         Log.d(TAG, "entry.getKey removed" + entry.getKey());
+                        Log.d("CHATTRACE", "default droomsremoved" + entry.getKey());
+                        Log.d("CHATTRACE", "default droomsremoved okid" + okId);
                         Log.d(TAG,"entry.getKey removed"+entry.getValue());
+                        RefreshDrooms = true;
                     }
                 }
                 Log.i(TAG,"after deal "+deals1);
@@ -131,6 +133,16 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
                     General.setSharedPreferences(getApplicationContext(), AppConstants.CLIENT_OK_ID, okId);
+                if(RefreshDrooms){
+                    Log.d(TAG, "Refresh Drooms flag is set");
+
+                 //   Intent intent2 = new Intent("shine");
+                 //   intent2.putExtra("RefreshDrooms", true);
+                 //   LocalBroadcastManager.getInstance(this).sendBroadcast(intent2);
+                    //Intent intent = new Intent(this, ClientDealsListActivity.class);
+                    //startActivity(intent);
+
+                }
 
 
                     Log.d(TAG, "CLIENT_OK_ID: " + General.getSharedPreferences(getApplicationContext(), AppConstants.CLIENT_OK_ID));
@@ -225,6 +237,7 @@ public class MyGcmListenerService extends GcmListenerService {
         }
         else {
             intent = new Intent(context, ClientMainActivity.class);
+            //intent = new Intent(context, ClientDealsListActivity.class);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -248,7 +261,12 @@ public class MyGcmListenerService extends GcmListenerService {
         if (NOTIFICATION_ID > 1073741824) {
             NOTIFICATION_ID = 0;
         }
+        if(RefreshDrooms){
+            Log.d(TAG,"Refresh Drooms flag is set1");
+           // Intent i = new Intent(this, ClientDealsListActivity.class);
+           // startActivity(i);
 
+        }
         notificationManager.notify(NOTIFICATION_ID++ /* ID of notification */, notificationBuilder.build());
         Log.d(TAG,"Notified");
     }

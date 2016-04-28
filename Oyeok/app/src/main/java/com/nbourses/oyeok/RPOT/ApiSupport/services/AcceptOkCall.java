@@ -108,7 +108,7 @@ public class AcceptOkCall {
                             args.putString("UserId1", acceptOk.responseData.getOkUserId()); //broker
                             args.putString("UserId2", acceptOk.responseData.getOyeUserId()); //client
                             args.putString("OkId", acceptOk.responseData.getOkId()); //channel id
-                            Log.i("call chala", "nacho2");
+
                             Log.i("TRACEOK", "if called mCallBack"+mCallBack);
 
                             if (mCallBack != null) {
@@ -131,7 +131,15 @@ public class AcceptOkCall {
 //                                String userId2 = acceptOk.responseData.getOyeUserId();
 //                                String okId = acceptOk.responseData.getOkId();
 //                                droomChatFirebase.createChatRoom(okId, userId1, userId2, droomDetails); */
-                                mCallBack.replaceFragment(args);
+                                Log.i("TRACEBROKERSIGNUP","2");
+
+                               // mCallBack.replaceFragment(args);
+
+                                Intent openDealsListing = new Intent(activity, BrokerDealsListActivity.class);
+                                //openDealsListing.putExtra("serverMessage", acceptOk.responseData.getMessage());
+                               // Log.i("TRACEOK", "serverMessage " + acceptOk.responseData.getMessage());
+                               // Log.i("TRACEBROKERSIGNUP","3");
+                                activity.startActivity(openDealsListing);
 
 
                             }
@@ -157,6 +165,7 @@ public class AcceptOkCall {
                             Intent openDealsListing = new Intent(activity, BrokerDealsListActivity.class);
                             openDealsListing.putExtra("serverMessage", acceptOk.responseData.getMessage());
                             Log.i("TRACEOK", "serverMessage " + acceptOk.responseData.getMessage());
+                            Log.i("TRACEBROKERSIGNUP","3");
                             activity.startActivity(openDealsListing);
                         }
 //                            ((ClientMainActivity) activity).showToastMessage(acceptOk.responseData.getMessage());
@@ -188,6 +197,7 @@ public class AcceptOkCall {
                         Log.i("TRACEOK","open broker deals list activity");
                         Intent openDealsListing = new Intent(activity, BrokerDealsListActivity.class);
                         openDealsListing.putExtra("serverMessage", error.getMessage());
+                        Log.i("TRACEBROKERSIGNUP", "4");
 
                         activity.startActivity(openDealsListing);
 

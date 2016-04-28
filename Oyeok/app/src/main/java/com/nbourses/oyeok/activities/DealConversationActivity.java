@@ -66,13 +66,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     @Bind(R.id.suggestionList)
     ListView suggestionList;
 
-  //  @Bind(R.id.spinnerProgress)
-   // ProgressBar spinnerProgress;
+   // @Bind(R.id.spinnerProgress)
+  //  ProgressBar spinnerProgress;
 
     @Bind(R.id.ratingBar)
     RatingBar ratingBar;
-  //  @Bind(R.id.texRating)
-  //  ProgressBar texrating;
+  // @Bind(R.id.texRating)
+   // ProgressBar texrating;
   private TextView texrating;
 
     private static final String TAG = "DealConversationActivit";
@@ -87,7 +87,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private String userRole = "client";
     private static final String[] suggestionsForClientArray = {"How can I use this app?", "How can I find property?", "Is it free of cost to get broker?"};
     private static final String[] suggestionsForBrokerArray = {"How can I use this app?", "How can I find client?", "Can I post property?"};
-
+    private Boolean isDefaultDeal;
     private final TextWatcher edtTypeMsgListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -116,6 +116,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     };
 
     @Override
+    //protected
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -123,6 +124,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         ButterKnife.bind(this);
        texrating = (TextView) findViewById(R.id.texRating);
         ratingBar.setOnRatingBarChangeListener(this);
+
+
+
+//        IntentFilter filter = new IntentFilter("shine");
+//        LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
+
 
         init();
     }
@@ -147,13 +154,23 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         edtTypeMsg.addTextChangedListener(edtTypeMsgListener);
 
         chatMessages = new ArrayList<>();
+
         Log.i(TAG,"chatMessages are"+chatMessages);
 
-        listAdapter = new ChatListAdapter(chatMessages, this);
-        chatListView.setAdapter(listAdapter);
 
         Bundle bundle  = getIntent().getExtras();
-        channel_name = bundle.getString(AppConstants.OK_ID);
+       channel_name = bundle.getString(AppConstants.OK_ID);
+       isDefaultDeal = bundle.getBoolean("isDefaultDeal");
+
+        Log.i("TRACE DEALS FLAG 3","FLAG "+isDefaultDeal);
+
+
+        listAdapter = new ChatListAdapter(chatMessages,isDefaultDeal, this);
+        chatListView.setAdapter(listAdapter);
+
+//        Bundle bundle  = getIntent().getExtras();
+//        channel_name = bundle.getString(AppConstants.OK_ID);
+
         Log.i(TAG,"channel_name"+channel_name);
         userRole = bundle.getString("userRole");
         Log.i(TAG,"userRole is"+userRole);
@@ -306,6 +323,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      * @param jsonMsg
      */
     private void displayMessage(JSONObject jsonMsg) {
+
+        Log.i("CONVER","jsonMsg"+jsonMsg);
         Log.i(TAG,"inside displayMessage"+ jsonMsg);
 
         String body = null;
@@ -318,13 +337,19 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 body = jsonMsg.getString("message");
                 if (jsonMsg.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER))){
                     userType = ChatMessageUserType.OTHER;
+                    Log.i("CONVER","OTHER set");
+
                 }
 
-               else if (jsonMsg.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), "DEFAULT"))){
+               else if (jsonMsg.getString("from").equalsIgnoreCase("DEFAULT")){
+                    Log.i("CONVER","DEFAULT set");
                     userType = ChatMessageUserType.DEFAULT;
+
+
                 }
 
                 else {
+                    Log.i("CONVER","SELF set");
                     userType = ChatMessageUserType.SELF;
                 }
 
@@ -355,7 +380,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i(TAG,"caught in display message" +e);
+            Log.i(TAG, "caught in display message" + e);
         }
     }
 
@@ -499,7 +524,14 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     @Override
     public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-        texrating.setText("Rating: "+rating);
+        texrating.setText("Rating: " + rating);
 
     }
+
+
+
+
+
+
+
 }

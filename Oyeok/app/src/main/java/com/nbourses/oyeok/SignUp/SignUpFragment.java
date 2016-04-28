@@ -669,6 +669,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 int j=b.getInt("Position");
                                 AcceptOkCall a = new AcceptOkCall();
                                 a.setmCallBack(SignUpFragment.this);
+                                Log.i("TRACEBROKERSIGNUP","1");
                                 a.acceptOk(p,j,dbHelper, getActivity());
 
                             }
@@ -707,6 +708,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                     public void failure(RetrofitError error) {
 
                         Log.i("TRACE","in signup failure");
+                        Log.i("TRACE", "Inside signup Failure" + error);
 
                         Log.i("TAG", "Inside signup Failure" + error.getMessage());
                         if (redirectToOyeIntentSpecs) {

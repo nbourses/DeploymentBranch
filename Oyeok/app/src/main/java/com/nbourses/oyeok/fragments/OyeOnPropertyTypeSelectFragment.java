@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -66,6 +67,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     private void init(LayoutInflater inflater, ViewGroup container){
         switch (selectedPropertyType) {
             case "home":
+                General.saveBoolean(getContext(), "propertySubtypeFlag", true);
                 rootView = inflater.inflate(R.layout.fragment_home_click, container, false);
 
                 //by default 2 BHK is selected
@@ -78,14 +80,17 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
                 onFilterValueUpdate(bhkNumber+"<sub><small>"+bhkNumberValue+"</small></sub>");
                 break;
             case "shop":
+                General.saveBoolean(getContext(), "propertySubtypeFlag", false);
                 rootView = inflater.inflate(R.layout.fragment_shop_click, container, false);
                 onFilterValueUpdate("SHO");
                 break;
             case "industrial":
+                General.saveBoolean(getContext(),"propertySubtypeFlag",false);
                 rootView = inflater.inflate(R.layout.fragment_industry_click, container, false);
                 onFilterValueUpdate("IND");
                 break;
             case "office":
+                General.saveBoolean(getContext(), "propertySubtypeFlag", false);
                 rootView = inflater.inflate(R.layout.fragment_office_click, container, false);
                 onFilterValueUpdate("OFF");
                 break;
@@ -138,6 +143,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     @Nullable
     @OnClick({R.id.txtRetailOutlet, R.id.txtFoodOutlet, R.id.txtBank})
     public void onShopClick(View v) {
+        General.saveBoolean(getContext(), "propertySubtypeFlag", true);
         clean();
         txtPreviousTextView = (TextView) v;
         txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
@@ -149,6 +155,10 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     @Nullable
     @OnClick({R.id.txtColdStorage, R.id.txtKitchen, R.id.txtWarehouse, R.id.txtManufacturing, R.id.txtWorkshop})
     public void onIndustryClick(View v) {
+        General.saveBoolean(getContext(), "propertySubtypeFlag", true);
+
+
+
         clean();
         txtPreviousTextView = (TextView) v;
         txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
@@ -161,6 +171,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     @OnClick({R.id.txt10, R.id.txt20,
             R.id.txt50, R.id.txt100, R.id.txt200})
     public void onOfficeClick(View v) {
+        General.saveBoolean(getContext(), "propertySubtypeFlag", true);
         clean();
         txtPreviousTextView = (TextView) v;
         txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));

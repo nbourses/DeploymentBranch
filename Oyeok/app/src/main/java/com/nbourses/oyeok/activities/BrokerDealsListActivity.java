@@ -95,6 +95,7 @@ public class BrokerDealsListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle bundle = getIntent().getExtras();
+        Log.i("TRACEOK","bundle is"+bundle);
         if (bundle != null) {
             if (bundle.containsKey("serverMessage")) {
                 SnackbarManager.show(

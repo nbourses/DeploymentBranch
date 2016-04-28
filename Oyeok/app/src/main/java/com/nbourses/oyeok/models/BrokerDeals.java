@@ -1,5 +1,7 @@
 package com.nbourses.oyeok.models;
 
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -8,9 +10,6 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class BrokerDeals {
-
-
-
 
 
     @Expose
@@ -37,12 +36,24 @@ public class BrokerDeals {
     @SerializedName("spec_code")
     private String specCode;
 
-    public BrokerDeals(String specs)
-    { // Constructor for default deal
-        this.okId = "default_id";
-        this.specCode = specs;
-        this.name = "deepti";
+    @Expose
+    @SerializedName("default_deal")
+    private Boolean defaultDeal;
 
+    public BrokerDeals(String ok_id,String specs, Boolean default_deal)
+    { // Constructor for default deal
+        //this.okId = "default_id";
+
+        Log.i("IN BROKERDEALS ","FLAG "+default_deal);
+        this.okId = ok_id;
+        this.specCode = specs;
+        this.name = "Oyeok";
+        this.defaultDeal = default_deal;
+
+    }
+
+    public Boolean getdefaultDeal() {
+        return defaultDeal;
     }
 
     public String getOkId() {

@@ -128,7 +128,9 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
         }
 
-
+        //Hardcode user login in shared prefs
+        //General.settSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER, yes);
+//       General.setSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER, "yes");
         init();
     }
 
@@ -419,26 +421,44 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
     @OnClick(R.id.btnOnOyeClick)
     public void submitOyeOk(View v) {
-        Log.i("TRACE =", "oyebutton baher");
+        Log.i("TRACE", "oyebutton");
+        Boolean s = General.retriveBoolean(this, "propertySubtypeFlag");
+
         if (General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-            Log.i("TRACE =", "clicked oyebutton if");
+            Log.i("TRACE", "clicked oyebutton if");
             //show sign up screen
             Bundle bundle = new Bundle();
             bundle.putStringArray("propertySpecification", null);
             bundle.putString("lastFragment", "OyeIntentSpecs");
 
-            SignUpFragment signUpFragment = new SignUpFragment();
-            loadFragment(signUpFragment, bundle, R.id.container_oye, "");
-            Log.i("Signup called =", "Sign up");
+            if(s.equals(false)){
+                SnackbarManager.show(
+                        Snackbar.with(this)
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text("Please select property subtype")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+            }else {
 
-
-            btnOnOyeClick.setVisibility(View.GONE);
+                    SignUpFragment signUpFragment = new SignUpFragment();
+                    loadFragment(signUpFragment, bundle, R.id.container_oye, "");
+                    Log.i("Signup called =", "Sign up");
+                    btnOnOyeClick.setVisibility(View.GONE);
+            }
         }
         else {
-            Log.i("TRACE =", "clicked oyebutton else");
-            //create new deal
-            General.publishOye(getApplicationContext());
-            closeOyeScreen();
+            Log.i("already", "Signed up");
+            if(s.equals(false)){
+                SnackbarManager.show(
+                        Snackbar.with(this)
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text("Please select property subtype")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+            }else {
+                //create new deal
+                General.publishOye(getApplicationContext());
+                closeOyeScreen();
+            }
         }
     }
 

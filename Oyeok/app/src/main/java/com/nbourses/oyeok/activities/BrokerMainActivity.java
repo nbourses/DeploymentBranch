@@ -63,6 +63,12 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
             }
 
+        //hardcore broker with shared prefs
+//        General.setSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER, "yes");
+//        General.setSharedPreferences(this,AppConstants.USER_ID, "krve2cnz03rc1hfi06upjpnoh9hrrtsy");
+//        General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
+
+
         init();
     }
 

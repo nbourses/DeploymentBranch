@@ -144,6 +144,19 @@ public class General extends BroadcastReceiver{
         editor.commit();
     }
 
+    public static void saveBoolean(Context context, String prefName, boolean value) {
+        Log.i("TRACE", "inside shared pref " + prefName + value);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putBoolean(prefName, value).commit();
+    }
+
+
+    public static Boolean retriveBoolean(Context context, String prefName) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        return prefs.getBoolean(prefName, false);
+    }
+
 
     /*
     public static void saveDefaultDeals(Context context, Set<String> value) {
@@ -457,7 +470,7 @@ public class General extends BroadcastReceiver{
 //        networkInfo.NetworkStatusChanged("esfrghatheth===");
 
 
-        if(haveConnectedMobile) {
+   /*     if(haveConnectedMobile) {
             Log.i("TRACE", "MOBILE NETWORK AVAILABLE ");
 //            Toast.makeText(context,"NETWORK AVAILABLE",Toast.LENGTH_SHORT).show();
         }
@@ -486,5 +499,11 @@ public class General extends BroadcastReceiver{
 //                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
         }
+
+        */
+
+        if(!(haveConnectedMobile) || !(haveConnectedWifi))
+            Toast.makeText(context, "INTERNET CONNECTIVITY NOT AVAILABLE", Toast.LENGTH_LONG).show();
+
     }
 }

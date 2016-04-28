@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
@@ -25,12 +26,15 @@ public class ChatListAdapter extends BaseAdapter {
 
     private ArrayList<ChatMessage> chatMessages;
     private Context context;
+    private Boolean isDefaultDeal = false;
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("HH:mm");
 
-    public ChatListAdapter(ArrayList<ChatMessage> chatMessages, Context context) {
+    public ChatListAdapter(ArrayList<ChatMessage> chatMessages, Boolean isDefaultDeal, Context context) {
         this.chatMessages = chatMessages;
+        this.isDefaultDeal = isDefaultDeal;
         this.context = context;
 
+        Log.i("TRACE DEALS FLAG 1","FLAG "+isDefaultDeal);
     }
 
 
@@ -64,7 +68,7 @@ public class ChatListAdapter extends BaseAdapter {
             if (convertView == null) {
                 v = LayoutInflater.from(context).inflate(R.layout.default_chat, null, false);
                 holder3 = new ViewHolder3();
-            //    holder3.spinnerProgress = (ProgressBar) v.findViewById(R.id.spinnerProgress);
+                holder3.spinnerProgress = (ProgressBar) v.findViewById(R.id.spinnerProgress);
                 holder3.messageTextView = (TextView) v.findViewById(R.id.message_text);
                 holder3.timeTextView = (TextView) v.findViewById(R.id.time_text);
                 holder3.chatReplyAuthor = (TextView) v.findViewById(R.id.chat_reply_author);
@@ -80,9 +84,20 @@ public class ChatListAdapter extends BaseAdapter {
             String userName = message.getUserName();
             //String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
 
+            Log.i("CONVER", "Chat message is" + message.getMessageText());
+
+
+            Log.i("TRACE DEALS FLAG", "FLAG " + isDefaultDeal);
+            if(!isDefaultDeal) {
+                holder3.spinnerProgress.setVisibility(View.INVISIBLE);
+                holder3.txtFirstChar.setVisibility(View.VISIBLE);
+            }else{
+                holder3.spinnerProgress.setVisibility(View.VISIBLE);
+                holder3.txtFirstChar.setVisibility(View.INVISIBLE);
+            }
             holder3.messageTextView.setText(message.getMessageText());
             holder3.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
-            holder3.chatReplyAuthor.setText("Welcome "+userName );
+            holder3.chatReplyAuthor.setText("Welcome user");
             //holder3.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
             holder3.txtFirstChar.setText("O");
 
@@ -105,6 +120,8 @@ public class ChatListAdapter extends BaseAdapter {
                 holder1 = (ViewHolder1) v.getTag();
 
             }
+
+            Log.i("CONVER","Chat message is self"+message.getMessageText());
 
             String userName = message.getUserName();
             String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
@@ -131,6 +148,8 @@ public class ChatListAdapter extends BaseAdapter {
                 holder2 = (ViewHolder2) v.getTag();
 
             }
+
+            Log.i("CONVER","Chat message is other"+message.getMessageText());
 
             holder2.messageTextView.setText(message.getMessageText());
             //holder2.messageTextView.setText(message.getMessageText());
@@ -172,7 +191,8 @@ public class ChatListAdapter extends BaseAdapter {
     }
 
     private class ViewHolder3 {
-     //   public ProgressBar spinnerProgress;
+        public ProgressBar spinnerProgress;
+
         public TextView messageTextView;
         public TextView timeTextView;
         public TextView chatReplyAuthor;
