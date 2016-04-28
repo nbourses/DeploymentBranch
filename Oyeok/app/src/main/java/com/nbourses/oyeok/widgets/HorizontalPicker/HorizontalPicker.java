@@ -1572,6 +1572,13 @@ public class HorizontalPicker extends View {
 
 
     String numToVal(int no){
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        int truncate_first;
+        if(currentapiVersion>=23)
+            truncate_first = 2;
+        else
+            truncate_first = 3;
+
         Log.i("TRACED","no is"+no);
         String str = "",v = "";
 
@@ -1599,7 +1606,7 @@ val=no;
                 str=format1.format(val);
                 String strWithoutSymbol2 = "";
 
-                strWithoutSymbol2 = str.substring(0,str.length()- 3);
+                strWithoutSymbol2 = str.substring(truncate_first,str.length()- 3);
                 str= strWithoutSymbol2;
           /* if(propertyType)
                 val = no/10000000;
@@ -1644,7 +1651,8 @@ val=no;
 
                         str=format2.format(val);
                         String strWithoutSymbol1 = "";
-                        strWithoutSymbol1 = str.substring(0,str.length()-3);
+                        strWithoutSymbol1 = str.substring(truncate_first,str.length()-3);
+
 
                         str= strWithoutSymbol1;
 
@@ -1671,7 +1679,7 @@ val=no;
 
                     str = format.format(val);
                     String strWithoutSymbol = "";
-                    strWithoutSymbol = str.substring(0,str.length()-3);
+                    strWithoutSymbol = str.substring(truncate_first,str.length()-3);
                     str= strWithoutSymbol;
                     //str = str+v+"."+s3+"K";
 

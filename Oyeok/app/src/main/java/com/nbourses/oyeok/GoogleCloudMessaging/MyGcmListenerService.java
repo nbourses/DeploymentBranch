@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
@@ -136,9 +137,9 @@ public class MyGcmListenerService extends GcmListenerService {
                 if(RefreshDrooms){
                     Log.d(TAG, "Refresh Drooms flag is set");
 
-                 //   Intent intent2 = new Intent("shine");
-                 //   intent2.putExtra("RefreshDrooms", true);
-                 //   LocalBroadcastManager.getInstance(this).sendBroadcast(intent2);
+                    Intent intent2 = new Intent("okeyed");
+                   intent2.putExtra("RefreshDrooms", true);
+                  LocalBroadcastManager.getInstance(this).sendBroadcast(intent2);
                     //Intent intent = new Intent(this, ClientDealsListActivity.class);
                     //startActivity(intent);
 

@@ -80,7 +80,7 @@ public class ClientDealsListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        IntentFilter filter = new IntentFilter("shine");
+        IntentFilter filter = new IntentFilter("okeyed");
         LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
 
         setContentView(R.layout.activity_deals_list);
@@ -398,14 +398,14 @@ public class ClientDealsListActivity extends AppCompatActivity {
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
 
 
-                     /*      if(RefreshDrooms) {
+                          if(RefreshDrooms) {
 
                               Log.i("Shine", "Drooms refreshed");
-
-                               //listAdapter.notifyDataSetChanged();
+                              listViewDeals.setAdapter(listAdapter);
+                              listAdapter.notifyDataSetChanged();
                                //listViewDeals.setAdapter(null);
                                //listViewDeals.setAdapter(listAdapter);
-                           }else {  */
+                           }else {
                                Log.i("Shine", "Drooms not refreshed");
 
 
@@ -436,7 +436,7 @@ public class ClientDealsListActivity extends AppCompatActivity {
                                });
 
 
-         //                  }
+                      }
 
                         }
                         else {
@@ -569,7 +569,7 @@ public class ClientDealsListActivity extends AppCompatActivity {
                     Map.Entry<String,String> entry = iter.next();
                     Log.d(TAG,"entry.getKey"+entry.getKey());
 
-                    BrokerDeals dealsa = new BrokerDeals(entry.getKey(),entry.getValue(),false);
+                    BrokerDeals dealsa = new BrokerDeals(entry.getKey(),entry.getValue(),true);
 
                     if (default_deals == null) {
                         default_deals = new ArrayList<BrokerDeals>();
