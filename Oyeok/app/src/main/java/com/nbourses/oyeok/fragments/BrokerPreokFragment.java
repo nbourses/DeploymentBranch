@@ -311,16 +311,22 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             */
 
             ptype = jsonObjectArray.getJSONObject(position).getString("property_type");
+
+            Log.i(TAG,"property_type "+ptype);
+            Log.i(TAG, "property_subtype " + pstype);
+
             texPtype.setText("Property Type: "+ptype);
             texPstype.setText("Property Subtype: "+pstype);
             //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
             rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /m.");
-            displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used.");
+      //      displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used.");
+
+            Log.i(TAG, "show is " + show);
 
             if(show.equals("show")) {
                 notClicked.setVisibility(View.GONE);
                 rentText.setVisibility(View.VISIBLE);
-                displayOkText.setVisibility(View.VISIBLE);
+             //   displayOkText.setVisibility(View.VISIBLE);
                 texPtype.setVisibility(View.VISIBLE);
                 texPstype.setVisibility(View.VISIBLE);
 
@@ -330,7 +336,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             else if(show.equals("hide")) {
                 notClicked.setVisibility(View.VISIBLE);
                 rentText.setVisibility(View.GONE);
-                displayOkText.setVisibility(View.GONE);
+             //   displayOkText.setVisibility(View.GONE);
                 texPtype.setVisibility(View.GONE);
                 texPstype.setVisibility(View.GONE);
                // pickContact.setVisibility(View.GONE);
@@ -339,7 +345,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             else {
                 notClicked.setVisibility(View.GONE);
                 rentText.setVisibility(View.VISIBLE);
-                displayOkText.setVisibility(View.VISIBLE);
+             //   displayOkText.setVisibility(View.VISIBLE);
                 texPtype.setVisibility(View.VISIBLE);
                 texPstype.setVisibility(View.VISIBLE);
               //  pickContact.setVisibility(View.VISIBLE);

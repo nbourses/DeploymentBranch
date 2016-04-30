@@ -307,10 +307,10 @@ public class CircularSeekBarNew extends View {
                 e.printStackTrace();
             }
             String l = null;
-            String o = null;
+           // String o = null;
             try {
                 l = numToVal(Integer.parseInt(values.getJSONObject(i).getString("price")));
-                o = values.getJSONObject(i).getString("ok_price") + " Oks";
+                // o = values.getJSONObject(i).getString("ok_price") + " Oks";
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -884,6 +884,7 @@ public class CircularSeekBarNew extends View {
                             if(mImageAction != null)
                             {
                                 mImageAction.onclick(i,values,"hide",x_c,y_c);
+                                Log.i("BrokerPreokFragment","hidden passed");
                             }
                         }else
                         {
@@ -891,12 +892,13 @@ public class CircularSeekBarNew extends View {
                             try {
                                 if(values.getJSONObject(i).getString("user_role").equalsIgnoreCase("client")) {
                                     mImageAction.onclick(i, values, "showHalf",x_c,y_c);
+                                    Log.i("BrokerPreokFragment", "showHalf passed");
                                     //remember changes
 
                                 }else
                                 {//remember changes
                                     mImageAction.onclick(i, values, "show",x_c,y_c);
-
+                                    Log.i("BrokerPreokFragment", "show passed");
                                     // sushil comment
 //                                    if(mImageAction != null)
 //                                     {

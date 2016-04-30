@@ -95,7 +95,13 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
             BrokerDeals deal = dealses.get(position);
 
+
+            Log.i("HDROOMS CRASH","deal.getSpecCode"+deal.getSpecCode());
+
+
+
             String userName = (!deal.getSpecCode().equals("")) ? deal.getSpecCode() : "None";
+
             holder.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
 
             String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());

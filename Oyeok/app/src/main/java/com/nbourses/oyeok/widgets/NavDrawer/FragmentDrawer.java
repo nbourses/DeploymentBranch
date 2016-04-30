@@ -44,6 +44,7 @@ public class FragmentDrawer extends Fragment {
     public MDrawerListener mDrawerListener;
     List<NavDrawerItem> navDrawerItems;
 
+
     public void setmDrawerListener(MDrawerListener mDrawerListener) {
         this.mDrawerListener = mDrawerListener;
     }
@@ -79,6 +80,8 @@ public class FragmentDrawer extends Fragment {
         dbHelper=new DBHelper(getActivity());
         userType=dbHelper.getValue(DatabaseConstants.user);
 
+
+
         Log.d(TAG, "IS_LOGGED_IN_USER "+General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER));
         Log.d(TAG, "ROLE_OF_USER "+General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER));
 
@@ -109,6 +112,8 @@ public class FragmentDrawer extends Fragment {
                              Bundle savedInstanceState) {
         // Inflating view layout
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+
+
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
 
         navDrawerItems = getData();

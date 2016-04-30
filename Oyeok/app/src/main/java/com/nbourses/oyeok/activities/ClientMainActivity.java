@@ -77,6 +77,10 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.profile_image_main)
     ImageView profileImage;
 
+    @Bind(R.id.txtEmail)
+    TextView emailTxt;
+
+
     @Bind(R.id.toast_text)
     TextView toastText;
 
@@ -214,7 +218,14 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
         if(!dbHelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
             Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbHelper.getValue(DatabaseConstants.imageFilePath));
             profileImage.setImageBitmap(yourSelectedImage);
+
+
         }
+        if(!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+            emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
+
+        }
+
 
         //by default load map view
         DashboardClientFragment dashboardClientFragment = new DashboardClientFragment();

@@ -32,6 +32,10 @@ public class HdRooms extends Model {
     @SerializedName("lon")
     private String lon;
 
+    @Expose
+    @SerializedName("page")
+    private String page;
+
     public String getUserId() {
         return userId;
     }
@@ -78,5 +82,13 @@ public class HdRooms extends Model {
 
     public void setLon(String lon) {
         this.lon = lon;
+    }
+
+    public String getPage() {
+        return page;
+    }
+
+    public void setPage(String page) {
+        this.page = page;
     }
 }

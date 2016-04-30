@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -80,6 +79,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     private static final String TAG = "SignUpFragment";
+    private DigitsAuthButton digitsButton;
 
     @Bind(R.id.submitprofile)
     Button submitBut;
@@ -167,6 +167,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
         redirectToOyeIntentSpecs=true;
 
+
         if(lastFragment.equals("RentalBrokerAvailable")||lastFragment.equals("RentalBrokerRequirement")||
                 lastFragment.equals("SaleBrokerAvailable")||lastFragment.equals("SaleBrokerRequirement") ||
                 lastFragment.equals("BrokerPreokFragment")) {
@@ -191,15 +192,19 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 //        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
 //        Fabric.with(this,new Digits());
 
+
         Digits.getSessionManager().clearActiveSession();
+
         authCallback = new AuthCallback() {
             @Override
             public void success(DigitsSession session, String phoneNumber) {
                 // Do something with the session
-                System.out.println("isValidUser " + session.isValidUser());
-                System.out.println("phoneNumber " + phoneNumber);
-                System.out.println("getPhoneNumber " + session.getPhoneNumber());
+                Log.i(TAG, "isValidUser " + session.isValidUser());
+                Log.i(TAG, "phoneNumber " + phoneNumber);
+                Log.i(TAG, "getPhoneNumber " + session.getPhoneNumber());
                 mobile_number = session.getPhoneNumber();
+
+                submitButton();
             }
 
             @Override
@@ -210,18 +215,28 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         };
 
 
-        DigitsAuthButton digitsButton = (DigitsAuthButton) view.findViewById(R.id.auth_button);
+//        TelephonyManager tm =(TelephonyManager)getContext().getSystemService(getContext().TELEPHONY_SERVICE);
+//        String number =tm.getLine1Number();
+//
+//      Log.i(TAG,"My number is "+number);
 
-        digitsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//   digitsButton = (DigitsAuthButton) view.findViewById(R.id.auth_button);
+//       // digitsButton.setText("sign me up");
+//
+//
+//        digitsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//
+//            }
+//        });
+//
+//                   digitsButton.setCallback(authCallback);
 
-                System.out.println("inside button getPhoneNumber "+mobile_number);
 
-            }
-        });
 
-        digitsButton.setCallback(authCallback);
+
         //digits//
 
         /*TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
@@ -258,6 +273,38 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
         name= (EditText) view.findViewById(R.id.etname);
         email= (EditText) view.findViewById(R.id.etemail);
+        Button submit=(Button)view.findViewById(R.id.submitprofile);
+
+
+
+        Sname = name.getText().toString();
+        Semail = email.getText().toString();
+
+
+        Log.i("TRACE", "inside submit");
+
+        validationCheck();
+        Log.i("TRACE", "after validationCheck");
+
+        // //validation_success = roleSelected();
+
+        context = getContext();
+        if (!Sname.matches("")) {
+
+            if (!Semail.matches("")){
+
+                submit.setVisibility(View.INVISIBLE);
+                digitsButton.setVisibility(View.VISIBLE);
+            }
+
+        }
+
+
+
+
+
+
+
        // number= (EditText) view.findViewById(R.id.etnumber);
        // vcode= (EditText) view.findViewById(R.id.etvcode);
         llsignup = (LinearLayout)view.findViewById(R.id.llsignup);
@@ -283,13 +330,140 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
             }
         });   */
 
-        Button submit=(Button)view.findViewById(R.id.submitprofile);
+
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // do something
-                Log.i("TRACE","inside submitprofile button");
-                submitButton();
+                Log.i("TRACE", "inside submitprofile button");
+
+
+
+                Log.i("TRACE inside sb","mobile_number");
+                Log.i("TRACE inside sb",""+mobile_number);
+
+//        if(mobile_number.length()>0)
+//            mobile_number = mobile_number.substring(3,12);
+//        else
+//        mobi
+                Sname = name.getText().toString();
+                Semail = email.getText().toString();
+
+
+                Log.i("TRACE", "inside submit");
+
+                validationCheck();
+                Log.i("TRACE", "after validationCheck");
+
+                // //validation_success = roleSelected();
+
+                context = getContext();
+                if (Sname.matches("")) {
+                    SnackbarManager.show(
+                            Snackbar.with(activity)
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Please enter name.")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
+                    return;
+                }
+                else
+                    email_success = isEmailValid(Semail);
+
+                if (email_success)
+                    Digits.authenticate(authCallback);
+
+
+//                context = getContext();
+//                InputMethodManager imm = (InputMethodManager)context
+//                        .getSystemService(context.INPUT_METHOD_SERVICE);
+//                imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+
+
+
+//  if (email_success) {
+
+
+
+       if (!mobile_number.isEmpty() && email_success) {
+                    Log.i("mobile no before dc", mobile_number);
+
+
+
+                    Log.i("mobile no after dc", mobile_number);
+
+
+                    Log.i("TRACE", "in nomail ntempty");
+
+                    ////     Sname = name.getText().toString();
+                    ////      Semail = email.getText().toString();
+
+                    ////         Svcode = vcode.getText().toString();
+
+                    //UserCredentials.saveString(this, PreferenceKeys.MY_SHORTMOBILE_KEY, Snumber);
+                    userProfileViewModel.setName(Sname);
+                    userProfileViewModel.setEmailId(Semail);
+                    userProfileViewModel.setMobileNumber(mobile_number);
+            /*Str_Lat = UserCredentials.getString(this, PreferenceKeys.MY_CUR_LAT);    //FirebaseClass.getString(this,FirebaseClass.MY_CUR_LAT);
+            Str_Lng = UserCredentials.getString(this, PreferenceKeys.MY_CUR_LNG);*/ //FirebaseClass.getString(this,FirebaseClass.MY_CUR_LNG);
+                    Str_Lat = SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT);
+                    Str_Lng = SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG);
+                    Log.i("TRACE", "Lat is" + Str_Lat);
+                    Log.i("TRACE", "Long is" + Str_Lng);
+
+                    String API = DatabaseConstants.serverUrl;
+
+                    User user = new User();
+                    user.setName(Sname);
+                    user.setEmail(Semail);
+                    user.setMobileNo(mobile_number);
+                    user.setMobileCode("+91");
+                    if (okBroker)
+                        user.setUserRole("broker");
+                    else
+                        user.setUserRole("client");
+
+                    regid = userProfileViewModel.getGcmId();
+                    user.setPushToken(regid);
+                    user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+                    user.setLongitude(Str_Lng);
+                    user.setLocality(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+                    user.setLatitude(Str_Lat);
+                    user.setPlatform("android");
+                    user.setDeviceId("Hardware");
+
+
+            /*user.setUserRole(dbHelper.getValue("userRole");
+            regid = UserProfileViewModel.getGcmId();
+            user.setGcmId(regid);
+            user.setLongitude(Double.parseDouble(dbHelper.getValue("currentLng")));
+            user.setLatitude(Double.parseDouble(dbHelper.getValue("currentLat")));
+            user.setDeviceId(dbHelper.getValue("deviceId"));*/
+
+                    //User user = new User();
+                    //////////////////////////////////////////////////
+            /*user.setName(Sname);
+            user.setEmail(Semail);
+            user.setMobileNo(Snumber);
+            user.setMobileCode("+91");
+            user.setUserRole(user_role);
+            regid = UserCredentials.getString(context, UserCredentials.KEY_GCM_ID);*/
+                    regid = SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID);
+                    userProfileViewModel.setGcmId(regid);
+                    userProfileViewModel.setLng(Str_Lng);
+                    userProfileViewModel.setLat(Str_Lat);
+                    userProfileViewModel.setDeviceId("Hardware");
+                    //user.setDeviceId(FirebaseClass.getString(context,FirebaseClass.DEVICE_ID));
+
+                    RestAdapter restAdapter = new RestAdapter.Builder()
+                            .setEndpoint(API).build();
+                    restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+                    UserApiService user1 = restAdapter.create(UserApiService.class);
+
+
+//                submitButton();
+
+                }
+
             }
         });
 
@@ -315,9 +489,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         //dbHelper.save(DatabaseConstants.mobileNumber,Snumber);
 
 
-        Log.i("captured number0 =",Snumber);
+        Log.i("captured number0 =", Snumber);
         validationCheck();
-        validation_success = numberValidation();
+//        validation_success = numberValidation();
         email_success = isEmailValid(Semail);
 
 //        FirebaseClass.save(this,FirebaseClass.MY_SHORTMOBILE_KEY,""+Snumber);
@@ -434,103 +608,6 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
     public void submitButton() {
 
-       Log.i("TRACE inside sb","mobile_number");
-        Log.i("TRACE inside sb",mobile_number);
-
-//        if(mobile_number.length()>0)
-//            mobile_number = mobile_number.substring(3,12);
-//        else
-//        mobi
-        Sname = name.getText().toString();
-        Semail = email.getText().toString();
-
-
-       Log.i("TRACE","inside submit");
-
-        validationCheck();
-        Log.i("TRACE", "after validationCheck");
-
-       // //validation_success = roleSelected();
-        email_success = isEmailValid(Semail);
-        context = getContext();
-        InputMethodManager imm = (InputMethodManager)context
-                .getSystemService(context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getView().getWindowToken(),0);
-
-
-
-        if (!mobile_number.isEmpty() && email_success) {
-
-         Log.i("TRACE","in nomail ntempty");
-
-       ////     Sname = name.getText().toString();
-      ////      Semail = email.getText().toString();
-
-   ////         Svcode = vcode.getText().toString();
-
-
-
-
-
-            //UserCredentials.saveString(this, PreferenceKeys.MY_SHORTMOBILE_KEY, Snumber);
-            userProfileViewModel.setName(Sname);
-            userProfileViewModel.setEmailId(Semail);
-            userProfileViewModel.setMobileNumber(mobile_number);
-            /*Str_Lat = UserCredentials.getString(this, PreferenceKeys.MY_CUR_LAT);    //FirebaseClass.getString(this,FirebaseClass.MY_CUR_LAT);
-            Str_Lng = UserCredentials.getString(this, PreferenceKeys.MY_CUR_LNG);*/ //FirebaseClass.getString(this,FirebaseClass.MY_CUR_LNG);
-            Str_Lat = SharedPrefs.getString(getActivity(),SharedPrefs.MY_LAT);
-            Str_Lng = SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG);
-            Log.i("TRACE","Lat is" +Str_Lat);
-            Log.i("TRACE","Long is" +Str_Lng);
-
-            String API = DatabaseConstants.serverUrl;
-
-            User user = new User();
-            user.setName(Sname);
-            user.setEmail(Semail);
-            user.setMobileNo(mobile_number);
-            user.setMobileCode("+91");
-            if(okBroker)
-                user.setUserRole("broker");
-            else
-                user.setUserRole("client");
-
-            regid = userProfileViewModel.getGcmId();
-            user.setPushToken(regid);
-            user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
-            user.setLongitude(Str_Lng);
-            user.setLocality(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
-            user.setLatitude(Str_Lat);
-            user.setPlatform("android");
-            user.setDeviceId("Hardware");
-
-
-            /*user.setUserRole(dbHelper.getValue("userRole");
-            regid = UserProfileViewModel.getGcmId();
-            user.setGcmId(regid);
-            user.setLongitude(Double.parseDouble(dbHelper.getValue("currentLng")));
-            user.setLatitude(Double.parseDouble(dbHelper.getValue("currentLat")));
-            user.setDeviceId(dbHelper.getValue("deviceId"));*/
-
-            //User user = new User();
-            //////////////////////////////////////////////////
-            /*user.setName(Sname);
-            user.setEmail(Semail);
-            user.setMobileNo(Snumber);
-            user.setMobileCode("+91");
-            user.setUserRole(user_role);
-            regid = UserCredentials.getString(context, UserCredentials.KEY_GCM_ID);*/
-            regid=SharedPrefs.getString(getActivity(),SharedPrefs.MY_GCM_ID);
-            userProfileViewModel.setGcmId(regid);
-            userProfileViewModel.setLng(Str_Lng);
-            userProfileViewModel.setLat(Str_Lat);
-            userProfileViewModel.setDeviceId("Hardware");
-            //user.setDeviceId(FirebaseClass.getString(context,FirebaseClass.DEVICE_ID));
-
-            RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setEndpoint(API).build();
-            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-            UserApiService user1 = restAdapter.create(UserApiService.class);
 
 
 
@@ -552,7 +629,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                         "Please enable location services",
                         Toast.LENGTH_LONG).show();*/
 
-            signup_success();
+           signup_success();
 
     /*   ////     if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")) {
                 if (otpReceived[0].equals(Svcode)) {
@@ -574,7 +651,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 .text("Otp validation in offline mode done")
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
             } */
-        }}
+        }
 
 
     void signup_success() {
@@ -914,6 +991,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
     private boolean isEmailValid(CharSequence email) {
 
+
+
       Log.i("TRACE","in isEmailvalid");
         if(android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches())
             return true;
@@ -968,17 +1047,17 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
             return;
         }
 
-        if (mobile_number.isEmpty()){
-            //Toast.makeText(getContext(),"s", Toast.LENGTH_SHORT).show();
-            SnackbarManager.show(
-                    Snackbar.with(activity)
-                            .position(Snackbar.SnackbarPosition.TOP)
-                            .text("Please Click on USE MY PHONE NO to proceed.")
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
-
-            Log.i("TRACE", "Plz enter submit number");
-            return;
-        }
+//        if (mobile_number.isEmpty()){
+//            //Toast.makeText(getContext(),"s", Toast.LENGTH_SHORT).show();
+//            SnackbarManager.show(
+//                    Snackbar.with(activity)
+//                            .position(Snackbar.SnackbarPosition.TOP)
+//                            .text("Please Click on USE MY PHONE NO to proceed.")
+//                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
+//
+//            Log.i("TRACE", "Plz enter submit number");
+//            return;
+//        }
 
         name.addTextChangedListener(new TextWatcher() {
 

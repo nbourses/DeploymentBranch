@@ -301,11 +301,17 @@ public class ClientDealsListActivity extends AppCompatActivity {
         hdRooms.setLat("123456789");
         hdRooms.setLon("123456789");
         hdRooms.setDeviceId(deviceId);
+        hdRooms.setPage("1");
 
 
-        Log.i("TRACE","in LOad broker deals");
+        Log.i("TRACE", "in LOad broker deals");
         OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
         oyeokApiService.seeHdRooms(hdRooms, new Callback<PublishLetsOye>() {
+            @Override
+            protected Object clone() throws CloneNotSupportedException {
+                return super.clone();
+            }
+
             @Override
             public void success(PublishLetsOye letsOye, Response response) {
 
@@ -319,8 +325,28 @@ public class ClientDealsListActivity extends AppCompatActivity {
                     JSONObject jsonObjectServer = new JSONObject(strResponse);
                     if (jsonObjectServer.getBoolean("success")) {
                         JSONObject jsonObjectResponseData = new JSONObject(jsonObjectServer.getString("responseData"));
-                        Log.i("TRACE","jsonObjectResponseData" +jsonObjectResponseData);
+                        Log.i("TRACE", "jsonObjectResponseData" + jsonObjectResponseData);
                         Log.d("CHATTRACE", "default drooms" + jsonObjectResponseData);
+
+
+
+//                        JSONObject jsonObjectResponseData1 = new JSONObject(jsonObjectResponseData.getString("for_oyes"));
+//
+//                        for (int i = 0; i < jsonObjectResponseData1.length(); i++) {
+//                            jsonObjectResponseData1.getJSONObject()
+//                        }
+
+
+
+
+
+
+
+
+
+
+
+
 
                         Gson gsonForOks = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
                         ArrayList<BrokerDeals> listBrokerDeals = (ArrayList<BrokerDeals>)
@@ -328,6 +354,24 @@ public class ClientDealsListActivity extends AppCompatActivity {
                                         new TypeToken<ArrayList<BrokerDeals>>() {
                                         }.getType());
                         Log.i("TRACE","list broker deals" +listBrokerDeals);
+
+                        Iterator<BrokerDeals> it = listBrokerDeals.iterator();
+
+                        ArrayList<BrokerDeals> listBrokerDeals_new = new ArrayList<BrokerDeals>();
+                        while (it.hasNext())
+                        {
+                            BrokerDeals deals = it.next();
+                            Log.i("TRACE==","deals.are"+deals);
+                            Log.i("TRACE==","deals.ok_id"+deals.getOkId());
+                            if(!(deals.getOkId().equalsIgnoreCase(null)))
+                            {
+                                Log.i("TRACE==","deals.ok_id inside cond");
+                                listBrokerDeals_new.add(deals);
+                            }
+
+                        }
+
+                        Log.i("TRACE==","list broker deals" +listBrokerDeals_new);
 
             /*            String[] FirstItem = {"Searching brokers for you."};
                         Log.i("TRACE", "firstitem" + FirstItem[0]);
@@ -389,7 +433,7 @@ public class ClientDealsListActivity extends AppCompatActivity {
                             //append default_deals with listBrokerDeals
 
                             Log.i("Shine", "default_deals2 " + default_deals);
-                            total_deals.addAll(listBrokerDeals);
+                            total_deals.addAll(listBrokerDeals_new);
                             total_deals.addAll(default_deals);
 
 //

@@ -54,25 +54,32 @@
                 app:met_primaryColor="@color/button_background_pressed_end"
                 />
 
-                <com.digits.sdk.android.DigitsAuthButton
-                    android:id="@+id/auth_button"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="match_parent"
+                    android:id="@+id/digitsFrame"
+                    android:visibility="invisible">
 
-          <!--              <com.rengwuxian.materialedittext.MaterialEditText
-                                android:id="@+id/etnumber"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="phone"
-                                android:hint="Mobile"
-                                app:met_floatingLabel="highlight"
-                                app:met_floatingLabelText="Mobile"
-                                app:met_floatingLabelTextSize="15sp"
-                                app:met_primaryColor="@color/button_background_pressed_end"
-                                app:met_baseColor="@android:color/black"
-                                />
+                    <com.digits.sdk.android.DigitsAuthButton
+                        android:id="@+id/auth_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </FrameLayout>
 
-                                -->
+                <!--              <com.rengwuxian.materialedittext.MaterialEditText
+                                      android:id="@+id/etnumber"
+                                      android:layout_width="match_parent"
+                                      android:layout_height="wrap_content"
+                                      android:inputType="phone"
+                                      android:hint="Mobile"
+                                      app:met_floatingLabel="highlight"
+                                      app:met_floatingLabelText="Mobile"
+                                      app:met_floatingLabelTextSize="15sp"
+                                      app:met_primaryColor="@color/button_background_pressed_end"
+                                      app:met_baseColor="@android:color/black"
+                                      />
+
+                                      -->
 
 
       <!--    <Button
