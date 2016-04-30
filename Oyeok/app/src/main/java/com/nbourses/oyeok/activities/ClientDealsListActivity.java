@@ -363,7 +363,7 @@ public class ClientDealsListActivity extends AppCompatActivity {
                             BrokerDeals deals = it.next();
                             Log.i("TRACE==","deals.are"+deals);
                             Log.i("TRACE==","deals.ok_id"+deals.getOkId());
-                            if(!(deals.getOkId().equalsIgnoreCase(null)))
+                            if(!(deals.getOkId() == null))
                             {
                                 Log.i("TRACE==","deals.ok_id inside cond");
                                 listBrokerDeals_new.add(deals);
