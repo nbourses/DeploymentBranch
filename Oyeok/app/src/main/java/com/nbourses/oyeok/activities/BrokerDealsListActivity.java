@@ -30,6 +30,7 @@ import com.nispok.snackbar.SnackbarManager;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -148,6 +149,7 @@ public class BrokerDealsListActivity extends AppCompatActivity {
         hdRooms.setGcmId(SharedPrefs.getString(getApplicationContext(), SharedPrefs.MY_GCM_ID));
         hdRooms.setLat("123456789");
         hdRooms.setLon("123456789");
+        hdRooms.setPage("1");
         hdRooms.setDeviceId(deviceId);
 
         Log.i("TRACEOK", "before hd rooms api call ");
@@ -183,10 +185,36 @@ public class BrokerDealsListActivity extends AppCompatActivity {
                         Log.i("TRACEOK", "listbrokerdeals size is "+listBrokerDeals.size());
                         if (listBrokerDeals.size() > 0) {
 
+
+
+                            Iterator<BrokerDeals> it = listBrokerDeals.iterator();
+
+                            ArrayList<BrokerDeals> listBrokerDeals_new = new ArrayList<BrokerDeals>();
+                            while (it.hasNext())
+                            {
+                                BrokerDeals deals = it.next();
+                                Log.i("TRACE==","deals.are"+deals);
+                                Log.i("TRACE==","deals.ok_id"+deals.getOkId());
+                                if(!(deals.getOkId() == null))
+                                {
+                                    Log.i("TRACE==","deals.ok_id inside cond");
+                                    listBrokerDeals_new.add(deals);
+                                }
+
+                            }
+
+                            Log.i("TRACE==","list broker deals" +listBrokerDeals_new);
+
+
+
+
+
+
+
 //                            displayListView();
 
                             //list all broker deals
-                            BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(listBrokerDeals, getApplicationContext());
+                            BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(listBrokerDeals_new, getApplicationContext());
                             listViewDeals.setAdapter(listAdapter);
                             listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
