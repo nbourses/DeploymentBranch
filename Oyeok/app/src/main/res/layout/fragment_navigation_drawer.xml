@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/profile_image_main"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
+            android:text="brokerORclient@abc.com"
             android:id="@+id/txtEmail"
             android:textAlignment="center"
             android:layout_centerHorizontal="true"

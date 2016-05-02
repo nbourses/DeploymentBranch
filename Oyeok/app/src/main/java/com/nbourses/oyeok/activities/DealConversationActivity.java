@@ -394,7 +394,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         if(messageText.trim().length()==0)
             return;
 
-        // Ritesh find to?
+        // Rt find to?
         String To = null;
         String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
         if(role.equals("broker"))

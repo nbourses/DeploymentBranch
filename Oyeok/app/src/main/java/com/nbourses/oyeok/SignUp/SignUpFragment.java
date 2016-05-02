@@ -220,8 +220,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 //
 //      Log.i(TAG,"My number is "+number);
 
-//   digitsButton = (DigitsAuthButton) view.findViewById(R.id.auth_button);
-//       // digitsButton.setText("sign me up");
+   digitsButton = (DigitsAuthButton) view.findViewById(R.id.auth_button);
+ digitsButton.setText("sign me up");
+     //   digitsButton.setAuthTheme(R.style.CustomDigitsTheme);
 //
 //
 //        digitsButton.setOnClickListener(new View.OnClickListener() {
@@ -370,7 +371,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                     email_success = isEmailValid(Semail);
 
                 if (email_success)
-                    Digits.authenticate(authCallback);
+                    Digits.authenticate(authCallback, R.style.CustomDigitsTheme);
 
 
 //                context = getContext();

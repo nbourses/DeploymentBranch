@@ -184,6 +184,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                         JSONObject ne = new JSONObject(k.toString());
                         JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
 
+                        Log.i("PREOK CALLED","neighbours"+neighbours);
+
                         jsonArrayReqLl = neighbours.getJSONArray("recent");;//neighbours.getJSONArray("req_ll");
                         jsonArrayAvlLl = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_ll");
 
@@ -295,6 +297,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             String ptype = null;
             String pstype;
             pstype = jsonObjectArray.getJSONObject(position).getString("property_subtype");
+            Log.i("debug circ","inside onclick");
+            Log.i("debug circ","inside onclick m "+jsonObjectArray);
+
 
           /*  if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
                 ptype = "home";

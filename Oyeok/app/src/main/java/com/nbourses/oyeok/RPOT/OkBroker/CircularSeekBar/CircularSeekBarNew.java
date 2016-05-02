@@ -347,17 +347,18 @@ public class CircularSeekBarNew extends View {
 //            int textwidth = left+(width/2);
             d.draw(canvas);
             int plusheight=0;
-            try {
-                if (values.getJSONObject(i).getString("user_role").equalsIgnoreCase("broker")) {
+
+           try {
+               if (values.getJSONObject(i).getString("user_role").equalsIgnoreCase("broker")) {
                     Drawable m = getResources().getDrawable(R.drawable.ic_add_24dp);
                     plusheight = m.getIntrinsicHeight();
                     int pluswidth = m.getIntrinsicWidth();
                     m.setBounds((int)(house_image_left-pluswidth+DPTOPX_SCALE),house_image_top-(height/2)-plusheight,(int)(house_image_left+DPTOPX_SCALE),house_image_top-(height/2));
                     m.draw(canvas);
-                }
+               }
             } catch (JSONException e) {
-                e.printStackTrace();
-            }
+      e.printStackTrace();
+          }
             imagesRect.add(i, new Rect(house_image_left, house_image_top - height, house_image_left + width, house_image_top));
 
 //            imagesRect.add(i, new Rect(left, top - height - plusheight, left + width, top));
@@ -871,13 +872,20 @@ public class CircularSeekBarNew extends View {
         int y_c = (int)y;
         switch(event.getAction())
         {
+
             case MotionEvent.ACTION_DOWN:
+                Log.i("Debug Circ","imagesRect is" +imagesRect);
+                Log.i("Debug Circ","imagesRect is" +imagesRect.size());
                 for(int i=0;i<imagesRect.size();i++)
                 {
                     Rect m = imagesRect.get(i);
                     if(m.contains(x_c,y_c))
                     {
 
+
+                        Log.i("Debug Circ","index is" +index);
+
+                        Log.i("Debug Circ","mImageAction " +mImageAction);
                         if(i == index)
                         {
                             index = -1;

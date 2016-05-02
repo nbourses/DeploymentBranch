@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
@@ -37,6 +38,10 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
+    @Bind(R.id.txtEmail)
+    TextView emailTxt;
+
+    DBHelper dbHelper;
     private FragmentDrawer drawerFragment;
     private WebView webView;
 
@@ -84,10 +89,17 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
+        dbHelper = new DBHelper(getBaseContext());
+
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
+        if(!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+            emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
+
+        }
     }
 
     /**
