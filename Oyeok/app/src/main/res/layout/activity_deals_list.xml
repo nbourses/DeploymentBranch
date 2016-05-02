@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/drawer_layout"
+    tools:context="in.co.madhur.chatbubblesdemo.DealsListActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/container_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/toolbar" />
+        </LinearLayout>
+
+        <include layout="@layout/deal_item" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"/>
+
+        <!--<com.cleveroad.androidmanimation.LoadingAnimationView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            app:lav_backgroundColor="@android:color/white"
+            app:lav_firstColor="@color/google_red"
+            app:lav_secondColor="@color/google_green"
+            app:lav_thirdColor="@color/google_blue"
+            app:lav_fourthColor="@color/google_yellow"
+            app:lav_speedCoefficient="1.0"
+            android:visibility="gone"/>-->
+
+        <ListView
+            android:id="@+id/listViewDeals"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar"
+            android:visibility="visible">
+        </ListView>
+
+        <!--<TextView
+            android:id="@+id/txtNoActiveDeal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_active_deal"
+            android:layout_margin="32dp"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>-->
+    </LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>

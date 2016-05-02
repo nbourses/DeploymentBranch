@@ -9,8 +9,7 @@
     <RelativeLayout
         android:id="@+id/top"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        >
+        android:layout_height="fill_parent">
 
         <FrameLayout
             android:id="@+id/ll_map"
@@ -18,138 +17,172 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/border_line">
 
-        <fragment
-            android:id="@+id/map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:name="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment"
-            android:orientation="vertical"
-            >
-        </fragment>
+            <fragment
+                android:id="@+id/map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:name="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical">
+            </fragment>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                >
-
-            <LinearLayout
-                android:id="@+id/ll_marker"
-                android:visibility="visible"
-                android:layout_width="fill_parent"
-                android:layout_height="56dp"
-                android:layout_marginLeft="@dimen/sixteen_dp"
-                android:layout_marginRight="@dimen/sixteen_dp"
-                android:orientation="horizontal"
-                android:background="@drawable/maker_bg">
+                android:layout_gravity="center_vertical">
 
                 <LinearLayout
+                    android:id="@+id/ll_marker"
+                    android:visibility="visible"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:orientation="vertical"
-                    android:paddingTop="4dp"
-                    android:paddingBottom="4dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:visibility="gone">
-                    <TextView
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="@dimen/sixteen_dp"
+                    android:layout_marginRight="@dimen/sixteen_dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/maker_bg">
+
+                    <LinearLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Non Serviceable Region"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/fourteen_sp"
-                        android:gravity="center" />
-                    <TextView
+                        android:layout_height="fill_parent"
+                        android:orientation="vertical"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:visibility="gone">
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Non Serviceable Region"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/fourteen_sp"
+                            android:gravity="center" />
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-6dp"
+                            android:text="No Broker Available"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/fourteen_sp"
+                            android:gravity="center" />
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/markerpanelminmax"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="-6dp"
-                        android:text="No Broker Available"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/fourteen_sp"
-                        android:gravity="center" />
+                        android:layout_height="fill_parent"
+                        android:visibility="visible">
+
+                        <!--<TextView
+                            android:id="@+id/linearlayout_drooms"
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:text="Deal"
+                            android:paddingLeft="@dimen/eight_dp"
+                            android:paddingRight="@dimen/eight_dp"
+                            android:background="@drawable/deal_circle"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sixteen_sp"
+                            android:gravity="center_vertical"
+                            android:layout_alignParentLeft="true"/>-->
+
+                        <TextView
+                            android:id="@+id/rupeesymbol"
+                            android:layout_width="wrap_content"
+                            android:text="@string/Rs"
+                            android:layout_marginLeft="130dp"
+                            android:layout_marginBottom="4dp"
+                            android:textColor="@color/yellow"
+                            android:layout_height="wrap_content"/>
+
+                        <com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker
+                            android:id="@+id/picker"
+                            android:layout_width="wrap_content"
+                            android:layout_height="35dp"
+                            android:layout_marginRight="50dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_centerInParent="true"
+                            android:textColor="@android:color/white"
+                            android:background="@android:color/black"
+                            android:textSize="13sp"
+                            android:ellipsize="marquee"
+                            android:marqueeRepeatLimit="1"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:layout_centerHorizontal="true"
+                            app:values="@array/hpicker"
+                            app:dividerSize="10dp"
+                            app:sideItems="@integer/sideItems"/>
+
+                        <TextView
+                            android:id="@+id/tvRate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="psf"
+                            android:textColor="@color/yellow"
+                            android:layout_alignParentBottom="true"
+                            android:textSize="12sp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="120dp"/>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:id="@+id/newVisits"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:backgroundTint="@color/yellow"
+                                android:text="Oye"
+                                android:gravity="center"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:background="@drawable/deal_circle"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/sixteen_sp"
+                                android:layout_alignParentRight="true"/>
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:id="@+id/txtFilterValue"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:backgroundTint="@color/yellow"
+                                android:text="2BHK"
+                                android:gravity="center"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:background="@drawable/deal_circle"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/twelve_sp"
+                                android:layout_alignParentRight="true"
+                                android:paddingTop="5dp" />
+
+                        </RelativeLayout>
+
+                        <!--<TextView
+                            android:id="@+id/txtFilterValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:backgroundTint="@color/yellow"
+                            android:text="Industry"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:background="@drawable/deal_circle"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/twelve_sp"
+                            android:layout_alignParentRight="true" />-->
+
+                    </RelativeLayout>
 
                 </LinearLayout>
-
-                <RelativeLayout
-                    android:id="@+id/markerpanelminmax"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:id="@+id/linearlayout_drooms"
-                        android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:text="Deal"
-                        android:paddingLeft="@dimen/eight_dp"
-                        android:paddingRight="@dimen/eight_dp"
-                        android:background="@drawable/deal_circle"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/sixteen_sp"
-                        android:gravity="center_vertical"
-                        android:layout_alignParentLeft="true"/>
-
-                    <TextView
-                        android:id="@+id/rupeesymbol"
-                        android:layout_width="wrap_content"
-                        android:text="@string/Rs"
-                        android:layout_marginLeft="130dp"
-                        android:layout_marginBottom="4dp"
-                        android:textColor="@color/yellow"
-                        android:layout_height="wrap_content"
-                        />
-
-                    <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.HorizontalPicker.HorizontalPicker
-                        android:id="@+id/picker"
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="50dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_centerInParent="true"
-                        android:layout_toRightOf="@id/linearlayout_drooms"
-                        android:textColor="@android:color/white"
-                        android:background="@android:color/black"
-                        android:textSize="13sp"
-
-                        android:ellipsize="marquee"
-                        android:marqueeRepeatLimit="1"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:layout_centerHorizontal="true"
-                        app:values="@array/hpicker"
-                        app:dividerSize="10dp"
-                        app:sideItems="@integer/sideItems"/>
-                    <TextView
-                        android:id="@+id/tvRate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="psf"
-                        android:textColor="@color/yellow"
-                        android:layout_alignParentBottom="true"
-
-                        android:textSize="12sp"
-                        android:layout_alignParentRight="true"
-
-                        android:layout_marginRight="120dp"/>
-                    <TextView
-                        android:id="@+id/newVisits"
-                        android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:backgroundTint="@color/yellow"
-                        android:text="Oye"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:background="@drawable/deal_circle"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/sixteen_sp"
-                        android:layout_alignParentRight="true" />
-
-                </RelativeLayout>
-
-
-            </LinearLayout>
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -160,7 +193,6 @@
                     android:layout_marginTop="-15dp" />
 
             </RelativeLayout>
-
 
             <!--<com.github.clans.fab.FloatingActionMenu
                 android:id="@+id/menu2"
@@ -180,25 +212,25 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginRight="8dp">-->
 
-                <!--<com.github.clans.fab.FloatingActionButton-->
-                    <!--android:id="@+id/fab12"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--fab:fab_label="Menu item 1"-->
-                    <!--style="@style/MenuButtonsStyle" />-->
+            <!--<com.github.clans.fab.FloatingActionButton-->
+            <!--android:id="@+id/fab12"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--fab:fab_label="Menu item 1"-->
+            <!--style="@style/MenuButtonsStyle" />-->
 
-                <!--<com.github.clans.fab.FloatingActionButton-->
-                    <!--android:id="@+id/fab22"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--fab:fab_label="Menu item 2"-->
-                    <!--style="@style/MenuButtonsStyle" />-->
+            <!--<com.github.clans.fab.FloatingActionButton-->
+            <!--android:id="@+id/fab22"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--fab:fab_label="Menu item 2"-->
+            <!--style="@style/MenuButtonsStyle" />-->
 
-                <!--<com.github.clans.fab.FloatingActionButton-->
-                    <!--android:id="@+id/fab32"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--style="@style/MenuButtonsStyle" />-->
+            <!--<com.github.clans.fab.FloatingActionButton-->
+            <!--android:id="@+id/fab32"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--style="@style/MenuButtonsStyle" />-->
 
             <!--</com.github.clans.fab.FloatingActionMenu>-->
 
@@ -242,7 +274,8 @@
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="12dp"
-                android:id="@+id/lin">
+                android:id="@+id/lin"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/qrCode"
@@ -255,10 +288,7 @@
             <ImageView
                 android:layout_width="1dp"
                 android:layout_height="fill_parent"
-                android:background="@color/white"
-                />
-
-
+                android:background="@color/white" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -269,7 +299,6 @@
                 android:layout_margin="@dimen/eight_dp"
                 android:weightSum="1"
                 android:id="@+id/route">
-
 
                 <AutoCompleteTextView android:id="@+id/inputSearch"
                     android:layout_width="fill_parent"
@@ -282,14 +311,12 @@
                     android:drawableRight="@drawable/ic_search_24dp"
                     android:inputType="textVisiblePassword"/>
 
-
             </LinearLayout>
 
             <ImageView
                 android:layout_width="1dp"
                 android:layout_height="fill_parent"
-                android:background="@color/white"
-                />
+                android:background="@color/white" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -300,55 +327,66 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_gps_fixed_24dp"
-                    />
+                    android:src="@drawable/ic_gps_fixed_24dp" />
 
             </LinearLayout>
 
         </LinearLayout>
+        <!--
+        <<<<<<< HEAD
+                    <Button
+                        android:layout_width="fill_parent"
+                        android:layout_height="@dimen/thirtysix_dp"
+                        android:gravity="center"
+                        android:layout_marginRight="@dimen/four_dp"
+                        android:background="@drawable/button_greenishblue"
+                        android:text="Oye A Broker"
+                        android:id="@+id/newVisits"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sixteen_sp"
+                        android:layout_weight="1" />
 
 
+                    <Button
+                        android:id="@+id/linearlayout_drooms"
+                        android:layout_width="fill_parent"
+                        android:layout_height="@dimen/thirtysix_dp"
+                        android:layout_marginLeft="@dimen/four_dp"
+                        android:gravity="center"
+                        android:textAllCaps="false"
+                        android:background="#FFB74D"
+                        android:text="Drooms"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sixteen_sp"
+                        android:layout_weight="1" />
 
-<!-- 
-<<<<<<< HEAD
-            <Button
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/thirtysix_dp"
-                android:gravity="center"
-                android:layout_marginRight="@dimen/four_dp"
-                android:background="@drawable/button_greenishblue"
-                android:text="Oye A Broker"
-                android:id="@+id/newVisits"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sixteen_sp"
-                android:layout_weight="1" />
-
-
-            <Button
-                android:id="@+id/linearlayout_drooms"
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/thirtysix_dp"
-                android:layout_marginLeft="@dimen/four_dp"
-                android:gravity="center"
-                android:textAllCaps="false"
-                android:background="#FFB74D"
-                android:text="Drooms"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sixteen_sp"
-                android:layout_weight="1" />
-
-            </LinearLayout>
-=======
->>>>>>> 83a4472e498b9ce118288e01cbf3165a2fdef17f -->
+                    </LinearLayout>
+        =======
+        >>>>>>> 83a4472e498b9ce118288e01cbf3165a2fdef17f -->
 
         <View
             android:id="@+id/border_line"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="@color/grey"
+            android:layout_above="@+id/seekbar_linearlayout" />
+
+        <RelativeLayout
+            android:id="@+id/missingArea"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
             android:layout_above="@+id/seekbar_linearlayout"
-            />
+            android:orientation="horizontal"
+            android:background="@color/yellow"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="We don't cater here yet"/>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/seekbar_linearlayout"
@@ -356,8 +394,8 @@
             android:paddingLeft="@dimen/eight_dp"
             android:paddingRight="@dimen/eight_dp"
             android:background="@color/dark_white"
-            android:layout_width="fill_parent"
-            android:layout_height="108dp"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
             android:orientation="vertical"
             android:gravity="bottom"
             android:baselineAligned="false"
@@ -367,17 +405,10 @@
             <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
                 android:id="@+id/phasedSeekBar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
-
+                android:layout_height="match_parent"/>
 
         </LinearLayout>
 
     </RelativeLayout>
-
-
-
-
-
 
 </RelativeLayout>

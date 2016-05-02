@@ -26,7 +26,7 @@ public class AcceptOk {
             this.coolOff = coolOff;
         }
 
-        @SerializedName("cooloff")
+        @SerializedName("cool_off")
         String coolOff;
 
         @SerializedName("message")

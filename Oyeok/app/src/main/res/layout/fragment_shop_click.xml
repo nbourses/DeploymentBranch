@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:rsv="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:rsv="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/homeArea"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/txtRetailOutlet"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:padding="4dp"
+            android:text="Retail Outlet"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/txtFoodOutlet"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginLeft="@dimen/eight_dp"
+            android:padding="4dp"
+            android:text="Food Outlet"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12sp"/>
+
+     <!--   <TextView
+            android:id="@+id/txtBank"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginLeft="@dimen/eight_dp"
+            android:padding="4dp"
+            android:text="Bank"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12sp"/>  -->
+
+        <TextView
+            android:id="@+id/txtBank"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginLeft="@dimen/eight_dp"
+            android:padding="4dp"
+            android:text="Bank"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12sp"/>
+</LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Seater Office"
+        android:gravity="center_horizontal"
+        android:visibility="invisible" />
+
+
+</LinearLayout>

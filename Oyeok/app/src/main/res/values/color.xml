@@ -11,35 +11,11 @@
     <color name="dark_white">#fcfcfc</color>
     <color name="grey">#cccccc</color>
     <color name="greenish_blue">#2DC4B6</color>
+    <color name="logo_background">#0D1D2E</color>
+
+
 
     <!-- Pritam Defined Color end here !-->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     <color name="theme_black">#393939</color>
     <drawable name="theme_black">#393939</drawable>

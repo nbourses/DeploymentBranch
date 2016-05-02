@@ -63,12 +63,11 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GeoFence;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MapWrapperLayout;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.HorizontalPicker.HorizontalPicker;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.QrCode.CaptureActivityAnyOrientation;
+import com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker;
+import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -168,7 +167,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
       View  rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
-        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl,getActivity());
+        droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl,getActivity());
         mDrooms = (TextView) rootView.findViewById(R.id.linearlayout_drooms);
        mVisits = (TextView) rootView.findViewById(R.id.newVisits);
         mQrCode = (ImageView) rootView.findViewById(R.id.qrCode);
@@ -214,7 +213,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         mPhasedSeekBar.setListener(this);
 
         autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
-        autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));		        autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
+        autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
+        autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
         autoCompView.setOnItemClickListener(this);
         //autoCompView.setOnItemClickListener(this);
         autoCompView.setOnClickListener(new View.OnClickListener() {
@@ -291,12 +291,6 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                         // result of the request.
                     }
                 }
-
-
-
-
-
-
                 /*IntentIntegrator.forSupportFragment(RexMarkerPanelScreen.this).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES).setCaptureActivity(CaptureActivityAnyOrientation.class).setOrientationLocked(false).initiateScan();*/
             }
         });
@@ -671,7 +665,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    IntentIntegrator.forSupportFragment(RexMarkerPanelScreen.this).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES).setCaptureActivity(CaptureActivityAnyOrientation.class).setOrientationLocked(false).initiateScan();
+//                    IntentIntegrator.forSupportFragment(RexMarkerPanelScreen.this).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES).setCaptureActivity(CaptureActivityAnyOrientation.class).setOrientationLocked(false).initiateScan();
 
                     // permission was granted, y-------------ay! Do the
                     // contacts-related task you need to do.

@@ -4,9 +4,8 @@ import com.google.gson.JsonElement;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AcceptOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.PreOk;
-
-import java.util.List;
+import com.nbourses.oyeok.models.HdRooms;
+import com.nbourses.oyeok.models.PublishLetsOye;
 
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -62,7 +61,7 @@ public interface OyeokApiService {
     @POST("/1/hailyo/giverating")
     void giveUserRoleRating(@Body Oyeok oyeok, Callback<Oyeok> callback);
 
-    @POST("/1/pre/ok")
+    @POST("/pre/ok")
     void preOk(@Body Oyeok oyeok, Callback<JsonElement> callback);
 
     @POST("/1/lets/oye")
@@ -70,6 +69,12 @@ public interface OyeokApiService {
 
     @POST("/1/ok/accept")
     void acceptOk(@Body Oyeok oyeok, Callback<AcceptOk> callback);
+
+    @POST("/lets/oye")
+    void publishOye(@Body PublishLetsOye publishLetsOye, Callback<PublishLetsOye> callback);
+
+    @POST("/see/hdrooms")
+    void seeHdRooms(@Body HdRooms hdRooms, Callback<PublishLetsOye> callback);
 }
 
 

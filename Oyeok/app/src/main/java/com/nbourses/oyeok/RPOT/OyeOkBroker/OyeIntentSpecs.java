@@ -33,6 +33,7 @@ import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
+import com.nbourses.oyeok.helpers.AppConstants;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
@@ -45,6 +46,8 @@ import retrofit.RetrofitError;
 import static java.lang.Math.log10;
 
 public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInteractionListener {
+
+    private static final String TAG = OyeIntentSpecs.class.getName();
 
     DBHelper dbHelper;
     private Button mOye;
@@ -108,11 +111,8 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
         seeRadioButton= (RadioButton) rootView.findViewById(R.id.seeRadioButton);
         showRadioButton= (RadioButton) rootView.findViewById(R.id.showRadioButton);
         discreteSeekBar=(DiscreteSeekBar) rootView.findViewById(R.id.discreteSeekBar1);
-        pricevalue = (TextView) rootView.findViewById(R.id.textSelected);
-        /*final FragmentManager fm = getChildFragmentManager();
-        final FragmentTransaction ft = fm.beginTransaction();
-        final Fragment fragOne = new MyFragment();*/
 
+        setMinMaxValueForDiscreteSeekBar();
 
         homeImageView.setSelected(true);
         shopImageView.setSelected(false);
@@ -368,17 +368,26 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
             public void onClick(View v) {
                 String[] temp=dataFromMyFragment.split(" ");
                 if(temp.length<=1)
-                {
-                    //Toast.makeText(getActivity(),"Please enter all the fields",Toast.LENGTH_LONG).show();
                     ((MainActivity)getActivity()).showToastMessage("Please enter all the fields");
-                }
                 else
-                letsOye();
+                    letsOye();
             }
         });
 
         // Inflate the layout for this fragment
         return rootView;
+    }
+
+    private void setMinMaxValueForDiscreteSeekBar() {
+        Log.d(TAG, "rentSale "+rentSale);
+        if (rentSale.equalsIgnoreCase("rent")) {
+            discreteSeekBar.setMin(AppConstants.minRent);
+            discreteSeekBar.setMax(AppConstants.maxRent);
+        }
+        else {
+            discreteSeekBar.setMin(AppConstants.minSale);
+            discreteSeekBar.setMax(AppConstants.maxSale);
+        }
     }
 
     @Override
@@ -413,8 +422,6 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
 
         }
         else {
-
-
             Oyeok oyeOk = new Oyeok();
             Log.i("tt="+propertySpecification[2]," size="+propertySpecification[1]+" price="+propertySpecification[4]+" req_avl="+propertySpecification[3]);
             oyeOk.setTt(propertySpecification[2]);
@@ -431,8 +438,6 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
             oyeOk.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
             oyeOk.setPlatform("android");
             Log.i("UserId", "saved in DB");
-
-
         /*oyeOk.setSpecCode("LL-3BHK-9Cr");
         oyeOk.setReqAvl("req");
         oyeOk.setUserId("egtgxhr02ai31a2uzu82ps2bysljv43n");

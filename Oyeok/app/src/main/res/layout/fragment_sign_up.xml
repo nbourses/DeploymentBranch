@@ -14,16 +14,27 @@
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_margin="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign Up"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                android:layout_gravity="center_horizontal"/>
+
             <LinearLayout
                 android:id="@+id/llsignup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="visible">
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/etname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Name"
+                android:singleLine="true"
                 app:met_floatingLabel="highlight"
                 app:met_floatingLabelText="Name"
                 app:met_floatingLabelTextSize="15sp"
@@ -36,38 +47,58 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
+                android:singleLine="true"
                 app:met_floatingLabel="highlight"
                 app:met_floatingLabelText="Email"
                 app:met_floatingLabelTextSize="15sp"
                 app:met_primaryColor="@color/button_background_pressed_end"
                 />
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/etnumber"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:hint="Mobile"
-                app:met_floatingLabel="highlight"
-                app:met_floatingLabelText="Mobile"
-                app:met_floatingLabelTextSize="15sp"
-                app:met_primaryColor="@color/button_background_pressed_end"
-                app:met_baseColor="@android:color/black"
-                />
-            <Button
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/digitsFrame"
+                    android:visibility="invisible">
+
+                    <com.digits.sdk.android.DigitsAuthButton
+                        android:id="@+id/auth_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </FrameLayout>
+
+                <!--              <com.rengwuxian.materialedittext.MaterialEditText
+                                      android:id="@+id/etnumber"
+                                      android:layout_width="match_parent"
+                                      android:layout_height="wrap_content"
+                                      android:inputType="phone"
+                                      android:hint="Mobile"
+                                      app:met_floatingLabel="highlight"
+                                      app:met_floatingLabelText="Mobile"
+                                      app:met_floatingLabelTextSize="15sp"
+                                      app:met_primaryColor="@color/button_background_pressed_end"
+                                      app:met_baseColor="@android:color/black"
+                                      />
+
+                                      -->
+
+
+      <!--    <Button
                 android:id="@+id/sendotp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Continue"
                 android:textColor="@android:color/white"
-                android:background="@color/greenish_blue"/>
+                android:background="@color/greenish_blue"/>  -->
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/llotp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:orientation="vertical">
-                <com.rengwuxian.materialedittext.MaterialEditText
+                android:orientation="vertical"
+                android:visibility="visible"
+                android:paddingTop="15dp">
+         <!--      <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/etvcode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -78,14 +109,14 @@
                     app:met_floatingLabelText="One time password"
                     app:met_floatingLabelTextSize="15sp"
                     app:met_primaryColor="@color/button_background_pressed_end"
-                    />
+                    />  -->
                 <Button
                     android:id="@+id/submitprofile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/greenish_blue"
                     android:textColor="@android:color/white"
-                    android:text="Done"/>
+                    android:text="Done" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

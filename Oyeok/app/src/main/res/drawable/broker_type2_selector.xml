@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!--<item android:drawable="@drawable/broker_type2_selected" android:state_selected="true"/>
+    <item android:drawable="@drawable/broker_type2_pressed" android:state_pressed="true"/>
+    <item android:drawable="@drawable/broker_type2"/>-->
 
+    <item android:drawable="@drawable/sale" android:state_selected="true"/>
+    <item android:drawable="@drawable/sale" android:state_pressed="true"/>
+    <item android:drawable="@drawable/default_seekbar_circle_white"/>
 
-    <selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-        <item android:drawable="@drawable/broker_type2_selected" android:state_selected="true"/>
-        <item android:drawable="@drawable/broker_type2_pressed" android:state_pressed="true"/>
-        <item android:drawable="@drawable/broker_type2"/>
-
-    </selector>
+</selector>
 

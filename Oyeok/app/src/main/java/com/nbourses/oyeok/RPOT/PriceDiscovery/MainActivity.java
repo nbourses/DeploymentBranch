@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.digits.sdk.android.Digits;
 import com.firebase.client.Firebase;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
@@ -40,12 +41,15 @@ import com.nbourses.oyeok.LPOT.PriceDiscoveryLoan.UI.LexMarkerPanelScreen;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.NavDrawer.FragmentDrawer;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.resideMenu.ResideMenu;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.resideMenu.ResideMenuItem;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.User.Profile;
+import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
+import com.nbourses.oyeok.widgets.resideMenu.ResideMenu;
+import com.nbourses.oyeok.widgets.resideMenu.ResideMenuItem;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,12 +58,22 @@ import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
+import io.fabric.sdk.android.Fabric;
+
+
 //import com.rockerhieu.emojicon.EmojiconGridFragment;
 //import com.rockerhieu.emojicon.EmojiconsFragment;
 //import com.rockerhieu.emojicon.emoji.Emojicon;
 
-
 public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener, View.OnClickListener{
+
+
+//digits
+    private static final String TWITTER_KEY = "CE00enRZ4tIG82OJp6vKib8YS";
+    private static final String TWITTER_SECRET = "5AMXDHAXG0luBuuHzSrDLD0AvwP8GzF06klXFgcwnzAVurXUoS";
+//digits ends
+
+
 
     private static final String[] INITIAL_PERMS={
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -97,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     TextView toastText;
     LinearLayout toastLayout;
     private Handler mHandler;
+    boolean netAvailable;
 
     public void setMapsClicked(openMapsClicked mapsClicked) {
         this.mapsClicked = mapsClicked;
@@ -140,7 +155,31 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        //digits
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new TwitterCore(authConfig), new Digits());
+       //digits end
+
+
+
         setContentView(R.layout.activity_main);
+
+        if (General.isNetworkAvailable(getApplicationContext())){
+
+            Log.i("TRACE", "network availability");
+        }
+        else
+
+        {
+            Log.i("TRACE", "network availabil");
+        }
+
+       // netAvailable = General.isNetworkAvailable(getApplicationContext());
+        Log.i("TRACE", "network availability");
+        Log.i("TRACE =", "In main");
+
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -467,7 +506,7 @@ toastLayout.setOnClickListener(new View.OnClickListener() {
     }
 
     @Override
-    public void onDrawerItemSelected(View view, int position) {
+    public void onDrawerItemSelected(View view, int position, String itemTitle) {
         displayView(position);
     }
 

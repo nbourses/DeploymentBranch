@@ -26,7 +26,6 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MapWrapperLayout;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.QrCode.CaptureActivityAnyOrientation;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.rangeSeekBarBrokerTypePanel.marker_pricebar;
 
 
@@ -80,7 +79,7 @@ public class JexMarkerPanelScreen extends Fragment {
             @Override
             public void onClick(View v) {
 
-                IntentIntegrator.forSupportFragment(JexMarkerPanelScreen.this).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES).setCaptureActivity(CaptureActivityAnyOrientation.class).setOrientationLocked(false).initiateScan();
+//                IntentIntegrator.forSupportFragment(JexMarkerPanelScreen.this).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES).setCaptureActivity(CaptureActivityAnyOrientation.class).setOrientationLocked(false).initiateScan();
             }
         });
 

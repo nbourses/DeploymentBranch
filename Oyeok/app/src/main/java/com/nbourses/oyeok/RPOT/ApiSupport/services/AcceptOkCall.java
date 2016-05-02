@@ -2,19 +2,24 @@ package com.nbourses.oyeok.RPOT.ApiSupport.services;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.firebase.client.Firebase;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.Firebase.DroomChatFirebase;
-import com.nbourses.oyeok.Firebase.DroomDetails;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AcceptOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
+import com.nbourses.oyeok.activities.BrokerDealsListActivity;
+import com.nbourses.oyeok.helpers.AppConstants;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +34,7 @@ import retrofit.client.Response;
  */
 public class AcceptOkCall {
     DroomChatFirebase droomChatFirebase;
+    private static final String TAG = "AcceptOkCall";
 
     public void setmCallBack(OnAcceptOkSuccess mCallBack) {
         this.mCallBack = mCallBack;
@@ -37,21 +43,24 @@ public class AcceptOkCall {
     OnAcceptOkSuccess mCallBack;
     public void acceptOk(JSONArray m,int position, final DBHelper dbHelper, final Activity activity) {
         String oyeId=null,oyeUserId=null,tt = null,size=null,price=null,reqAvl=null;
+        Firebase.setAndroidContext(activity);
         droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl,activity);
 
 
         Log.i("mArray= ",m.toString());
         try {
+             Log.i("OKACCPET","position is" +position);
              oyeId=m.getJSONObject(position).getString("oye_id");
+            Log.i("OKACCEPT","oyeId is" +oyeId);
+
              oyeUserId= m.getJSONObject(position).getString("user_id");
             tt=m.getJSONObject(position).getString("tt");
-            size=m.getJSONObject(position).getString("size");
+            //size=m.getJSONObject(position).getString("size");
             price=m.getJSONObject(position).getString("price");
             reqAvl = m.getJSONObject(position).getString("req_avl");
         }
         catch (JSONException e){
             e.printStackTrace();
-            Log.i("Munni","null hai");
         }
 
 
@@ -76,39 +85,64 @@ public class AcceptOkCall {
         acceptOk.setOyeUserId(oyeUserId);
         acceptOk.setTimeToMeet("15");
 
-
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         OyeokApiService user1 = restAdapter.create(OyeokApiService.class);
-        if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable(activity))
-        try {
-            user1.acceptOk(acceptOk, new Callback<AcceptOk>() {
-                @Override
-                public void success(AcceptOk acceptOk, Response response) {
-                    if(acceptOk.responseData.getMessage()==null) {
-                        Log.i("call chala", "nachoo");
-                        String coolOffString =acceptOk.responseData.getCoolOff();
-                        int coolOff=Integer.parseInt(coolOffString);
-                        Bundle args = new Bundle();
-                        args.putString("UserId1", acceptOk.responseData.getOkUserId());
-                        args.putString("UserId2", acceptOk.responseData.getOyeUserId());
-                        args.putString("OkId", acceptOk.responseData.getOkId());
-                        if (mCallBack != null) {
-                            dbHelper.save(DatabaseConstants.coolOff,coolOffString);
-                            dbHelper.save("Time",acceptOk.responseData.getTime().toString());
-                            DroomDetails droomDetails = new DroomDetails();
-                            droomDetails.setTitle("Test Droom");
-                            Log.i("call chala", "nacho2");
-                            droomDetails.setLastMessage("Test Last Message");
-                            droomDetails.setStatus("Test Message Not read");
-                            droomDetails.setTimestamp("Test TimeStamp");
-                            String userId1 = acceptOk.responseData.getOkUserId();
-                            String userId2 = acceptOk.responseData.getOyeUserId();
-                            String okId = acceptOk.responseData.getOkId();
-                            droomChatFirebase.createChatRoom(okId, userId1, userId2, droomDetails);
-                            Log.i("Andhar bhi aaya", "nachoo");
-                            mCallBack.replaceFragment(args);
-                        }
+        Log.i("TRACEOK", "if called "+user1);
+//        if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable(activity))
+        if (isNetworkAvailable(activity)) {
+            try {
+                user1.acceptOk(acceptOk, new Callback<AcceptOk>() {
+                    @Override
+                    public void success(AcceptOk acceptOk, Response response) {
+                        Log.i("TRACEOK", "if called "+response);
+                        if (acceptOk.responseData.getMessage() == null) {
+                            Log.i("TRACEOK", "if called "+response);
+
+                           // Log.d(TAG, "getOyeId " + acceptOk.responseData.getOyeId());
+                            Log.d(TAG, "getOkId " + acceptOk.responseData.getOkId());
+
+                            //String coolOffString = acceptOk.responseData.getCoolOff();
+                            //int coolOff = Integer.parseInt(coolOffString);
+                            Bundle args = new Bundle();
+                            args.putString("UserId1", acceptOk.responseData.getOkUserId()); //broker
+                            args.putString("UserId2", acceptOk.responseData.getOyeUserId()); //client
+                            args.putString("OkId", acceptOk.responseData.getOkId()); //channel id
+
+                            Log.i("TRACEOK", "if called mCallBack"+mCallBack);
+
+                            if (mCallBack != null) {
+                                Log.i("TRACEOK", "if called ");
+                                Log.i("TRACEOK", "if called " +acceptOk.responseData.getMessage());
+
+                               // dbHelper.save(DatabaseConstants.coolOff, coolOffString);
+                     //           dbHelper.save("Time", acceptOk.responseData.getTime().toString());
+
+
+
+                                /* Firebase thing excluded: Ritesh
+//                                DroomDetails droomDetails = new DroomDetails();
+//                                droomDetails.setTitle("Test Droom");
+//                                Log.i("call chala", "nacho2");
+//                                droomDetails.setLastMessage("Test Last Message");
+//                                droomDetails.setStatus("Test Message Not read");
+//                                droomDetails.setTimestamp("Test TimeStamp");
+//                                String userId1 = acceptOk.responseData.getOkUserId();
+//                                String userId2 = acceptOk.responseData.getOyeUserId();
+//                                String okId = acceptOk.responseData.getOkId();
+//                                droomChatFirebase.createChatRoom(okId, userId1, userId2, droomDetails); */
+                                Log.i("TRACEBROKERSIGNUP","2");
+
+                               // mCallBack.replaceFragment(args);
+
+                                Intent openDealsListing = new Intent(activity, BrokerDealsListActivity.class);
+                                //openDealsListing.putExtra("serverMessage", acceptOk.responseData.getMessage());
+                               // Log.i("TRACEOK", "serverMessage " + acceptOk.responseData.getMessage());
+                               // Log.i("TRACEBROKERSIGNUP","3");
+                                activity.startActivity(openDealsListing);
+
+
+                            }
                     /*DroomDetails droomDetails=new DroomDetails();
                     droomDetails.setTitle("Test Droom");
                     droomDetails.setLastMessage("Test Last Message");
@@ -123,15 +157,23 @@ public class AcceptOkCall {
                     droomDetails.setStatus("Message Not read");
                     droomDetails.setTimestamp("TimeStamp");
                     droomChatFirebase.updateChatRoom(okId,userId1,userId2,droomDetails);*/
+                        }
+                        else {
+                            Log.i("TRACE", "else called ");
+                            Log.i("TRACE","serverMessage "+acceptOk.responseData.getMessage());
+
+                            Intent openDealsListing = new Intent(activity, BrokerDealsListActivity.class);
+                            openDealsListing.putExtra("serverMessage", acceptOk.responseData.getMessage());
+                            Log.i("TRACEOK", "serverMessage " + acceptOk.responseData.getMessage());
+                            Log.i("TRACEBROKERSIGNUP","3");
+                            activity.startActivity(openDealsListing);
+                        }
+//                            ((ClientMainActivity) activity).showToastMessage(acceptOk.responseData.getMessage());
+
                     }
-                    else
-                        ( (MainActivity)activity).showToastMessage(acceptOk.responseData.getMessage());
-                       // Log.i("message=",acceptOk.responseData.getMessage());
 
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
+                    @Override
+                    public void failure(RetrofitError error) {
                     /*Log.i("accept error", error.getMessage());
                     Bundle args=new Bundle();
                     args.putString("UserId2","lub8aesblzt8gnokdjlofy5b1xcoduae");
@@ -150,13 +192,29 @@ public class AcceptOkCall {
                         droomChatFirebase.createChatRoom(okId,userId1,userId2,droomDetails);
                         mCallBack.replaceFragment(args);
                     }*/
+                        Log.i("TRACEOK","serverMessage 1");
+                        Log.i("TRACEOK","serverMessage "+ error.getMessage());
+                        Log.i("TRACEOK","open broker deals list activity");
+                        Intent openDealsListing = new Intent(activity, BrokerDealsListActivity.class);
+                        openDealsListing.putExtra("serverMessage", error.getMessage());
+                        Log.i("TRACEBROKERSIGNUP", "4");
 
-                    ( (MainActivity)activity).showToastMessage(error.getMessage());
+                        activity.startActivity(openDealsListing);
 
-                }
-            });
-        }catch (Exception e){
-            Log.i("Exception","caught in accept ok");
+//                        ((ClientMainActivity) activity).showToastMessage(error.getMessage());
+
+                    }
+                });
+            } catch (Exception e) {
+                Log.i("Exception", "caught in accept ok");
+            }
+        }
+        else {
+            SnackbarManager.show(
+                    com.nispok.snackbar.Snackbar.with(activity)
+                            .position(Snackbar.SnackbarPosition.BOTTOM)
+                            .text("Please check your internet connection")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
         }
     }
 

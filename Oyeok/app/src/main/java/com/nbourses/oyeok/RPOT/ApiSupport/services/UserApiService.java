@@ -1,7 +1,5 @@
 package com.nbourses.oyeok.RPOT.ApiSupport.services;
 
-import android.util.Log;
-
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.MobileVerify;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
@@ -9,9 +7,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateProfile;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.http.Body;
-import retrofit.http.GET;
 import retrofit.http.POST;
 
 
@@ -86,7 +82,7 @@ import retrofit.http.POST;
         if user_id is "anonymous" then the user signing up is new user if user_id is "a value" then it's an existing user
         */
 
-        @POST("/1/get/price")
+        @POST("/get/price")
         void getPrice(@Body User user, Callback<GetPrice> callback);
 
         @POST("/1/user/existing")
@@ -108,7 +104,7 @@ import retrofit.http.POST;
 
 
 
-        @POST("/1/update/profile")
+        @POST("/update/profile")
         void userUpdateProfile(@Body User user, Callback<UpdateProfile> callback);
 
         @POST("/1/user/profile")

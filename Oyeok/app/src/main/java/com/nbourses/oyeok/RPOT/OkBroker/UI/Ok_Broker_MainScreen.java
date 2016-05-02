@@ -53,17 +53,17 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
-import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.SlidingTabLayout.PagerItem;
 import com.nbourses.oyeok.RPOT.OkBroker.UI.SlidingTabLayout.SlidingTabLayout;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MapWrapperLayout;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
+import com.nbourses.oyeok.activities.BrokerDealsListActivity;
+import com.nbourses.oyeok.activities.ClientMainActivity;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -85,7 +85,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openMapsClicked,CustomPhasedListener {
+public class Ok_Broker_MainScreen extends Fragment implements ClientMainActivity.openMapsClicked,CustomPhasedListener {
 
     private static final String TAG = Ok_Broker_MainScreen.class.getSimpleName();
     private ViewPager mPager;
@@ -140,12 +140,11 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 //        int width = size.x;
 //        PagerSlidingTabStrip.width = width / 2;
        View  v= inflater.inflate(R.layout.broker_main_screen, container, false);
-        ((MainActivity)getActivity()).setMapsClicked(this);
+//        ((MainActivity)getActivity()).setMapsClicked(this);
 
         //mHideShow = (LinearLayout) v.findViewById(R.id.showMap);
         mMapView = (FrameLayout) v.findViewById(R.id.mapView);
         bPinLocation = (ImageButton)v.findViewById(R.id.bPinLocation);
-
 
         hourGlass1= (ImageView) v.findViewById(R.id.hglass_imageView1);
         aboveImageView1= (ImageView) v.findViewById(R.id.imageView_above1);
@@ -185,12 +184,10 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         dbHelper=new DBHelper(getContext());
 
 
-        if(!dbHelper.getValue(DatabaseConstants.userId).equals("null"))
-        {
+        if(!dbHelper.getValue(DatabaseConstants.userId).equals("null")) {
             hourGlassDetails=hourGlassFirebase.getHourGlassDetails();
             filledHourGlass=hourGlassDetails.getWholeHourGlass();
             percentage=hourGlassDetails.getPercentage();
-
         }
 
         timeCount1.setText("" + totalTime/1000);
@@ -203,7 +200,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         fillHourGlasses(filledHourGlass, percentage);
         updateTotalTime();
 
-        leftHourGlasses=500-filledHourGlass*100-percentage;
+        leftHourGlasses=500-filledHourGlass*100-percentage; //time in sec
 
 
        // earnOk = (Button) v.findViewById(R.id.earnOk);
@@ -214,8 +211,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         mTabs  = (SlidingTabLayout) v.findViewById(R.id.tabs);
         //mTabs.setDistributeEvenly(true);
         ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-        pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
-        pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
+        pagerItems.add(new PagerItem("Tenants", new Req_Rental_Broker_Tenants()));
+        pagerItems.add(new PagerItem("Owners", new Avail_Rental_Broker_Landlords()));
         adapter = new MyPagerAdapter(getChildFragmentManager(),pagerItems);
         mTabs.setDistributeEvenly(true);
         mTabs.setBackgroundColor(Color.parseColor("#031625"));
@@ -265,7 +262,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
         }
 
-        ((MainActivity)getActivity()).changeDrawerToggle(true,"DashBoard");
+//        ((MainActivity)getActivity()).changeDrawerToggle(true,"DashBoard");
 
 
         return v;
@@ -321,7 +318,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     public void onPause() {
 
         super.onPause();
-        ((MainActivity)getActivity()).hideOpenMaps();
+//        ((MainActivity)getActivity()).hideOpenMaps();
     }
 
     @Override
@@ -329,7 +326,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         super.onResume();
 
         //((MainActivity)getActivity()).hideResideMenu();
-        ((MainActivity)getActivity()).showOpenMaps();
+//        ((MainActivity)getActivity()).showOpenMaps();
     }
 
     void startRepeatingTask() {
@@ -352,12 +349,6 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 } else {
             final LocationManager manager = (LocationManager)getActivity(). getSystemService( Context.LOCATION_SERVICE );
 
-
-
-
-
-
-
             if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
                 buildAlertMessageNoGps();
             }
@@ -365,8 +356,6 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                     hideMap(1);
 
                     if (!mFirst) {
-
-
 
                         customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
 
@@ -378,7 +367,6 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                                 map.setMyLocationEnabled(false);
                                 //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, map);
                                 //selectedLocation = map.getCameraPosition().target;
-
 
                             }
                         });
@@ -392,13 +380,13 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
                                     //Toast.makeText(getActivity(), "Moved", Toast.LENGTH_LONG).show();
                                     //mActivity.showToastMessage("Moved");
-                                    ((MainActivity)getActivity()).showToastMessage("Moved");
+                                    ((ClientMainActivity)getActivity()).showToastMessage("Moved");
 
                                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 
                                     //Toast.makeText(getActivity(), "Up", Toast.LENGTH_LONG).show();
                                     //mActivity.showToastMessage("Up");
-                                    ((MainActivity)getActivity()).showToastMessage("Up");
+                                    ((ClientMainActivity)getActivity()).showToastMessage("Up");
                                     if (isNetworkAvailable()) {
 
                                         lat = latlng.latitude;
@@ -607,8 +595,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
             if (position == 2) {
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Loan Seekers", new Loan_Broker_Requirement()));
-                pagerItems.add(new PagerItem("Loan Lenders", new Loan_Broker_Available()));
+                pagerItems.add(new PagerItem("Loan Seekers", new Req_Loan_Broker_Borrowers()));
+                pagerItems.add(new PagerItem("Loan Lenders", new Avail_Loan_Broker_Lenders()));
                 if(isAdded()) {
                     adapter.setPagerItems(pagerItems);
                     adapter.notifyDataSetChanged();
@@ -623,8 +611,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
             if (position == 1) {
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Seekers", new Sale_Broker_Requirement_new()));
-                pagerItems.add(new PagerItem("Owners", new Sale_Broker_Available_new()));
+                pagerItems.add(new PagerItem("Seekers", new Req_Sale_Broker_Buyers_New()));
+                pagerItems.add(new PagerItem("Owners", new Avail_Sale_Broker_Sellers_New()));
                 if(isAdded()) {
                     adapter.setPagerItems(pagerItems);
                     adapter.notifyDataSetChanged();
@@ -639,8 +627,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
             if (position == 0) {
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
-                pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
+                pagerItems.add(new PagerItem("Tenants", new Req_Rental_Broker_Tenants()));
+                pagerItems.add(new PagerItem("Owners", new Avail_Rental_Broker_Landlords()));
                 if(isAdded()) {
                     adapter.setPagerItems(pagerItems);
                     adapter.notifyDataSetChanged();
@@ -655,8 +643,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
             if (position == 3) {
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
-                pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
+                pagerItems.add(new PagerItem("Tenants", new Req_Rental_Broker_Tenants()));
+                pagerItems.add(new PagerItem("Owners", new Avail_Rental_Broker_Landlords()));
                 if(isAdded()) {
                     adapter.setPagerItems(pagerItems);
                     adapter.notifyDataSetChanged();
@@ -673,8 +661,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         else{
             if (position == 1) {
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Seekers", new Sale_Broker_Requirement_new()));
-                pagerItems.add(new PagerItem("Owners", new Sale_Broker_Available_new()));
+                pagerItems.add(new PagerItem("Seekers", new Req_Sale_Broker_Buyers_New()));
+                pagerItems.add(new PagerItem("Owners", new Avail_Sale_Broker_Sellers_New()));
                 if(isAdded()) {
                     adapter.setPagerItems(pagerItems);
                     adapter.notifyDataSetChanged();
@@ -689,8 +677,8 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
 
             if (position == 0) {
                 ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
-                pagerItems.add(new PagerItem("Tenants", new Rental_Broker_Requirement()));
-                pagerItems.add(new PagerItem("Owners", new Rental_Broker_Available()));
+                pagerItems.add(new PagerItem("Tenants", new Req_Rental_Broker_Tenants()));
+                pagerItems.add(new PagerItem("Owners", new Avail_Rental_Broker_Landlords()));
                 if(isAdded()) {
                     adapter.setPagerItems(pagerItems);
                     adapter.notifyDataSetChanged();
@@ -738,16 +726,16 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         public Fragment getItem(int position) {
 //            if(phasedSeekbarPosition == 0) {
 //                if (position == 1) {
-//                    return new Rental_Broker_Available();
+//                    return new Avail_Rental_Broker_Landlords();
 //                } else {
-//                    return new Rental_Broker_Requirement();
+//                    return new Req_Rental_Broker_Tenants();
 //                }
 //            }else
 //            {
 //                if (position == 1) {
-//                    return new Rental_Broker_Available();
+//                    return new Avail_Rental_Broker_Landlords();
 //                } else {
-//                    return new Rental_Broker_Requirement();
+//                    return new Req_Rental_Broker_Tenants();
 //                }
 //
 //            }
@@ -775,14 +763,9 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
     }
 
     public void openDroomList(){
-        Bundle b= new Bundle();
-        b.putString("lastFragment","okBrokerMainScreen");
-        Fragment fragment = new Droom_chats_list();
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragment.setArguments(b);
-        fragmentTransaction.replace(R.id.container_body, fragment);
-        fragmentTransaction.commit();
+        //open deals listing
+        Intent openDealsListing = new Intent(getActivity(), BrokerDealsListActivity.class);
+        startActivity(openDealsListing);
     }
 
 
@@ -791,35 +774,32 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         super.onActivityResult(requestCode, resultCode, data);
 
 
-
         Fragment page = getChildFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + mPager.getCurrentItem());
-
-
         if(currentItem == 0 || currentItem == 3) {
 
             if (mPager.getCurrentItem() == 0) {
-                Rental_Broker_Requirement f = (Rental_Broker_Requirement) page;
+                Req_Rental_Broker_Tenants f = (Req_Rental_Broker_Tenants) page;
                 f.onActivityResult(requestCode, resultCode, data);
             } else {
-                Rental_Broker_Available f = (Rental_Broker_Available) page;
+                Avail_Rental_Broker_Landlords f = (Avail_Rental_Broker_Landlords) page;
                 f.onActivityResult(requestCode, resultCode, data);
             }
         }else if(currentItem == 1) {
 
             if (mPager.getCurrentItem() == 0) {
-                Sale_Broker_Requirement_new f = (Sale_Broker_Requirement_new) page;
+                Req_Sale_Broker_Buyers_New f = (Req_Sale_Broker_Buyers_New) page;
                 f.onActivityResult(requestCode, resultCode, data);
             } else {
-                Sale_Broker_Available_new f = (Sale_Broker_Available_new) page;
+                Avail_Sale_Broker_Sellers_New f = (Avail_Sale_Broker_Sellers_New) page;
                 f.onActivityResult(requestCode, resultCode, data);
             }
         }else if(currentItem == 2) {
 
             if (mPager.getCurrentItem() == 0) {
-                Loan_Broker_Requirement f = (Loan_Broker_Requirement) page;
+                Req_Loan_Broker_Borrowers f = (Req_Loan_Broker_Borrowers) page;
                 f.onActivityResult(requestCode, resultCode, data);
             } else {
-                Loan_Broker_Available f = (Loan_Broker_Available) page;
+                Avail_Loan_Broker_Lenders f = (Avail_Loan_Broker_Lenders) page;
                 f.onActivityResult(requestCode, resultCode, data);
             }
         }
@@ -879,15 +859,16 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                         JSONArray reqOr = neighbours.getJSONArray("req_or");
                         JSONArray avlLl = neighbours.getJSONArray("avl_ll");
                         JSONArray avlOr = neighbours.getJSONArray("avl_or");
-                        //   Log.i("oye_id=", reqLl.getJSONObject(0).getString("oye_id"));
+                        JSONArray jsonPreOkRecent = neighbours.getJSONArray("recent");
+
                         //dbHelper.save(DatabaseConstants.coolOff,coolOffPeriod);
                         dbHelper.save(DatabaseConstants.reqLl, reqLl.toString());
                         dbHelper.save(DatabaseConstants.reqOr, reqOr.toString());
                         dbHelper.save(DatabaseConstants.avlLl, avlLl.toString());
                         dbHelper.save(DatabaseConstants.avlOr, avlOr.toString());
-                        //
-                        //  Log.i("req_ll from db: ", dbHelper.getValue(DatabaseConstants.reqLl));
-                        onPositionSelected(currentItem,currentCount);
+                        dbHelper.save(DatabaseConstants.preOkRecent, jsonPreOkRecent.toString());
+
+                        onPositionSelected(currentItem, currentCount);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -928,7 +909,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 HttpClient httpclient = new DefaultHttpClient();
                 HttpPost httppost = new HttpPost(url);
                 HttpResponse response = httpclient.execute(httppost);
-                HttpEntity entity = response.getEntity();
+                 HttpEntity entity = response.getEntity();
                 is = entity.getContent();
 
             } catch (Exception e) {
@@ -1020,7 +1001,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         @Override
         protected void onPostExecute(String s) {
 
-            MainActivity main = (MainActivity)getActivity();
+            ClientMainActivity main = (ClientMainActivity)getActivity();
             main.setTitle(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) + "," + SharedPrefs.getString(getActivity(), SharedPrefs.MY_CITY));
 
             //TODO: set action bar title here
@@ -1047,12 +1028,11 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                 FragmentManager fragmentManager = getFragmentManager();
 
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.container_body, fragment);
+                fragmentTransaction.replace(R.id.container_map, fragment);
                 fragmentTransaction.commit();
             }
             else
             {
-                
                 dbHelper.save(DatabaseConstants.userRole, "Broker");
                 dbHelper.save(DatabaseConstants.user,"Broker");
                 String API=DatabaseConstants.serverUrl;
@@ -1077,10 +1057,6 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
                                 Log.i("role changed to", "Broker");
                                 AcceptOkCall a = new AcceptOkCall();
                                 a.acceptOk(p,j,dbHelper, getActivity());
-
-
-
-
                             }
 
                             @Override
@@ -1119,7 +1095,7 @@ public class Ok_Broker_MainScreen extends Fragment implements MainActivity.openM
         fragment.setArguments(args);
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container_body, fragment);
+        fragmentTransaction.replace(R.id.container_map, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
 

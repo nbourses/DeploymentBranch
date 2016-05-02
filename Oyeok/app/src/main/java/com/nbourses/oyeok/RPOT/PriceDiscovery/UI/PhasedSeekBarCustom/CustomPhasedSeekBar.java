@@ -13,6 +13,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.helpers.General;
 
 /**
  * Created by prathyush on 03/12/15.
@@ -83,7 +85,6 @@ public class CustomPhasedSeekBar extends View {
 
             TypedArray a = getContext().obtainStyledAttributes(
                     attrs, R.styleable.CustomPhasedSeekBar, defStyleAttr, 0);
-
 
             mBackgroundPaddingRect.left = a.getDimension(R.styleable.CustomPhasedSeekBar_custom_phasedseekbar_marginLeft, 0.0f);
             mBackgroundPaddingRect.top = a.getDimension(R.styleable.CustomPhasedSeekBar_custom_phasedseekbar_marginTop, 0.0f);
@@ -200,10 +201,25 @@ public class CustomPhasedSeekBar extends View {
     }
 
     protected void setCurrentItem(int currentItem) {
+        String TT;
         if (mCurrentItem != currentItem && mListener != null) {
             mListener.onPositionSelected(currentItem,getCount());
         }
         mCurrentItem = currentItem;
+        Log.i("TRACE", "PHASED seekbar current" + mCurrentItem);
+
+        if(mCurrentItem == 0) {
+            TT = "RENTAL";
+        }
+        else{
+            TT = "RESALE";
+        }
+
+        General.setSharedPreferences(getContext(), "TT", TT);
+
+
+
+        //General.getSharedPreferences(getContext(), "TT");
     }
 
     public void setFirstDraw(boolean firstDraw) {
@@ -254,6 +270,7 @@ public class CustomPhasedSeekBar extends View {
         itemOn = stateListDrawable.getCurrent();
 
 
+
         for (int i = 0; i < count; i++) {
            // if ( i == mCurrentItem) continue;
 
@@ -296,25 +313,21 @@ public class CustomPhasedSeekBar extends View {
             try {
                 if( i != mCurrentItem)
                 itemOff.draw(canvas);
-            }catch (Exception e)
-            {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
 
 
             if((2*widthHalf/3)>height/2)
             {
-
                 if( i != 0) {
                     canvas.drawLine(mAnchors[i][0] - (2 * widthHalf / 3), mAnchors[i][1], mAnchors[i][0] - (height / 2), mAnchors[i][1], mLinePaint);
                 }
                 if(i != count-1) {
                     canvas.drawLine(mAnchors[i][0] + (height / 2), mAnchors[i][1], mAnchors[i][0] + (2 * widthHalf / 3), mAnchors[i][1], mLinePaint);
                 }
-
-
             }
-
 
             String s = mAdapter.getTimeDetails(i);
             //int length = (int) (s.length() * 15 *DPTOPX_SCALE)/2;
@@ -333,13 +346,14 @@ public class CustomPhasedSeekBar extends View {
             }
             paint.setTextSize((float) (textSize * DPTOPX_SCALE));
 
-            canvas.drawText(s + " min", mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
-                    10 * DPTOPX_SCALE, paint) ;
-            canvas.drawText(brokerName, mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
-                    24 * DPTOPX_SCALE, paint);
+            /*canvas.drawText(s + " min", mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
+                    10 * DPTOPX_SCALE, paint) ;*/
 
-            canvas.drawText("Broker", mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
-                    2 * mAnchors[i][1] - 10 * DPTOPX_SCALE, paint);
+            canvas.drawText(brokerName, mAnchors[i][0] - (30 * DPTOPX_SCALE / count),
+                    12 * DPTOPX_SCALE, paint);
+
+            /*canvas.drawText("Broker", mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
+                    2 * mAnchors[i][1] - 10 * DPTOPX_SCALE, paint);*/
 
 
         }
