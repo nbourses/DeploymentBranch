@@ -20,7 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.digits.sdk.android.AuthCallback;
@@ -48,6 +50,7 @@ import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.RPOT.Utils.Constant;
 import com.nbourses.oyeok.User.UserProfileViewModel;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
+import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
@@ -83,6 +86,21 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
     @Bind(R.id.submitprofile)
     Button submitBut;
+
+//    @Bind(R.id.listViewDeals)
+//    ListView listViewDeals;
+//
+//    @Bind(R.id.supportChat)
+//    LinearLayout supportChat;
+
+
+    //@Bind(R.id.fragment_container)
+    private FrameLayout fragment_container1;
+    private LinearLayout supportChat;
+    private ListView listViewDeals;
+
+
+
     /* @Bind(R.id.edit) TextView edit;
      @Bind(R.id.etname) EditText name;
      @Bind(R.id.etemail) EditText email;
@@ -168,6 +186,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         redirectToOyeIntentSpecs=true;
 
 
+        View view1 =  inflater.inflate(R.layout.activity_deals_list, container, false);
+        fragment_container1 = (FrameLayout) view1.findViewById(R.id.fragment_container1);
+        supportChat = (LinearLayout) view1.findViewById(R.id.supportChat);
+        listViewDeals = (ListView) view1.findViewById(R.id.listViewDeals);
+
+
         if(lastFragment.equals("RentalBrokerAvailable")||lastFragment.equals("RentalBrokerRequirement")||
                 lastFragment.equals("SaleBrokerAvailable")||lastFragment.equals("SaleBrokerRequirement") ||
                 lastFragment.equals("BrokerPreokFragment")) {
@@ -181,6 +205,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
             redirectToOyeIntentSpecs=true;
             propertySpecification=b.getStringArray("propertySpecification");
         }
+        if(lastFragment.equals("Chat"))
+            redirectToOyeIntentSpecs=false;
+
         Log.i("Signup called =", "view assigned");
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
         dbHelper=new DBHelper(getActivity());
@@ -750,6 +777,26 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 Log.i("TRACEBROKERSIGNUP","1");
                                 a.acceptOk(p,j,dbHelper, getActivity());
 
+                            } else{
+
+                                Log.i("REACHED","I am here");
+                                //showChatList();
+
+
+
+
+                                fragment_container1.setVisibility(View.GONE);
+
+                                supportChat.setVisibility(View.VISIBLE);
+                                listViewDeals.setVisibility(View.VISIBLE);
+                                Log.i("REACHED", "I am here1");
+
+
+
+                                Intent intent = new Intent(getContext(), ClientDealsListActivity.class);
+                                intent.putExtra("default_deal_flag",true);
+                                startActivity(intent);
+                                Log.i("REACHED", "I am here2");
                             }
                         }
 
@@ -851,6 +898,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 setResult(Activity.RESULT_CANCELED, returnIntent);
             }*/
         }
+    }
+
+    public interface ShowChatList
+    {
+        public void showChatList();
+
     }
 
     public void letsOye()

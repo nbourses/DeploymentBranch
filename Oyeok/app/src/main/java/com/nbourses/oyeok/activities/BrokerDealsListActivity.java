@@ -65,6 +65,7 @@ public class BrokerDealsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_broker_deals_list);
 
+
         ButterKnife.bind(this);
 
         init();

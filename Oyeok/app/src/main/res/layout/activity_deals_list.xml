@@ -23,12 +23,20 @@
                 layout="@layout/toolbar" />
         </LinearLayout>
 
-        <include layout="@layout/deal_item" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/supportChat">
+            <include layout="@layout/deal_item" />
+        </LinearLayout>
+
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="?android:attr/listDivider"/>
+
+
 
         <!--<com.cleveroad.androidmanimation.LoadingAnimationView
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -49,8 +57,7 @@
             android:id="@+id/listViewDeals"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar"
-            android:visibility="visible">
+            android:layout_below="@+id/toolbar">
         </ListView>
 
         <!--<TextView
@@ -63,6 +70,31 @@
             android:gravity="center_vertical"
             android:visibility="gone"
             android:textAppearance="?android:attr/textAppearanceLarge"/>-->
+      <!--  <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:layout_weight="1">
+
+        </FrameLayout>   -->
+
+
+
+
+
+            <FrameLayout
+
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/fragment_container1"
+                android:layout_below="@+id/toolbar" />
+
+
     </LinearLayout>
+
+
+
+
 
 </android.support.v4.widget.DrawerLayout>

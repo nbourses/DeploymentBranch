@@ -437,7 +437,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
         if (General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
             Log.i("TRACE", "clicked oyebutton if");
-            //show sign up screen
+            //show ƒlo up screen
             Bundle bundle = new Bundle();
             bundle.putStringArray("propertySpecification", null);
             bundle.putString("lastFragment", "OyeIntentSpecs");

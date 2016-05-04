@@ -163,9 +163,11 @@ public class OyeIntentFragment extends Fragment implements MyFragment.OnFragment
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
                /* if (fromUser) {
                     settings.setTextZoom(value);
+
                 }*/
                 int val= seekBar.getProgress();
                 Log.i("Debug",""+value);
+                value = value * 1000;
 
                 DecimalFormat formatter = new DecimalFormat();
                 //String s = numToVal(value);

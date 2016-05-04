@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +16,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -22,6 +28,7 @@ import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
+import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.adapters.BrokerDealsListAdapter;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -55,6 +62,19 @@ public class ClientDealsListActivity extends AppCompatActivity {
     @Bind(R.id.listViewDeals)
     ListView listViewDeals;
 
+    @Bind(R.id.supportChat)
+    LinearLayout supportChat;
+
+    @Bind(R.id.dealItemRoot)
+    RelativeLayout dealItemRoot;
+//    @Bind(R.id.fragment_container)
+//    FrameLayout fragment_container;
+    @Bind(R.id.fragment_container1)
+    FrameLayout fragment_container1;
+
+
+
+
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
     private boolean default_deal_flag;
@@ -84,11 +104,20 @@ public class ClientDealsListActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
 
         setContentView(R.layout.activity_deals_list);
-       // listViewDeals = (ListView) findViewById(R.id.listViewDeals);
+        listViewDeals = (ListView) findViewById(R.id.listViewDeals);
+        supportChat = (LinearLayout)findViewById(R.id.supportChat);
+        fragment_container1 = (FrameLayout)findViewById(R.id.fragment_container1);
       //  listViewDeals.setAdapter(new SearchingBrokersAdapter(this));
 
+        supportChat.setVisibility(View.VISIBLE);
+        listViewDeals.setVisibility(View.VISIBLE);
+        fragment_container1.setVisibility(View.GONE);
+
         Intent myIntent = getIntent();
-        default_deal_flag = myIntent.getExtras().getBoolean("default_deal_flag");
+      default_deal_flag = myIntent.getExtras().getBoolean("default_deal_flag");
+
+
+
 
         ButterKnife.bind(this);
 
@@ -371,6 +400,9 @@ public class ClientDealsListActivity extends AppCompatActivity {
 
                         }
 
+//                        if(!listBrokerDeals_new)
+//                            listBrokerDeals =
+
                         Log.i("TRACE==","list broker deals" +listBrokerDeals_new);
 
             /*            String[] FirstItem = {"Searching brokers for you."};
@@ -412,7 +444,7 @@ public class ClientDealsListActivity extends AppCompatActivity {
 
                         }   */
 
-                        if (listBrokerDeals.size() > 0) {
+                        if (listBrokerDeals_new.size() > 0) {
 
                             Log.i("TRACE", "NOT inside default deal");
 //                            displayListView();
@@ -433,7 +465,9 @@ public class ClientDealsListActivity extends AppCompatActivity {
                             //append default_deals with listBrokerDeals
 
                             Log.i("Shine", "default_deals2 " + default_deals);
+                            if(listBrokerDeals_new != null)
                             total_deals.addAll(listBrokerDeals_new);
+                            if(default_deals != null)
                             total_deals.addAll(default_deals);
 
 //
@@ -522,13 +556,52 @@ public class ClientDealsListActivity extends AppCompatActivity {
         listViewDeals.setVisibility(View.VISIBLE);
     }*/
 //
+//    @OnClick(R.id.dealItemRoot)
+//    public void onClickDealItemRoot(View v) {
+//        Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+//        intent.putExtra("userRole", "client");
+//        intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
+//        startActivity(intent);
+//    }
+
     @OnClick(R.id.dealItemRoot)
     public void onClickDealItemRoot(View v) {
-        Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
-        intent.putExtra("userRole", "client");
-        intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
-        startActivity(intent);
+
+
+
+        Log.i("USER_ID", " " + General.getSharedPreferences(this, AppConstants.USER_ID).isEmpty());
+
+        if(!General.getSharedPreferences(this ,AppConstants.USER_ID).isEmpty())  {
+
+            Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+            intent.putExtra("userRole", "client");
+//        intent.putExtra("channel_name","my_channel");
+            intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
+            startActivity(intent);
+        }
+        else
+        {
+           supportChat.setVisibility(View.GONE);
+            listViewDeals.setVisibility(View.GONE);
+           fragment_container1.setVisibility(View.VISIBLE);
+            Bundle bundle = new Bundle();
+            bundle.putStringArray("Chat", null);
+            bundle.putString("lastFragment", "Chat");
+
+//            FrameLayout frame = new FrameLayout(this);
+//            frame.setId(SIGNUP_VIEW_ID);
+//            setContentView(frame, new LayoutParams(
+//                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
+
+            SignUpFragment signUpFragment = new SignUpFragment();
+//            signUpFragment.getView().bringToFront();
+            loadFragment(signUpFragment, bundle, R.id.fragment_container1, "");
+            Log.i("Signup called =", "Sign up");
+
+        }
     }
+
 
     /*private void init() {
         try {
@@ -645,6 +718,23 @@ public class ClientDealsListActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(handlePushNewMessage);
         super.onDestroy();
     }
+
+    private void loadFragment(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        //set arguments
+        fragment.setArguments(args);
+//        fragment.getView().bringToFront();
+        //load fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.show(fragment);
+        fragmentTransaction.commitAllowingStateLoss();
+
+        //set title
+//        getSupportActionBar().setTitle(title);
+    }
+
 }
 
 
