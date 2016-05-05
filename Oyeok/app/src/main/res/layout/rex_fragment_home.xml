@@ -126,6 +126,33 @@
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="120dp"/>
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tvFetchingRates"
+                            android:layout_marginRight="20dp"
+                            android:layout_alignTop="@+id/tvCommingsoon"
+                            android:layout_alignStart="@+id/picker"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignEnd="@+id/tvCommingsoon"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:gravity="center"
+                            android:textColor="@color/White" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tvCommingsoon"
+                            android:layout_marginRight="30dp"
+                            android:layout_alignBottom="@+id/picker"
+                            android:layout_alignEnd="@+id/picker"
+                            android:layout_alignTop="@+id/picker"
+                            android:layout_alignStart="@+id/picker"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:textColor="@color/White" />
+
                         <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" >
@@ -145,28 +172,7 @@
                                 android:layout_alignParentRight="true"/>
                         </RelativeLayout>
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" >
-
-                            <TextView
-                                android:id="@+id/txtFilterValue"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:backgroundTint="@color/yellow"
-                                android:text="2BHK"
-                                android:gravity="center"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:background="@drawable/deal_circle"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/twelve_sp"
-                                android:layout_alignParentRight="true"
-                                android:paddingTop="5dp" />
-
-                        </RelativeLayout>
-
-                        <!--<TextView
+                        <TextView
                             android:id="@+id/txtFilterValue"
                             android:layout_width="wrap_content"
                             android:layout_height="fill_parent"
@@ -178,7 +184,7 @@
                             android:background="@drawable/deal_circle"
                             android:textColor="@color/white"
                             android:textSize="@dimen/twelve_sp"
-                            android:layout_alignParentRight="true" />-->
+                            android:layout_alignParentRight="true" />
 
                     </RelativeLayout>
 

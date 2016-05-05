@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -159,6 +160,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private TextView tvRate;
     private TextView rupeesymbol;
     private OnOyeClick onOyeClick;
+    private TextView tvCommingsoon;
+    private TextView tvFetchingrates;
     CustomMapFragment customMapFragment;
 
     private int llMin, llMax, orMin, orMax;
@@ -215,7 +218,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         errorText = (TextView) rootView.findViewById(R.id.errorText);
 
         rupeesymbol = (TextView) rootView.findViewById(R.id.rupeesymbol);
+        tvCommingsoon = (TextView) rootView.findViewById(R.id.tvCommingsoon);
         tvRate = (TextView)rootView.findViewById(R.id.tvRate);
+        tvFetchingrates = (TextView) rootView.findViewById(R.id.tvFetchingRates);
         onPositionSelected(0, 2);
 
         horizontalPicker = (HorizontalPicker)rootView.findViewById(R.id.picker);
@@ -500,6 +505,15 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         UserApiService userApiService = restAdapter.create(UserApiService.class);
+        horizontalPicker.setVisibility(View.INVISIBLE);
+        tvRate.setVisibility(View.INVISIBLE);
+        rupeesymbol.setVisibility(View.INVISIBLE);
+        tvCommingsoon.setVisibility(View.INVISIBLE);
+        tvFetchingrates.setVisibility(View.VISIBLE);
+        tvFetchingrates.setText("Fetching Rates...");
+        tvFetchingrates.setTypeface(null,Typeface.ITALIC);
+        tvFetchingrates.setTextSize(14);
+
         userApiService.getPrice(user, new Callback<GetPrice>() {
             @Override
             public void success(GetPrice getPrice, Response response) {
@@ -526,6 +540,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
                     updateHorizontalPicker();
+                    horizontalPicker.setVisibility(View.VISIBLE);
+                    tvRate.setVisibility(View.VISIBLE);
+                    rupeesymbol.setVisibility(View.VISIBLE);
+                    tvCommingsoon.setVisibility(View.INVISIBLE);
+                    tvFetchingrates.setVisibility(View.INVISIBLE);
 
                     missingArea.setVisibility(View.GONE);
                 }
@@ -534,7 +553,15 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                             Snackbar.with(getActivity())
                                     .text("We don't cater here yet")
                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());*/
+                    horizontalPicker.setVisibility(View.INVISIBLE);
+                    tvRate.setVisibility(View.INVISIBLE);
+                    rupeesymbol.setVisibility(View.INVISIBLE);
 
+                    tvFetchingrates.setVisibility(View.INVISIBLE);
+                    tvCommingsoon.setVisibility(View.VISIBLE);
+                    tvCommingsoon.setText("Coming Soon...");
+                    tvCommingsoon.setTypeface(null,Typeface.BOLD);
+                    tvCommingsoon.setTextSize(18);
                     missingArea.setVisibility(View.VISIBLE);
                     /*missingArea.setAnimation(AnimationUtils.loadAnimation(getActivity(),
                             R.anim.slide_up));*/

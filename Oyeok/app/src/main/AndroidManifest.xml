@@ -43,7 +43,7 @@
         tools:replace="android:icon" >
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA-1FOjfeKbpUOPqc-HLOGAnSN-H5Y2csI" />
+            android:value="AIzaSyD9u7py1PGKcnlrO77NuY_40jxgIOhX34I" />
         <!--
             <meta-data
             android:name="com.google.android.gms.version"
