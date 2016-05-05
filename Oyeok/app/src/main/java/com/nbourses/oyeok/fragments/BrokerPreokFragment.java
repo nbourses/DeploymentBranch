@@ -168,6 +168,11 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         preok.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
         preok.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
         preok.setPlatform("android");
+        if(General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals(""))
+        preok.setUserId("demo_id");
+        else
+            preok.setUserId(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(AppConstants.SERVER_BASE_URL)
