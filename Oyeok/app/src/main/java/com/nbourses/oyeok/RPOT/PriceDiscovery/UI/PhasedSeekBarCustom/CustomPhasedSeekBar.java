@@ -173,16 +173,16 @@ public class CustomPhasedSeekBar extends View {
 
         //Initialize paint objects
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mLinePaint.setColor(Color.parseColor("#757575"));
+        mLinePaint.setColor(Color.parseColor("Black"));
         mLinePaint.setStrokeWidth(5 * DPTOPX_SCALE);
 
-
+//#757575
         mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mCirclePaint.setColor(Color.parseColor("#FFFFFF"));
+        mCirclePaint.setColor(Color.parseColor("White"));
         mCirclePaint.setStyle(Paint.Style.FILL);
 
         mCircleStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mCircleStrokePaint.setColor(Color.parseColor("#9E9E9E"));
+        mCircleStrokePaint.setColor(Color.parseColor("Grey"));
         mCircleStrokePaint.setStrokeWidth(2 * DPTOPX_SCALE);
         mCircleStrokePaint.setStyle(Paint.Style.STROKE);
 
@@ -196,7 +196,7 @@ public class CustomPhasedSeekBar extends View {
 
     }
 
-    protected int getCount() {
+      protected int getCount() {
         return isInEditMode() ? 3 : mAdapter.getCount();
     }
 
@@ -292,7 +292,7 @@ public class CustomPhasedSeekBar extends View {
             int height = itemOff.getIntrinsicHeight();
             int m = 2*widthHalf/3;
             int l = height/2;
-            int radius = Math.min(l,m);
+            int radius = Math.min(l,m)/2;
 
             canvas.drawCircle(mAnchors[i][0],mAnchors[i][1],radius,mCirclePaint);
             canvas.drawCircle(mAnchors[i][0], mAnchors[i][1], radius, mCircleStrokePaint);
@@ -319,7 +319,7 @@ public class CustomPhasedSeekBar extends View {
             }
 
 
-            if((2*widthHalf/3)>height/2)
+           if((2*widthHalf/3)>height/2)
             {
                 if( i != 0) {
                     canvas.drawLine(mAnchors[i][0] - (2 * widthHalf / 3), mAnchors[i][1], mAnchors[i][0] - (height / 2), mAnchors[i][1], mLinePaint);
@@ -361,7 +361,7 @@ public class CustomPhasedSeekBar extends View {
         int height = itemOn.getIntrinsicHeight();
         int width  = itemOn.getIntrinsicWidth();
 
-        int radius = Math.min(height/2,width/2);
+        int radius = Math.min(height,width);
 
         if(mFirstDraw)
         {
@@ -420,7 +420,7 @@ public class CustomPhasedSeekBar extends View {
     }
 
     protected int getNormalizedX(MotionEvent event) {
-        return Math.min(Math.max((int) event.getX(), mItemHalfWidth), getWidth() - mItemHalfWidth);
+       return Math.min(Math.max((int) event.getX(), mItemHalfWidth), getWidth() - mItemHalfWidth);
     }
 
 
