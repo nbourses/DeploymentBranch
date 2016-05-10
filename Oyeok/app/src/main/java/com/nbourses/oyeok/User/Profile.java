@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -28,6 +29,8 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateProfile;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.helpers.AppConstants;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -83,12 +86,12 @@ public class Profile extends Fragment {
         }
 
         profileImage= (ImageView)layout.findViewById(R.id.profile_image);
-        if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
-            Log.i("Profile","name "+dbhelper.getValue(DatabaseConstants.imageFilePath));
-            filePath = dbhelper.getValue(DatabaseConstants.imageFilePath);
-            Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-            profileImage.setImageBitmap(yourSelectedImage);
-        }
+//        if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
+//            Log.i("Profile","name "+dbhelper.getValue(DatabaseConstants.imageFilePath));
+//            filePath = dbhelper.getValue(DatabaseConstants.imageFilePath);
+//            Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
+//            profileImage.setImageBitmap(yourSelectedImage);
+//        }
 
         updateProfile= (Button) layout.findViewById(R.id.update_profile);
         updateProfile.setOnClickListener(new View.OnClickListener() {
@@ -97,16 +100,18 @@ public class Profile extends Fragment {
             }
         });
 
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                Log.i("Profile","Profile image updated");
-                //intent.putExtra("crop","true");
-                //intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, 1);
-            }
-        });
+//        profileImage.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View arg0) {
+//                Intent intent = new Intent(Intent.ACTION_PICK);
+//                intent.setType("image/*");
+//                Log.i("Profile","Profile image updated");
+//                //intent.putExtra("crop","true");
+//               // intent.setAction(Intent.ACTION_GET_CONTENT);
+//                startActivityForResult(intent, 1);
+//            }
+//        });
+        // set cursor at the end
+        username_txt.setSelection(username_txt.getText().length());
 
 //        ((MainActivity)getActivity()).changeDrawerToggle(false,"Profile");
 
@@ -167,17 +172,24 @@ public class Profile extends Fragment {
             @Override
             public void success(UpdateProfile updateProfile, Response response) {
                 Log.i("Profile","success"+response);
+                SnackbarManager.show(
+                    Snackbar.with(getContext())
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("Profile updated successfully")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
-                dbhelper.save(DatabaseConstants.email, emailTxt.getText().toString());
+
+                        dbhelper.save(DatabaseConstants.email, emailTxt.getText().toString());
                 dbhelper.save(DatabaseConstants.name,username_txt.getText().toString());
                 dbhelper.save(DatabaseConstants.imageFilePath,filePath);
                 //drawerFragment = (FragmentDrawer) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
 
                 profileImageMain = (ImageView)getActivity().findViewById(R.id.profile_image_main);
-                if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
-                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbhelper.getValue(DatabaseConstants.imageFilePath));
-                   // profileImageMain.setImageBitmap(yourSelectedImage);
-                }
+//                if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
+//                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbhelper.getValue(DatabaseConstants.imageFilePath));
+//                    profileImageMain.setImageBitmap(yourSelectedImage);
+//                }
+
             }
 
             @Override

@@ -89,6 +89,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     @Bind(R.id.deal)
     Button deal;
+    @Bind(R.id.hdroomsCount)
+    TextView hdroomsCount;
 
     @Bind(R.id.notClicked)
     LinearLayout notClicked;
@@ -135,6 +137,14 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     }
 
     private void init() {
+
+        if(General.getBadgeCount(getContext(),AppConstants.HDROOMS_COUNT)<=0)
+            hdroomsCount.setVisibility(View.GONE);
+        else {
+            hdroomsCount.setVisibility(View.VISIBLE);
+            hdroomsCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT)));
+        }
+
         mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(),
                 new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
                 new String[]{"30", "15"},
@@ -187,7 +197,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(AppConstants.SERVER_BASE_URL_101)
+                .setEndpoint(AppConstants.SERVER_BASE_URL)
                 .build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
@@ -203,11 +213,11 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                         Log.i("PREOK CALLED","neighbours"+ne);
                         Log.i("PREOK CALLED","neighbours"+neighbours);
 
-                        jsonArrayReqLl = neighbours.getJSONArray("req_ll");;//neighbours.getJSONArray("req_ll");
-                        jsonArrayAvlLl = neighbours.getJSONArray("avl_ll");//neighbours.getJSONArray("avl_ll");
+                        jsonArrayReqLl = neighbours.getJSONArray("recent");;//neighbours.getJSONArray("req_ll");
+                        jsonArrayAvlLl = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_ll");
 
-                        jsonArrayReqOr = neighbours.getJSONArray("req_or");//neighbours.getJSONArray("req_or");
-                        jsonArrayAvlOr = neighbours.getJSONArray("avl_or");//neighbours.getJSONArray("avl_or");
+                        jsonArrayReqOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("req_or");
+                        jsonArrayAvlOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_or");
 
                         Log.i("PREOK CALLED","jsonArrayReqLl"+jsonArrayReqLl);
                         Log.i("PREOK CALLED","jsonArrayAvlLl"+jsonArrayAvlLl);

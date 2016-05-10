@@ -1,5 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="right"
+    android:id="@+id/dealsWrapper">
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dealsWrap">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone" />
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textSize="15dp"
+        android:text="Notifications"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
+
+    <TextView
+
+        android:id="@+id/supportCount"
+        android:layout_toRightOf="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:background="@android:drawable/ic_notification_overlay"
+        android:text="23"
+        android:layout_alignParentRight="true"
+        android:textSize="12sp"
+        android:textStyle="bold"
+          />
+    </LinearLayout>
+    <!-- android:layout_above="@+id/btnMyDeals" -->
+
+
+</RelativeLayout>
+
+<!--
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true">
@@ -15,4 +65,14 @@
         android:textColor="@color/black"
         android:textStyle="bold" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/supportBadge" />
+
 </RelativeLayout>
+
+-->
+
+

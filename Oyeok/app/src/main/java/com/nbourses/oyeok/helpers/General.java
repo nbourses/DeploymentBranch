@@ -76,6 +76,23 @@ public class General extends BroadcastReceiver{
     }
 
 
+    public static void setBadgeCount(Context context, String prefName, int value) {
+        Log.i("TRACE","inside shared pref "+prefName +value);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(prefName, value);
+        editor.commit();
+    }
+
+    public static int getBadgeCount(Context context, String prefName) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Log.i("TRACE", "rt" + prefName);
+
+        return prefs.getInt(prefName, 0);
+    }
+
+
+
     public static void saveDefaultDeals(Context context, String value) {
 
             Log.i("TRACE", "save default deal inside" + value);

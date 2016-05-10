@@ -23,6 +23,7 @@ import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -40,9 +41,9 @@ public class MyGcmListenerService extends GcmListenerService {
     private static final String TAG = "MyGcmListenerService";
     public static int NOTIFICATION_ID = 1;
     Boolean RefreshDrooms = false;
-    private int badgeCount = 1;
-    private int supportCount = 1;
-    private int hdRoomsCount = 1;
+    private int badgeCount;
+    private int supportCount;
+    private int hdRoomsCount;
     /**
      * Called when message is received.
      *
@@ -55,11 +56,17 @@ public class MyGcmListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
 
 
-        Log.i(TAG,"before apply count "+badgeCount);
-        ShortcutBadger.applyCount(this, badgeCount);
-        badgeCount++;
-        Log.i(TAG,"after apply count "+badgeCount);
 
+        //clear all badge counts
+//        General.setBadgeCount(getApplicationContext(),AppConstants.HDROOMS_COUNT,0);
+//        General.setBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT,0);
+//        General.setBadgeCount(getApplicationContext(),AppConstants.SUPPORT_COUNT,0);
+
+        badgeCount = General.getBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT);
+        supportCount = General.getBadgeCount(getApplicationContext(),AppConstants.SUPPORT_COUNT);
+        hdRoomsCount = General.getBadgeCount(getApplicationContext(),AppConstants.HDROOMS_COUNT);
+
+        //ShortcutBadger.applyCount(this, badgeCount);
 
         String title = data.getString("title");
         String message = data.getString("message");
@@ -76,6 +83,29 @@ public class MyGcmListenerService extends GcmListenerService {
         Log.d(TAG, "Message: " + message);     //["+918483014575","ritesh"]
 
         Log.d(TAG, "ROLE_OF_USER: " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
+
+        //Update hdRoomsCount badge
+
+        try{
+            JSONObject json = new JSONObject(data.getString("message"));
+
+                okId = json.getString("ok_id");
+            if(!okId.equals("")){
+                hdRoomsCount++;
+                badgeCount++;
+                Log.i(TAG,"badecount hd rooms badgeCount "+badgeCount);
+                Log.i(TAG,"badecount hd rooms hdRoomsCount "+hdRoomsCount);
+
+                ShortcutBadger.applyCount(this, badgeCount);
+                General.setBadgeCount(getApplicationContext(),AppConstants.HDROOMS_COUNT,hdRoomsCount);
+                General.setBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT,badgeCount);
+            }
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
         if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equals("client")) {

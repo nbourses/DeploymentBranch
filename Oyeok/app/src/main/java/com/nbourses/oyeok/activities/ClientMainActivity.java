@@ -4,8 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -90,6 +88,9 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.btnOnOyeClick)
     Button btnOnOyeClick;
 
+    @Bind(R.id.hdroomsCount)
+    TextView hdroomsCount;
+
     private WebView webView;
 
     public interface openMapsClicked{
@@ -116,6 +117,8 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
+
+       //
 
         if (General.isNetworkAvailable(getApplicationContext())) {
 
@@ -156,6 +159,12 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
      * init all components
      */
     private void init() {
+        if(General.getBadgeCount(this,AppConstants.HDROOMS_COUNT)<=0)
+            hdroomsCount.setVisibility(View.GONE);
+        else {
+            hdroomsCount.setVisibility(View.VISIBLE);
+            hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)));
+        }
 
         //You need to set the Android context using Firebase.setAndroidContext() before using Firebase.
         Firebase.setAndroidContext(this);
@@ -242,12 +251,12 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
-        if(!dbHelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
-            Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbHelper.getValue(DatabaseConstants.imageFilePath));
-            profileImage.setImageBitmap(yourSelectedImage);
-
-
-        }
+//        if(!dbHelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
+//            Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbHelper.getValue(DatabaseConstants.imageFilePath));
+//            profileImage.setImageBitmap(yourSelectedImage);
+//
+//
+//        }
         if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
             if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
                 emailTxt.setVisibility(View.VISIBLE);

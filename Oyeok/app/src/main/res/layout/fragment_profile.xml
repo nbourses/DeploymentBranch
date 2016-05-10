@@ -21,9 +21,13 @@
             android:layout_width="match_parent"
             android:layout_height="132dp"
             android:text="USERNAME"
+            android:textCursorDrawable="@null"
+            android:singleLine="true"
             android:id="@+id/txt_user"
             android:textColor="#ffffff"
             android:hint="Enter Name"
+            android:textColorHint="#bebcbc"
+            android:cursorVisible="true"
             android:layout_gravity="center_vertical|center_horizontal"
             android:gravity="center"
             android:textSize="25sp"/>
@@ -63,6 +67,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:textSize="20sp"
             android:id="@+id/txt_email"
             android:background="@null"

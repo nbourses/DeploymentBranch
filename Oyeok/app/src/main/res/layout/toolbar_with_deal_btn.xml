@@ -84,12 +84,7 @@
 
     -->
 
-    <RelativeLayout
-        android:id="@+id/badge_layout2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></RelativeLayout>
-
-    <RelativeLayout
+    <!--<RelativeLayout
         android:id="@+id/badge_layout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -117,6 +112,7 @@
             android:textSize="12sp"
             android:textStyle="bold" />
     </RelativeLayout>
+    -->
 
 
     <RelativeLayout
@@ -150,7 +146,7 @@
         </LinearLayout>
         <TextView
 
-            android:id="@+id/badge_notification_2"
+            android:id="@+id/hdroomsCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#fff"
