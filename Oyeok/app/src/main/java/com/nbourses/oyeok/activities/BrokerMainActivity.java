@@ -96,9 +96,15 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
-        if(!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
-            emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
 
+        if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+            if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+                emailTxt.setVisibility(View.VISIBLE);
+                emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
+
+            }
+        }else{
+            emailTxt.setVisibility(View.INVISIBLE);
         }
     }
 

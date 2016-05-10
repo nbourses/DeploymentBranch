@@ -59,23 +59,32 @@ public class Profile extends Fragment {
         dbhelper=new DBHelper(getActivity());
         username_txt=(EditText)layout.findViewById(R.id.txt_user);
         updateProfile= (Button)layout.findViewById(R.id.update_profile);
-        if(!dbhelper.getValue(DatabaseConstants.name).equals("null"))
+        if(!dbhelper.getValue(DatabaseConstants.name).equals("null")) {
+            Log.i("Profile","name "+dbhelper.getValue(DatabaseConstants.name));
             username_txt.setText(dbhelper.getValue(DatabaseConstants.name));
+        }
 
         phoneTxt= (TextView) layout.findViewById(R.id.txt_phone);
-        if(!dbhelper.getValue(DatabaseConstants.mobileNumber).equals("null"))
+        if(!dbhelper.getValue(DatabaseConstants.mobileNumber).equals("null")) {
+            Log.i("Profile","name "+dbhelper.getValue(DatabaseConstants.mobileNumber));
             phoneTxt.setText(dbhelper.getValue(DatabaseConstants.mobileNumber));
+        }
 
         emailTxt=(EditText)layout.findViewById(R.id.txt_email);
-        if(!dbhelper.getValue(DatabaseConstants.email).equals("null"))
+        if(!dbhelper.getValue(DatabaseConstants.email).equals("null")) {
+            Log.i("Profile","email "+dbhelper.getValue(DatabaseConstants.email));
             emailTxt.setText(dbhelper.getValue(DatabaseConstants.email));
+        }
 
         role_txt=(TextView)layout.findViewById(R.id.txt_role);
-        if(!dbhelper.getValue(DatabaseConstants.user).equals("null"))
+        if(!dbhelper.getValue(DatabaseConstants.user).equals("null")) {
+            Log.i("Profile","user "+dbhelper.getValue(DatabaseConstants.user));
             role_txt.setText(dbhelper.getValue(DatabaseConstants.user));
+        }
 
         profileImage= (ImageView)layout.findViewById(R.id.profile_image);
         if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
+            Log.i("Profile","name "+dbhelper.getValue(DatabaseConstants.imageFilePath));
             filePath = dbhelper.getValue(DatabaseConstants.imageFilePath);
             Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
             profileImage.setImageBitmap(yourSelectedImage);
@@ -92,6 +101,7 @@ public class Profile extends Fragment {
             public void onClick(View arg0) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
+                Log.i("Profile","Profile image updated");
                 //intent.putExtra("crop","true");
                 //intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, 1);
@@ -108,6 +118,7 @@ public class Profile extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i("Profile","onActivity result");
 
         //switch(requestCode) {
                         /*case 1234:*/
@@ -149,12 +160,14 @@ public class Profile extends Fragment {
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         UserApiService userApiService = restAdapter.create(UserApiService.class);
+        Log.i("Profile","update profile request call"+user);
         //if (dbhelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
         userApiService.userUpdateProfile(user, new Callback<UpdateProfile>() {
 
             @Override
             public void success(UpdateProfile updateProfile, Response response) {
-                Log.i("update profile", "success");
+                Log.i("Profile","success"+response);
+
                 dbhelper.save(DatabaseConstants.email, emailTxt.getText().toString());
                 dbhelper.save(DatabaseConstants.name,username_txt.getText().toString());
                 dbhelper.save(DatabaseConstants.imageFilePath,filePath);
@@ -163,13 +176,13 @@ public class Profile extends Fragment {
                 profileImageMain = (ImageView)getActivity().findViewById(R.id.profile_image_main);
                 if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
                     Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbhelper.getValue(DatabaseConstants.imageFilePath));
-                    profileImageMain.setImageBitmap(yourSelectedImage);
+                   // profileImageMain.setImageBitmap(yourSelectedImage);
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.i("update profile", "failed");
+                Log.i("update profile", "failed "+error );
             }
         });
     }

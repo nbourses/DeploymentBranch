@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -154,11 +155,13 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     String lastFragment="";
     private String role_of_user;
     private Activity activity;
-////////////////////////////////////////////////////
+    private Button submit;
+    ////////////////////////////////////////////////////
     // Variables defined for digits authentication
 ////////////////////////////////////////////////////
     private AuthCallback authCallback;
     private String mobile_number="";
+
 
 
     private static final String TWITTER_KEY = "CE00enRZ4tIG82OJp6vKib8YS";
@@ -178,6 +181,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         b=getArguments();
         redirectToOyeIntentSpecs=false;
         okBroker=false;
+
         if(b.getString("lastFragment")!=null)
             if(b.getString("lastFragment")!=null)
                 lastFragment=b.getString("lastFragment");
@@ -194,7 +198,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
         if(lastFragment.equals("RentalBrokerAvailable")||lastFragment.equals("RentalBrokerRequirement")||
                 lastFragment.equals("SaleBrokerAvailable")||lastFragment.equals("SaleBrokerRequirement") ||
-                lastFragment.equals("BrokerPreokFragment")) {
+                lastFragment.equals("BrokerPreokFragment")||lastFragment.equals("ChatBroker")) {
             okBroker = true;
             redirectToOyeIntentSpecs = false;
         }
@@ -205,8 +209,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
             redirectToOyeIntentSpecs=true;
             propertySpecification=b.getStringArray("propertySpecification");
         }
-        if(lastFragment.equals("Chat"))
-            redirectToOyeIntentSpecs=false;
+        if(lastFragment.equals("Chat")) {
+            redirectToOyeIntentSpecs = false;
+        }
 
         Log.i("Signup called =", "view assigned");
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
@@ -301,7 +306,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
         name= (EditText) view.findViewById(R.id.etname);
         email= (EditText) view.findViewById(R.id.etemail);
-        Button submit=(Button)view.findViewById(R.id.submitprofile);
+        submit=(Button)view.findViewById(R.id.submitprofile);
 
 
 
@@ -429,6 +434,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
                     //UserCredentials.saveString(this, PreferenceKeys.MY_SHORTMOBILE_KEY, Snumber);
                     userProfileViewModel.setName(Sname);
+
                     userProfileViewModel.setEmailId(Semail);
                     userProfileViewModel.setMobileNumber(mobile_number);
             /*Str_Lat = UserCredentials.getString(this, PreferenceKeys.MY_CUR_LAT);    //FirebaseClass.getString(this,FirebaseClass.MY_CUR_LAT);
@@ -636,7 +642,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
     public void submitButton() {
 
-
+        submit.setEnabled(false);
+        submit.setBackgroundColor(ContextCompat.getColor(context, R.color.grey));
+        submit.setText("Registering...");
 
 
 
@@ -723,6 +731,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         userProfileViewModel.setName(Sname);
         userProfileViewModel.setEmailId(Semail);
         userProfileViewModel.setDeviceId(my_user_id);
+        General.setSharedPreferences(getContext(),AppConstants.NAME,Sname); //necessary to get name for default deal
+
 
         if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
             try {
@@ -731,6 +741,13 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                     @Override
                     public void success(SignUp signUp, retrofit.client.Response response) {
                         Log.i("TAG", "Inside signup success");
+//                        SnackbarManager.show(
+//                                Snackbar.with(context)
+//                                        .position(Snackbar.SnackbarPosition.BOTTOM)
+//                                        .text("Please wait we are signing you up.")
+//                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+
 
                         my_user_id = signUp.responseData.getUserId();
 
@@ -764,7 +781,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                             letsOye();
                         else
                         {
-                            if(okBroker){
+                            if(okBroker && !(lastFragment.equals("ChatBroker"))){
                                 jsonArray=b.getString("JsonArray");
                                 try {
                                     p=new JSONArray(jsonArray);
@@ -831,6 +848,10 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
                     @Override
                     public void failure(RetrofitError error) {
+
+                        submit.setEnabled(true);
+                        submit.setBackgroundColor(ContextCompat.getColor(context, R.color.greenish_blue));
+                        submit.setText("DONE");
 
                         Log.i("TRACE","in signup failure");
                         Log.i("TRACE", "Inside signup Failure" + error);

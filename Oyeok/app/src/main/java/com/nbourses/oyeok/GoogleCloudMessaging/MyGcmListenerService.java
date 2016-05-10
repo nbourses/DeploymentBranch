@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 /**
  * Created by YASH_SHAH on 28/12/2015.
  */
@@ -38,6 +40,9 @@ public class MyGcmListenerService extends GcmListenerService {
     private static final String TAG = "MyGcmListenerService";
     public static int NOTIFICATION_ID = 1;
     Boolean RefreshDrooms = false;
+    private int badgeCount = 1;
+    private int supportCount = 1;
+    private int hdRoomsCount = 1;
     /**
      * Called when message is received.
      *
@@ -48,6 +53,13 @@ public class MyGcmListenerService extends GcmListenerService {
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
+
+
+        Log.i(TAG,"before apply count "+badgeCount);
+        ShortcutBadger.applyCount(this, badgeCount);
+        badgeCount++;
+        Log.i(TAG,"after apply count "+badgeCount);
+
 
         String title = data.getString("title");
         String message = data.getString("message");

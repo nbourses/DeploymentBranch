@@ -7,18 +7,16 @@
     android:minHeight="?attr/actionBarSize"
     android:background="?attr/colorPrimary"
     local:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    local:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    local:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-    >
-    <Button
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:visibility="gone"
-        android:background="@drawable/ic_menu_24dp"
-        android:id="@+id/residemenu_rightmenu_titlebar"
-        android:layout_gravity="right|center_vertical"
-        android:layout_marginRight="10dp"/>
 
+
+
+<!--
+<FrameLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="right">
     <Button
         android:id="@+id/btnMyDeals"
         android:layout_width="wrap_content"
@@ -28,6 +26,186 @@
         android:text="DEALS"
         android:textSize="18sp"
         android:textColor="@color/white"
-        android:background="@drawable/rounded_deals_button"/>
+        android:background="@drawable/rounded_deals_button"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/badge_notification_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:background="@android:drawable/ic_notification_overlay"
+        android:text="23"
+        android:textColor="#FFF"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+
+
+
+</FrameLayout>
+-->
+<!--
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right">
+        <Button
+            android:id="@+id/btnMyDeals"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="8dp"
+            android:text="DEALS"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_deals_button"
+            android:layout_alignParentTop="true"/>
+
+        <TextView
+            android:id="@+id/badge_notification_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:background="@android:drawable/ic_notification_overlay"
+            android:text="23"
+            android:textColor="#FFF"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_alignEnd="@id/btnMyDeals"
+            android:layout_gravity="top|right"
+            />
+
+
+
+
+    </RelativeLayout>
+
+    -->
+
+    <RelativeLayout
+        android:id="@+id/badge_layout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/badge_layout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/relative_layout_item_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="40dip"
+                android:layout_height="40dip"
+                android:background="@drawable/support" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/badge_notification_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/relative_layout_item_count"
+            android:background="@android:drawable/ic_notification_overlay"
+            android:text="27"
+            android:textColor="#FFF"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:id="@+id/dealsWrapper">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/dealsWrap"
+            >
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:visibility="gone" />
+        <Button
+            android:id="@+id/btnMyDeals"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="8dp"
+            android:layout_alignParentRight="true"
+            android:text="DEALS"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_deals_button" />
+        </LinearLayout>
+        <TextView
+
+            android:id="@+id/badge_notification_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:background="@android:drawable/ic_notification_overlay"
+            android:text="23"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_alignParentRight="true"  />
+           <!-- android:layout_above="@+id/btnMyDeals" -->
+
+
+    </RelativeLayout>
+
+<!-- <RelativeLayout
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:id="@+id/dealsWrapper"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:visibility="gone" />
+        <Button
+            android:id="@+id/btnMyDeals"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="8dp"
+            android:layout_alignParentRight="true"
+            android:text="DEALS"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_deals_button" />
+        </LinearLayout>
+        <TextView
+
+            android:id="@+id/badge_notification_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:background="@android:drawable/ic_notification_overlay"
+            android:text="23"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_alignParentRight="true"  />
+
+
+
+</RelativeLayout> -->
+
 
 </android.support.v7.widget.Toolbar>

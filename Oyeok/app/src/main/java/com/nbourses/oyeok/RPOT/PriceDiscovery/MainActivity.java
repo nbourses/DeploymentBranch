@@ -202,8 +202,12 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         setSupportActionBar(mToolbar);
 
+
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
         {

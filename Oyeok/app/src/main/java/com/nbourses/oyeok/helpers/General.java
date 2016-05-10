@@ -207,7 +207,9 @@ public class General extends BroadcastReceiver{
             String json = gson.toJson(AppConstants.letsOye);
 
             Log.d(TAG, "AppConstants.letsOye "+json);
-            Log.i("TRACE", "AppConstants.letsOye " + json);
+            Log.i("TRACE","Get user Id from model "+AppConstants.letsOye.getUserId());
+
+            Log.i("TRACE", "AppConstants.letsOye from model " + json);
 
             JSONObject jsonObj = new JSONObject(json);
             tt = jsonObj.getString("tt");
@@ -296,7 +298,17 @@ public class General extends BroadcastReceiver{
                 //set gcmId
                 AppConstants.letsOye.setGcmId(SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
 
-                Log.i("TRACE", "is networking available" + SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
+                Log.i("TRACE", "GCM id is" + SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
+
+                Log.i("TRACE","Get user Id from model "+AppConstants.letsOye.getUserId());
+                Log.i("TRACE","Get user Id from model "+AppConstants.letsOye.getGcmId());
+
+
+                Log.i("TRACE", "AppConstants.letsOye direct" + AppConstants.letsOye);
+                final Gson gsona = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                String jsona = gsona.toJson(AppConstants.letsOye);
+
+                Log.i(TAG, "AppConstants.letsOye parsed "+jsona);
                 RestAdapter restAdapter = new RestAdapter
                                             .Builder()
                                             .setEndpoint(AppConstants.SERVER_BASE_URL)

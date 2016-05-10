@@ -174,8 +174,8 @@ public class ClientDealsListActivity extends AppCompatActivity {
                     Log.d("CHATTRACE","default drooms"+entry);
                     String ok_id = entry.getKey();
                     String specs = entry.getValue();
-
-                    BrokerDeals dealsa = new BrokerDeals(ok_id,specs, true);
+                    String name = General.getSharedPreferences(this,AppConstants.NAME);  //name of client to show in default deal title
+                    BrokerDeals dealsa = new BrokerDeals(name,ok_id,specs, true);
 
                     if (default_deals == null) {
                         default_deals = new ArrayList<BrokerDeals>();
@@ -274,6 +274,7 @@ public class ClientDealsListActivity extends AppCompatActivity {
     getSupportActionBar().setTitle("My Deals");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
     }
 
@@ -685,8 +686,9 @@ public class ClientDealsListActivity extends AppCompatActivity {
                 while (iter.hasNext()) {
                     Map.Entry<String,String> entry = iter.next();
                     Log.d(TAG,"entry.getKey"+entry.getKey());
+                    String name = General.getSharedPreferences(context,AppConstants.NAME);  //name of client to show in default deal title
 
-                    BrokerDeals dealsa = new BrokerDeals(entry.getKey(),entry.getValue(),true);
+                    BrokerDeals dealsa = new BrokerDeals(name, entry.getKey(),entry.getValue(),true);
 
                     if (default_deals == null) {
                         default_deals = new ArrayList<BrokerDeals>();

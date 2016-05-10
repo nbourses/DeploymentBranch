@@ -200,11 +200,38 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             }
         });
 
+      //  RelativeLayout re = (RelativeLayout) findViewById(R.id.badge);
         //setup toolbar
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Client");
+       getSupportActionBar().setDisplayShowHomeEnabled(true);
+       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+  //      mToolbar.setNavigationIcon(R.drawable.home);
+       getSupportActionBar().setTitle("Client");
+
+    //    getSupportActionBar().setIcon(R.drawable.ic_launcher); // or setLogo()
+    //    getSupportActionBar().setLogo(R.drawable.industry);
+
+//        ActionBar actionbar = getSupportActionBar ();
+//        actionbar.setDisplayHomeAsUpEnabled(true);
+//        actionbar.setHomeAsUpIndicator(R.drawable.home);
+
+
+//        mToolbar.setNavigationIcon(R.drawable.home);
+//        mToolbar.setTitle("Title");
+//        mToolbar.setSubtitle("Sub");
+//        mToolbar.setLogo(R.drawable.ic_launcher);
+
+
+   //  getSupportActionBar().setHomeAsUpIndicator(R.drawable.shop);
+//        if (Build.VERSION.SDK_INT >= 18) {
+//            getSupportActionBar().setHomeAsUpIndicator(
+//                    getResources().getDrawable(R.drawable.home));
+//        }
+
+
+
+
+
 
         //TODO: need to validate this functionality
         dbHelper = new DBHelper(getBaseContext());
@@ -221,10 +248,22 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
 
         }
-        if(!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
-            emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
+        if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+            if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+                emailTxt.setVisibility(View.VISIBLE);
+                emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
 
+            }
+        }else{
+            emailTxt.setVisibility(View.INVISIBLE);
         }
+
+
+
+
+
+
+
 
 
         //by default load map view

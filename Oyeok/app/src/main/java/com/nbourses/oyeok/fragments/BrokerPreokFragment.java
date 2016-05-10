@@ -103,7 +103,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private JSONArray jsonArrayReqOr;
     private JSONArray jsonArrayAvlLl;
     private JSONArray jsonArrayAvlOr;
-    private JSONArray jsonArrayPreokRecent;
+  //  private JSONArray jsonArrayPreokRecent;
 
     private String strTenants = "Tenants";
     private String strOwners = "Owners";
@@ -156,6 +156,18 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         preok();
     }
 
+
+    public void refreshCircularSeekbar(JSONArray arr,int currentSeekbarPosition){
+
+
+
+
+
+
+        circularSeekbar.setValues(arr.toString());
+
+    }
+
     /**
      * load preok data by making server API call
      */
@@ -175,7 +187,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(AppConstants.SERVER_BASE_URL)
+                .setEndpoint(AppConstants.SERVER_BASE_URL_101)
                 .build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
@@ -188,24 +200,30 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                     try {
                         JSONObject ne = new JSONObject(k.toString());
                         JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
-
+                        Log.i("PREOK CALLED","neighbours"+ne);
                         Log.i("PREOK CALLED","neighbours"+neighbours);
 
-                        jsonArrayReqLl = neighbours.getJSONArray("recent");;//neighbours.getJSONArray("req_ll");
-                        jsonArrayAvlLl = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_ll");
+                        jsonArrayReqLl = neighbours.getJSONArray("req_ll");;//neighbours.getJSONArray("req_ll");
+                        jsonArrayAvlLl = neighbours.getJSONArray("avl_ll");//neighbours.getJSONArray("avl_ll");
 
-                        jsonArrayReqOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("req_or");
-                        jsonArrayAvlOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_or");
+                        jsonArrayReqOr = neighbours.getJSONArray("req_or");//neighbours.getJSONArray("req_or");
+                        jsonArrayAvlOr = neighbours.getJSONArray("avl_or");//neighbours.getJSONArray("avl_or");
 
-                        jsonArrayPreokRecent = neighbours.getJSONArray("recent");
+                        Log.i("PREOK CALLED","jsonArrayReqLl"+jsonArrayReqLl);
+                        Log.i("PREOK CALLED","jsonArrayAvlLl"+jsonArrayAvlLl);
+                        Log.i("PREOK CALLED","jsonArrayReqOr"+jsonArrayReqOr);
+                        Log.i("PREOK CALLED","jsonArrayAvlOr"+jsonArrayAvlOr);
+
+
+                       // jsonArrayPreokRecent = neighbours.getJSONArray("recent");
                         //if all values are empty then show from resent
-                        if (jsonArrayReqLl.length() == 0 && jsonArrayAvlLl.length() == 0 &&
-                                jsonArrayReqOr.length() == 0 && jsonArrayAvlOr.length() == 0) {
-                            jsonArrayReqLl = jsonArrayPreokRecent;
-                            jsonArrayAvlLl = jsonArrayPreokRecent;
-                            jsonArrayReqOr = jsonArrayPreokRecent;
-                            jsonArrayAvlOr = jsonArrayPreokRecent;
-                        }
+//                        if (jsonArrayReqLl.length() == 0 && jsonArrayAvlLl.length() == 0 &&
+//                                jsonArrayReqOr.length() == 0 && jsonArrayAvlOr.length() == 0) {
+//                            jsonArrayReqLl = jsonArrayPreokRecent;
+//                            jsonArrayAvlLl = jsonArrayPreokRecent;
+//                            jsonArrayReqOr = jsonArrayPreokRecent;
+//                            jsonArrayAvlOr = jsonArrayPreokRecent;
+//                        }
 
 
                         onPositionSelected(currentSeekbarPosition, currentCount);
@@ -236,15 +254,46 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         if (v.getId() == txtOption1.getId()) {
             txtOption1.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption1.getText().toString();
+            Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
+
+           // update circular seekbar
+
+            if (currentOptionSelectedString.equalsIgnoreCase(strSeekers))
+                currentOptionSelectedString = strTenants;
+            Log.i("PREOK CALLED","currentOptionSelectedString1 phase"+currentOptionSelectedString);
+            if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
+                Log.i("PREOK CALLED","values set phase"+jsonArrayReqLl.toString());
+                circularSeekbar.setValues(jsonArrayReqLl.toString());
+            }
+            else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
+                Log.i("PREOK CALLED", "values set phase" + jsonArrayAvlLl.toString());
+                circularSeekbar.setValues(jsonArrayAvlLl.toString());
+            }
 
         }
         else if (v.getId() == txtOption2.getId()) {
             txtOption2.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption2.getText().toString();
+            Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
             rentText.setVisibility(View.GONE);
             displayOkText.setVisibility(View.GONE);
             texPtype.setVisibility(View.GONE);
             texPstype.setVisibility(View.GONE);
+            // update circular seekbar
+
+            if (currentOptionSelectedString.equalsIgnoreCase(strTenants))
+                currentOptionSelectedString = strSeekers;
+            Log.i("PREOK CALLED","currentOptionSelectedString2 phase"+currentOptionSelectedString);
+
+            if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
+                Log.i("PREOK CALLED", "values set phase" + jsonArrayReqOr.toString());
+                circularSeekbar.setValues(jsonArrayReqOr.toString());
+            }
+            else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
+                Log.i("PREOK CALLED", "values set phase" + jsonArrayAvlOr.toString());
+                circularSeekbar.setValues(jsonArrayAvlOr.toString());
+            }
+
         }
 
         onPositionSelected(currentSeekbarPosition, currentCount);
@@ -253,6 +302,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     @Override
     public void onPositionSelected(int position, int count) {
         currentSeekbarPosition = position;
+        Log.i("PREOK CALLED","currentSeekbarPosition"+currentSeekbarPosition);
 
         if (position == 0) {
             //rental
@@ -262,11 +312,16 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
             if (currentOptionSelectedString.equalsIgnoreCase(strSeekers))
                 currentOptionSelectedString = strTenants;
+            Log.i("PREOK CALLED","currentOptionSelectedString1"+currentOptionSelectedString);
 
-            if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants))
+            if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
+                Log.i("PREOK CALLED","values set"+jsonArrayReqLl.toString());
                 circularSeekbar.setValues(jsonArrayReqLl.toString());
-            else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners))
+            }
+            else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
+                Log.i("PREOK CALLED", "values set" + jsonArrayAvlLl.toString());
                 circularSeekbar.setValues(jsonArrayAvlLl.toString());
+            }
         }
         else if (position == 1) {
             //sale
@@ -276,11 +331,16 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
             if (currentOptionSelectedString.equalsIgnoreCase(strTenants))
                 currentOptionSelectedString = strSeekers;
+            Log.i("PREOK CALLED","currentOptionSelectedString2"+currentOptionSelectedString);
 
-            if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers))
+            if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
+                Log.i("PREOK CALLED", "values set" + jsonArrayReqOr.toString());
                 circularSeekbar.setValues(jsonArrayReqOr.toString());
-            else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller))
+            }
+            else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
+                Log.i("PREOK CALLED", "values set" + jsonArrayAvlOr.toString());
                 circularSeekbar.setValues(jsonArrayAvlOr.toString());
+            }
         }
 
         synchronized (circularSeekbar) {

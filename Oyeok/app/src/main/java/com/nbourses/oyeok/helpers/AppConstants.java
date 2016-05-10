@@ -19,10 +19,12 @@ public class AppConstants {
     public static final String IS_LOGGED_IN_USER = "isLoggedInUser";
 
     public static final String USER_ID = "userId";
+    public static final String NAME = "name";
 
     public static PublishLetsOye letsOye = new PublishLetsOye();
 
     public static final String SERVER_BASE_URL = "https://ssl.hailyo.com/1";
+    public static final String SERVER_BASE_URL_101 = "https://ssl.hailyo.com/1.01";
 
     public static final String OK_ID = "ok_id";
 

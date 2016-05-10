@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:local="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,15 +10,20 @@
     local:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     local:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 
-    >
+    tools:showIn="@layout/activity_main">
+
     <Button
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:visibility="gone"
+
         android:background="@drawable/ic_menu_24dp"
         android:id="@+id/residemenu_rightmenu_titlebar"
         android:layout_gravity="right|center_vertical"
         android:layout_marginRight="10dp"/>
+    <!--android:background="@drawable/ic_menu_24dp"-->
+
+
 
     <Button
         android:id="@+id/openmaps"
