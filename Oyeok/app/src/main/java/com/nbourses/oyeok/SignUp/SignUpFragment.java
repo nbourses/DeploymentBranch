@@ -807,6 +807,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
 
                                 Intent intent = new Intent(getContext(), BrokerDealsListActivity.class);
+                                intent.putExtra("userRole", "broker");
                                 //intent.putExtra("default_deal_flag",true);
                                 startActivity(intent);
 

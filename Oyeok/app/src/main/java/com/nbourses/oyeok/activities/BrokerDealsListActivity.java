@@ -20,6 +20,8 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.nbourses.oyeok.Database.DBHelper;
+import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
@@ -51,6 +53,7 @@ import retrofit.mime.TypedByteArray;
 public class BrokerDealsListActivity extends AppCompatActivity {
 
     private static final String TAG = "BrokerDealsListActivity";
+    private DBHelper dbHelper;
 
     @Bind(R.id.listViewDeals)
     ListView listViewDeals;
@@ -97,6 +100,8 @@ public class BrokerDealsListActivity extends AppCompatActivity {
     }
 
     private void init() {
+
+        dbHelper = new DBHelper(this);
         /*mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setMessage("Loading...Please wait...");
@@ -296,8 +301,7 @@ public class BrokerDealsListActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putStringArray("Chat", null);
             bundle.putString("lastFragment", "ChatBroker");
-
-
+            dbHelper.save(DatabaseConstants.userRole, "Broker");
 
 
 //            FrameLayout frame = new FrameLayout(this);
