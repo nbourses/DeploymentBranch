@@ -794,7 +794,28 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 Log.i("TRACEBROKERSIGNUP","1");
                                 a.acceptOk(p,j,dbHelper, getActivity());
 
-                            } else{
+                            }
+                            else if(okBroker && lastFragment.equals("ChatBroker")){
+                                //broker sign up from support chat click
+
+                                fragment_container1.setVisibility(View.GONE);
+
+                                supportChat.setVisibility(View.VISIBLE);
+                                listViewDeals.setVisibility(View.VISIBLE);
+                                Log.i("REACHED", "I am here1");
+
+
+
+                                Intent intent = new Intent(getContext(), BrokerDealsListActivity.class);
+                                //intent.putExtra("default_deal_flag",true);
+                                startActivity(intent);
+
+
+
+                        }
+
+
+                            else{
 
                                 Log.i("REACHED","I am here");
                                 //showChatList();

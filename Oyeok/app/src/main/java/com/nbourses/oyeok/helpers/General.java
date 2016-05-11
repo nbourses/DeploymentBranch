@@ -531,8 +531,13 @@ public class General extends BroadcastReceiver{
 
         */
 
-        if(!(haveConnectedMobile) || !(haveConnectedWifi))
+        if(!(haveConnectedMobile) && !(haveConnectedWifi))
             Toast.makeText(context, "INTERNET CONNECTIVITY NOT AVAILABLE", Toast.LENGTH_LONG).show();
+        SnackbarManager.show(
+                    Snackbar.with(context)
+                            .position(Snackbar.SnackbarPosition.BOTTOM)
+                            .text("INTERNET CONNECTIVITY NOT AVAILABLE")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
     }
 }
