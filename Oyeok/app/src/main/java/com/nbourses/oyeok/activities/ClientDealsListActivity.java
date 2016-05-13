@@ -67,7 +67,7 @@ public class ClientDealsListActivity extends AppCompatActivity {
 
     @Bind(R.id.dealItemRoot)
     RelativeLayout dealItemRoot;
-//    @Bind(R.id.fragment_container)
+    //    @Bind(R.id.fragment_container)
 //    FrameLayout fragment_container;
     @Bind(R.id.fragment_container1)
     FrameLayout fragment_container1;
@@ -107,14 +107,14 @@ public class ClientDealsListActivity extends AppCompatActivity {
         listViewDeals = (ListView) findViewById(R.id.listViewDeals);
         supportChat = (LinearLayout)findViewById(R.id.supportChat);
         fragment_container1 = (FrameLayout)findViewById(R.id.fragment_container1);
-      //  listViewDeals.setAdapter(new SearchingBrokersAdapter(this));
+        //  listViewDeals.setAdapter(new SearchingBrokersAdapter(this));
 
         supportChat.setVisibility(View.VISIBLE);
         listViewDeals.setVisibility(View.VISIBLE);
         fragment_container1.setVisibility(View.GONE);
 
         Intent myIntent = getIntent();
-      default_deal_flag = myIntent.getExtras().getBoolean("default_deal_flag");
+        default_deal_flag = myIntent.getExtras().getBoolean("default_deal_flag");
 
 
 
@@ -136,62 +136,62 @@ public class ClientDealsListActivity extends AppCompatActivity {
         //call API to load deals for broker
 
 //        if(default_deal_flag)
-  //     {
-            //Log.i("TRACE", "Spec code from shared prefs" + General.getSharedPreferences(this, "MY_SPEC_CODE"));
-          //  String OK_id= General.getSharedPreferences(this, "OK_ID");
+        //     {
+        //Log.i("TRACE", "Spec code from shared prefs" + General.getSharedPreferences(this, "MY_SPEC_CODE"));
+        //  String OK_id= General.getSharedPreferences(this, "OK_ID");
 
 
 
+if(!RefreshDrooms) {
 
-            deals = General.getDefaultDeals(this);
-        Log.d("CHATTRACE","deals from shared"+deals);
-            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-            HashMap<String, String> deals1 = null;
-        if(deals != null) {
-            deals1 = gson.fromJson(deals, type);
-        }
+    Log.i("TRACE", "refreshdrooms is not set "+RefreshDrooms);
+    deals = General.getDefaultDeals(this);
+    Log.d("CHATTRACE", "deals from shared" + deals);
+    java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+    }.getType();
+    HashMap<String, String> deals1 = null;
+    if (deals != null) {
+        deals1 = gson.fromJson(deals, type);
+    }
 
 
-            Log.i("TRACE","values after " +deals1);
-            if(deals1 == null){
-                deals1 = new HashMap<String, String>();
-                Log.i("TRACE","values after initialization " +deals1);
+    Log.i("TRACE", "values after " + deals1);
+    if (deals1 == null) {
+        deals1 = new HashMap<String, String>();
+        Log.i("TRACE", "values after initialization " + deals1);
 
+    }
+
+    if (deals1 != null) {
+
+
+        Iterator<Map.Entry<String, String>> iter = deals1.entrySet().iterator();
+
+        while (iter.hasNext()) {
+            Map.Entry<String, String> entry = iter.next();
+            Log.i(TAG, "entry.getKey" + entry.getKey());
+            Log.i(TAG, "entry.getKeystring" + entry.getKey().toString());
+            Log.i(TAG, "entry.getvalue" + entry.getValue());
+
+            Log.d("CHATTRACE", "default drooms" + entry);
+            String ok_id = entry.getKey();
+            String specs = entry.getValue();
+            String name = General.getSharedPreferences(this, AppConstants.NAME);  //name of client to show in default deal title
+            BrokerDeals dealsa = new BrokerDeals(name, ok_id, specs, true);
+
+            if (default_deals == null) {
+                default_deals = new ArrayList<BrokerDeals>();
             }
+            Log.i(TAG, "default deals are" + default_deals);
+            default_deals.add(dealsa);
 
-            if(deals1 != null) {
-
-
-
-                Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
-
-                while (iter.hasNext()) {
-                    Map.Entry<String,String> entry = iter.next();
-                    Log.i(TAG,"entry.getKey"+entry.getKey());
-                    Log.i(TAG,"entry.getKeystring"+entry.getKey().toString());
-                    Log.i(TAG, "entry.getvalue" + entry.getValue());
-
-                    Log.d("CHATTRACE","default drooms"+entry);
-                    String ok_id = entry.getKey();
-                    String specs = entry.getValue();
-                    String name = General.getSharedPreferences(this,AppConstants.NAME);  //name of client to show in default deal title
-                    BrokerDeals dealsa = new BrokerDeals(name,ok_id,specs, true);
-
-                    if (default_deals == null) {
-                        default_deals = new ArrayList<BrokerDeals>();
-                    }
-                    Log.i(TAG,"default deals are"+default_deals);
-                    default_deals.add(dealsa);
-
-                    }
-                }
-
+        }
+    }
 
 
 
 
       /*        Before adding OK id as chanel name in default dealing rooms
-
                 Collection d = deals1.values();
                 Log.i("TRACE", "values after jugad collection" + d);
                 Iterator it = d.iterator();
@@ -218,7 +218,6 @@ public class ClientDealsListActivity extends AppCompatActivity {
 
    /*         default_deals = new ArrayList<BrokerDeals>();
            Iterator it = General.getDefaultDeals(this).iterator();
-
             while (it.hasNext()) {
                 //System.out.println(it.next());
                 String s= it.next().toString();
@@ -227,51 +226,52 @@ public class ClientDealsListActivity extends AppCompatActivity {
 //                Log.i("TRACE", "element of set Set from shared" + deals);
                 default_deals.add(deals);
                // Log.i("TRACE", "element of set Set from shared tostring" + it.next().toString());
-
-
             } */
-            //Log.i("TRACE", "ele"+default_deals);
-            //deals = new BrokerDeals(General.getSharedPreferences(this, "MY_SPEC_CODE"));
-           // Log.i("TRACE", "ment");
+    //Log.i("TRACE", "ele"+default_deals);
+    //deals = new BrokerDeals(General.getSharedPreferences(this, "MY_SPEC_CODE"));
+    // Log.i("TRACE", "ment");
 
 
+    if (default_deals != null) {
+        BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
+        listViewDeals.setAdapter(listAdapter);
+        Log.i("inside adapter ", "object " + listAdapter);
 
-        if(default_deals != null) {
-            BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
-            listViewDeals.setAdapter(listAdapter);
-            Log.i("inside adapter ", "object " + listAdapter);
+        listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-            listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-                    Log.i("TRACE","default deals adapter clicked" +position);
-
-
-                    BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-
-                    Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
-                    intent.putExtra("userRole", "client");
-
-                    intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
-                    Log.i("TRACE", "ment" + AppConstants.OK_ID);
-
-                    startActivity(intent);
-                }
-            });
+                Log.i("TRACE", "default deals adapter clicked" + position);
 
 
-        }
+                BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
 
-            //save default deal
- //       }//Log.i("TRACE", "Get default deal" + General.getDefaultDeals(this));
+                Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+                intent.putExtra("userRole", "client");
 
+                intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                Log.i("TRACE", "ment" + AppConstants.OK_ID);
+
+                startActivity(intent);
+            }
+        });
+
+
+    }
 
     loadBrokerDeals();
 
+}
+
+        //save default deal
+        //       }//Log.i("TRACE", "Get default deal" + General.getDefaultDeals(this));
+
+
+
+
         setSupportActionBar(mToolbar);
 
-    getSupportActionBar().setTitle("My Deals");
+        getSupportActionBar().setTitle("My Deals");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -281,7 +281,6 @@ public class ClientDealsListActivity extends AppCompatActivity {
     /*private void dismissProgressBar() {
         *//*if (mProgressDialog.isShowing())
             mProgressDialog.dismiss();*//*
-
         *//*progressBar.pauseAnimation();
         progressBar.setVisibility(View.GONE);*//*
     }*/
@@ -302,15 +301,143 @@ public class ClientDealsListActivity extends AppCompatActivity {
         startActivity(new Intent(this, ClientMainActivity.class));
     }
 
+
+
+
+
+
+
+    private void loadDefaultDeals(){
+
+        Log.i("TRACE", "refreshdrooms is not set "+RefreshDrooms);
+        deals = General.getDefaultDeals(this);
+        Log.d("CHATTRACE", "deals from shared" + deals);
+        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+        }.getType();
+        HashMap<String, String> deals1 = null;
+        if (deals != null) {
+            deals1 = gson.fromJson(deals, type);
+        }
+
+
+        Log.i("TRACE", "values after " + deals1);
+        if (deals1 == null) {
+            deals1 = new HashMap<String, String>();
+            Log.i("TRACE", "values after initialization " + deals1);
+
+        }
+
+        if (deals1 != null) {
+
+
+            Iterator<Map.Entry<String, String>> iter = deals1.entrySet().iterator();
+
+            while (iter.hasNext()) {
+                Map.Entry<String, String> entry = iter.next();
+                Log.i(TAG, "entry.getKey" + entry.getKey());
+                Log.i(TAG, "entry.getKeystring" + entry.getKey().toString());
+                Log.i(TAG, "entry.getvalue" + entry.getValue());
+
+                Log.d("CHATTRACE", "default drooms" + entry);
+                String ok_id = entry.getKey();
+                String specs = entry.getValue();
+                String name = General.getSharedPreferences(this, AppConstants.NAME);  //name of client to show in default deal title
+                BrokerDeals dealsa = new BrokerDeals(name, ok_id, specs, true);
+
+                if (default_deals == null) {
+                    default_deals = new ArrayList<BrokerDeals>();
+                }
+                Log.i(TAG, "default deals are" + default_deals);
+                default_deals.add(dealsa);
+
+            }
+        }
+
+
+
+
+      /*        Before adding OK id as chanel name in default dealing rooms
+                Collection d = deals1.values();
+                Log.i("TRACE", "values after jugad collection" + d);
+                Iterator it = d.iterator();
+                while (it.hasNext()) {
+                    // Log.i("TRACE", "values from hashmap " +it.next());
+                    String s = it.next().toString();
+                    Log.i("TRACE", "element of set Set from shared == " + s);
+                    BrokerDeals dealsa = new BrokerDeals(s,ok_id);
+                    Log.i("TRACE", "*************");
+                    Log.i("TRACE", "ele" + default_deals);
+                    Log.i("TRACE", "element of set Set from shared" + dealsa);
+                    // Log.i("TRACE", "default_deals type" + dealswa.getClass().getName());
+                    // Log.i("TRACE", "default_deals type" + default_deals.getClass().getName());
+                    if (default_deals == null) {
+                        default_deals = new ArrayList<BrokerDeals>();
+                    }//default_deals.addAll(dealsa);
+                    default_deals.add(dealsa);
+                }  */
+
+
+
+
+
+
+   /*         default_deals = new ArrayList<BrokerDeals>();
+           Iterator it = General.getDefaultDeals(this).iterator();
+            while (it.hasNext()) {
+                //System.out.println(it.next());
+                String s= it.next().toString();
+                Log.i("TRACE", "element of set Set from shared == " + s);
+               deals = new BrokerDeals(s);
+//                Log.i("TRACE", "element of set Set from shared" + deals);
+                default_deals.add(deals);
+               // Log.i("TRACE", "element of set Set from shared tostring" + it.next().toString());
+            } */
+        //Log.i("TRACE", "ele"+default_deals);
+        //deals = new BrokerDeals(General.getSharedPreferences(this, "MY_SPEC_CODE"));
+        // Log.i("TRACE", "ment");
+
+
+        if (default_deals != null) {
+            BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
+            listViewDeals.setAdapter(listAdapter);
+            Log.i("inside adapter ", "object " + listAdapter);
+
+            listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                    Log.i("TRACE", "default deals adapter clicked" + position);
+
+
+                    BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
+
+                    Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+                    intent.putExtra("userRole", "client");
+
+                    intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                    Log.i("TRACE", "ment" + AppConstants.OK_ID);
+
+                    startActivity(intent);
+                }
+            });
+
+
+        }
+
+
+    }
+
+
+
     private void loadBrokerDeals() {
 
 
-       // String defaultOK = "{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"Searching for brokers\"}],\"for_oks\":[]}";
-       // Log.i("TRACE","DefailtOK" +defaultOK);
-       // JSONObject jsonObj = new JSONObject("{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"LL-200+-15000\"}],\"for_oks\":[]}");
+        // String defaultOK = "{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"Searching for brokers\"}],\"for_oks\":[]}";
+        // Log.i("TRACE","DefailtOK" +defaultOK);
+        // JSONObject jsonObj = new JSONObject("{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"LL-200+-15000\"}],\"for_oks\":[]}");
 
 
-    Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
         RestAdapter restAdapter = new RestAdapter
                 .Builder()
@@ -411,38 +538,31 @@ public class ClientDealsListActivity extends AppCompatActivity {
                         ArrayAdapter<String> Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,FirstItem);
                         listViewDeals.setAdapter(Adapter); */
 
-                       // listViewDeals = (ListView) findViewById(R.id.listViewDeals);
+                        // listViewDeals = (ListView) findViewById(R.id.listViewDeals);
 
-      ////                 listViewDeals.setAdapter(new SearchingBrokersAdapter(getApplicationContext()));
+                        ////                 listViewDeals.setAdapter(new SearchingBrokersAdapter(getApplicationContext()));
                   /*     listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                            @Override
                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-
                            }
                        });  */
 
                        /* if(listBrokerDeals.size()<= 0)
                         {
                             Log.i("TRACE","inside default deal");
-
                             BrokerDeals deals = new BrokerDeals();
                             ArrayList bdeals = new ArrayList<BrokerDeals>();
                             bdeals.add(deals);
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(bdeals,getApplicationContext());
                             listViewDeals.setAdapter(listAdapter);
                             Log.i("TRACE","Default deal is "+bdeals);
-
                         } */
 
                     /*    if(listBrokerDeals.size()<= 0)
                         {
                             Log.i("TRACE","inside default deal");
-
                             listViewDeals = (ListView) findViewById(R.id.listViewDeals);
                             listViewDeals.setAdapter(new SearchingBrokersAdapter(getApplicationContext()));
-
                         }   */
 
                         if (listBrokerDeals_new.size() > 0) {
@@ -467,9 +587,9 @@ public class ClientDealsListActivity extends AppCompatActivity {
 
                             Log.i("Shine", "default_deals2 " + default_deals);
                             if(listBrokerDeals_new != null)
-                            total_deals.addAll(listBrokerDeals_new);
+                                total_deals.addAll(listBrokerDeals_new);
                             if(default_deals != null)
-                            total_deals.addAll(default_deals);
+                                total_deals.addAll(default_deals);
 
 //
                             // }
@@ -477,45 +597,45 @@ public class ClientDealsListActivity extends AppCompatActivity {
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
 
 
-                          if(RefreshDrooms) {
+                            if(RefreshDrooms) {
 
-                              Log.i("Shine", "Drooms refreshed");
-                              listViewDeals.setAdapter(listAdapter);
-                              listAdapter.notifyDataSetChanged();
-                               //listViewDeals.setAdapter(null);
-                               //listViewDeals.setAdapter(listAdapter);
-                           }else {
-                               Log.i("Shine", "Drooms not refreshed");
-
-
-                               listViewDeals.setAdapter(listAdapter);
-                               listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                   @Override
-                                   public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-                                       Log.i("TRACE", "main deals adapter clicked" + position);
+                                Log.i("Shine", "Drooms refreshed");
+                                listViewDeals.setAdapter(listAdapter);
+                                listAdapter.notifyDataSetChanged();
+                                //listViewDeals.setAdapter(null);
+                                //listViewDeals.setAdapter(listAdapter);
+                            }else {
+                                Log.i("Shine", "Drooms not refreshed");
 
 
-                                       final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-                                       String json = gson.toJson(AppConstants.letsOye);
+                                listViewDeals.setAdapter(listAdapter);
+                                listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-                                       Log.d(TAG, "AppConstants.letsOye " + json);
-                                       Log.i("TRACE", "AppConstants.letsOye " + json);
-
-
-                                       BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-
-                                       Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
-                                       intent.putExtra("userRole", "client");
-                                       intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
-                                       intent.putExtra("isDefaultDeal",brokerDeals.getdefaultDeal());
-                                       Log.i("TRACE DEALS FLAG 2", "FLAG " + brokerDeals.getdefaultDeal());
-                                       startActivity(intent);
-                                   }
-                               });
+                                        Log.i("TRACE", "main deals adapter clicked" + position);
 
 
-                      }
+                                        final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                                        String json = gson.toJson(AppConstants.letsOye);
+
+                                        Log.d(TAG, "AppConstants.letsOye " + json);
+                                        Log.i("TRACE", "AppConstants.letsOye " + json);
+
+
+                                        BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
+
+                                        Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+                                        intent.putExtra("userRole", "client");
+                                        intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                                        intent.putExtra("isDefaultDeal",brokerDeals.getdefaultDeal());
+                                        Log.i("TRACE DEALS FLAG 2", "FLAG " + brokerDeals.getdefaultDeal());
+                                        startActivity(intent);
+                                    }
+                                });
+
+
+                            }
 
                         }
                         else {
@@ -546,12 +666,10 @@ public class ClientDealsListActivity extends AppCompatActivity {
     /*private void displayTextMessage(String message) {
         if (message == null)
             message = getString(R.string.no_active_deal);
-
         txtNoActiveDeal.setText(message);
         txtNoActiveDeal.setVisibility(View.VISIBLE);
         listViewDeals.setVisibility(View.GONE);
     }
-
     private void displayListView() {
         txtNoActiveDeal.setVisibility(View.GONE);
         listViewDeals.setVisibility(View.VISIBLE);
@@ -582,9 +700,9 @@ public class ClientDealsListActivity extends AppCompatActivity {
         }
         else
         {
-           supportChat.setVisibility(View.GONE);
+            supportChat.setVisibility(View.GONE);
             listViewDeals.setVisibility(View.GONE);
-           fragment_container1.setVisibility(View.VISIBLE);
+            fragment_container1.setVisibility(View.VISIBLE);
             Bundle bundle = new Bundle();
             bundle.putStringArray("Chat", null);
             bundle.putString("lastFragment", "Chat");
@@ -610,10 +728,8 @@ public class ClientDealsListActivity extends AppCompatActivity {
             if (publishLetsOyes.size() > 0) {
                 txtNoActiveDeal.setVisibility(View.GONE);
                 listViewDeals.setVisibility(View.VISIBLE);
-
                 DealsListAdapter listAdapter = new DealsListAdapter(publishLetsOyes, this);
                 listViewDeals.setAdapter(listAdapter);
-
                 listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -632,13 +748,11 @@ public class ClientDealsListActivity extends AppCompatActivity {
         catch (Exception e) {
             e.printStackTrace();
         }
-
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("My Deals");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -646,7 +760,6 @@ public class ClientDealsListActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }*/
 
@@ -656,54 +769,76 @@ public class ClientDealsListActivity extends AppCompatActivity {
     private final BroadcastReceiver handlePushNewMessage = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, final Intent intent) {
+
             // Update list here and refresh listview using adapter.notifyDataSetChanged();
 
             RefreshDrooms = intent.getExtras().getBoolean("RefreshDrooms");
+
+            Log.i("TRACE","refreshdrooms is set" +RefreshDrooms);
             Log.i("Shine","RefreshDrooms is "+RefreshDrooms);
-            deals = General.getDefaultDeals(context);
+            Log.i("Shine","1");
+//            deals = General.getDefaultDeals(context);
+//            Log.i("Shine","2 "+deals);
+//
+//
+//            Log.i("Default deals in shared","handlePushNewMessage" +deals);
+//
+//
+//            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+//            HashMap<String, String> deals1 = null;
+//            if(deals != null) {
+//                deals1 = gson.fromJson(deals, type);
+//            }
+//
+//
+//            Log.i("SHINE","deals are after removed"+deals1);
+//            if(deals1 == null){
+//                deals1 = new HashMap<String, String>();
+//                Log.i("SHINE","deals are after removed null con"+deals1);
+//
+//            }
+//
+//            if(deals1 != null) {
+//
+//
+//
+//                Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
+//
+//                while (iter.hasNext()) {
+//                    Map.Entry<String,String> entry = iter.next();
+//                    Log.d(TAG,"entry.getKey"+entry.getKey());
+//                    String name = General.getSharedPreferences(context,AppConstants.NAME);  //name of client to show in default deal title
+//
+//                    BrokerDeals dealsa = new BrokerDeals(name, entry.getKey(),entry.getValue(),true);
+//
+//                    if (default_deals == null) {
+//                        default_deals = new ArrayList<BrokerDeals>();
+//                    }else{
+//                        default_deals.clear();
+//                    }
+//                    Log.i(TAG, "default deals are before adding in handle push" + default_deals);
+//                  //  default_deals.clear();
+//                    Log.i(TAG, "default deals are before adding in handle push cleared" + default_deals);
+//                    default_deals.add(dealsa);
+//                    Log.i(TAG, "default deals are after adding in adding in handle push" + default_deals);
+//
+//                }
+//            }
+//
+//            if(default_deals != null) {
+//
+//                Log.i(TAG, "default deals are after adding in adding in handle push3" + default_deals);
+//
+//                BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
+//               // listViewDeals.setAdapter(null);
+//                //listAdapter.notifyDataSetChanged();
+//                listViewDeals.setAdapter(listAdapter);
+//                Log.i("inside adapter ", "object " + listAdapter);
+//            }
 
-
-            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-            HashMap<String, String> deals1 = null;
-            if(deals != null) {
-                deals1 = gson.fromJson(deals, type);
-            }
-
-
-            Log.i("SHINE","deals are after removed"+deals1);
-            if(deals1 == null){
-                deals1 = new HashMap<String, String>();
-                Log.i("SHINE","deals are after removed null con"+deals1);
-
-            }
-
-            if(deals1 != null) {
-
-
-
-                Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
-
-                while (iter.hasNext()) {
-                    Map.Entry<String,String> entry = iter.next();
-                    Log.d(TAG,"entry.getKey"+entry.getKey());
-                    String name = General.getSharedPreferences(context,AppConstants.NAME);  //name of client to show in default deal title
-
-                    BrokerDeals dealsa = new BrokerDeals(name, entry.getKey(),entry.getValue(),true);
-
-                    if (default_deals == null) {
-                        default_deals = new ArrayList<BrokerDeals>();
-                    }
-                    Log.i(TAG, "default deals are" + default_deals);
-                    default_deals.add(dealsa);
-
-                }
-            }
-
-            if(default_deals != null) {
-                BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
-                listViewDeals.setAdapter(listAdapter);
-                Log.i("inside adapter ", "object " + listAdapter);
-            }
+            default_deals.clear();
+            loadDefaultDeals();
+            //RefreshDrooms = false;
 
            loadBrokerDeals();
 
@@ -748,9 +883,7 @@ class SearchingBrokerItem
     {
         this.txt = txt;
     }
-
 }
-
 class SearchingBrokersAdapter extends BaseAdapter
 {
     ArrayList<SearchingBrokerItem> list;
@@ -761,25 +894,20 @@ class SearchingBrokersAdapter extends BaseAdapter
        list = new ArrayList<SearchingBrokerItem>();
        Resources res = c.getResources();
         String[] txt = res.getStringArray(R.array.searchingbrokers);
-
         list.add(new SearchingBrokerItem(txt[0]));
     }
-
     @Override
     public int getCount() {
         return list.size();
     }
-
     @Override
     public Object getItem(int position) {
         return list.get(0);
     }
-
     @Override
     public long getItemId(int position) {
         return 0;
     }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -78,6 +80,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     @Bind(R.id.texPstype)
     TextView texPstype;
 
+    @Bind(R.id.beaconOK)
+    TextView beaconOK;
+
    // @Bind(R.id.contactText)
    // TextView contactText;
 
@@ -97,6 +102,27 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     @Bind(R.id.circularSeekbar)
     CircularSeekBarNew circularSeekbar;
+
+
+    @Bind(R.id.option1Count)
+    TextView option1Count;
+
+    @Bind(R.id.option2Count)
+    TextView option2Count;
+
+    @Bind(R.id.rentalCount)
+    TextView rentalCount;
+
+    @Bind(R.id.resaleCount)
+    TextView resaleCount;
+
+    @Bind(R.id.option2CountCont1)
+    LinearLayout option2CountCont1;
+
+    @Bind(R.id.option2CountCont2)
+    LinearLayout option2CountCont2;
+
+
 
     private static final String TAG = "BrokerPreokFragment";
     private static final int REQUEST_CODE_TO_SELECT_CLIENT = 302;
@@ -120,6 +146,12 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private int selectedItemPosition;
     private DBHelper dbHelper;
 
+
+    Animation bounce;
+    Animation zoomin;
+    Animation zoomout;
+
+
     public BrokerPreokFragment() {
         // Required empty public constructor
     }
@@ -130,13 +162,65 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         // Inflate the layout for this fragment
         View  v = inflater.inflate(R.layout.fragment_broker_preok, container, false);
         ButterKnife.bind(this, v);
+        bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+        zoomin = AnimationUtils.loadAnimation(getContext(), R.anim.zoomin);
+        zoomout = AnimationUtils.loadAnimation(getContext(), R.anim.zoomout);
+
 
         init();
 
         return v;
     }
 
+
+
     private void init() {
+
+
+        zoomin.setAnimationListener(new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animation arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation arg0) {
+                beaconOK.startAnimation(zoomout);
+
+            }
+        });
+
+
+        zoomout.setAnimationListener(new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animation arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation arg0) {
+                beaconOK.startAnimation(zoomin);
+
+            }
+        });
+
+
 
         if(General.getBadgeCount(getContext(),AppConstants.HDROOMS_COUNT)<=0)
             hdroomsCount.setVisibility(View.GONE);
@@ -144,6 +228,12 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             hdroomsCount.setVisibility(View.VISIBLE);
             hdroomsCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT)));
         }
+
+
+
+
+
+
 
         mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(),
                 new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
@@ -182,6 +272,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
      * load preok data by making server API call
      */
     public void preok() {
+        Log.i("TRACE","GCM id is"+SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         //preok params
         Oyeok preok = new Oyeok();
         preok.setDeviceId("Hardware");
@@ -255,6 +346,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     @OnClick({R.id.txtOption1, R.id.txtOption2})
     public void onOptionClick(View v) {
+        animatebadges();
+        //okButton.setAnimation(zoomin);
+        //okButton.setAnimation(zoomout);
 
         if (txtPreviouslySelectedOption != null)
             txtPreviouslySelectedOption.setBackgroundResource(R.color.colorPrimaryDark);
@@ -262,6 +356,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         txtPreviouslySelectedOption = (TextView) v;
 
         if (v.getId() == txtOption1.getId()) {
+            option2CountCont2.setVisibility(View.GONE);
             txtOption1.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption1.getText().toString();
             Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
@@ -282,6 +377,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
         }
         else if (v.getId() == txtOption2.getId()) {
+
+            option2CountCont1.setVisibility(View.GONE);
             txtOption2.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption2.getText().toString();
             Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
@@ -311,47 +408,162 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     @Override
     public void onPositionSelected(int position, int count) {
+        animatebadges();
+
         currentSeekbarPosition = position;
         Log.i("PREOK CALLED","currentSeekbarPosition"+currentSeekbarPosition);
 
         if (position == 0) {
+            resaleCount.setVisibility(View.GONE);
+
+
+            if(General.getBadgeCount(getContext(),AppConstants.RENTAL_COUNT)<=0)
+                rentalCount.setVisibility(View.GONE);
+            else {
+                rentalCount.setVisibility(View.VISIBLE);
+                rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
+            }
+
+            if(General.getBadgeCount(getContext(),AppConstants.TENANTS_COUNT)<=0)
+                //option1Count.setVisibility(View.GONE);
+                option2CountCont1.setVisibility(View.GONE);
+            else {
+                //option1Count.setVisibility(View.VISIBLE);
+                option2CountCont1.setVisibility(View.VISIBLE);
+                option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
+            }
+            if(General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT)<=0) {
+                Log.i(TAG,"ownerscount1"+General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT));
+                //option2Count.setVisibility(View.GONE);
+                option2CountCont2.setVisibility(View.GONE);
+
+            }
+            else {
+                Log.i(TAG,"ownerscount2"+General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT));
+                //option2Count.setVisibility(View.VISIBLE);
+                option2CountCont2.setVisibility(View.VISIBLE);
+                option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT)));
+            }
+
+
+
+
             //rental
             //Tenants, Owners
             txtOption1.setText(strTenants);
             txtOption2.setText(strOwners);
+            Log.i("PREOK CALLED13#", "currentOptionSelectedString2" + currentOptionSelectedString);
 
-            if (currentOptionSelectedString.equalsIgnoreCase(strSeekers))
+            if (currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
                 currentOptionSelectedString = strTenants;
-            Log.i("PREOK CALLED","currentOptionSelectedString1"+currentOptionSelectedString);
+                Log.i("PREOK CALLED10", "currentOptionSelectedString1" + currentOptionSelectedString);
+            }
+            if (currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
+                currentOptionSelectedString = strOwners;
+               Log.i("PREOK CALLED13", "currentOptionSelectedString1" + currentOptionSelectedString);
+           }
 
             if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
-                Log.i("PREOK CALLED","values set"+jsonArrayReqLl.toString());
+                Log.i("PREOK CALLED11","values set"+jsonArrayReqLl.toString());
                 circularSeekbar.setValues(jsonArrayReqLl.toString());
             }
             else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
-                Log.i("PREOK CALLED", "values set" + jsonArrayAvlLl.toString());
+                Log.i("PREOK CALLED12", "values set" + jsonArrayAvlLl.toString());
                 circularSeekbar.setValues(jsonArrayAvlLl.toString());
             }
+
+            //added
+
+//            if (currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
+//                currentOptionSelectedString = strOwners;
+//                Log.i("PREOK CALLED13", "currentOptionSelectedString1" + currentOptionSelectedString);
+//            }
+//            if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
+//                Log.i("PREOK CALLED14","values set"+jsonArrayAvlLl.toString());
+//                circularSeekbar.setValues(jsonArrayReqLl.toString());
+//            }
+//            else if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
+//                Log.i("PREOK CALLED15", "values set" + jsonArrayReqLl.toString());
+//                circularSeekbar.setValues(jsonArrayAvlLl.toString());
+//            }
+
+
         }
         else if (position == 1) {
+            rentalCount.setVisibility(View.GONE);
+            if(General.getBadgeCount(getContext(),AppConstants.RESALE_COUNT)<=0)
+                resaleCount.setVisibility(View.GONE);
+            else {
+                resaleCount.setVisibility(View.VISIBLE);
+                resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
+            }
+            if(General.getBadgeCount(getContext(),AppConstants.BUYER_COUNT)<=0)
+                //option1Count.setVisibility(View.GONE);
+                option2CountCont1.setVisibility(View.GONE);
+            else {
+                //option1Count.setVisibility(View.VISIBLE);
+                option2CountCont1.setVisibility(View.VISIBLE);
+                option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
+            }
+            if(General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT)<=0)
+                //option2Count.setVisibility(View.GONE);
+                option2CountCont2.setVisibility(View.GONE);
+            else {
+                //option2Count.setVisibility(View.VISIBLE);
+                option2CountCont2.setVisibility(View.VISIBLE);
+                option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
+            }
+
+
+
             //sale
             //Buyer, Seller
             txtOption1.setText(strSeekers);
             txtOption2.setText(strSeller);
 
-            if (currentOptionSelectedString.equalsIgnoreCase(strTenants))
+            Log.i("PREOK CALLED13*", "currentOptionSelectedString2" + currentOptionSelectedString);
+
+            if (currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
                 currentOptionSelectedString = strSeekers;
-            Log.i("PREOK CALLED","currentOptionSelectedString2"+currentOptionSelectedString);
+                Log.i("PREOK CALLED16", "currentOptionSelectedString2" + currentOptionSelectedString);
+            }
+            if (currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
+                currentOptionSelectedString = strSeller;
+               Log.i("PREOK CALLED19", "currentOptionSelectedString2" + currentOptionSelectedString);
+            }
 
             if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
-                Log.i("PREOK CALLED", "values set" + jsonArrayReqOr.toString());
+                Log.i("PREOK CALLED17", "values set" + jsonArrayReqOr.toString());
                 circularSeekbar.setValues(jsonArrayReqOr.toString());
             }
             else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
-                Log.i("PREOK CALLED", "values set" + jsonArrayAvlOr.toString());
+                Log.i("PREOK CALLED18", "values set" + jsonArrayAvlOr.toString());
                 circularSeekbar.setValues(jsonArrayAvlOr.toString());
             }
+
+            // Added
+
+//            if (currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
+//                currentOptionSelectedString = strSeller;
+//                Log.i("PREOK CALLED19", "currentOptionSelectedString2" + currentOptionSelectedString);
+//            }
+//
+//            if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
+//                Log.i("PREOK CALLED120", "values set" + jsonArrayAvlOr.toString());
+//                circularSeekbar.setValues(jsonArrayReqOr.toString());
+//            }
+//            else if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
+//                Log.i("PREOK CALLED121", "values set" + jsonArrayReqOr.toString());
+//                circularSeekbar.setValues(jsonArrayAvlOr.toString());
+//            }
+
+
+
         }
+
+
+
+
 
         synchronized (circularSeekbar) {
             circularSeekbar.post(new Runnable() {
@@ -509,4 +721,12 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         Intent openDealsListing = new Intent(getActivity(), BrokerDealsListActivity.class);
         startActivity(openDealsListing);
     }
+    public void animatebadges(){
+        option1Count.startAnimation(bounce);
+        option2Count.startAnimation(bounce);
+        rentalCount.startAnimation(bounce);
+        resaleCount.startAnimation(bounce);
+    }
+
+
 }

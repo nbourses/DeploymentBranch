@@ -190,7 +190,8 @@
                     android:src="@drawable/ic_markerpin"
                     android:layout_below="@id/ll_marker"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="-15dp" />
+                    android:layout_marginTop="-15dp"
+                    android:id="@+id/Mmarker" />
 
             </RelativeLayout>
 

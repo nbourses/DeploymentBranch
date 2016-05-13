@@ -44,6 +44,20 @@ public class MyGcmListenerService extends GcmListenerService {
     private int badgeCount;
     private int supportCount;
     private int hdRoomsCount;
+    private int rentalCount;
+    private int resaleCount;
+    private int tenantsCount;
+    private int ownersCount;
+    private int buyerCount;
+    private int sellerCount;
+
+
+    private String tType;
+    private String intend;
+    private Boolean LL = false;
+    private Boolean OR = false;
+    private Boolean REQ = false;
+    private Boolean AVL = false;
     /**
      * Called when message is received.
      *
@@ -66,18 +80,91 @@ public class MyGcmListenerService extends GcmListenerService {
         supportCount = General.getBadgeCount(getApplicationContext(),AppConstants.SUPPORT_COUNT);
         hdRoomsCount = General.getBadgeCount(getApplicationContext(),AppConstants.HDROOMS_COUNT);
 
+
+
         //ShortcutBadger.applyCount(this, badgeCount);
 
         String title = data.getString("title");
         String message = data.getString("message");
         String okId = null;
         String deals;
+
+
+        Log.i(TAG,"Title is "+title);
+
+        if(title.equalsIgnoreCase("Oye")){
+
+            rentalCount = General.getBadgeCount(getApplicationContext(),AppConstants.RENTAL_COUNT);
+            resaleCount = General.getBadgeCount(getApplicationContext(),AppConstants.RESALE_COUNT);
+            tenantsCount = General.getBadgeCount(getApplicationContext(),AppConstants.TENANTS_COUNT);
+            ownersCount = General.getBadgeCount(getApplicationContext(),AppConstants.OWNERS_COUNT);
+            buyerCount = General.getBadgeCount(getApplicationContext(),AppConstants.BUYER_COUNT);
+            sellerCount  = General.getBadgeCount(getApplicationContext(),AppConstants.SELLER_COUNT);
+
+            Log.i(TAG,"Message is "+message);   // Message: REQ-industrial-kitchen-1200000-LL
+
+
+            String[] split = message.split("-");
+            for (int i = 0; i < split.length; i++) {
+                tType = split[4];
+                intend = split[0];
+            }
+
+            if(tType.equalsIgnoreCase("LL"))
+                LL =true;
+               else
+                OR = true;
+
+            if(intend.equalsIgnoreCase("REQ"))
+                REQ = true;
+            else
+                AVL = true;
+
+             if(LL){
+                 rentalCount++;
+                 if(REQ)
+                     tenantsCount++;
+                 else if(AVL)
+                     ownersCount++;
+             }
+            else if(OR){
+                 resaleCount++;
+                 if(REQ)
+                     buyerCount++;
+                 else if(AVL)
+                     sellerCount++;
+
+             }
+
+
+            General.setBadgeCount(getApplicationContext(),AppConstants.RENTAL_COUNT,rentalCount);
+            General.setBadgeCount(getApplicationContext(),AppConstants.RESALE_COUNT,resaleCount);
+            General.setBadgeCount(getApplicationContext(),AppConstants.TENANTS_COUNT,tenantsCount);
+            General.setBadgeCount(getApplicationContext(),AppConstants.OWNERS_COUNT,ownersCount);
+            General.setBadgeCount(getApplicationContext(),AppConstants.BUYER_COUNT,buyerCount);
+            General.setBadgeCount(getApplicationContext(),AppConstants.SELLER_COUNT,sellerCount);
+
+            Log.i(TAG,"rentalCount "+rentalCount);
+            Log.i(TAG,"resaleCount "+resaleCount);
+            Log.i(TAG,"tenantsCount "+tenantsCount);
+            Log.i(TAG,"ownersCount "+ownersCount);
+            Log.i(TAG,"buyerCount "+buyerCount);
+            Log.i(TAG,"sellerCount "+sellerCount);
+
+
+        }
+
+
+
+
+
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         deals = General.getDefaultDeals(this);
 
         java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
         HashMap<String, String> deals1 = gson.fromJson(deals, type);
 
+        Log.d(TAG,"data is" + data);
         Log.d(TAG,"deals are" + deals);
 
         Log.d(TAG, "Message: " + message);     //["+918483014575","ritesh"]
@@ -85,6 +172,8 @@ public class MyGcmListenerService extends GcmListenerService {
         Log.d(TAG, "ROLE_OF_USER: " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
 
         //Update hdRoomsCount badge
+
+        Log.i(TAG,"msg is "+message+" type of msg is: "+message.getClass().getSimpleName());
 
         try{
             JSONObject json = new JSONObject(data.getString("message"));
@@ -137,10 +226,13 @@ public class MyGcmListenerService extends GcmListenerService {
                     }
                 }
                 Log.i(TAG,"after deal "+deals1);
-
+                Log.i("Default deals in shared","I am here2");
                 Gson g = new Gson();
                 String hashMapString = g.toJson(deals1);
                 General.saveDefaultDeals(this, hashMapString);
+                String deals5 = General.getDefaultDeals(this);
+                Log.i("Default deals in shared","I am here");
+                Log.i("Default deals in shared","are" +deals5);
 
 
 

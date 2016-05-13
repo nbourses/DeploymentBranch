@@ -50,6 +50,16 @@ public class AppConstants {
     public static final String BADGE_COUNT = "badgeCount";
     public static final String SUPPORT_COUNT = "supportCount";
     public static final String HDROOMS_COUNT = "hdRoomsCount";
+    public static final String TENANTS_COUNT = "tenantsCount";
+    public static final String OWNERS_COUNT = "ownersCount";
+    public static final String BUYER_COUNT = "buyerCount";
+    public static final String SELLER_COUNT = "sellerCount";
+    public static final String RENTAL_COUNT = "rentalCount";
+    public static final String RESALE_COUNT = "resaleCount";
+
+
+
+
 
 
 

@@ -53,7 +53,7 @@ public class AcceptOkCall {
              oyeId=m.getJSONObject(position).getString("oye_id");
             Log.i("OKACCEPT","oyeId is" +oyeId);
 
-             oyeUserId= m.getJSONObject(position).getString("user_id");
+            // oyeUserId= m.getJSONObject(position).getString("user_id");
             tt=m.getJSONObject(position).getString("tt");
             //size=m.getJSONObject(position).getString("size");
             price=m.getJSONObject(position).getString("price");
