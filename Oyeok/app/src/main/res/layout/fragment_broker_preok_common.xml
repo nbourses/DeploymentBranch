@@ -88,6 +88,7 @@
                 android:text=""
                 android:textSize="12sp"
                 android:textStyle="bold"
+                android:visibility="gone"
                 android:layout_alignParentRight="true"  />
             <!-- android:layout_above="@+id/btnMyDeals" -->
 
@@ -133,17 +134,19 @@
             android:layout_weight="1"
             android:layout_height="wrap_content" />
     </LinearLayout>
-        <TextView
-
-            android:id="@+id/hdroomsCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:background="@android:drawable/ic_notification_overlay"
-            android:text="23"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:layout_alignParentRight="true"  />
+            <TextView
+                android:id="@+id/hdroomsCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="10"
+                android:paddingEnd="8dp"
+                android:paddingRight="8dp"
+                android:paddingLeft="8dp"
+                android:gravity="center"
+                android:textColor="#FFF"
+                android:textSize="11sp"
+                android:background="@drawable/circle_badge2"/>
         <!-- android:layout_above="@+id/btnMyDeals" -->
 
 

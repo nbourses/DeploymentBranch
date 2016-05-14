@@ -26,8 +26,11 @@ import com.nbourses.oyeok.helpers.General;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.Format;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
@@ -54,6 +57,9 @@ public class MyGcmListenerService extends GcmListenerService {
 
     private String tType;
     private String intend;
+    private String ptype;
+    private String pstype;
+    private String price;
     private Boolean LL = false;
     private Boolean OR = false;
     private Boolean REQ = false;
@@ -70,7 +76,7 @@ public class MyGcmListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
 
 
-
+        Log.i(TAG,"bundle data is "+data);
         //clear all badge counts
 //        General.setBadgeCount(getApplicationContext(),AppConstants.HDROOMS_COUNT,0);
 //        General.setBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT,0);
@@ -105,21 +111,42 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
             String[] split = message.split("-");
-            for (int i = 0; i < split.length; i++) {
-                tType = split[4];
+            String a = null;
+            String b = null;
+
+            //for (int i = 0; i < split.length; i++) {
                 intend = split[0];
+                ptype = split[1];
+                pstype = split[2];
+                price = split[3];
+                tType = split[4];
+         //  DecimalFormat formatter = new DecimalFormat();
+            int x =Integer.parseInt(price);
+
+
+            Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+            price=format1.format(x);
+            price = price.substring(0,price.length()-3);
+            //price ="₹ "+price;
+
+
+           // }
+
+            if(tType.equalsIgnoreCase("LL")) {
+                LL = true;
+                b = "rent";
             }
-
-            if(tType.equalsIgnoreCase("LL"))
-                LL =true;
-               else
+               else {
                 OR = true;
-
-            if(intend.equalsIgnoreCase("REQ"))
+                b = "sale";
+            }
+            if(intend.equalsIgnoreCase("REQ")) {
                 REQ = true;
-            else
+                a = "required";
+            }else {
                 AVL = true;
-
+                a = "available";
+            }
              if(LL){
                  rentalCount++;
                  if(REQ)
@@ -136,6 +163,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
              }
 
+            message = ptype+"("+pstype+")"+" is "+ a + " at price "+price+ " for "+b;
 
             General.setBadgeCount(getApplicationContext(),AppConstants.RENTAL_COUNT,rentalCount);
             General.setBadgeCount(getApplicationContext(),AppConstants.RESALE_COUNT,resaleCount);
@@ -389,7 +417,9 @@ public class MyGcmListenerService extends GcmListenerService {
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+                .setContentIntent(pendingIntent)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message));
+
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

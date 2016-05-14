@@ -115,12 +115,12 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     @Bind(R.id.resaleCount)
     TextView resaleCount;
-
-    @Bind(R.id.option2CountCont1)
-    LinearLayout option2CountCont1;
-
-    @Bind(R.id.option2CountCont2)
-    LinearLayout option2CountCont2;
+//
+//    @Bind(R.id.option2CountCont1)
+//    LinearLayout option2CountCont1;
+//
+//    @Bind(R.id.option2CountCont2)
+//    LinearLayout option2CountCont2;
 
 
 
@@ -356,7 +356,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         txtPreviouslySelectedOption = (TextView) v;
 
         if (v.getId() == txtOption1.getId()) {
-            option2CountCont2.setVisibility(View.GONE);
+//            option2CountCont2.setVisibility(View.GONE);
+        //    option2Count.setVisibility(View.GONE);
             txtOption1.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption1.getText().toString();
             Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
@@ -378,7 +379,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         }
         else if (v.getId() == txtOption2.getId()) {
 
-            option2CountCont1.setVisibility(View.GONE);
+ //           option2CountCont1.setVisibility(View.GONE);
+          //  option1Count.setVisibility(View.GONE);
             txtOption2.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption2.getText().toString();
             Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
@@ -426,22 +428,22 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
             if(General.getBadgeCount(getContext(),AppConstants.TENANTS_COUNT)<=0)
                 //option1Count.setVisibility(View.GONE);
-                option2CountCont1.setVisibility(View.GONE);
+                option1Count.setVisibility(View.GONE);
             else {
                 //option1Count.setVisibility(View.VISIBLE);
-                option2CountCont1.setVisibility(View.VISIBLE);
+                option1Count.setVisibility(View.VISIBLE);
                 option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
             }
             if(General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT)<=0) {
                 Log.i(TAG,"ownerscount1"+General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT));
                 //option2Count.setVisibility(View.GONE);
-                option2CountCont2.setVisibility(View.GONE);
+                option2Count.setVisibility(View.GONE);
 
             }
             else {
                 Log.i(TAG,"ownerscount2"+General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT));
                 //option2Count.setVisibility(View.VISIBLE);
-                option2CountCont2.setVisibility(View.VISIBLE);
+                option2Count.setVisibility(View.VISIBLE);
                 option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT)));
             }
 
@@ -499,18 +501,18 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             }
             if(General.getBadgeCount(getContext(),AppConstants.BUYER_COUNT)<=0)
                 //option1Count.setVisibility(View.GONE);
-                option2CountCont1.setVisibility(View.GONE);
+                option1Count.setVisibility(View.GONE);
             else {
                 //option1Count.setVisibility(View.VISIBLE);
-                option2CountCont1.setVisibility(View.VISIBLE);
+                option1Count.setVisibility(View.VISIBLE);
                 option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
             }
             if(General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT)<=0)
                 //option2Count.setVisibility(View.GONE);
-                option2CountCont2.setVisibility(View.GONE);
+                option2Count.setVisibility(View.GONE);
             else {
                 //option2Count.setVisibility(View.VISIBLE);
-                option2CountCont2.setVisibility(View.VISIBLE);
+                option2Count.setVisibility(View.VISIBLE);
                 option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
             }
 

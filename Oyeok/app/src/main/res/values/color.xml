@@ -244,7 +244,7 @@
     <color name="Grey">#EEEEEE</color>
     <color name="Red">#F44336</color>
     <color name="Cyan">#90CAF9</color>
-    <color name="Purple">#6200CA</color>
+    <color name="Purple">#6200ca</color>
 
     <color name="header_normal">#ffe74c3c</color>
     <color name="header_pressed">#ffc0392b</color>

@@ -166,6 +166,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         setContentView(R.layout.activity_main);
 
+
+
+
         if (General.isNetworkAvailable(getApplicationContext())){
 
             Log.i("TRACE", "network availability");
@@ -205,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
 
 
@@ -372,6 +376,8 @@ toastLayout.setOnClickListener(new View.OnClickListener() {
         hideMap(0);
         toastLayout.setVisibility(View.INVISIBLE);
     }
+
+
 
 
 
@@ -569,7 +575,7 @@ toastLayout.setOnClickListener(new View.OnClickListener() {
         String user_id = dbHelper.getValue(DatabaseConstants.userId);
         //JSONObject sessionParams = branch.getFirstReferringParams();
         branch.setIdentity(user_id);
-        
+
         branchUniversalObject = new BranchUniversalObject()
                 // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
                 .setCanonicalIdentifier(user_id);
@@ -778,4 +784,6 @@ toastLayout.setOnClickListener(new View.OnClickListener() {
         alert.show();
     }
     //refer button onclick
+
+
 }

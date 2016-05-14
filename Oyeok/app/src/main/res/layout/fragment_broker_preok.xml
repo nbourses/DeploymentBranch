@@ -271,119 +271,85 @@
             android:orientation="horizontal"
             android:layout_below="@+id/combined_layout">
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-            <RelativeLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-                android:id="@+id/dealsWrapper1">
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    >
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/txtOption1"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="fill_parent"
                         android:layout_height="40dp"
                         android:text="Option 1"
                         android:gravity="center"
                         android:textColor="#FFFFFF"
-                        android:background="@color/colorPrimaryDark" />
+                        android:background="@color/colorPrimaryDark"/>
 
-                </LinearLayout>
+                    <TextView
+                        android:id="@+id/option1Count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@id/txtOption1"
+                        android:layout_alignRight="@id/txtOption1"
+                        android:layout_alignEnd="@id/txtOption1"
+                        android:text="10"
+                        android:paddingEnd="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingLeft="8dp"
+                        android:gravity="center"
+                        android:textColor="#FFF"
+                        android:textSize="11sp"
+                        android:background="@drawable/circle_badge"/>
+                </RelativeLayout>
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/option2CountCont1">
-                <TextView
 
-                    android:id="@+id/option1Count"
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#fff"
-                    android:background="@android:drawable/ic_notification_overlay"
-                    android:text="23"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:layout_alignParentRight="true"
-                    android:layout_gravity="right"/>
-                </LinearLayout>
-                <!-- android:layout_above="@+id/btnMyDeals" -->
+                    android:layout_height="wrap_content">
 
-
-            </RelativeLayout>
-
-
-
-
-
-
-
-            <RelativeLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-
-                android:id="@+id/dealsWrapper2">
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    >
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/txtOption2"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="fill_parent"
                         android:layout_height="40dp"
                         android:text="Option 2"
                         android:gravity="center"
-                        android:background="@color/colorPrimaryDark"
-                        android:textColor="#FFFFFF"/><![CDATA[
-
-                    />
-                ]]>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/option2CountCont2">
+                        android:textColor="#FFFFFF"
+                        android:background="@color/colorPrimaryDark"/>
 
                     <TextView
-
                         android:id="@+id/option2Count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="#fff"
-                        android:background="@android:drawable/ic_notification_overlay"
-                        android:text="23"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:layout_alignParentRight="true"
-                        android:layout_gravity="right" />
-                </LinearLayout>
-                <!-- android:layout_above="@+id/btnMyDeals" -->
+                        android:layout_alignTop="@id/txtOption2"
+                        android:layout_alignRight="@id/txtOption2"
+                        android:layout_alignEnd="@id/txtOption2"
+                        android:text="10"
+                        android:paddingEnd="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingLeft="8dp"
+                        android:gravity="center"
+                        android:textColor="#FFF"
+                        android:textSize="11sp"
+                        android:background="@drawable/circle_badge"/>
+                </RelativeLayout>
 
 
-            </RelativeLayout>
-
-
+            </LinearLayout>
 
 
 
@@ -425,7 +391,8 @@
                 <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
                     android:id="@+id/phasedSeekBar"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:textAlignment="center" />
 
             </LinearLayout>
             <LinearLayout
@@ -433,17 +400,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="106dp">
-            <TextView
+                <TextView
 
-                android:id="@+id/rentalCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#fff"
-                android:background="@android:drawable/ic_notification_overlay"
-                android:text="23"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:layout_alignParentRight="true" />
+                    android:id="@+id/rentalCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circle_badge2"
+                    android:text="123"
+
+                    android:layout_alignParentRight="true"
+                    android:paddingEnd="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingLeft="8dp"
+                    android:gravity="center"
+                    android:textColor="#FFF"
+                    android:textSize="11sp"/>
 
 
             </LinearLayout>
@@ -459,12 +430,16 @@
                     android:id="@+id/resaleCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#fff"
-                    android:background="@android:drawable/ic_notification_overlay"
-                    android:text="25"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:layout_alignParentRight="true" />
+                    android:background="@drawable/circle_badge2"
+                    android:text="3"
+
+                    android:layout_alignParentRight="true"
+                    android:paddingEnd="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingLeft="8dp"
+                    android:gravity="center"
+                    android:textColor="#FFF"
+                    android:textSize="11sp"/>
             </LinearLayout>
 
 
@@ -475,47 +450,49 @@
 
 
 
+        </RelativeLayout>
+
+
+
     </RelativeLayout>
 
-</RelativeLayout>
-
-<FrameLayout
-    android:id="@+id/mapView"
-    android:visibility="gone"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <fragment
-        android:id="@+id/map"
-        android:layout_below="@+id/seekbar_linearlayout"
+    <FrameLayout
+        android:id="@+id/mapView"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment"
-        android:orientation="vertical">
-    </fragment>
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/location_pin"
-        android:layout_gravity="center"
-        android:background="@null"
-        android:id="@+id/locationpin" />
-    <ImageButton
-        android:id="@+id/bPinLocation"
-        android:layout_height="60dp"
-        android:layout_width="60dp"
-        android:padding="15dp"
-        android:layout_marginBottom="15dp"
-        android:layout_marginRight="15dp"
-        android:background="#40000000"
-        android:src="@drawable/ic_gps_fixed_24dp"
-        android:layout_gravity="bottom|right"
-        android:visibility="gone" />
-    <TextView
-        android:id="@+id/tv_change_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Change Location"
-        android:layout_marginRight="100dp"
-        android:layout_gravity="bottom|right"/>
-</FrameLayout>
+        android:layout_height="match_parent">
+        <fragment
+            android:id="@+id/map"
+            android:layout_below="@+id/seekbar_linearlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment"
+            android:orientation="vertical">
+        </fragment>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/location_pin"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:id="@+id/locationpin" />
+        <ImageButton
+            android:id="@+id/bPinLocation"
+            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:padding="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="15dp"
+            android:background="#40000000"
+            android:src="@drawable/ic_gps_fixed_24dp"
+            android:layout_gravity="bottom|right"
+            android:visibility="gone" />
+        <TextView
+            android:id="@+id/tv_change_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change Location"
+            android:layout_marginRight="100dp"
+            android:layout_gravity="bottom|right"/>
+    </FrameLayout>
 </FrameLayout>

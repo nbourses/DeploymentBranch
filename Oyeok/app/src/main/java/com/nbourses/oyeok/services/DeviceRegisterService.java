@@ -10,6 +10,8 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 
 /**
  * Created by rohit on 11/02/16.
@@ -34,6 +36,7 @@ public class DeviceRegisterService extends Service {
                     String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
                             GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
                     SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_GCM_ID, token);
+                    General.setSharedPreferences(getApplicationContext(), AppConstants.GCM_ID,token);
 
                     Log.i(TAG, "GCM Registration Token: " + token);
 

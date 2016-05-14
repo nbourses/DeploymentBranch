@@ -30,18 +30,21 @@
         android:textStyle="bold"
         android:paddingRight="5dp" />
 
-    <TextView
 
-        android:id="@+id/supportCount"
-        android:layout_toRightOf="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#fff"
-        android:background="@android:drawable/ic_notification_overlay"
-        android:text="23"
-        android:layout_alignParentRight="true"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/supportCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="10"
+            android:paddingEnd="8dp"
+            android:paddingRight="8dp"
+            android:paddingLeft="8dp"
+            android:gravity="center"
+            android:textColor="#FFF"
+            android:textSize="11sp"
+            android:background="@drawable/circle_badge2"/>
     </LinearLayout>
     <!-- android:layout_above="@+id/btnMyDeals" -->
 

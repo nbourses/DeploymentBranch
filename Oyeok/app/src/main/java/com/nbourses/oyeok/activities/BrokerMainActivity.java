@@ -64,7 +64,7 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
                 SnackbarManager.show(
                         Snackbar.with(this)
                                 .position(Snackbar.SnackbarPosition.TOP)
-                                .text("No internet connection ,please check your settings")
+                                .text("No internet connectivity.")
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
             }
 

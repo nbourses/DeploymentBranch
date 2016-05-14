@@ -131,7 +131,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             SnackbarManager.show(
                     Snackbar.with(this)
                             .position(Snackbar.SnackbarPosition.TOP)
-                            .text("No internet connection ,please check your settings")
+                            .text("No internet connectivity.")
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
         }
 
