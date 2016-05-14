@@ -157,7 +157,8 @@
             android:gravity="center"
             android:textColor="#FFF"
             android:textSize="11sp"
-            android:layout_alignParentRight="true"  />
+            android:layout_alignParentRight="true"
+            android:visibility="gone" />
            <!-- android:layout_above="@+id/btnMyDeals" -->
 
 

@@ -26,9 +26,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.Format;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Set;
 
 import retrofit.Callback;
@@ -211,6 +214,25 @@ public class General extends BroadcastReceiver{
     }
 
 
+
+    public static String currencyFormat(String price){
+
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        int truncate_first;
+        if(currentapiVersion>=23)
+            truncate_first = 2;
+        else
+            truncate_first = 3;
+
+        int x =Integer.parseInt(price);
+
+        Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+        price=format1.format(x);
+        price = price.substring(truncate_first,price.length()-3);
+        price ="₹ "+price;
+
+        return price;
+    }
 
     public static void publishOye(final Context context) {
         try {

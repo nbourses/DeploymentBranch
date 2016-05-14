@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -41,9 +42,18 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
     @Bind(R.id.txtEmail)
     TextView emailTxt;
 
+
+
+    private TextView option1Count;
+    private TextView option2Count;
+    private TextView rentalCount;
+    private TextView resaleCount;
+
+
     DBHelper dbHelper;
     private FragmentDrawer drawerFragment;
     private WebView webView;
+    SharedPreferences.OnSharedPreferenceChangeListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +94,91 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
         Fragment brokerPreokFragment = new BrokerPreokFragment();
         loadFragment(brokerPreokFragment, null, R.id.container_map, "");
 
+//        option1Count = (TextView) findViewById(R.id.option1Count);
+//         option2Count = (TextView) findViewById(R.id.option2Count);
+//         rentalCount = (TextView) findViewById(R.id.rentalCount);
+//        resaleCount = (TextView) findViewById(R.id.resaleCount);
+//
+//
+//
+//
+//
+//        SharedPreferences prefs =
+//                PreferenceManager.getDefaultSharedPreferences(this);
+//
+//        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+//            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+//
+//                if (key.equals(AppConstants.RENTAL_COUNT)) {
+//                    if (General.getBadgeCount(getApplicationContext(), AppConstants.RENTAL_COUNT) <= 0)
+//                        rentalCount.setVisibility(View.GONE);
+//                    else {
+//                        rentalCount.setVisibility(View.VISIBLE);
+//                        rentalCount.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT)));
+//                    }
+//                }
+//                if (key.equals(AppConstants.RESALE_COUNT)) {
+//                    if (General.getBadgeCount(getApplicationContext(), AppConstants.RESALE_COUNT) <= 0)
+//                        resaleCount.setVisibility(View.GONE);
+//                    else {
+//                        resaleCount.setVisibility(View.VISIBLE);
+//                        resaleCount.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.RESALE_COUNT)));
+//                    }
+//
+//
+//                }
+//
+//                if (key.equals(AppConstants.TENANTS_COUNT)) {
+//                    if (General.getBadgeCount(getApplicationContext(), AppConstants.TENANTS_COUNT) <= 0)
+//                        option1Count.setVisibility(View.GONE);
+//                    else {
+//                        option1Count.setVisibility(View.VISIBLE);
+//                        option1Count.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.TENANTS_COUNT)));
+//                    }
+//
+//                }
+//                if (key.equals(AppConstants.OWNERS_COUNT)) {
+//                    if (General.getBadgeCount(getApplicationContext(), AppConstants.OWNERS_COUNT) <= 0)
+//                        option2Count.setVisibility(View.GONE);
+//                    else {
+//                        option2Count.setVisibility(View.VISIBLE);
+//                        option2Count.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.OWNERS_COUNT)));
+//                    }
+//
+//                }
+//
+//                if (key.equals(AppConstants.BUYER_COUNT)) {
+//                    if (General.getBadgeCount(getApplicationContext(), AppConstants.BUYER_COUNT) <= 0)
+//                        option1Count.setVisibility(View.GONE);
+//                    else {
+//                        option1Count.setVisibility(View.VISIBLE);
+//                        option1Count.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.BUYER_COUNT)));
+//                    }
+//
+//                }
+//
+//                if (key.equals(AppConstants.SELLER_COUNT)) {
+//                    if (General.getBadgeCount(getApplicationContext(), AppConstants.SELLER_COUNT) <= 0)
+//                        option2Count.setVisibility(View.GONE);
+//                    else {
+//                        option2Count.setVisibility(View.VISIBLE);
+//                        option2Count.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.SELLER_COUNT)));
+//                    }
+//
+//                }
+//
+//
+//            }
+//
+//
+//        };
+//        prefs.registerOnSharedPreferenceChangeListener(listener);
+
+
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Broker");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         dbHelper = new DBHelper(getBaseContext());
 

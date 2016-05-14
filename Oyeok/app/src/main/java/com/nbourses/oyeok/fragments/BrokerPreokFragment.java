@@ -3,10 +3,12 @@ package com.nbourses.oyeok.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -145,6 +147,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private JSONArray jsonObjectArray;
     private int selectedItemPosition;
     private DBHelper dbHelper;
+    SharedPreferences.OnSharedPreferenceChangeListener listener;
 
 
     Animation bounce;
@@ -221,8 +224,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         });
 
 
-
-        if(General.getBadgeCount(getContext(),AppConstants.HDROOMS_COUNT)<=0)
+        if (General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT) <= 0)
             hdroomsCount.setVisibility(View.GONE);
         else {
             hdroomsCount.setVisibility(View.VISIBLE);
@@ -230,8 +232,81 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         }
 
 
+       try {
+           SharedPreferences prefs =
+                   PreferenceManager.getDefaultSharedPreferences(getContext());
+           listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+               public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+
+                   if (key.equals(AppConstants.RENTAL_COUNT)) {
+                       if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) <= 0)
+                           rentalCount.setVisibility(View.GONE);
+                       else {
+                           rentalCount.setVisibility(View.VISIBLE);
+                           rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
+                       }
+                   }
+                   if (key.equals(AppConstants.RESALE_COUNT)) {
+                       if (General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT) <= 0)
+                           resaleCount.setVisibility(View.GONE);
+                       else {
+                           resaleCount.setVisibility(View.VISIBLE);
+                           resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
+                       }
 
 
+                   }
+
+                   if (key.equals(AppConstants.TENANTS_COUNT)) {
+                       if (General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT) <= 0)
+                           option1Count.setVisibility(View.GONE);
+                       else {
+                           option1Count.setVisibility(View.VISIBLE);
+                           option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
+                       }
+
+                   }
+                   if (key.equals(AppConstants.OWNERS_COUNT)) {
+                       if (General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT) <= 0)
+                           option2Count.setVisibility(View.GONE);
+                       else {
+                           option2Count.setVisibility(View.VISIBLE);
+                           option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT)));
+                       }
+
+                   }
+
+                   if (key.equals(AppConstants.BUYER_COUNT)) {
+                       if (General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT) <= 0)
+                           option1Count.setVisibility(View.GONE);
+                       else {
+                           option1Count.setVisibility(View.VISIBLE);
+                           option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
+                       }
+
+                   }
+
+                   if (key.equals(AppConstants.SELLER_COUNT)) {
+                       if (General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT) <= 0)
+                           option2Count.setVisibility(View.GONE);
+                       else {
+                           option2Count.setVisibility(View.VISIBLE);
+                           option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
+                       }
+
+                   }
+
+
+               }
+
+
+           };
+           prefs.registerOnSharedPreferenceChangeListener(listener);
+
+       }
+       catch (Exception e){
+           Log.e(TAG, e.getMessage());
+       }
 
 
 
@@ -356,6 +431,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         txtPreviouslySelectedOption = (TextView) v;
 
         if (v.getId() == txtOption1.getId()) {
+            rentText.setVisibility(View.GONE);
+            texPtype.setVisibility(View.GONE);
+            texPstype.setVisibility(View.GONE);
 //            option2CountCont2.setVisibility(View.GONE);
         //    option2Count.setVisibility(View.GONE);
             txtOption1.setBackgroundResource(R.color.greenish_blue);
@@ -385,7 +463,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             currentOptionSelectedString = txtOption2.getText().toString();
             Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
             rentText.setVisibility(View.GONE);
-            displayOkText.setVisibility(View.GONE);
+            //displayOkText.setVisibility(View.GONE);
             texPtype.setVisibility(View.GONE);
             texPstype.setVisibility(View.GONE);
             // update circular seekbar
@@ -416,6 +494,11 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         Log.i("PREOK CALLED","currentSeekbarPosition"+currentSeekbarPosition);
 
         if (position == 0) {
+
+            rentText.setVisibility(View.GONE);
+            texPtype.setVisibility(View.GONE);
+            texPstype.setVisibility(View.GONE);
+
             resaleCount.setVisibility(View.GONE);
 
 
@@ -492,6 +575,12 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
         }
         else if (position == 1) {
+
+
+            rentText.setVisibility(View.GONE);
+            texPtype.setVisibility(View.GONE);
+            texPstype.setVisibility(View.GONE);
+
             rentalCount.setVisibility(View.GONE);
             if(General.getBadgeCount(getContext(),AppConstants.RESALE_COUNT)<=0)
                 resaleCount.setVisibility(View.GONE);
@@ -612,7 +701,11 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             texPtype.setText("Property Type: "+ptype);
             texPstype.setText("Property Subtype: "+pstype);
             //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
-            rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /m.");
+            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL"))
+            rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))+" /m.");
+            else
+                rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")));
+            //  rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /m.");
       //      displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used.");
 
             Log.i(TAG, "show is " + show);

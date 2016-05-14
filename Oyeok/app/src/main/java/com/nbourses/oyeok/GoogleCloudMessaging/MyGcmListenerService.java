@@ -26,11 +26,8 @@ import com.nbourses.oyeok.helpers.General;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.Format;
-import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
@@ -121,12 +118,13 @@ public class MyGcmListenerService extends GcmListenerService {
                 price = split[3];
                 tType = split[4];
          //  DecimalFormat formatter = new DecimalFormat();
-            int x =Integer.parseInt(price);
 
-
-            Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
-            price=format1.format(x);
-            price = price.substring(0,price.length()-3);
+            price = General.currencyFormat(price);
+//            int x =Integer.parseInt(price);
+//
+//            Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+//            price=format1.format(x);
+//            price = price.substring(0,price.length()-3);
             //price ="₹ "+price;
 
 
@@ -162,8 +160,9 @@ public class MyGcmListenerService extends GcmListenerService {
                      sellerCount++;
 
              }
+            ptype = ptype.substring(0, 1).toUpperCase() + ptype.substring(1);
 
-            message = ptype+"("+pstype+")"+" is "+ a + " at price "+price+ " for "+b;
+            message = ptype+"("+pstype+")"+" is "+ a + " at price "+price+ " for "+b+".";
 
             General.setBadgeCount(getApplicationContext(),AppConstants.RENTAL_COUNT,rentalCount);
             General.setBadgeCount(getApplicationContext(),AppConstants.RESALE_COUNT,resaleCount);
@@ -363,7 +362,16 @@ public class MyGcmListenerService extends GcmListenerService {
         }
 
 */
+
+        if(title.equalsIgnoreCase("Oyeok")) {
+            if(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equals("client"))
+            message = "We have just assigned a broker to your request.";
+            else
+             message = "We have just created a dealing room on your request.";
+        }
         Log.d(TAG,"OnMessageReceived MyGcmListenerService sending notification");
+
+       if(!message.equalsIgnoreCase("hello"))
         this.sendNotification(title, message);
         Log.d(TAG, "After sendNotification");
 

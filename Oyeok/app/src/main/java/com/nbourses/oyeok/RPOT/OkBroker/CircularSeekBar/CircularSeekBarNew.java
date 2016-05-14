@@ -29,7 +29,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -379,9 +378,14 @@ public class CircularSeekBarNew extends View {
 
         //start.setBounds(endx - (w / 2), starty - (h / 2), endx + (w / 2), starty + (h / 2));
         //start.draw(canvas);
-        DecimalFormat formatter = new DecimalFormat();
-        canvas.drawText("Min: ₹ " + formatter.format(minValue), mCircleRectF.left * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
-        canvas.drawText("Max: ₹ " + formatter.format(maxvalue), mCircleRectF.right - 120 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+//        DecimalFormat formatter = new DecimalFormat();
+//        canvas.drawText("Min: ₹ " + formatter.format(minValue), mCircleRectF.left * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+//        canvas.drawText("Max: ₹ " + formatter.format(maxvalue), mCircleRectF.right - 120 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+
+        canvas.drawText("Min: " + General.currencyFormat(minValue+""), mCircleRectF.left * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("Max: " + General.currencyFormat(maxvalue+""), mCircleRectF.right - 120 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+
+
     }
 
     /*

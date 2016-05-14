@@ -4,9 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -92,6 +94,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     TextView hdroomsCount;
 
     private WebView webView;
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
 
     public interface openMapsClicked{
         public void clicked();
@@ -164,6 +167,34 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
         else {
             hdroomsCount.setVisibility(View.VISIBLE);
             hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)));
+        }
+
+
+        try {
+            SharedPreferences prefs =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+
+            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                    if (key.equals(AppConstants.HDROOMS_COUNT)) {
+                        if (General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT) <= 0)
+                            hdroomsCount.setVisibility(View.GONE);
+                        else {
+                            hdroomsCount.setVisibility(View.VISIBLE);
+                            hdroomsCount.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT)));
+
+
+                        }
+
+
+                    }
+                }
+            };
+
+            prefs.registerOnSharedPreferenceChangeListener(listener);
+        }
+        catch (Exception e){
+            Log.e(TAG, e.getMessage());
         }
 
         //You need to set the Android context using Firebase.setAndroidContext() before using Firebase.

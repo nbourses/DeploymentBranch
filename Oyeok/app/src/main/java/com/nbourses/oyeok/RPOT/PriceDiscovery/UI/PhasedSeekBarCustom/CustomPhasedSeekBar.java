@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 
 /**
@@ -215,7 +216,7 @@ public class CustomPhasedSeekBar extends View {
             TT = "RESALE";
         }
 
-        General.setSharedPreferences(getContext(), "TT", TT);
+        General.setSharedPreferences(getContext(), AppConstants.TT, TT);
 
 
 

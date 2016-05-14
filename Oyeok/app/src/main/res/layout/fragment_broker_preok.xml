@@ -305,7 +305,8 @@
                         android:gravity="center"
                         android:textColor="#FFF"
                         android:textSize="11sp"
-                        android:background="@drawable/circle_badge"/>
+                        android:background="@drawable/circle_badge"
+                        android:visibility="gone" />
                 </RelativeLayout>
 
 
@@ -345,7 +346,8 @@
                         android:gravity="center"
                         android:textColor="#FFF"
                         android:textSize="11sp"
-                        android:background="@drawable/circle_badge"/>
+                        android:background="@drawable/circle_badge"
+                        android:visibility="gone" />
                 </RelativeLayout>
 
 
@@ -414,7 +416,8 @@
                     android:paddingLeft="8dp"
                     android:gravity="center"
                     android:textColor="#FFF"
-                    android:textSize="11sp"/>
+                    android:textSize="11sp"
+                    android:visibility="gone" />
 
 
             </LinearLayout>
@@ -439,7 +442,8 @@
                     android:paddingLeft="8dp"
                     android:gravity="center"
                     android:textColor="#FFF"
-                    android:textSize="11sp"/>
+                    android:textSize="11sp"
+                    android:visibility="gone" />
             </LinearLayout>
 
 
