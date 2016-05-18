@@ -1,11 +1,11 @@
 package com.nbourses.oyeok.fragments;
 
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -17,12 +17,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nbourses.oyeok.Database.DBHelper;
@@ -41,12 +50,14 @@ import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.SnackbarManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -59,7 +70,7 @@ import retrofit.client.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BrokerPreokFragment extends Fragment implements CustomPhasedListener, CircularSeekBarNew.imageAction, OnAcceptOkSuccess {
+public class BrokerPreokFragment extends Fragment implements CustomPhasedListener, CircularSeekBarNew.imageAction, OnAcceptOkSuccess,OnChartValueSelectedListener {
 
     @Bind(R.id.phasedSeekBar)
     CustomPhasedSeekBar mCustomPhasedSeekbar;
@@ -117,6 +128,21 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     @Bind(R.id.resaleCount)
     TextView resaleCount;
+
+    @Bind(R.id.buildingSlider)
+    RelativeLayout buildingSlider;
+
+    @Bind(R.id.chart)
+    BarChart chart;
+
+    @Bind(R.id.okBtn)
+    Button okBtn;
+
+    @Bind(R.id.setB)
+    TextView setB;
+
+    @Bind(R.id.selectB)
+    TextView selectB;
 //
 //    @Bind(R.id.option2CountCont1)
 //    LinearLayout option2CountCont1;
@@ -144,10 +170,20 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private int currentSeekbarPosition = 0; //default is rental
     private String currentOptionSelectedString = strTenants; //default is Tenants
     private TextView txtPreviouslySelectedOption;
+    private TextView txtPreviouslySelectedOptionB;
     private JSONArray jsonObjectArray;
     private int selectedItemPosition;
     private DBHelper dbHelper;
     SharedPreferences.OnSharedPreferenceChangeListener listener;
+    //private int[] buildingsSelected = new int[3];
+    private List<Integer> buildingsSelected = new ArrayList<Integer>();
+    private List<Highlight> highlights = new ArrayList<Highlight>();
+    private Highlight [] highs;
+    private int[] arr;
+    private Animation slide_up;
+    private Animation slide_down;
+    private ObjectAnimator animation;
+
 
 
     Animation bounce;
@@ -178,6 +214,20 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 
     private void init() {
+
+        slide_up = AnimationUtils.loadAnimation(getContext(),
+                R.anim.slide_up);
+        slide_down = AnimationUtils.loadAnimation(getContext(),
+                R.anim.slide_down);
+
+        animation = ObjectAnimator.ofFloat(chart, "rotationY", 0.0f, 360f);  // HERE 360 IS THE ANGLE OF ROTATE, YOU CAN USE 90, 180 IN PLACE OF IT,  ACCORDING TO YOURS REQUIREMENT
+
+        animation.setDuration(500); // HERE 500 IS THE DURATION OF THE ANIMATION, YOU CAN INCREASE OR DECREASE ACCORDING TO YOURS REQUIREMENT
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+
+
+
+        chart();
 
 
         zoomin.setAnimationListener(new Animation.AnimationListener() {
@@ -320,6 +370,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         txtPreviouslySelectedOption = txtOption1;
         txtPreviouslySelectedOption.setBackgroundResource(R.color.greenish_blue);
 
+        txtPreviouslySelectedOptionB = selectB;
+        txtPreviouslySelectedOptionB.setBackgroundResource(R.color.greenish_blue);
+
         txtOption1.setText(strTenants);
         txtOption2.setText(strOwners);
 
@@ -342,6 +395,60 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         circularSeekbar.setValues(arr.toString());
 
     }
+
+
+
+    public void chart() {
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(4, 0));
+        entries.add(new BarEntry(8, 1));
+        entries.add(new BarEntry(6, 2));
+        entries.add(new BarEntry(12, 3));
+        entries.add(new BarEntry(18, 4));
+        entries.add(new BarEntry(9, 5));
+        entries.add(new BarEntry(14, 6));
+        entries.add(new BarEntry(18, 7));
+        entries.add(new BarEntry(16, 8));
+        entries.add(new BarEntry(22, 9));
+        BarDataSet dataset = new BarDataSet(entries, "10");
+
+        // creating labels
+        ArrayList<String> labels = new ArrayList<String>();
+        labels.add("January");
+        labels.add("February");
+        labels.add("March");
+        labels.add("April");
+        labels.add("May");
+        labels.add("June");
+        labels.add("July");
+        labels.add("August");
+        labels.add("Sept");
+        labels.add("Oct");
+
+
+        BarData data = new BarData(labels, dataset);
+        chart.setData(data); // set the data and list of lables into chart
+
+        chart.setDescription("Select three Buildings");
+
+        chart.animateY(2000);
+
+
+        chart.setScaleYEnabled(false);
+        //   chart.setPinchZoom(false);
+        chart.setDoubleTapToZoomEnabled(false);
+//        chart.setDragEnabled(true);
+        chart.setOnChartValueSelectedListener(this);
+
+
+
+
+
+
+    }
+
+
+
 
     /**
      * load preok data by making server API call
@@ -419,9 +526,43 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         }
     }
 
+    @OnClick(R.id.okBtn)
+    public void onOptionClickok(View v){
+
+        buildingSlider.startAnimation(slide_down);
+        buildingSlider.setVisibility(View.GONE);
+
+//        if (buildingSlider.getVisibility() == View.VISIBLE) {
+//            TranslateAnimation animate = new TranslateAnimation(0, 0, buildingSlider.getHeight(), 0);
+//            animate.setDuration(500);
+//            animate.setFillAfter(true);
+//            buildingSlider.startAnimation(animate);
+//            buildingSlider.setVisibility(View.GONE);
+//        }
+
+    }
+
+
+
+    @OnClick({R.id.selectB, R.id.setB})
+    public void onOptionClickB(View v) {
+        if (txtPreviouslySelectedOptionB != null)
+            txtPreviouslySelectedOptionB.setBackgroundResource(R.color.colorPrimaryDark);
+
+        txtPreviouslySelectedOptionB = (TextView) v;
+        if (v.getId() == selectB.getId()) {
+            selectB.setBackgroundResource(R.color.greenish_blue);
+            animation.start();
+        }
+        else if (v.getId() == setB.getId()) {
+            setB.setBackgroundResource(R.color.greenish_blue);
+            animation.start();
+        }
+
+    }
     @OnClick({R.id.txtOption1, R.id.txtOption2})
     public void onOptionClick(View v) {
-        animatebadges();
+
         //okButton.setAnimation(zoomin);
         //okButton.setAnimation(zoomout);
 
@@ -751,12 +892,29 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
  @OnClick({R.id.okButton, R.id.deal})
     public void onButtonsClick(View v) {
         if (okButton.getId() == v.getId()) {
+
+
+
             if (jsonObjectArray == null) {
-                SnackbarManager.show(
-                        com.nispok.snackbar.Snackbar.with(getActivity())
-                                .position(Snackbar.SnackbarPosition.BOTTOM)
-                                .text("Please select a deal")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+
+                buildingSlider.startAnimation(slide_up);
+                buildingSlider.setVisibility(View.VISIBLE);
+//                SnackbarManager.show(
+//                        com.nispok.snackbar.Snackbar.with(getActivity())
+//                                .position(Snackbar.SnackbarPosition.BOTTOM)
+//                                .text("Please select a deal")
+//                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+//                if (buildingSlider.getVisibility() == View.GONE) {
+//                    TranslateAnimation animate = new TranslateAnimation(0, 0, 0 , buildingSlider.getHeight());
+//                    animate.setDuration(2000);
+//                    animate.setFillAfter(true);
+//                    buildingSlider.startAnimation(animate);
+//                    buildingSlider.setVisibility(View.VISIBLE);
+//                }
+
+
+
             }
             else {
                 if (!General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
@@ -821,6 +979,292 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         option2Count.startAnimation(bounce);
         rentalCount.startAnimation(bounce);
         resaleCount.startAnimation(bounce);
+    }
+
+
+    @Override
+    public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+
+
+
+        highs = chart.getHighlighted();
+
+        highlights = new ArrayList<Highlight>(Arrays.asList(highs));
+
+        if(highlights.contains(h)){
+            highlights.remove(h);
+            highs = highlights.toArray(new Highlight[highlights.size()]);
+              chart.highlightValues(highs);
+        } else{
+            highlights.add(h);
+            highs = highlights.toArray(new Highlight[highlights.size()]);
+            chart.highlightValues(highs);
+        }
+
+
+//        Log.i("GRAPH", "Start " + highlights.size() + "list " + highlights + "h is " + h);
+//        Log.i("GRAPH", "buildings selected " + buildingsSelected);
+//
+//
+//        if (!buildingsSelected.contains(h.getXIndex())) {
+//            Log.i("GRAPH", "1 " + highlights.size());
+//            if (highlights.size() < 3) {
+//                Log.i("GRAPH", "2");
+//                highlights.add(h);
+//                buildingsSelected.add(h.getXIndex());
+//                Log.i("GRAPH2", "buildings selected " + buildingsSelected);
+//                Log.i("GRAPH", "added " + h);
+//                highs = highlights.toArray(new Highlight[highlights.size()]);
+//                chart.highlightValues(highs);
+//            } else if (highlights.size() == 3) {
+//                Log.i("GRAPH", "3 " + highlights.size());
+//                //can select only three buildings
+//
+//                chart.highlightValues(highs);
+//            }
+//
+//        } else {
+//            Log.i("GRAPH", "4 " + highlights.size() + "list " + highlights + "h is " +h);
+//
+//            for (Iterator<Highlight> it = highlights.iterator(); it.hasNext(); ) {
+//
+//                Highlight hi = it.next();
+//                Log.i("GRAPH", "hi is " +hi);
+//                if (Integer.valueOf(hi.getXIndex()).equals(Integer.valueOf(h.getXIndex()))) {
+//                    it.remove();
+//                    //highlights.remove(Integer.valueOf(h.getXIndex()));
+//                    Log.i("GRAPH", "Removed " + hi.getXIndex() + "ved  " + h.getXIndex());
+//                    buildingsSelected.remove(Integer.valueOf(h.getXIndex()));
+//                }
+//
+//                //  buildingsSelected.remove(Integer.valueOf(h.getXIndex()));
+//                Log.i("GRAPH", "removed " + h);
+//                Log.i("GRAPH4", "buildings selected " + buildingsSelected);
+//                highs = highlights.toArray(new Highlight[highlights.size()]);
+//                chart.highlightValues(highs);
+//            }
+//
+//
+//        }
+
+
+//        if (!highlights.contains(h)){
+//            Log.i("GRAPH","1 "+highlights.size());
+//            if(highlights.size()<3){
+//                Log.i("GRAPH","2");
+//                highlights.add(h);
+//                Log.i("GRAPH","added "+h);
+//                highs = highlights.toArray(new Highlight[highlights.size()]);
+//                chart.highlightValues(highs);
+//            }
+//            else if(highlights.size()==3){
+//                Log.i("GRAPH","3 "+highlights.size());
+//                //can select only three buildings
+//
+//                chart.highlightValues(highs);
+//            }
+//
+//        }
+//        else{Log.i("GRAPH","4 "+highlights.size()+"list "+highlights +"h is "+h);
+//
+//
+//             highlights.remove(h);
+//            Log.i("GRAPH","removed "+h);
+//            highs = highlights.toArray(new Highlight[highlights.size()]);
+//            chart.highlightValues(highs);
+//        }
+
+
+
+/*
+  Log.i("GRAPH","executed");
+
+
+        if (!buildingsSelected.contains(e.getXIndex())) {
+            Log.i("GRAPH","1");
+            buildingsSelected.add(e.getXIndex());
+            Log.i("GRAPH10", "buildings selected after add " + buildingsSelected);
+            Log.i("GRAPH10", "buildings selected after add " + buildingsSelected.get(0));
+
+            if (buildingsSelected.size() < 3) {
+
+               // for (int i = 0; i < buildingsSelected.size(); i++) {
+
+                    if (buildingsSelected.size() == 1) {
+                        Log.i("GRAPH10", "buildings selected " + buildingsSelected);
+                        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+                        chart.highlightValues(new Highlight[]{h0});
+
+
+
+                    } else if (buildingsSelected.size() == 2) {
+                        Log.i("GRAPH11", "buildings selected " + buildingsSelected);
+                        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+                        Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
+                        chart.highlightValues(new Highlight[]{h0, h1});
+
+                    } else {
+                        Log.i("GRAPH12", "buildings selected " + buildingsSelected);
+                        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+                        Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
+                        Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
+                        chart.highlightValues(new Highlight[]{h0, h1, h2});
+
+
+                    }
+   //             }
+            } else if(buildingsSelected.size() == 3){
+                Log.i("GRAPH","3");
+                //cant be added
+                Log.i("GRAPH30", "buildings selected " + buildingsSelected);
+                Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+                Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
+                Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
+                chart.highlightValues(new Highlight[]{h0, h1, h2});
+
+            }
+        }
+        else {
+            Log.i("GRAPH","2");
+            Log.i("GRAPH","removed "+Integer.valueOf(e.getXIndex()));
+            buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
+            Log.i("GRAPH","after removing "+buildingsSelected);
+        //    for (int i = 0; i < buildingsSelected.size(); i++) {
+
+            Log.i("GRAPH","size "+buildingsSelected.size());
+                if (buildingsSelected.size() == 1) {
+                    Log.i("GRAPH20", "buildings selected " + buildingsSelected);
+                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+                    chart.highlightValues(new Highlight[]{h0});
+
+                } else if (buildingsSelected.size() == 2) {
+                    Log.i("GRAPH21", "buildings selected " + buildingsSelected);
+                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
+                    chart.highlightValues(new Highlight[]{h0, h1});
+
+
+                }else if(buildingsSelected.size() == 0){
+                    chart.highlightValue(-1,-1);
+                }
+        //        else if (buildingsSelected.size() == 3) {
+//                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+//                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
+//                    Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
+//                    chart.highlightValues(new Highlight[]{h0, h1, h2});
+//                }
+         //   }
+        }
+      //  Highlight [] highs = highlights.toArray(new Highlight[highlights.size()]);
+       // chart.highlightValues(highs);
+
+
+
+*/
+    }
+
+
+//        if(buildingsSelected.size()<3){
+//            if(!buildingsSelected.contains(e.getXIndex())) {
+//                buildingsSelected.add(e.getXIndex());
+//
+//                //chart.highlightValues(buildingsSelected);
+//                //     Integer [] buildings = buildingsSelected.toArray(new Integer[buildingsSelected.size()]);
+//                for (int i = 0; i < buildingsSelected.size(); i++) {
+//
+//                    if (buildingsSelected.size() == 1) {
+//                        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+//                        chart.highlightValues(new Highlight[]{h0});
+//                    } else if (buildingsSelected.size() == 2) {
+//                        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+//                        Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
+//                        chart.highlightValues(new Highlight[]{h0, h1});
+//                    }else {
+//                        Highlight h0 = new Highlight(buildingsSelected.get(0),0);
+//                        Highlight h1 = new Highlight(buildingsSelected.get(1),0);
+//                        Highlight h2 = new Highlight(buildingsSelected.get(2),0);
+//                        chart.highlightValues(new Highlight[] {h0,h1,h2});
+//                    }
+//                    }
+//
+////                   Highlight h1 = new Highlight(0,0);// 1st value to highlight
+////                    Highlight h2 = new Highlight(4,0);// 1st value to highlight
+////                    Highlight h3 = new Highlight(8,0);// 1st value to highlight
+////                   highlights.add(h1);
+//                    //     highlights.add(new Highlight(buildingsSelected.get(i),0));
+//
+//
+//                }
+////                Highlight h1 = new Highlight(); // 1st value to highlight
+////                Highlight h2 = new Highlight(); // 2nd value to highlight
+//
+//                //chart.highlightValues(new Highlight[] {h1, h2});
+//
+//            }       // chart.highlightValues(new buildings[] buildings);
+//            else if(buildingsSelected.size()==3){
+//                if(!buildingsSelected.contains(e.getXIndex())) {
+// //only three can be selected
+//
+//                }
+//                else{
+//
+//                    buildingsSelected.remove(e.getXIndex());
+//
+//                    for (int i = 0; i < buildingsSelected.size(); i++) {
+//
+//                        if(buildingsSelected.size()==1){
+//                            Highlight h0 = new Highlight(buildingsSelected.get(0),0);
+//                            chart.highlightValues(new Highlight[] {h0});
+//                        }else if(buildingsSelected.size()==2) {
+//                            Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+//                            Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
+//                            chart.highlightValues(new Highlight[]{h0, h1});
+//                        }
+////                        }else {
+////                            Highlight h0 = new Highlight(buildingsSelected.get(0),0);
+////                            Highlight h1 = new Highlight(buildingsSelected.get(1),0);
+////                            Highlight h2 = new Highlight(buildingsSelected.get(2),0);
+////                            chart.highlightValues(new Highlight[] {h0,h1,h2});
+////                        }
+//                    }
+//
+//                }
+//
+//            }
+//
+//            else{
+//                buildingsSelected.remove(e.getXIndex());
+//
+//            for (int i = 0; i < buildingsSelected.size(); i++) {
+//
+//                if(buildingsSelected.size()==1){
+//                    Highlight h0 = new Highlight(buildingsSelected.get(0),0);
+//                    chart.highlightValues(new Highlight[] {h0});
+//                }else if(buildingsSelected.size()==2) {
+//                    Highlight h0 = new Highlight(buildingsSelected.get(0),0);
+//                    Highlight h1 = new Highlight(buildingsSelected.get(1),0);
+//                    chart.highlightValues(new Highlight[] {h0,h1});
+//                }else if(buildingsSelected.size()==3){
+//                    Highlight h0 = new Highlight(buildingsSelected.get(0),0);
+//                    Highlight h1 = new Highlight(buildingsSelected.get(1),0);
+//                    Highlight h2 = new Highlight(buildingsSelected.get(2),0);
+//                    chart.highlightValues(new Highlight[] {h0,h1,h2});
+//                }
+//            }
+//            }
+//
+//        }
+
+
+//        buildingsSelected.contains()
+
+
+
+
+    @Override
+    public void onNothingSelected() {
+
+
     }
 
 

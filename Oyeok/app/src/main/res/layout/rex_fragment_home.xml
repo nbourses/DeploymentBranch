@@ -191,7 +191,7 @@
                     android:layout_below="@id/ll_marker"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="-15dp"
-                    android:id="@+id/Mmarker" />
+                    android:id="@+id/iMarker" />
 
             </RelativeLayout>
 

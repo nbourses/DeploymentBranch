@@ -88,16 +88,21 @@
 
 
 
-    <style name="CustomDigitsTheme" parent="Theme.AppCompat.Light">
-        <item name="android:textColorPrimary">@android:color/white</item>
+    <style name="CustomDigitsTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColorPrimary">@android:color/darker_gray</item>
         <item name="android:textColorSecondary">@android:color/darker_gray</item>
         <item name="android:windowBackground">@color/logo_background</item>
         <item name="android:textColorLink">@color/greenish_blue</item>
         <item name="colorAccent">@color/greenish_blue</item>
         <item name="dgts__logoDrawable">@drawable/digitslogo</item>
-        <item name="android:actionBarItemBackground">@color/logo_background</item>
         <item name="android:actionMenuTextColor">@color/greenish_blue</item>
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
 
+
+
+    </style>
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/logo_background</item>
     </style>
 
 

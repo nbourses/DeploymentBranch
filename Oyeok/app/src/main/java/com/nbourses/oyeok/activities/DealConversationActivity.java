@@ -821,6 +821,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      *  pubnub push notification
      */
 
+
     public void sendNotification(String channel_name) {
 
         Log.i("Pubnub push","channel_name is "+channel_name);

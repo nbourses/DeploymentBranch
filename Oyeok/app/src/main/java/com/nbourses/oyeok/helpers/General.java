@@ -400,11 +400,11 @@ public class General extends BroadcastReceiver{
 
 
                                 Toast.makeText(context, "" + jsonResponseData.getString("message"), Toast.LENGTH_LONG).show();
-                                SnackbarManager.show(
-                                        Snackbar.with(context)
-                                                .position(Snackbar.SnackbarPosition.TOP)
-                                                .text("Your old oye with same specs: " + jsonResponseData.getString("message"))
-                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+//                                SnackbarManager.show(
+//                                        Snackbar.with(context)
+//                                                .position(Snackbar.SnackbarPosition.TOP)
+//                                                .text("Your old oye with same specs: " + jsonResponseData.getString("message"))
+//                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
 
                                 //  if (jsonResponseData.getInt("code") == 1) {

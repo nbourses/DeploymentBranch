@@ -499,4 +499,76 @@
             android:layout_marginRight="100dp"
             android:layout_gravity="bottom|right"/>
     </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_gravity="bottom"
+        android:id="@+id/buildingSlider"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/linearLayout">
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="267dp"
+                android:visibility="visible"
+                android:background="@color/White" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="OK"
+                android:id="@+id/okBtn"
+                android:layout_gravity="center_horizontal|bottom"
+                android:clickable="true"
+                android:background="@color/greenish_blue"
+                android:textColor="#FFFFFF"
+                android:textSize="30dp" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:textColor="#FFFFFF"
+                android:background="@color/colorPrimaryDark"
+
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Select buildings"
+                android:id="@+id/selectB"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:layout_alignParentStart="true"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Set building price"
+                android:gravity="center"
+                android:id="@+id/setB"
+                android:textColor="#FFFFFF"
+                android:background="@color/colorPrimaryDark"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
 </FrameLayout>

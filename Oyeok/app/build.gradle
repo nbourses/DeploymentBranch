@@ -21,6 +21,10 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
 
 android {
     useLibrary 'org.apache.http.legacy'
@@ -145,4 +149,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-identity:8.4.0'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
     compile 'me.leolin:ShortcutBadger:1.1.4@aar'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
 }

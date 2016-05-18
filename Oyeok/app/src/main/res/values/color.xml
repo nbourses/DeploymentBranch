@@ -10,7 +10,7 @@
     <color name="white">#ffffff</color>
     <color name="dark_white">#fcfcfc</color>
     <color name="grey">#cccccc</color>
-    <color name="greenish_blue">#2DC4B6</color>
+    <color name="greenish_blue">#2dc4b6</color>
     <color name="logo_background">#0D1D2E</color>
 
 
@@ -242,7 +242,7 @@
     <color name="purple_dark">#6a3ab2</color>
 
     <color name="Grey">#EEEEEE</color>
-    <color name="Red">#F44336</color>
+    <color name="Red">#f44336</color>
     <color name="Cyan">#90CAF9</color>
     <color name="Purple">#6200ca</color>
 

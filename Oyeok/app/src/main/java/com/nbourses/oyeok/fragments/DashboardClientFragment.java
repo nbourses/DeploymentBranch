@@ -21,6 +21,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -31,6 +32,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -47,6 +49,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nbourses.oyeok.Database.DBHelper;
@@ -102,7 +105,7 @@ import retrofit.client.Response;
 
 import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
-public class DashboardClientFragment extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList,HorizontalPicker.pickerPriceSelected,FragmentDrawer.MDrawerListener {
+public class DashboardClientFragment extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList, HorizontalPicker.pickerPriceSelected, FragmentDrawer.MDrawerListener {
 
     private final String TAG = DashboardClientFragment.class.getSimpleName();
     private static final String[] INITIAL_PERMS = {
@@ -134,8 +137,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private GoogleMap map;
     private LinearLayout ll_marker;
     private GeoFence geoFence;
-    private int permissionCheckForCamera,permissionCheckForLocation;
-    private final int MY_PERMISSION_FOR_CAMERA=11;
+    private int permissionCheckForCamera, permissionCheckForLocation;
+    private final int MY_PERMISSION_FOR_CAMERA = 11;
     private CustomPhasedSeekBar mPhasedSeekBar;
     String brokerType;
     private Geocoder geocoder;
@@ -160,6 +163,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private TextView rupeesymbol;
     private OnOyeClick onOyeClick;
     CustomMapFragment customMapFragment;
+    private int x,y,top,bottom,left,right,width,height;
+    private android.graphics.Point point;
 
     private int llMin, llMax, orMin, orMax;
 
@@ -172,12 +177,17 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     @Bind(R.id.txtFilterValue)
     TextView txtFilterValue;
 
+    @Bind(R.id.iMarker)
+    ImageView iMarker;
+
+
+
     ValueAnimator mFlipAnimator;
 
     private BroadcastReceiver onFilterValueUpdate = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getExtras() != null){
+            if (intent.getExtras() != null) {
                 txtFilterValue.setText(Html.fromHtml(intent.getExtras().getString("filterValue")));
             }
         }
@@ -192,11 +202,64 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View  rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
+        final View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         ButterKnife.bind(this, rootView);
 
+
         requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
-        droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl,getActivity());
+
+
+//        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_markerpin);
+//        LatLng latLng = new LatLng(21.4225, 39.8262);
+//        map.addMarker(new MarkerOptions().position(latLng).title("Mecca").icon(icon)).showInfoWindow();
+//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
+
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                int[] locations = new int[2];
+                iMarker.getLocationOnScreen(locations);
+//                x = locations[0]+26;
+//                y = locations[1]-115;
+                x = locations[0];
+                y = locations[1];
+
+
+
+
+                point= new android.graphics.Point(x,y);
+                Log.i("MARKER","oncreate data"+x+" "+y+" "+point);
+
+
+
+
+                bottom = iMarker.getBottom();
+                top = iMarker.getTop();
+                left=iMarker.getLeft();
+                right=iMarker.getRight();
+                width=iMarker.getMeasuredWidth();
+                height=iMarker.getMeasuredHeight();
+//                x = left + (right-left)/2;
+//                y = bottom+115;
+
+                Log.i("t1","Bottom"+ iMarker.getBottom()+"top"+top+"left"+left+"right"+right);
+                Log.i("t1","width"+width+"height "+height);
+         //       point= new android.graphics.Point(x,y);
+
+                Log.i("t1","co-ordinate"+x+" "+y);
+            }
+
+        });
+
+       // LatLng r = map.getProjection().fromScreenLocation(point);
+
+
+       // map.addMarker(new MarkerOptions().position(r).title("Tester"));
+
+        droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl, getActivity());
 //        mDrooms = (TextView) rootView.findViewById(R.id.linearlayout_drooms);
         mVisits = (TextView) rootView.findViewById(R.id.newVisits);
         mQrCode = (ImageView) rootView.findViewById(R.id.qrCode);
@@ -206,8 +269,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
         permissionCheckForCamera = ContextCompat.checkSelfPermission(this.getActivity(),
                 Manifest.permission.CAMERA);
-        dashboardActivity = (ClientMainActivity)getActivity();
-        dbHelper=new DBHelper(getContext());
+        dashboardActivity = (ClientMainActivity) getActivity();
+        dbHelper = new DBHelper(getContext());
         ll_map = (FrameLayout) rootView.findViewById(R.id.ll_map);
         permissionCheckForLocation = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
@@ -215,10 +278,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         errorText = (TextView) rootView.findViewById(R.id.errorText);
 
         rupeesymbol = (TextView) rootView.findViewById(R.id.rupeesymbol);
-        tvRate = (TextView)rootView.findViewById(R.id.tvRate);
+        tvRate = (TextView) rootView.findViewById(R.id.tvRate);
+
+
         onPositionSelected(0, 2);
 
-        horizontalPicker = (HorizontalPicker)rootView.findViewById(R.id.picker);
+        horizontalPicker = (HorizontalPicker) rootView.findViewById(R.id.picker);
         horizontalPicker.setMpicker(this);
         horizontalPicker.setTvRate(tvRate, rupeesymbol);
         horizontalPicker.setSelectedItem(2);
@@ -235,7 +300,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         });
 
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
-        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
+        if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{"Rental", "Resale"}));
         else
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
@@ -287,12 +352,22 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     map = googleMap;
+                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
                     map.setMyLocationEnabled(true);
                     setCameraListener();
                     geoFence.drawPloygon(map);
                 }
             });
-            getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
+            getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
         }
 
         customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
@@ -309,6 +384,16 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 //                    horizontalPicker.stopScrolling();
                     tvRate.setVisibility(View.VISIBLE);
                     rupeesymbol.setVisibility(View.VISIBLE);
+
+LatLng currentLocation1;
+                    currentLocation1 = map.getProjection().fromScreenLocation(point);
+                    Log.i("MARKER","point"+point + " " + point.x+ " " +point.y+ " " +x+ " " +y +" "+currentLocation1);
+//                        x = left + (right-left)/2;
+//                        y = bottom;
+  map.addMarker(new MarkerOptions().position(currentLocation1));
+                //    point.set(point.x,point.y);
+
+
                     getPrice();
                     map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -322,15 +407,15 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             }
         });
 
-        mcallback =  new GetCurrentLocation.CurrentLocationCallback() {
+        mcallback = new GetCurrentLocation.CurrentLocationCallback() {
             @Override
             public void onComplete(Location location) {
                 if (location != null) {
                     lat = location.getLatitude();
                     lng = location.getLongitude();
-                    SharedPrefs.save(getActivity(),SharedPrefs.MY_LAT,lat+"");
+                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                    if(isNetworkAvailable()) {
+                    if (isNetworkAvailable()) {
                         try {
                             //getRegion();
                         } catch (Exception e) {
@@ -339,11 +424,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     }
 
                     LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
                     map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
                     map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
 
                     //make retrofit call to get Min Max price
-                    if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
+                    if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
                         try {
                             getPrice();
                         } catch (Exception e) {
@@ -355,7 +441,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         };
 
 
-        if(!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
+        if (!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
             droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
 
         dbHelper.save(DatabaseConstants.userRole, "Client");
@@ -410,9 +496,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     @Override
     public void onResume() {
-        final LocationManager manager = (LocationManager)getActivity(). getSystemService( Context.LOCATION_SERVICE );
+        final LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps();
         }
         super.onResume();
@@ -445,8 +531,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     }
 
 
-
-
     private Handler mHandler;
     Runnable mStatusChecker = new Runnable() {
         @Override
@@ -458,9 +542,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     private void hideMap(int i) {
         Animation m = null;
-        if(isAdded())
+        if (isAdded())
             //Load animation
-            if(i==0)
+            if (i == 0)
                 m = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
             else
                 m = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
@@ -475,8 +559,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         if (result != null) {
             if (result.getContents() == null) {
                 toast = "Cancelled from fragment";
-            }
-            else {
+            } else {
                 toast = "Scanned from fragment: " + result.getContents();
             }
             // At this point we may or may not have a reference to the activity
@@ -505,31 +588,30 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             public void success(GetPrice getPrice, Response response) {
                 if (getPrice.responseData.getLl_min() != null &&
                         !getPrice.responseData.getLl_min().equals("")) {
-                    Log.i("TRACE","RESPONSEDATAr" +response);
+                    Log.i("TRACE", "RESPONSEDATAr" + response);
                     llMin = Integer.parseInt(getPrice.responseData.getLl_min());
                     llMax = Integer.parseInt(getPrice.responseData.getLl_max());
-                    Log.i("TRACE","RESPONSEDATAr" +llMin);
-                    Log.i("TRACE","RESPONSEDATAr" +llMax);
-                    llMin = 5*(Math.round(llMin/5));
-                    llMax =  5*(Math.round(llMax/5));
-                    Log.i("TRACE","RESPONSEDATAr" +llMin);
-                    Log.i("TRACE","RESPONSEDATAr" +llMax);
+                    Log.i("TRACE", "RESPONSEDATAr" + llMin);
+                    Log.i("TRACE", "RESPONSEDATAr" + llMax);
+                    llMin = 5 * (Math.round(llMin / 5));
+                    llMax = 5 * (Math.round(llMax / 5));
+                    Log.i("TRACE", "RESPONSEDATAr" + llMin);
+                    Log.i("TRACE", "RESPONSEDATAr" + llMax);
 
                     orMin = Integer.parseInt(getPrice.responseData.getOr_min());
                     orMax = Integer.parseInt(getPrice.responseData.getOr_max());
-                    Log.i("TRACE","RESPONSEDATAr" +orMin);
-                    Log.i("TRACE","RESPONSEDATAr" +orMax);
-                    orMin = 500*(Math.round(orMin/500));
-                    orMax = 500*(Math.round(orMax/500));
-                    Log.i("TRACE","RESPONSEDATAr" +orMin);
-                    Log.i("TRACE","RESPONSEDATAr" +orMax);
+                    Log.i("TRACE", "RESPONSEDATAr" + orMin);
+                    Log.i("TRACE", "RESPONSEDATAr" + orMax);
+                    orMin = 500 * (Math.round(orMin / 500));
+                    orMax = 500 * (Math.round(orMax / 500));
+                    Log.i("TRACE", "RESPONSEDATAr" + orMin);
+                    Log.i("TRACE", "RESPONSEDATAr" + orMax);
 
 
                     updateHorizontalPicker();
 
                     missingArea.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     /*SnackbarManager.show(
                             Snackbar.with(getActivity())
                                     .text("We don't cater here yet")
@@ -552,8 +634,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
         if (horizontalPicker != null) {
             if (brokerType.equals("rent"))
-             //   horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
-                horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
+                //   horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
+                horizontalPicker.setInterval((llMin * 1000), (llMax * 1000), 10, HorizontalPicker.THOUSANDS);
             else
 
                 horizontalPicker.setInterval(orMin, orMax, 10, HorizontalPicker.THOUSANDS);
@@ -580,8 +662,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     // permission was granted, y-------------ay! Do the
                     // contacts-related task you need to do.
 
-                }
-                else {
+                } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
@@ -593,6 +674,16 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
                             map = googleMap;
+                            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                // TODO: Consider calling
+                                //    ActivityCompat#requestPermissions
+                                // here to request the missing permissions, and then overriding
+                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                //                                          int[] grantResults)
+                                // to handle the case where the user grants the permission. See the documentation
+                                // for ActivityCompat#requestPermissions for more details.
+                                return;
+                            }
                             map.setMyLocationEnabled(true);
                             setCameraListener();
                             geoFence.drawPloygon(map);
@@ -617,7 +708,41 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         lat = location.getLatitude();
                         lng = location.getLongitude();
                         LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                        map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+                      //  point = map.getProjection().toScreenLocation(currentLocation);
+                       // Log.i("MARKER","point "+point);
+                        map.addMarker(new MarkerOptions().position(currentLocation).title("Ritesh"));
+
+                       //LatLng c = map.getProjection().fromScreenLocation(point);
+
+                        x = left + (right-left)/2;
+                        y = bottom;
+
+                        point = map.getProjection().toScreenLocation(currentLocation);
+                        Log.i("MARKER","point"+point + " " + point.x+ " " +point.y+ " " +x+ " " +y +" "+currentLocation);
+//                        x = left + (right-left)/2;
+//                        y = bottom;
+
+                        point.set(point.x,point.y-50);
+
+
+
+
+                       LatLng target = map.getProjection().fromScreenLocation(point);
+                     CameraPosition c = new CameraPosition.Builder().target(currentLocation).build();
+
+
+                        map.moveCamera(CameraUpdateFactory.newCameraPosition(c));
+                        map.addMarker(new MarkerOptions().position(target).title("Ritesh1"));
+
+                        Log.i("MARKER","locn"+currentLocation+" "+target);
+
+
+
+
+
+
+
+                        //map.moveCamera(CameraUpdateFactory.newLatLng(c));
                         map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
 
                     }
