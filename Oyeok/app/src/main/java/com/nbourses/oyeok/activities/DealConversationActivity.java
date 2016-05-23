@@ -35,6 +35,7 @@ import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.ChatMessage;
 import com.pubnub.api.Callback;
+import com.pubnub.api.PnApnsMessage;
 import com.pubnub.api.PnGcmMessage;
 import com.pubnub.api.PnMessage;
 import com.pubnub.api.Pubnub;
@@ -821,8 +822,54 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      *  pubnub push notification
      */
 
+    public void sendNotification(String channel_name) throws JSONException {
 
-    public void sendNotification(String channel_name) {
+        PnGcmMessage gcmMessage = new PnGcmMessage();
+
+        JSONObject json = new JSONObject();
+
+        try {
+            json.put("a","1");
+        }
+        catch (JSONException e)
+        {
+
+        }
+
+        gcmMessage.setData(json);
+
+
+        // Create APNS message
+
+        PnApnsMessage apnsMessage = new PnApnsMessage();
+        apnsMessage.setApsSound("melody");
+        apnsMessage.setApsAlert("Hi from android !!!");
+        apnsMessage.setApsBadge(4);
+        apnsMessage.put("C ","3");
+
+        PnMessage message = new PnMessage(pubnub, channel_name, new Callback() {
+            @Override
+            public void successCallback(String channel, Object message) {
+                Log.i("TRACE NOTIFICATION","Successfull "+message);
+            }
+
+            @Override
+            public void errorCallback(String channel,PubnubError error)
+            {
+                Log.i("TRACE NOTIFICATION","Error "+error);
+            }
+        },apnsMessage,gcmMessage);
+
+        message.put("b","20");
+
+        try {
+            message.publish();
+        }
+        catch (PubnubException e){}
+    }
+
+
+    public void sendNotification1(String channel_name) {
 
         Log.i("Pubnub push","channel_name is "+channel_name);
         Log.i("Pubnub push","GCM id is "+General.getSharedPreferences(this,AppConstants.GCM_ID));

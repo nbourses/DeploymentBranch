@@ -7,10 +7,9 @@
     android:id="@+id/drawer_layout"
     tools:context="in.co.madhur.chatbubblesdemo.DealsListActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/container_toolbar"
@@ -22,21 +21,29 @@
                 android:id="@+id/toolbar"
                 layout="@layout/toolbar" />
         </LinearLayout>
+        <FrameLayout
+
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/fragment_container1"
+            android:visibility="gone"
+            android:layout_below="@+id/phaseSeekbar" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/supportChat">
+            android:id="@+id/supportChat"
+            android:layout_below="@+id/container_toolbar">
             <include layout="@layout/deal_item" />
         </LinearLayout>
-
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?android:attr/listDivider"/>
-
-
+            android:background="?android:attr/listDivider"
+            android:layout_below="@+id/supportChat"
+            android:id="@+id/view"
+            android:visibility="visible" />
 
         <!--<com.cleveroad.androidmanimation.LoadingAnimationView
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -56,9 +63,32 @@
         <ListView
             android:id="@+id/listViewDeals"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/view"
+            android:layout_above="@+id/phaseSeekbar">
         </ListView>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:id="@+id/phaseSeekbar"
+            android:layout_gravity="bottom"
+            android:paddingTop="10dp"
+            android:background="@color/common_plus_signin_btn_text_dark_disabled"
+            android:visibility="visible"
+            android:gravity="bottom"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentBottom="true">
+
+            <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
+                android:id="@+id/phasedSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:visibility="visible"
+                android:clickable="false" />
+        </LinearLayout>
 
         <!--<TextView
             android:id="@+id/txtNoActiveDeal"
@@ -70,31 +100,8 @@
             android:gravity="center_vertical"
             android:visibility="gone"
             android:textAppearance="?android:attr/textAppearanceLarge"/>-->
-      <!--  <FrameLayout
-            android:id="@+id/fragment_container"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible"
-            android:layout_weight="1">
-
-        </FrameLayout>   -->
 
 
-
-
-
-            <FrameLayout
-
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/fragment_container1"
-                android:layout_below="@+id/toolbar" />
-
-
-    </LinearLayout>
-
-
-
-
+    </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>

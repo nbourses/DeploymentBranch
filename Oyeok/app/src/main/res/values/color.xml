@@ -168,7 +168,7 @@
     <color name="rosybrown">#BC8F8F</color>
     <color name="mediumorchid">#BA55D3</color>
     <color name="darkgoldenrod">#B8860B</color>
-    <color name="firebrick">#B22222</color>
+    <color name="firebrick">#b22222</color>
     <color name="powderblue">#B0E0E6</color>
     <color name="lightsteelblue">#B0C4DE</color>
     <color name="paleturquoise">#AFEEEE</color>
@@ -241,9 +241,9 @@
     <color name="purple_middle">#8658ce</color>
     <color name="purple_dark">#6a3ab2</color>
 
-    <color name="Grey">#EEEEEE</color>
+    <color name="Grey">#eeeeee</color>
     <color name="Red">#f44336</color>
-    <color name="Cyan">#90CAF9</color>
+    <color name="Cyan">#90caf9</color>
     <color name="Purple">#6200ca</color>
 
     <color name="header_normal">#ffe74c3c</color>

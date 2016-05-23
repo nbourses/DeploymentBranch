@@ -269,7 +269,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
         permissionCheckForCamera = ContextCompat.checkSelfPermission(this.getActivity(),
                 Manifest.permission.CAMERA);
-        dashboardActivity = (ClientMainActivity) getActivity();
+
+        //commented to load fragment from broker dashboard
+       // dashboardActivity = (ClientMainActivity) getActivity();
         dbHelper = new DBHelper(getContext());
         ll_map = (FrameLayout) rootView.findViewById(R.id.ll_map);
         permissionCheckForLocation = ContextCompat.checkSelfPermission(getActivity(),

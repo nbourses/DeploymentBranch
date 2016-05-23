@@ -384,12 +384,13 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                >
+                android:id="@+id/phaseSeekbar">
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:visibility="gone" />
+
                 <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
                     android:id="@+id/phasedSeekBar"
                     android:layout_width="match_parent"
@@ -446,16 +447,17 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-
-
-
-
-
-
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Set Locality"
+                android:id="@+id/setLocality"
+                android:textColor="@color/White"
+                android:background="@color/greenish_blue"
+                android:visibility="gone" />
 
 
         </RelativeLayout>
-
 
 
     </RelativeLayout>

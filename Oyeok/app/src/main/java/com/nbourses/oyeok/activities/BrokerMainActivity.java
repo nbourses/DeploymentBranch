@@ -15,12 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.fragments.BrokerPreokFragment;
+import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
@@ -42,12 +44,21 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
     @Bind(R.id.txtEmail)
     TextView emailTxt;
 
+    @Bind(R.id.openmaps)
+    Button openmaps;
+
+
+
+
+
 
 
     private TextView option1Count;
     private TextView option2Count;
     private TextView rentalCount;
     private TextView resaleCount;
+
+
 
 
     DBHelper dbHelper;
@@ -60,6 +71,7 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_agent_main);
+
         ButterKnife.bind(this);
 
         if (General.isNetworkAvailable(getApplicationContext())) {
@@ -88,6 +100,8 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
     }
 
     private void init() {
+        openmaps.setVisibility(View.VISIBLE);
+
         /*Fragment fragment = new Ok_Broker_MainScreen();
         loadFragment(fragment, null, R.id.container_map, "");*/
 
@@ -196,7 +210,28 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
         }else{
             emailTxt.setVisibility(View.INVISIBLE);
         }
+
+
+        openmaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                
+                DashboardClientFragment dashboardClientFragment = new DashboardClientFragment();
+                loadFragment(dashboardClientFragment, null, R.id.container_map, "");
+
+            }
+        });
+
+
+
+
+
+
     }
+
+
+
 
     /**
      * load fragment

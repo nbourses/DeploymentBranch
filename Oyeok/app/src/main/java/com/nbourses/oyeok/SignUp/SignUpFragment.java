@@ -345,6 +345,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         //llotp.setVisibility(View.GONE);
 
         role_of_user = dbHelper.getValue(DatabaseConstants.userRole);
+
 //        ((DashboardActivity) getActivity()).showToastMessage("Signing up as " + role_of_user);
 
         SnackbarManager.show(

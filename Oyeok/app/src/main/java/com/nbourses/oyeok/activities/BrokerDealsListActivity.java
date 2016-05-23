@@ -25,6 +25,9 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.adapters.BrokerDealsListAdapter;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -50,7 +53,7 @@ import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedByteArray;
 
-public class BrokerDealsListActivity extends AppCompatActivity {
+public class BrokerDealsListActivity extends AppCompatActivity implements CustomPhasedListener {
 
     private static final String TAG = "BrokerDealsListActivity";
     private DBHelper dbHelper;
@@ -62,8 +65,16 @@ public class BrokerDealsListActivity extends AppCompatActivity {
     Toolbar mToolbar;
     @Bind(R.id.supportChat)
     LinearLayout supportChat;
+    @Bind(R.id.view)
+    View view;
     @Bind(R.id.fragment_container1)
     FrameLayout fragment_container1;
+
+    @Bind(R.id.phasedSeekBar)
+    CustomPhasedSeekBar mCustomPhasedSeekbar;
+
+    @Bind(R.id.phaseSeekbar)
+    LinearLayout phaseSeekBar;
 
     /*@Bind(R.id.txtNoActiveDeal)
     TextView txtNoActiveDeal;
@@ -72,6 +83,9 @@ public class BrokerDealsListActivity extends AppCompatActivity {
     LoadingAnimationView progressBar;*/
 
 //    private ProgressDialog mProgressDialog = null;
+
+    private String TT = "LL";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +114,26 @@ public class BrokerDealsListActivity extends AppCompatActivity {
     }
 
     private void init() {
+
+        //if user is logged in then make phase seek bar visible, view is already made GONE from layout, on safer side we will still make it gone initially programatically
+
+        phaseSeekBar.setVisibility(View.GONE);
+        if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).isEmpty()){
+            phaseSeekBar.setVisibility(View.VISIBLE);
+
+        }
+
+        General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
+
+        // mPhasedSeekBar = (CustomPhasedSeekBar) findViewById(R.id.phasedSeekBar);
+        mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(this.getResources(),
+                new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
+                new String[]{"30", "15"},
+                new String[]{"Rental", "Resale"
+                }));
+        mCustomPhasedSeekbar.setListener((this));
+
+        Log.i("Phaseseekbar","oncreate value "+General.getSharedPreferences(this, AppConstants.TT));
 
         dbHelper = new DBHelper(this);
         /*mProgressDialog = new ProgressDialog(this);
@@ -222,8 +256,11 @@ public class BrokerDealsListActivity extends AppCompatActivity {
                                 Log.i("TRACE==","deals.ok_id"+deals.getOkId());
                                 if(!(deals.getOkId() == null))
                                 {
-                                    Log.i("TRACE==","deals.ok_id inside cond");
-                                    listBrokerDeals_new.add(deals);
+
+                                    if(deals.getSpecCode().contains(TT+"-")) {
+                                        Log.i("DEALREFRESHPHASESEEKBA", "deal spec code " + deals.getSpecCode() + " for " + TT);
+                                        listBrokerDeals_new.add(deals);
+                                    }
                                 }
 
                             }
@@ -296,6 +333,7 @@ public class BrokerDealsListActivity extends AppCompatActivity {
         else
         {
             supportChat.setVisibility(View.GONE);
+            view.setVisibility(View.GONE);
             listViewDeals.setVisibility(View.GONE);
             fragment_container1.setVisibility(View.VISIBLE);
             Bundle bundle = new Bundle();
@@ -356,4 +394,27 @@ public class BrokerDealsListActivity extends AppCompatActivity {
 //        getSupportActionBar().setTitle(title);
     }
 
+    @Override
+    public void onPositionSelected(int position, int count) {
+        if(position == 0) {
+
+            General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
+            TT = "LL";
+            loadBrokerDeals();
+        }
+        else{
+
+            General.setSharedPreferences(this, AppConstants.TT, AppConstants.RESALE);
+            TT = "OR";
+            loadBrokerDeals();
+        }
+
+
+        //General.setSharedPreferences(this, AppConstants.TT, TT);
+
+        Log.i(TAG, "PHASED seekbar current onPositionSelected" + position +" "+ " count "+count+" "+General.getSharedPreferences(this, "TT"));
+
+
+
+    }
 }
