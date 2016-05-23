@@ -279,7 +279,7 @@ public class MyGcmListenerService extends GcmListenerService {
                     }
                 }
 */
-                    //Delete default dealing room for this ok Id  // what is user discards notification? dealing room bhi nahi khulega and default deal bhi delete ho jayegi
+                    //delete default dealing room for this ok Id  // what is user discards notification? dealing room bhi nahi khulega and default deal bhi delete ho jayegi
                     // dealing room is already present at server so when SeeHDrooms call hoga then dealing room aa jayegi (But where is clients approval that he wants to chat with broker)
                     // currently there is no choice to client if broker oks then mob no. exchange ho jayenge.
 

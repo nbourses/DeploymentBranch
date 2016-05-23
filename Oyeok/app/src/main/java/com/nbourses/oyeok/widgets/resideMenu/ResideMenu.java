@@ -55,7 +55,7 @@ public class ResideMenu extends FrameLayout {
     /** The DecorView of current activity. */
     private ViewGroup viewDecor;
     private TouchDisableView viewActivity;
-    /** The flag of menu opening status. */
+    /** The flag of more opening status. */
     private boolean              isOpened;
     private float shadowAdjustScaleX;
     private float shadowAdjustScaleY;
@@ -201,7 +201,7 @@ public class ResideMenu extends FrameLayout {
 
 
     /**
-     * Set the background image of menu;
+     * Set the background image of more;
      *
      * @param imageResource
      */
@@ -222,7 +222,7 @@ public class ResideMenu extends FrameLayout {
 //    }
 
     /**
-     * Add a single item to the left menu;
+     * Add a single item to the left more;
      *
      * WARNING: It will be removed from v2.0.
      * @param menuItem
@@ -260,7 +260,7 @@ public class ResideMenu extends FrameLayout {
     }
 
     /**
-     * Set menu items by a array;
+     * Set more items by a array;
      *
      * @param menuItems
      * @param direction
@@ -292,7 +292,7 @@ public class ResideMenu extends FrameLayout {
     }
 
     /**
-     * Return instances of menu items;
+     * Return instances of more items;
      *
      * @return
      */
@@ -304,7 +304,7 @@ public class ResideMenu extends FrameLayout {
     }
 
     /**
-     * If you need to do something on closing or opening menu,
+     * If you need to do something on closing or opening more,
      * set a listener here.
      *
      * @return
@@ -319,7 +319,7 @@ public class ResideMenu extends FrameLayout {
     }
 
     /**
-     * Show the menu;
+     * Show the more;
      */
     public void openMenu(int direction){
 
@@ -337,7 +337,7 @@ public class ResideMenu extends FrameLayout {
     }
 
     /**
-     * Close the menu;
+     * Close the more;
      */
     public void closeMenu(){
 
@@ -388,7 +388,7 @@ public class ResideMenu extends FrameLayout {
     }
 
     /**
-     * return the flag of menu status;
+     * return the flag of more status;
      *
      * @return
      */
@@ -511,7 +511,7 @@ public class ResideMenu extends FrameLayout {
     }
 
     /**
-     * If there were some view you don't want reside menu
+     * If there were some view you don't want reside more
      * to intercept their touch event, you could add it to
      * ignored views.
      *
@@ -676,12 +676,12 @@ public class ResideMenu extends FrameLayout {
     public interface OnMenuListener{
 
         /**
-         * This method will be called at the finished time of opening menu animations.
+         * This method will be called at the finished time of opening more animations.
          */
         public void openMenu();
 
         /**
-         * This method will be called at the finished time of closing menu animations.
+         * This method will be called at the finished time of closing more animations.
          */
         public void closeMenu();
     }

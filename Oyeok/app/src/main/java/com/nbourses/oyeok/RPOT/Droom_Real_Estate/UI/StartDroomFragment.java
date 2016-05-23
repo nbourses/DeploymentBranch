@@ -1,7 +1,6 @@
 package com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -18,11 +17,9 @@ import android.widget.ImageView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.nbourses.oyeok.R;
@@ -63,7 +60,7 @@ public class StartDroomFragment extends Fragment {
         // use your custom layout
         ListView myListView = (ListView) rootView.findViewById(R.id.listViewswipeview);
          adapter = new ArrayAdapter<String>(getActivity(),
-                R.layout.test_layout, R.id.et_building_name, values);
+                R.layout.test_layout1, R.id.et_building_name, values);
         myListView.setAdapter(adapter);
 
 

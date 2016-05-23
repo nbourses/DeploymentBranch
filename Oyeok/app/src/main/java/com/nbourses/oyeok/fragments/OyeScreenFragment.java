@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -109,7 +110,16 @@ public class OyeScreenFragment extends Fragment {
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
 
                 DecimalFormat formatter = new DecimalFormat();
+                Log.i("val", String.valueOf(+ value));
+                System.out.println(value);
+
+              //  if(value>15000)
+               // {
+               value=value/1000;
+                value=value*1000;
+               // }
                 txtSelected.setText(formatter.format(value));
+
                 AppConstants.letsOye.setPrice("" + value);
             }
 
@@ -205,6 +215,7 @@ public class OyeScreenFragment extends Fragment {
             if (bundle.getString("brokerType").equalsIgnoreCase("rent")) {
                 budgetSeekBar.setMin(AppConstants.minRent);
                 budgetSeekBar.setMax(AppConstants.maxRent);
+               // budgetSeekBar.setProgress(500);
                 txtSelected.setText(formatter.format(AppConstants.minRent));
 
                 txtOptionSee.setText(getString(R.string.oye_rental_req));
@@ -216,6 +227,8 @@ public class OyeScreenFragment extends Fragment {
             else {
                 budgetSeekBar.setMin(AppConstants.minSale);
                 budgetSeekBar.setMax(AppConstants.maxSale);
+               // budgetSeekBar.setProgress(10);
+               // budgetSeekBar.incrementProgressBy(10);
                 txtSelected.setText(formatter.format(AppConstants.minSale));
 
                 txtOptionSee.setText(getString(R.string.oye_sale_req));

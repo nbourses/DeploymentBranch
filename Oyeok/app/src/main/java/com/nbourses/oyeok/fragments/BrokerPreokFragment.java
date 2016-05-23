@@ -734,11 +734,11 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                         Log.i("PREOK CALLED","neighbours"+ne);
                         Log.i("PREOK CALLED","neighbours"+neighbours);
 
-                        jsonArrayReqLl = neighbours.getJSONArray("recent");;//neighbours.getJSONArray("req_ll");
-                        jsonArrayAvlLl = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_ll");
+                        jsonArrayReqLl = neighbours.getJSONArray("req_ll");;//neighbours.getJSONArray("req_ll");
+                        jsonArrayAvlLl = neighbours.getJSONArray("avl_ll");//neighbours.getJSONArray("avl_ll");
 
-                        jsonArrayReqOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("req_or");
-                        jsonArrayAvlOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_or");
+                        jsonArrayReqOr = neighbours.getJSONArray("req_or");//neighbours.getJSONArray("req_or");
+                        jsonArrayAvlOr = neighbours.getJSONArray("avl_or");//neighbours.getJSONArray("avl_or");
 
                         Log.i("PREOK CALLED","jsonArrayReqLl"+jsonArrayReqLl);
                         Log.i("PREOK CALLED","jsonArrayAvlLl"+jsonArrayAvlLl);

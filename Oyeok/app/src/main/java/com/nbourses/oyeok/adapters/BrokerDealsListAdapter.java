@@ -2,6 +2,7 @@ package com.nbourses.oyeok.adapters;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,7 @@ public class BrokerDealsListAdapter extends BaseAdapter {
             return dealses.size();
 
         return deals.size();
+
     }
 
     @Override
@@ -156,6 +158,8 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
             String description = ptype + " property ("+pstype+") for " +intend+ " at Rs. " + price;
 
+            Log.i("Deal data","Deal data is"+deal.getName());
+
             holder.txtFirstChar.setText(name.substring(0, 1).toUpperCase());
 
             Log.i("Deal data","Deal data is"+deal.getName());
@@ -192,10 +196,17 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
     }
 
     private class ViewHolder {
+
         public TextView txtTitle;
         public TextView txtDescription;
         public TextView txtTime;
         public TextView txtFirstChar;
+
+    }
+
+    public int dp2px(int dp) {
+        Log.i("TRACE1","dp"+" "+dp);
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,dp,context.getResources().getDisplayMetrics());
     }
 }
 

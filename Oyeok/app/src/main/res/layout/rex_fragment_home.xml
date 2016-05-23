@@ -17,13 +17,25 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/border_line">
 
-            <fragment
+
+          <!--  <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/> -->
+
+
+
+
+
+
+           <fragment
                 android:id="@+id/map"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:name="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment"
                 android:orientation="vertical"
-                android:layout_gravity="center_vertical">
+               android:layout_gravity="center_vertical">
             </fragment>
 
             <RelativeLayout
@@ -126,6 +138,33 @@
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="120dp"/>
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tvFetchingRates"
+                            android:layout_marginRight="20dp"
+                            android:layout_alignTop="@+id/tvCommingsoon"
+                            android:layout_alignStart="@+id/picker"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignEnd="@+id/tvCommingsoon"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:gravity="center"
+                            android:textColor="@color/White" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tvCommingsoon"
+                            android:layout_marginRight="30dp"
+                            android:layout_alignBottom="@+id/picker"
+                            android:layout_alignEnd="@+id/picker"
+                            android:layout_alignTop="@+id/picker"
+                            android:layout_alignStart="@+id/picker"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:textColor="@color/White" />
+
                         <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" >
@@ -145,28 +184,7 @@
                                 android:layout_alignParentRight="true"/>
                         </RelativeLayout>
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" >
-
-                            <TextView
-                                android:id="@+id/txtFilterValue"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:backgroundTint="@color/yellow"
-                                android:text="2BHK"
-                                android:gravity="center"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:background="@drawable/deal_circle"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/twelve_sp"
-                                android:layout_alignParentRight="true"
-                                android:paddingTop="5dp" />
-
-                        </RelativeLayout>
-
-                        <!--<TextView
+                        <TextView
                             android:id="@+id/txtFilterValue"
                             android:layout_width="wrap_content"
                             android:layout_height="fill_parent"
@@ -178,7 +196,7 @@
                             android:background="@drawable/deal_circle"
                             android:textColor="@color/white"
                             android:textSize="@dimen/twelve_sp"
-                            android:layout_alignParentRight="true" />-->
+                            android:layout_alignParentRight="true" />
 
                     </RelativeLayout>
 
@@ -191,7 +209,9 @@
                     android:layout_below="@id/ll_marker"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="-15dp"
-                    android:id="@+id/iMarker" />
+
+                    android:id="@+id/Mmarker" />
+
 
             </RelativeLayout>
 
@@ -292,25 +312,33 @@
                 android:background="@color/white" />
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical|center_horizontal"
                 android:orientation="vertical"
                 android:layout_margin="@dimen/eight_dp"
                 android:weightSum="1"
-                android:id="@+id/route">
+                android:id="@+id/route"
+                android:nestedScrollingEnabled="false">
 
                 <AutoCompleteTextView android:id="@+id/inputSearch"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:inputType="textMultiLine|textPostalAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:hint="Search .."
                     android:background="@color/greenish_blue"
                     android:textColorHint="@color/white"
                     android:textColor="@color/white"
                     android:textCursorDrawable="@color/white"
                     android:drawableRight="@drawable/ic_search_24dp"
-                    android:inputType="textVisiblePassword"/>
+                    android:singleLine="false"
+                    android:minLines="2"
+                    android:lines="2"
+                    android:scrollbars="none"
+                    android:textAlignment="center"
+                    android:textSize="15dp"
+                    android:nestedScrollingEnabled="false" />
 
             </LinearLayout>
 
@@ -328,7 +356,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_gps_fixed_24dp" />
+                    android:src="@drawable/ic_gps_fixed_24dp"/>
 
             </LinearLayout>
 
@@ -363,8 +391,7 @@
                         android:layout_weight="1" />
 
                     </LinearLayout>
-        =======
-        >>>>>>> 83a4472e498b9ce118288e01cbf3165a2fdef17f -->
+      -->
 
         <View
             android:id="@+id/border_line"

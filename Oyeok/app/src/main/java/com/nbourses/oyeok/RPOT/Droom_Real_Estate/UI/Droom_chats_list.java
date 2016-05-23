@@ -102,7 +102,7 @@ public class Droom_chats_list extends Fragment implements ChatList {
                 openItem.setTitleSize(18);
                 // set item title font color
                 openItem.setTitleColor(Color.WHITE);
-                // add to menu
+                // add to more
                 menu.addMenuItem(openItem);
 
                 // create "delete" item
@@ -114,7 +114,7 @@ public class Droom_chats_list extends Fragment implements ChatList {
                 deleteItem.setWidth(dp2px(90));
                 // set a icon
                 deleteItem.setIcon(R.drawable.ic_delete);
-                // add to menu
+                // add to more
                 menu.addMenuItem(deleteItem);
             }
         };
@@ -165,7 +165,7 @@ public class Droom_chats_list extends Fragment implements ChatList {
                         mAdapter.notifyDataSetChanged();
                         break;
                 }
-                // false : close the menu; true : not close the menu
+                // false : close the more; true : not close the more
                 return false;
             }
         });
@@ -266,7 +266,7 @@ public class Droom_chats_list extends Fragment implements ChatList {
 
         @Override
         public int getViewTypeCount() {
-            // menu type count
+            // more type count
             return 1;
         }
 
@@ -301,7 +301,7 @@ public class Droom_chats_list extends Fragment implements ChatList {
 
         @Override
         public int getItemViewType(int position) {
-            // current menu type
+            // current more type
             return 1;
         }
 

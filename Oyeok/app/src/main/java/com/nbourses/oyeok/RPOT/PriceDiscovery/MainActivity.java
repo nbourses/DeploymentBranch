@@ -640,7 +640,7 @@ toastLayout.setOnClickListener(new View.OnClickListener() {
         //resideMenu.setBackground(R.drawable.residemenu_background);
         resideMenu.attachToActivity(this);
 
-        // create menu items;
+        // create more items;
         String titles[] = { "R-Exchange", "J-Exchange", "L-Exchange"};
         int icon[] = { R.drawable.residemenu_realestate, R.drawable.residemenu_jobs, R.drawable.residemenu_loan};
 

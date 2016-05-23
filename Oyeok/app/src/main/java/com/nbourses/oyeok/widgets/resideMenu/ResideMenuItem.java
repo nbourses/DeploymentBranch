@@ -18,9 +18,9 @@ import com.nbourses.oyeok.R;
  */
 public class ResideMenuItem extends LinearLayout {
 
-    /** menu item  icon  */
+    /** more item  icon  */
     public ImageView iv_icon;
-    /** menu item  title */
+    /** more item  title */
     public TextView tv_title;
 
     public ResideMenuItem(Context context) {

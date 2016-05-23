@@ -5,7 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:id="@+id/list_item1"
-    android:text="pratik"
+    android:text="sushil"
     android:textColor="#ffffff"
     android:layout_margin="@dimen/eight_dp"
     android:background="@color/greenish_blue"

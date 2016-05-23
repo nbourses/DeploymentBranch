@@ -555,11 +555,25 @@ public class General extends BroadcastReceiver{
 
         if(!(haveConnectedMobile) && !(haveConnectedWifi))
             Toast.makeText(context, "INTERNET CONNECTIVITY NOT AVAILABLE", Toast.LENGTH_LONG).show();
-        SnackbarManager.show(
+       /* SnackbarManager.show(
                     Snackbar.with(context)
                             .position(Snackbar.SnackbarPosition.BOTTOM)
                             .text("INTERNET CONNECTIVITY NOT AVAILABLE")
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));*/
 
     }
 }
+
+
+   // private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+   /* private void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission to access the location is missing.
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        } else if (map != null) {
+            // Access to the location has been granted to the app.
+            map.setMyLocationEnabled(true);
+        }
+    }*/

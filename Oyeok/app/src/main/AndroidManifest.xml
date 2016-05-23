@@ -24,10 +24,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
-    <uses-permission android:name="com.nbourses.oyeok.permission.C2D_MESSAGE" />
-
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <permission
         android:name="com.nbourses.oyeok.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -45,7 +44,7 @@
         tools:replace="android:icon" >
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA-1FOjfeKbpUOPqc-HLOGAnSN-H5Y2csI" />
+            android:value="AIzaSyD9u7py1PGKcnlrO77NuY_40jxgIOhX34I" />
         <!--
             <meta-data
             android:name="com.google.android.gms.version"
@@ -231,12 +230,12 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity
+       <!-- <activity
             android:name=".activities.browser"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_browser"
             android:theme="@style/FullscreenTheme" >
-        </activity>
+        </activity> -->
     </application>
 
 </manifest>

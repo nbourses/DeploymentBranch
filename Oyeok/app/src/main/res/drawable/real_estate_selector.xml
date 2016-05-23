@@ -4,10 +4,9 @@
     <!--<item android:drawable="@drawable/real_estate_agent_selected" android:state_selected="true"/>
     <item android:drawable="@drawable/real_estate_agent_pressed" android:state_pressed="true"/>
     <item android:drawable="@drawable/real_estate_agent"/>-->
-
-    <item android:drawable="@drawable/real_estate_agent" android:state_selected="true"/>
-    <item android:drawable="@drawable/real_estate_agent" android:state_pressed="true"/>
-    <item android:drawable="@drawable/default_seekbar_circle_white"/>
+    <item android:drawable="@drawable/real_estate_home1" android:state_selected="true"/>
+    <item android:drawable="@drawable/real_estate_home1" android:state_pressed="true"/>
+   <item android:drawable="@drawable/phased_seek_circle_default"/>
 
 </selector>
 
