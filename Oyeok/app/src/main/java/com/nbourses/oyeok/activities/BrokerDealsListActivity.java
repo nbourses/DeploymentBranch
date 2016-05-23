@@ -15,8 +15,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -59,7 +59,7 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     private DBHelper dbHelper;
 
     @Bind(R.id.listViewDeals)
-    ListView listViewDeals;
+    SwipeMenuListView listViewDeals;
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
@@ -90,9 +90,9 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_broker_deals_list);
+        setContentView(R.layout.activity_deals_list);
 
-        listViewDeals = (ListView) findViewById(R.id.listViewDeals);
+        listViewDeals = (SwipeMenuListView) findViewById(R.id.listViewDeals);
         supportChat = (LinearLayout)findViewById(R.id.supportChat);
         fragment_container1 = (FrameLayout)findViewById(R.id.fragment_container1);
         //  listViewDeals.setAdapter(new SearchingBrokersAdapter(this));

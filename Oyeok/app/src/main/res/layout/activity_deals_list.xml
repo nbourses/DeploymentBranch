@@ -26,6 +26,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/toolbar"
                 layout="@layout/toolbar" />
         </LinearLayout>
+
         <FrameLayout
 
             android:layout_width="fill_parent"
@@ -47,7 +48,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="1dp"
 
-            android:background="?android:attr/listDivider"/>
+            android:background="?android:attr/listDivider"
+            android:layout_below="@+id/supportChat"
+            android:id="@+id/view"
+            android:visibility="visible"/>
 
         <!-- <com.cleveroad.androidmanimation.LoadingAnimationView
 
@@ -56,8 +60,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/view"
             android:visibility="visible" />
 
-        <!--<com.cleveroad.androidmanimation.LoadingAnimationView
->>>>>>> c4d0ab43de5c9b088f7a99842193e9b8757b1ce6
+
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/progressBar"
@@ -90,7 +93,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
             android:layout_height="wrap_content"
             android:layout_below="@+id/view"
-            android:layout_above="@+id/phaseSeekbar">
+            android:layout_above="@+id/phaseSeekbar"/>
 
 
 

@@ -57,6 +57,7 @@ public class BrokerDealsListAdapter extends BaseAdapter {
             return dealses.size();
 
         return deals.size();
+
     }
 
     @Override
@@ -156,6 +157,8 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
 
             String description = ptype + " property ("+pstype+") for " +intend+ " at Rs. " + price;
+
+            Log.i("Deal data","Deal data is"+deal.getName());
 
             holder.txtFirstChar.setText(name.substring(0, 1).toUpperCase());
 
