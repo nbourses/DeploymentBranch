@@ -12,6 +12,10 @@ public class AppConstants {
     public static final int minSale = 9000000;
     public static final int maxSale = 100000000;
 
+    public static String MY_LAT = "myLat";
+    public static String MY_LNG = "myLong";
+
+
     public static final String CLOSE_OYE_SCREEN_SLIDE = "closeOyeScreenSlide";
 
     public static final String ON_FILTER_VALUE_UPDATE = "onFilterValueUpdate";
@@ -23,6 +27,7 @@ public class AppConstants {
     public static PublishLetsOye letsOye = new PublishLetsOye();
 
     public static final String SERVER_BASE_URL = "https://ssl.hailyo.com/1";
+    public static final String SERVER_BASE_URL101 = "https://ssl.hailyo.com/1.01";
 
     public static final String OK_ID = "ok_id";
 

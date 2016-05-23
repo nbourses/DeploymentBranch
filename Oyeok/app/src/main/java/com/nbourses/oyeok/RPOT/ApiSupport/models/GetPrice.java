@@ -1,6 +1,7 @@
 
 package com.nbourses.oyeok.RPOT.ApiSupport.models;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.gson.annotations.SerializedName;
 
 
@@ -34,13 +35,14 @@ public class GetPrice {
     public void setResponseData(ResponseData responseData){
         this.responseData= responseData;
     }*/
+
     public class ResponseData{
         @SerializedName("ll_min")
         private String ll_min;
         private String ll_max;
         private String or_min;
         private String or_max;
-
+        JSONPObject jsonpObject;
         public String getLl_min() {
             return ll_min;
         }

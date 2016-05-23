@@ -71,8 +71,8 @@ public class GetCurrentLocation extends Activity implements LocationListener,Goo
         this.context = context;
 
         locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(INTERVAL);
+       locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+       locationRequest.setInterval(INTERVAL);
         locationRequest.setFastestInterval(FASTEST_INTERVAL);
 
         googleApiClient = new GoogleApiClient.Builder(context)
@@ -121,11 +121,18 @@ public class GetCurrentLocation extends Activity implements LocationListener,Goo
     public void onLocationChanged(Location location) {
         Log.d("currentLocation", "\n ======> onLocationChange : " + location);
         if ( location != null ) {
-            if(currentLocationCallback != null) {
+           /* if(currentLocationCallback != null) {
                 currentLocationCallback.onComplete(location);
-            }
+            }*/
+
+           double latitude= location.getLatitude();
+            double longitude= location.getLongitude();
+
+
+
         }
-        fusedLocationProviderApi.removeLocationUpdates(googleApiClient, this);
+        //fusedLocationProviderApi.removeLocationUpdates(googleApiClient, this);
+
     }
 
     @Override

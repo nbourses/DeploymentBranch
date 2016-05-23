@@ -98,6 +98,9 @@ public class User {
         @SerializedName("pincode")
         public String pincode;
 
+    @SerializedName("property_type")
+    private String property_type;
+
     public String getGcmId() {
         return gcmId;
     }
@@ -495,12 +498,29 @@ public class User {
                 this.oyeokId = oyeokId;
         }
 
-        /**
-         *
-         * @return
-         * The userIntention
-         */
-        public String getUserIntention() {
+    /**
+     *
+     * @return
+     * The property_type
+     */
+
+
+    public void setProperty_type(String property_type) {
+            this.property_type = property_type;
+        }
+    public String getProperty_type() {
+        return property_type;
+    }
+
+    /**
+     *
+     * @return
+     * The userIntention
+     */
+
+
+
+    public String getUserIntention() {
                 return userIntention;
         }
 

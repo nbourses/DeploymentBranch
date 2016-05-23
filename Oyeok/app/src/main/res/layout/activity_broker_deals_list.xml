@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- <android.support.v4.widget.DrawerLayout -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/drawer_layout"
-    tools:context="in.co.madhur.chatbubblesdemo.DealsListActivity">
+    android:id="@+id/drawer_layout">
+    <!--tools:context="com.nbourses.oyeok.activities.ClientDealsListActivity"-->
+    <!--&gt;-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,7 +48,7 @@
             android:visibility="gone"/>-->
 
         <ListView
-            android:id="@+id/listViewDeals"
+            android:id="@+id/listViewDeals1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar">
@@ -63,5 +65,6 @@
             android:visibility="gone"
             android:textAppearance="?android:attr/textAppearanceLarge"/>-->
     </LinearLayout>
+    </RelativeLayout>
 
-</android.support.v4.widget.DrawerLayout>
+<!--</android.support.v4.widget.DrawerLayout>-->

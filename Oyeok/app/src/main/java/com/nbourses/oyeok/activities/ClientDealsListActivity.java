@@ -1,9 +1,15 @@
 package com.nbourses.oyeok.activities;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.ResolveInfo;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
@@ -18,14 +24,21 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.baoyz.swipemenulistview.SwipeMenuListView.OnMenuItemClickListener;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.Gesture.ListViewSwipeGesture;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
@@ -38,6 +51,7 @@ import com.nbourses.oyeok.models.PublishLetsOye;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -54,13 +68,15 @@ import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedByteArray;
 
+//import com.nbourses.oyeok.Gesture.TestActivity;
+
 public class ClientDealsListActivity extends AppCompatActivity {
 
     private List<PublishLetsOye> publishLetsOyes;
     private static final String TAG = "DealsListActivity";
 
     @Bind(R.id.listViewDeals)
-    ListView listViewDeals;
+    SwipeMenuListView listViewDeals;
 
     @Bind(R.id.supportChat)
     LinearLayout supportChat;
@@ -73,8 +89,6 @@ public class ClientDealsListActivity extends AppCompatActivity {
     FrameLayout fragment_container1;
 
 
-
-
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
     private boolean default_deal_flag;
@@ -83,6 +97,15 @@ public class ClientDealsListActivity extends AppCompatActivity {
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private String deals;
     private Boolean RefreshDrooms = false;
+    private BrokerDealsListAdapter listAdapter;
+
+    private static ListViewSwipeGesture touchListener;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+    // private ArrayList<dumpclass> listdata;
 
 
     //private ListView listViewDeals;
@@ -104,25 +127,201 @@ public class ClientDealsListActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
 
         setContentView(R.layout.activity_deals_list);
-        listViewDeals = (ListView) findViewById(R.id.listViewDeals);
-        supportChat = (LinearLayout)findViewById(R.id.supportChat);
-        fragment_container1 = (FrameLayout)findViewById(R.id.fragment_container1);
-      //  listViewDeals.setAdapter(new SearchingBrokersAdapter(this));
 
+
+        // listViewDeals	=	(ListView) findViewById(R.id.listViewDeals);
+        // listdata		=	new ArrayList<dumpclass>();
+        //InitializeValues();
+
+
+        listViewDeals = (SwipeMenuListView) findViewById(R.id.listViewDeals);
+        supportChat = (LinearLayout) findViewById(R.id.supportChat);
+        fragment_container1 = (FrameLayout)findViewById(R.id.fragment_container1);
+        //  listViewDeals.setAdapter(new SearchingBrokersAdapter(this));
+
+        listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
         supportChat.setVisibility(View.VISIBLE);
         listViewDeals.setVisibility(View.VISIBLE);
-        fragment_container1.setVisibility(View.GONE);
+//        fragment_container1.setVisibility(View.GONE);
 
         Intent myIntent = getIntent();
-      default_deal_flag = myIntent.getExtras().getBoolean("default_deal_flag");
-
-
+        default_deal_flag = myIntent.getExtras().getBoolean("default_deal_flag");
 
 
         ButterKnife.bind(this);
 
         init();
+
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+
+
+
+                // create "More" item
+                SwipeMenuItem MoreItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                MoreItem.setBackground(new ColorDrawable(getResources().getColor(R.color.grey)));
+                // set item width
+                MoreItem.setWidth(listAdapter.dp2px(120));
+                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(120));
+                // set item title
+                MoreItem.setIcon(R.drawable.more);
+                MoreItem.setTitle("More");
+                // set item title fontsize
+                MoreItem.setTitleSize(18);
+                // set item title font color
+                MoreItem.setTitleColor(R.color.white);
+                // add to more
+                menu.addMenuItem(MoreItem);
+
+
+                // create "unmute" item
+                SwipeMenuItem MuteItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                MuteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.timestamp)));
+                // set item width
+                MuteItem.setWidth(listAdapter.dp2px(120));
+                // set item title
+                MuteItem.setIcon(R.drawable.unmute);
+                MuteItem.setTitle("unmute");
+                // set item title fontsize
+                MuteItem.setTitleSize(18);
+                // set item title font color
+                MuteItem.setTitleColor(Color.WHITE);
+                // add to more
+                menu.addMenuItem(MuteItem);
+
+
+
+                // create "delete" item
+                SwipeMenuItem deleteItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                deleteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.darkred)));
+                // set item width
+                deleteItem.setWidth(listAdapter.dp2px(120));
+                // set a icon
+               deleteItem.setIcon(R.drawable.delete);
+                deleteItem.setTitle("delete");
+                MuteItem.setTitleSize(18);
+                // set item title font color
+                deleteItem.setTitleColor(R.color.white);
+                // add to more
+                menu.addMenuItem(deleteItem);
+
+
+
+
+
+
+
+
+
+            }
+        };
+        // set creator
+        listViewDeals.setMenuCreator(creator);
+
+        // step 2. listener item click event
+        listViewDeals.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+//                ApplicationInfo item =  listAdapter.getItem(position);
+                switch (index) {
+                    case 0:
+
+                        Log.i("OPEN OPTION", "=================");
+                        //open
+//                        open(item);
+                        break;
+                    case 1:
+                        // delete
+//					delete(item);
+//                        listAdapter.remove(position);
+//                        listAdapter.notifyDataSetChanged();
+                        break;
+                }
+                return false;
+            }
+        });
+
+        // set SwipeListener
+        listViewDeals.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
+
+            @Override
+            public void onSwipeStart(int position) {
+                // swipe start
+            }
+
+            @Override
+            public void onSwipeEnd(int position) {
+                // swipe end
+            }
+        });
+
+        // other setting
+//		listView.setCloseInterpolator(new BounceInterpolator());
+
+        // test item long click
+        listViewDeals.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view,
+                                           int position, long id) {
+//              Toast.makeText(getApplicationContext(), position + " long click", 0).show();
+                return false;
+            }
+        });
+
+
+//        touchListener = new ListViewSwipeGesture(listViewDeals, swipeListener, this);
+//        touchListener.SwipeType	=	ListViewSwipeGesture.Double;    //Set two options at background of list item
+//
+//
+
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
+
+    private void delete(ApplicationInfo item) {
+        // delete app
+        try {
+            Intent intent = new Intent(Intent.ACTION_DELETE);
+            intent.setData(Uri.fromParts("package", item.packageName, null));
+            startActivity(intent);
+        } catch (Exception e) {
+        }
+    }
+
+    private void open(ApplicationInfo item) {
+        // open app
+        Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
+        resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        resolveIntent.setPackage(item.packageName);
+        List<ResolveInfo> resolveInfoList = getPackageManager()
+                .queryIntentActivities(resolveIntent, 0);
+        if (resolveInfoList != null && resolveInfoList.size() > 0) {
+            ResolveInfo resolveInfo = resolveInfoList.get(0);
+            String activityPackageName = resolveInfo.activityInfo.packageName;
+            String className = resolveInfo.activityInfo.name;
+
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            ComponentName componentName = new ComponentName(
+                    activityPackageName, className);
+
+            intent.setComponent(componentName);
+            startActivity(intent);
+        }
+    }
+
 
     private void init() {
         /*mProgressDialog = new ProgressDialog(this);
@@ -136,55 +335,53 @@ public class ClientDealsListActivity extends AppCompatActivity {
         //call API to load deals for broker
 
 //        if(default_deal_flag)
-  //     {
-            //Log.i("TRACE", "Spec code from shared prefs" + General.getSharedPreferences(this, "MY_SPEC_CODE"));
-          //  String OK_id= General.getSharedPreferences(this, "OK_ID");
+        //     {
+        //Log.i("TRACE", "Spec code from shared prefs" + General.getSharedPreferences(this, "MY_SPEC_CODE"));
+        //  String OK_id= General.getSharedPreferences(this, "OK_ID");
 
 
-
-
-            deals = General.getDefaultDeals(this);
-        Log.d("CHATTRACE","deals from shared"+deals);
-            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-            HashMap<String, String> deals1 = null;
-        if(deals != null) {
+        deals = General.getDefaultDeals(this);
+        Log.d("CHATTRACE", "deals from shared" + deals);
+        Type type = new TypeToken<HashMap<String, String>>() {
+        }.getType();
+        HashMap<String, String> deals1 = null;
+        if (deals != null) {
             deals1 = gson.fromJson(deals, type);
         }
 
 
-            Log.i("TRACE","values after " +deals1);
-            if(deals1 == null){
-                deals1 = new HashMap<String, String>();
-                Log.i("TRACE","values after initialization " +deals1);
+        Log.i("TRACE", "values after " + deals1);
+        if (deals1 == null) {
+            deals1 = new HashMap<String, String>();
+            Log.i("TRACE", "values after initialization " + deals1);
+
+        }
+
+        if (deals1 != null) {
+
+
+            Iterator<Map.Entry<String, String>> iter = deals1.entrySet().iterator();
+
+            while (iter.hasNext()) {
+                Map.Entry<String, String> entry = iter.next();
+                Log.i(TAG, "entry.getKey" + entry.getKey());
+                Log.i(TAG, "entry.getKeystring" + entry.getKey().toString());
+                Log.i(TAG, "entry.getvalue" + entry.getValue());
+
+                Log.d("CHATTRACE", "default drooms" + entry);
+                String ok_id = entry.getKey();
+                String specs = entry.getValue();
+
+                BrokerDeals dealsa = new BrokerDeals(ok_id, specs, true);
+
+                if (default_deals == null) {
+                    default_deals = new ArrayList<BrokerDeals>();
+                }
+                Log.i(TAG, "default deals are" + default_deals);
+                default_deals.add(dealsa);
 
             }
-
-            if(deals1 != null) {
-
-
-
-                Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
-
-                while (iter.hasNext()) {
-                    Map.Entry<String,String> entry = iter.next();
-                    Log.i(TAG,"entry.getKey"+entry.getKey());
-                    Log.i(TAG,"entry.getKeystring"+entry.getKey().toString());
-                    Log.i(TAG, "entry.getvalue" + entry.getValue());
-
-                    Log.d("CHATTRACE","default drooms"+entry);
-                    String ok_id = entry.getKey();
-                    String specs = entry.getValue();
-
-                    BrokerDeals dealsa = new BrokerDeals(ok_id,specs, true);
-
-                    if (default_deals == null) {
-                        default_deals = new ArrayList<BrokerDeals>();
-                    }
-                    Log.i(TAG,"default deals are"+default_deals);
-                    default_deals.add(dealsa);
-
-                    }
-                }
+        }
 
 
 
@@ -230,13 +427,12 @@ public class ClientDealsListActivity extends AppCompatActivity {
 
 
             } */
-            //Log.i("TRACE", "ele"+default_deals);
-            //deals = new BrokerDeals(General.getSharedPreferences(this, "MY_SPEC_CODE"));
-           // Log.i("TRACE", "ment");
+        //Log.i("TRACE", "ele"+default_deals);
+        //deals = new BrokerDeals(General.getSharedPreferences(this, "MY_SPEC_CODE"));
+        // Log.i("TRACE", "ment");
 
 
-
-        if(default_deals != null) {
+        if (default_deals != null) {
             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
             listViewDeals.setAdapter(listAdapter);
             Log.i("inside adapter ", "object " + listAdapter);
@@ -263,15 +459,14 @@ public class ClientDealsListActivity extends AppCompatActivity {
 
         }
 
-            //save default deal
- //       }//Log.i("TRACE", "Get default deal" + General.getDefaultDeals(this));
+        //save default deal
+        //       }//Log.i("TRACE", "Get default deal" + General.getDefaultDeals(this));
 
 
-    loadBrokerDeals();
+        loadBrokerDeals();
 
         setSupportActionBar(mToolbar);
-
-    getSupportActionBar().setTitle("My Deals");
+        getSupportActionBar().setTitle("My Deals");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -304,12 +499,12 @@ public class ClientDealsListActivity extends AppCompatActivity {
     private void loadBrokerDeals() {
 
 
-       // String defaultOK = "{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"Searching for brokers\"}],\"for_oks\":[]}";
-       // Log.i("TRACE","DefailtOK" +defaultOK);
-       // JSONObject jsonObj = new JSONObject("{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"LL-200+-15000\"}],\"for_oks\":[]}");
+        // String defaultOK = "{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"Searching for brokers\"}],\"for_oks\":[]}";
+        // Log.i("TRACE","DefailtOK" +defaultOK);
+        // JSONObject jsonObj = new JSONObject("{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"LL-200+-15000\"}],\"for_oks\":[]}");
 
 
-    Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
         RestAdapter restAdapter = new RestAdapter
                 .Builder()
@@ -345,10 +540,7 @@ public class ClientDealsListActivity extends AppCompatActivity {
             public void success(PublishLetsOye letsOye, Response response) {
 
 
-
-
-
-                Log.i("TRACE","in successs");
+                Log.i("TRACE", "in successs");
                 String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                 try {
                     JSONObject jsonObjectServer = new JSONObject(strResponse);
@@ -358,7 +550,6 @@ public class ClientDealsListActivity extends AppCompatActivity {
                         Log.d("CHATTRACE", "default drooms" + jsonObjectResponseData);
 
 
-
 //                        JSONObject jsonObjectResponseData1 = new JSONObject(jsonObjectResponseData.getString("for_oyes"));
 //
 //                        for (int i = 0; i < jsonObjectResponseData1.length(); i++) {
@@ -366,35 +557,22 @@ public class ClientDealsListActivity extends AppCompatActivity {
 //                        }
 
 
-
-
-
-
-
-
-
-
-
-
-
                         Gson gsonForOks = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
                         ArrayList<BrokerDeals> listBrokerDeals = (ArrayList<BrokerDeals>)
                                 gsonForOks.fromJson(jsonObjectResponseData.getString("for_oyes"),
                                         new TypeToken<ArrayList<BrokerDeals>>() {
                                         }.getType());
-                        Log.i("TRACE","list broker deals" +listBrokerDeals);
+                        Log.i("TRACE", "list broker deals" + listBrokerDeals);
 
                         Iterator<BrokerDeals> it = listBrokerDeals.iterator();
 
                         ArrayList<BrokerDeals> listBrokerDeals_new = new ArrayList<BrokerDeals>();
-                        while (it.hasNext())
-                        {
+                        while (it.hasNext()) {
                             BrokerDeals deals = it.next();
-                            Log.i("TRACE==","deals.are"+deals);
-                            Log.i("TRACE==","deals.ok_id"+deals.getOkId());
-                            if(!(deals.getOkId() == null))
-                            {
-                                Log.i("TRACE==","deals.ok_id inside cond");
+                            Log.i("TRACE==", "deals.are" + deals);
+                            Log.i("TRACE==", "deals.ok_id" + deals.getOkId());
+                            if (!(deals.getOkId() == null)) {
+                                Log.i("TRACE==", "deals.ok_id inside cond");
                                 listBrokerDeals_new.add(deals);
                             }
 
@@ -403,16 +581,16 @@ public class ClientDealsListActivity extends AppCompatActivity {
 //                        if(!listBrokerDeals_new)
 //                            listBrokerDeals =
 
-                        Log.i("TRACE==","list broker deals" +listBrokerDeals_new);
+                        Log.i("TRACE==", "list broker deals" + listBrokerDeals_new);
 
             /*            String[] FirstItem = {"Searching brokers for you."};
                         Log.i("TRACE", "firstitem" + FirstItem[0]);
                         ArrayAdapter<String> Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,FirstItem);
                         listViewDeals.setAdapter(Adapter); */
 
-                       // listViewDeals = (ListView) findViewById(R.id.listViewDeals);
+                        // listViewDeals = (ListView) findViewById(R.id.listViewDeals);
 
-      ////                 listViewDeals.setAdapter(new SearchingBrokersAdapter(getApplicationContext()));
+                        ////                 listViewDeals.setAdapter(new SearchingBrokersAdapter(getApplicationContext()));
                   /*     listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                            @Override
                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -465,10 +643,10 @@ public class ClientDealsListActivity extends AppCompatActivity {
                             //append default_deals with listBrokerDeals
 
                             Log.i("Shine", "default_deals2 " + default_deals);
-                            if(listBrokerDeals_new != null)
-                            total_deals.addAll(listBrokerDeals_new);
-                            if(default_deals != null)
-                            total_deals.addAll(default_deals);
+                            if (listBrokerDeals_new != null)
+                                total_deals.addAll(listBrokerDeals_new);
+                            if (default_deals != null)
+                                total_deals.addAll(default_deals);
 
 //
                             // }
@@ -476,18 +654,20 @@ public class ClientDealsListActivity extends AppCompatActivity {
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
 
 
-                          if(RefreshDrooms) {
+                            if (RefreshDrooms) {
 
-                              Log.i("Shine", "Drooms refreshed");
-                              listViewDeals.setAdapter(listAdapter);
-                              listAdapter.notifyDataSetChanged();
-                               //listViewDeals.setAdapter(null);
-                               //listViewDeals.setAdapter(listAdapter);
-                           }else {
-                               Log.i("Shine", "Drooms not refreshed");
+                                Log.i("Shine", "Drooms refreshed");
+                                listViewDeals.setAdapter(listAdapter);
+
+                                listAdapter.notifyDataSetChanged();
+                                //listViewDeals.setAdapter(null);
+                                //listViewDeals.setAdapter(listAdapter);
+                            } else {
+                                Log.i("Shine", "Drooms not refreshed");
 
 
-                               listViewDeals.setAdapter(listAdapter);
+                                listViewDeals.setAdapter(listAdapter);
+
                                listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                    @Override
                                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -514,28 +694,24 @@ public class ClientDealsListActivity extends AppCompatActivity {
                                });
 
 
-                      }
+                            }
 
-                        }
-                        else {
+                        } else {
 //                            displayTextMessage(null);
                         }
-                    }
-                    else {
+                    } else {
 //                        displayTextMessage(null);
                     }
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
 //                    displayTextMessage(getString(R.string.no_internet_connection));
-                }
-                finally {
+                } finally {
 //                    dismissProgressBar();
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.i("TRACE","in failure");
+                Log.i("TRACE", "in failure");
 //                dismissProgressBar();
 //                displayTextMessage(getString(R.string.no_internet_connection));
             }
@@ -602,7 +778,6 @@ public class ClientDealsListActivity extends AppCompatActivity {
         }
     }
 
-
     /*private void init() {
         try {
             publishLetsOyes = PublishLetsOye.getAll();
@@ -650,43 +825,41 @@ public class ClientDealsListActivity extends AppCompatActivity {
     }*/
 
 
-
-
     private final BroadcastReceiver handlePushNewMessage = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, final Intent intent) {
             // Update list here and refresh listview using adapter.notifyDataSetChanged();
 
             RefreshDrooms = intent.getExtras().getBoolean("RefreshDrooms");
-            Log.i("Shine","RefreshDrooms is "+RefreshDrooms);
+            Log.i("Shine", "RefreshDrooms is " + RefreshDrooms);
             deals = General.getDefaultDeals(context);
 
 
-            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+            Type type = new TypeToken<HashMap<String, String>>() {
+            }.getType();
             HashMap<String, String> deals1 = null;
-            if(deals != null) {
+            if (deals != null) {
                 deals1 = gson.fromJson(deals, type);
             }
 
 
-            Log.i("SHINE","deals are after removed"+deals1);
-            if(deals1 == null){
+            Log.i("SHINE", "deals are after removed" + deals1);
+            if (deals1 == null) {
                 deals1 = new HashMap<String, String>();
-                Log.i("SHINE","deals are after removed null con"+deals1);
+                Log.i("SHINE", "deals are after removed null con" + deals1);
 
             }
 
-            if(deals1 != null) {
+            if (deals1 != null) {
 
 
-
-                Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
+                Iterator<Map.Entry<String, String>> iter = deals1.entrySet().iterator();
 
                 while (iter.hasNext()) {
-                    Map.Entry<String,String> entry = iter.next();
-                    Log.d(TAG,"entry.getKey"+entry.getKey());
+                    Map.Entry<String, String> entry = iter.next();
+                    Log.d(TAG, "entry.getKey" + entry.getKey());
 
-                    BrokerDeals dealsa = new BrokerDeals(entry.getKey(),entry.getValue(),true);
+                    BrokerDeals dealsa = new BrokerDeals(entry.getKey(), entry.getValue(), true);
 
                     if (default_deals == null) {
                         default_deals = new ArrayList<BrokerDeals>();
@@ -697,19 +870,19 @@ public class ClientDealsListActivity extends AppCompatActivity {
                 }
             }
 
-            if(default_deals != null) {
+            if (default_deals != null) {
                 BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
                 listViewDeals.setAdapter(listAdapter);
+
                 Log.i("inside adapter ", "object " + listAdapter);
             }
 
-           loadBrokerDeals();
+            loadBrokerDeals();
 
             Toast.makeText(context, "We have just assigned a broker to your request.", Toast.LENGTH_LONG).show();
 
         }
     };
-
 
 
     @Override
@@ -719,8 +892,7 @@ public class ClientDealsListActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void loadFragment(Fragment fragment, Bundle args, int containerId, String title)
-    {
+    private void loadFragment(Fragment fragment, Bundle args, int containerId, String title) {
         //set arguments
         fragment.setArguments(args);
 //        fragment.getView().bringToFront();
@@ -734,9 +906,135 @@ public class ClientDealsListActivity extends AppCompatActivity {
         //set title
 //        getSupportActionBar().setTitle(title);
     }
+   /* @Override
+   public boolean onCreateOptionsMenu(Menu more) {
+        // Inflate the more; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.more.swipe, more);
+        return true;
+    }*/
 
+
+   /* ListViewSwipeGesture.TouchCallbacks swipeListener = new ListViewSwipeGesture.TouchCallbacks() {
+        //        @OnTouch(R.id.dealItemRoot)
+        @Override
+        public void FullSwipeListView(int position) {
+            // TODO Auto-generated method stub
+            Toast.makeText(getApplicationContext(), "Action_2", Toast.LENGTH_SHORT).show();
+            Log.i("swipe", "fullswipelistview");
+        }
+
+        @Override
+        public void HalfSwipeListView(int position) {
+            // TODO Auto-generated method stub
+            Toast.makeText(getApplicationContext(), "Action_1", Toast.LENGTH_SHORT).show();
+            Log.i("swipe", "halfswipelistview");
+        }
+
+        @Override
+        public void LoadDataForScroll(int count) {
+            // TODO Auto-generated method stub
+            Log.i("swipe", "LoaddatafromScroll");
+
+        }
+
+        @Override
+        public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+            // TODO Auto-generated method stub
+            Toast.makeText(getApplicationContext(), "delete", Toast.LENGTH_SHORT).show();
+            //for(int i:reverseSortedPositions){
+            // listdata.remove(i);
+            // listAdapter.notifyDataSetChanged();
+            //}
+            Log.i("swipe", "OnDismiss");
+        }
+
+        @Override
+        public void OnClickListView(int position) {
+            // TODO Auto-generated method stub
+            Log.i("swipe", "OnclickView");
+
+
+
+
+
+
+
+            *//*if(!General.getSharedPreferences(getApplicationContext() ,AppConstants.USER_ID).isEmpty())  {
+
+                Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+                intent.putExtra("userRole", "client");
+//        intent.putExtra("channel_name","my_channel");
+                intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
+                startActivity(intent);
+            }
+            else
+            {
+                supportChat.setVisibility(View.GONE);
+                listViewDeals.setVisibility(View.GONE);
+                fragment_container1.setVisibility(View.VISIBLE);
+                Bundle bundle = new Bundle();
+                bundle.putStringArray("Chat", null);
+                bundle.putString("lastFragment", "Chat");
+
+//            FrameLayout frame = new FrameLayout(this);
+//            frame.setId(SIGNUP_VIEW_ID);
+//            setContentView(frame, new LayoutParams(
+//                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
+
+                SignUpFragment signUpFragment = new SignUpFragment();
+//            signUpFragment.getView().bringToFront();
+                loadFragment(signUpFragment, bundle, R.id.fragment_container1, "");
+                Log.i("Signup called =", "Sign up");
+
+            }*//*
+            // startActivity(new Intent(getApplicationContext(),TestActivity.class));
+        }
+
+    };
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "ClientDealsList Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.nbourses.oyeok.activities/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "ClientDealsList Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.nbourses.oyeok.activities/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
 }
-
+*/
 
 /*
 class SearchingBrokerItem
@@ -797,3 +1095,4 @@ class SearchingBrokersAdapter extends BaseAdapter
     }
 }
 */
+}

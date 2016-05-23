@@ -22,6 +22,7 @@ public class CustomMapFragment extends SupportMapFragment {
         mMapWrapperLayout.addView(mOriginalView);
 
         return mMapWrapperLayout;
+        //return mOriginalView;
     }
 
     @Override
@@ -31,5 +32,7 @@ public class CustomMapFragment extends SupportMapFragment {
 
     public void setOnDragListener(MapWrapperLayout.OnDragListener onDragListener) {
         mMapWrapperLayout.setOnDragListener(onDragListener);
+
+       // mOriginalView.setOnDragListener(onDragListener);
     }
 }

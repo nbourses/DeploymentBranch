@@ -29,8 +29,8 @@ public class AutoCompletePlaces {
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
-    private static final String API_KEY = "AIzaSyCLWLri_ZzN0udt86teXNF55vza44uoRJs";
-
+   // private static final String API_KEY = "AIzaSyCLWLri_ZzN0udt86teXNF55vza44uoRJs";
+    private static final String API_KEY = "AIzaSyD9u7py1PGKcnlrO77NuY_40jxgIOhX34I";
 
     public void onItemClick(AdapterView adapterView, View view, int position, long id) {
         String str = (String) adapterView.getItemAtPosition(position);
