@@ -1,7 +1,6 @@
 package com.nbourses.oyeok.widgets.NavDrawer;
 
 
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -139,6 +138,9 @@ public class FragmentDrawer extends Fragment {
     public void setUp(int fragmentId, DrawerLayout drawerLayout, final Toolbar toolbar) {
         containerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
+
+
+
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -178,6 +180,11 @@ public class FragmentDrawer extends Fragment {
     public void setmDrawerToggle(boolean string)
     {
         mDrawerToggle.setDrawerIndicatorEnabled(string);
+
+
+
+
+
     }
 
     public boolean handle(MenuItem item) {

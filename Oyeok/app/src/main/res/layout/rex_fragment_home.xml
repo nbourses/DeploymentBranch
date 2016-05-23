@@ -209,7 +209,9 @@
                     android:layout_below="@id/ll_marker"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="-15dp"
+
                     android:id="@+id/Mmarker" />
+
 
             </RelativeLayout>
 
@@ -389,8 +391,7 @@
                         android:layout_weight="1" />
 
                     </LinearLayout>
-        =======
-        >>>>>>> 83a4472e498b9ce118288e01cbf3165a2fdef17f -->
+      -->
 
         <View
             android:id="@+id/border_line"

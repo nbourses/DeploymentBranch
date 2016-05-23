@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.nbourses.oyeok"
     android:versionCode="18"
-    android:versionName="1.2">
+    android:versionName="1.2" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -79,21 +79,38 @@
             <intent-filter>
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
-
         </receiver>
-        <receiver android:name=".helpers.General">
+        <receiver android:name=".helpers.General" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-
-
 
         <activity
             android:name=".RPOT.PriceDiscovery.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
+
+
+
+
+
+
+       <!-- start pubnub register our Broadcast Receiver and Service -->
+        <receiver
+            android:name=".GoogleCloudMessaging.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.nbourses.oyeok" />
+            </intent-filter>
+        </receiver>
+        <service android:name=".GoogleCloudMessaging.GcmIntentService" />
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <!-- stop pubnub register our Broadcast Receiver and Service -->
+
         <!--
         <activity
             android:name=".RPOT.PriceDiscovery.UI.QrCode.CaptureActivityAnyOrientation"

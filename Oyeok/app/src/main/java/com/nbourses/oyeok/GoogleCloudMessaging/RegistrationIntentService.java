@@ -11,6 +11,8 @@ import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 
 import java.io.IOException;
 
@@ -45,6 +47,7 @@ public class RegistrationIntentService extends IntentService {
                 // [END get_token]
                 SharedPrefs.save(this, SharedPrefs.MY_GCM_ID,token);
                 dbHelper.save(DatabaseConstants.gcmId, token);
+                General.setSharedPreferences(this, AppConstants.GCM_ID,token);
                 // TODO: Implement this method to send any registration to your app's servers.
                 sendRegistrationToServer(token);
                 // Subscribe to topic channels

@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -51,7 +52,9 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+
 import com.google.android.gms.maps.model.Marker;
+
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -172,6 +175,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private TextView tvCommingsoon;
     private TextView tvFetchingrates;
     CustomMapFragment customMapFragment;
+    private int x,y,top,bottom,left,right,width,height;
+    private android.graphics.Point point;
 
     private JSONArray jsonArrayll_min;
    private JSONArray jsonarray ;
@@ -190,6 +195,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     @Bind(R.id.txtFilterValue)
     TextView txtFilterValue;
+
+    @Bind(R.id.iMarker)
+    ImageView iMarker;
+
+
 
     ValueAnimator mFlipAnimator;
 
@@ -214,7 +224,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         final View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         ButterKnife.bind(this, rootView);
 
+
         requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
+
         droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl, getActivity());
 //        mDrooms = (TextView) rootView.findViewById(R.id.linearlayout_drooms);
         mVisits = (TextView) rootView.findViewById(R.id.newVisits);
@@ -223,6 +235,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
         mMarkerminmax = (RelativeLayout) rootView.findViewById(R.id.markerpanelminmax);
         ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
+
         // map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 
         //Remmember changes sushil start
@@ -257,6 +270,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
         // permissionCheckForCamera = ContextCompat.checkSelfPermission(this.getActivity(),Manifest.permission.CAMERA);
         dashboardActivity = (ClientMainActivity) getActivity();
+
         dbHelper = new DBHelper(getContext());
         ll_map = (FrameLayout) rootView.findViewById(R.id.ll_map);
 
@@ -267,9 +281,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         errorText = (TextView) rootView.findViewById(R.id.errorText);
 
         rupeesymbol = (TextView) rootView.findViewById(R.id.rupeesymbol);
+
         tvCommingsoon = (TextView) rootView.findViewById(R.id.tvCommingsoon);
         tvRate = (TextView) rootView.findViewById(R.id.tvRate);
         tvFetchingrates = (TextView) rootView.findViewById(R.id.tvFetchingRates);
+
         onPositionSelected(0, 2);
 
         horizontalPicker = (HorizontalPicker) rootView.findViewById(R.id.picker);
@@ -485,167 +501,6 @@ try {
     }
 
 }catch (Exception e){}
-      /* geoFence = new GeoFence();
-       if ((int) Build.VERSION.SDK_INT < 23) {
-            customMapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                   map = googleMap;
-                    map.setMyLocationEnabled(true);
-                  //setCameraListener();
-                    geoFence.drawPloygon(map);
-                }
-            });
-
-
-          // getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
-        }*/
-
-
-
-
-
-
-
-/*
-        horizontalPicker.setVisibility(View.INVISIBLE);
-        tvRate.setVisibility(View.INVISIBLE);
-        rupeesymbol.setVisibility(View.INVISIBLE);
-        tvCommingsoon.setVisibility(View.INVISIBLE);
-        tvFetchingrates.setVisibility(View.VISIBLE);
-        tvFetchingrates.setText("Fetching Rates...");
-        tvFetchingrates.setTypeface(null,Typeface.ITALIC);
-        tvFetchingrates.setTextSize(14);*/
-
-
-        customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
-            @Override
-            public void onDrag(MotionEvent motionEvent) {
-                //Log.d("t1", String.format("ME: %s", motionEvent));
-
-                if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                    tvRate.setVisibility(View.GONE);
-                    rupeesymbol.setVisibility(View.GONE);
-                    //Point p= new Point(x,y);
-                    //LatLng currentLocation1;
-//                    currentLocation1= map.getProjection().fromScreenLocation(point);
-                    //  lat=currentLocation1.latitude;
-                    //lng=currentLocation1.longitude;
-
-
-                    //SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                    // SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                    //getRegion();
-                    //getPrice();
-                    horizontalPicker.keepScrolling();
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    mMarkerPanel.setVisibility(View.VISIBLE);
-                    mMarkerminmax.setVisibility(View.VISIBLE);
-                    Mmarker.setVisibility(View.VISIBLE);
-                    horizontalPicker.stopScrolling();
-                    tvRate.setVisibility(View.VISIBLE);
-                    rupeesymbol.setVisibility(View.VISIBLE);
-
-                    //Remmember changes sushil start
-                    LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
-
-                   currentLocation1 = map.getProjection().fromScreenLocation(point);
-                    lat = currentLocation1.latitude;
-                    Log.i("t1", "lat" + " " + lat);
-                    lng = currentLocation1.longitude;
-                    Log.i("t1", "lng" + " " + lng);
-                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                    Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-                    Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-                    // getRegion();
-                    //  horizontalPicker.stopScrolling();
-                    //new LocationUpdater().execute();
-
-
-                    getPrice();
-                    //updateHorizontalPicker();
-                   // map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation1,12));
-                    // map.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("I am here!").icon(icon1));
-                   // map.addMarker(new MarkerOptions().position(currentLocation1).title(""));
-                    //map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
-
-                    // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation1));
-                    // map.set
-
-                    Log.i("t1", "latlong" + " " + currentLocation1);
-
-
-                    // map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
-                    if (isNetworkAvailable()) {
-                        new LocationUpdater().execute();
-                    }
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    tvRate.setVisibility(View.GONE);
-                    rupeesymbol.setVisibility(View.GONE);
-                    LatLng currentLocation11;
-                  //String lat  SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT
-                   // map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation11,12));
-                    // LatLng currentLocation2;
-                    // Point p= new Point(left,bottom);
-                    // currentLocation2= map.getProjection().fromScreenLocation(p);
-                    // lat=currentLocation2.latitude;
-                    //lng=currentLocation2.longitude;
-//                    horizontalPicker.keepScrolling();
-
-                }
-                //SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                //SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-            }
-        });
-
-
-      /*  mcallback = new GetCurrentLocation.CurrentLocationCallback() {
-
-            @Override
-            public void onComplete(Location location) {
-                if (location != null) {
-                    lat = location.getLatitude();
-                    lng = location.getLongitude();
-                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                    if (isNetworkAvailable()) {
-                        try {
-                            getRegion();
-                        } catch (Exception e) {
-                            Log.i("Exception", "caught in get region");
-                        }
-                    }
-
-                    // LatLng currentLocation= new LatLng(location.getLatitude(), location.getLongitude());
-                    // LatLng currentLocation= new LatLng(lat, lng);
-
-                    // Log.i("t1","lat_long"+currentLocation);
-
-
-                    //Log.i("t1", "caught"+width+ " "+height);
-                    //map.
-                    //map.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("I am here!").icon(icon1).anchor(x,y));
-
-
-                    //map.addMarker(new MarkerOptions().position(currentLocation).title("current Location"));
-                    // map.animateCamera(CameraUpdateFactory.newLatLng(currentLocation));
-                    //map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-                    // map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
-
-                    //make retrofit call to get Min Max price
-                    if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
-                        try {
-                            getPrice();
-                        } catch (Exception e) {
-
-                        }
-                    }
-                }
-            }
-        };
-        Log.i("t2", "mcallback" + mcallback);*/
-
 
         if (!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
             droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
@@ -749,9 +604,9 @@ try {
 
     private void hideMap(int i) {
         Animation m = null;
-        if(isAdded())
+        if (isAdded())
             //Load animation
-            if(i==0)
+            if (i == 0)
                 m = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
             else
                 m = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
@@ -766,8 +621,7 @@ try {
         if (result != null) {
             if (result.getContents() == null) {
                 toast = "Cancelled from fragment";
-            }
-            else {
+            } else {
                 toast = "Scanned from fragment: " + result.getContents();
             }
             // At this point we may or may not have a reference to the activity
@@ -842,6 +696,7 @@ try {
 //            public void success(GetPrice getPrice, Response response) {
 //                Log.i("GETPRICE","response" +response);
                 if (getPrice.responseData.getLl_min() != null &&
+
                         !getPrice.responseData.getLl_min().equals("") ) {
                     Log.i("tt","I am here"+1);
 
@@ -896,6 +751,7 @@ try {
                     }
                     else {
                         Log.i("tt","I am here"+3);
+
                     /*SnackbarManager.show(
                             Snackbar.with(getActivity())
                                     .text("We don't cater here yet")
@@ -962,8 +818,8 @@ try {
 
         if (horizontalPicker != null) {
             if (brokerType.equals("rent"))
-             //   horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
-                horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
+                //   horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
+                horizontalPicker.setInterval((llMin * 1000), (llMax * 1000), 10, HorizontalPicker.THOUSANDS);
             else
 
                 horizontalPicker.setInterval(orMin, orMax, 10, HorizontalPicker.THOUSANDS);
@@ -994,8 +850,7 @@ try {
                     // permission was granted, y-------------ay! Do the
                     // contacts-related task you need to do.
 
-                }
-                else {
+                } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
@@ -1006,7 +861,19 @@ try {
                    customMapFragment.getMapAsync(new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
-                           map = googleMap;
+
+                            map = googleMap;
+                            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                // TODO: Consider calling
+                                //    ActivityCompat#requestPermissions
+                                // here to request the missing permissions, and then overriding
+                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                //                                          int[] grantResults)
+                                // to handle the case where the user grants the permission. See the documentation
+                                // for ActivityCompat#requestPermissions for more details.
+                                return;
+                            }
+
                             map.setMyLocationEnabled(true);
                           //setCameraListener();
                             Log.i("t1","map"+map);
@@ -1032,11 +899,13 @@ try {
                        //lat = location.getLatitude();
                       //  lng = location.getLongitude();
                         LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+//<<<<<<< HEAD
                         Log.i("t1","lat_long_getcurrentlocation"+" "+currentLocation);
                       //  map.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title("I am here!").icon(icon1).anchor(x,y));
                      //   map.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title("I am here!"));
                         point= map.getProjection().toScreenLocation(currentLocation);
                       map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+
                         map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
 
                     }

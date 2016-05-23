@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -28,6 +29,8 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateProfile;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.helpers.AppConstants;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -59,27 +62,36 @@ public class Profile extends Fragment {
         dbhelper=new DBHelper(getActivity());
         username_txt=(EditText)layout.findViewById(R.id.txt_user);
         updateProfile= (Button)layout.findViewById(R.id.update_profile);
-        if(!dbhelper.getValue(DatabaseConstants.name).equals("null"))
+        if(!dbhelper.getValue(DatabaseConstants.name).equals("null")) {
+            Log.i("Profile","name "+dbhelper.getValue(DatabaseConstants.name));
             username_txt.setText(dbhelper.getValue(DatabaseConstants.name));
+        }
 
         phoneTxt= (TextView) layout.findViewById(R.id.txt_phone);
-        if(!dbhelper.getValue(DatabaseConstants.mobileNumber).equals("null"))
+        if(!dbhelper.getValue(DatabaseConstants.mobileNumber).equals("null")) {
+            Log.i("Profile","name "+dbhelper.getValue(DatabaseConstants.mobileNumber));
             phoneTxt.setText(dbhelper.getValue(DatabaseConstants.mobileNumber));
+        }
 
         emailTxt=(EditText)layout.findViewById(R.id.txt_email);
-        if(!dbhelper.getValue(DatabaseConstants.email).equals("null"))
+        if(!dbhelper.getValue(DatabaseConstants.email).equals("null")) {
+            Log.i("Profile","email "+dbhelper.getValue(DatabaseConstants.email));
             emailTxt.setText(dbhelper.getValue(DatabaseConstants.email));
+        }
 
         role_txt=(TextView)layout.findViewById(R.id.txt_role);
-        if(!dbhelper.getValue(DatabaseConstants.user).equals("null"))
+        if(!dbhelper.getValue(DatabaseConstants.user).equals("null")) {
+            Log.i("Profile","user "+dbhelper.getValue(DatabaseConstants.user));
             role_txt.setText(dbhelper.getValue(DatabaseConstants.user));
+        }
 
         profileImage= (ImageView)layout.findViewById(R.id.profile_image);
-        if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
-            filePath = dbhelper.getValue(DatabaseConstants.imageFilePath);
-            Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-            profileImage.setImageBitmap(yourSelectedImage);
-        }
+//        if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
+//            Log.i("Profile","name "+dbhelper.getValue(DatabaseConstants.imageFilePath));
+//            filePath = dbhelper.getValue(DatabaseConstants.imageFilePath);
+//            Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
+//            profileImage.setImageBitmap(yourSelectedImage);
+//        }
 
         updateProfile= (Button) layout.findViewById(R.id.update_profile);
         updateProfile.setOnClickListener(new View.OnClickListener() {
@@ -88,15 +100,18 @@ public class Profile extends Fragment {
             }
         });
 
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                //intent.putExtra("crop","true");
-                //intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, 1);
-            }
-        });
+//        profileImage.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View arg0) {
+//                Intent intent = new Intent(Intent.ACTION_PICK);
+//                intent.setType("image/*");
+//                Log.i("Profile","Profile image updated");
+//                //intent.putExtra("crop","true");
+//               // intent.setAction(Intent.ACTION_GET_CONTENT);
+//                startActivityForResult(intent, 1);
+//            }
+//        });
+        // set cursor at the end
+        username_txt.setSelection(username_txt.getText().length());
 
 //        ((MainActivity)getActivity()).changeDrawerToggle(false,"Profile");
 
@@ -108,6 +123,7 @@ public class Profile extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i("Profile","onActivity result");
 
         //switch(requestCode) {
                         /*case 1234:*/
@@ -149,27 +165,36 @@ public class Profile extends Fragment {
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         UserApiService userApiService = restAdapter.create(UserApiService.class);
+        Log.i("Profile","update profile request call"+user);
         //if (dbhelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
         userApiService.userUpdateProfile(user, new Callback<UpdateProfile>() {
 
             @Override
             public void success(UpdateProfile updateProfile, Response response) {
-                Log.i("update profile", "success");
-                dbhelper.save(DatabaseConstants.email, emailTxt.getText().toString());
+                Log.i("Profile","success"+response);
+                SnackbarManager.show(
+                    Snackbar.with(getContext())
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("Profile updated successfully")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+
+                        dbhelper.save(DatabaseConstants.email, emailTxt.getText().toString());
                 dbhelper.save(DatabaseConstants.name,username_txt.getText().toString());
                 dbhelper.save(DatabaseConstants.imageFilePath,filePath);
                 //drawerFragment = (FragmentDrawer) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
 
                 profileImageMain = (ImageView)getActivity().findViewById(R.id.profile_image_main);
-                if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
-                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbhelper.getValue(DatabaseConstants.imageFilePath));
-                    profileImageMain.setImageBitmap(yourSelectedImage);
-                }
+//                if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
+//                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbhelper.getValue(DatabaseConstants.imageFilePath));
+//                    profileImageMain.setImageBitmap(yourSelectedImage);
+//                }
+
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.i("update profile", "failed");
+                Log.i("update profile", "failed "+error );
             }
         });
     }

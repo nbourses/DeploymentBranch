@@ -40,14 +40,16 @@ public class BrokerDeals {
     @SerializedName("default_deal")
     private Boolean defaultDeal;
 
-    public BrokerDeals(String ok_id,String specs, Boolean default_deal)
+    public BrokerDeals(String name,String ok_id, String specs, Boolean default_deal)
     { // Constructor for default deal
         //this.okId = "default_id";
+
 
         Log.i("IN BROKERDEALS ","FLAG "+default_deal);
         this.okId = ok_id;
         this.specCode = specs;
-        this.name = "Oyeok";
+        this.name = name;
+
         this.defaultDeal = default_deal;
 
     }

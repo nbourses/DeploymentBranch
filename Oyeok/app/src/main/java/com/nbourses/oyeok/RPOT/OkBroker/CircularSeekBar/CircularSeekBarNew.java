@@ -29,7 +29,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -346,19 +345,22 @@ public class CircularSeekBarNew extends View {
 //
 //            int textwidth = left+(width/2);
             d.draw(canvas);
-            int plusheight=0;
 
-           try {
-               if (values.getJSONObject(i).getString("user_role").equalsIgnoreCase("broker")) {
-                    Drawable m = getResources().getDrawable(R.drawable.ic_add_24dp);
-                    plusheight = m.getIntrinsicHeight();
-                    int pluswidth = m.getIntrinsicWidth();
-                    m.setBounds((int)(house_image_left-pluswidth+DPTOPX_SCALE),house_image_top-(height/2)-plusheight,(int)(house_image_left+DPTOPX_SCALE),house_image_top-(height/2));
-                    m.draw(canvas);
-               }
-            } catch (JSONException e) {
-      e.printStackTrace();
-          }
+
+            // user role is no more part of preok so was catching in exception, leading hiding of property description and double touch on property icon problem
+//            int plusheight=0;
+//
+//           try {
+//               if (values.getJSONObject(i).getString("user_role").equalsIgnoreCase("broker")) {
+//                    Drawable m = getResources().getDrawable(R.drawable.ic_add_24dp);
+//                    plusheight = m.getIntrinsicHeight();
+//                    int pluswidth = m.getIntrinsicWidth();
+//                    m.setBounds((int)(house_image_left-pluswidth+DPTOPX_SCALE),house_image_top-(height/2)-plusheight,(int)(house_image_left+DPTOPX_SCALE),house_image_top-(height/2));
+//                    m.draw(canvas);
+//               }
+//            } catch (JSONException e) {
+//      e.printStackTrace();
+//          }
             imagesRect.add(i, new Rect(house_image_left, house_image_top - height, house_image_left + width, house_image_top));
 
 //            imagesRect.add(i, new Rect(left, top - height - plusheight, left + width, top));
@@ -376,9 +378,14 @@ public class CircularSeekBarNew extends View {
 
         //start.setBounds(endx - (w / 2), starty - (h / 2), endx + (w / 2), starty + (h / 2));
         //start.draw(canvas);
-        DecimalFormat formatter = new DecimalFormat();
-        canvas.drawText("Min: ₹ " + formatter.format(minValue), mCircleRectF.left * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
-        canvas.drawText("Max: ₹ " + formatter.format(maxvalue), mCircleRectF.right - 120 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+//        DecimalFormat formatter = new DecimalFormat();
+//        canvas.drawText("Min: ₹ " + formatter.format(minValue), mCircleRectF.left * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+//        canvas.drawText("Max: ₹ " + formatter.format(maxvalue), mCircleRectF.right - 120 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+
+        canvas.drawText("Min: " + General.currencyFormat(minValue+""), mCircleRectF.left * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("Max: " + General.currencyFormat(maxvalue+""), mCircleRectF.right - 120 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+
+
     }
 
     /*
@@ -897,14 +904,17 @@ public class CircularSeekBarNew extends View {
                         }else
                         {
                             index = i;
-                            try {
-                                if(values.getJSONObject(i).getString("user_role").equalsIgnoreCase("client")) {
-                                    mImageAction.onclick(i, values, "showHalf",x_c,y_c);
-                                    Log.i("BrokerPreokFragment", "showHalf passed");
-                                    //remember changes
-
-                                }else
-                                {//remember changes
+//                           // user role is no more part of preok so was catching in exception, leading hiding of property description and double touch on property icon problem
+//
+//                            try {
+//
+//                                if(values.getJSONObject(i).getString("user_role").equalsIgnoreCase("client")) {
+//                                    mImageAction.onclick(i, values, "showHalf",x_c,y_c);
+//                                    Log.i("BrokerPreokFragment", "showHalf passed");
+//                                    //remember changes
+//
+//                                }else
+//                                {//remember changes
                                     mImageAction.onclick(i, values, "show",x_c,y_c);
                                     Log.i("BrokerPreokFragment", "show passed");
                                     // sushil comment
@@ -914,11 +924,11 @@ public class CircularSeekBarNew extends View {
 //                                    }
                                   invalidate();
 
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+//                                }
+//
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
                         }
                         //pw = new PopupWindow(, 300, 470, true);
                         // display the popup in the center

@@ -105,7 +105,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;*/
 
 
-public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList,HorizontalPicker.pickerPriceSelected,FragmentDrawer.MDrawerListener {
+public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList, HorizontalPicker.pickerPriceSelected, FragmentDrawer.MDrawerListener {
 
     private final String TAG = RexMarkerPanelScreen.class.getSimpleName();
     private static final String[] INITIAL_PERMS = {
@@ -134,8 +134,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private GoogleMap map;
     private LinearLayout ll_marker;
     private GeoFence geoFence;
-    private int permissionCheckForCamera,permissionCheckForLocation;
-    private final int MY_PERMISSION_FOR_CAMERA=11;
+    private int permissionCheckForCamera, permissionCheckForLocation;
+    private final int MY_PERMISSION_FOR_CAMERA = 11;
     private CustomPhasedSeekBar mPhasedSeekBar;
     String brokerType;
     private Geocoder geocoder;
@@ -160,25 +160,27 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
     private TextView rupeesymbol;
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-      View  rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
+        View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
+
+        Log.i("TRACE","REXMARKER");
+
         requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
-        droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl,getActivity());
+        droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl, getActivity());
         mDrooms = (TextView) rootView.findViewById(R.id.linearlayout_drooms);
-       mVisits = (TextView) rootView.findViewById(R.id.newVisits);
+        mVisits = (TextView) rootView.findViewById(R.id.newVisits);
         mQrCode = (ImageView) rootView.findViewById(R.id.qrCode);
         mMarkerPanel = (LinearLayout) rootView.findViewById(R.id.ll_marker);
 
-       mMarkerminmax = (RelativeLayout) rootView.findViewById(R.id.markerpanelminmax);
+        mMarkerminmax = (RelativeLayout) rootView.findViewById(R.id.markerpanelminmax);
         ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
-         permissionCheckForCamera = ContextCompat.checkSelfPermission(this.getActivity(),
+        permissionCheckForCamera = ContextCompat.checkSelfPermission(this.getActivity(),
                 Manifest.permission.CAMERA);
-        mainActivity=(MainActivity)getActivity();
-        dbHelper=new DBHelper(getContext());
+        mainActivity = (MainActivity) getActivity();
+        dbHelper = new DBHelper(getContext());
         ll_map = (FrameLayout) rootView.findViewById(R.id.ll_map);
         permissionCheckForLocation = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
@@ -187,10 +189,10 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
         rupeesymbol = (TextView) rootView.findViewById(R.id.rupeesymbol);
 
-        horizontalPicker = (HorizontalPicker)rootView.findViewById(R.id.picker);
-       horizontalPicker.setMpicker(this);
-        tvRate = (TextView)rootView.findViewById(R.id.tvRate);
-        horizontalPicker.setTvRate(tvRate,rupeesymbol);
+        horizontalPicker = (HorizontalPicker) rootView.findViewById(R.id.picker);
+        horizontalPicker.setMpicker(this);
+        tvRate = (TextView) rootView.findViewById(R.id.tvRate);
+        horizontalPicker.setTvRate(tvRate, rupeesymbol);
         horizontalPicker.setSelectedItem(2);
         onPositionSelected(0, 2);
         horizontalPicker.setOnClickListener(new View.OnClickListener() {
@@ -206,7 +208,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             }
         });
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
-        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
+        if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{"Rental", "Sale"}));
         else
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
@@ -233,9 +235,9 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             @Override
             public void onClick(View v) {
                 Bundle b = new Bundle();
-                b.putSerializable("HashMap",chatListData);
-                b.putString("lastFragment","rexMrakerPanel");
-                Fragment f=new Droom_chats_list();
+                b.putSerializable("HashMap", chatListData);
+                b.putString("lastFragment", "rexMrakerPanel");
+                Fragment f = new Droom_chats_list();
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 f.setArguments(b);
@@ -245,8 +247,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 Log.i("Change Fragment", f.toString());
                 // set the toolbar title
 
-               // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null);
-               // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(),null);
+                // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(), null);
+                // ((MainActivity)getActivity()).changeFragment(new Drooms_Client_new(),null);
             }
         });
         mVisits.setOnClickListener(new View.OnClickListener() {
@@ -254,8 +256,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             public void onClick(View v) {
                 Bundle args = new Bundle();
                 args.putString("BrokerType", brokerType);
-                args.putString("Address",SharedPrefs.getString(getActivity(),SharedPrefs.MY_REGION));
-                ((MainActivity)getActivity()).changeFragment(new OyeIntentSpecs(), args,"");
+                args.putString("Address", SharedPrefs.getString(getActivity(), SharedPrefs.MY_REGION));
+                ((MainActivity) getActivity()).changeFragment(new OyeIntentSpecs(), args, "");
                 //OyeIntentSpecs oye = new OyeIntentSpecs();
 
                 //oye.setArguments(args);
@@ -284,7 +286,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                         // No explanation needed, we can request the permission.
 
                         ActivityCompat.requestPermissions(getActivity(),
-                                new String[]{Manifest.permission.CAMERA},MY_PERMISSION_FOR_CAMERA);
+                                new String[]{Manifest.permission.CAMERA}, MY_PERMISSION_FOR_CAMERA);
 
                         // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                         // app-defined int constant. The callback method gets the
@@ -294,7 +296,6 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 /*IntentIntegrator.forSupportFragment(RexMarkerPanelScreen.this).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES).setCaptureActivity(CaptureActivityAnyOrientation.class).setOrientationLocked(false).initiateScan();*/
             }
         });
-
 
 
         mMarkerPanel.setOnClickListener(new View.OnClickListener() {
@@ -308,9 +309,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         });
 
 
-        ((MainActivity)getActivity()).changeDrawerToggle(true,"MarkerPanelScreen");
-
-
+        ((MainActivity) getActivity()).changeDrawerToggle(true, "MarkerPanelScreen");
 
 
         CustomMapFragment customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
@@ -319,6 +318,16 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 map = googleMap;
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
                 map.setMyLocationEnabled(true);
                 setCameraListener();
                 //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, map);

@@ -110,7 +110,8 @@
     <string name="type_your_message">Type your message</string>
 
     <string name="gcm_defaultSenderId">463092685367</string>
-    <string name="api_key">AIzaSyBCInmUgDWVq9NEXM5gjri8vudSd1jjyzQ</string>
+    <string name="api_key">AIzaSyBbURHypLRkDAI98XiI3MmTArjtKMeItjc</string>
+
 
     <string name="no_active_deal">No Active Deal</string>
     <string name="no_internet_connection">Please check your internet connection.</string>

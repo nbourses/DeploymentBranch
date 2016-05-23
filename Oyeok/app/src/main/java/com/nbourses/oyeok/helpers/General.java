@@ -26,9 +26,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.Format;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Set;
 
 import retrofit.Callback;
@@ -74,6 +77,23 @@ public class General extends BroadcastReceiver{
         }
         return null;
     }
+
+
+    public static void setBadgeCount(Context context, String prefName, int value) {
+        Log.i("TRACE","inside shared pref "+prefName +value);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(prefName, value);
+        editor.commit();
+    }
+
+    public static int getBadgeCount(Context context, String prefName) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Log.i("TRACE", "rt" + prefName);
+
+        return prefs.getInt(prefName, 0);
+    }
+
 
 
     public static void saveDefaultDeals(Context context, String value) {
@@ -195,6 +215,25 @@ public class General extends BroadcastReceiver{
 
 
 
+    public static String currencyFormat(String price){
+
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        int truncate_first;
+        if(currentapiVersion>=23)
+            truncate_first = 2;
+        else
+            truncate_first = 3;
+
+        int x =Integer.parseInt(price);
+
+        Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+        price=format1.format(x);
+        price = price.substring(truncate_first,price.length()-3);
+        price ="₹ "+price;
+
+        return price;
+    }
+
     public static void publishOye(final Context context) {
         try {
             String tt;
@@ -207,7 +246,9 @@ public class General extends BroadcastReceiver{
             String json = gson.toJson(AppConstants.letsOye);
 
             Log.d(TAG, "AppConstants.letsOye "+json);
-            Log.i("TRACE", "AppConstants.letsOye " + json);
+            Log.i("TRACE","Get user Id from model "+AppConstants.letsOye.getUserId());
+
+            Log.i("TRACE", "AppConstants.letsOye from model " + json);
 
             JSONObject jsonObj = new JSONObject(json);
             tt = jsonObj.getString("tt");
@@ -296,7 +337,17 @@ public class General extends BroadcastReceiver{
                 //set gcmId
                 AppConstants.letsOye.setGcmId(SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
 
-                Log.i("TRACE", "is networking available" + SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
+                Log.i("TRACE", "GCM id is" + SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
+
+                Log.i("TRACE","Get user Id from model "+AppConstants.letsOye.getUserId());
+                Log.i("TRACE","Get user Id from model "+AppConstants.letsOye.getGcmId());
+
+
+                Log.i("TRACE", "AppConstants.letsOye direct" + AppConstants.letsOye);
+                final Gson gsona = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                String jsona = gsona.toJson(AppConstants.letsOye);
+
+                Log.i(TAG, "AppConstants.letsOye parsed "+jsona);
                 RestAdapter restAdapter = new RestAdapter
                                             .Builder()
                                             .setEndpoint(AppConstants.SERVER_BASE_URL)
@@ -349,11 +400,11 @@ public class General extends BroadcastReceiver{
 
 
                                 Toast.makeText(context, "" + jsonResponseData.getString("message"), Toast.LENGTH_LONG).show();
-                                SnackbarManager.show(
-                                        Snackbar.with(context)
-                                                .position(Snackbar.SnackbarPosition.TOP)
-                                                .text("Your old oye with same specs: " + jsonResponseData.getString("message"))
-                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+//                                SnackbarManager.show(
+//                                        Snackbar.with(context)
+//                                                .position(Snackbar.SnackbarPosition.TOP)
+//                                                .text("Your old oye with same specs: " + jsonResponseData.getString("message"))
+//                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
 
                                 //  if (jsonResponseData.getInt("code") == 1) {
@@ -502,8 +553,13 @@ public class General extends BroadcastReceiver{
 
         */
 
-        if(!(haveConnectedMobile) || !(haveConnectedWifi))
+        if(!(haveConnectedMobile) && !(haveConnectedWifi))
             Toast.makeText(context, "INTERNET CONNECTIVITY NOT AVAILABLE", Toast.LENGTH_LONG).show();
+        SnackbarManager.show(
+                    Snackbar.with(context)
+                            .position(Snackbar.SnackbarPosition.BOTTOM)
+                            .text("INTERNET CONNECTIVITY NOT AVAILABLE")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
     }
 }

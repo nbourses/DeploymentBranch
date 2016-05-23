@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,12 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.fragments.BrokerPreokFragment;
+import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
@@ -41,15 +44,34 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
     @Bind(R.id.txtEmail)
     TextView emailTxt;
 
+    @Bind(R.id.openmaps)
+    Button openmaps;
+
+
+
+
+
+
+
+    private TextView option1Count;
+    private TextView option2Count;
+    private TextView rentalCount;
+    private TextView resaleCount;
+
+
+
+
     DBHelper dbHelper;
     private FragmentDrawer drawerFragment;
     private WebView webView;
+    SharedPreferences.OnSharedPreferenceChangeListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_agent_main);
+
         ButterKnife.bind(this);
 
         if (General.isNetworkAvailable(getApplicationContext())) {
@@ -64,7 +86,7 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
                 SnackbarManager.show(
                         Snackbar.with(this)
                                 .position(Snackbar.SnackbarPosition.TOP)
-                                .text("No internet connection ,please check your settings")
+                                .text("No internet connectivity.")
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
             }
 
@@ -78,17 +100,99 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
     }
 
     private void init() {
+        openmaps.setVisibility(View.VISIBLE);
+
         /*Fragment fragment = new Ok_Broker_MainScreen();
         loadFragment(fragment, null, R.id.container_map, "");*/
 
         Fragment brokerPreokFragment = new BrokerPreokFragment();
         loadFragment(brokerPreokFragment, null, R.id.container_map, "");
 
+//        option1Count = (TextView) findViewById(R.id.option1Count);
+//         option2Count = (TextView) findViewById(R.id.option2Count);
+//         rentalCount = (TextView) findViewById(R.id.rentalCount);
+//        resaleCount = (TextView) findViewById(R.id.resaleCount);
+//
+//
+//
+//
+//
+//        SharedPreferences prefs =
+//                PreferenceManager.getDefaultSharedPreferences(this);
+//
+//        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+//            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+//
+//                if (key.equals(AppConstants.RENTAL_COUNT)) {
+//                    if (General.getBadgeCount(getApplicationContext(), AppConstants.RENTAL_COUNT) <= 0)
+//                        rentalCount.setVisibility(View.GONE);
+//                    else {
+//                        rentalCount.setVisibility(View.VISIBLE);
+//                        rentalCount.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT)));
+//                    }
+//                }
+//                if (key.equals(AppConstants.RESALE_COUNT)) {
+//                    if (General.getBadgeCount(getApplicationContext(), AppConstants.RESALE_COUNT) <= 0)
+//                        resaleCount.setVisibility(View.GONE);
+//                    else {
+//                        resaleCount.setVisibility(View.VISIBLE);
+//                        resaleCount.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.RESALE_COUNT)));
+//                    }
+//
+//
+//                }
+//
+//                if (key.equals(AppConstants.TENANTS_COUNT)) {
+//                    if (General.getBadgeCount(getApplicationContext(), AppConstants.TENANTS_COUNT) <= 0)
+//                        option1Count.setVisibility(View.GONE);
+//                    else {
+//                        option1Count.setVisibility(View.VISIBLE);
+//                        option1Count.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.TENANTS_COUNT)));
+//                    }
+//
+//                }
+//                if (key.equals(AppConstants.OWNERS_COUNT)) {
+//                    if (General.getBadgeCount(getApplicationContext(), AppConstants.OWNERS_COUNT) <= 0)
+//                        option2Count.setVisibility(View.GONE);
+//                    else {
+//                        option2Count.setVisibility(View.VISIBLE);
+//                        option2Count.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.OWNERS_COUNT)));
+//                    }
+//
+//                }
+//
+//                if (key.equals(AppConstants.BUYER_COUNT)) {
+//                    if (General.getBadgeCount(getApplicationContext(), AppConstants.BUYER_COUNT) <= 0)
+//                        option1Count.setVisibility(View.GONE);
+//                    else {
+//                        option1Count.setVisibility(View.VISIBLE);
+//                        option1Count.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.BUYER_COUNT)));
+//                    }
+//
+//                }
+//
+//                if (key.equals(AppConstants.SELLER_COUNT)) {
+//                    if (General.getBadgeCount(getApplicationContext(), AppConstants.SELLER_COUNT) <= 0)
+//                        option2Count.setVisibility(View.GONE);
+//                    else {
+//                        option2Count.setVisibility(View.VISIBLE);
+//                        option2Count.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.SELLER_COUNT)));
+//                    }
+//
+//                }
+//
+//
+//            }
+//
+//
+//        };
+//        prefs.registerOnSharedPreferenceChangeListener(listener);
+
+
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Broker");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         dbHelper = new DBHelper(getBaseContext());
 
@@ -96,11 +200,38 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
-        if(!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
-            emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
 
+        if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+            if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+                emailTxt.setVisibility(View.VISIBLE);
+                emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
+
+            }
+        }else{
+            emailTxt.setVisibility(View.INVISIBLE);
         }
+
+
+        openmaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                
+                DashboardClientFragment dashboardClientFragment = new DashboardClientFragment();
+                loadFragment(dashboardClientFragment, null, R.id.container_map, "");
+
+            }
+        });
+
+
+
+
+
+
     }
+
+
+
 
     /**
      * load fragment

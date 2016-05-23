@@ -23,11 +23,14 @@ public class AppConstants {
     public static final String IS_LOGGED_IN_USER = "isLoggedInUser";
 
     public static final String USER_ID = "userId";
+    public static final String NAME = "name";
 
     public static PublishLetsOye letsOye = new PublishLetsOye();
 
     public static final String SERVER_BASE_URL = "https://ssl.hailyo.com/1";
-    public static final String SERVER_BASE_URL101 = "https://ssl.hailyo.com/1.01";
+
+    public static final String SERVER_BASE_URL_101 = "https://ssl.hailyo.com/1.01";
+
 
     public static final String OK_ID = "ok_id";
 
@@ -50,4 +53,25 @@ public class AppConstants {
     public static final String PUBNUB_SUBSCRIBE_KEY = "sub-c-f662fb7c-b5ff-11e5-a916-0619f8945a4f";
 
     public static final String PUBNUB_SECRET_KEY = "sec-c-NDUxZWZlNWItMDMxZi00ZjM4LWIyODYtMjE5ODVmNmZhZjBj";
+    public static final String BADGE_COUNT = "badgeCount";
+    public static final String SUPPORT_COUNT = "supportCount";
+    public static final String HDROOMS_COUNT = "hdRoomsCount";
+    public static final String TENANTS_COUNT = "tenantsCount";
+    public static final String OWNERS_COUNT = "ownersCount";
+    public static final String BUYER_COUNT = "buyerCount";
+    public static final String SELLER_COUNT = "sellerCount";
+    public static final String RENTAL_COUNT = "rentalCount";
+    public static final String RESALE_COUNT = "resaleCount";
+    public static final String GCM_ID = "gcm_id";
+    public static final String TT = "TT";
+    public static final String RENTAL ="RENTAL";
+    public static final String RESALE = "RESALE";
+
+
+
+
+
+
+
+
 }

@@ -4,11 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -90,7 +90,11 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.btnOnOyeClick)
     Button btnOnOyeClick;
 
+    @Bind(R.id.hdroomsCount)
+    TextView hdroomsCount;
+
     private WebView webView;
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
 
     public interface openMapsClicked{
         public void clicked();
@@ -117,6 +121,8 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
 
+       //
+
         if (General.isNetworkAvailable(getApplicationContext())) {
 
             Log.i("TRACE", "network available");
@@ -128,7 +134,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             SnackbarManager.show(
                     Snackbar.with(this)
                             .position(Snackbar.SnackbarPosition.TOP)
-                            .text("No internet connection ,please check your settings")
+                            .text("No internet connectivity.")
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
         }
 
@@ -156,6 +162,40 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
      * init all components
      */
     private void init() {
+        if(General.getBadgeCount(this,AppConstants.HDROOMS_COUNT)<=0)
+            hdroomsCount.setVisibility(View.GONE);
+        else {
+            hdroomsCount.setVisibility(View.VISIBLE);
+            hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)));
+        }
+
+
+        try {
+            SharedPreferences prefs =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+
+            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                    if (key.equals(AppConstants.HDROOMS_COUNT)) {
+                        if (General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT) <= 0)
+                            hdroomsCount.setVisibility(View.GONE);
+                        else {
+                            hdroomsCount.setVisibility(View.VISIBLE);
+                            hdroomsCount.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT)));
+
+
+                        }
+
+
+                    }
+                }
+            };
+
+            prefs.registerOnSharedPreferenceChangeListener(listener);
+        }
+        catch (Exception e){
+            Log.e(TAG, e.getMessage());
+        }
 
         //You need to set the Android context using Firebase.setAndroidContext() before using Firebase.
         Firebase.setAndroidContext(this);
@@ -200,11 +240,38 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             }
         });
 
+      //  RelativeLayout re = (RelativeLayout) findViewById(R.id.badge);
         //setup toolbar
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Client");
+       getSupportActionBar().setDisplayShowHomeEnabled(true);
+       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+  //      mToolbar.setNavigationIcon(R.drawable.home);
+       getSupportActionBar().setTitle("Client");
+
+    //    getSupportActionBar().setIcon(R.drawable.ic_launcher); // or setLogo()
+    //    getSupportActionBar().setLogo(R.drawable.industry);
+
+//        ActionBar actionbar = getSupportActionBar ();
+//        actionbar.setDisplayHomeAsUpEnabled(true);
+//        actionbar.setHomeAsUpIndicator(R.drawable.home);
+
+
+//        mToolbar.setNavigationIcon(R.drawable.home);
+//        mToolbar.setTitle("Title");
+//        mToolbar.setSubtitle("Sub");
+//        mToolbar.setLogo(R.drawable.ic_launcher);
+
+
+   //  getSupportActionBar().setHomeAsUpIndicator(R.drawable.shop);
+//        if (Build.VERSION.SDK_INT >= 18) {
+//            getSupportActionBar().setHomeAsUpIndicator(
+//                    getResources().getDrawable(R.drawable.home));
+//        }
+
+
+
+
+
 
         //TODO: need to validate this functionality
         dbHelper = new DBHelper(getBaseContext());
@@ -215,16 +282,28 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
-        if(!dbHelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
-            Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbHelper.getValue(DatabaseConstants.imageFilePath));
-            profileImage.setImageBitmap(yourSelectedImage);
+//        if(!dbHelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
+//            Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbHelper.getValue(DatabaseConstants.imageFilePath));
+//            profileImage.setImageBitmap(yourSelectedImage);
+//
+//
+//        }
+        if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+            if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+                emailTxt.setVisibility(View.VISIBLE);
+                emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
 
-
+            }
+        }else{
+            emailTxt.setVisibility(View.INVISIBLE);
         }
-        if(!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
-            emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
 
-        }
+
+
+
+
+
+
 
 
         //by default load map view

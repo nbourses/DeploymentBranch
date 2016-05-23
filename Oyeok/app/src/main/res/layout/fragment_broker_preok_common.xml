@@ -47,15 +47,81 @@
 
 
 
-        <Button
-            android:layout_width="0dp"
+
+
+
+
+
+        <RelativeLayout
             android:layout_weight="1"
-            android:background="@color/greenish_blue"
-            android:layout_marginLeft="5dp"
-            android:text="Ok"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/okButton"
-            android:textColor="@color/white" />
+
+            android:id="@+id/dealsWrapper6">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                >
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:visibility="gone" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/greenish_blue"
+                    android:layout_marginLeft="5dp"
+                    android:text="Ok"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/okButton"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+            <TextView
+
+                android:id="@+id/beaconOK"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#fff"
+                android:background="@android:drawable/ic_notification_overlay"
+                android:text=""
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:layout_alignParentRight="true"  />
+            <!-- android:layout_above="@+id/btnMyDeals" -->
+
+
+        </RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:id="@+id/dealsWrapper">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/deal"
@@ -64,9 +130,34 @@
             android:background="@color/yellow"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:layout_width="0dp"
+            android:layout_width="fill_parent"
             android:layout_weight="1"
             android:layout_height="wrap_content" />
+    </LinearLayout>
+            <TextView
+                android:id="@+id/hdroomsCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="10"
+                android:paddingEnd="8dp"
+                android:paddingRight="8dp"
+                android:paddingLeft="8dp"
+                android:gravity="center"
+                android:textColor="#FFF"
+                android:textSize="11sp"
+                android:background="@drawable/circle_badge2"
+                android:visibility="gone" />
+        <!-- android:layout_above="@+id/btnMyDeals" -->
+
+
+    </RelativeLayout>
+
+
+
+
+
+
 
     </LinearLayout>
 
@@ -96,7 +187,7 @@
             android:id="@+id/texPtype"
             android:visibility="gone"
             android:gravity="center"
-            android:textSize="13dp"
+            android:textSize="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -107,7 +198,7 @@
         android:id="@+id/texPstype"
         android:visibility="gone"
         android:gravity="center"
-        android:textSize="13dp"
+        android:textSize="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -271,25 +271,90 @@
             android:orientation="horizontal"
             android:layout_below="@+id/combined_layout">
 
-            <TextView
-                android:id="@+id/txtOption1"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="40dp"
-                android:text="Option 1"
-                android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:background="@color/colorPrimaryDark"/>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-            <TextView
-                android:id="@+id/txtOption2"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="40dp"
-                android:text="Option 2"
-                android:gravity="center"
-                android:background="@color/colorPrimaryDark"
-                android:textColor="#FFFFFF"/>
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+
+                    <TextView
+                        android:id="@+id/txtOption1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:text="Option 1"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:background="@color/colorPrimaryDark"/>
+
+                    <TextView
+                        android:id="@+id/option1Count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@id/txtOption1"
+                        android:layout_alignRight="@id/txtOption1"
+                        android:layout_alignEnd="@id/txtOption1"
+                        android:text="10"
+                        android:paddingEnd="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingLeft="8dp"
+                        android:gravity="center"
+                        android:textColor="#FFF"
+                        android:textSize="11sp"
+                        android:background="@drawable/circle_badge"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+
+                    <TextView
+                        android:id="@+id/txtOption2"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:text="Option 2"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:background="@color/colorPrimaryDark"/>
+
+                    <TextView
+                        android:id="@+id/option2Count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@id/txtOption2"
+                        android:layout_alignRight="@id/txtOption2"
+                        android:layout_alignEnd="@id/txtOption2"
+                        android:text="10"
+                        android:paddingEnd="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingLeft="8dp"
+                        android:gravity="center"
+                        android:textColor="#FFF"
+                        android:textSize="11sp"
+                        android:background="@drawable/circle_badge"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+
 
         </LinearLayout>
 
@@ -302,7 +367,7 @@
             <include layout="@layout/fragment_broker_preok_common"/>
         </FrameLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/seekbar_linearlayout"
             android:paddingLeft="@dimen/sixteen_dp"
             android:paddingRight="@dimen/sixteen_dp"
@@ -316,12 +381,84 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="-8dp"
             android:paddingTop="8dp">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/phaseSeekbar">
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:visibility="gone" />
 
-            <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
-                android:id="@+id/phasedSeekBar"
+                <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
+                    android:id="@+id/phasedSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="106dp">
+                <TextView
+
+                    android:id="@+id/rentalCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circle_badge2"
+                    android:text="123"
+
+                    android:layout_alignParentRight="true"
+                    android:paddingEnd="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingLeft="8dp"
+                    android:gravity="center"
+                    android:textColor="#FFF"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="271dp">
+
+                <TextView
+
+                    android:id="@+id/resaleCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circle_badge2"
+                    android:text="3"
+
+                    android:layout_alignParentRight="true"
+                    android:paddingEnd="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingLeft="8dp"
+                    android:gravity="center"
+                    android:textColor="#FFF"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <Button
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:text="Set Locality"
+                android:id="@+id/setLocality"
+                android:textColor="@color/White"
+                android:background="@color/greenish_blue"
+                android:visibility="gone" />
+
+
+        </RelativeLayout>
+
 
     </RelativeLayout>
 
@@ -364,4 +501,76 @@
             android:layout_marginRight="100dp"
             android:layout_gravity="bottom|right"/>
     </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_gravity="bottom"
+        android:id="@+id/buildingSlider"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/linearLayout">
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="267dp"
+                android:visibility="visible"
+                android:background="@color/White" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="OK"
+                android:id="@+id/okBtn"
+                android:layout_gravity="center_horizontal|bottom"
+                android:clickable="true"
+                android:background="@color/greenish_blue"
+                android:textColor="#FFFFFF"
+                android:textSize="30dp" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:textColor="#FFFFFF"
+                android:background="@color/colorPrimaryDark"
+
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Select buildings"
+                android:id="@+id/selectB"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:layout_alignParentStart="true"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Set building price"
+                android:gravity="center"
+                android:id="@+id/setB"
+                android:textColor="#FFFFFF"
+                android:background="@color/colorPrimaryDark"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
 </FrameLayout>

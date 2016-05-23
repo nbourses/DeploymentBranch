@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +43,19 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     public void onBindViewHolder(MyViewHolder holder, int position) {
         NavDrawerItem current = data.get(position);
         holder.title.setText(current.getTitle());
+        if(position == 2) {
+
+            if(General.getBadgeCount(context,AppConstants.HDROOMS_COUNT)<=0)
+                holder.supportCount.setVisibility(View.GONE);
+            else {
+                holder.supportCount.setVisibility(View.VISIBLE);
+                holder.supportCount.setText(String.valueOf(General.getBadgeCount(context, AppConstants.HDROOMS_COUNT)));
+
+            }
+
+              }
+        else
+            holder.supportCount.setVisibility(View.GONE);
     }
 
     @Override
@@ -50,10 +65,12 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView title;
+        TextView supportCount;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
+            supportCount = (TextView) itemView.findViewById(R.id.supportCount);
         }
     }
 }
