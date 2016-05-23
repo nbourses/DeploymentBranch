@@ -2,6 +2,7 @@ package com.nbourses.oyeok.RPOT.ApiSupport.services;
 
 import com.google.gson.JsonElement;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AcceptOk;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.BrokerBuildings;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.models.HdRooms;
@@ -75,6 +76,9 @@ public interface OyeokApiService {
 
     @POST("/see/hdrooms")
     void seeHdRooms(@Body HdRooms hdRooms, Callback<PublishLetsOye> callback);
+
+    @POST("/broker/buildings")
+    void brokerBuildings(@Body BrokerBuildings brokerBuildings, Callback<JsonElement> callback);
 }
 
 

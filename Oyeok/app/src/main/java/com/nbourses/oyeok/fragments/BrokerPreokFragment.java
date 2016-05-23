@@ -45,6 +45,7 @@ import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.BrokerBuildings;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OnAcceptOkSuccess;
@@ -65,7 +66,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
@@ -172,6 +172,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private JSONArray jsonArrayReqOr;
     private JSONArray jsonArrayAvlLl;
     private JSONArray jsonArrayAvlOr;
+    private JSONArray buildings;
+    private List<String> names;
   //  private JSONArray jsonArrayPreokRecent;
 
     private String strTenants = "Tenants";
@@ -259,8 +261,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 //        buildingPrice.addAll(Arrays.asList(4,8,12,15,18,22,16,2,10,7));
 //        buildingNames.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
+        brokerbuildings();
 
-        chart();
 
 
         zoomin.setAnimationListener(new Animation.AnimationListener() {
@@ -418,6 +420,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     }
 
 
+
+
     public void refreshCircularSeekbar(JSONArray arr,int currentSeekbarPosition){
 
 
@@ -433,89 +437,265 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     public void chart() {
         Log.i("GRAPH","scale before set chart 1"+ chart.getScaleX());
-         pricechart = false;
-         entries = new ArrayList<>();
+        // pricechart = false;
+
+        entries = new ArrayList<>();
         labels = new ArrayList<String>();
 
-
-        buildingPrice.addAll(Arrays.asList(4,8,12,15,18,22,16,2,10,7));
-        buildingNames.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
+        //if(!pricechart) {
 
 
-        for(int i =0;i< buildingPrice.size();i++){
+            // buildingPrice.addAll(Arrays.asList(4,8,12,15,18,22,16,2,10,7));
+            //buildingNames.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
+
+            Log.i("STEP2", "STEP2");
+
+            setChart();
+
+           /* for (int i = 0; i < buildingPrice.size(); i++) {
                 entries.add(new BarEntry(buildingPrice.get(i), i));
             }
 
-
-//        entries.add(new BarEntry(buildingPrice.get(0), 0));
-//        entries.add(new BarEntry(buildingPrice.get(1), 1));
-//        entries.add(new BarEntry(buildingPrice.get(2), 2));
-//        entries.add(new BarEntry(buildingPrice.get(3), 3));
-//        entries.add(new BarEntry(buildingPrice.get(4), 4));
-//        entries.add(new BarEntry(buildingPrice.get(5), 5));
-//        entries.add(new BarEntry(buildingPrice.get(6), 6));
-//        entries.add(new BarEntry(buildingPrice.get(7), 7));
-//        entries.add(new BarEntry(buildingPrice.get(8), 8));
-//        entries.add(new BarEntry(buildingPrice.get(9), 9));
-        dataset = new BarDataSet(entries,Integer.toString(buildingPrice.size()));
+            dataset = new BarDataSet(entries, Integer.toString(buildingPrice.size()));
 
 
-        // creating labels
-//        labels = new ArrayList<String>();
-//        labels.add("January");
-//        labels.add("February");
-//        labels.add("March");
-//        labels.add("April");
-//        labels.add("May");
-//        labels.add("June");
-//        labels.add("July");
-//        labels.add("August");
-//        labels.add("Sept");
-//        labels.add("Oct");
-
-        Log.i("GRAPH","entries "+entries);
+            Log.i("GRAPH", "entries " + entries + "buildingPrice.get(i) " + buildingPrice.get(1));
 
 
-//        for(int i =0;i< buildingNames.size();i++){
-//
-//            labels.add(buildingNames.get(i));
-//        }
-        labels.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
+            labels.addAll(buildingNames);
+            //labels.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
 
-        Log.i("GRAPH","labels "+labels);
+            Log.i("GRAPH", "labels " + labels);
+
+            BarData data = new BarData(labels, dataset);
+            chart.setData(data); // set the data and list of lables into chart  */
+
+            chart.setDescription("Select three Buildings.");
+
+
+            chart.animateY(1500);
+
+
+            chart.setScaleYEnabled(false);
+            chart.setScaleXEnabled(false);
+            // chart.setScaleEnabled(false);
+            chart.fitScreen();
+            chart.zoom(3.3f, 1f, 0, 0);
+            Log.i("GRAPH", "scale after set chart1 " + chart.getScaleX());
+
+            chart.setDragEnabled(true);
+
+            //   chart.setPinchZoom(false);
+            chart.setDoubleTapToZoomEnabled(false);
+            chart.setTouchEnabled(true);
+
+
+            chart.setOnChartValueSelectedListener(this);
+
+      /*  }
+
+        else {
+            setB.setClickable(false);
+            //pricechart = true;
+
+            entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(0)), 0));
+            entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(1)), 1));
+            entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(2)), 2));
+
+
+            buildingsSelected.clear();
+            dataset = new BarDataSet(entries, "3");
+
+            // creating labels
+
+            labels.add("January");
+            labels.add("February");
+            labels.add("March");
+            BarData data = new BarData(labels, dataset);
+            chart.setData(data);
+            chart.notifyDataSetChanged();
+            chart.invalidate();
+
+
+            // highlight all three buildings
+            Highlight h0 = new Highlight(0, 0);
+            Highlight h1 = new Highlight(1, 0);
+            Highlight h2 = new Highlight(2, 0);
+            chart.highlightValues(new Highlight[]{h0, h1, h2});
+
+
+            chart.setDescription("Set price for buildings.");
+
+            chart.animateY(2000);
+
+
+            chart.setScaleYEnabled(false);
+            //chart.setScaleEnabled(false);
+
+            chart.fitScreen();
+            chart.zoom(1.001f, 1f, 0, 0);
+            Log.i("GRAPH", "scale after set chart2 " + chart.getScaleX());
+
+            chart.setDragEnabled(true);
+
+            //   chart.setPinchZoom(false);
+            chart.setDoubleTapToZoomEnabled(false);
+            chart.setTouchEnabled(true);
+
+
+            // chart1.setOnChartValueSelectedListener(this);
+        }*/
+
+        chart.setOnChartGestureListener(this);
+
+    }
+
+    void setChart()
+    {
+
+        if(buildingsSelected.size()<=0) {
+
+            entries.clear();
+            labels.clear();
+            for (int i = 0; i < buildingPrice.size(); i++) {
+
+                entries.add(new BarEntry(buildingPrice.get(i), i));
+            }
+
+            dataset = new BarDataSet(entries, Integer.toString(buildingPrice.size()));
+            labels.addAll(buildingNames);
+        }
+        else
+        {
+            entries.clear();
+            labels.clear();
+
+            for (int i = 0; i < buildingsSelected.size(); i++) {
+                entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(i)), i));
+                labels.add(buildingNames.get(buildingsSelected.get(i)));
+            }
+
+            dataset = new BarDataSet(entries, Integer.toString(buildingsSelected.size()));
+
+        }
+
+        Log.i("GRAPH", "entries " + entries + "buildingPrice.get(i) " + buildingPrice.get(1));
+
+
+
+        //labels.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
+
+        Log.i("GRAPH", "labels " + labels);
 
         BarData data = new BarData(labels, dataset);
         chart.setData(data); // set the data and list of lables into chart
 
-        chart.setDescription("Select three Buildings.");
-
-
-        chart.animateY(1500);
-
-
-       chart.setScaleYEnabled(false);
-        chart.setScaleXEnabled(false);
-       // chart.setScaleEnabled(false);
-        chart.fitScreen();
-        chart.zoom(3.3f, 1f, 0, 0);
-        Log.i("GRAPH","scale after set chart1 "+ chart.getScaleX());
-
-     chart.setDragEnabled(true);
-
-        //   chart.setPinchZoom(false);
-        chart.setDoubleTapToZoomEnabled(false);
-        chart.setTouchEnabled(true);
-
-
-
-      chart.setOnChartValueSelectedListener(this);
-        chart.setOnChartGestureListener(this);
-
-
-
-
     }
 
+
+    public void brokerbuildings(){
+        Log.i("BROKER BUILDINGS CALLED","1");
+
+        BrokerBuildings brokerBuildings = new BrokerBuildings();
+        brokerBuildings.setDeviceId("Hardware");
+        brokerBuildings.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+        brokerBuildings.setPage("1");
+        brokerBuildings.setLng(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+        brokerBuildings.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+        brokerBuildings.setPropertyType("home");
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(AppConstants.SERVER_BASE_URL)
+                .build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+
+
+        try {
+            oyeokApiService.brokerBuildings(brokerBuildings, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+
+                    Log.i("BROKER BUILDINGS CALLED","success");
+
+
+                    JsonObject k = jsonElement.getAsJsonObject();
+                    try {
+                        JSONObject ne = new JSONObject(k.toString());
+                        buildings = ne.getJSONObject("responseData").getJSONArray("buildings");
+                        Log.i("BROKER BUILDINGS CALLED","buildings"+ne.getJSONObject("responseData"));
+                        Integer price;
+                        for (int i=0; i<buildings.length(); i++) {
+                            JSONObject actor = buildings.getJSONObject(i);
+                            String name = actor.getString("name");
+                           if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RESALE"))
+                               price = actor.getInt("or_psf");
+                            else
+                               price = actor.getInt("ll_pm");
+
+
+                            Log.i("BROKER BUILDINGS CALLED","success"+name+" "+price);
+
+
+                            Log.i("BROKER BUILDINGS CALLED","success"+price.getClass().getName()+" "+buildingPrice.getClass().getName());
+                            buildingNames.add(name);
+                            buildingPrice.add(price);
+
+                            Log.i("STEP1","STEP1");
+
+
+                        }
+
+
+
+
+
+
+
+                       // Log.i("PREOK CALLED","buildings"+a);
+                        Log.i("BROKER BUILDINGS CALLED","buildings"+buildings);
+                        Log.i("BROKER BUILDINGS CALLED","buildingNames"+buildingNames);
+                        Log.i("BROKER BUILDINGS CALLED","buildingPrice"+buildingPrice);
+
+
+                       chart();
+
+//                        jsonArrayReqLl = neighbours.getJSONArray("recent");;//neighbours.getJSONArray("req_ll");
+//                        jsonArrayAvlLl = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_ll");
+//
+//                        jsonArrayReqOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("req_or");
+//                        jsonArrayAvlOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_or");
+//
+//                        Log.i("PREOK CALLED","jsonArrayReqLl"+jsonArrayReqLl);
+//                        Log.i("PREOK CALLED","jsonArrayAvlLl"+jsonArrayAvlLl);
+//                        Log.i("PREOK CALLED","jsonArrayReqOr"+jsonArrayReqOr);
+//                        Log.i("PREOK CALLED","jsonArrayAvlOr"+jsonArrayAvlOr);
+//
+//
+//
+//                        onPositionSelected(currentSeekbarPosition, currentCount);
+                    }
+                    catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
+                        Log.i("BROKER BUILDINGS CALLED","Failed "+e.getMessage());
+                    }
+
+
+
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+        }
+        catch (Exception e){
+            Log.e(TAG, e.getMessage());
+        }
+    }
 
 
     /**
@@ -620,18 +800,21 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         txtPreviouslySelectedOptionB = (TextView) v;
         if (v.getId() == selectB.getId()) {
             selectB.setBackgroundResource(R.color.greenish_blue);
-            chart.clear();
-            if(entries.size() !=0)
-            entries.clear();
-            if(labels.size() !=0)
-            labels.clear();
-            if(buildingPrice.size() !=0)
-            buildingPrice.clear();
+           // chart.clear();
+           // if(entries.size() !=0)
+//            entries.clear();
+//            if(labels.size() !=0)
+//            labels.clear();
+          //  if(buildingPrice.size() !=0)
+          //  buildingPrice.clear();
             setB.setClickable(true);
 
             if(buildingsSelected.size() !=0)
                 buildingsSelected.clear();
-            chart();
+            Log.i("STEP3","STEP3");
+           // chart();
+            setChart();
+
             chart.animateY(1500);
            animation.start();
 
@@ -640,12 +823,13 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             if(buildingsSelected.size() == 3) {
                 setB.setBackgroundResource(R.color.greenish_blue);
                 selectB.setBackgroundResource(R.color.colorPrimaryDark);
-                if(entries.size() !=0)
-                    entries.clear();
+//                if(entries.size() !=0)
+//                    entries.clear();
                // chart.zoom(1f, 1f, 0, 0);
-                chart.clear();
+              //  chart.clear();
 
-                priceChart();
+              //  priceChart();
+                setChart();
                chart.animateY(1500);
                 animation.start();
             }
@@ -1001,6 +1185,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
                 buildingSlider.startAnimation(slide_up);
                 buildingSlider.setVisibility(View.VISIBLE);
+
 //                SnackbarManager.show(
 //                        com.nispok.snackbar.Snackbar.with(getActivity())
 //                                .position(Snackbar.SnackbarPosition.BOTTOM)
@@ -1095,6 +1280,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(1)), 1));
         entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(2)), 2));
 
+
+
             buildingsSelected.clear();
         dataset = new BarDataSet(entries, "3");
 
@@ -1108,6 +1295,12 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         chart.notifyDataSetChanged();
         chart.invalidate();
 
+
+        // highlight all three buildings
+        Highlight h0 = new Highlight(0, 0);
+        Highlight h1 = new Highlight(1, 0);
+        Highlight h2 = new Highlight(2, 0);
+        chart.highlightValues(new Highlight[]{h0, h1, h2});
 
 
         chart.setDescription("Set price for buildings.");

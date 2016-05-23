@@ -499,7 +499,7 @@ if(!RefreshDrooms) {
         hdRooms.setPage("1");
 
 
-        Log.i("TRACE", "in LOad broker deals");
+        Log.i("TRACE", "in Load broker deals");
         OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
         oyeokApiService.seeHdRooms(hdRooms, new Callback<PublishLetsOye>() {
             @Override

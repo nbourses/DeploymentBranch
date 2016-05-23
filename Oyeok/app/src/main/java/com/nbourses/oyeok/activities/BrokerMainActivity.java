@@ -216,7 +216,7 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
             @Override
             public void onClick(View v) {
 
-                
+
                 DashboardClientFragment dashboardClientFragment = new DashboardClientFragment();
                 loadFragment(dashboardClientFragment, null, R.id.container_map, "");
 
