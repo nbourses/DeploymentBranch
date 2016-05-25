@@ -60,15 +60,25 @@ public class General extends BroadcastReceiver{
 //    {
 //        this.networkInfo = networkInfo;
 //    }
-public static void saveMutedOKIds(Context context, String value) {
+public static void saveMutedOKIds(Context context, Set<String> value) {
 
     Log.i("TRACE", "save default deal inside" + value);
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
     SharedPreferences.Editor editor = prefs.edit();
-    editor.putString(AppConstants.MUTED_OKIDS, value);
+    editor.putStringSet(AppConstants.MUTED_OKIDS, value);
     editor.commit();
 
 }
+
+    public static Set<String> getMutedOKIds(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+
+        return prefs.getStringSet(AppConstants.MUTED_OKIDS, null);
+
+
+    }
 
     public static String getSampleDealsJsonData(Context contex) {
         return getRawString(contex, "sample_deals_data");
@@ -157,7 +167,7 @@ public static void saveMutedOKIds(Context context, String value) {
         editor.commit();
     }
 
-    public static boolean saveArray(String[] array, String arrayName, Context mContext) {
+    public static boolean saveArray(Context mContext, String arrayName, String[] array ) {
         SharedPreferences prefs = mContext.getSharedPreferences("preferencename", 0);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(arrayName +"_size", array.length);

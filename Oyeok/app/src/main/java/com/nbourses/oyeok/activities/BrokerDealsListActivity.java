@@ -2,6 +2,7 @@ package com.nbourses.oyeok.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
@@ -12,18 +13,25 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.BounceInterpolator;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.deleteHDroom;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
@@ -38,10 +46,13 @@ import com.nbourses.oyeok.models.PublishLetsOye;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -85,13 +96,16 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
 //    private ProgressDialog mProgressDialog = null;
 
     private String TT = "LL";
+    private Set<String> mutedOKIds = new HashSet<String>();
+    private ArrayList<BrokerDeals> listBrokerDeals_new;
+    private BrokerDealsListAdapter listAdapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deals_list);
-
+        listAdapter = new BrokerDealsListAdapter(listBrokerDeals_new, getApplicationContext());
         listViewDeals = (SwipeMenuListView) findViewById(R.id.listViewDeals);
         supportChat = (LinearLayout)findViewById(R.id.supportChat);
         fragment_container1 = (FrameLayout)findViewById(R.id.fragment_container1);
@@ -114,6 +128,206 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     }
 
     private void init() {
+
+
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+
+
+
+                // create "More" item
+                SwipeMenuItem MoreItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                MoreItem.setBackground(new ColorDrawable(getResources().getColor(R.color.grey)));
+                // set item width
+                MoreItem.setWidth(listAdapter.dp2px(90));
+                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(90));
+                // set item title
+                MoreItem.setIcon(R.drawable.more);
+                MoreItem.setTitle("More");
+                // set item title fontsize
+                MoreItem.setTitleSize(18);
+                // set item title font color
+                MoreItem.setTitleColor(R.color.white);
+                // add to more
+                menu.addMenuItem(MoreItem);
+
+
+                // create "unmute" item
+                SwipeMenuItem MuteItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                MuteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.timestamp)));
+                // set item width
+                MuteItem.setWidth(listAdapter.dp2px(90));
+                // set item title
+                MuteItem.setIcon(R.drawable.unmute);
+                MuteItem.setTitle("unmute");
+                // set item title fontsize
+                MuteItem.setTitleSize(18);
+                // set item title font color
+                MuteItem.setTitleColor(Color.WHITE);
+                // add to more
+                menu.addMenuItem(MuteItem);
+
+
+
+                // create "delete" item
+                SwipeMenuItem deleteItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                deleteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.darkred)));
+                // set item width
+                deleteItem.setWidth(listAdapter.dp2px(90));
+                // set a icon
+                deleteItem.setIcon(R.drawable.delete);
+                deleteItem.setTitle("delete");
+                MuteItem.setTitleSize(18);
+                // set item title font color
+                deleteItem.setTitleColor(R.color.white);
+                // add to more
+                menu.addMenuItem(deleteItem);
+
+
+
+
+
+
+
+
+
+            }
+        };
+        // set creator
+        listViewDeals.setMenuCreator(creator);
+        listViewDeals.setCloseInterpolator(new BounceInterpolator());
+        listViewDeals.setOpenInterpolator(new BounceInterpolator());
+
+        // step 2. listener item click event
+        listViewDeals.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                //           ApplicationInfo item =  listAdapter.getItem(position);
+                switch (index) {
+                    case 0:
+
+                        Log.i("OPEN OPTION", "=================");
+                        //open
+//                        open(item);
+                        break;
+                    case 1:
+
+                        Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(BrokerDealsListActivity.this));
+                        if(!(General.getMutedOKIds(BrokerDealsListActivity.this) == null)) {
+                            mutedOKIds.addAll(General.getMutedOKIds(BrokerDealsListActivity.this));
+
+                            if(mutedOKIds.contains(listBrokerDeals_new.get(position).getOkId())) {
+                                mutedOKIds.remove(listBrokerDeals_new.get(position).getOkId());
+                                SnackbarManager.show(
+                                        Snackbar.with(BrokerDealsListActivity.this)
+                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                .text(listBrokerDeals_new.get(position).getSpecCode() + " unmuted!")
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                            }
+                            else {
+                                mutedOKIds.add(listBrokerDeals_new.get(position).getOkId());
+                                SnackbarManager.show(
+                                        Snackbar.with(BrokerDealsListActivity.this)
+                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                .text(listBrokerDeals_new.get(position).getSpecCode() + " muted!")
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                            }
+
+                        }
+
+
+                        General.saveMutedOKIds(BrokerDealsListActivity.this,mutedOKIds);
+
+                        Log.i("MUTE", "muted from shared" + General.getMutedOKIds(BrokerDealsListActivity.this));
+//                        Log.i("MUTE CALLED", "ok_id " + total_deals.get(position).getOkId());
+//                        General.setSharedPreferences(getApplicationContext(), AppConstants.MUTED_OKIDS, total_deals.get(position).getOkId());
+//                        General.getSharedPreferences(getApplicationContext(),AppConstants.MUTED_OKIDS)
+                        // delete
+//					delete(item);
+//                        listAdapter.remove(position);
+//                        listAdapter.notifyDataSetChanged();
+                        break;
+                    case 2:
+
+                        Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
+
+
+                        Log.i("deleteDR CALLED", "spec code " + listBrokerDeals_new.get(position).getSpecCode());
+
+
+
+
+                        if(listBrokerDeals_new != null) {
+                            if (listBrokerDeals_new.contains(listBrokerDeals_new.get(position))) {
+
+                                Log.i("deleteDR CALLED", "Its HDroom " + listBrokerDeals_new.get(position).getSpecCode());
+
+
+                                deleteDealingroom(listBrokerDeals_new.get(position).getOkId(),listBrokerDeals_new.get(position).getSpecCode());
+                                //on delete droom delete that room OK id from mutedOKIds
+
+                                Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(BrokerDealsListActivity.this));
+                                if(!(General.getMutedOKIds(BrokerDealsListActivity.this) == null)) {
+                                    mutedOKIds.addAll(General.getMutedOKIds(BrokerDealsListActivity.this));
+
+                                    if(mutedOKIds.contains(listBrokerDeals_new.get(position).getOkId()))
+                                        mutedOKIds.remove(listBrokerDeals_new.get(position).getOkId());
+
+                                }
+
+                                General.saveMutedOKIds(BrokerDealsListActivity.this, mutedOKIds);
+
+                                Log.i("MUTE", "muted from shared" + General.getMutedOKIds(BrokerDealsListActivity.this));
+
+                            }
+                        }
+
+                        // delete
+//					delete(item);
+//                        listAdapter.remove(position);
+//                        listAdapter.notifyDataSetChanged();
+                        break;
+                }
+                return false;
+            }
+        });
+
+        // set SwipeListener
+        listViewDeals.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
+
+            @Override
+            public void onSwipeStart(int position) {
+                // swipe start
+            }
+
+            @Override
+            public void onSwipeEnd(int position) {
+                // swipe end
+            }
+        });
+
+        // other setting
+//		listView.setCloseInterpolator(new BounceInterpolator());
+
+        // test item long click
+        listViewDeals.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view,
+                                           int position, long id) {
+//              Toast.makeText(getApplicationContext(), position + " long click", 0).show();
+                return false;
+            }
+        });
+
 
         //if user is logged in then make phase seek bar visible, view is already made GONE from layout, on safer side we will still make it gone initially programatically
 
@@ -184,6 +398,78 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
         return super.onOptionsItemSelected(item);
     }
 
+
+    private void deleteDealingroom(String deleteOKId, final String specCode){
+
+
+
+
+        deleteHDroom deleteHDroom  = new deleteHDroom();
+        deleteHDroom.setOkId(deleteOKId);
+        deleteHDroom.setUserId(General.getSharedPreferences(this,AppConstants.USER_ID));
+        deleteHDroom.setPage("1");
+        deleteHDroom.setGcmId(General.getSharedPreferences(this,AppConstants.GCM_ID));
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(AppConstants.SERVER_BASE_URL)
+                .build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+
+
+        try {
+            oyeokApiService.deleteHDroom(deleteHDroom, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+
+                    Log.i("deleteDR CALLED","success");
+                    loadBrokerDeals();
+
+                    SnackbarManager.show(
+                            Snackbar.with(BrokerDealsListActivity.this)
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text(specCode + " deleted")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+
+                    JsonObject k = jsonElement.getAsJsonObject();
+                    try {
+                        JSONObject ne = new JSONObject(k.toString());
+                        String success = ne.getString("success");
+
+
+
+
+                    }
+
+
+
+                    catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
+                        Log.i("deleteDR CALLED","Failed "+e.getMessage());
+                    }
+
+
+
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+        }
+        catch (Exception e){
+            Log.e(TAG, e.getMessage());
+        }
+
+
+    }
+
+
+
     private void loadBrokerDeals() {
         Log.i("TRACEOK","inside loadbroker deals ");
 
@@ -248,7 +534,7 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
 
                             Iterator<BrokerDeals> it = listBrokerDeals.iterator();
 
-                            ArrayList<BrokerDeals> listBrokerDeals_new = new ArrayList<BrokerDeals>();
+                            listBrokerDeals_new = new ArrayList<BrokerDeals>();
                             while (it.hasNext())
                             {
                                 BrokerDeals deals = it.next();

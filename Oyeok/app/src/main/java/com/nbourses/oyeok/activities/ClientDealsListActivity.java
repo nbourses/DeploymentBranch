@@ -60,9 +60,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -128,6 +130,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     private String TT = "LL";
     private ArrayList<BrokerDeals> total_deals;
     private ArrayList<BrokerDeals> listBrokerDeals_new;
+    private Set<String> mutedOKIds = new HashSet<String>();
+
 
 
 
@@ -189,8 +193,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 // set item background
                 MoreItem.setBackground(new ColorDrawable(getResources().getColor(R.color.grey)));
                 // set item width
-                MoreItem.setWidth(listAdapter.dp2px(120));
-                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(120));
+                MoreItem.setWidth(listAdapter.dp2px(90));
+                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(90));
                 // set item title
                 MoreItem.setIcon(R.drawable.more);
                 MoreItem.setTitle("More");
@@ -208,7 +212,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 // set item background
                 MuteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.timestamp)));
                 // set item width
-                MuteItem.setWidth(listAdapter.dp2px(120));
+                MuteItem.setWidth(listAdapter.dp2px(90));
                 // set item title
                 MuteItem.setIcon(R.drawable.unmute);
                 MuteItem.setTitle("unmute");
@@ -227,7 +231,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 // set item background
                 deleteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.darkred)));
                 // set item width
-                deleteItem.setWidth(listAdapter.dp2px(120));
+                deleteItem.setWidth(listAdapter.dp2px(90));
                 // set a icon
                deleteItem.setIcon(R.drawable.delete);
                 deleteItem.setTitle("delete");
@@ -264,7 +268,33 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                         break;
                     case 1:
 
+                        Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(ClientDealsListActivity.this));
+                        if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
+                            mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
 
+                            if(mutedOKIds.contains(total_deals.get(position).getOkId())) {
+                                mutedOKIds.remove(total_deals.get(position).getOkId());
+                                SnackbarManager.show(
+                                        Snackbar.with(ClientDealsListActivity.this)
+                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                .text(total_deals.get(position).getSpecCode() + " unmuted!")
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                            }
+                            else {
+                                mutedOKIds.add(total_deals.get(position).getOkId());
+                                SnackbarManager.show(
+                                        Snackbar.with(ClientDealsListActivity.this)
+                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                .text(total_deals.get(position).getSpecCode() + " muted!")
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                            }
+
+                        }
+
+
+                        General.saveMutedOKIds(ClientDealsListActivity.this,mutedOKIds);
+
+                        Log.i("MUTE", "muted from shared" + General.getMutedOKIds(ClientDealsListActivity.this));
 //                        Log.i("MUTE CALLED", "ok_id " + total_deals.get(position).getOkId());
 //                        General.setSharedPreferences(getApplicationContext(), AppConstants.MUTED_OKIDS, total_deals.get(position).getOkId());
 //                        General.getSharedPreferences(getApplicationContext(),AppConstants.MUTED_OKIDS)
@@ -298,6 +328,20 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
                                 deleteDealingroom(total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
+                                //on delete droom delete that room OK id from mutedOKIds
+
+                                Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(ClientDealsListActivity.this));
+                                if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
+                                    mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
+
+                                    if(mutedOKIds.contains(total_deals.get(position).getOkId()))
+                                        mutedOKIds.remove(total_deals.get(position).getOkId());
+
+                                }
+
+                                General.saveMutedOKIds(ClientDealsListActivity.this, mutedOKIds);
+
+                                Log.i("MUTE", "muted from shared" + General.getMutedOKIds(ClientDealsListActivity.this));
 
                             }
                         }
