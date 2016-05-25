@@ -99,6 +99,8 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     private Set<String> mutedOKIds = new HashSet<String>();
     private ArrayList<BrokerDeals> listBrokerDeals_new;
     private BrokerDealsListAdapter listAdapter;
+    private SwipeMenuItem MuteItem,unMuteItem;
+    private SwipeMenuCreator creator;
 
 
     @Override
@@ -129,14 +131,15 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
 
     private void init() {
 
-
-        SwipeMenuCreator creator = new SwipeMenuCreator() {
+//        final SwipeMenu[] menu1 = new SwipeMenu[1];
+        creator = new SwipeMenuCreator() {
 
             @Override
             public void create(SwipeMenu menu) {
 
+Log.i("SWIPE","inside swipe menu creator");
 
-
+//                menu1[0] = menu;
                 // create "More" item
                 SwipeMenuItem MoreItem = new SwipeMenuItem(
                         getApplicationContext());
@@ -151,13 +154,14 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
                 // set item title fontsize
                 MoreItem.setTitleSize(18);
                 // set item title font color
-                MoreItem.setTitleColor(R.color.white);
+                MoreItem.setTitleColor(R.color.black);
                 // add to more
+
                 menu.addMenuItem(MoreItem);
 
 
                 // create "unmute" item
-                SwipeMenuItem MuteItem = new SwipeMenuItem(
+                MuteItem = new SwipeMenuItem(
                         getApplicationContext());
                 // set item background
                 MuteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.timestamp)));
@@ -190,6 +194,22 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
                 deleteItem.setTitleColor(R.color.white);
                 // add to more
                 menu.addMenuItem(deleteItem);
+
+//                unMuteItem = new SwipeMenuItem(
+//                        getApplicationContext());
+//                // set item background
+//                unMuteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.timestamp)));
+//                // set item width
+//                unMuteItem.setWidth(listAdapter.dp2px(90));
+//                // set item title
+//                unMuteItem.setIcon(R.drawable.mute2);
+//                unMuteItem.setTitle("unmute");
+//                // set item title fontsize
+//                unMuteItem.setTitleSize(18);
+//                // set item title font color
+//                unMuteItem.setTitleColor(Color.WHITE);
+//                // add to more
+//                menu.addMenuItem(unMuteItem);
 
 
 
@@ -226,6 +246,42 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
 
                             if(mutedOKIds.contains(listBrokerDeals_new.get(position).getOkId())) {
                                 mutedOKIds.remove(listBrokerDeals_new.get(position).getOkId());
+                               // Log.i("SWIPE", "MuteItem " + MuteItem + " " + MuteItem.getIcon());
+                               // MuteItem=menu.getMenuItem(position);
+                               // Log.i("SWIPE", "MuteItem " + MuteItem + " " + MuteItem.getIcon());
+                                //MuteItem=menu.getMenuItem(position);
+
+//                                menu.removeMenuItem(MuteItem);
+//
+//
+//
+//                                unMuteItem = new SwipeMenuItem(
+//                                        getApplicationContext());
+//                                // set item background
+//                                unMuteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.timestamp)));
+//                                // set item width
+//                                unMuteItem.setWidth(listAdapter.dp2px(90));
+//                                // set item title
+//                                unMuteItem.setIcon(R.drawable.mute2);
+//                                unMuteItem.setTitle("mute");
+//                                // set item title fontsize
+//                                unMuteItem.setTitleSize(18);
+//                                // set item title font color
+//                                unMuteItem.setTitleColor(Color.WHITE);
+//                                // add to more
+//                                menu.addMenuItem(unMuteItem);
+//
+//
+//                                synchronized (creator) {
+//                                    creator.notify();
+//                                }
+//                               listAdapter.notifyDataSetChanged();
+//                                loadBrokerDeals();
+
+
+
+//                                MuteItem.setIcon(R.drawable.unmute);
+//                                menu.addMenuItem(MuteItem);
                                 SnackbarManager.show(
                                         Snackbar.with(BrokerDealsListActivity.this)
                                                 .position(Snackbar.SnackbarPosition.TOP)
@@ -234,6 +290,16 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
                             }
                             else {
                                 mutedOKIds.add(listBrokerDeals_new.get(position).getOkId());
+
+
+                              //   Log.i("SWIPE", "MuteItem " + MuteItem + " " + MuteItem.getIcon());
+                               //  MuteItem=menu.getMenuItem(position);
+                              //   Log.i("SWIPE", "MuteItem " + MuteItem + " " + MuteItem.getIcon());
+                                //menu.removeMenuItem(MuteItem);
+
+                               // MuteItem.setIcon(R.drawable.mute2);
+                               // menu.addMenuItem(MuteItem);
+
                                 SnackbarManager.show(
                                         Snackbar.with(BrokerDealsListActivity.this)
                                                 .position(Snackbar.SnackbarPosition.TOP)
