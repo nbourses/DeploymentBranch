@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -211,6 +212,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private Entry e;
     ArrayList<String> buildingNames;
     ArrayList<Integer> buildingPrice;
+    ArrayList<Integer> buildingPriceLL = new ArrayList<Integer>();
+    ArrayList<Integer> buildingPriceOR = new ArrayList<Integer>();
     private boolean pricechart = false;
 
     Animation bounce;
@@ -476,16 +479,29 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             chart.animateY(1500);
 
 
-            chart.setScaleYEnabled(false);
-            chart.setScaleXEnabled(false);
+//            chart.setScaleYEnabled(false);
+//            chart.setScaleXEnabled(false);
             // chart.setScaleEnabled(false);
-            chart.fitScreen();
-            chart.zoom(3.3f, 1f, 0, 0);
+            //chart.fitScreen();
+
+
+        YAxis rightAxis = chart.getAxisRight();
+        rightAxis.setEnabled(false);
+
             Log.i("GRAPH", "scale after set chart1 " + chart.getScaleX());
 
             chart.setDragEnabled(true);
 
+        YAxis yaxis = chart.getAxis(YAxis.AxisDependency.LEFT);
+        XAxis xAxis = chart.getXAxis();
+        yaxis.setAxisMinValue(500);
+
+        Log.i("GRAPH", "chart.getYMax " + chart.getYMax() + "chart.getYChartMax " + chart.getYChartMax());
+
+        //yaxis.setAxisMaxValue(999999999);
+
             //   chart.setPinchZoom(false);
+        xAxis.setLabelsToSkip(0);
             chart.setDoubleTapToZoomEnabled(false);
             chart.setTouchEnabled(true);
 
@@ -554,9 +570,11 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     {
 
         if(buildingsSelected.size()<=0) {
-
+            chart.fitScreen();
+            chart.zoom(3.3f, 1f, 0, 0);
             entries.clear();
             labels.clear();
+            chart.editEntryValue = false;
             for (int i = 0; i < buildingPrice.size(); i++) {
 
                 entries.add(new BarEntry(buildingPrice.get(i), i));
@@ -567,9 +585,11 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         }
         else
         {
+            chart.fitScreen();
+
             entries.clear();
             labels.clear();
-
+            chart.editEntryValue = true;
             for (int i = 0; i < buildingsSelected.size(); i++) {
                 entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(i)), i));
                 labels.add(buildingNames.get(buildingsSelected.get(i)));
@@ -625,27 +645,36 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                         JSONObject ne = new JSONObject(k.toString());
                         buildings = ne.getJSONObject("responseData").getJSONArray("buildings");
                         Log.i("BROKER BUILDINGS CALLED","buildings"+ne.getJSONObject("responseData"));
-                        Integer price;
+
                         for (int i=0; i<buildings.length(); i++) {
                             JSONObject actor = buildings.getJSONObject(i);
                             String name = actor.getString("name");
-                           if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RESALE"))
-                               price = actor.getInt("or_psf");
-                            else
-                               price = actor.getInt("ll_pm");
+                          // if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RESALE"))
 
 
-                            Log.i("BROKER BUILDINGS CALLED","success"+name+" "+price);
+                            buildingPriceOR.add(actor.getInt("or_psf"));
+                            buildingPriceLL.add(actor.getInt("ll_pm"));
+
+                            Log.i("BROKER BUILDINGS CALLED", "buildingPriceOR" + buildingPriceOR);
+
+                            Log.i("BROKER BUILDINGS CALLED", "buildingPriceLL" + buildingPriceLL);
 
 
-                            Log.i("BROKER BUILDINGS CALLED","success"+price.getClass().getName()+" "+buildingPrice.getClass().getName());
+
+                           // Log.i("BROKER BUILDINGS CALLED","success"+name+" "+price);
+
+
+                          //  Log.i("BROKER BUILDINGS CALLED","success"+price.getClass().getName()+" "+buildingPrice.getClass().getName());
                             buildingNames.add(name);
-                            buildingPrice.add(price);
+                          // buildingPrice.add(price);
+
 
                             Log.i("STEP1","STEP1");
 
 
                         }
+                        buildingPrice.addAll(buildingPriceLL);
+                        Log.i("BROKER BUILDINGS CALLED", "buildingPrice" +  buildingPrice);
 
 
 
@@ -997,12 +1026,12 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 //                Log.i("PREOK CALLED15", "values set" + jsonArrayReqLl.toString());
 //                circularSeekbar.setValues(jsonArrayAvlLl.toString());
 //            }
-
+//            buildingPrice.clear();
+//            buildingPrice.addAll(buildingPriceLL);
+//            setChart();
 
         }
         else if (position == 1) {
-
-
             rentText.setVisibility(View.GONE);
             texPtype.setVisibility(View.GONE);
             texPstype.setVisibility(View.GONE);
@@ -1074,6 +1103,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 //                circularSeekbar.setValues(jsonArrayAvlOr.toString());
 //            }
 
+            buildingPrice.clear();
+            buildingPrice.addAll(buildingPriceOR);
+            setChart();
 
 
         }
@@ -1536,106 +1568,6 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     }
 
 
-
-
-
-//        if(buildingsSelected.size()<3){
-//            if(!buildingsSelected.contains(e.getXIndex())) {
-//                buildingsSelected.add(e.getXIndex());
-//
-//                //chart.highlightValues(buildingsSelected);
-//                //     Integer [] buildings = buildingsSelected.toArray(new Integer[buildingsSelected.size()]);
-//                for (int i = 0; i < buildingsSelected.size(); i++) {
-//
-//                    if (buildingsSelected.size() == 1) {
-//                        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-//                        chart.highlightValues(new Highlight[]{h0});
-//                    } else if (buildingsSelected.size() == 2) {
-//                        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-//                        Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-//                        chart.highlightValues(new Highlight[]{h0, h1});
-//                    }else {
-//                        Highlight h0 = new Highlight(buildingsSelected.get(0),0);
-//                        Highlight h1 = new Highlight(buildingsSelected.get(1),0);
-//                        Highlight h2 = new Highlight(buildingsSelected.get(2),0);
-//                        chart.highlightValues(new Highlight[] {h0,h1,h2});
-//                    }
-//                    }
-//
-////                   Highlight h1 = new Highlight(0,0);// 1st value to highlight
-////                    Highlight h2 = new Highlight(4,0);// 1st value to highlight
-////                    Highlight h3 = new Highlight(8,0);// 1st value to highlight
-////                   highlights.add(h1);
-//                    //     highlights.add(new Highlight(buildingsSelected.get(i),0));
-//
-//
-//                }
-////                Highlight h1 = new Highlight(); // 1st value to highlight
-////                Highlight h2 = new Highlight(); // 2nd value to highlight
-//
-//                //chart.highlightValues(new Highlight[] {h1, h2});
-//
-//            }       // chart.highlightValues(new buildings[] buildings);
-//            else if(buildingsSelected.size()==3){
-//                if(!buildingsSelected.contains(e.getXIndex())) {
-// //only three can be selected
-//
-//                }
-//                else{
-//
-//                    buildingsSelected.remove(e.getXIndex());
-//
-//                    for (int i = 0; i < buildingsSelected.size(); i++) {
-//
-//                        if(buildingsSelected.size()==1){
-//                            Highlight h0 = new Highlight(buildingsSelected.get(0),0);
-//                            chart.highlightValues(new Highlight[] {h0});
-//                        }else if(buildingsSelected.size()==2) {
-//                            Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-//                            Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-//                            chart.highlightValues(new Highlight[]{h0, h1});
-//                        }
-////                        }else {
-////                            Highlight h0 = new Highlight(buildingsSelected.get(0),0);
-////                            Highlight h1 = new Highlight(buildingsSelected.get(1),0);
-////                            Highlight h2 = new Highlight(buildingsSelected.get(2),0);
-////                            chart.highlightValues(new Highlight[] {h0,h1,h2});
-////                        }
-//                    }
-//
-//                }
-//
-//            }
-//
-//            else{
-//                buildingsSelected.remove(e.getXIndex());
-//
-//            for (int i = 0; i < buildingsSelected.size(); i++) {
-//
-//                if(buildingsSelected.size()==1){
-//                    Highlight h0 = new Highlight(buildingsSelected.get(0),0);
-//                    chart.highlightValues(new Highlight[] {h0});
-//                }else if(buildingsSelected.size()==2) {
-//                    Highlight h0 = new Highlight(buildingsSelected.get(0),0);
-//                    Highlight h1 = new Highlight(buildingsSelected.get(1),0);
-//                    chart.highlightValues(new Highlight[] {h0,h1});
-//                }else if(buildingsSelected.size()==3){
-//                    Highlight h0 = new Highlight(buildingsSelected.get(0),0);
-//                    Highlight h1 = new Highlight(buildingsSelected.get(1),0);
-//                    Highlight h2 = new Highlight(buildingsSelected.get(2),0);
-//                    chart.highlightValues(new Highlight[] {h0,h1,h2});
-//                }
-//            }
-//            }
-//
-//        }
-
-
-//        buildingsSelected.contains()
-
-
-
-
     @Override
     public void onNothingSelected() {
 
@@ -1728,16 +1660,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
         Log.i("GRAPH","me onChartSingleTapped "+me);
 
-//        Highlight h0 = new Highlight(3, 0);
-//        Highlight h1 = new Highlight(6, 0);
-//        Highlight h2 = new Highlight(9, 0);
-//        chart.highlightValues(new Highlight[]{h0, h1, h2});
-
-//        Log.i("GRAPH","me "+me.getActionIndex());
-       // Log.i("GRAPH","me "+me.getX());
-       // Log.i("GRAPH","me "+me.getY());
-//        Log.i("GRAPH","me "+me.getAxisValue(0));
-//        Log.i("GRAPH","me "+me.getX(0));
+//
 
         //highlighter.getHighlight(me.getX(0),me.getY(0));
         highlight = highlighter.getHighlight(me.getX(),me.getY());
@@ -1763,141 +1686,6 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 //        highlight();
 
 
-  /*      Log.i("GRAPH","me "+highlight.getXIndex()) ;
-
-
-        if (!buildingsSelected.contains(highlight.getXIndex())) {
-            Log.i("GRAPH", "1");
-
-
-            if (buildingsSelected.size() < 3) {
-                buildingsSelected.add(highlight.getXIndex());
-                Log.i("GRAPH10", "buildings selected after add " + buildingsSelected);
-
-                // for (int i = 0; i < buildingsSelected.size(); i++) {
-
-                if (buildingsSelected.size() == 1) {
-                    Log.i("GRAPH10", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    chart.highlightValues(new Highlight[]{h0});
-
-
-                } else if (buildingsSelected.size() == 2) {
-                    Log.i("GRAPH11", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                    chart.highlightValues(new Highlight[]{h0, h1});
-
-                } else {
-                    Log.i("GRAPH12", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                    Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
-                    chart.highlightValues(new Highlight[]{h0, h1, h2});
-
-
-                }
-                //             }
-            } else if (buildingsSelected.size() == 3) {
-                Log.i("GRAPH", "3");
-                //cant be added
-                Log.i("GRAPH30", "buildings selected " + buildingsSelected);
-                Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
-                chart.highlightValues(new Highlight[]{h0, h1, h2});
-
-            }
-
-        }
-
-        //chart.highlightValues(null);
-
-
-
-        buildingsSelected.add(highlight.getXIndex());
-        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-        chart.highlightValues(new Highlight[]{h0});
-        Log.i("GRAPH", "executed ");
-        Log.i("GRAPH10", "buildings selected and new build " + buildingsSelected +" " +highlight.getXIndex());
-
-        if (!buildingsSelected.contains(highlight.getXIndex())) {
-            Log.i("GRAPH", "1");
-
-
-            if (buildingsSelected.size() < 3) {
-                buildingsSelected.add(highlight.getXIndex());
-                Log.i("GRAPH10", "buildings selected after add " + buildingsSelected);
-
-                // for (int i = 0; i < buildingsSelected.size(); i++) {
-
-                if (buildingsSelected.size() == 1) {
-                    Log.i("GRAPH10", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    chart.highlightValues(new Highlight[]{h0});
-
-
-                } else if (buildingsSelected.size() == 2) {
-                    Log.i("GRAPH11", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                    chart.highlightValues(new Highlight[]{h0, h1});
-
-                } else {
-                    Log.i("GRAPH12", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                    Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
-                    chart.highlightValues(new Highlight[]{h0, h1, h2});
-
-
-                }
-                //             }
-            } else if (buildingsSelected.size() == 3) {
-                Log.i("GRAPH", "3");
-                //cant be added
-                Log.i("GRAPH30", "buildings selected " + buildingsSelected);
-                Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
-                chart.highlightValues(new Highlight[]{h0, h1, h2});
-
-            }
-        } else {
-            Log.i("GRAPH", "2");
-            Log.i("GRAPH", "removed " + Integer.valueOf(highlight.getXIndex()));
-            // buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
-            buildingsSelected.remove(Integer.valueOf(highlight.getXIndex()));
-            Log.i("GRAPH", "after removing " + buildingsSelected);
-            //    for (int i = 0; i < buildingsSelected.size(); i++) {
-
-            Log.i("GRAPH", "size " + buildingsSelected.size());
-            if (buildingsSelected.size() == 1) {
-                Log.i("GRAPH20", "buildings selected " + buildingsSelected);
-                Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                chart.highlightValues(new Highlight[]{h0});
-
-            } else if (buildingsSelected.size() == 2) {
-                Log.i("GRAPH21", "buildings selected " + buildingsSelected);
-                Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                chart.highlightValues(new Highlight[]{h0, h1});
-
-
-            } else if (buildingsSelected.size() == 0) {
-                chart.highlightValues(null);
-            }
-            //        else if (buildingsSelected.size() == 3) {
-//                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-//                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-//                    Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
-//                    chart.highlightValues(new Highlight[]{h0, h1, h2});
-//                }
-            //   }
-        }
-        //  Highlight [] highs = highlights.toArray(new Highlight[highlights.size()]);
-        // chart.highlightValues(highs);
-*/
 
 
 
@@ -1916,7 +1704,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     }
 
     @Override
-    public void onChartTranslate(MotionEvent me, float dX, float dY) {
+   public void onChartTranslate(MotionEvent me, float dX, float dY) {
 //        Log.i("GRAPH","onChartTranslate "+me);
        // Log.i("GRAPH","onChartTranslate "+me.getAction() +" "+me.getAxisValue(MotionEvent.AXIS_Y));
 
@@ -1925,55 +1713,19 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
        // e = dataset.getEntryForIndex(highlight.getXIndex());
 
-        if(pricechart) {
-            e = chart.getEntryByTouchPoint(me.getX(), me.getY());
-            e.setVal(chart.getYValueByTouchPoint(me.getX(), me.getY(), YAxis.AxisDependency.LEFT));
-
-            chart.notifyDataSetChanged();
-            chart.invalidate();
-//            Log.i("GRAPH", "once onChartTranslate again " + me);
-        }
+//        if(pricechart) {
+//            e = chart.getEntryByTouchPoint(me.getX(), me.getY());
+//            e.setVal(chart.getYValueByTouchPoint(me.getX(), me.getY(), YAxis.AxisDependency.LEFT));
+//
+//            chart.notifyDataSetChanged();
+//            chart.invalidate();
+////            Log.i("GRAPH", "once onChartTranslate again " + me);
+//        }
 
        // Log.i("GRAPH","onChartTranslate1 "+me.getX()+" "+me.getY()+" "+dX+" "+dY+" ");
 
 
-//        Log.i("GRAPH","getYValueByTouchPoint1 "+chart.getYValueByTouchPoint(me.getX(),me.getY(), YAxis.AxisDependency.LEFT));
-//        Log.i("GRAPH","getYValueByTouchPoint2 "+chart.getYValueByTouchPoint(dX,dX, YAxis.AxisDependency.LEFT));
-//        Log.i("GRAPH","getYValueByTouchPoint3 "+chart.getYValueByTouchPoint(me.getX(),me.getY(), YAxis.AxisDependency.RIGHT));
-//        Log.i("GRAPH","getYValueByTouchPoint4 "+chart.getYValueByTouchPoint(dX,dX, YAxis.AxisDependency.RIGHT));
-//
-//
-//
-//        Log.i("GRAPH","getValuesByTouchPoint1 "+chart.getValuesByTouchPoint(me.getX(),me.getY(), YAxis.AxisDependency.LEFT));
-//        Log.i("GRAPH","getValuesByTouchPoint2 "+chart.getValuesByTouchPoint(dX,dX, YAxis.AxisDependency.LEFT));
-//        Log.i("GRAPH","getValuesByTouchPoint3 "+chart.getValuesByTouchPoint(me.getX(),me.getY(), YAxis.AxisDependency.RIGHT));
-//        Log.i("GRAPH","getValuesByTouchPoint4 "+chart.getValuesByTouchPoint(dX,dX, YAxis.AxisDependency.RIGHT));
 
-//        Log.i("GRAPH","entry is "+dataset.getEntryForIndex(highlight.getXIndex()));
-
-
-
-
-
-
-
-
-   //  dataset.addEntry(new BarEntry(chart.getYValueByTouchPoint(me.getX(),me.getY(), YAxis.AxisDependency.LEFT),highlight.getXIndex()));
-
-   //chart.notifyDataSetChanged();
-//       chart.notifyDataSetChanged();
-    //  chart.invalidate();
-
-
-//        PointD p = chart.getValuesByTouchPoint(dX,dY, YAxis.AxisDependency.LEFT);
-// Entry e = new BarEntry(18, highlight.getXIndex());
-       // e.setData();
-//        dataset.addEntry(new BarEntry(18, highlight.getXIndex()));
-//                //highlight.getXIndex() =
-//        //entries.add(new BarEntry(4,highlight.getXIndex()));
-//       // chart.notifyDataSetChanged();
-//        chart.notifyDataSetChanged();
-//        chart.invalidate();
 
     }
 }

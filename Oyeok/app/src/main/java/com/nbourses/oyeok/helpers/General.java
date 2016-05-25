@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
@@ -59,6 +60,16 @@ public class General extends BroadcastReceiver{
 //    {
 //        this.networkInfo = networkInfo;
 //    }
+public static void saveMutedOKIds(Context context, String value) {
+
+    Log.i("TRACE", "save default deal inside" + value);
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    SharedPreferences.Editor editor = prefs.edit();
+    editor.putString(AppConstants.MUTED_OKIDS, value);
+    editor.commit();
+
+}
+
     public static String getSampleDealsJsonData(Context contex) {
         return getRawString(contex, "sample_deals_data");
     }
@@ -135,6 +146,16 @@ public class General extends BroadcastReceiver{
         Map<String, ?> default_deals_map = defaultdeals.getAll();
         return default_deals_map;
     }  */
+
+    public static void setArraylist(Context context, String prefName, String value) {
+
+        ArrayList<String> MutedOKIds= new ArrayList<>();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(prefName, value);
+        editor.commit();
+    }
 
     public static boolean saveArray(String[] array, String arrayName, Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences("preferencename", 0);

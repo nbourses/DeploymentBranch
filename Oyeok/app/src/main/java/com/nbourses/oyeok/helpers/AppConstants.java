@@ -66,12 +66,7 @@ public class AppConstants {
     public static final String TT = "TT";
     public static final String RENTAL ="RENTAL";
     public static final String RESALE = "RESALE";
-
-
-
-
-
-
+    public static final String MUTED_OKIDS ="mutedOKIds";
 
 
 }
