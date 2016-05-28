@@ -32,7 +32,7 @@ public class GcmIntentService extends IntentService {
         Log.i("Pubnub push","inside GSMIntentService");
 
         if (!extras.isEmpty() && GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-            sendNotification("Received: " + extras.toString());
+           // sendNotification("Received: " + extras.toString());
         }
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }

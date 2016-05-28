@@ -112,6 +112,7 @@ public class MyGcmListenerService extends GcmListenerService {
             String b = null;
 
             //for (int i = 0; i < split.length; i++) {
+
                 intend = split[0];
                 ptype = split[1];
                 pstype = split[2];
@@ -131,7 +132,9 @@ public class MyGcmListenerService extends GcmListenerService {
            // }
 
             if(tType.equalsIgnoreCase("LL")) {
+                Log.i("NOTIF","LL set true");
                 LL = true;
+                Log.i("NOTIF","LL set true value "+LL);
                 b = "rent";
             }
                else {
@@ -147,10 +150,18 @@ public class MyGcmListenerService extends GcmListenerService {
             }
              if(LL){
                  rentalCount++;
-                 if(REQ)
+                 LL = true;
+                 Log.i("NOTIF","LL set true value rentalCount "+rentalCount);
+                 if(REQ) {
                      tenantsCount++;
-                 else if(AVL)
+                     Log.i("NOTIF", "LL set true value rentalCount " + tenantsCount);
+
+                 }else if(AVL)
                      ownersCount++;
+                 LL = false;
+                 REQ = false;
+                 AVL = false;
+
              }
             else if(OR){
                  resaleCount++;
@@ -158,6 +169,9 @@ public class MyGcmListenerService extends GcmListenerService {
                      buyerCount++;
                  else if(AVL)
                      sellerCount++;
+                 OR = false;
+                 REQ = false;
+                 AVL = false;
 
              }
             ptype = ptype.substring(0, 1).toUpperCase() + ptype.substring(1);

@@ -61,6 +61,8 @@ import com.nispok.snackbar.SnackbarManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.HashMap;
+
 import butterknife.Bind;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -167,6 +169,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     private static final String TWITTER_KEY = "CE00enRZ4tIG82OJp6vKib8YS";
     private static final String TWITTER_SECRET = "5AMXDHAXG0luBuuHzSrDLD0AvwP8GzF06klXFgcwnzAVurXUoS";
 
+    HashMap<String, Float> listings = new HashMap<String, Float>();
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -178,9 +182,33 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+
+
+
         b=getArguments();
         redirectToOyeIntentSpecs=false;
         okBroker=false;
+
+
+        //listings= (HashMap<String, Float>) b.getSerializable("listings");
+        Log.i("signup fragment","building listings are "+listings);
+        String[] bNames = new String[3];
+        int[] bPrice = new int[3];
+
+        if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            // run only when broker
+
+            bNames = b.getStringArray("bNames");
+            bPrice = b.getIntArray("bPrice");
+
+            Log.i("Listings are", "bNames " + bNames + "bPrice " + bPrice);
+
+            listings.put(bNames[0], (float) bPrice[0]);
+            listings.put(bNames[1], (float) bPrice[1]);
+            listings.put(bNames[0], (float) bPrice[0]);
+        }
+
 
         if(b.getString("lastFragment")!=null)
             if(b.getString("lastFragment")!=null)
@@ -793,7 +821,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 AcceptOkCall a = new AcceptOkCall();
                                 a.setmCallBack(SignUpFragment.this);
                                 Log.i("TRACEBROKERSIGNUP","1");
-                                a.acceptOk(p,j,dbHelper, getActivity());
+                                a.acceptOk(listings,p,j,dbHelper, getActivity());
 
                             }
                             else if(okBroker && lastFragment.equals("ChatBroker")){

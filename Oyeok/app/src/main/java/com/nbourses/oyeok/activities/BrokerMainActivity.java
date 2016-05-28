@@ -226,9 +226,9 @@ GoogleMap map;
 //                brokerMap.setChangeLoction(this);
                 loadFragment(brokerMap,null,R.id.container_map,"");
                 gmap=true;
-
                 tv_change_region.setVisibility(View.VISIBLE);
                 tv_change_region.setText(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
+
 
 
 //              Bro

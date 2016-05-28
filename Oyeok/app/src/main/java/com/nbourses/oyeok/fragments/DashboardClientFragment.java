@@ -75,6 +75,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCusto
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.animations.FlipListener;
 import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.interfaces.OnOyeClick;
 import com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
@@ -219,7 +220,20 @@ private  boolean flag[]= new boolean[5];
 
         final View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         ButterKnife.bind(this, rootView);
+
          gpsTracker= new GPSTracker(getContext());
+
+
+
+        if(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI).equals("")){
+            General.setSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI,String.valueOf(System.currentTimeMillis()));
+            Log.i("TIMESTAMP","millis "+System.currentTimeMillis());
+        }
+
+
+
+
+
         requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
         droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl, getActivity());
 //        mDrooms = (TextView) rootView.findViewById(R.id.linearlayout_drooms);
@@ -509,17 +523,18 @@ private  boolean flag[]= new boolean[5];
         tvFetchingrates.setTypeface(null,Typeface.ITALIC);
         tvFetchingrates.setTextSize(14);*/
 
-        try {
-            if (isNetworkAvailable()){
-        customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
-            @Override
-            public void onDrag(MotionEvent motionEvent) {
-                //Log.d("t1", String.format("ME: %s", motionEvent));
 
-                if (motionEvent.getAction() == MotionEvent.ACTION_MOVE)  {
-                    tvRate.setVisibility(View.INVISIBLE);
-                    rupeesymbol.setVisibility(View.INVISIBLE);
-                   //tv_building.setVisibility(View.GONE);
+        try {
+            if (isNetworkAvailable()) {
+                customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
+                    @Override
+                    public void onDrag(MotionEvent motionEvent) {
+                        //Log.d("t1", String.format("ME: %s", motionEvent));
+
+                        if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                            tvRate.setVisibility(View.INVISIBLE);
+                            rupeesymbol.setVisibility(View.INVISIBLE);
+                            //tv_building.setVisibility(View.GONE);
 //                    Point p= new Point(x,y);
 //                    LatLng currentLocation1;
 //                   currentLocation1= map.getProjection().fromScreenLocation(point);
@@ -529,61 +544,62 @@ private  boolean flag[]= new boolean[5];
 //
 //                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
 //                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                    //getRegion();
+                            //getRegion();
 
-                    horizontalPicker.keepScrolling();
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    //mMarkerPanel.setVisibility(View.VISIBLE);
-
-
-                    mMarkerminmax.setVisibility(View.VISIBLE);
-                    Mmarker.setVisibility(View.VISIBLE);
-                    horizontalPicker.stopScrolling();
-                    tvRate.setVisibility(View.VISIBLE);
-                    rupeesymbol.setVisibility(View.VISIBLE);
-                   tv_building.setVisibility(View.VISIBLE);
-
-                    LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
-
-                    currentLocation1 = map.getProjection().fromScreenLocation(point);
-                    lat = currentLocation1.latitude;
-                    Log.i("t1", "lat" + " " + lat);
-                    lng = currentLocation1.longitude;
-                    Log.i("t1", "lng" + " " + lng);
-                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                    Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-                    Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-                    getRegion();
-                    horizontalPicker.stopScrolling();
-
-                   // getPrice();
-                    getPrice();
-mflag=false;
-
-                    Log.i("t1", "latlong" + " " + currentLocation1);
+                            horizontalPicker.keepScrolling();
+                        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                            //mMarkerPanel.setVisibility(View.VISIBLE);
 
 
+                            mMarkerminmax.setVisibility(View.VISIBLE);
+                            Mmarker.setVisibility(View.VISIBLE);
+                            horizontalPicker.stopScrolling();
+                            tvRate.setVisibility(View.VISIBLE);
+                            rupeesymbol.setVisibility(View.VISIBLE);
+                            tv_building.setVisibility(View.VISIBLE);
 
-                    if (isNetworkAvailable()) {
-                        new LocationUpdater().execute();
+                            LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
+
+                            currentLocation1 = map.getProjection().fromScreenLocation(point);
+                            lat = currentLocation1.latitude;
+                            Log.i("t1", "lat" + " " + lat);
+                            lng = currentLocation1.longitude;
+                            Log.i("t1", "lng" + " " + lng);
+                            SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+                            SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                            Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+                            Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+                            getRegion();
+                            horizontalPicker.stopScrolling();
+
+                            // getPrice();
+                            getPrice();
+                            mflag = false;
+
+
+                            Log.i("t1", "latlong" + " " + currentLocation1);
+
+
+                            if (isNetworkAvailable()) {
+                                new LocationUpdater().execute();
+                            }
+                        } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                            tvRate.setVisibility(View.INVISIBLE);
+                            rupeesymbol.setVisibility(View.INVISIBLE);
+                            tv_building.setVisibility(View.VISIBLE);
+                            LatLng currentLocation11;
+
+
+                        }
+                        SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+                        SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
                     }
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    tvRate.setVisibility(View.INVISIBLE);
-                    rupeesymbol.setVisibility(View.INVISIBLE);
-                    tv_building.setVisibility(View.VISIBLE);
-                    LatLng currentLocation11;
-
-
-                }
-                SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                });
             }
-        });
 
-        }
+        }catch (Exception e){}
 
-    }catch (Exception e){}
+
       /*  mcallback = new GetCurrentLocation.CurrentLocationCallback() {
 
             @Override
@@ -826,7 +842,20 @@ mflag=false;
     public void getPrice() {
         //getRegion();
         User user = new User();
-        user.setDeviceId("Hardware");
+
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE)
+                == PackageManager.PERMISSION_GRANTED) {
+            Log.i("PREOK","getcontext "+General.getDeviceId(getContext()));
+            user.setDeviceId(General.getDeviceId(getContext()));
+
+
+        }else{
+            // preok.setDeviceId(General.getSharedPreferences(this,AppConstants.));
+            user.setDeviceId(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
+            Log.i("PREOK","getcontext "+General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
+
+        }
+
         user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         user.setUserRole("client");
         user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));

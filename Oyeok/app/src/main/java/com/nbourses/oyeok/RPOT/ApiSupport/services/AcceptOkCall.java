@@ -24,6 +24,9 @@ import com.nispok.snackbar.SnackbarManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -41,7 +44,7 @@ public class AcceptOkCall {
     }
 
     OnAcceptOkSuccess mCallBack;
-    public void acceptOk(JSONArray m,int position, final DBHelper dbHelper, final Activity activity) {
+    public void acceptOk(HashMap<String, Float> listings, JSONArray m, int position, final DBHelper dbHelper, final Activity activity) {
         String oyeId=null,oyeUserId=null,tt = null,size=null,price=null,reqAvl=null;
         Firebase.setAndroidContext(activity);
         droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl,activity);
@@ -67,6 +70,14 @@ public class AcceptOkCall {
         String API = DatabaseConstants.serverUrl;
         Oyeok acceptOk = new Oyeok();
         //DBHelper dbHelper1= new DBHelper();
+
+
+        for (Map.Entry<String, Float> entry : listings.entrySet())
+        {
+            acceptOk.setListings(entry.getKey(),entry.getValue());
+        }
+
+       //
         acceptOk.setDeviceId("Hardware");
         acceptOk.setGcmId(SharedPrefs.getString(activity, SharedPrefs.MY_GCM_ID));
         acceptOk.setPushToken(SharedPrefs.getString(activity, SharedPrefs.MY_GCM_ID));
@@ -134,6 +145,8 @@ public class AcceptOkCall {
                                 Log.i("TRACEBROKERSIGNUP","2");
 
                                // mCallBack.replaceFragment(args);
+
+
 
                                 Intent openDealsListing = new Intent(activity, BrokerDealsListActivity.class);
                                 //openDealsListing.putExtra("serverMessage", acceptOk.responseData.getMessage());

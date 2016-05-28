@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.models.PublishLetsOye;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -48,7 +51,7 @@ public class DealsListAdapter extends BaseAdapter {
         PublishLetsOye deal = dealses.get(position);
 
         if (convertView == null) {
-            v = LayoutInflater.from(context).inflate(R.layout.deal_item, parent, false);
+            v = LayoutInflater.from(context).inflate(R.layout.support_chat_item, parent, false);
             holder = new ViewHolder();
 
             holder.txtTitle = (TextView) v.findViewById(R.id.txtTitle);
@@ -69,7 +72,10 @@ public class DealsListAdapter extends BaseAdapter {
         holder.txtDescription.setText("Property sub type: "+deal.getPropertySubType()
                                         +", Size: "+deal.getSize()
                                         +", Price: "+deal.getPrice());
-        holder.txtTime.setText(deal.getTime());
+        Log.i("CHAT","current time "+DateFormat.getDateTimeInstance().format(new Date()));
+
+        holder.txtTime.setText(DateFormat.getDateTimeInstance().format(new Date()));
+       Log.i("CHAT","current time "+DateFormat.getDateTimeInstance());
 
         return v;
     }

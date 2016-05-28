@@ -95,8 +95,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_below="@+id/view"
             android:layout_above="@+id/phaseSeekbar"/>
 
-
-
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"

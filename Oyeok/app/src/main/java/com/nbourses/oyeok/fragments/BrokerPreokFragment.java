@@ -1,10 +1,12 @@
 package com.nbourses.oyeok.fragments;
 
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -28,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -45,6 +49,7 @@ import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.BrokerBuildings;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OnAcceptOkSuccess;
@@ -65,7 +70,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -106,11 +111,11 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     @Bind(R.id.texPtype)
     TextView texPtype;
 
-   // @Bind(R.id.contactText)
-   // TextView contactText;
+    // @Bind(R.id.contactText)
+    // TextView contactText;
 
-   // @Bind(R.id.pickContact)
-   // Button pickContact;
+    // @Bind(R.id.pickContact)
+    // Button pickContact;
 
     @Bind(R.id.okButton)
     Button okButton;
@@ -172,7 +177,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private JSONArray jsonArrayReqOr;
     private JSONArray jsonArrayAvlLl;
     private JSONArray jsonArrayAvlOr;
-  //  private JSONArray jsonArrayPreokRecent;
+    private JSONArray buildings;
+    private List<String> names;
+    //  private JSONArray jsonArrayPreokRecent;
 
     private String strTenants = "Tenants";
     private String strOwners = "Owners";
@@ -209,7 +216,11 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private Entry e;
     ArrayList<String> buildingNames;
     ArrayList<Integer> buildingPrice;
+    ArrayList<Integer> buildingPriceLL = new ArrayList<Integer>();
+    ArrayList<Integer> buildingPriceOR = new ArrayList<Integer>();
     private boolean pricechart = false;
+    private HashMap<String, Float> listings;
+    private int permissionCheckForDeviceId;
 
     Animation bounce;
     Animation zoomin;
@@ -240,7 +251,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     private void init() {
 
-         highlighter = new ChartHighlighter(chart);
+        highlighter = new ChartHighlighter(chart);
         slide_up = AnimationUtils.loadAnimation(getContext(),
                 R.anim.slide_up);
         slide_down = AnimationUtils.loadAnimation(getContext(),
@@ -253,14 +264,14 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 
 
-      buildingNames = new ArrayList<String>();
+        buildingNames = new ArrayList<String>();
         buildingPrice = new ArrayList<Integer>();
 
 
 //        buildingPrice.addAll(Arrays.asList(4,8,12,15,18,22,16,2,10,7));
 //        buildingNames.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
+        brokerbuildings();
 
-        chart();
 
 
         zoomin.setAnimationListener(new Animation.AnimationListener() {
@@ -315,81 +326,80 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         }
 
 
-       try {
-           SharedPreferences prefs =
-                   PreferenceManager.getDefaultSharedPreferences(getContext());
-           listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-               public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        try {
+            SharedPreferences prefs =
+                    PreferenceManager.getDefaultSharedPreferences(getContext());
+            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 
-                   if (key.equals(AppConstants.RENTAL_COUNT)) {
-                       if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) <= 0)
-                           rentalCount.setVisibility(View.GONE);
-                       else {
-                           rentalCount.setVisibility(View.VISIBLE);
-                           rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
-                       }
-                   }
-                   if (key.equals(AppConstants.RESALE_COUNT)) {
-                       if (General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT) <= 0)
-                           resaleCount.setVisibility(View.GONE);
-                       else {
-                           resaleCount.setVisibility(View.VISIBLE);
-                           resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
-                       }
-
-
-                   }
-
-                   if (key.equals(AppConstants.TENANTS_COUNT)) {
-                       if (General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT) <= 0)
-                           option1Count.setVisibility(View.GONE);
-                       else {
-                           option1Count.setVisibility(View.VISIBLE);
-                           option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
-                       }
-
-                   }
-                   if (key.equals(AppConstants.OWNERS_COUNT)) {
-                       if (General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT) <= 0)
-                           option2Count.setVisibility(View.GONE);
-                       else {
-                           option2Count.setVisibility(View.VISIBLE);
-                           option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT)));
-                       }
-
-                   }
-
-                   if (key.equals(AppConstants.BUYER_COUNT)) {
-                       if (General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT) <= 0)
-                           option1Count.setVisibility(View.GONE);
-                       else {
-                           option1Count.setVisibility(View.VISIBLE);
-                           option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
-                       }
-
-                   }
-
-                   if (key.equals(AppConstants.SELLER_COUNT)) {
-                       if (General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT) <= 0)
-                           option2Count.setVisibility(View.GONE);
-                       else {
-                           option2Count.setVisibility(View.VISIBLE);
-                           option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
-                       }
-
-                   }
+                    if (key.equals(AppConstants.RENTAL_COUNT)) {
+                        if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) <= 0)
+                            rentalCount.setVisibility(View.GONE);
+                        else {
+                            rentalCount.setVisibility(View.VISIBLE);
+                            rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
+                        }
+                    }
+                    if (key.equals(AppConstants.RESALE_COUNT)) {
+                        if (General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT) <= 0)
+                            resaleCount.setVisibility(View.GONE);
+                        else {
+                            resaleCount.setVisibility(View.VISIBLE);
+                            resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
+                        }
 
 
-               }
+                    }
+
+                    if (key.equals(AppConstants.TENANTS_COUNT)) {
+                        if (General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT) <= 0)
+                            option1Count.setVisibility(View.GONE);
+                        else {
+                            option1Count.setVisibility(View.VISIBLE);
+                            option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
+                        }
+
+                    }
+                    if (key.equals(AppConstants.OWNERS_COUNT)) {
+                        if (General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT) <= 0)
+                            option2Count.setVisibility(View.GONE);
+                        else {
+                            option2Count.setVisibility(View.VISIBLE);
+                            option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT)));
+                        }
+
+                    }
+
+                    if (key.equals(AppConstants.BUYER_COUNT)) {
+                        if (General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT) <= 0)
+                            option1Count.setVisibility(View.GONE);
+                        else {
+                            option1Count.setVisibility(View.VISIBLE);
+                            option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
+                        }
+
+                    }
+
+                    if (key.equals(AppConstants.SELLER_COUNT)) {
+                        if (General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT) <= 0)
+                            option2Count.setVisibility(View.GONE);
+                        else {
+                            option2Count.setVisibility(View.VISIBLE);
+                            option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
+                        }
+
+                    }
+
+                }
 
 
-           };
-           prefs.registerOnSharedPreferenceChangeListener(listener);
+            };
+            prefs.registerOnSharedPreferenceChangeListener(listener);
 
-       }
-       catch (Exception e){
-           Log.e(TAG, e.getMessage());
-       }
+        }
+        catch (Exception e){
+            Log.e(TAG, e.getMessage());
+        }
 
 
 
@@ -418,6 +428,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     }
 
 
+
+
     public void refreshCircularSeekbar(JSONArray arr,int currentSeekbarPosition){
 
 
@@ -433,59 +445,38 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     public void chart() {
         Log.i("GRAPH","scale before set chart 1"+ chart.getScaleX());
-         pricechart = false;
-         entries = new ArrayList<>();
+        // pricechart = false;
+
+        entries = new ArrayList<>();
         labels = new ArrayList<String>();
 
-
-        buildingPrice.addAll(Arrays.asList(4,8,12,15,18,22,16,2,10,7));
-        buildingNames.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
+        //if(!pricechart) {
 
 
-        for(int i =0;i< buildingPrice.size();i++){
+        // buildingPrice.addAll(Arrays.asList(4,8,12,15,18,22,16,2,10,7));
+        //buildingNames.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
+
+        Log.i("STEP2", "STEP2");
+
+        setChart();
+
+           /* for (int i = 0; i < buildingPrice.size(); i++) {
                 entries.add(new BarEntry(buildingPrice.get(i), i));
             }
 
-
-//        entries.add(new BarEntry(buildingPrice.get(0), 0));
-//        entries.add(new BarEntry(buildingPrice.get(1), 1));
-//        entries.add(new BarEntry(buildingPrice.get(2), 2));
-//        entries.add(new BarEntry(buildingPrice.get(3), 3));
-//        entries.add(new BarEntry(buildingPrice.get(4), 4));
-//        entries.add(new BarEntry(buildingPrice.get(5), 5));
-//        entries.add(new BarEntry(buildingPrice.get(6), 6));
-//        entries.add(new BarEntry(buildingPrice.get(7), 7));
-//        entries.add(new BarEntry(buildingPrice.get(8), 8));
-//        entries.add(new BarEntry(buildingPrice.get(9), 9));
-        dataset = new BarDataSet(entries,Integer.toString(buildingPrice.size()));
+            dataset = new BarDataSet(entries, Integer.toString(buildingPrice.size()));
 
 
-        // creating labels
-//        labels = new ArrayList<String>();
-//        labels.add("January");
-//        labels.add("February");
-//        labels.add("March");
-//        labels.add("April");
-//        labels.add("May");
-//        labels.add("June");
-//        labels.add("July");
-//        labels.add("August");
-//        labels.add("Sept");
-//        labels.add("Oct");
-
-        Log.i("GRAPH","entries "+entries);
+            Log.i("GRAPH", "entries " + entries + "buildingPrice.get(i) " + buildingPrice.get(1));
 
 
-//        for(int i =0;i< buildingNames.size();i++){
-//
-//            labels.add(buildingNames.get(i));
-//        }
-        labels.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
+            labels.addAll(buildingNames);
+            //labels.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
 
-        Log.i("GRAPH","labels "+labels);
+            Log.i("GRAPH", "labels " + labels);
 
-        BarData data = new BarData(labels, dataset);
-        chart.setData(data); // set the data and list of lables into chart
+            BarData data = new BarData(labels, dataset);
+            chart.setData(data); // set the data and list of lables into chart  */
 
         chart.setDescription("Select three Buildings.");
 
@@ -493,29 +484,265 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         chart.animateY(1500);
 
 
-       chart.setScaleYEnabled(false);
-        chart.setScaleXEnabled(false);
-       // chart.setScaleEnabled(false);
-        chart.fitScreen();
-        chart.zoom(3.3f, 1f, 0, 0);
-        Log.i("GRAPH","scale after set chart1 "+ chart.getScaleX());
+//            chart.setScaleYEnabled(false);
+//            chart.setScaleXEnabled(false);
+        // chart.setScaleEnabled(false);
+        //chart.fitScreen();
 
-     chart.setDragEnabled(true);
+
+        YAxis rightAxis = chart.getAxisRight();
+        rightAxis.setEnabled(false);
+
+        Log.i("GRAPH", "scale after set chart1 " + chart.getScaleX());
+
+        chart.setDragEnabled(true);
+
+        YAxis yaxis = chart.getAxis(YAxis.AxisDependency.LEFT);
+        XAxis xAxis = chart.getXAxis();
+        yaxis.setAxisMinValue(500);
+
+        Log.i("GRAPH", "chart.getYMax " + chart.getYMax() + "chart.getYChartMax " + chart.getYChartMax());
+
+        //yaxis.setAxisMaxValue(999999999);
 
         //   chart.setPinchZoom(false);
+        xAxis.setLabelsToSkip(0);
         chart.setDoubleTapToZoomEnabled(false);
         chart.setTouchEnabled(true);
 
 
-
-      chart.setOnChartValueSelectedListener(this);
+        chart.setOnChartValueSelectedListener(this);
         chart.setOnChartGestureListener(this);
 
+
+      /*  }
+
+        else {
+            setB.setClickable(false);
+            //pricechart = true;
+
+            entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(0)), 0));
+            entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(1)), 1));
+            entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(2)), 2));
+
+
+            buildingsSelected.clear();
+            dataset = new BarDataSet(entries, "3");
+
+            // creating labels
+
+            labels.add("January");
+            labels.add("February");
+            labels.add("March");
+            BarData data = new BarData(labels, dataset);
+            chart.setData(data);
+            chart.notifyDataSetChanged();
+            chart.invalidate();
+
+
+            // highlight all three buildings
+            Highlight h0 = new Highlight(0, 0);
+            Highlight h1 = new Highlight(1, 0);
+            Highlight h2 = new Highlight(2, 0);
+            chart.highlightValues(new Highlight[]{h0, h1, h2});
+
+
+            chart.setDescription("Set price for buildings.");
+
+            chart.animateY(2000);
+
+
+            chart.setScaleYEnabled(false);
+            //chart.setScaleEnabled(false);
+
+            chart.fitScreen();
+            chart.zoom(1.001f, 1f, 0, 0);
+            Log.i("GRAPH", "scale after set chart2 " + chart.getScaleX());
+
+            chart.setDragEnabled(true);
+
+            //   chart.setPinchZoom(false);
+            chart.setDoubleTapToZoomEnabled(false);
+            chart.setTouchEnabled(true);
+
+
+            // chart1.setOnChartValueSelectedListener(this);
+        }*/
 
 
 
     }
 
+    void setChart()
+    {
+        chart.highlightValues(null);
+
+        if(buildingsSelected.size()!=3) {
+            pricechart = false;
+            chart.fitScreen();
+            chart.zoom(3.3f, 1f, 0, 0);
+            try {
+                entries.clear();
+                labels.clear();
+            }
+            catch(Exception e)
+            {
+
+            }
+            chart.editEntryValue = false;
+            for (int i = 0; i < buildingPrice.size(); i++) {
+
+                entries.add(new BarEntry(buildingPrice.get(i), i));
+            }
+
+            dataset = new BarDataSet(entries, Integer.toString(buildingPrice.size()));
+            labels.addAll(buildingNames);
+        }
+        else
+        {
+            pricechart = true;
+            chart.fitScreen();
+            chart.highlightValues(null);
+            entries.clear();
+            labels.clear();
+            chart.editEntryValue = true;
+            for (int i = 0; i < buildingsSelected.size(); i++) {
+                entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(i)), i));
+                labels.add(buildingNames.get(buildingsSelected.get(i)));
+            }
+            //buildingsSelected.clear();
+
+
+            dataset = new BarDataSet(entries, Integer.toString(buildingsSelected.size()));
+
+        }
+
+        Log.i("GRAPH", "entries " + entries + "buildingPrice.get(i) " + buildingPrice.get(1));
+
+
+
+        //labels.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
+
+        Log.i("GRAPH", "labels " + labels);
+
+        BarData data = new BarData(labels, dataset);
+        chart.setData(data); // set the data and list of lables into chart
+
+    }
+
+
+    public void brokerbuildings(){
+        Log.i("BROKER BUILDINGS CALLED","1");
+
+        BrokerBuildings brokerBuildings = new BrokerBuildings();
+        brokerBuildings.setDeviceId("Hardware");
+        brokerBuildings.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+        brokerBuildings.setPage("1");
+        brokerBuildings.setLng(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+        brokerBuildings.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+        brokerBuildings.setPropertyType("home");
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(AppConstants.SERVER_BASE_URL)
+                .build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+
+
+        try {
+            oyeokApiService.brokerBuildings(brokerBuildings, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+
+                    Log.i("BROKER BUILDINGS CALLED","success");
+
+
+                    JsonObject k = jsonElement.getAsJsonObject();
+                    try {
+                        JSONObject ne = new JSONObject(k.toString());
+                        buildings = ne.getJSONObject("responseData").getJSONArray("buildings");
+                        Log.i("BROKER BUILDINGS CALLED","buildings"+ne.getJSONObject("responseData"));
+
+                        for (int i=0; i<buildings.length(); i++) {
+                            JSONObject actor = buildings.getJSONObject(i);
+                            String name = actor.getString("name");
+                            // if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RESALE"))
+
+
+                            buildingPriceOR.add(actor.getInt("or_psf"));
+                            buildingPriceLL.add(actor.getInt("ll_pm"));
+
+                            Log.i("BROKER BUILDINGS CALLED", "buildingPriceOR" + buildingPriceOR);
+
+                            Log.i("BROKER BUILDINGS CALLED", "buildingPriceLL" + buildingPriceLL);
+
+
+
+                            // Log.i("BROKER BUILDINGS CALLED","success"+name+" "+price);
+
+
+                            //  Log.i("BROKER BUILDINGS CALLED","success"+price.getClass().getName()+" "+buildingPrice.getClass().getName());
+                            buildingNames.add(name);
+                            // buildingPrice.add(price);
+
+
+                            Log.i("STEP1","STEP1");
+
+
+                        }
+                        buildingPrice.addAll(buildingPriceLL);
+                        Log.i("BROKER BUILDINGS CALLED", "buildingPrice" +  buildingPrice);
+
+
+
+
+
+
+
+                        // Log.i("PREOK CALLED","buildings"+a);
+                        Log.i("BROKER BUILDINGS CALLED","buildings"+buildings);
+                        Log.i("BROKER BUILDINGS CALLED","buildingNames"+buildingNames);
+                        Log.i("BROKER BUILDINGS CALLED","buildingPrice"+buildingPrice);
+
+
+                        chart();
+
+//                        jsonArrayReqLl = neighbours.getJSONArray("recent");;//neighbours.getJSONArray("req_ll");
+//                        jsonArrayAvlLl = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_ll");
+//
+//                        jsonArrayReqOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("req_or");
+//                        jsonArrayAvlOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_or");
+//
+//                        Log.i("PREOK CALLED","jsonArrayReqLl"+jsonArrayReqLl);
+//                        Log.i("PREOK CALLED","jsonArrayAvlLl"+jsonArrayAvlLl);
+//                        Log.i("PREOK CALLED","jsonArrayReqOr"+jsonArrayReqOr);
+//                        Log.i("PREOK CALLED","jsonArrayAvlOr"+jsonArrayAvlOr);
+//
+//
+//
+//                        onPositionSelected(currentSeekbarPosition, currentCount);
+                    }
+                    catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
+                        Log.i("BROKER BUILDINGS CALLED","Failed "+e.getMessage());
+                    }
+
+
+
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+        }
+        catch (Exception e){
+            Log.e(TAG, e.getMessage());
+        }
+    }
 
 
     /**
@@ -525,20 +752,40 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         Log.i("TRACE","GCM id is"+SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         //preok params
         Oyeok preok = new Oyeok();
-        preok.setDeviceId("Hardware");
+//        int permissionCheck = ContextCompat.checkSelfPermission(getContext(),
+//                Manifest.permission.WRITE_CALENDAR);
+        //permissionCheckForDeviceId = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE);
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE)
+                == PackageManager.PERMISSION_GRANTED) {
+            Log.i("PREOK","getcontext "+General.getDeviceId(getContext()));
+            preok.setDeviceId(General.getDeviceId(getContext()));
+
+
+        }else{
+           // preok.setDeviceId(General.getSharedPreferences(this,AppConstants.));
+            preok.setDeviceId(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
+            Log.i("PREOK","getcontext "+General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
+
+        }
+
         preok.setUserRole("broker");
         preok.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         preok.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
         preok.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
         preok.setPlatform("android");
-        if(General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals(""))
-        preok.setUserId("demo_id");
-        else
-            preok.setUserId(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+        Log.i("PREOK","user_id1 "+General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER));
+        if(General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+            preok.setUserId("demo_id");
+
+        }
+        else {
+            preok.setUserId(General.getSharedPreferences(getContext(), AppConstants.USER_ID));
+            Log.i("PREOK","user_id "+General.getSharedPreferences(getContext(), AppConstants.USER_ID));
+        }
 
 
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(AppConstants.SERVER_BASE_URL)
+                .setEndpoint(AppConstants.SERVER_BASE_URL_101)
                 .build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
@@ -566,7 +813,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                         Log.i("PREOK CALLED","jsonArrayAvlOr"+jsonArrayAvlOr);
 
 
-                       // jsonArrayPreokRecent = neighbours.getJSONArray("recent");
+                        // jsonArrayPreokRecent = neighbours.getJSONArray("recent");
                         //if all values are empty then show from resent
 //                        if (jsonArrayReqLl.length() == 0 && jsonArrayAvlLl.length() == 0 &&
 //                                jsonArrayReqOr.length() == 0 && jsonArrayAvlOr.length() == 0) {
@@ -595,10 +842,71 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     }
 
     @OnClick(R.id.okBtn)
-    public void onOptionClickok(View v){
+    public void onOptionClickok(View v) {
 
-        buildingSlider.startAnimation(slide_down);
-        buildingSlider.setVisibility(View.GONE);
+        try {
+            Log.i("CHART", "y value " + chart.getEntriesAtIndex(0).get(0).getVal());
+            listings = new HashMap<String, Float>();
+            listings.put(buildingNames.get(buildingsSelected.get(0)), chart.getEntriesAtIndex(0).get(0).getVal());
+            listings.put(buildingNames.get(buildingsSelected.get(1)), chart.getEntriesAtIndex(1).get(0).getVal());
+            listings.put(buildingNames.get(buildingsSelected.get(2)), chart.getEntriesAtIndex(2).get(0).getVal());
+        }
+        catch (Exception e) {
+
+        }
+
+
+        if (!General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            dbHelper.save(DatabaseConstants.userRole, "Broker");
+            //show sign up screen if broker is not registered
+            Bundle bundle = new Bundle();
+            bundle.putString("lastFragment", "BrokerPreokFragment");
+            bundle.putString("JsonArray", jsonObjectArray.toString());
+            bundle.putInt("Position", selectedItemPosition);
+            Log.i("listings","building1 "+buildingNames.get(buildingsSelected.get(0)));
+            Log.i("listings","building2 "+buildingNames.get(buildingsSelected.get(1)));
+            Log.i("listings","building3 "+buildingNames.get(buildingsSelected.get(2)));
+
+            Log.i("listings","price1 "+chart.getEntriesAtIndex(0).get(0).getVal());
+            Log.i("listings","price2 "+chart.getEntriesAtIndex(1).get(0).getVal());
+            Log.i("listings","price3 "+chart.getEntriesAtIndex(2).get(0).getVal());
+
+            String[] bNames = new String[]{buildingNames.get(buildingsSelected.get(0)),buildingNames.get(buildingsSelected.get(1)),buildingNames.get(buildingsSelected.get(2))};
+            int[] bPrice = new int[]{Math.round(chart.getEntriesAtIndex(0).get(0).getVal()),Math.round(chart.getEntriesAtIndex(1).get(0).getVal()),Math.round(chart.getEntriesAtIndex(2).get(0).getVal())};
+
+
+            bundle.putIntArray("bPrice",bPrice);
+            bundle.putStringArray("bNames",bNames);
+
+
+            bundle.putSerializable("listings", listings);
+            Fragment fragment = null;
+            fragment = new SignUpFragment();
+            fragment.setArguments(bundle);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.container_map, fragment);
+            fragmentTransaction.commit();
+        } else {
+            //here broker is registered
+
+
+
+
+            AcceptOkCall a = new AcceptOkCall();
+            a.setmCallBack(BrokerPreokFragment.this);
+            a.acceptOk(listings, jsonObjectArray, selectedItemPosition, dbHelper, getActivity());
+
+
+        }
+
+
+
+//        buildingSlider.startAnimation(slide_down);
+//        buildingSlider.setVisibility(View.GONE);
+
+
 
 //        if (buildingSlider.getVisibility() == View.VISIBLE) {
 //            TranslateAnimation animate = new TranslateAnimation(0, 0, buildingSlider.getHeight(), 0);
@@ -620,33 +928,41 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         txtPreviouslySelectedOptionB = (TextView) v;
         if (v.getId() == selectB.getId()) {
             selectB.setBackgroundResource(R.color.greenish_blue);
-            chart.clear();
-            if(entries.size() !=0)
-            entries.clear();
-            if(labels.size() !=0)
-            labels.clear();
-            if(buildingPrice.size() !=0)
-            buildingPrice.clear();
+            // chart.clear();
+            // if(entries.size() !=0)
+//            entries.clear();
+//            if(labels.size() !=0)
+//            labels.clear();
+            //  if(buildingPrice.size() !=0)
+            //  buildingPrice.clear();
             setB.setClickable(true);
 
             if(buildingsSelected.size() !=0)
                 buildingsSelected.clear();
-            chart();
+            Log.i("STEP3","STEP3");
+            // chart();
+            setChart();
+
             chart.animateY(1500);
-           animation.start();
+            animation.start();
 
         }
         else if (v.getId() == setB.getId()) {
             if(buildingsSelected.size() == 3) {
                 setB.setBackgroundResource(R.color.greenish_blue);
                 selectB.setBackgroundResource(R.color.colorPrimaryDark);
-                if(entries.size() !=0)
-                    entries.clear();
-               // chart.zoom(1f, 1f, 0, 0);
-                chart.clear();
 
-                priceChart();
-               chart.animateY(1500);
+                okBtn.setEnabled(true);
+                okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.greenish_blue));
+                okBtn.setText("OK");
+//                if(entries.size() !=0)
+//                    entries.clear();
+                // chart.zoom(1f, 1f, 0, 0);
+                //  chart.clear();
+
+                //  priceChart();
+                setChart();
+                chart.animateY(1500);
                 animation.start();
             }
             else{
@@ -677,12 +993,12 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             texPtype.setVisibility(View.GONE);
             texPstype.setVisibility(View.GONE);
 //            option2CountCont2.setVisibility(View.GONE);
-        //    option2Count.setVisibility(View.GONE);
+            //    option2Count.setVisibility(View.GONE);
             txtOption1.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption1.getText().toString();
             Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
 
-           // update circular seekbar
+            // update circular seekbar
 
             if (currentOptionSelectedString.equalsIgnoreCase(strSeekers))
                 currentOptionSelectedString = strTenants;
@@ -699,8 +1015,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         }
         else if (v.getId() == txtOption2.getId()) {
 
- //           option2CountCont1.setVisibility(View.GONE);
-          //  option1Count.setVisibility(View.GONE);
+            //           option2CountCont1.setVisibility(View.GONE);
+            //  option1Count.setVisibility(View.GONE);
             txtOption2.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption2.getText().toString();
             Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
@@ -787,8 +1103,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             }
             if (currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
                 currentOptionSelectedString = strOwners;
-               Log.i("PREOK CALLED13", "currentOptionSelectedString1" + currentOptionSelectedString);
-           }
+                Log.i("PREOK CALLED13", "currentOptionSelectedString1" + currentOptionSelectedString);
+            }
 
             if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
                 Log.i("PREOK CALLED11","values set"+jsonArrayReqLl.toString());
@@ -813,12 +1129,12 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 //                Log.i("PREOK CALLED15", "values set" + jsonArrayReqLl.toString());
 //                circularSeekbar.setValues(jsonArrayAvlLl.toString());
 //            }
-
+//            buildingPrice.clear();
+//            buildingPrice.addAll(buildingPriceLL);
+//            setChart();
 
         }
         else if (position == 1) {
-
-
             rentText.setVisibility(View.GONE);
             texPtype.setVisibility(View.GONE);
             texPstype.setVisibility(View.GONE);
@@ -862,7 +1178,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             }
             if (currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 currentOptionSelectedString = strSeller;
-               Log.i("PREOK CALLED19", "currentOptionSelectedString2" + currentOptionSelectedString);
+                Log.i("PREOK CALLED19", "currentOptionSelectedString2" + currentOptionSelectedString);
             }
 
             if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
@@ -890,6 +1206,13 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 //                circularSeekbar.setValues(jsonArrayAvlOr.toString());
 //            }
 
+            try {
+                buildingPrice.clear();
+                buildingPrice.addAll(buildingPriceOR);
+                setChart();
+            }catch(Exception e){
+
+            }
 
 
         }
@@ -944,41 +1267,41 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             texPstype.setText("Property Subtype: "+pstype);
             //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL"))
-            rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))+" /m.");
+                rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))+" /m.");
             else
                 rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")));
             //  rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /m.");
-      //      displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used.");
+            //      displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used.");
 
             Log.i(TAG, "show is " + show);
 
             if(show.equals("show")) {
                 notClicked.setVisibility(View.GONE);
                 rentText.setVisibility(View.VISIBLE);
-             //   displayOkText.setVisibility(View.VISIBLE);
+                //   displayOkText.setVisibility(View.VISIBLE);
                 texPtype.setVisibility(View.VISIBLE);
                 texPstype.setVisibility(View.VISIBLE);
 
-               // pickContact.setVisibility(View.GONE);
-               // contactText.setVisibility(View.GONE);
+                // pickContact.setVisibility(View.GONE);
+                // contactText.setVisibility(View.GONE);
             }
             else if(show.equals("hide")) {
                 notClicked.setVisibility(View.VISIBLE);
                 rentText.setVisibility(View.GONE);
-             //   displayOkText.setVisibility(View.GONE);
+                //   displayOkText.setVisibility(View.GONE);
                 texPtype.setVisibility(View.GONE);
                 texPstype.setVisibility(View.GONE);
-               // pickContact.setVisibility(View.GONE);
-               // contactText.setVisibility(View.GONE);
+                // pickContact.setVisibility(View.GONE);
+                // contactText.setVisibility(View.GONE);
             }
             else {
                 notClicked.setVisibility(View.GONE);
                 rentText.setVisibility(View.VISIBLE);
-             //   displayOkText.setVisibility(View.VISIBLE);
+                //   displayOkText.setVisibility(View.VISIBLE);
                 texPtype.setVisibility(View.VISIBLE);
                 texPstype.setVisibility(View.VISIBLE);
-              //  pickContact.setVisibility(View.VISIBLE);
-              //  contactText.setVisibility(View.VISIBLE);
+                //  pickContact.setVisibility(View.VISIBLE);
+                //  contactText.setVisibility(View.VISIBLE);
             }
         }
         catch (JSONException e) {
@@ -989,8 +1312,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         }
     }
 
- //   @OnClick({R.id.okButton, R.id.deal, R.id.pickContact})
- @OnClick({R.id.okButton, R.id.deal})
+    //   @OnClick({R.id.okButton, R.id.deal, R.id.pickContact})
+    @OnClick({R.id.okButton, R.id.deal})
     public void onButtonsClick(View v) {
         if (okButton.getId() == v.getId()) {
 
@@ -999,13 +1322,11 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             if (jsonObjectArray == null) {
 
 
-                buildingSlider.startAnimation(slide_up);
-                buildingSlider.setVisibility(View.VISIBLE);
-//                SnackbarManager.show(
-//                        com.nispok.snackbar.Snackbar.with(getActivity())
-//                                .position(Snackbar.SnackbarPosition.BOTTOM)
-//                                .text("Please select a deal")
-//                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                SnackbarManager.show(
+                        com.nispok.snackbar.Snackbar.with(getActivity())
+                                .position(Snackbar.SnackbarPosition.BOTTOM)
+                                .text("Please select a deal")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 //                if (buildingSlider.getVisibility() == View.GONE) {
 //                    TranslateAnimation animate = new TranslateAnimation(0, 0, 0 , buildingSlider.getHeight());
 //                    animate.setDuration(2000);
@@ -1018,28 +1339,40 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
             }
             else {
-                if (!General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-                    dbHelper.save(DatabaseConstants.userRole, "Broker");
-                    //show sign up screen if broker is not registered
-                    Bundle bundle = new Bundle();
-                    bundle.putString("lastFragment", "BrokerPreokFragment");
-                    bundle.putString("JsonArray", jsonObjectArray.toString());
-                    bundle.putInt("Position", selectedItemPosition);
-                    Fragment fragment = null;
-                    fragment = new SignUpFragment();
-                    fragment.setArguments(bundle);
+                //show buildings
 
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.container_map, fragment);
-                    fragmentTransaction.commit();
-                } else {
-                    //here broker is registered
-                    AcceptOkCall a = new AcceptOkCall();
-                    a.setmCallBack(BrokerPreokFragment.this);
-                    a.acceptOk(jsonObjectArray, selectedItemPosition, dbHelper, getActivity());
-                }
+                buildingSlider.startAnimation(slide_up);
+                buildingSlider.setVisibility(View.VISIBLE);
+
+                okBtn.setEnabled(false);
+                okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
+                okBtn.setText("OK");
+
             }
+//            else {
+//                if (!General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+//                    dbHelper.save(DatabaseConstants.userRole, "Broker");
+//                    //show sign up screen if broker is not registered
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("lastFragment", "BrokerPreokFragment");
+//                    bundle.putString("JsonArray", jsonObjectArray.toString());
+//                    bundle.putInt("Position", selectedItemPosition);
+//                    Fragment fragment = null;
+//                    fragment = new SignUpFragment();
+//                    fragment.setArguments(bundle);
+//
+//                    FragmentManager fragmentManager = getFragmentManager();
+//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                    fragmentTransaction.replace(R.id.container_map, fragment);
+//                    fragmentTransaction.commit();
+//                } else {
+//                    //here broker is registered  show buildings
+//
+//                    buildingSlider.startAnimation(slide_up);
+//                    buildingSlider.setVisibility(View.VISIBLE);
+//
+//                }
+//            }
         }
         else if (deal.getId() == v.getId()) {
             //open deals listing
@@ -1062,8 +1395,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                 if (c.moveToFirst()) {
                     String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                     // TODO Fetch other Contact details as you want to use
-                  //  contactText.setText(name);
-                  //  contactText.setPadding(8, 0, 0, 0);
+                    //  contactText.setText(name);
+                    //  contactText.setPadding(8, 0, 0, 0);
                 }
             }
         }
@@ -1091,11 +1424,13 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         pricechart = true;
         entries = new ArrayList<>();
 
-       entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(0)), 0));
+        entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(0)), 0));
         entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(1)), 1));
         entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(2)), 2));
 
-            buildingsSelected.clear();
+
+
+        buildingsSelected.clear();
         dataset = new BarDataSet(entries, "3");
 
         // creating labels
@@ -1109,6 +1444,12 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         chart.invalidate();
 
 
+        // highlight all three buildings
+        Highlight h0 = new Highlight(0, 0);
+        Highlight h1 = new Highlight(1, 0);
+        Highlight h2 = new Highlight(2, 0);
+        chart.highlightValues(new Highlight[]{h0, h1, h2});
+
 
         chart.setDescription("Set price for buildings.");
 
@@ -1120,7 +1461,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
         chart.fitScreen();
         chart.zoom(1.001f, 1f, 0, 0);
-       Log.i("GRAPH","scale after set chart2 "+ chart.getScaleX());
+        Log.i("GRAPH","scale after set chart2 "+ chart.getScaleX());
 
         chart.setDragEnabled(true);
 
@@ -1129,7 +1470,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         chart.setTouchEnabled(true);
 
 
-       // chart1.setOnChartValueSelectedListener(this);
+        // chart1.setOnChartValueSelectedListener(this);
         chart.setOnChartGestureListener(this);
 
 
@@ -1140,7 +1481,6 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
 
         Log.i("GRAPH","on value selected");
-
 
 
 //        Log.i("GRAPH", "h is " + h);
@@ -1248,51 +1588,143 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 //            chart.highlightValues(highs);
 //        }
 
-      chart.highlightValues(null);
-        Log.i("GRAPH", "executed ");
-        Log.i("GRAPH10", "buildings selected and new build " + buildingsSelected +" " +e.getXIndex());
+        if(!pricechart) {
+            // make highlights null as we are going to rehighlight altogether
+            chart.highlightValues(null);
+            Log.i("GRAPH", "executed ");
+            Log.i("GRAPH10", "buildings selected and new build " + buildingsSelected + " " + e.getXIndex());
 
-        if (!buildingsSelected.contains(e.getXIndex())) {
-            Log.i("GRAPH", "1");
-
-
-            if (buildingsSelected.size() < 3) {
-                buildingsSelected.add(e.getXIndex());
-                Log.i("GRAPH10", "buildings selected after add " + buildingsSelected);
-
-                // for (int i = 0; i < buildingsSelected.size(); i++) {
-
-                if (buildingsSelected.size() == 1) {
-                    Log.i("GRAPH10", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    chart.highlightValues(new Highlight[]{h0});
+            if (!buildingsSelected.contains(e.getXIndex())) {
+                Log.i("GRAPH", "1");
 
 
-                } else if (buildingsSelected.size() == 2) {
-                    Log.i("GRAPH11", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                    chart.highlightValues(new Highlight[]{h0, h1});
+                if (buildingsSelected.size() < 3) {
+                    buildingsSelected.add(e.getXIndex());
+                    Log.i("GRAPH10", "buildings selected after add " + buildingsSelected);
 
-                } else {
-                    Log.i("GRAPH12", "buildings selected " + buildingsSelected);
+                    // for (int i = 0; i < buildingsSelected.size(); i++) {
+
+                    if (buildingsSelected.size() == 1) {
+                        Log.i("GRAPH10", "buildings selected " + buildingsSelected);
+                        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+                        chart.highlightValues(new Highlight[]{h0});
+
+
+                    } else if (buildingsSelected.size() == 2) {
+                        Log.i("GRAPH11", "buildings selected " + buildingsSelected);
+                        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+                        Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
+                        chart.highlightValues(new Highlight[]{h0, h1});
+
+                    } else {
+                        Log.i("GRAPH12", "buildings selected " + buildingsSelected);
+                        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+                        Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
+                        Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
+                        chart.highlightValues(new Highlight[]{h0, h1, h2});
+
+
+                    }
+                    //             }
+                } else if (buildingsSelected.size() == 3) {
+                    Log.i("GRAPH", "3");
+                    //cant be added
+
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Max 3 buildings can be selected at a time.")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+
+                    Log.i("GRAPH30", "buildings selected " + buildingsSelected);
                     Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
                     Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
                     Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
                     chart.highlightValues(new Highlight[]{h0, h1, h2});
 
-
                 }
-                //             }
+            } else {
+                Log.i("GRAPH", "2");
+                Log.i("GRAPH", "removed " + Integer.valueOf(e.getXIndex()));
+                // buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
+                buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
+                Log.i("GRAPH", "after removing " + buildingsSelected);
+                //    for (int i = 0; i < buildingsSelected.size(); i++) {
+
+                Log.i("GRAPH", "size " + buildingsSelected.size());
+                if (buildingsSelected.size() == 1) {
+                    Log.i("GRAPH20", "buildings selected " + buildingsSelected);
+                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+                    chart.highlightValues(new Highlight[]{h0});
+
+                } else if (buildingsSelected.size() == 2) {
+                    Log.i("GRAPH21", "buildings selected " + buildingsSelected);
+                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
+                    chart.highlightValues(new Highlight[]{h0, h1});
+
+
+                } else if (buildingsSelected.size() == 0) {
+                    chart.highlightValues(null);
+                }
+                //        else if (buildingsSelected.size() == 3) {
+//                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+//                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
+//                    Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
+//                    chart.highlightValues(new Highlight[]{h0, h1, h2});
+//                }
+                //   }
+            }
+            //  Highlight [] highs = highlights.toArray(new Highlight[highlights.size()]);
+            // chart.highlightValues(highs);
+
+
+        }
+
+    }
+
+
+    @Override
+    public void onNothingSelected() {
+
+        if(!pricechart) {
+            Log.i("GRAPH", "nothing selected called size " + buildingsSelected.size() + " chartIndex " + chartIndex);
+
+            if (buildingsSelected.contains(chartIndex)) {
+                Log.i("GRAPH", "2");
+                Log.i("GRAPH", "removed " + Integer.valueOf(chartIndex));
+                // buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
+                buildingsSelected.remove(Integer.valueOf(chartIndex));
+                Log.i("GRAPH", "after removing " + buildingsSelected);
+                //    for (int i = 0; i < buildingsSelected.size(); i++) {
+
+                Log.i("GRAPH", "size " + buildingsSelected.size());
+                if (buildingsSelected.size() == 1) {
+                    Log.i("GRAPH20", "buildings selected " + buildingsSelected);
+                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+                    chart.highlightValues(new Highlight[]{h0});
+
+                } else if (buildingsSelected.size() == 2) {
+                    Log.i("GRAPH21", "buildings selected " + buildingsSelected);
+                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
+                    chart.highlightValues(new Highlight[]{h0, h1});
+
+
+                } else if (buildingsSelected.size() == 0) {
+                    chart.highlightValues(null);
+                }
             } else if (buildingsSelected.size() == 3) {
+                //if building touched is already not selected and already 3 buildings are highlighted
                 Log.i("GRAPH", "3");
                 //cant be added
 
                 SnackbarManager.show(
-                    Snackbar.with(getContext())
-                            .position(Snackbar.SnackbarPosition.TOP)
-                            .text("Max 3 buildings can be selected at a time.")
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                        Snackbar.with(getContext())
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text("Max 3 buildings can be selected at a time.")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
 
                 Log.i("GRAPH30", "buildings selected " + buildingsSelected);
@@ -1301,183 +1733,44 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                 Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
                 chart.highlightValues(new Highlight[]{h0, h1, h2});
 
+
             }
-        } else {
-            Log.i("GRAPH", "2");
-            Log.i("GRAPH", "removed " + Integer.valueOf(e.getXIndex()));
-           // buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
-            buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
-            Log.i("GRAPH", "after removing " + buildingsSelected);
-            //    for (int i = 0; i < buildingsSelected.size(); i++) {
-
-            Log.i("GRAPH", "size " + buildingsSelected.size());
-            if (buildingsSelected.size() == 1) {
-                Log.i("GRAPH20", "buildings selected " + buildingsSelected);
-                Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                chart.highlightValues(new Highlight[]{h0});
-
-            } else if (buildingsSelected.size() == 2) {
-                Log.i("GRAPH21", "buildings selected " + buildingsSelected);
-                Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                chart.highlightValues(new Highlight[]{h0, h1});
+        }
 
 
-            } else if (buildingsSelected.size() == 0) {
-                chart.highlightValues(null);
-            }
-            //        else if (buildingsSelected.size() == 3) {
+//        if (buildingsSelected.size() == 0) {
+//            // chart.highlightValues(null);
+//            //do nothing
+//        }
+//        else if (buildingsSelected.size() == 1) {
+//            // chart.highlightValues(null);
+//            buildingsSelected.remove(Integer.valueOf(chartIndex));
+//        }else {
+//            Log.i("GRAPH", "nothing selected " + chartIndex + " " + buildingsSelected.get(0));
+//            //buildingsSelected.remove(Integer.valueOf(chartIndex));
+//
+//            if (buildingsSelected.get(0) == chartIndex) {
+//                Log.i("GRAPH", "nothing selected  highlight baki array");
+//                //remove first element from array and heiglight remaining
+//                buildingsSelected.remove(Integer.valueOf(chartIndex));
+//                if (buildingsSelected.size() == 1) {
+//                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
+//                    chart.highlightValues(new Highlight[]{h0});
+//                }
+//                else if (buildingsSelected.size() == 2) {
+//
 //                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
 //                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-//                    Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
-//                    chart.highlightValues(new Highlight[]{h0, h1, h2});
+//                    chart.highlightValues(new Highlight[]{h0, h1});
 //                }
-            //   }
-        }
-        //  Highlight [] highs = highlights.toArray(new Highlight[highlights.size()]);
-        // chart.highlightValues(highs);
-
-
-
-
-    }
-
-
-
-
-
-//        if(buildingsSelected.size()<3){
-//            if(!buildingsSelected.contains(e.getXIndex())) {
-//                buildingsSelected.add(e.getXIndex());
+//            } else {
 //
-//                //chart.highlightValues(buildingsSelected);
-//                //     Integer [] buildings = buildingsSelected.toArray(new Integer[buildingsSelected.size()]);
-//                for (int i = 0; i < buildingsSelected.size(); i++) {
-//
-//                    if (buildingsSelected.size() == 1) {
-//                        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-//                        chart.highlightValues(new Highlight[]{h0});
-//                    } else if (buildingsSelected.size() == 2) {
-//                        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-//                        Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-//                        chart.highlightValues(new Highlight[]{h0, h1});
-//                    }else {
-//                        Highlight h0 = new Highlight(buildingsSelected.get(0),0);
-//                        Highlight h1 = new Highlight(buildingsSelected.get(1),0);
-//                        Highlight h2 = new Highlight(buildingsSelected.get(2),0);
-//                        chart.highlightValues(new Highlight[] {h0,h1,h2});
-//                    }
-//                    }
-//
-////                   Highlight h1 = new Highlight(0,0);// 1st value to highlight
-////                    Highlight h2 = new Highlight(4,0);// 1st value to highlight
-////                    Highlight h3 = new Highlight(8,0);// 1st value to highlight
-////                   highlights.add(h1);
-//                    //     highlights.add(new Highlight(buildingsSelected.get(i),0));
-//
-//
-//                }
-////                Highlight h1 = new Highlight(); // 1st value to highlight
-////                Highlight h2 = new Highlight(); // 2nd value to highlight
-//
-//                //chart.highlightValues(new Highlight[] {h1, h2});
-//
-//            }       // chart.highlightValues(new buildings[] buildings);
-//            else if(buildingsSelected.size()==3){
-//                if(!buildingsSelected.contains(e.getXIndex())) {
-// //only three can be selected
-//
-//                }
-//                else{
-//
-//                    buildingsSelected.remove(e.getXIndex());
-//
-//                    for (int i = 0; i < buildingsSelected.size(); i++) {
-//
-//                        if(buildingsSelected.size()==1){
-//                            Highlight h0 = new Highlight(buildingsSelected.get(0),0);
-//                            chart.highlightValues(new Highlight[] {h0});
-//                        }else if(buildingsSelected.size()==2) {
-//                            Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-//                            Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-//                            chart.highlightValues(new Highlight[]{h0, h1});
-//                        }
-////                        }else {
-////                            Highlight h0 = new Highlight(buildingsSelected.get(0),0);
-////                            Highlight h1 = new Highlight(buildingsSelected.get(1),0);
-////                            Highlight h2 = new Highlight(buildingsSelected.get(2),0);
-////                            chart.highlightValues(new Highlight[] {h0,h1,h2});
-////                        }
-//                    }
-//
-//                }
-//
+//                Log.i("GRAPH", "nothing selected  highlight else " + buildingsSelected.get(0));
 //            }
-//
-//            else{
-//                buildingsSelected.remove(e.getXIndex());
-//
-//            for (int i = 0; i < buildingsSelected.size(); i++) {
-//
-//                if(buildingsSelected.size()==1){
-//                    Highlight h0 = new Highlight(buildingsSelected.get(0),0);
-//                    chart.highlightValues(new Highlight[] {h0});
-//                }else if(buildingsSelected.size()==2) {
-//                    Highlight h0 = new Highlight(buildingsSelected.get(0),0);
-//                    Highlight h1 = new Highlight(buildingsSelected.get(1),0);
-//                    chart.highlightValues(new Highlight[] {h0,h1});
-//                }else if(buildingsSelected.size()==3){
-//                    Highlight h0 = new Highlight(buildingsSelected.get(0),0);
-//                    Highlight h1 = new Highlight(buildingsSelected.get(1),0);
-//                    Highlight h2 = new Highlight(buildingsSelected.get(2),0);
-//                    chart.highlightValues(new Highlight[] {h0,h1,h2});
-//                }
-//            }
-//            }
-//
 //        }
-
-
-//        buildingsSelected.contains()
-
-
-
-
-    @Override
-    public void onNothingSelected() {
-
-        if (buildingsSelected.size() == 0) {
-            // chart.highlightValues(null);
-            //do nothing
-        }
-        else if (buildingsSelected.size() == 1) {
-           // chart.highlightValues(null);
-            buildingsSelected.remove(Integer.valueOf(chartIndex));
-        }else {
-            Log.i("GRAPH", "nothing selected " + chartIndex + " " + buildingsSelected.get(0));
-            //buildingsSelected.remove(Integer.valueOf(chartIndex));
-
-            if (buildingsSelected.get(0) == chartIndex) {
-                Log.i("GRAPH", "nothing selected  highlight baki array");
-                //remove first element from array and heiglight remaining
-                buildingsSelected.remove(Integer.valueOf(chartIndex));
-                if (buildingsSelected.size() == 1) {
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    chart.highlightValues(new Highlight[]{h0});
-                }
-                else if (buildingsSelected.size() == 2) {
-
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                    chart.highlightValues(new Highlight[]{h0, h1});
-                }
-            } else {
-
-                Log.i("GRAPH", "nothing selected  highlight else " + buildingsSelected.get(0));
-            }
-        }
-
-    }
+//
+//
+ }
 
 
 
@@ -1510,22 +1803,24 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     @Override
     public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-        Log.i("GRAPH","onChartGestureStart "+me);
+        // Log.i("GRAPH","onChartGestureStart "+me);
     }
 
     @Override
     public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-        Log.i("GRAPH","onChartGestureEnd "+me);
+        //  Log.i("GRAPH","onChartGestureEnd "+me);
+
     }
 
     @Override
     public void onChartLongPressed(MotionEvent me) {
-        Log.i("GRAPH","onChartLongPressed "+me);
+        //   Log.i("GRAPH","onChartLongPressed "+me);
     }
 
     @Override
     public void onChartDoubleTapped(MotionEvent me) {
-        Log.i("GRAPH","onChartDoubleTapped "+me);
+
+        //Log.i("GRAPH","onChartDoubleTapped "+me);
     }
 
     @Override
@@ -1533,22 +1828,13 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 
 
-        Log.i("GRAPH","me onChartSingleTapped "+me);
+        //  Log.i("GRAPH","me onChartSingleTapped "+me);
 
-//        Highlight h0 = new Highlight(3, 0);
-//        Highlight h1 = new Highlight(6, 0);
-//        Highlight h2 = new Highlight(9, 0);
-//        chart.highlightValues(new Highlight[]{h0, h1, h2});
-
-//        Log.i("GRAPH","me "+me.getActionIndex());
-       // Log.i("GRAPH","me "+me.getX());
-       // Log.i("GRAPH","me "+me.getY());
-//        Log.i("GRAPH","me "+me.getAxisValue(0));
-//        Log.i("GRAPH","me "+me.getX(0));
+//
 
         //highlighter.getHighlight(me.getX(0),me.getY(0));
         highlight = highlighter.getHighlight(me.getX(),me.getY());
-       // highlights = new ArrayList<Highlight>(Arrays.asList(highs));
+        // highlights = new ArrayList<Highlight>(Arrays.asList(highs));
 //        highlights.add(highlight);
 //        highs = highlights.toArray(new Highlight[highlights.size()]);
 //               chart.highlightValues(highs);
@@ -1570,141 +1856,6 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 //        highlight();
 
 
-  /*      Log.i("GRAPH","me "+highlight.getXIndex()) ;
-
-
-        if (!buildingsSelected.contains(highlight.getXIndex())) {
-            Log.i("GRAPH", "1");
-
-
-            if (buildingsSelected.size() < 3) {
-                buildingsSelected.add(highlight.getXIndex());
-                Log.i("GRAPH10", "buildings selected after add " + buildingsSelected);
-
-                // for (int i = 0; i < buildingsSelected.size(); i++) {
-
-                if (buildingsSelected.size() == 1) {
-                    Log.i("GRAPH10", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    chart.highlightValues(new Highlight[]{h0});
-
-
-                } else if (buildingsSelected.size() == 2) {
-                    Log.i("GRAPH11", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                    chart.highlightValues(new Highlight[]{h0, h1});
-
-                } else {
-                    Log.i("GRAPH12", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                    Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
-                    chart.highlightValues(new Highlight[]{h0, h1, h2});
-
-
-                }
-                //             }
-            } else if (buildingsSelected.size() == 3) {
-                Log.i("GRAPH", "3");
-                //cant be added
-                Log.i("GRAPH30", "buildings selected " + buildingsSelected);
-                Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
-                chart.highlightValues(new Highlight[]{h0, h1, h2});
-
-            }
-
-        }
-
-        //chart.highlightValues(null);
-
-
-
-        buildingsSelected.add(highlight.getXIndex());
-        Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-        chart.highlightValues(new Highlight[]{h0});
-        Log.i("GRAPH", "executed ");
-        Log.i("GRAPH10", "buildings selected and new build " + buildingsSelected +" " +highlight.getXIndex());
-
-        if (!buildingsSelected.contains(highlight.getXIndex())) {
-            Log.i("GRAPH", "1");
-
-
-            if (buildingsSelected.size() < 3) {
-                buildingsSelected.add(highlight.getXIndex());
-                Log.i("GRAPH10", "buildings selected after add " + buildingsSelected);
-
-                // for (int i = 0; i < buildingsSelected.size(); i++) {
-
-                if (buildingsSelected.size() == 1) {
-                    Log.i("GRAPH10", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    chart.highlightValues(new Highlight[]{h0});
-
-
-                } else if (buildingsSelected.size() == 2) {
-                    Log.i("GRAPH11", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                    chart.highlightValues(new Highlight[]{h0, h1});
-
-                } else {
-                    Log.i("GRAPH12", "buildings selected " + buildingsSelected);
-                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                    Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
-                    chart.highlightValues(new Highlight[]{h0, h1, h2});
-
-
-                }
-                //             }
-            } else if (buildingsSelected.size() == 3) {
-                Log.i("GRAPH", "3");
-                //cant be added
-                Log.i("GRAPH30", "buildings selected " + buildingsSelected);
-                Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
-                chart.highlightValues(new Highlight[]{h0, h1, h2});
-
-            }
-        } else {
-            Log.i("GRAPH", "2");
-            Log.i("GRAPH", "removed " + Integer.valueOf(highlight.getXIndex()));
-            // buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
-            buildingsSelected.remove(Integer.valueOf(highlight.getXIndex()));
-            Log.i("GRAPH", "after removing " + buildingsSelected);
-            //    for (int i = 0; i < buildingsSelected.size(); i++) {
-
-            Log.i("GRAPH", "size " + buildingsSelected.size());
-            if (buildingsSelected.size() == 1) {
-                Log.i("GRAPH20", "buildings selected " + buildingsSelected);
-                Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                chart.highlightValues(new Highlight[]{h0});
-
-            } else if (buildingsSelected.size() == 2) {
-                Log.i("GRAPH21", "buildings selected " + buildingsSelected);
-                Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-                Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-                chart.highlightValues(new Highlight[]{h0, h1});
-
-
-            } else if (buildingsSelected.size() == 0) {
-                chart.highlightValues(null);
-            }
-            //        else if (buildingsSelected.size() == 3) {
-//                    Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
-//                    Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
-//                    Highlight h2 = new Highlight(buildingsSelected.get(2), 0);
-//                    chart.highlightValues(new Highlight[]{h0, h1, h2});
-//                }
-            //   }
-        }
-        //  Highlight [] highs = highlights.toArray(new Highlight[highlights.size()]);
-        // chart.highlightValues(highs);
-*/
 
 
 
@@ -1725,62 +1876,26 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     @Override
     public void onChartTranslate(MotionEvent me, float dX, float dY) {
 //        Log.i("GRAPH","onChartTranslate "+me);
-       // Log.i("GRAPH","onChartTranslate "+me.getAction() +" "+me.getAxisValue(MotionEvent.AXIS_Y));
+        // Log.i("GRAPH","onChartTranslate "+me.getAction() +" "+me.getAxisValue(MotionEvent.AXIS_Y));
 
-       // highlight = highlighter.getHighlight(me.getX(),me.getY());
-
-
-       // e = dataset.getEntryForIndex(highlight.getXIndex());
-
-        if(pricechart) {
-            e = chart.getEntryByTouchPoint(me.getX(), me.getY());
-            e.setVal(chart.getYValueByTouchPoint(me.getX(), me.getY(), YAxis.AxisDependency.LEFT));
-
-            chart.notifyDataSetChanged();
-            chart.invalidate();
-//            Log.i("GRAPH", "once onChartTranslate again " + me);
-        }
-
-       // Log.i("GRAPH","onChartTranslate1 "+me.getX()+" "+me.getY()+" "+dX+" "+dY+" ");
+        // highlight = highlighter.getHighlight(me.getX(),me.getY());
 
 
-//        Log.i("GRAPH","getYValueByTouchPoint1 "+chart.getYValueByTouchPoint(me.getX(),me.getY(), YAxis.AxisDependency.LEFT));
-//        Log.i("GRAPH","getYValueByTouchPoint2 "+chart.getYValueByTouchPoint(dX,dX, YAxis.AxisDependency.LEFT));
-//        Log.i("GRAPH","getYValueByTouchPoint3 "+chart.getYValueByTouchPoint(me.getX(),me.getY(), YAxis.AxisDependency.RIGHT));
-//        Log.i("GRAPH","getYValueByTouchPoint4 "+chart.getYValueByTouchPoint(dX,dX, YAxis.AxisDependency.RIGHT));
+        // e = dataset.getEntryForIndex(highlight.getXIndex());
+
+//        if(pricechart) {
+//            e = chart.getEntryByTouchPoint(me.getX(), me.getY());
+//            e.setVal(chart.getYValueByTouchPoint(me.getX(), me.getY(), YAxis.AxisDependency.LEFT));
 //
-//
-//
-//        Log.i("GRAPH","getValuesByTouchPoint1 "+chart.getValuesByTouchPoint(me.getX(),me.getY(), YAxis.AxisDependency.LEFT));
-//        Log.i("GRAPH","getValuesByTouchPoint2 "+chart.getValuesByTouchPoint(dX,dX, YAxis.AxisDependency.LEFT));
-//        Log.i("GRAPH","getValuesByTouchPoint3 "+chart.getValuesByTouchPoint(me.getX(),me.getY(), YAxis.AxisDependency.RIGHT));
-//        Log.i("GRAPH","getValuesByTouchPoint4 "+chart.getValuesByTouchPoint(dX,dX, YAxis.AxisDependency.RIGHT));
+//            chart.notifyDataSetChanged();
+//            chart.invalidate();
+////            Log.i("GRAPH", "once onChartTranslate again " + me);
+//        }
 
-//        Log.i("GRAPH","entry is "+dataset.getEntryForIndex(highlight.getXIndex()));
+        // Log.i("GRAPH","onChartTranslate1 "+me.getX()+" "+me.getY()+" "+dX+" "+dY+" ");
 
 
 
-
-
-
-
-
-   //  dataset.addEntry(new BarEntry(chart.getYValueByTouchPoint(me.getX(),me.getY(), YAxis.AxisDependency.LEFT),highlight.getXIndex()));
-
-   //chart.notifyDataSetChanged();
-//       chart.notifyDataSetChanged();
-    //  chart.invalidate();
-
-
-//        PointD p = chart.getValuesByTouchPoint(dX,dY, YAxis.AxisDependency.LEFT);
-// Entry e = new BarEntry(18, highlight.getXIndex());
-       // e.setData();
-//        dataset.addEntry(new BarEntry(18, highlight.getXIndex()));
-//                //highlight.getXIndex() =
-//        //entries.add(new BarEntry(4,highlight.getXIndex()));
-//       // chart.notifyDataSetChanged();
-//        chart.notifyDataSetChanged();
-//        chart.invalidate();
 
     }
 }

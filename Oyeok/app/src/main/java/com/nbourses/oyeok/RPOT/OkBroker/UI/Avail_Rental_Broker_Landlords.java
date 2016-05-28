@@ -36,6 +36,7 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Avail_Rental_Broker_Landlords extends Fragment implements CircularSeekBarNew.imageAction,OnAcceptOkSuccess {
@@ -57,6 +58,7 @@ public class Avail_Rental_Broker_Landlords extends Fragment implements CircularS
     Button droom;
     FloatingActionButton autoOk;
     Ok_Broker_MainScreen ok_broker_mainScreen;
+    HashMap<String, Float> listings = new HashMap<String, Float>();
 
 
 
@@ -185,7 +187,7 @@ public class Avail_Rental_Broker_Landlords extends Fragment implements CircularS
 
                     AcceptOkCall a = new AcceptOkCall();
                     a.setmCallBack(Avail_Rental_Broker_Landlords.this);
-                    a.acceptOk(p,j,dbHelper, getActivity());
+                    a.acceptOk(listings,p,j,dbHelper, getActivity());
                 }
             }
         });

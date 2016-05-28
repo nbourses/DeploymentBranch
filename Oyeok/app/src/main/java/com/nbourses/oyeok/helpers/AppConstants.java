@@ -66,11 +66,9 @@ public class AppConstants {
     public static final String TT = "TT";
     public static final String RENTAL ="RENTAL";
     public static final String RESALE = "RESALE";
-
-
-
-
-
+    public static final String MUTED_OKIDS ="mutedOKIds";
+    public static final String NO_OF_SAVED_MESSAGES = "20";
+    public static final String TIME_STAMP_IN_MILLI = "20";
 
 
 

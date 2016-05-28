@@ -220,7 +220,7 @@ public class CircularSeekBarNew extends View {
             //Get drawables according to property type.Needs to be worked on
             //Drawable d = getResources().getDrawable(drawables[i % 4]);
             Drawable d = null;
-            String ptype = null;
+            String ptype = "home";
             String pstype;
             try {
       /*          pstype = values.getJSONObject(i).getString("property_subtype");
@@ -238,8 +238,30 @@ public class CircularSeekBarNew extends View {
                     ptype = "office";
                 }
         */
+               try {
+                   ptype = values.getJSONObject(i).getString("property_type");
+               }
 
-                ptype = values.getJSONObject(i).getString("property_type");
+               catch(Exception e){
+
+
+                       pstype = values.getJSONObject(i).getString("property_subtype");
+
+                       if (pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")) {
+                           ptype = "home";
+                       } else if (pstype.equals("retail outlet") || pstype.equals("food outlet") || pstype.equals("bank")) {
+                           ptype = "shop";
+                       } else if (pstype.equals("cold storage") || pstype.equals("kitchen") || pstype.equals("manufacturing") || pstype.equals("warehouse") || pstype.equals("workshop")) {
+                           ptype = "industrial";
+                       } else if (pstype.equals("<15") || pstype.equals("<35") || pstype.equals("<50") || pstype.equals("<100") || pstype.equals("100+")) {
+                           ptype = "office";
+                       } else {
+                           ptype = "home";
+                       }
+
+
+               }
+
 
                 Log.i("TRACE","Ptype decided: "+ptype);
                 //ptype = values.getJSONObject(i).getString("property_type");
@@ -266,34 +288,38 @@ public class CircularSeekBarNew extends View {
                 }
                 else{
                     Log.i("TRACE","ptype not set");
+                    d = getResources().getDrawable(drawables[0]);
                 }
-            } catch (JSONException e) {
+            }
+            catch (JSONException e) {
                 e.printStackTrace();
             }
            // Log.i("TRACE","Property type" + values.getJSONObject(0).getString("price"));
 
             Log.i("TRACE","d" +d);
 
-            if(i!=index) {
+
+               if (i != index) {
 
 //                try {
 //                    //checking the oye_status and changing the color of icon to grey or red(inactive and active)
 //                    if (values.getJSONObject(i).getString("oye_status").equalsIgnoreCase("active")) {
 //                        d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#E53935"), PorterDuff.Mode.SRC_ATOP)); //Red
 //                    } else {
-                        d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));  // Gray
+
+                   d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));  // Gray
 //                    }
 //                }
 //                catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
 
-            }
-            else
-            {
-                //This is if the icon is clicked or selected
-                d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#81C784"), PorterDuff.Mode.SRC_ATOP)); //Light green
-            }
+               } else {
+                   //This is if the icon is clicked or selected
+                   d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#81C784"), PorterDuff.Mode.SRC_ATOP)); //Light green
+               }
+
+
             int house_image_left;
             int house_image_top;
             int height = d.getIntrinsicHeight();
@@ -539,13 +565,13 @@ public class CircularSeekBarNew extends View {
            else if(values.length()==2) {
                 arrayTemp[0] = Integer.parseInt(values.getJSONObject(0).getString("price"));
                 arrayTemp[1] = Integer.parseInt(values.getJSONObject(1).getString("price"));
-                Arrays.sort(arrayTemp);
+                //Arrays.sort(arrayTemp);
                 JSONObject j1;
-                if(arrayTemp[1]>arrayTemp[2])
+                if(arrayTemp[0]>arrayTemp[1])
                 {
                     j1 = values.getJSONObject(0);
-                    values.put(0, values.getJSONObject(2));
-                    values.put(2, j1);
+                    values.put(0, values.getJSONObject(1));
+                    values.put(1, j1);
                 }
                 else
                 {

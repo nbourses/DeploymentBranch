@@ -1,12 +1,10 @@
 package com.nbourses.oyeok.activities;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -36,10 +34,13 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.Database.SharedPrefs;
 
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.deleteHDroom;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
@@ -51,14 +52,21 @@ import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.BrokerDeals;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.PublishLetsOye;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -121,6 +129,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
     public CustomPhasedSeekBar mPhasedSeekBar1;
     private String TT = "LL";
+    private ArrayList<BrokerDeals> total_deals;
+    private ArrayList<BrokerDeals> listBrokerDeals_new;
+    private Set<String> mutedOKIds = new HashSet<String>();
+
 
 
 
@@ -165,6 +177,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
         ButterKnife.bind(this);
+
+        Log.i("CHAT","in client deals list activity "+DateFormat.getDateTimeInstance().format(new Date()));
 
 
         init();
@@ -247,7 +261,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         listViewDeals.setOnMenuItemClickListener(new OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-//                ApplicationInfo item =  listAdapter.getItem(position);
+     //           ApplicationInfo item =  listAdapter.getItem(position);
                 switch (index) {
                     case 0:
 
@@ -256,6 +270,122 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 //                        open(item);
                         break;
                     case 1:
+
+                        Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(ClientDealsListActivity.this));
+                        if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
+                            mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
+
+                            if(mutedOKIds.contains(total_deals.get(position).getOkId())) {
+                                mutedOKIds.remove(total_deals.get(position).getOkId());
+                                SnackbarManager.show(
+                                        Snackbar.with(ClientDealsListActivity.this)
+                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                .text(total_deals.get(position).getSpecCode() + " unmuted!")
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                            }
+                            else {
+                                mutedOKIds.add(total_deals.get(position).getOkId());
+                                SnackbarManager.show(
+                                        Snackbar.with(ClientDealsListActivity.this)
+                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                .text(total_deals.get(position).getSpecCode() + " muted!")
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                            }
+
+                        }
+
+
+                        General.saveMutedOKIds(ClientDealsListActivity.this,mutedOKIds);
+
+                        Log.i("MUTE", "muted from shared" + General.getMutedOKIds(ClientDealsListActivity.this));
+//                        Log.i("MUTE CALLED", "ok_id " + total_deals.get(position).getOkId());
+//                        General.setSharedPreferences(getApplicationContext(), AppConstants.MUTED_OKIDS, total_deals.get(position).getOkId());
+//                        General.getSharedPreferences(getApplicationContext(),AppConstants.MUTED_OKIDS)
+                        // delete
+//					delete(item);
+//                        listAdapter.remove(position);
+//                        listAdapter.notifyDataSetChanged();
+                        break;
+                    case 2:
+
+                        Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
+
+
+                        Log.i("deleteDR CALLED", "spec code " + total_deals.get(position).getSpecCode());
+
+
+                        if(default_deals != null) {
+                            if (default_deals.contains(total_deals.get(position))){
+
+                                Log.i("deleteDR CALLED", "Its default deal " + total_deals.get(position).getSpecCode());
+
+
+                                String deals;
+                                deals = General.getDefaultDeals(ClientDealsListActivity.this);
+                                java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+                                }.getType();
+                                HashMap<String, String> deals1 = gson.fromJson(deals, type);
+
+                                Log.i("TRACE", "hashmap:" + deals1);
+
+                                if (deals1 == null) {
+                                    deals1 = new HashMap<String, String>();
+
+                                }
+
+                                Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
+
+                                while (iter.hasNext()) {
+                                    Map.Entry<String,String> entry = iter.next();
+                                    Log.i("DELETE DEFAULT DROOM","entry.getKey"+entry.getKey());
+                                    if(total_deals.get(position).getOkId().equalsIgnoreCase(entry.getKey())){
+                                        iter.remove();
+                                        Log.i("DELETE DEFAULT DROOM", "entry.getKey removed" + entry.getKey());
+                                        Log.i("DELETE DEFAULT DROOM", "default droomsremoved" + entry.getKey());
+                                        Log.i("DELETE DEFAULT DROOM", "default droomsremoved okid" + total_deals.get(position).getOkId());
+                                        Log.i("DELETE DEFAULT DROOM","entry.getKey removed"+entry.getValue());
+                                       // RefreshDrooms = true;
+                                    }
+                                }
+                                Log.i(TAG,"after deal "+deals1);
+                                Log.i("Default deals in shared","I am here2");
+                                Gson g = new Gson();
+                                String hashMapString = g.toJson(deals1);
+                                General.saveDefaultDeals(ClientDealsListActivity.this, hashMapString);
+
+                                deleteDealingroom("1",total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
+                                default_deals.clear();
+                                loadDefaultDeals();
+
+                            }
+                        }
+
+
+                        if(listBrokerDeals_new != null) {
+                            if (listBrokerDeals_new.contains(total_deals.get(position))) {
+
+                                Log.i("deleteDR CALLED", "Its HDroom " + total_deals.get(position).getSpecCode());
+
+
+                                deleteDealingroom("0",total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
+                                //on delete droom delete that room OK id from mutedOKIds
+
+                                Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(ClientDealsListActivity.this));
+                                if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
+                                    mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
+
+                                    if(mutedOKIds.contains(total_deals.get(position).getOkId()))
+                                        mutedOKIds.remove(total_deals.get(position).getOkId());
+
+                                }
+
+                                General.saveMutedOKIds(ClientDealsListActivity.this, mutedOKIds);
+
+                                Log.i("MUTE", "muted from shared" + General.getMutedOKIds(ClientDealsListActivity.this));
+
+                            }
+                        }
+
                         // delete
 //					delete(item);
 //                        listAdapter.remove(position);
@@ -317,26 +447,27 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         }
     }
 
-    private void open(ApplicationInfo item) {
+
+    private void more(ApplicationInfo item) {
         // open app
-        Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
-        resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        resolveIntent.setPackage(item.packageName);
-        List<ResolveInfo> resolveInfoList = getPackageManager()
-                .queryIntentActivities(resolveIntent, 0);
-        if (resolveInfoList != null && resolveInfoList.size() > 0) {
-            ResolveInfo resolveInfo = resolveInfoList.get(0);
-            String activityPackageName = resolveInfo.activityInfo.packageName;
-            String className = resolveInfo.activityInfo.name;
+//        Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
+//        resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+//        resolveIntent.setPackage(item.packageName);
+//        List<ResolveInfo> resolveInfoList = getPackageManager()
+//                .queryIntentActivities(resolveIntent, 0);
+//        if (resolveInfoList != null && resolveInfoList.size() > 0) {
+//            ResolveInfo resolveInfo = resolveInfoList.get(0);
+//            String activityPackageName = resolveInfo.activityInfo.packageName;
+//            String className = resolveInfo.activityInfo.name;
+//
+//            Intent intent = new Intent(Intent.ACTION_MAIN);
+//            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+//            ComponentName componentName = new ComponentName(
+//                    activityPackageName, className);
+//
+//            intent.setComponent(componentName);
+//            startActivity(intent);
 
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            ComponentName componentName = new ComponentName(
-                    activityPackageName, className);
-
-            intent.setComponent(componentName);
-            startActivity(intent);
-        }
     }
 
 
@@ -560,7 +691,75 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
 
+private void deleteDealingroom(String deleteOyeId,String deleteOKId, final String specCode){
 
+
+
+
+    deleteHDroom deleteHDroom  = new deleteHDroom();
+    deleteHDroom.setOkId(deleteOKId);
+    deleteHDroom.setDeleteOyeId(deleteOyeId);
+    deleteHDroom.setUserId(General.getSharedPreferences(this,AppConstants.USER_ID));
+    deleteHDroom.setPage("1");
+    deleteHDroom.setGcmId(General.getSharedPreferences(this,AppConstants.GCM_ID));
+
+    RestAdapter restAdapter = new RestAdapter.Builder()
+            .setEndpoint(AppConstants.SERVER_BASE_URL)
+            .build();
+    restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+    OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+
+
+    try {
+        oyeokApiService.deleteHDroom(deleteHDroom, new Callback<JsonElement>() {
+            @Override
+            public void success(JsonElement jsonElement, Response response) {
+
+                Log.i("deleteDR CALLED","success");
+                loadBrokerDeals();
+
+                SnackbarManager.show(
+                        Snackbar.with(ClientDealsListActivity.this)
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text(specCode + " deleted")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+
+                        JsonObject k = jsonElement.getAsJsonObject();
+                try {
+                    JSONObject ne = new JSONObject(k.toString());
+                    String success = ne.getString("success");
+
+
+
+
+                    }
+
+
+
+                catch (JSONException e) {
+                    Log.e(TAG, e.getMessage());
+                    Log.i("deleteDR CALLED","Failed "+e.getMessage());
+                }
+
+
+
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+    catch (Exception e){
+        Log.e(TAG, e.getMessage());
+    }
+
+
+    }
 
 
     private void loadDefaultDeals(){
@@ -717,7 +916,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         hdRooms.setPage("1");
 
 
-        Log.i("TRACE", "in LOad broker deals");
+        Log.i("TRACE", "in Load broker deals");
         OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
         oyeokApiService.seeHdRooms(hdRooms, new Callback<PublishLetsOye>() {
             @Override
@@ -756,7 +955,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                         Iterator<BrokerDeals> it = listBrokerDeals.iterator();
 
-                        ArrayList<BrokerDeals> listBrokerDeals_new = new ArrayList<BrokerDeals>();
+                       listBrokerDeals_new = new ArrayList<BrokerDeals>();
                         while (it.hasNext()) {
                             BrokerDeals deals = it.next();
 
@@ -824,7 +1023,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             //listViewDeals.setAdapter(Adapter);
                             //list all broker deals
 
-                            ArrayList<BrokerDeals> total_deals = new ArrayList<BrokerDeals>();
+                            total_deals = new ArrayList<BrokerDeals>();
                             ;
                             // if(default_deal_flag)
                             // {
@@ -839,6 +1038,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 //
                             // }
+
+
 
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
 
