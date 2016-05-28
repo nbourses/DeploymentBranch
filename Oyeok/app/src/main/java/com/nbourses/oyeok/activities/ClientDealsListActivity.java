@@ -218,7 +218,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 MuteItem.setWidth(listAdapter.dp2px(90));
                 // set item title
                 MuteItem.setIcon(R.drawable.unmute);
-                MuteItem.setTitle("unmute");
+                MuteItem.setTitle("mute");
                 // set item title fontsize
                 MuteItem.setTitleSize(18);
                 // set item title font color

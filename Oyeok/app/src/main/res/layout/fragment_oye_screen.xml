@@ -19,7 +19,9 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/eight_dp"
-            android:paddingRight="@dimen/eight_dp">
+            android:paddingRight="@dimen/eight_dp"
+            android:paddingTop="-10dp"
+            android:paddingBottom="-10dp">
             <ImageView
                 android:id="@+id/btnCloseOyeScreenSlide"
                 android:layout_width="32dp"

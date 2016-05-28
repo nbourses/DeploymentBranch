@@ -52,7 +52,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 
 //import com.google.android.gms.identity.intents.Address;
 
@@ -62,6 +61,10 @@ import butterknife.ButterKnife;
 public class BrokerMap extends DashboardClientFragment{
 @Bind(R.id.iv_markerpin)
     ImageView iv_markerpin;
+
+    @Bind(R.id.tv_change_region)
+    TextView tv_change_region;
+
     GoogleMap gmap;
     CustomMapFragment customMapFragment;
     AutoCompleteTextView autoCompView;
@@ -72,7 +75,7 @@ public class BrokerMap extends DashboardClientFragment{
 
    // id_markerpin;
 
-TextView tv_change_region;
+//TextView tv_change_region;
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "",locality="";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,9 +83,9 @@ TextView tv_change_region;
 
         final View rootView = inflater.inflate(R.layout.broker_map, container, false);
         final View rootView1 = inflater.inflate(R.layout.toolbar, container, false);
-     ButterKnife.bind(this, rootView);
-        ButterKnife.bind(this, rootView1);
-       tv_change_region=(TextView) rootView1.findViewById(R.id.tv_change_region);
+       // ButterKnife.bind(this, rootView);
+     //  ButterKnife.bind(this, rootView1);
+      tv_change_region=(TextView) rootView1.findViewById(R.id.tv_change_region);
        // icon1 = BitmapDescriptorFactory.fromResource(R.drawable.iv_markerpin);
         iv_markerpin = (ImageView) rootView.findViewById(R.id.iv_markerpin);
 
@@ -201,7 +204,7 @@ if(customMapFragment==null) {
                         Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
                         getRegion();
                         Log.i("t1", "latlong" + " " + currentLocation1);
-                        gmap.addMarker(new MarkerOptions().position(currentLocation1));
+                       // gmap.addMarker(new MarkerOptions().position(currentLocation1));
                         if (isNetworkAvailable()) {
                             new LocationUpdater().execute();
                         }

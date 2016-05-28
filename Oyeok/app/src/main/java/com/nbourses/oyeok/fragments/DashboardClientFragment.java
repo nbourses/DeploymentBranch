@@ -432,7 +432,7 @@ private  boolean flag[]= new boolean[5];
                                     for ( int j = 0; j < 5; j++){
                                         if(flag[i]==true){
 
-                                            mCustomerMarker[i].setIcon(icon1);
+                                           // mCustomerMarker[i].setIcon(icon1);
                                         }
 
                                     }
@@ -441,8 +441,8 @@ private  boolean flag[]= new boolean[5];
                                         Log.i("icon", " onclick_icon2" + marker.getTitle());
                                         Log.i("icon", " onclick_icon2" + mCustomerMarker[i].getTitle());
                                         //mCustomerMarker[i].remove();
-                                        marker.setIcon(icon2);
-                                      //  mCustomerMarker[i].remove();
+                                       // marker.setIcon(icon2);
+                                      // mCustomerMarker[i].setIcon(icon2);
                                         //mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(mCustomerMarker[i].getPosition()).title(mCustomerMarker[i].getTitle()).snippet(mCustomerMarker[i].getSnippet()).icon(icon2));
                                         search_building_icon.setVisibility(View.VISIBLE);
                                         marker.showInfoWindow();
@@ -456,7 +456,8 @@ private  boolean flag[]= new boolean[5];
                                         Log.i("icon", " onclick_icon1" + marker.getTitle());
                                         Log.i("icon", " onclick_icon1" + mCustomerMarker[i].getTitle());
                                        // mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(mCustomerMarker[i].getPosition()).title(mCustomerMarker[i].getTitle()).snippet(mCustomerMarker[i].getSnippet()).icon(icon1));
-                                        marker.setIcon(icon2);
+                                       // marker.setIcon(icon1);
+                                       // mCustomerMarker[i].setIcon(icon1);
                                         search_building_icon.setVisibility(View.GONE);
                                         marker.showInfoWindow();
                                         flag[i] = false;
