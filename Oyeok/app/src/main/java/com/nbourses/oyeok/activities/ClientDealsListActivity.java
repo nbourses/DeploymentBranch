@@ -191,22 +191,22 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
                 // create "More" item
-                SwipeMenuItem MoreItem = new SwipeMenuItem(
-                        getApplicationContext());
-                // set item background
-                MoreItem.setBackground(new ColorDrawable(getResources().getColor(R.color.grey)));
-                // set item width
-                MoreItem.setWidth(listAdapter.dp2px(90));
-                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(90));
-                // set item title
-                MoreItem.setIcon(R.drawable.more);
-                MoreItem.setTitle("More");
-                // set item title fontsize
-                MoreItem.setTitleSize(18);
-                // set item title font color
-                MoreItem.setTitleColor(R.color.white);
-                // add to more
-                menu.addMenuItem(MoreItem);
+//                SwipeMenuItem MoreItem = new SwipeMenuItem(
+//                        getApplicationContext());
+//                // set item background
+//                MoreItem.setBackground(new ColorDrawable(getResources().getColor(R.color.grey)));
+//                // set item width
+//                MoreItem.setWidth(listAdapter.dp2px(90));
+//                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(90));
+//                // set item title
+//                MoreItem.setIcon(R.drawable.more);
+//                MoreItem.setTitle("More");
+//                // set item title fontsize
+//                MoreItem.setTitleSize(18);
+//                // set item title font color
+//                MoreItem.setTitleColor(R.color.white);
+//                // add to more
+//                menu.addMenuItem(MoreItem);
 
 
                 // create "unmute" item

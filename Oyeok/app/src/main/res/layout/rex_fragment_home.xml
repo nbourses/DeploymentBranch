@@ -106,15 +106,14 @@
                             android:text="@string/average_rate_this_locality"
                             android:id="@+id/tv_building"
                             android:textColor="@color/White"
-                            android:layout_alignParentTop="true"
-                            android:layout_toStartOf="@+id/newVisits"
                             android:singleLine="true"
-                            android:gravity="center"
                             android:layout_alignEnd="@+id/tvCommingsoon"
                             android:textSize="12dp"
-                            android:layout_marginTop="-5dp"
                             android:layout_above="@+id/picker"
-                            android:visibility="visible" />
+                            android:visibility="visible"
+                            android:gravity="top"
+                            android:layout_toEndOf="@+id/tvFetchingRates"
+                            android:layout_alignParentTop="true" />
 
                         <com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker
                             android:id="@+id/picker"
@@ -140,32 +139,31 @@
                             android:text="@string/Rs"
                             android:layout_marginLeft="100dp"
                             android:layout_marginBottom="4dp"
-                            android:textColor="@color/greenish_blue"
+                            android:textColor="@color/yellow"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
                             android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tvRate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="psf"
-                            android:textColor="@color/greenish_blue"
-                            android:layout_alignParentBottom="true"
-                            android:textSize="12sp"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="120dp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/tvFetchingRates"
                             android:layout_marginRight="30dp"
-                            android:layout_marginTop="20dp"
 
-                           android:foregroundGravity="center"
-                            android:gravity="center"
-                            android:textColor="@color/White" />
+                            android:foregroundGravity="center"
+                            android:textColor="@color/White"
+                            android:layout_alignTop="@+id/picker" />
+
+                        <TextView
+                            android:id="@+id/tvRate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="psf"
+                            android:textColor="@color/yellow"
+                            android:layout_alignParentBottom="true"
+                            android:textSize="12sp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="120dp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -175,9 +173,9 @@
                             android:layout_alignBottom="@+id/picker"
                             android:layout_alignEnd="@+id/picker"
                             android:layout_alignTop="@+id/picker"
-                            android:layout_alignStart="@+id/picker"
                             android:foregroundGravity="center"
-                            android:textColor="@color/White" />
+                            android:textColor="@color/White"
+                            android:layout_toEndOf="@+id/tvFetchingRates" />
 
                         <RelativeLayout
                             android:layout_width="wrap_content"

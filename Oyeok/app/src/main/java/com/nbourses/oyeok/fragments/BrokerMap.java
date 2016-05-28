@@ -52,6 +52,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
 //import com.google.android.gms.identity.intents.Address;
 
@@ -79,8 +80,9 @@ TextView tv_change_region;
 
         final View rootView = inflater.inflate(R.layout.broker_map, container, false);
         final View rootView1 = inflater.inflate(R.layout.toolbar, container, false);
-     // ButterKnife.bind(this, rootView);
-     //  tv_change_region=(TextView) findViewById(R.id.tv_change_region);
+     ButterKnife.bind(this, rootView);
+        ButterKnife.bind(this, rootView1);
+       tv_change_region=(TextView) rootView1.findViewById(R.id.tv_change_region);
        // icon1 = BitmapDescriptorFactory.fromResource(R.drawable.iv_markerpin);
         iv_markerpin = (ImageView) rootView.findViewById(R.id.iv_markerpin);
 

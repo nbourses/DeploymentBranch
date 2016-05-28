@@ -429,14 +429,20 @@ private  boolean flag[]= new boolean[5];
                             Log.i("MARKER ", "==========");
                             for ( i = 0; i < 5; i++) {
                                 if (marker.getId().equals(mCustomerMarker[i].getId()) ) {
+                                    for ( int j = 0; j < 5; j++){
+                                        if(flag[i]==true){
 
+                                            mCustomerMarker[i].setIcon(icon1);
+                                        }
+
+                                    }
 
                                     if(flag[i]==false) {
                                         Log.i("icon", " onclick_icon2" + marker.getTitle());
                                         Log.i("icon", " onclick_icon2" + mCustomerMarker[i].getTitle());
                                         //mCustomerMarker[i].remove();
                                         marker.setIcon(icon2);
-                                        mCustomerMarker[i].remove();
+                                      //  mCustomerMarker[i].remove();
                                         //mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(mCustomerMarker[i].getPosition()).title(mCustomerMarker[i].getTitle()).snippet(mCustomerMarker[i].getSnippet()).icon(icon2));
                                         search_building_icon.setVisibility(View.VISIBLE);
                                         marker.showInfoWindow();
@@ -451,7 +457,7 @@ private  boolean flag[]= new boolean[5];
                                         Log.i("icon", " onclick_icon1" + mCustomerMarker[i].getTitle());
                                        // mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(mCustomerMarker[i].getPosition()).title(mCustomerMarker[i].getTitle()).snippet(mCustomerMarker[i].getSnippet()).icon(icon1));
                                         marker.setIcon(icon2);
-                                        search_building_icon.setVisibility(View.INVISIBLE);
+                                        search_building_icon.setVisibility(View.GONE);
                                         marker.showInfoWindow();
                                         flag[i] = false;
 
@@ -574,7 +580,7 @@ private  boolean flag[]= new boolean[5];
 
                             // getPrice();
                             getPrice();
-                            mflag = false;
+                           // mflag = false;
 
 
                             Log.i("t1", "latlong" + " " + currentLocation1);
@@ -870,16 +876,16 @@ private  boolean flag[]= new boolean[5];
         user.setPincode("400058");
 
 
-        horizontalPicker.setVisibility(View.GONE);
-        tvRate.setVisibility(View.INVISIBLE);
-        rupeesymbol.setVisibility(View.INVISIBLE);
-        tvFetchingrates.setVisibility(View.VISIBLE);
-        tvCommingsoon.setVisibility(View.GONE);
-        tvFetchingrates.setText("Fetching Rates....");
-//        tvCommingsoon.setTypeface(null, Typeface.BOLD);
-        tvCommingsoon.setTypeface(null, Typeface.ITALIC);
-        tvCommingsoon.setTextSize(18);
-      //  missingArea.setVisibility(View.VISIBLE);
+//        horizontalPicker.setVisibility(View.GONE);
+//        tvRate.setVisibility(View.INVISIBLE);
+//        rupeesymbol.setVisibility(View.INVISIBLE);
+//        tvFetchingrates.setVisibility(View.VISIBLE);
+//        tvCommingsoon.setVisibility(View.GONE);
+//        tvFetchingrates.setText("Fetching Rates....");
+////        tvCommingsoon.setTypeface(null, Typeface.BOLD);
+//        tvCommingsoon.setTypeface(null, Typeface.ITALIC);
+//        tvCommingsoon.setTextSize(18);
+//      //  missingArea.setVisibility(View.VISIBLE);
 
 
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_101).build();
@@ -935,7 +941,7 @@ private  boolean flag[]= new boolean[5];
                             }
 
 
-                            if(mflag=false) {
+                            //if(mflag=false) {
 
 
                                 for (int i = 0; i < 5; i++) {
@@ -956,9 +962,9 @@ private  boolean flag[]= new boolean[5];
                                     Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
                                     flag[i] = false;
                                 }
-                                mflag=true;
+                                //mflag=true;
 
-                            }
+                           // }
                             updateHorizontalPicker();
 
                             horizontalPicker.setVisibility(View.VISIBLE);
@@ -996,15 +1002,15 @@ private  boolean flag[]= new boolean[5];
 
                         Log.i("GETPRICE","Else mode ====== ");
 
-                        horizontalPicker.setVisibility(View.INVISIBLE);
-                        tvRate.setVisibility(View.INVISIBLE);
-                        rupeesymbol.setVisibility(View.INVISIBLE);
-                        tvFetchingrates.setVisibility(View.INVISIBLE);
-                        tvCommingsoon.setVisibility(View.VISIBLE);
-                        tvCommingsoon.setText("Coming Soon...");
-                        tvCommingsoon.setTypeface(null, Typeface.BOLD);
-                        tvCommingsoon.setTextSize(18);
-                        missingArea.setVisibility(View.VISIBLE);
+//                        horizontalPicker.setVisibility(View.INVISIBLE);
+//                        tvRate.setVisibility(View.INVISIBLE);
+//                        rupeesymbol.setVisibility(View.INVISIBLE);
+//                        tvFetchingrates.setVisibility(View.INVISIBLE);
+//                        tvCommingsoon.setVisibility(View.VISIBLE);
+//                        tvCommingsoon.setText("Coming Soon...");
+//                        tvCommingsoon.setTypeface(null, Typeface.BOLD);
+//                        tvCommingsoon.setTextSize(18);
+//                        missingArea.setVisibility(View.VISIBLE);
 
 
                     /*missingArea.setAnimation(AnimationUtils.loadAnimation(getActivity(),
