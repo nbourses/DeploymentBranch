@@ -365,8 +365,8 @@ public class Ok_Broker_MainScreen extends Fragment implements ClientMainActivity
                                 map = googleMap;
 
                                 map.setMyLocationEnabled(false);
-                                //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, map);
-                                //selectedLocation = map.getCameraPosition().target;
+                                //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, broker_map);
+                                //selectedLocation = broker_map.getCameraPosition().target;
 
                             }
                         });

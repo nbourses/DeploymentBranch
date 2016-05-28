@@ -38,7 +38,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.Database.SharedPrefs;
-import com.nbourses.oyeok.Gesture.ListViewSwipeGesture;
+
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
@@ -112,7 +112,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
     private BrokerDealsListAdapter listAdapter;
 
-    private static ListViewSwipeGesture touchListener;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -183,8 +182,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 // set item background
                 MoreItem.setBackground(new ColorDrawable(getResources().getColor(R.color.grey)));
                 // set item width
-                MoreItem.setWidth(listAdapter.dp2px(120));
-                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(120));
+                MoreItem.setWidth(listAdapter.dp2px(90));
+                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(90));
                 // set item title
                 MoreItem.setIcon(R.drawable.more);
                 MoreItem.setTitle("More");
@@ -202,7 +201,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 // set item background
                 MuteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.timestamp)));
                 // set item width
-                MuteItem.setWidth(listAdapter.dp2px(120));
+                MuteItem.setWidth(listAdapter.dp2px(90));
                 // set item title
                 MuteItem.setIcon(R.drawable.unmute);
                 MuteItem.setTitle("unmute");
@@ -221,7 +220,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 // set item background
                 deleteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.darkred)));
                 // set item width
-                deleteItem.setWidth(listAdapter.dp2px(120));
+                deleteItem.setWidth(listAdapter.dp2px(90));
                 // set a icon
                deleteItem.setIcon(R.drawable.delete);
                 deleteItem.setTitle("delete");

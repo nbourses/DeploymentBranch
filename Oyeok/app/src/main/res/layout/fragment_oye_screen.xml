@@ -282,7 +282,7 @@
             <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                 android:id="@+id/budgetSeekBar"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginLeft="8dp"
                 android:paddingBottom="8dp"
                 app:dsb_indicatorPopupEnabled="false"
@@ -365,4 +365,71 @@
 
 
     </LinearLayout>
+
+    <CheckBox
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Security Deposit can Earn @ 12% Interest Rate"
+        android:id="@+id/checkBox"
+        android:layout_below="@+id/rootWrapper"
+        android:layout_alignParentEnd="true"
+        android:textColor="#008000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:text="FD in Bank @ 6% Interest"
+        android:id="@+id/tv_fd_bank"
+        android:textColor="@color/Black"
+        android:textAlignment="center"
+        android:foregroundGravity="center_horizontal"
+        android:layout_alignBottom="@+id/checkBox"
+        android:layout_alignParentStart="true" />
+
+    <GridLayout
+        android:id="@+id/btnOnOyeClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@color/yellow"
+
+
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:visibility="invisible"
+        android:layout_centerVertical="true"
+        android:layout_alignEnd="@+id/checkBox">
+
+
+        <LinearLayout
+            android:layout_gravity="center">
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|top"
+                android:textColor="@color/White"
+                android:layout_margin="5dp"
+                android:text="CONNECT NOW | List" />
+            <TextView
+                android:id="@+id/tv_dealinfo11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/foreground_material_light"
+                android:layout_margin="5dp"
+                android:text="2BHK Home @ Andheri"
+                android:singleLine="false" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:textColor="@color/White"
+            android:layout_margin="5dp"
+            android:text="(Brokers,Visits,Listings)" />
+
+    </GridLayout>
+
 </RelativeLayout>

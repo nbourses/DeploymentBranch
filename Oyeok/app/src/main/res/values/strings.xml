@@ -125,5 +125,6 @@
     <string name="title_activity_browser">browser</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="average_rate_this_locality">Average Rate @ This Locality</string>
 
 </resources>

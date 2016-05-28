@@ -19,7 +19,7 @@
 
 
           <!--  <fragment
-                android:id="@+id/map"
+                android:id="@+id/broker_map"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/> -->
@@ -41,13 +41,14 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical">
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="40dp">
 
                 <LinearLayout
                     android:id="@+id/ll_marker"
                     android:visibility="visible"
                     android:layout_width="fill_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="66dp"
                     android:layout_marginLeft="@dimen/sixteen_dp"
                     android:layout_marginRight="@dimen/sixteen_dp"
                     android:orientation="horizontal"
@@ -100,21 +101,27 @@
                             android:layout_alignParentLeft="true"/>-->
 
                         <TextView
-                            android:id="@+id/rupeesymbol"
-                            android:layout_width="wrap_content"
-                            android:text="@string/Rs"
-                            android:layout_marginLeft="130dp"
-                            android:layout_marginBottom="4dp"
-                            android:textColor="@color/yellow"
-                            android:layout_height="wrap_content"/>
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/average_rate_this_locality"
+                            android:id="@+id/tv_building"
+                            android:textColor="@color/White"
+                            android:layout_alignParentTop="true"
+                            android:layout_toStartOf="@+id/newVisits"
+                            android:singleLine="true"
+                            android:gravity="center"
+                            android:layout_alignEnd="@+id/tvCommingsoon"
+                            android:textSize="12dp"
+                            android:layout_marginTop="-5dp"
+                            android:layout_above="@+id/picker"
+                            android:visibility="visible" />
 
                         <com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker
                             android:id="@+id/picker"
                             android:layout_width="wrap_content"
-                            android:layout_height="35dp"
+                            android:layout_height="wrap_content"
                             android:layout_marginRight="50dp"
                             android:layout_marginTop="10dp"
-                            android:layout_centerInParent="true"
                             android:textColor="@android:color/white"
                             android:background="@android:color/black"
                             android:textSize="13sp"
@@ -122,17 +129,28 @@
                             android:marqueeRepeatLimit="1"
                             android:focusable="true"
                             android:focusableInTouchMode="true"
-                            android:layout_centerHorizontal="true"
                             app:values="@array/hpicker"
                             app:dividerSize="10dp"
-                            app:sideItems="@integer/sideItems"/>
+                            app:sideItems="@integer/sideItems"
+                            android:layout_above="@+id/tvRate" />
+
+                        <TextView
+                            android:id="@+id/rupeesymbol"
+                            android:layout_width="wrap_content"
+                            android:text="@string/Rs"
+                            android:layout_marginLeft="100dp"
+                            android:layout_marginBottom="4dp"
+                            android:textColor="@color/greenish_blue"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/tvRate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="psf"
-                            android:textColor="@color/yellow"
+                            android:textColor="@color/greenish_blue"
                             android:layout_alignParentBottom="true"
                             android:textSize="12sp"
                             android:layout_alignParentRight="true"
@@ -142,13 +160,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/tvFetchingRates"
-                            android:layout_marginRight="20dp"
-                            android:layout_alignTop="@+id/tvCommingsoon"
-                            android:layout_alignStart="@+id/picker"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignEnd="@+id/tvCommingsoon"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="30dp"
+                            android:layout_marginTop="20dp"
+
+                           android:foregroundGravity="center"
                             android:gravity="center"
                             android:textColor="@color/White" />
 
@@ -161,8 +176,7 @@
                             android:layout_alignEnd="@+id/picker"
                             android:layout_alignTop="@+id/picker"
                             android:layout_alignStart="@+id/picker"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp"
+                            android:foregroundGravity="center"
                             android:textColor="@color/White" />
 
                         <RelativeLayout
@@ -171,8 +185,8 @@
 
                             <TextView
                                 android:id="@+id/newVisits"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
                                 android:backgroundTint="@color/yellow"
                                 android:text="Oye"
                                 android:gravity="center"
@@ -182,12 +196,13 @@
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/sixteen_sp"
                                 android:layout_alignParentRight="true"/>
+
                         </RelativeLayout>
 
                         <TextView
                             android:id="@+id/txtFilterValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="fill_parent"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
                             android:backgroundTint="@color/yellow"
                             android:text="Industry"
                             android:gravity="center_vertical"
@@ -209,9 +224,7 @@
                     android:layout_below="@id/ll_marker"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="-15dp"
-
                     android:id="@+id/Mmarker" />
-
 
             </RelativeLayout>
 
@@ -280,7 +293,6 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/eight_dp"
 
             android:background="@drawable/rectable_border_effect"
             android:orientation="horizontal"
@@ -315,16 +327,14 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical|center_horizontal"
                 android:orientation="vertical"
-                android:layout_margin="@dimen/eight_dp"
                 android:weightSum="1"
                 android:id="@+id/route"
                 android:nestedScrollingEnabled="false">
 
                 <AutoCompleteTextView android:id="@+id/inputSearch"
                     android:inputType="textMultiLine|textPostalAddress"
-                    android:layout_width="wrap_content"
+                    android:layout_width="258dp"
                     android:layout_height="wrap_content"
                     android:hint="Search .."
                     android:background="@color/greenish_blue"
@@ -338,7 +348,19 @@
                     android:scrollbars="none"
                     android:textAlignment="center"
                     android:textSize="15dp"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:layout_marginLeft="50dp"
+                    android:foregroundGravity="center" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/selected_property"
+                    android:src="@drawable/search_building_icon"
+                    android:foregroundGravity="left"
+                    android:layout_marginTop="-40dp"
+                    android:visibility="visible"
+                    android:background="@drawable/tw__transparent" />
 
             </LinearLayout>
 
@@ -391,7 +413,8 @@
                         android:layout_weight="1" />
 
                     </LinearLayout>
-      -->
+        =======
+        >>>>>>> 83a4472e498b9ce118288e01cbf3165a2fdef17f -->
 
         <View
             android:id="@+id/border_line"

@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,6 +53,8 @@ public class OyeScreenFragment extends Fragment {
 
     @Bind(R.id.txtOptionShow)
     TextView txtOptionShow;
+    @Bind(R.id.tv_fd_bank)
+    TextView tv_fd_bank;
 
     @Bind(R.id.loadContainer)
     LinearLayout loadContainer;
@@ -62,8 +66,16 @@ public class OyeScreenFragment extends Fragment {
     @Bind(R.id.txtSelected)
     TextView txtSelected;
 
+    @Bind(R.id.checkBox)
+    CheckBox satView;
+
     @Bind(R.id.requestType)
     TextView requestType;
+
+
+    TextView tv_dealinfo;
+
+
 
     private ImageView txtPreviouslySelectedPropertyType;
     private static final String propertyTypeDefaultColor = "#FFFFFF";
@@ -82,14 +94,53 @@ public class OyeScreenFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_oye_screen, container, false);
         ButterKnife.bind(this, rootView);
 
+        View rootView1 = inflater.inflate(R.layout.activity_dashboard, container, false);
+      satView = (CheckBox) rootView.findViewById(R.id.checkBox);
+        satView.setVisibility(View.VISIBLE);
         bundle = getArguments();
+      tv_fd_bank=(TextView)rootView.findViewById(R.id.tv_fd_bank);
+        tv_dealinfo=(TextView)rootView1.findViewById(R.id.tv_dealinfo);
 
-        init();
 
-        return rootView;
+
+
+            init();
+
+
+        satView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (buttonView.isChecked()) {
+                    tv_fd_bank.setTextColor(getResources().getColor(R.color.greenish_blue));
+                    satView.setTextColor(getResources().getColor(R.color.black));
+                    //checked
+                }
+                else
+                {
+                    satView.setTextColor(getResources().getColor(R.color.greenish_blue));
+                    tv_fd_bank.setTextColor(getResources().getColor(R.color.black));
+                    //not checked
+                }
+
+            }
+        });
+
+
+
+            return rootView;
+
+
+
+
     }
 
     private void init() {
+
+
+
+
+
+
         //by default Home option is selected
         txtPreviouslySelectedPropertyType = txtHome;
         txtHome.setBackgroundResource(R.drawable.buy_option_circle);
@@ -184,21 +235,26 @@ public class OyeScreenFragment extends Fragment {
             txtHome.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("home");
             loadHomeOptionView("home");
+            tv_dealinfo.setText(tv_dealinfo.getText()+" "+"home");
+
         }
         else if(txtShop.getId() == v.getId()) {
             txtShop.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("shop");
             loadHomeOptionView("shop");
+            tv_dealinfo.setText(tv_dealinfo.getText()+" "+"shop");
         }
         else if(txtIndustrial.getId() == v.getId()) {
             txtIndustrial.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("industrial");
             loadHomeOptionView("industrial");
+            tv_dealinfo.setText(tv_dealinfo.getText()+" "+"industrial");
         }
         else if(txtOffice.getId() == v.getId()) {
             txtOffice.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("office");
             loadHomeOptionView("office");
+            tv_dealinfo.setText(tv_dealinfo.getText()+" "+"office");
         }
     }
 
@@ -240,9 +296,41 @@ public class OyeScreenFragment extends Fragment {
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
     @OnClick(R.id.btnCloseOyeScreenSlide)
     public void onBtnCloseOyeScreenSlideClick(View v) {
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
     }
+
+
+   // satView = (CheckBox) findViewById(R.id.checkBox);
+
+//    satView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//        @Override
+//        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//            if (buttonView.isChecked()) {
+//                //checked
+//            }
+//            else
+//            {
+//                //not checked
+//            }
+//
+//        });
+
+
+
+
 }

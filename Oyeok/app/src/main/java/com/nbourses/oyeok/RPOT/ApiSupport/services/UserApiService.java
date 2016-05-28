@@ -71,6 +71,7 @@ import retrofit.http.POST;
         @POST("/1/user/gps")
         void sendLocation(@Body User user ,Callback<User> callBack);
 
+
         // API POST Request
       /*  {
         "user_id" : "7.216944372169443e+21",

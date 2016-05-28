@@ -572,8 +572,8 @@ public class General extends BroadcastReceiver{
             // Permission to access the location is missing.
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-        } else if (map != null) {
+        } else if (broker_map != null) {
             // Access to the location has been granted to the app.
-            map.setMyLocationEnabled(true);
+            broker_map.setMyLocationEnabled(true);
         }
     }*/

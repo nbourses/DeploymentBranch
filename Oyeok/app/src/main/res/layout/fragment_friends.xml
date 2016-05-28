@@ -437,7 +437,8 @@
                 android:text="Oye"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sixteen_sp" />
+                android:textSize="@dimen/sixteen_sp"
+                android:visibility="visible" />
 
         </LinearLayout>
 

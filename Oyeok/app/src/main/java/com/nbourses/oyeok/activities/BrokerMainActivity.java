@@ -1,12 +1,16 @@
 package com.nbourses.oyeok.activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,11 +22,13 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.fragments.BrokerMap;
 import com.nbourses.oyeok.fragments.BrokerPreokFragment;
-import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
@@ -36,21 +42,20 @@ import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
 
-public class BrokerMainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
+public class BrokerMainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener{
 
-    @Bind(R.id.toolbar)
-    Toolbar mToolbar;
+@Bind(R.id.toolbar)
+   Toolbar mToolbar;
 
     @Bind(R.id.txtEmail)
     TextView emailTxt;
 
     @Bind(R.id.openmaps)
     Button openmaps;
-
-
-
-
-
+TextView tv_change_region;
+ private boolean gmap=false;
+GoogleMap map;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
 
     private TextView option1Count;
@@ -69,11 +74,12 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_agent_main);
 
         ButterKnife.bind(this);
+        tv_change_region=(TextView) findViewById(R.id.tv_change_region);
 
+        tv_change_region.setVisibility(View.VISIBLE);
         if (General.isNetworkAvailable(getApplicationContext())) {
 
             Log.i("TRACE", "network availabe");
@@ -211,25 +217,46 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
             emailTxt.setVisibility(View.INVISIBLE);
         }
 
+//Remember
 
         openmaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                BrokerMap brokerMap=new BrokerMap();
+//                brokerMap.setChangeLoction(this);
+                loadFragment(brokerMap,null,R.id.container_map,"");
+                gmap=true;
 
-                
-                DashboardClientFragment dashboardClientFragment = new DashboardClientFragment();
-                loadFragment(dashboardClientFragment, null, R.id.container_map, "");
+                tv_change_region.setVisibility(View.VISIBLE);
+                tv_change_region.setText(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
+
+
+//              Bro
+
+
+//                DashboardClientFragment dashboardClientFragment = new DashboardClientFragment();
+//                loadFragment(dashboardClientFragment, null, R.id.container_map, "");
 
             }
         });
-
-
+//
 
 
 
 
     }
 
+    private void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission to access the location is missing.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        } else if (map != null) {
+            // Access to the location has been granted to the app.
+            map.setMyLocationEnabled(true);
+        }
+    }
 
 
 
@@ -358,10 +385,30 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
             startActivity(back);
 
         }
+
+        else if(gmap ==true){
+
+            Intent back = new Intent(this, BrokerMainActivity.class);
+            startActivity(back);
+
+
+        }
+
         else{
 
                 super.onBackPressed();
 
         }
+        tv_change_region.setVisibility(View.VISIBLE);
+        tv_change_region.setText(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
+
+
+
+
     }
+
+//    @Override
+//    public void changeLocation(String location) {
+//        tv_change_region.setText(location);
+//    }
 }

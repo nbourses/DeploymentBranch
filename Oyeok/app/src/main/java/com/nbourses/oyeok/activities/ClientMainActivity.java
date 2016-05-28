@@ -23,7 +23,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -88,10 +88,12 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     LinearLayout toastLayout;
 
     @Bind(R.id.btnOnOyeClick)
-    Button btnOnOyeClick;
+    GridLayout btnOnOyeClick;
 
     @Bind(R.id.hdroomsCount)
     TextView hdroomsCount;
+
+
 
     private WebView webView;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
@@ -210,12 +212,12 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
         slidingLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                resizeScrollView(panel, slideOffset);
+//                resizeScrollView(panel, slideOffset);
             }
 
             @Override
             public void onPanelExpanded(View panel) {
-                resizeScrollView(panel, 0.0f);
+//                resizeScrollView(panel, 0.0f);
             }
 
             @Override
@@ -224,20 +226,20 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
             @Override
             public void onPanelAnchored(View panel) {
-                resizeScrollView(panel, anchorPoint);
+//                resizeScrollView(panel, anchorPoint);
             }
 
             @Override
             public void onPanelHidden(View panel) {
             }
 
-            private void resizeScrollView(View panel, float slideOffset) {
-                final int scrollViewHeight =
-                        (int) ((panel.getHeight() - slidingLayout.getPanelHeight()) * (1.0f - slideOffset));
-                slidingView.setLayoutParams(
-                        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                scrollViewHeight));
-            }
+//            private void resizeScrollView(View panel, float slideOffset) {
+//                final int scrollViewHeight =
+//                        (int) ((panel.getHeight() - slidingLayout.getPanelHeight()) * (1.0f - slideOffset));
+//                slidingView.setLayoutParams(
+//                        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+//                                scrollViewHeight));
+//            }
         });
 
       //  RelativeLayout re = (RelativeLayout) findViewById(R.id.badge);
@@ -306,7 +308,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
 
 
-        //by default load map view
+        //by default load broker_map view
         DashboardClientFragment dashboardClientFragment = new DashboardClientFragment();
         dashboardClientFragment.setOyeButtonClickListener(this);
         loadFragment(dashboardClientFragment, null, R.id.container_map, "Client Dashboard");
@@ -585,6 +587,4 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     }
 
 }
-
-
 

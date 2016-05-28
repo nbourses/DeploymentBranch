@@ -60,7 +60,7 @@ public class PayTMFragment extends Fragment implements View.OnClickListener {
         2) Checksum verification url
         Merchant should replace the below values with his values*/
 
-        //below parameter map is required to construct PaytmOrder object, Merchant should replace below map values with his own values
+        //below parameter broker_map is required to construct PaytmOrder object, Merchant should replace below broker_map values with his own values
 
         Map<String, String> paramMap = new HashMap<String, String>();
 

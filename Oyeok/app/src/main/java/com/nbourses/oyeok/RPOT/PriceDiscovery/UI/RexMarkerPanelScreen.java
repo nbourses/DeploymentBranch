@@ -330,8 +330,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 }
                 map.setMyLocationEnabled(true);
                 setCameraListener();
-                //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, map);
-                //selectedLocation = map.getCameraPosition().target;
+                //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, broker_map);
+                //selectedLocation = broker_map.getCameraPosition().target;
                 geoFence.drawPloygon(map);
 
             }
@@ -357,7 +357,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                     getPrice();
                     map.animateCamera(CameraUpdateFactory.zoomTo(16));
                     /*
-                    LatLng latlng = map.getCameraPosition().target;
+                    LatLng latlng = broker_map.getCameraPosition().target;
                     lat = latlng.latitude;
                     lng = latlng.longitude;
                     if (isNetworkAvailable()) {
@@ -430,8 +430,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 //                    }
 //
 //                    LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-//                    map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-//                    map.animateCamera(CameraUpdateFactory.zoomTo(16));
+//                    broker_map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+//                    broker_map.animateCamera(CameraUpdateFactory.zoomTo(16));
 //
 //                    //make retrofit call to get Min Max price
 //                    if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
@@ -642,11 +642,11 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
                 Log.i("getPrice", "success");
                 //minPrice.setText(getPrice.responseData.getOr_max());
                 //maxPrice.setText(getPrice.responseData.getOr_min());
-                String min = getPrice.responseData.getOr_min();
-                String max = getPrice.responseData.getOr_max();
-                if(horizontalPicker!=null)
-                    horizontalPicker.setInterval(Integer.parseInt(min),Integer.parseInt(max),
-                            10,HorizontalPicker.THOUSANDS);
+               // string min = getPrice.getResponseData().getPrice().getLlMin();
+               // String max = getPrice.getResponseData().getPrice().getLlMax();
+               // if(horizontalPicker!=null)
+                  //  horizontalPicker.setInterval(min,max,
+                  //          10,HorizontalPicker.THOUSANDS);
 
             }
 
@@ -983,7 +983,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
             /*p1 = new GeoPoint((int) (location.getLatitude() * 1E6),
                     (int) (location.getLongitude() * 1E6));*/
             LatLng l=new LatLng(location.getLatitude(),location.getLongitude());
-            //map.addMarker(new MarkerOptions().position(l));
+            //broker_map.addMarker(new MarkerOptions().position(l));
             map.moveCamera(CameraUpdateFactory.newLatLng(l));
             map.animateCamera(CameraUpdateFactory.zoomTo(16));
             //return p1;

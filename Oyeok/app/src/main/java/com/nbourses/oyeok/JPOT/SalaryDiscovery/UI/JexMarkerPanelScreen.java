@@ -123,8 +123,8 @@ public class JexMarkerPanelScreen extends Fragment {
                 map = googleMap;
 
                 map.setMyLocationEnabled(true);
-                //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, map);
-                //selectedLocation = map.getCameraPosition().target;
+                //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, broker_map);
+                //selectedLocation = broker_map.getCameraPosition().target;
 
             }
         });
