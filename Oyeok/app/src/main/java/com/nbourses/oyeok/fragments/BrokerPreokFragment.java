@@ -333,9 +333,14 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                 public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 
                     if (key.equals(AppConstants.RENTAL_COUNT)) {
-                        if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) <= 0)
+                        Log.i(TAG,"OnSharedPreferenceChangeListener 1");
+                        Log.i(TAG,"OnSharedPreferenceChangeListener 1 rent "+General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT));
+                        if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) <= 0) {
+                            Log.i(TAG,"OnSharedPreferenceChangeListener 2");
                             rentalCount.setVisibility(View.GONE);
+                        }
                         else {
+                            Log.i(TAG,"OnSharedPreferenceChangeListener 3");
                             rentalCount.setVisibility(View.VISIBLE);
                             rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
                         }

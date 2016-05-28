@@ -130,6 +130,12 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
            // }
+            Log.i("NOTIF","LL set true intend "+intend);
+            Log.i("NOTIF","LL set true ptype "+ptype );
+            Log.i("NOTIF","LL set true pstype "+pstype);
+            Log.i("NOTIF","LL set true price "+price);
+            Log.i("NOTIF","LL set true tType "+tType);
+
 
             if(tType.equalsIgnoreCase("LL")) {
                 Log.i("NOTIF","LL set true");

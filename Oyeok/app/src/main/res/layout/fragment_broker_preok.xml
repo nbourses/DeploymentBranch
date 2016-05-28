@@ -402,7 +402,7 @@
                 android:id="@+id/box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="90dp"
+                android:paddingLeft="105dp"
                 android:visibility="visible">
                 <TextView
 
