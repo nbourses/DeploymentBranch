@@ -34,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 
 public class Req_Rental_Broker_Tenants extends Fragment implements CircularSeekBarNew.imageAction,OnAcceptOkSuccess {
 
@@ -54,6 +55,7 @@ public class Req_Rental_Broker_Tenants extends Fragment implements CircularSeekB
     Ok_Broker_MainScreen ok_broker_mainScreen;
     Button droom;
     FloatingActionButton autoOk;
+    HashMap<String, Float> listings = new HashMap<String, Float>();
    // View popup;
    // private PopupWindow pw;
 
@@ -98,7 +100,7 @@ public class Req_Rental_Broker_Tenants extends Fragment implements CircularSeekB
                     {
                         AcceptOkCall a = new AcceptOkCall();
                         a.setmCallBack(Req_Rental_Broker_Tenants.this);
-                        a.acceptOk(p,j,dbHelper, getActivity());
+                        a.acceptOk(listings,p,j,dbHelper, getActivity());
                     }
                 }
         });

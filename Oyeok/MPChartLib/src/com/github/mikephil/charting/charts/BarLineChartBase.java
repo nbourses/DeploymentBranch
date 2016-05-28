@@ -645,7 +645,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
 
-        Log.i("TRACE GRAPH ","TOUCH =========");
+       // Log.i("TRACE GRAPH ","TOUCH =========");
         if (mChartTouchListener == null || mData == null)
             return false;
 
@@ -661,7 +661,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
                         if (editEntryValue) {
                             Entry entry = getEntryByTouchPoint(event.getX(), event.getY());
                             PointD value = getValuesByTouchPoint(event.getX(), event.getY(), AxisDependency.LEFT);
-                            Log.i("CRASH GRAPH","entry "+entry);
+                          //  Log.i("CRASH GRAPH","entry "+entry);
 
                             if(maxLimit == 0)
                                 maxLimit = this.getYChartMax()*5;

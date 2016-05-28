@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -263,6 +265,19 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
         price ="₹ "+price;
 
         return price;
+    }
+
+    public static String getDeviceId(Context context){
+        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        final String tmDevice, tmSerial, androidId;
+        tmDevice = "" + tm.getDeviceId();
+        tmSerial = "" + tm.getSimSerialNumber();
+        androidId = "" + android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+
+        UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
+        String deviceId = deviceUuid.toString();
+        return deviceId;
     }
 
     public static void publishOye(final Context context) {
@@ -584,8 +599,10 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
 
         */
 
-        if(!(haveConnectedMobile) && !(haveConnectedWifi))
-            Toast.makeText(context, "INTERNET CONNECTIVITY NOT AVAILABLE", Toast.LENGTH_LONG).show();
+//        if(!(haveConnectedMobile) && !(haveConnectedWifi))
+//            Toast.makeText(context, "INTERNET CONNECTIVITY NOT AVAILABLE", Toast.LENGTH_LONG).show();
+
+
        /* SnackbarManager.show(
                     Snackbar.with(context)
                             .position(Snackbar.SnackbarPosition.BOTTOM)

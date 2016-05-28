@@ -402,7 +402,8 @@
                 android:id="@+id/box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="106dp">
+                android:paddingLeft="90dp"
+                android:visibility="visible">
                 <TextView
 
                     android:id="@+id/rentalCount"
@@ -572,5 +573,11 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="right|bottom"
+        android:visibility="gone"></RelativeLayout>
 
 </FrameLayout>

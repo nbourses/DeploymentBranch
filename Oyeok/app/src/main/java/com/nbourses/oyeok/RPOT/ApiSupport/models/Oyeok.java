@@ -174,6 +174,9 @@ public class Oyeok {
     @SerializedName("property_subtype")
     private String propertySubtype;
 
+    @SerializedName("listings")
+    Map<String, Float> listings = new HashMap<String, Float>();
+
     public String getPropertySubtype() {
         return propertySubtype;
     }
@@ -192,6 +195,17 @@ public class Oyeok {
 
     //@JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    //@JsonAnyGetter
+    public Map<String, Float> getListings() {
+        return this.listings;
+    }
+
+    //@JsonAnySetter
+    public void setListings(String buildingname, Float price) {
+        this.listings.put(buildingname, price);
+    }
+
 
     /**
      * A unique identifier for the user

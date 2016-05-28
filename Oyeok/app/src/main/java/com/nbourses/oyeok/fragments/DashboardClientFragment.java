@@ -75,6 +75,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCusto
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.animations.FlipListener;
 import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.interfaces.OnOyeClick;
 import com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
@@ -216,6 +217,17 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
         final View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         ButterKnife.bind(this, rootView);
+
+
+        if(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI).equals("")){
+            General.setSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI,String.valueOf(System.currentTimeMillis()));
+            Log.i("TIMESTAMP","millis "+System.currentTimeMillis());
+        }
+
+
+
+
+
 
         requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
         droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl, getActivity());
@@ -524,50 +536,50 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         tvFetchingrates.setTypeface(null,Typeface.ITALIC);
         tvFetchingrates.setTextSize(14);*/
 
+try {
+    customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
+        @Override
+        public void onDrag(MotionEvent motionEvent) {
+            //Log.d("t1", String.format("ME: %s", motionEvent));
 
-        customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
-            @Override
-            public void onDrag(MotionEvent motionEvent) {
-                //Log.d("t1", String.format("ME: %s", motionEvent));
-
-                if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                    tvRate.setVisibility(View.GONE);
-                    rupeesymbol.setVisibility(View.GONE);
-                    //Point p= new Point(x,y);
-                    //LatLng currentLocation1;
+            if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                tvRate.setVisibility(View.GONE);
+                rupeesymbol.setVisibility(View.GONE);
+                //Point p= new Point(x,y);
+                //LatLng currentLocation1;
 //                    currentLocation1= map.getProjection().fromScreenLocation(point);
-                    //  lat=currentLocation1.latitude;
-                    //lng=currentLocation1.longitude;
+                //  lat=currentLocation1.latitude;
+                //lng=currentLocation1.longitude;
 
 
-                    //SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                    // SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                    //getRegion();
-                    //getPrice();
-                    horizontalPicker.keepScrolling();
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    mMarkerPanel.setVisibility(View.VISIBLE);
-                    mMarkerminmax.setVisibility(View.VISIBLE);
-                    Mmarker.setVisibility(View.VISIBLE);
-                    horizontalPicker.stopScrolling();
-                    tvRate.setVisibility(View.VISIBLE);
-                    rupeesymbol.setVisibility(View.VISIBLE);
+                //SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+                // SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                //getRegion();
+                //getPrice();
+                horizontalPicker.keepScrolling();
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                mMarkerPanel.setVisibility(View.VISIBLE);
+                mMarkerminmax.setVisibility(View.VISIBLE);
+                Mmarker.setVisibility(View.VISIBLE);
+                horizontalPicker.stopScrolling();
+                tvRate.setVisibility(View.VISIBLE);
+                rupeesymbol.setVisibility(View.VISIBLE);
 
-                    //Remmember changes sushil start
-                    LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
+                //Remmember changes sushil start
+                LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
 
-                    currentLocation1 = map.getProjection().fromScreenLocation(point);
-                    lat = currentLocation1.latitude;
-                    Log.i("t1", "lat" + " " + lat);
-                    lng = currentLocation1.longitude;
-                    Log.i("t1", "lng" + " " + lng);
-                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                    Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-                    Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-                    getRegion();
-                    //  horizontalPicker.stopScrolling();
-                    //new LocationUpdater().execute();
+                currentLocation1 = map.getProjection().fromScreenLocation(point);
+                lat = currentLocation1.latitude;
+                Log.i("t1", "lat" + " " + lat);
+                lng = currentLocation1.longitude;
+                Log.i("t1", "lng" + " " + lng);
+                SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+                SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+                Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+                getRegion();
+                //  horizontalPicker.stopScrolling();
+                //new LocationUpdater().execute();
 
 //                    for(int i=0;i<5;i++) {
 //                        if (mCustomerMarker [i]!= null) {
@@ -575,52 +587,55 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 //                        }
 //
 //                    }
-                    getPrice();
-                    double j=0.0884652453;
-                    for(int i=0;i<5;i++) {
-                        j=j+j;
-                        LatLng l = new LatLng(lat+j,lng+j);
-                        mCustomerMarker[i] = map.addMarker(new MarkerOptions()
-                                .position(l)
-                                .title("Title")
-                                .snippet("Description")
-                                .icon(icon1));
-                    }
-                    //updateHorizontalPicker();
-                    // map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation1,12));
-                    // map.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("I am here!").icon(icon1));
-                    // map.addMarker(new MarkerOptions().position(currentLocation1).title(""));
-                    //map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
+                getPrice();
+                double j = 0.0884652453;
+                for (int i = 0; i < 5; i++) {
+                    j = j + j;
+                    LatLng l = new LatLng(lat + j, lng + j);
+                    mCustomerMarker[i] = map.addMarker(new MarkerOptions()
+                            .position(l)
+                            .title("Title")
+                            .snippet("Description")
+                            .icon(icon1));
+                }
+                //updateHorizontalPicker();
+                // map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation1,12));
+                // map.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("I am here!").icon(icon1));
+                // map.addMarker(new MarkerOptions().position(currentLocation1).title(""));
+                //map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
 
-                    // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation1));
-                    // map.set
+                // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation1));
+                // map.set
 
-                    Log.i("t1", "latlong" + " " + currentLocation1);
+                Log.i("t1", "latlong" + " " + currentLocation1);
 
 
-                    // map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
-                    if (isNetworkAvailable()) {
-                        new LocationUpdater().execute();
-                    }
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    tvRate.setVisibility(View.GONE);
-                    rupeesymbol.setVisibility(View.GONE);
-                    LatLng currentLocation11;
-                    //String lat  SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT
-                    // map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation11,12));
-                    // LatLng currentLocation2;
-                    // Point p= new Point(left,bottom);
-                    // currentLocation2= map.getProjection().fromScreenLocation(p);
-                    // lat=currentLocation2.latitude;
-                    //lng=currentLocation2.longitude;
+                // map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
+                if (isNetworkAvailable()) {
+                    new LocationUpdater().execute();
+                }
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                tvRate.setVisibility(View.GONE);
+                rupeesymbol.setVisibility(View.GONE);
+                LatLng currentLocation11;
+                //String lat  SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT
+                // map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation11,12));
+                // LatLng currentLocation2;
+                // Point p= new Point(left,bottom);
+                // currentLocation2= map.getProjection().fromScreenLocation(p);
+                // lat=currentLocation2.latitude;
+                //lng=currentLocation2.longitude;
 //                    horizontalPicker.keepScrolling();
 
-                }
-                SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
             }
-        });
+            SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+            SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+        }
+    });
+}
+catch (Exception e){
 
+}
 
       /*  mcallback = new GetCurrentLocation.CurrentLocationCallback() {
 
@@ -812,7 +827,20 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     public void getPrice() {
         //getRegion();
         User user = new User();
-        user.setDeviceId("Hardware");
+
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE)
+                == PackageManager.PERMISSION_GRANTED) {
+            Log.i("PREOK","getcontext "+General.getDeviceId(getContext()));
+            user.setDeviceId(General.getDeviceId(getContext()));
+
+
+        }else{
+            // preok.setDeviceId(General.getSharedPreferences(this,AppConstants.));
+            user.setDeviceId(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
+            Log.i("PREOK","getcontext "+General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
+
+        }
+
         user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         user.setUserRole("client");
         user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));

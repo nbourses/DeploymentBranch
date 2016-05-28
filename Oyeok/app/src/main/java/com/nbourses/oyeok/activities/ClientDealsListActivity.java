@@ -58,7 +58,9 @@ import com.nispok.snackbar.SnackbarManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -176,6 +178,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
         ButterKnife.bind(this);
+
+        Log.i("CHAT","in client deals list activity "+DateFormat.getDateTimeInstance().format(new Date()));
 
 
         init();
@@ -317,6 +321,43 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                 Log.i("deleteDR CALLED", "Its default deal " + total_deals.get(position).getSpecCode());
 
 
+                                String deals;
+                                deals = General.getDefaultDeals(ClientDealsListActivity.this);
+                                java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+                                }.getType();
+                                HashMap<String, String> deals1 = gson.fromJson(deals, type);
+
+                                Log.i("TRACE", "hashmap:" + deals1);
+
+                                if (deals1 == null) {
+                                    deals1 = new HashMap<String, String>();
+
+                                }
+
+                                Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
+
+                                while (iter.hasNext()) {
+                                    Map.Entry<String,String> entry = iter.next();
+                                    Log.i("DELETE DEFAULT DROOM","entry.getKey"+entry.getKey());
+                                    if(total_deals.get(position).getOkId().equalsIgnoreCase(entry.getKey())){
+                                        iter.remove();
+                                        Log.i("DELETE DEFAULT DROOM", "entry.getKey removed" + entry.getKey());
+                                        Log.i("DELETE DEFAULT DROOM", "default droomsremoved" + entry.getKey());
+                                        Log.i("DELETE DEFAULT DROOM", "default droomsremoved okid" + total_deals.get(position).getOkId());
+                                        Log.i("DELETE DEFAULT DROOM","entry.getKey removed"+entry.getValue());
+                                       // RefreshDrooms = true;
+                                    }
+                                }
+                                Log.i(TAG,"after deal "+deals1);
+                                Log.i("Default deals in shared","I am here2");
+                                Gson g = new Gson();
+                                String hashMapString = g.toJson(deals1);
+                                General.saveDefaultDeals(ClientDealsListActivity.this, hashMapString);
+
+                                deleteDealingroom("1",total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
+                                default_deals.clear();
+                                loadDefaultDeals();
+
                             }
                         }
 
@@ -327,7 +368,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                 Log.i("deleteDR CALLED", "Its HDroom " + total_deals.get(position).getSpecCode());
 
 
-                                deleteDealingroom(total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
+                                deleteDealingroom("0",total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
                                 //on delete droom delete that room OK id from mutedOKIds
 
                                 Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(ClientDealsListActivity.this));
@@ -651,13 +692,14 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
 
-private void deleteDealingroom(String deleteOKId, final String specCode){
+private void deleteDealingroom(String deleteOyeId,String deleteOKId, final String specCode){
 
 
 
 
     deleteHDroom deleteHDroom  = new deleteHDroom();
     deleteHDroom.setOkId(deleteOKId);
+    deleteHDroom.setDeleteOyeId(deleteOyeId);
     deleteHDroom.setUserId(General.getSharedPreferences(this,AppConstants.USER_ID));
     deleteHDroom.setPage("1");
     deleteHDroom.setGcmId(General.getSharedPreferences(this,AppConstants.GCM_ID));

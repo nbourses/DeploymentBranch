@@ -769,6 +769,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         for (int i = 0; i < jsonArrayHistoryLength; i++) {
                             JSONObject jsonMsg = jsonArrayHistory.getJSONObject(i);
 
+
+                            Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub jsonArrayResponse" + jsonArrayResponse);
+                            Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub jsonArrayHistory" + jsonArrayHistory);
                             Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub" + jsonMsg);
                             displayMessage(jsonMsg);
 
@@ -796,13 +799,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
 
-                        jsonMsg.put("message", "You have initiated inquiry for requested "+jsonResponse.getString("property_subtype")+", "+jsonResponse.getString("property_type")+" property within budget "+jsonResponse.getString("price")+" Within a moment we are connecting you to our top 3 brokers.");
+                        jsonMsg.put("message", "You have initiated inquiry for requested "+jsonResponse.getString("property_subtype")+", "+jsonResponse.getString("property_type")+" property within budget "+General.currencyFormat(jsonResponse.getString("price"))+" Within a moment we are connecting you to our top 3 brokers.");
                         //Log.i("TRACE","messageText is "+messageText);
                         //Log.i(TAG,"messageText is"+messageText);
                         //publish message
                         pubnub.publish(channel, jsonMsg, true, new Callback() {});
                         Log.i(TAG, "Default message published");
-
 
 
                     }

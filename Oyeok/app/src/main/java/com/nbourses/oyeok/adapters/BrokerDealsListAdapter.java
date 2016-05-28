@@ -7,9 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.BrokerDeals;
 
 import java.util.ArrayList;
@@ -81,10 +84,11 @@ public class BrokerDealsListAdapter extends BaseAdapter {
 Log.i("inside brokerdeals view","flag check "+this.default_deal);
             if (convertView == null) {
 
-                   v = LayoutInflater.from(context).inflate(R.layout.broker_deal_item, parent, false);
+                   v = LayoutInflater.from(context).inflate(R.layout.hdroom_chat_item, parent, false);
                holder = new ViewHolder();
 
                 holder.txtTitle = (TextView) v.findViewById(R.id.txtTitle);
+                holder.dealPtype =(ImageView) v.findViewById(R.id.dealPtype);
                 holder.txtDescription = (TextView) v.findViewById(R.id.txtDescription);
                 holder.txtTime = (TextView) v.findViewById(R.id.txtTime);
                 holder.txtFirstChar = (TextView) v.findViewById(R.id.txtFirstChar);
@@ -156,21 +160,60 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
 
 
-            String description = ptype + " property ("+pstype+") for " +intend+ " at Rs. " + price;
+
+//            Iterator<BrokerDeals> it = dealses.iterator();
+//
+//          //  listBrokerDeals_new = new ArrayList<BrokerDeals>();
+//            while (it.hasNext()) {
+//                BrokerDeals deals = it.next();
+//
+//                Log.i("CHAT","deals.are"+deals);
+//                Log.i("CHAT","deals.ok_id"+deals.getdefaultDeal());
+////                if(!(deals.getOkId() == null))
+////                {   if(deals.getSpecCode().contains(TT+"-")) {
+////                    Log.i("DEALREFRESHPHASESEEKBA","deal spec code "+deals.getSpecCode()+" for "+TT);
+////
+////
+////
+////                }
+//                }
+
+            Log.i("CHAT","default deal flag is "+default_deal);
+
+
+
+                String description = ptype + " property ("+pstype+") for " +intend+ " at  " + General.currencyFormat(price)+".";
 
             Log.i("Deal data","Deal data is"+deal.getName());
 
-            holder.txtFirstChar.setText(name.substring(0, 1).toUpperCase());
+   //         holder.txtFirstChar.setText(name.substring(0, 1).toUpperCase());
 
             Log.i("Deal data","Deal data is"+deal.getName());
 
            // String specs = String.valueOf(spec.charAt(0)).toUpperCase() + spec.subSequence(1, spec.length());
-            holder.txtTitle.setText(name);
+
+
+
+            if(General.getSharedPreferences(context, AppConstants.NAME).equalsIgnoreCase(name) || General.getSharedPreferences(context,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+                holder.txtTitle.setText(name);
+            else
+            holder.txtTitle.setText("Broker "+name);
+
+            if(ptype.equalsIgnoreCase("office"))
+            holder.dealPtype.setImageResource(R.drawable.office);
+            else if(ptype.equalsIgnoreCase("home"))
+                holder.dealPtype.setImageResource(R.drawable.home);
+            else if(ptype.equalsIgnoreCase("shop"))
+                holder.dealPtype.setImageResource(R.drawable.shop);
+            else if(ptype.equalsIgnoreCase("industry"))
+                holder.dealPtype.setImageResource(R.drawable.industry);
 
             //  holder.txtDescription.setText(deal.getMobileNo());
             holder.txtDescription.setText(description);
 
-            holder.txtTime.setText("23.11");
+           // holder.txtTime.setText("23.11");
+
+            holder.txtTime.setText("");
 
 
 
@@ -201,6 +244,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
         public TextView txtDescription;
         public TextView txtTime;
         public TextView txtFirstChar;
+        public ImageView dealPtype;
 
     }
 

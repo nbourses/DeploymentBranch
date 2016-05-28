@@ -78,6 +78,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -127,6 +129,8 @@ public class Ok_Broker_MainScreen extends Fragment implements ClientMainActivity
     ImageView aboveImageView,aboveImageView1,aboveImageView2,aboveImageView3,aboveImageView4,aboveImageView5;
     ImageView belowImageView,belowImageView1,belowImageView2,belowImageView3,belowImageView4,belowImageView5;
     ImageView aboveAboveImageView,aboveAboveImageView1,aboveAboveImageView2,aboveAboveImageView3,aboveAboveImageView4,aboveAboveImageView5;
+    HashMap<String, Float> listings = new HashMap<String, Float>();
+
     //MainActivity mActivity = new MainActivity();
 
     @Override
@@ -1056,7 +1060,7 @@ public class Ok_Broker_MainScreen extends Fragment implements ClientMainActivity
                             public void success(User user, Response response) {
                                 Log.i("role changed to", "Broker");
                                 AcceptOkCall a = new AcceptOkCall();
-                                a.acceptOk(p,j,dbHelper, getActivity());
+                                a.acceptOk(listings,p,j,dbHelper, getActivity());
                             }
 
                             @Override

@@ -66,7 +66,7 @@
             android:textSize="10sp"
             android:id="@+id/txtTime"
             android:layout_marginRight="8dp"
-            android:text=""/>
+            android:text="Time"/>
 
     </LinearLayout>
 

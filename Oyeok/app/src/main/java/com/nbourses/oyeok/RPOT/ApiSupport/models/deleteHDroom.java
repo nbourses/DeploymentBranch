@@ -22,6 +22,9 @@ public class deleteHDroom {
     @SerializedName("page")
     public String page;
 
+    @SerializedName("delete_oye_id")
+    public String delete_oye_id;
+
     public String getSuccess(){
         return success;
     }
@@ -63,6 +66,14 @@ public class deleteHDroom {
 
     public void setPage(String page){
         this.page=page;
+    }
+
+    public String getDeleteOyeid(){
+        return delete_oye_id;
+    }
+
+    public void setDeleteOyeId(String delete_oye_id){
+        this.delete_oye_id=delete_oye_id;
     }
 
 }
