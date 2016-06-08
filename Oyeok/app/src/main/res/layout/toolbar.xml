@@ -31,7 +31,7 @@
         android:layout_gravity="right"
         android:background="@drawable/broker_pin"
         android:gravity="center"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_marginRight="10dp"
         android:layout_width="24dp"
         android:layout_height="24dp" />
@@ -44,7 +44,7 @@
         android:text="Andheri West"
         android:textStyle="bold"
         android:layout_marginRight="30dp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:paddingRight="10dp" />
 
 

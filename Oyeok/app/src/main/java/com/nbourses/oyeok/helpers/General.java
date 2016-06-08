@@ -47,7 +47,7 @@ import retrofit.mime.TypedByteArray;
 /**
  * Created by rohit on 09/02/16.
  */
-public class General extends BroadcastReceiver{
+public class General extends BroadcastReceiver {
 
     public static HashMap<String, String> oyeDataHolder = new HashMap<String, String>();
     public static final String TAG = "General";
@@ -55,22 +55,42 @@ public class General extends BroadcastReceiver{
     private NetworkInterface networkInfo;
 
 
+    //  private static Set<String> defaultDeals ;
 
-  //  private static Set<String> defaultDeals ;
-
-//    public General(NetworkInterface networkInfo)
+    //    public General(NetworkInterface networkInfo)
 //    {
 //        this.networkInfo = networkInfo;
 //    }
-public static void saveMutedOKIds(Context context, Set<String> value) {
 
-    Log.i("TRACE", "save default deal inside" + value);
-    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-    SharedPreferences.Editor editor = prefs.edit();
-    editor.putStringSet(AppConstants.MUTED_OKIDS, value);
-    editor.commit();
+    public static void saveSet(Context context,String name, Set<String> value) {
+// for storing catched msgs
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putStringSet(name, value);
+        editor.commit();
 
-}
+    }
+
+    public static Set<String> getSet(Context context, String name) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+
+        return prefs.getStringSet(name, null);
+
+
+    }
+
+
+    public static void saveMutedOKIds(Context context, Set<String> value) {
+
+        Log.i("TRACE", "save default deal inside" + value);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putStringSet(AppConstants.MUTED_OKIDS, value);
+        editor.commit();
+
+    }
 
     public static Set<String> getMutedOKIds(Context context) {
 
@@ -103,7 +123,7 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
 
 
     public static void setBadgeCount(Context context, String prefName, int value) {
-        Log.i("TRACE","inside shared pref "+prefName +value);
+        Log.i("TRACE", "inside shared pref " + prefName + value);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(prefName, value);
@@ -118,14 +138,13 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
     }
 
 
-
     public static void saveDefaultDeals(Context context, String value) {
 
-            Log.i("TRACE", "save default deal inside" + value);
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("DefaultDeals", value);
-            editor.commit();
+        Log.i("TRACE", "save default deal inside" + value);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("DefaultDeals", value);
+        editor.commit();
 
     }
 
@@ -161,7 +180,7 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
 
     public static void setArraylist(Context context, String prefName, String value) {
 
-        ArrayList<String> MutedOKIds= new ArrayList<>();
+        ArrayList<String> MutedOKIds = new ArrayList<>();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
@@ -169,28 +188,27 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
         editor.commit();
     }
 
-    public static boolean saveArray(Context mContext, String arrayName, String[] array ) {
+    public static boolean saveArray(Context mContext, String arrayName, String[] array) {
         SharedPreferences prefs = mContext.getSharedPreferences("preferencename", 0);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(arrayName +"_size", array.length);
-        for(int i=0;i<array.length;i++)
+        editor.putInt(arrayName + "_size", array.length);
+        for (int i = 0; i < array.length; i++)
             editor.putString(arrayName + "_" + i, array[i]);
         return editor.commit();
     }
-
 
 
     public static String[] loadArray(String arrayName, Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences("preferencename", 0);
         int size = prefs.getInt(arrayName + "_size", 0);
         String array[] = new String[size];
-        for(int i=0;i<size;i++)
+        for (int i = 0; i < size; i++)
             array[i] = prefs.getString(arrayName + "_" + i, null);
         return array;
     }
 
     public static void setSharedPreferences(Context context, String prefName, String value) {
-        Log.i("TRACE","inside shared pref "+prefName +value);
+        Log.i("TRACE", "inside shared pref " + prefName + value);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(prefName, value);
@@ -242,32 +260,31 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        Log.i("TRACE","activeNetworkInfo" +activeNetworkInfo);
+        Log.i("TRACE", "activeNetworkInfo" + activeNetworkInfo);
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 
-
-    public static String currencyFormat(String price){
+    public static String currencyFormat(String price) {
 
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         int truncate_first;
-        if(currentapiVersion>=23)
+        if (currentapiVersion >= 23)
             truncate_first = 2;
         else
             truncate_first = 3;
 
-        int x =Integer.parseInt(price);
+        int x = Integer.parseInt(price);
 
         Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
-        price=format1.format(x);
-        price = price.substring(truncate_first,price.length()-3);
-        price ="₹ "+price;
+        price = format1.format(x);
+        price = price.substring(truncate_first, price.length() - 3);
+        price = "₹ " + price;
 
         return price;
     }
 
-    public static String getDeviceId(Context context){
+    public static String getDeviceId(Context context) {
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
         final String tmDevice, tmSerial, androidId;
@@ -275,13 +292,14 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
         tmSerial = "" + tm.getSimSerialNumber();
         androidId = "" + android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
 
-        UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
+        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
         String deviceId = deviceUuid.toString();
         return deviceId;
     }
 
     public static void publishOye(final Context context) {
         try {
+            String intend;
             String tt;
             String pstype;
             String price;
@@ -291,45 +309,48 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
             final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
             String json = gson.toJson(AppConstants.letsOye);
 
-            Log.d(TAG, "AppConstants.letsOye "+json);
-            Log.i("TRACE","Get user Id from model "+AppConstants.letsOye.getUserId());
+            Log.d(TAG, "AppConstants.letsOye " + json);
+            Log.i("TRACE", "Get user Id from model " + AppConstants.letsOye.getUserId());
 
             Log.i("TRACE", "AppConstants.letsOye from model " + json);
 
             JSONObject jsonObj = new JSONObject(json);
+
+            intend = jsonObj.getString("req_avl");
+
             tt = jsonObj.getString("tt");
             pstype = jsonObj.getString("property_subtype");
             price = jsonObj.getString("price");
-            speccode = tt + "-" + pstype + "-" + price;
+            speccode = intend.toUpperCase() + "-" + tt + "-" + pstype + "-" + price;
             Log.i("TRACE", "speccode is" + speccode);
 
             General.setSharedPreferences(context, "MY_SPEC_CODE", speccode);
             General.getSharedPreferences(context, "MY_SPEC_CODE");
             Log.i("TRACE", "Spec code got from shared prefs" + General.getSharedPreferences(context, "MY_SPEC_CODE"));
 
-           // String[] array;                   // <--declared statement
+            // String[] array;                   // <--declared statement
 //            String[] array = new String[100];
 //            Log.i("TRACE", "zala be");
 //            saveArray(array, speccode, context);
 //            Log.i("TRACE", "zala be1");
 //
 //            Log.i("TRACE", "zala be2" + loadArray(speccode,context));
-             //Set<String> set;
+            //Set<String> set;
 
-       // Set defaultDeals = new HashSet<>();
-         //   private List<Issue> issues = new ArrayList<>();
+            // Set defaultDeals = new HashSet<>();
+            //   private List<Issue> issues = new ArrayList<>();
 //            String elements[] = {"a"};
-   ////           Set<String> set = new HashSet();
+            ////           Set<String> set = new HashSet();
 //            Set<String> set = new HashSet<>(Arrays.asList(elements));
-      //        Log.i("TRACE", "abc");
-    //          set = getDefaultDeals(context);
+            //        Log.i("TRACE", "abc");
+            //          set = getDefaultDeals(context);
 //            Log.i("TRACE", "zala be1");
 //          //  Log.i("TRACE", "Set is:-" + set);
-     //       set.add(speccode);
-     //    Log.i("TRACE", "efg");
+            //       set.add(speccode);
+            //    Log.i("TRACE", "efg");
 //            Log.i("TRACE", "set is:" + speccode);
-     //      saveDefaultDeals(context, set);
-     //       Log.i("TRACE", "Saved");
+            //      saveDefaultDeals(context, set);
+            //       Log.i("TRACE", "Saved");
 //            Log.i("TRACE", "Get default deal" + defaultDeals);
 //            if(speccode != null) {
 //                set.add(speccode);
@@ -340,8 +361,6 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
 //
 //                saveDefaultDeals(context, );
 //            }
-
-
 
 
             //set = new HashSet<String>();
@@ -369,11 +388,7 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
             */
 
 
-
-
-
-
-          //  Log.i("TRACE","Okid from shared prefs is " +General.getSharedPreferences(context, "OK_ID"));
+            //  Log.i("TRACE","Okid from shared prefs is " +General.getSharedPreferences(context, "OK_ID"));
 
             if (isNetworkAvailable(context)) {
                 Log.i("TRACE", "is networking available" + General.getSharedPreferences(context, AppConstants.USER_ID));
@@ -385,28 +400,28 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
 
                 Log.i("TRACE", "GCM id is" + SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
 
-                Log.i("TRACE","Get user Id from model "+AppConstants.letsOye.getUserId());
-                Log.i("TRACE","Get user Id from model "+AppConstants.letsOye.getGcmId());
+                Log.i("TRACE", "Get user Id from model " + AppConstants.letsOye.getUserId());
+                Log.i("TRACE", "Get user Id from model " + AppConstants.letsOye.getGcmId());
 
 
                 Log.i("TRACE", "AppConstants.letsOye direct" + AppConstants.letsOye);
                 final Gson gsona = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
                 String jsona = gsona.toJson(AppConstants.letsOye);
 
-                Log.i(TAG, "AppConstants.letsOye parsed "+jsona);
+                Log.i(TAG, "AppConstants.letsOye parsed " + jsona);
                 RestAdapter restAdapter = new RestAdapter
-                                            .Builder()
-                                            .setEndpoint(AppConstants.SERVER_BASE_URL)
-                                            .setConverter(new GsonConverter(gson))
-                                            .build();
+                        .Builder()
+                        .setEndpoint(AppConstants.SERVER_BASE_URL)
+                        .setConverter(new GsonConverter(gson))
+                        .build();
 
                 restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
                 OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
                 oyeokApiService.publishOye(AppConstants.letsOye, new Callback<PublishLetsOye>() {
                     @Override
                     public void success(PublishLetsOye letsOye, Response response) {
-                        Log.i("TRACE", "in success"+response);
-                        String strResponse =  new String(((TypedByteArray)response.getBody()).getBytes());
+                        Log.i("TRACE", "in success" + response);
+                        String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                         Log.e(TAG, "RETROFIT SUCCESS " + strResponse);
 
                         Log.i("TRACE", "Response" + strResponse);
@@ -426,18 +441,17 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
 
                             JSONObject jsonResponse = new JSONObject(strResponse);
                             JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
-                            Log.i("TRACE", "Response data"+jsonResponse.getString("responseData"));
-                            if("Exhausted your daily limit of Oyes today. Pls try tomorrow".equals(jsonResponseData.getString("message"))){
-                                Log.i("TRACE", "Hello user, "+jsonResponseData.getString("message"));
+                            Log.i("TRACE", "Response data" + jsonResponse.getString("responseData"));
+                            if ("Exhausted your daily limit of Oyes today. Pls try tomorrow".equals(jsonResponseData.getString("message"))) {
+                                Log.i("TRACE", "Hello user, " + jsonResponseData.getString("message"));
 
-                                Toast.makeText(context, ""+jsonResponseData.getString("message"), Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "" + jsonResponseData.getString("message"), Toast.LENGTH_LONG).show();
                                 SnackbarManager.show(
                                         Snackbar.with(context)
                                                 .position(Snackbar.SnackbarPosition.TOP)
-                                                .text("Your old oye with same specs: " +jsonResponseData.getString("message"))
+                                                .text("Your old oye with same specs: " + jsonResponseData.getString("message"))
                                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                            }
-                            else {
+                            } else {
                                 Log.i("TRACE", "Ok id from response is " + jsonResponseData.getString("ok_id"));
                                 Log.i("TRACE", "step2");
                                 General.setSharedPreferences(context, "OK_ID", jsonResponseData.getString("ok_id"));
@@ -455,7 +469,7 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
 
                                 //  if (jsonResponseData.getInt("code") == 1) {
                                 AppConstants.letsOye.setTime(formattedDate);
-                                AppConstants.letsOye.save();
+//                                AppConstants.letsOye.save();
                                 //  }
 
                                 // Create default deal here after letsoye success
@@ -525,7 +539,7 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
                         Log.i("TRACE", "open intent deal listing");
                         //open deals listing
                         Intent openDealsListing = new Intent(context, ClientDealsListActivity.class);
-                        openDealsListing.putExtra("default_deal_flag",true);
+                        openDealsListing.putExtra("default_deal_flag", true);
                         openDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(openDealsListing);
 
@@ -540,8 +554,7 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
                     }
                 });
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -599,19 +612,21 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
 
         */
 
-//        if(!(haveConnectedMobile) && !(haveConnectedWifi))
-//            Toast.makeText(context, "INTERNET CONNECTIVITY NOT AVAILABLE", Toast.LENGTH_LONG).show();
+        if (!(haveConnectedMobile) && !(haveConnectedWifi)) {
 
 
+            Intent i = new Intent(AppConstants.NETWORK_CONNECTIVITY);
+            i.putExtra("tv_dealinfo","noConnectivity");
+            LocalBroadcastManager.getInstance(context).sendBroadcast(i);
        /* SnackbarManager.show(
                     Snackbar.with(context)
                             .position(Snackbar.SnackbarPosition.BOTTOM)
                             .text("INTERNET CONNECTIVITY NOT AVAILABLE")
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));*/
 
+        }
     }
 }
-
 
    // private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
    /* private void enableMyLocation() {

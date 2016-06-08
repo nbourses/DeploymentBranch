@@ -1,7 +1,10 @@
 package com.nbourses.oyeok.activities;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -11,12 +14,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -41,6 +47,7 @@ import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class BrokerMainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener{
 
@@ -52,7 +59,17 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
 
     @Bind(R.id.openmaps)
     Button openmaps;
-TextView tv_change_region;
+
+//    @Bind(R.id.preok_layout)
+//    Toolbar preok_layout;
+
+//    @Bind(R.id.buildingSlider)
+//    RelativeLayout buildingSlider;
+
+
+
+
+    TextView tv_change_region;
  private boolean gmap=false;
 GoogleMap map;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -62,6 +79,14 @@ GoogleMap map;
     private TextView option2Count;
     private TextView rentalCount;
     private TextView resaleCount;
+    private Animation slide_down;
+
+    private Boolean buildingSliderflag = false;
+    private Boolean DrawerFlag = false;
+    private Boolean openMapsFlag = false;
+    private Boolean webviewFlag = false;
+    private Boolean signupSuccessflag = false;
+
 
 
 
@@ -69,17 +94,70 @@ GoogleMap map;
     DBHelper dbHelper;
     private FragmentDrawer drawerFragment;
     private WebView webView;
+
+
     SharedPreferences.OnSharedPreferenceChangeListener listener;
+
+    private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            networkConnectivity();
+
+        }
+    };
+
+
+    private BroadcastReceiver buildingSliderFlag = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("buildingSliderflag1","buildingSliderflag "+buildingSliderflag);
+          //  if(intent.getExtras().getString("buildingSliderFlag") != null){
+                buildingSliderflag = intent.getExtras().getBoolean("buildingSliderFlag");
+                Log.i("buildingSliderflag","buildingSliderflag "+buildingSliderflag);
+         //   }
+        }
+    };
+
+    private BroadcastReceiver localityBroadcast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getExtras().getString("locality") != null){
+                String locality = intent.getExtras().getString("locality");
+                Log.i("localityBroadcast","localityBroadcast1 ");
+                Log.i("localityBroadcast","localityBroadcast "+locality);
+                setLocality(locality);
+            }
+        }
+    };
+
+//    private BroadcastReceiver signupSuccessFlag = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            Log.i("signupSuccessflag rec","signupSuccessflag ");
+//            signupSuccessflag = intent.getExtras().getBoolean("signupSuccessflag");
+//            Log.i("signupSuccessflag r","signupSuccessflag "+signupSuccessflag);
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agent_main);
 
+
+
         ButterKnife.bind(this);
         tv_change_region=(TextView) findViewById(R.id.tv_change_region);
+        openmaps=(Button) findViewById(R.id.openmaps);
 
         tv_change_region.setVisibility(View.VISIBLE);
+        try {
+            tv_change_region.setText(SharedPrefs.getString(this, SharedPrefs.MY_LOCALITY));
+        }catch(Exception e){
+
+        }
+
+        ShortcutBadger.removeCount(this);
         if (General.isNetworkAvailable(getApplicationContext())) {
 
             Log.i("TRACE", "network availabe");
@@ -104,8 +182,39 @@ GoogleMap map;
 
         init();
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Register mMessageReceiver to receive messages.
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(localityBroadcast, new IntentFilter(AppConstants.LOCALITY_BROADCAST));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(buildingSliderFlag, new IntentFilter(AppConstants.BUILDINGSLIDERFLAG));
+//        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(signupSuccessFlag, new IntentFilter(AppConstants.SIGNUPSUCCESSFLAG));
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Unregister since the activity is not visible
+            LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(localityBroadcast);
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(buildingSliderFlag);
+//        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(signupSuccessFlag);
+
+
+    }
+
+
+
+
+
+
 
     private void init() {
+        slide_down = AnimationUtils.loadAnimation(this,
+                R.anim.slide_down);
         openmaps.setVisibility(View.VISIBLE);
 
         /*Fragment fragment = new Ok_Broker_MainScreen();
@@ -113,6 +222,9 @@ GoogleMap map;
 
         Fragment brokerPreokFragment = new BrokerPreokFragment();
         loadFragment(brokerPreokFragment, null, R.id.container_map, "");
+
+
+       //buildingSlider = (RelativeLayout) findViewById(R.id.buildingSlider);
 
 //        option1Count = (TextView) findViewById(R.id.option1Count);
 //         option2Count = (TextView) findViewById(R.id.option2Count);
@@ -207,6 +319,9 @@ GoogleMap map;
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
 
+
+
+
         if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
             if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
                 emailTxt.setVisibility(View.VISIBLE);
@@ -216,6 +331,8 @@ GoogleMap map;
         }else{
             emailTxt.setVisibility(View.INVISIBLE);
         }
+
+
 
 //Remember
 
@@ -227,7 +344,7 @@ GoogleMap map;
                 loadFragment(brokerMap,null,R.id.container_map,"");
                 gmap=true;
                 tv_change_region.setVisibility(View.VISIBLE);
-                tv_change_region.setText(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
+             //   tv_change_region.setText(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
 
 
 
@@ -302,7 +419,7 @@ GoogleMap map;
         } */
 
         else if (itemTitle.equals(getString(R.string.notifications))) {
-            Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
+            Intent openDealsListing = new Intent(this, BrokerDealsListActivity.class);
             openDealsListing.putExtra("default_deal_flag",false);
             startActivity(openDealsListing);
         }
@@ -313,6 +430,7 @@ GoogleMap map;
             webView.getSettings().setJavaScriptEnabled(true);
             webView.setWebViewClient(new WebViewClient());
             webView.loadUrl("http://www.facebook.com/nexchanges");
+
 
 
         }
@@ -334,11 +452,15 @@ GoogleMap map;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         if(drawerFragment.handle(item))
             return true;
 
         return false;
     }
+
+
+
 
 
 
@@ -379,36 +501,95 @@ GoogleMap map;
 
     @Override
     public void onBackPressed() {
+        Log.i("ONBACKPRESSED","signupSuccessflag 432 "+signupSuccessflag);
+        Log.i("ONBACKPRESSED","buildingSliderflag "+buildingSliderflag);
+
+        Log.i("ONBACKPRESSED","broker main activity ");
         if(webView != null){
+//            Log.i("ONBACKPRESSED","broker main activity webview");
             webView = null;
            Intent back = new Intent(this, BrokerMainActivity.class);
             startActivity(back);
-
-        }
-
-        else if(gmap ==true){
-
-            Intent back = new Intent(this, BrokerMainActivity.class);
-            startActivity(back);
+            finish();
 
 
         }
+//        signupSuccessflag = true;
+//        if(signupSuccessflag){
+//            Log.i("ONBACKPRESSED","signupSuccessflag "+signupSuccessflag);
+//            signupSuccessflag = false;
+//            Intent back = new Intent(this, BrokerMainActivity.class);
+//            startActivity(back);
+//
+//
+//        }
 
+
+
+
+
+//        if (this.drawerFragment.isDrawerOpen(GravityCompat.START)) {
+//            this.drawerFragment.closeDrawer(GravityCompat.START);
+//        }
+
+        if(gmap ==true){
+            Log.i("ONBACKPRESSED","broker main activity gmap");
+           Intent back = new Intent(this, BrokerMainActivity.class);
+           startActivity(back);
+            gmap =false;
+           finish();
+
+
+        }
+
+        if(buildingSliderflag == true){
+            Log.i("ONBACKPRESSED","buildingSliderflag "+buildingSliderflag);
+
+            Intent intent = new Intent(AppConstants.SLIDEDOWNBUILDINGS);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            buildingSliderflag = false;
+        }
+
+//        else if(DrawerFlag = true) {
+//               //just close the drawer dont finish activity
+//            DrawerFlag = false;
+//        }
+//        else if(openMapsFlag){
+//            //just close the drawer dont finish activity
+//           openMapsFlag = false;
+//        }
+//        else if (buildingSlider.getVisibility() == View.VISIBLE) {
+//            buildingSlider.startAnimation(slide_down);
+//            buildingSlider.setVisibility(View.GONE);
+//        }
         else{
 
-                super.onBackPressed();
+              //  this.finish();
+               super.onBackPressed();
+            //NavUtils.navigateUpFromSameTask(this);
 
         }
-        tv_change_region.setVisibility(View.VISIBLE);
-        tv_change_region.setText(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
+//        tv_change_region.setVisibility(View.VISIBLE);
+//        tv_change_region.setText(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
 
 
 
 
     }
+    private  void networkConnectivity(){
+        SnackbarManager.show(
+                Snackbar.with(this)
+                        .position(Snackbar.SnackbarPosition.TOP)
+                        .text("INTERNET CONNECTIVITY NOT AVAILABLE")
+                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+    }
+
 
 //    @Override
 //    public void changeLocation(String location) {
 //        tv_change_region.setText(location);
 //    }
+    private void setLocality(String locality){
+        tv_change_region.setText(locality);
+    }
 }

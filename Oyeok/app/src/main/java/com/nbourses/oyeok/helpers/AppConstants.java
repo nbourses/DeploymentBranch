@@ -14,9 +14,14 @@ public class AppConstants {
 
     public static String MY_LAT = "myLat";
     public static String MY_LNG = "myLong";
-
-
+    public static final String SIGNUPSUCCESSFLAG = "signupSuccessFlag";
+    public static final String SLIDEDOWNBUILDINGS = "slideDownBuildings";
+    public static final String BUILDINGSLIDERFLAG = "buildingSliderFlag";
+    public static final String NETWORK_CONNECTIVITY = "networkConnectivity";
     public static final String CLOSE_OYE_SCREEN_SLIDE = "closeOyeScreenSlide";
+    public static final String OYE_BUTTON_DATA = "oyeButtonData";
+
+    public static final String LOCALITY_BROADCAST = "localityBroadcast";
 
     public static final String ON_FILTER_VALUE_UPDATE = "onFilterValueUpdate";
 
@@ -69,6 +74,8 @@ public class AppConstants {
     public static final String MUTED_OKIDS ="mutedOKIds";
     public static final String NO_OF_SAVED_MESSAGES = "20";
     public static final String TIME_STAMP_IN_MILLI = "20";
+    public static final String SPEC_CODE = "specCode";
+    public static final String CACHE = "_cache";   // dynamic channel_name_CACHE
 
 
 

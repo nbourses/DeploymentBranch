@@ -1,5 +1,6 @@
 package com.nbourses.oyeok.RPOT.ApiSupport.models;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.HashMap;
@@ -174,7 +175,8 @@ public class Oyeok {
     @SerializedName("property_subtype")
     private String propertySubtype;
 
-    @SerializedName("listings")
+    @Expose
+    @SerializedName("listing")
     Map<String, Float> listings = new HashMap<String, Float>();
 
     public String getPropertySubtype() {
@@ -202,8 +204,8 @@ public class Oyeok {
     }
 
     //@JsonAnySetter
-    public void setListings(String buildingname, Float price) {
-        this.listings.put(buildingname, price);
+    public void setListings(Map<String ,Float>listing) {
+        this.listings= listing;
     }
 
 

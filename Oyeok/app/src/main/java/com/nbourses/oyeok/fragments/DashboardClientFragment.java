@@ -15,10 +15,12 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -108,7 +110,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 
-public class DashboardClientFragment extends Fragment implements CustomPhasedListener,AdapterView.OnItemClickListener,GoogleMap.OnCameraChangeListener,ChatList,HorizontalPicker.pickerPriceSelected,FragmentDrawer.MDrawerListener {
+public class DashboardClientFragment extends Fragment implements CustomPhasedListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList, HorizontalPicker.pickerPriceSelected, FragmentDrawer.MDrawerListener {
 
 
     //GoogleMap.OnCameraChangeListener,
@@ -128,6 +130,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
+
+
     private static final int INITIAL_REQUEST = 133;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
     private static final int MAP_ZOOM = 12;
@@ -145,8 +149,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private ImageView search_building_icon;
     private BitmapDescriptor icon1;
     private BitmapDescriptor icon2;
-private  boolean flag[]= new boolean[5];
-    boolean mflag=false;
+    private boolean flag[] = new boolean[5];
+    boolean mflag = false;
+
 
 
     private GeoFence geoFence;
@@ -154,7 +159,7 @@ private  boolean flag[]= new boolean[5];
     private final int MY_PERMISSION_FOR_CAMERA = 11;
     private CustomPhasedSeekBar mPhasedSeekBar;
     Drawable marker = null;
-    Marker[] mCustomerMarker= new Marker[5];
+    Marker[] mCustomerMarker = new Marker[5];
     String brokerType;
     private Geocoder geocoder;
     private GetCurrentLocation.CurrentLocationCallback mcallback;
@@ -186,8 +191,12 @@ private  boolean flag[]= new boolean[5];
     static int top, bottom, left, right, width, height;
     private int llMin, llMax, orMin, orMax;
     private String name;
-    private int or_psf,ll_pm;
+    private int or_psf, ll_pm;
     private LatLng loc;
+    private String filterValue;
+    private String bhk;
+    private int filterValueMultiplier;
+
 
     @Bind(R.id.seekbar_linearlayout)
     LinearLayout seekbarLinearLayout;
@@ -204,7 +213,35 @@ private  boolean flag[]= new boolean[5];
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getExtras() != null) {
-                txtFilterValue.setText(Html.fromHtml(intent.getExtras().getString("filterValue")));
+                if ((intent.getExtras().getString("filterValue") != null)) {
+                    txtFilterValue.setText(Html.fromHtml(intent.getExtras().getString("filterValue")));
+                }
+                if ((intent.getExtras().getString("filterValue") != null)) {
+                    // txtFilterValue.setText(intent.getExtras().getString("filterValue"));
+                    bhk = intent.getExtras().getString("bhk");
+                    //filterValue =  intent.getExtras().getString("filterValue").toString();
+
+                    if (bhk.equalsIgnoreCase("1bhk")) {
+                        filterValueMultiplier = 600;
+                        updateHorizontalPicker();
+                    } else if (bhk.equalsIgnoreCase("2bhk")) {
+                        filterValueMultiplier = 950;
+                        updateHorizontalPicker();
+                    } else if (bhk.equalsIgnoreCase("3bhk")) {
+                        filterValueMultiplier = 1600;
+                        updateHorizontalPicker();
+                    } else if (bhk.equalsIgnoreCase("4bhk")) {
+                        filterValueMultiplier = 2100;
+                        updateHorizontalPicker();
+                    } else if (bhk.equalsIgnoreCase("4+bhk")) {
+                        filterValueMultiplier = 3000;
+                        updateHorizontalPicker();
+                    } else {
+                        filterValueMultiplier = 1000;
+                        updateHorizontalPicker();
+                    }
+
+                }
             }
         }
     };
@@ -221,17 +258,13 @@ private  boolean flag[]= new boolean[5];
         final View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         ButterKnife.bind(this, rootView);
 
-         gpsTracker= new GPSTracker(getContext());
+        gpsTracker = new GPSTracker(getContext());
 
 
-
-        if(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI).equals("")){
-            General.setSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI,String.valueOf(System.currentTimeMillis()));
-            Log.i("TIMESTAMP","millis "+System.currentTimeMillis());
+        if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
+            General.setSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI, String.valueOf(System.currentTimeMillis()));
+            Log.i("TIMESTAMP", "millis " + System.currentTimeMillis());
         }
-
-
-
 
 
         requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
@@ -257,8 +290,8 @@ private  boolean flag[]= new boolean[5];
 
                 int[] locations = new int[2];
                 Mmarker.getLocationOnScreen(locations);
-                x = locations[0]+26;
-                y = locations[1]-115;
+                x = locations[0] + 26;
+                y = locations[1] - 115;
 //                x = left - (right - left) / 2;
 //                y = bottom;
                 bottom = Mmarker.getBottom();
@@ -329,7 +362,7 @@ private  boolean flag[]= new boolean[5];
                 autoCompView.setText("");
                 autoCompView.showDropDown();
                 // new LocationUpdater().execute();
-               // ll_map.setAlpha(0.5f);
+                // ll_map.setAlpha(0.5f);
 
             }
         });
@@ -370,48 +403,66 @@ private  boolean flag[]= new boolean[5];
 //        });
 
 
-
-
         try {
             if (isNetworkAvailable())
                 customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
-            map=customMapFragment.getMap();
-           // geoFence = new GeoFence();
+            map = customMapFragment.getMap();
+            // geoFence = new GeoFence();
             if (isNetworkAvailable()) {
 
 
+                if (map != null) {
+                    if ((int) Build.VERSION.SDK_INT < 23) {
+
+                        // getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
+                        customMapFragment.getMapAsync(new OnMapReadyCallback() {
+                            @Override
+                            public void onMapReady(GoogleMap googleMap) {
+                                map = googleMap;
+                                //lat = 19.1269299;
+                                //lng = 72.8376545999999;
+                                enableMyLocation();
+//                                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//
+//                                    map.setMyLocationEnabled(true);
+//                                    return;
+//                                }
+
+                               /* lat = gpsTracker.getLatitude();
+                                Log.i("lat", "===================" + lat);
+//
+                                lng = gpsTracker.getLongitude();
+                                Log.i("lat", "===================" + lng);
+                                SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+                                SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                                getPrice();
+                                new LocationUpdater().execute();
+
+                                LatLng center = new LatLng(lat, lng);
+
+                                map.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 12));*/
 
 
+                            }
+                        });
+                        getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
+                    }
 
-                if(map!=null){
+//                   else
+//                    {
+//                        ActivityCompat.requestPermissions(getActivity(),LOCATION_PERMS,LOCATION_PERMISSION_REQUEST_CODE);
+//                    }
 
+//                    lat= gpsTracker.getLatitude();
+//                    Log.i("lat","==================="+lat);
+//
+//                    lng=gpsTracker.getLongitude();
+//                    Log.i("lat","==================="+lng);
+//                    LatLng center = new LatLng(lat, lng);
+//
+//                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 12));
 
-
-
-                    customMapFragment.getMapAsync(new OnMapReadyCallback() {
-                        @Override
-                        public void onMapReady(GoogleMap googleMap) {
-                            map = googleMap;
-                            //lat = 19.1269299;
-                            //lng = 72.8376545999999;
-                            enableMyLocation();
-                            //broker_map.setMyLocationEnabled(true);
-
-
-                            lat= gpsTracker.getLatitude();
-                            lng=gpsTracker.getLongitude();
-                            SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                            SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                            getPrice();
-                            new LocationUpdater().execute();
-
-                            LatLng center = new LatLng(lat, lng);
-
-                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 12));
-
-
-                        }
-                    });
+                    //LatLng ll=   gpsTracker.getLocation();
 
 //                    enableMyLocation();
 //                    lat= gpsTracker.getLatitude();
@@ -423,53 +474,75 @@ private  boolean flag[]= new boolean[5];
                     map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(Marker marker) {
-
-
+                            Marker m;
+//
                             int i;
                             Log.i("MARKER ", "==========");
-                            for ( i = 0; i < 5; i++) {
-                                if (marker.getId().equals(mCustomerMarker[i].getId()) ) {
-                                    for ( int j = 0; j < 5; j++){
-                                        if(flag[i]==true){
-
-                                           // mCustomerMarker[i].setIcon(icon1);
-                                        }
-
-                                    }
-
-                                    if(flag[i]==false) {
-                                        Log.i("icon", " onclick_icon2" + marker.getTitle());
-                                        Log.i("icon", " onclick_icon2" + mCustomerMarker[i].getTitle());
-                                        //mCustomerMarker[i].remove();
-                                       // marker.setIcon(icon2);
-                                      // mCustomerMarker[i].setIcon(icon2);
-                                        //mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(mCustomerMarker[i].getPosition()).title(mCustomerMarker[i].getTitle()).snippet(mCustomerMarker[i].getSnippet()).icon(icon2));
-                                        search_building_icon.setVisibility(View.VISIBLE);
-                                        marker.showInfoWindow();
-                                        flag[i] = true;
-                                        // mflag=true;
+                            for (i = 0; i < 5; i++) {
+                                // mCustomerMarker[i].setIcon(icon2);
+                                //flag[i] = false;
+                                if (marker.getId().equals(mCustomerMarker[i].getId())) {
 
 
-                                    }
-                                    else {
+//                                    if (flag[i] == false) {
 
-                                        Log.i("icon", " onclick_icon1" + marker.getTitle());
-                                        Log.i("icon", " onclick_icon1" + mCustomerMarker[i].getTitle());
-                                       // mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(mCustomerMarker[i].getPosition()).title(mCustomerMarker[i].getTitle()).snippet(mCustomerMarker[i].getSnippet()).icon(icon1));
-                                       // marker.setIcon(icon1);
-                                       // mCustomerMarker[i].setIcon(icon1);
-                                        search_building_icon.setVisibility(View.GONE);
-                                        marker.showInfoWindow();
-                                        flag[i] = false;
+                                    Log.i("flag[i] == false ", "===========================");
 
-                                        //mflag=true;
 
-                                    }
+                                    Log.i("icon", " onclick_icon2" + marker.getTitle());
+                                    Log.i("icon", " onclick_icon2" + mCustomerMarker[i].getTitle());
+                                    // mCustomerMarker[i].remove();
+                                    // marker.setIcon(icon2);
+                                    mCustomerMarker[i].setIcon(icon2);
+                                    // mCustomerMarker[i].setIcon(icon2);
+                                    //  mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(marker.getPosition()).title(marker.getTitle()).snippet(marker.getSnippet()).icon(icon2));
+                                    search_building_icon.setVisibility(View.VISIBLE);
+                                    //marker.showInfoWindow();
 
-                                    break;
+                                    mCustomerMarker[i].showInfoWindow();
+
+//                                        flag[i] = true;
+                                    // mflag=true;
+
+
+//                                    }
+//                                else {
+//
+//                                        Log.i("icon", " onclick_icon1" + marker.getTitle());
+//                                        Log.i("icon", " onclick_icon1" + mCustomerMarker[i].getTitle());
+//                                        Log.i("flag[i] == true ", "===========================");
+//                                        // mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(mCustomerMarker[i].getPosition()).title(mCustomerMarker[i].getTitle()).snippet(mCustomerMarker[i].getSnippet()).icon(icon1));
+//                                       // marker.setIcon(icon1);
+//                                       //mCustomerMarker[i].remove();
+//                                        mCustomerMarker[i].setIcon(icon1);
+//                                       // mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(marker.getPosition()).title(marker.getTitle()).snippet(marker.getSnippet()).icon(icon1));
+//
+//                                        search_building_icon.setVisibility(View.GONE);
+//                                        //marker.showInfoWindow();
+//                                        flag[i] = false;
+//
+//                                        //mflag=true;
+//
+//                                    }
+
+
                                 }
+                                else
+                                {
+
+                                    mCustomerMarker[i].setIcon(icon1);
 
 
+                                }
+                                /*else  if (flag[i] == true) {
+                                    Log.i("flag[i] == true 11 ", "===========================");
+                                           // m=mCustomerMarker[i];
+                                    mCustomerMarker[i].setIcon(icon1);
+                                            //mCustomerMarker[i].remove();
+                                            //mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).snippet(m.getSnippet()).icon(icon1));
+                                            flag[i]=false;
+
+                                        }*/
 
 
                             }
@@ -485,13 +558,21 @@ private  boolean flag[]= new boolean[5];
                 }
 
 
-
-
-
-
             }
 
-        }catch (Exception e){}
+
+        } catch (Exception e) {
+        }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -513,6 +594,7 @@ private  boolean flag[]= new boolean[5];
 
           // getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
         }*/
+
 
 
 
@@ -581,7 +663,7 @@ private  boolean flag[]= new boolean[5];
 
                             // getPrice();
                             getPrice();
-                           // mflag = false;
+                            // mflag = false;
 
 
                             Log.i("t1", "latlong" + " " + currentLocation1);
@@ -604,15 +686,18 @@ private  boolean flag[]= new boolean[5];
                 });
             }
 
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
 
 
-      /*  mcallback = new GetCurrentLocation.CurrentLocationCallback() {
+        mcallback = new GetCurrentLocation.CurrentLocationCallback() {
 
             @Override
             public void onComplete(Location location) {
                 if (location != null) {
                     lat = location.getLatitude();
+
+
                     lng = location.getLongitude();
                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
@@ -624,7 +709,7 @@ private  boolean flag[]= new boolean[5];
                         }
                     }
 
-                    // LatLng currentLocation= new LatLng(location.getLatitude(), location.getLongitude());
+                    LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
                     // LatLng currentLocation= new LatLng(lat, lng);
 
                     // Log.i("t1","lat_long"+currentLocation);
@@ -637,8 +722,8 @@ private  boolean flag[]= new boolean[5];
 
                     //broker_map.addMarker(new MarkerOptions().position(currentLocation).title("current Location"));
                     // broker_map.animateCamera(CameraUpdateFactory.newLatLng(currentLocation));
-                    //broker_map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-                    // broker_map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
+                    map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+                    map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
 
                     //make retrofit call to get Min Max price
                     if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
@@ -651,7 +736,7 @@ private  boolean flag[]= new boolean[5];
                 }
             }
         };
-        Log.i("t2", "mcallback" + mcallback);*/
+        Log.i("t2", "mcallback" + mcallback);
 
 
         if (!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
@@ -678,8 +763,10 @@ private  boolean flag[]= new boolean[5];
                         @Override
                         public void run() {
                             if (isFlipped()) {
+                                Log.i("mFlipAnimator","is flipped");
                                 mFlipAnimator.reverse();
                             } else {
+                                Log.i("mFlipAnimator","is flipped not");
                                 mFlipAnimator.start();
                             }
                         }
@@ -691,51 +778,9 @@ private  boolean flag[]= new boolean[5];
 
 
 
-//        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//            @Override
-//            public boolean onMarkerClick (Marker marker){
-//
-//                Log.i("MARKER ", "==========");
-//                for (int i = 0; i < 5; i++) {
-//                    if (marker.getTitle().equals(mCustomerMarker[i].getTitle())) {
-//                        Log.i("icon", " onclick_icon2" + marker.getTitle());
-//                        Log.i("icon", " onclick_icon2" + mCustomerMarker[i].getTitle());
-//                        mCustomerMarker[i].setIcon(icon2);
-//                        search_building_icon.setVisibility(View.VISIBLE);
-//                    } else {
-//                        Log.i("icon", " onclick_icon1" + marker.getTitle());
-//                        Log.i("icon", " onclick_icon1" + mCustomerMarker[i].getTitle());
-//                        mCustomerMarker[i].setIcon(icon1);
-//                        search_building_icon.setVisibility(View.GONE);
-//
-//
-//                    }
-//                }
-//
-//
-//                return true;
-//            }
-//        });
-
-
-
-
-
-
-
-
 
         return rootView;
     }
-
-
-
-
-
-
-
-
-
 
 
     private void enableMyLocation() {
@@ -749,18 +794,77 @@ private  boolean flag[]= new boolean[5];
             // Access to the location has been granted to the app.
 //            LocationManager lm;
 //            lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//            Location location = lm.getL astKnownLocation(LocationManager.GPS_PROVIDER);
 //            double longitude = location.getLongitude();
 //            double latitude = location.getLatitude();
             map.setMyLocationEnabled(true);
         }
     }
+
     @OnClick(R.id.txtFilterValue)
     public void onTxtFilterValueClick(View v) {
         openOyeScreen();
     }
 
     private void openOyeScreen() {
+
+        Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
+        intent.putExtra("tv_dealinfo","Home 2BHK");
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
+        //mFlipAnimator.end();
+//        mFlipAnimator.removeAllUpdateListeners();
+//        //FlipListener f = new FlipListener(txtFilterValue);
+//        mFlipAnimator = ValueAnimator.ofFloat(0f);
+//        mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue));
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if (getActivity() != null) {
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if (isFlipped()) {
+//                                Log.i("mFlipAnimator","is flipped");
+//                                mFlipAnimator.reverse();
+//                            } else {
+//                                Log.i("mFlipAnimator","is flipped not");
+//                                mFlipAnimator.start();
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        }, 2000, 2000);
+
+
+//        mFlipAnimator.end();
+//        mFlipAnimator.start();
+//        mFlipAnimator = ValueAnimator.ofFloat(0f);
+//
+//        mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue, txtFilterValue));
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if (getActivity() != null) {
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if (isFlipped()) {
+//                                mFlipAnimator.reverse();
+//                            } else {
+//                                mFlipAnimator.start();
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        }, 2000, 2000);
+//        //mFlipAnimator.end();
+//        mFlipAnimator.removeAllUpdateListeners();
+
         Bundle args = new Bundle();
         args.putString("brokerType", brokerType);
         args.putString("Address", SharedPrefs.getString(getActivity(), SharedPrefs.MY_REGION));
@@ -808,7 +912,6 @@ private  boolean flag[]= new boolean[5];
     }
 
 
-
     private Handler mHandler;
     Runnable mStatusChecker = new Runnable() {
         @Override
@@ -820,9 +923,9 @@ private  boolean flag[]= new boolean[5];
 
     private void hideMap(int i) {
         Animation m = null;
-        if(isAdded())
+        if (isAdded())
             //Load animation
-            if(i==0)
+            if (i == 0)
                 m = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
             else
                 m = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
@@ -837,8 +940,7 @@ private  boolean flag[]= new boolean[5];
         if (result != null) {
             if (result.getContents() == null) {
                 toast = "Cancelled from fragment";
-            }
-            else {
+            } else {
                 toast = "Scanned from fragment: " + result.getContents();
             }
             // At this point we may or may not have a reference to the activity
@@ -852,14 +954,14 @@ private  boolean flag[]= new boolean[5];
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE)
                 == PackageManager.PERMISSION_GRANTED) {
-            Log.i("PREOK","getcontext "+General.getDeviceId(getContext()));
+            Log.i("PREOK", "getcontext " + General.getDeviceId(getContext()));
             user.setDeviceId(General.getDeviceId(getContext()));
 
 
-        }else{
+        } else {
             // preok.setDeviceId(General.getSharedPreferences(this,AppConstants.));
-            user.setDeviceId(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
-            Log.i("PREOK","getcontext "+General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
+            user.setDeviceId(General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
+            Log.i("PREOK", "getcontext " + General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
 
         }
 
@@ -868,9 +970,9 @@ private  boolean flag[]= new boolean[5];
         user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
         user.setProperty_type("home");
         user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-        Log.i("t1","My_lng"+"  "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+        Log.i("t1", "My_lng" + "  " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
         user.setLocality(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-        Log.i("t1","My_lat"+"  "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+        Log.i("t1", "My_lat" + "  " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
 
         user.setPlatform("android");
         Log.i("my_locality", SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
@@ -892,7 +994,7 @@ private  boolean flag[]= new boolean[5];
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_101).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
-        UserApiService userApiService =  restAdapter.create(UserApiService.class);
+        UserApiService userApiService = restAdapter.create(UserApiService.class);
 
         userApiService.getPrice(user, new Callback<GetPrice>() {
 
@@ -901,7 +1003,7 @@ private  boolean flag[]= new boolean[5];
 
                 try {
 
-                    String strResponse =  new String(((TypedByteArray)response.getBody()).getBytes());
+                    String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                     Log.e(TAG, "RETROFIT SUCCESS " + getPrice.getResponseData().getPrice().getLlMin().toString());
                     JSONObject jsonResponse = new JSONObject(strResponse);
                     JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
@@ -945,27 +1047,27 @@ private  boolean flag[]= new boolean[5];
                             //if(mflag=false) {
 
 
-                                for (int i = 0; i < 5; i++) {
-                                    name = getPrice.getResponseData().getBuildings().get(i).getName();
-                                    Log.i("TRACE", "RESPONSEDATAr" + name);
-                                    or_psf = Integer.parseInt(getPrice.getResponseData().getBuildings().get(i).getOrPsf());
-                                    Log.i("TRACE", "RESPONSEDATAr" + or_psf);
-                                    ll_pm = Integer.parseInt(getPrice.getResponseData().getBuildings().get(i).getLlPm());
-                                    Log.i("TRACE", "RESPONSEDATAr" + ll_pm);
-                                    double lat = Double.parseDouble(getPrice.getResponseData().getBuildings().get(i).getLoc().get(1));
-                                    Log.i("TRACE", "RESPONSEDATAr" + lat);
-                                    double longi = Double.parseDouble(getPrice.getResponseData().getBuildings().get(i).getLoc().get(0));
-                                    Log.i("TRACE", "RESPONSEDATAr" + longi);
-                                    loc = new LatLng(lat, longi);
-                                    Log.i("TRACE", "RESPONSEDATAr" + loc);
-                                    Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
-                                    mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc).title(name).snippet("Rent:" + or_psf + ",Sale:" + ll_pm).icon(icon1));
-                                    Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
-                                    flag[i] = false;
-                                }
-                                //mflag=true;
+                            for (int i = 0; i < 5; i++) {
+                                name = getPrice.getResponseData().getBuildings().get(i).getName();
+                                Log.i("TRACE", "RESPONSEDATAr" + name);
+                                or_psf = Integer.parseInt(getPrice.getResponseData().getBuildings().get(i).getOrPsf());
+                                Log.i("TRACE", "RESPONSEDATAr" + or_psf);
+                                ll_pm = Integer.parseInt(getPrice.getResponseData().getBuildings().get(i).getLlPm());
+                                Log.i("TRACE", "RESPONSEDATAr" + ll_pm);
+                                double lat = Double.parseDouble(getPrice.getResponseData().getBuildings().get(i).getLoc().get(1));
+                                Log.i("TRACE", "RESPONSEDATAr" + lat);
+                                double longi = Double.parseDouble(getPrice.getResponseData().getBuildings().get(i).getLoc().get(0));
+                                Log.i("TRACE", "RESPONSEDATAr" + longi);
+                                loc = new LatLng(lat, longi);
+                                Log.i("TRACE", "RESPONSEDATAr" + loc);
+                                Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
+                                mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc).title(name).snippet("Rent:" + or_psf + ",Sale:" + ll_pm).icon(icon1));
+                                Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
+                                flag[i] = false;
+                            }
+                            //mflag=true;
 
-                           // }
+                            // }
                             updateHorizontalPicker();
 
                             horizontalPicker.setVisibility(View.VISIBLE);
@@ -1001,7 +1103,7 @@ private  boolean flag[]= new boolean[5];
                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity()); */
 
 
-                        Log.i("GETPRICE","Else mode ====== ");
+                        Log.i("GETPRICE", "Else mode ====== ");
 
 //                        horizontalPicker.setVisibility(View.INVISIBLE);
 //                        tvRate.setVisibility(View.INVISIBLE);
@@ -1017,9 +1119,8 @@ private  boolean flag[]= new boolean[5];
                     /*missingArea.setAnimation(AnimationUtils.loadAnimation(getActivity(),
                             R.anim.slide_up));*/
                     }
-                }
-                catch (Exception e){
-                    Log.i("Price Error"," "+e.getMessage());
+                } catch (Exception e) {
+                    Log.i("Price Error", " " + e.getMessage());
                 }
 
 
@@ -1034,42 +1135,39 @@ private  boolean flag[]= new boolean[5];
     }
 
 
-
-
-   // map.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener));
-
-
-
-
-
-
+    // map.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener));
 
 
     private void updateHorizontalPicker() {
 
+
         if (horizontalPicker != null) {
-            if (brokerType.equals("rent"))
+            if (brokerType.equals("rent")) {
                 //   horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
-                horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
+
+
+                Log.i("HORRIZONTALPICKER","filterValue "+filterValue+" filterValueMultiplier "+filterValueMultiplier);
+                horizontalPicker.setInterval((llMin * filterValueMultiplier), (llMax * filterValueMultiplier), 10, HorizontalPicker.THOUSANDS);
+            }
             else
 
                 horizontalPicker.setInterval(orMin, orMax, 10, HorizontalPicker.THOUSANDS);
         }
     }
 
-    /*private boolean canAccessLocation() {
-        return (hasPermission(Manifest.permission.ACCESS_FINE_LOCATION));
+    private boolean canAccessLocation() {
+        return(hasPermission(Manifest.permission.ACCESS_FINE_LOCATION));
     }
 
     private boolean hasPermission(String perm) {
-        return (PackageManager.PERMISSION_GRANTED == checkSelfPermission(getContext(), perm));
-    }*/
+        return(PackageManager.PERMISSION_GRANTED== ContextCompat.checkSelfPermission(getContext(),perm));
+    }
 
 
     //rem
 
 
-  /* @Override
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         switch (requestCode) {
@@ -1081,8 +1179,7 @@ private  boolean flag[]= new boolean[5];
                     // permission was granted, y-------------ay! Do the
                     // contacts-related task you need to do.
 
-                }
-                else {
+                } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
@@ -1090,17 +1187,24 @@ private  boolean flag[]= new boolean[5];
             case LOCATION_REQUEST:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                   customMapFragment.getMapAsync(new OnMapReadyCallback() {
-                        @Override
-                        public void onMapReady(GoogleMap googleMap) {
-                           broker_map = googleMap;
-                            broker_map.setMyLocationEnabled(true);
-                          //setCameraListener();
-                            Log.i("t1","broker_map"+broker_map);
-                            geoFence.drawPloygon(broker_map);
-                        }
-                    });
-                //  getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
+                    if (map != null){
+                        customMapFragment.getMapAsync(new OnMapReadyCallback() {
+                            @Override
+                            public void onMapReady(GoogleMap googleMap) {
+                                map = googleMap;
+                                //lat = 19.1269299;
+                                //lng = 72.8376545999999;
+                                enableMyLocation();
+//
+
+
+                            }
+                        });
+
+                    }
+                    getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+
+
 
                 }
                 else {
@@ -1111,52 +1215,51 @@ private  boolean flag[]= new boolean[5];
             // other 'case' lines to check for other
             // permissions this app might request
         }
-       if (canAccessLocation()) {
+        if (canAccessLocation()) {
             new GetCurrentLocation(getActivity(), new GetCurrentLocation.CurrentLocationCallback() {
                 @Override
                 public void onComplete(Location location) {
                     if (location != null) {
-                       //lat = location.getLatitude();
-                      //  lng = location.getLongitude();
+                        lat = location.getLatitude();
+                        lng = location.getLongitude();
                         LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
                         Log.i("t1","lat_long_getcurrentlocation"+" "+currentLocation);
-                      //  broker_map.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title("I am here!").icon(icon1).anchor(x,y));
-                     //   broker_map.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title("I am here!"));
-                        point= broker_map.getProjection().toScreenLocation(currentLocation);
-                      broker_map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-                        broker_map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
+                        //  broker_map.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title("I am here!").icon(icon1).anchor(x,y));
+                        //   broker_map.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title("I am here!"));
+                        // point= map.getProjection().toScreenLocation(currentLocation);
+                        map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+                        map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
 
                     }
                 }
             });
-//           getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
-           //Log.i("t1","mcallback"+""+mcallback);
-       }
-        else {
-            //Intent intent = new Intent(this, MainActivity.class);
-            //startActivity(intent);
-           // Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
-//            ((DashboardActivity) getActivity()).showToastMessage("Offline Mode");
+            getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
+            //Log.i("t1","mcallback"+""+mcallback);
         }
+        // else {
+        //Intent intent = new Intent(this, MainActivity.class);
+        //startActivity(intent);
+        // Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
+//            ((DashboardActivity) getActivity()).showToastMessage("Offline Mode");
+        // }
 
-   }  */
+    }
 
     @Override
     public void onPositionSelected(int position, int count) {
-        if(count==2){
-            if(position==0) {
+        if (count == 2) {
+            if (position == 0) {
                 tvRate.setText("/ month");
                 brokerType = "rent";
                 dbHelper.save(DatabaseConstants.brokerType, "LL");
-                dbHelper.save("brokerType","On Rent");
+                dbHelper.save("brokerType", "On Rent");
 
                 updateHorizontalPicker();
-            }
-            else if(position==1) {
+            } else if (position == 1) {
                 tvRate.setText("/ sq.ft");
                 brokerType = "resale";
                 dbHelper.save(DatabaseConstants.brokerType, "OR");
-                dbHelper.save("brokerType","For Sale");
+                dbHelper.save("brokerType", "For Sale");
 
                 updateHorizontalPicker();
             }
@@ -1164,16 +1267,8 @@ private  boolean flag[]= new boolean[5];
     }
 
 
-
-
-
-
-
-
-
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ll_map.setAlpha(1f);
         map.animateCamera(CameraUpdateFactory.zoomTo(12));
         autoCompView.clearListSelection();
@@ -1191,16 +1286,23 @@ private  boolean flag[]= new boolean[5];
         List<Address> addresses = null;
 
         try {
-            addresses = geocoder.getFromLocation(Double.parseDouble(lat1),Double.parseDouble(lng1),1);
+            addresses = geocoder.getFromLocation(Double.parseDouble(lat1), Double.parseDouble(lng1), 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
             region = addresses.get(0).getSubLocality();
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LOCALITY, region);
+            Log.i("localityBroadcast","localityBroadcast3 "+region);
+
+            Intent intent = new Intent(AppConstants.LOCALITY_BROADCAST);
+            intent.putExtra("locality",region);
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
             pincode = addresses.get(0).getPostalCode();
             // fullAddress = "";
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         //for(int i=0; i<addresses.get(0).getMaxAddressLineIndex(); i++){
         //    fullAddress += addresses.get(0).getAddressLine(i);
         //}
@@ -1230,15 +1332,15 @@ private  boolean flag[]= new boolean[5];
             // lat=currentLocation1.latitude;
             //Log.i("t1","lat"+" "+lat);
             // lng=currentLocation1.longitude;
-            Log.i("t1","lat_target"+lat);
-            Log.i("t1","lng_target"+lng);
+            Log.i("t1", "lat_target" + lat);
+            Log.i("t1", "lng_target" + lng);
             //LatLng  currentLocation1= new LatLng(lat, lng);
             //  broker_map.addMarker(new MarkerOptions().position(currentLocation1).title("marker"));
             //SharedPrefs.save(getActivity(),SharedPrefs.MY_LAT,lat+"");
             //SharedPrefs.save(getActivity(),SharedPrefs.MY_LNG,lng+"");
             // broker_map.addMarker(new MarkerOptions().position(currentLocation1).title("marker"));
 
-            new LocationUpdater().execute();
+            // new LocationUpdater().execute();
         }
     }
 
@@ -1249,8 +1351,8 @@ private  boolean flag[]= new boolean[5];
 
     @Override
     public void sendData(HashMap<String, HashMap<String, String>> hashMap) {
-        chatListData=hashMap;
-        Log.i("chatdata in rex",chatListData.toString());
+        chatListData = hashMap;
+        Log.i("chatdata in rex", chatListData.toString());
     }
 
     @Override
@@ -1266,11 +1368,7 @@ private  boolean flag[]= new boolean[5];
     }
 
 
-
-
-
-
-    protected class LocationUpdater extends AsyncTask<Double, Double, String>{
+    protected class LocationUpdater extends AsyncTask<Double, Double, String> {
         public JSONObject getJSONfromURL(String url) {
 
             // initialize
@@ -1313,6 +1411,7 @@ private  boolean flag[]= new boolean[5];
 
             return jObject;
         }
+
         @Override
         protected String doInBackground(Double[] objects) {
             try {
@@ -1337,17 +1436,17 @@ private  boolean flag[]= new boolean[5];
                             if (Type.equalsIgnoreCase("street_number")) {
                                 Address1 += long_name;
                             } else if (Type.equalsIgnoreCase("route")) {
-                                Address1 += " "+long_name;
+                                Address1 += " " + long_name;
                             } else if (Type.equalsIgnoreCase("sublocality_level_2")) {
                                 Address2 = long_name;
-                            } else if (Type.equalsIgnoreCase("sublocality_level_1")){
-                                Address2 += " "+long_name;
+                            } else if (Type.equalsIgnoreCase("sublocality_level_1")) {
+                                Address2 += " " + long_name;
                                 if (getActivity() != null)
-                                    SharedPrefs.save(getActivity(),SharedPrefs.MY_LOCALITY,long_name);
+                                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LOCALITY, long_name);
                             } else if (Type.equalsIgnoreCase("locality")) {
                                 // Address2 = Address2 + long_name + ", ";
                                 City = long_name;
-                                SharedPrefs.save(getActivity(),SharedPrefs.MY_CITY, City);
+                                SharedPrefs.save(getActivity(), SharedPrefs.MY_CITY, City);
                             } else if (Type.equalsIgnoreCase("administrative_area_level_2")) {
                                 County = long_name;
                             } else if (Type.equalsIgnoreCase("administrative_area_level_1")) {
@@ -1356,7 +1455,7 @@ private  boolean flag[]= new boolean[5];
                                 Country = long_name;
                             } else if (Type.equalsIgnoreCase("postal_code")) {
                                 PIN = long_name;
-                                SharedPrefs.save(getActivity(),SharedPrefs.MY_PINCODE,PIN);
+                                SharedPrefs.save(getActivity(), SharedPrefs.MY_PINCODE, PIN);
                             }
                         }
                         if (getActivity() != null)
@@ -1377,11 +1476,12 @@ private  boolean flag[]= new boolean[5];
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             autoCompView.setText(s);
-            Log.i("","");
+            Log.i("", "");
             autoCompView.dismissDropDown();
             // new LocationUpdater().execute();
         }
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1389,10 +1489,11 @@ private  boolean flag[]= new boolean[5];
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public boolean setCameraListener(){
+    public boolean setCameraListener() {
         //broker_map.setOnCameraChangeListener(this);
         return true;
     }
+
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
@@ -1412,27 +1513,26 @@ private  boolean flag[]= new boolean[5];
     }
 
 
-
-    public void getLocationFromAddress(String strAddress){
+    public void getLocationFromAddress(String strAddress) {
 
         Geocoder coder = new Geocoder(getActivity());
         List<Address> address;
         //GeoPoint p1 = null;
 
         try {
-            address = coder.getFromLocationName(strAddress,5);
-            if (address==null) {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
                 //return null;
             }
-            Address location=address.get(0);
-            lat=location.getLatitude();
-            lng=location.getLongitude();
-            Log.i("lat="+location.getLatitude()," long="+location.getLongitude());
-            LatLng l=new LatLng(location.getLatitude(),location.getLongitude());
+            Address location = address.get(0);
+            lat = location.getLatitude();
+            lng = location.getLongitude();
+            Log.i("lat=" + location.getLatitude(), " long=" + location.getLongitude());
+            LatLng l = new LatLng(location.getLatitude(), location.getLongitude());
             Log.i("t1", "lng" + " " + lng);
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-            map.addMarker(new MarkerOptions().position(l).title("marker"));
+           // map.addMarker(new MarkerOptions().position(l).title("marker"));
 
             //Marker marker = broker_map.addMarker(new MarkerOptions()
             //     .position(l)
@@ -1445,43 +1545,78 @@ private  boolean flag[]= new boolean[5];
             map.moveCamera(CameraUpdateFactory.newLatLng(l));
             // broker_map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
             getPrice();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-
-
 
 
     }
 
 
-//    @Override
-//    public boolean onMarkerClick (Marker marker){
-//
-//        Log.i("MARKER ", "==========");
-//        for (int i = 0; i < 5; i++) {
-//            if (marker.getTitle().equals(mCustomerMarker[i].getTitle())) {
-//                Log.i("icon", " onclick_icon2" + marker.getTitle());
-//                Log.i("icon", " onclick_icon2" + mCustomerMarker[i].getTitle());
-//                mCustomerMarker[i].setIcon(icon2);
-//                search_building_icon.setVisibility(View.VISIBLE);
-//            } else {
-//                Log.i("icon", " onclick_icon1" + marker.getTitle());
-//                Log.i("icon", " onclick_icon1" + mCustomerMarker[i].getTitle());
-//                mCustomerMarker[i].setIcon(icon1);
-//                search_building_icon.setVisibility(View.GONE);
-//
-//
-//            }
-//        }
-//
-//
-//        return true;
-//    }
+
+
+
+
+
+
+
+
+
+
+   /* @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+
+                    customMapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap googleMap) {
+                            map = googleMap;
+                            //lat = 19.1269299;
+                            //lng = 72.8376545999999;
+                            enableMyLocation();
+                               if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                                    map.setMyLocationEnabled(true);
+                                    return;
+                               }
+                            lat = gpsTracker.getLatitude();
+                            Log.i("lat", "===================" + lat);
+                            lng = gpsTracker.getLongitude();
+                            Log.i("lat", "===================" + lng);
+                            SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+                            SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                            getPrice();
+                            new LocationUpdater().execute();
+                            LatLng center = new LatLng(lat,lng);
+                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 12));
+
+
+                        }
+                    });
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }*/
 
 
 }

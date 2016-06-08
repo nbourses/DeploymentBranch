@@ -1,11 +1,15 @@
 package com.nbourses.oyeok.activities;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -34,6 +38,8 @@ import com.nbourses.oyeok.enums.ChatMessageUserType;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.ChatMessage;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 import com.pubnub.api.Callback;
 import com.pubnub.api.PnApnsMessage;
 import com.pubnub.api.PnGcmMessage;
@@ -98,15 +104,31 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
     private String userRole = "client";
-    private static final String[] suggestionsForClientArray = {"How can I use this app?", "How can I find property?", "Is it free of cost to get broker?"};
+    private static final String[] suggestionsForClientArray = {"How can I use this app?", "How can I find property?", "Will I get broker within 15 or 20 minutes?"};
     private static final String[] suggestionsForBrokerArray = {"How can I use this app?", "How can I find client?", "Can I post property?"};
+    private static final String[] suggestionsLLAvl = {"I need vegetarian tenant.", "I need family as tenant.", "I have parking available."};
+    private static final String[] suggestionsORAvl = {"I have parking available with house.", "Society with good security/surveillance.", "Ready for negotiation"};
+
+    private static final String[] suggestionsLLReq = {"I need Society with good security/surveillance.", "I need parking.", "I need new construction."};
+    private static final String[] suggestionsORReq = {"I need Society with good security/surveillance.", "I need parking.", "I need new construction."};
+
     private Boolean isDefaultDeal;
     private Boolean firstMessage = false;
     private Boolean present = true;
     private JSONObject jsonMsgtoWhereNow = new JSONObject();
+    private String specCode;
+    private ArrayList<JSONObject> cachedmsgs = new ArrayList<JSONObject>();
+    String[] bNames = new String[3];
+    int[] bPrice = new int[3];
+    Bundle b;
 
 
-
+    private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            networkConnectivity();
+        }
+    };
     private final TextWatcher edtTypeMsgListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -146,7 +168,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         dbHelper = new DBHelper(getBaseContext());
 
-
 //        IntentFilter filter = new IntentFilter("shine");
 //        LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
         UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
@@ -159,6 +180,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     @Override
     protected void onResume() {
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
+
         super.onResume();
 
         if (!channel_name.equals(""))
@@ -174,10 +197,15 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     @Override
     protected void onPause() {
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
+
         super.onPause();
         if (pubnub != null)
             pubnub.unsubscribeAll();
+
     }
+
+
 
     private void init() {
 
@@ -192,9 +220,95 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         Bundle bundle  = getIntent().getExtras();
         channel_name = bundle.getString(AppConstants.OK_ID); //my_channel if came from root item
+        specCode = bundle.getString(AppConstants.SPEC_CODE);
         isDefaultDeal = bundle.getBoolean("isDefaultDeal");
 
         Log.i("TRACE DEALS FLAG 3", "FLAG " + isDefaultDeal);
+
+        //display messages from cache
+//        String s = General.getSharedPreferences(this,channel_name+AppConstants.CACHE);
+//        //List<JSONObject> itemList = Arrays.asList(s);
+//        Log.i("CACHE","string is from cache type"+General.getSharedPreferences(this,channel_name+AppConstants.CACHE).getClass().getName());
+//
+//        JSONArray jsonArray = null;
+//        try {
+//            jsonArray = new JSONArray(s);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+
+
+          //  bNames = b.getStringArray("bNames");
+          //  bPrice = b.getIntArray("bPrice");
+            String[] bNames = new String[]{"Building1","Building2","Building3"};
+            int[] bPrice = new int[]{35000,50000,65000};
+            Log.i("Listing card data","card data "+bNames+" "+bPrice+"channel_name "+channel_name);
+        try{
+            JSONObject jsonMsg = new JSONObject();
+            //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
+            jsonMsg.put("from", "LISTING");
+            //jsonMsg.put("to", "client");
+
+            jsonMsg.put("to", "client");
+
+
+            jsonMsg.put("message",String.valueOf(bNames[0]+"--"+bPrice[0]+"--"+bNames[1]+"--"+bPrice[1]+"--"+bNames[2]+"--"+bPrice[2]));
+
+            //Log.i("TRACE","messageText is "+messageText);
+            //Log.i(TAG,"messageText is"+messageText);
+            //publish message
+            pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+            Log.i(TAG, "Listing message published");
+        }
+        catch(Exception e){
+            Log.i(TAG, "caught in listing msg exception "+e);
+
+        }
+
+
+
+
+
+       // Log.i("CHAT","cache cache from shared yo mana string "+jsonArray +"    type is "+jsonArray.getClass().getName());
+//
+
+
+
+//        try {
+//            String s = General.getSharedPreferences(this,channel_name+AppConstants.CACHE);
+//
+//            Log.i("CHAT","cache cache from shared yo mana "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
+//           // Log.i("CACHE", "cache from shared yo mana " + General.getSharedPreferences(this, channel_name + AppConstants.CACHE));
+//
+//            Log.i("CHAT","cache cache from shared yo mana string "+s);
+//           //JSONObject jsonObj = new JSONObject(s);
+//            //JSONObject j = new JSONObject(General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
+//
+//            //Log.i("CACHE", "cache from shared yo mana jsonObj " + jsonObj);
+//           // displayMessage(jsonObj);
+//            JSONArray jsonArray = new JSONArray(s);
+//            Log.i("CHAT","cache cache from shared yo mana string "+jsonArray +"    type is "+jsonArray.getClass().getName());
+//
+//
+//            int jsonArrayLength = jsonArray.length();
+//            if (jsonArray.length() > 0) {
+//                for (int i = 0; i < jsonArrayLength; i++) {
+//                    JSONObject jsonMsg = jsonArray.getJSONObject(i);
+//
+//
+//                    Log.i(TAG, "jsonMsg catched success " + jsonMsg);
+//                    displayMessage(jsonMsg);
+//
+//                }
+//            }
+//
+//
+//
+//        }
+//        catch(Exception e){
+//            Log.i("CACHE", "cache from shared yo mana caught in exception " + e);
+//
+//        }
 
 
 
@@ -326,17 +440,39 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //        Bundle bundle  = getIntent().getExtras();
 //        channel_name = bundle.getString(AppConstants.OK_ID);
 
-        Log.i(TAG, "channel_name" + channel_name);
+        Log.i(TAG, "channel_name yo" + channel_name);
         userRole = bundle.getString("userRole");
         Log.i(TAG, "userRole is" + userRole);
+        Log.i(TAG, "speccode is yo" + specCode);
 
         ArrayAdapter<String> adapterSuggestions = null;
         //userRole.equals("other") then load simple_list_item_2
-        if (userRole.equals("client"))
-            adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsForClientArray);
-        else
-            adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsForBrokerArray);
 
+        if (channel_name.equalsIgnoreCase("my_channel") || channel_name.equalsIgnoreCase(UUID) ) {
+            if (userRole.equals("client"))
+                adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsForClientArray);
+            else
+                adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsForBrokerArray);
+        }
+        else if(specCode.contains("LL")){
+            if(specCode.contains("REQ")){
+                adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsLLReq);
+            }
+            else{
+                adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsLLAvl);
+            }
+
+        }
+        else{
+            if(specCode.contains("REQ")){
+                adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsORReq);
+            }
+            else{
+                adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsORAvl);
+            }
+
+
+        }
         //assign adapter to ListView
         suggestionList.setAdapter(adapterSuggestions);
         suggestionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -524,16 +660,102 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         Log.i("WHERENOW", "5 ");
         Log.i("CONVER", "jsonMsg" + jsonMsg);
         Log.i(TAG, "inside displayMessage" + jsonMsg);
+        //Read cachedmsgs from shared
+if(cachedmsgs.size() < 10) {
+    cachedmsgs.add(jsonMsg);
+}
+        else{
+    cachedmsgs.remove(0);
+    cachedmsgs.add(jsonMsg);
+}
+
+        Log.i("CACHE", "cachedmsgs after add" + cachedmsgs);
+
 
         String body = null;
+        String timetoken = null;
         ChatMessageUserType userType = null;
         final ChatMessage message = new ChatMessage();
         String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
 
 
         try {
+            if (jsonMsg.has("message")) {
+                JSONObject j = jsonMsg.getJSONObject("message");
+                timetoken = jsonMsg.getString("timetoken");
+                Log.i("CHAT","samosa1 "+jsonMsg.getString("message"));
+
+                if (j.has("message") && j.has("from") && j.has("to")) {
+                    Log.i("CHAT","samosa");
+                    body = j.getString("message");
+                    Log.i("CHAT","papdi "+body);
+
+                    if (j.getString("from").equalsIgnoreCase("DEFAULT")){
+                        Log.i("CONVER", "DEFAULT set");
+                        userType = ChatMessageUserType.DEFAULT;
+                    }
+                    else if (j.getString("from").equalsIgnoreCase("LISTING")){
+                        Log.i("CONVER", "LISTING set");
+                        userType = ChatMessageUserType.LISTING;
+                    }
+                    else if (!j.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID)))
+                    {
+                        userType = ChatMessageUserType.SELF;
+                    }
+                    else {
+                        userType = ChatMessageUserType.OTHER;
+                    }
+
+
+                    //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
+                    //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
+
+
+                    message.setUserName(roleOfUser);
+                    message.setMessageStatus(ChatMessageStatus.SENT);
+                    message.setMessageText(body);
+                    message.setUserType(userType);
+                    message.setMessageTime(new Date().getTime());
+                    message.setMessageTime(Long.valueOf(timetoken)/10000);
+
+
+
+
+                    chatMessages.add(message);
+                    Log.i(TAG, "message after adding to chatMessages" + chatMessages);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, "message runOnUiThread" + listAdapter);
+                            if (listAdapter != null) {
+                                Log.i(TAG, "message runOnUiThread  not null");
+                                listAdapter.notifyDataSetChanged();
+                            }
+                            Log.i(TAG, "message runOnUiThread edtTypeMsg1");
+                            edtTypeMsg.setText("");
+                            Log.i(TAG, "message runOnUiThread edtTypeMsg2");
+                        }
+                    });
+                }
+
+
+
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG, "caught in display message1" + e);
+        }
+
+
+
+        try {
             if (jsonMsg.has("message") && jsonMsg.has("from") && jsonMsg.has("to")) {
+                Log.i("CHAT","samosa");
                 body = jsonMsg.getString("message");
+                Log.i("CHAT","papdi "+body);
 
                 if (jsonMsg.getString("from").equalsIgnoreCase("DEFAULT")){
                     Log.i("CONVER", "DEFAULT set");
@@ -594,7 +816,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private void sendMessage(final String messageText)
     {
-        Log.i(TAG, "Insidde send message");
+        Log.i(TAG, "Inside send message");
         if(messageText.trim().length()==0)
             return;
 
@@ -765,10 +987,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     JSONArray jsonArrayResponse = new JSONArray(response.toString());
                     JSONArray jsonArrayHistory = jsonArrayResponse.getJSONArray(0);
                     int jsonArrayHistoryLength = jsonArrayHistory.length();
+                   // cacheMessages(jsonArrayHistory);
                     if (jsonArrayHistory.length() > 0) {
+                        Log.i(TAG, "loadhistory not empty");
                         for (int i = 0; i < jsonArrayHistoryLength; i++) {
                             JSONObject jsonMsg = jsonArrayHistory.getJSONObject(i);
-
 
                             Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub jsonArrayResponse" + jsonArrayResponse);
                             Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub jsonArrayHistory" + jsonArrayHistory);
@@ -778,6 +1001,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         }
                     }
                     else{
+                        Log.i(TAG, "loadhistory empty");
 
 
                         JSONObject jsonMsg = new JSONObject();
@@ -799,7 +1023,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
 
-                        jsonMsg.put("message", "You have initiated inquiry for requested "+jsonResponse.getString("property_subtype")+", "+jsonResponse.getString("property_type")+" property within budget "+General.currencyFormat(jsonResponse.getString("price"))+" Within a moment we are connecting you to our top 3 brokers.");
+                        jsonMsg.put("message", "You have initiated enquiry for requested "+jsonResponse.getString("property_subtype")+", "+jsonResponse.getString("property_type")+" property within budget "+General.currencyFormat(jsonResponse.getString("price"))+" Within a moment we are connecting you to our top 3 brokers.");
                         //Log.i("TRACE","messageText is "+messageText);
                         //Log.i(TAG,"messageText is"+messageText);
                         //publish message
@@ -816,7 +1040,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             public void errorCallback(String channel, PubnubError error) {
             }
         };
-        pubnub.history(channel_name, 10, false, callback);
+       // pubnub.history(channel_name, 10, false, callback);
+        pubnub.history(channel_name,true, 10,callback);
     }
 
 
@@ -955,7 +1180,55 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     }
 
 
+private  void networkConnectivity(){
+    Log.i("TRACE","networkConnectivity1");
+    SnackbarManager.show(
+            Snackbar.with(this)
+                    .position(Snackbar.SnackbarPosition.TOP)
+                    .text("INTERNET CONNECTIVITY NOT AVAILABLE")
+                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+}
 
+    private void cacheMessages(JSONArray msgs){
+//        JSONObject jo = new JSONObject();
+//
+//// populate the array
+//        try {
+//            jo.put("msg",msgs);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+
+        General.setSharedPreferences(this,channel_name+AppConstants.CACHE,msgs.toString());
+        Log.i("CHAT","cache "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        General.setSharedPreferences(this,channel_name+AppConstants.CACHE,cachedmsgs.toString());
+        Log.i("CHAT","cache "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
+
+//        SharedPreferences appSharedPrefs = PreferenceManager
+//                .getDefaultSharedPreferences(this.getApplicationContext());
+//        SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
+//        Gson gson = new Gson();
+//        String json = gson.toJson(cachedmsgs);
+//        prefsEditor.putString(channel_name+AppConstants.CACHE, json);
+//        prefsEditor.commit();
+
+//        Set<JSONObject> set = new HashSet<>();
+//        set.addAll(cachedmsgs);
+//        General.saveSet(this,channel_name+AppConstants.CACHE,set.toString());
+//        General.setSharedPreferences(this,channel_name+AppConstants.CACHE,cachedmsgs.toString());
+//       Log.i("CACHE","cache got from shared  "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
+//
+
+
+
+        super.onBackPressed();
+        }
 
 
 

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -32,7 +33,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     private static final String propertyTypeDefaultColor = "#FFFFFF";
     private String bhkNumber = "2";
     private String bhkNumberValue = "BHK";
-
+    private String oyeButtonData;
     public OyeOnPropertyTypeSelectFragment() {
         // Required empty public constructor
     }
@@ -80,22 +81,22 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
      //         txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
                 AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
                 AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
-                onFilterValueUpdate(bhkNumber+"<sub><small>"+bhkNumberValue+"</small></sub>");
+                onFilterValueUpdate(bhkNumber+"<sub><small>"+bhkNumberValue+"</small></sub>",bhkNumber+""+bhkNumberValue);
                 break;
             case "shop":
                 General.saveBoolean(getContext(), "propertySubtypeFlag", false);
                 rootView = inflater.inflate(R.layout.fragment_shop_click, container, false);
-                onFilterValueUpdate("SHO");
+                onFilterValueUpdate("SHO","default");
                 break;
             case "industrial":
                 General.saveBoolean(getContext(),"propertySubtypeFlag",false);
                 rootView = inflater.inflate(R.layout.fragment_industry_click, container, false);
-                onFilterValueUpdate("IND");
+                onFilterValueUpdate("IND","default");
                 break;
             case "office":
                 General.saveBoolean(getContext(), "propertySubtypeFlag", false);
                 rootView = inflater.inflate(R.layout.fragment_office_click, container, false);
-                onFilterValueUpdate("OFF");
+                onFilterValueUpdate("OFF","default");
                 break;
             /*case "others":
                 rootView = inflater.inflate(R.layout.others_layout, container, false);
@@ -145,7 +146,9 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
             bhkNumberValue = "BHK";
             tv_dealinfo.setText("4+BHK");
         }
-        onFilterValueUpdate(bhkNumber+"<sub><small>"+bhkNumberValue+"</small></sub>");
+        onFilterValueUpdate(bhkNumber+"<sub><small>"+bhkNumberValue+"</small></sub>",bhkNumber+""+bhkNumberValue);
+        oyeButtonData = selectedPropertyType +" "+txtPreviousTextView.getText().toString();
+        setOyeButtonData(oyeButtonData);
     }
 
     @Nullable
@@ -161,6 +164,8 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         Log.i("retail","==========================="+txtPreviousTextView.getText().toString());
         tv_dealinfo.setText(txtPreviousTextView.getText().toString());
         AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
+        oyeButtonData = txtPreviousTextView.getText().toString();
+        setOyeButtonData(oyeButtonData);
     }
 
     @Nullable
@@ -177,6 +182,8 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
         tv_dealinfo.setText(txtPreviousTextView.getText().toString());
         AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
+        oyeButtonData = txtPreviousTextView.getText().toString();
+        setOyeButtonData(oyeButtonData);
     }
 
     @Nullable
@@ -191,6 +198,8 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
         AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
         tv_dealinfo.setText(txtPreviousTextView.getText().toString());
+        oyeButtonData = selectedPropertyType +" "+txtPreviousTextView.getText().toString();
+        setOyeButtonData(oyeButtonData);
     }
 
     private void clean() {
@@ -199,9 +208,23 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
             txtPreviousTextView.setTextColor(Color.parseColor("black"));
     }
 
-    private void onFilterValueUpdate(String filterValue) {
+    private void onFilterValueUpdate(String filterValue, String bhk) {
         Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
         intent.putExtra("filterValue", filterValue);
+        intent.putExtra("bhk", bhk);
+        intent.putExtra("tv_dealinfo",oyeButtonData);
+
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
+
+    }
+
+    private void setOyeButtonData(String oyeButtonData) {
+        Log.i("oyeButtonData","oyeButtonData "+oyeButtonData+"@"+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+        Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
+        intent.putExtra("tv_dealinfo",oyeButtonData);
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
     }
+
+
 }

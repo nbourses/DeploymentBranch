@@ -208,7 +208,8 @@ if(customMapFragment==null) {
                         if (isNetworkAvailable()) {
                             new LocationUpdater().execute();
                         }
-                        tv_change_region.setText(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
+                       // tv_change_region.setText(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
+
                        // tv_change_region.addTextChangedListener(TextWatcher watcher);
                         //locationName.changeLocation(tv_change_region.getText().toString());
                     } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {

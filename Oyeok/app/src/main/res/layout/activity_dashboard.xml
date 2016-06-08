@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/wrapper"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:visibility="visible">
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
         xmlns:sothree="http://schemas.android.com/apk/res-auto"
@@ -126,7 +127,8 @@
             android:layout_gravity="left|top"
             android:textColor="@color/White"
             android:layout_margin="5dp"
-            android:text="CONNECT NOW | List" />
+            android:text="CONNECT NOW | List"
+            android:visibility="visible" />
         <TextView
             android:id="@+id/tv_dealinfo"
             android:layout_width="wrap_content"
@@ -167,7 +169,11 @@
         <!--android:layout_alignParentBottom="true"-->
         <!--android:text="CONNECT NOW |" />-->
 
-
+    <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/webView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="invisible" />
 
 
 

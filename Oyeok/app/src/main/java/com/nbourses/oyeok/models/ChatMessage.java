@@ -12,16 +12,17 @@ public class ChatMessage {
     private ChatMessageUserType userType;
     private ChatMessageStatus messageStatus;
     private String userName;
+    private Long messageTime;
 
-    public long getMessageTime() {
+    public Long getMessageTime() {
         return messageTime;
     }
 
-    public void setMessageTime(long messageTime) {
+    public void setMessageTime(Long messageTime) {
         this.messageTime = messageTime;
     }
 
-    private long messageTime;
+
 
     public void setMessageText(String messageText) {
         this.messageText = messageText;

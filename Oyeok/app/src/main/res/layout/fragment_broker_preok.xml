@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:gravity="bottom"
     android:layout_width="match_parent"
+    android:id="@+id/preok_layout"
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -367,7 +368,7 @@
             <include layout="@layout/fragment_broker_preok_common"/>
         </FrameLayout>
 
-        <RelativeLayout
+      <RelativeLayout
             android:id="@+id/seekbar_linearlayout"
             android:paddingLeft="@dimen/sixteen_dp"
             android:paddingRight="@dimen/sixteen_dp"
@@ -381,28 +382,28 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="-8dp"
             android:paddingTop="8dp">
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/phaseSeekbar">
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:visibility="gone" />
+               <LinearLayout
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/phaseSeekbar">
+               <View
+                      android:layout_width="0dp"
+                      android:layout_height="0dp"
+                      android:layout_weight="1"
+                      android:visibility="gone" />
 
-                <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
-                    android:id="@+id/phasedSeekBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textAlignment="center" />
+                  <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
+                      android:id="@+id/phasedSeekBar"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:textAlignment="center" />
 
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="105dp"
+                android:paddingLeft="106dp"
                 android:visibility="visible">
                 <TextView
 
@@ -524,7 +525,7 @@
 
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:text="OK"
                 android:id="@+id/okBtn"
                 android:layout_gravity="center_horizontal|bottom"

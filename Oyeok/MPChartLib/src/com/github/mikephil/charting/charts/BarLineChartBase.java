@@ -661,16 +661,17 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
                         if (editEntryValue) {
                             Entry entry = getEntryByTouchPoint(event.getX(), event.getY());
                             PointD value = getValuesByTouchPoint(event.getX(), event.getY(), AxisDependency.LEFT);
-                          //  Log.i("CRASH GRAPH","entry "+entry);
+                            Log.i("CRASH GRAPH","entry "+entry+"value.y " +value.y);
 
                             if(maxLimit == 0)
                                 maxLimit = this.getYChartMax()*5;
 
-                            if(value.y < maxLimit) {
+                            if(value.y < maxLimit && value.y > 500) {
                                 entry.setVal((float) value.y);
                                 setAutoScaleMinMaxEnabled(true);
                                 notifyDataSetChanged();
                             }
+
                         }
                         break;
 

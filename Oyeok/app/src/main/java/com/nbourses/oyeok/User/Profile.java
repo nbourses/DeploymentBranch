@@ -29,6 +29,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateProfile;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
@@ -181,6 +182,7 @@ public class Profile extends Fragment {
 
                         dbhelper.save(DatabaseConstants.email, emailTxt.getText().toString());
                 dbhelper.save(DatabaseConstants.name,username_txt.getText().toString());
+                General.setSharedPreferences(getContext(),AppConstants.NAME,username_txt.getText().toString());
                 dbhelper.save(DatabaseConstants.imageFilePath,filePath);
                 //drawerFragment = (FragmentDrawer) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
 

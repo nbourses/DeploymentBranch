@@ -2,6 +2,7 @@ package com.nbourses.oyeok.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
@@ -14,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -38,7 +40,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.Database.SharedPrefs;
-
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.deleteHDroom;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
@@ -132,6 +133,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     private ArrayList<BrokerDeals> total_deals;
     private ArrayList<BrokerDeals> listBrokerDeals_new;
     private Set<String> mutedOKIds = new HashSet<String>();
+    private int position;   //position of swipe menu item
 
 
 
@@ -147,6 +149,13 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     LoadingAnimationView progressBar;*/
 
 //    private ProgressDialog mProgressDialog = null;
+
+    private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            networkConnectivity();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -260,16 +269,17 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         // step 2. listener item click event
         listViewDeals.setOnMenuItemClickListener(new OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+            public boolean onMenuItemClick(int pos, SwipeMenu menu, int index) {
      //           ApplicationInfo item =  listAdapter.getItem(position);
+                position = pos;
                 switch (index) {
-                    case 0:
+                    case 2:
 
                         Log.i("OPEN OPTION", "=================");
                         //open
 //                        open(item);
                         break;
-                    case 1:
+                    case 0:
 
                         Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(ClientDealsListActivity.this));
                         if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
@@ -306,87 +316,98 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 //                        listAdapter.remove(position);
 //                        listAdapter.notifyDataSetChanged();
                         break;
-                    case 2:
+                    case 1:
 
                         Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
 
 
                         Log.i("deleteDR CALLED", "spec code " + total_deals.get(position).getSpecCode());
+                        AlertDialog alertDialog = new AlertDialog.Builder(ClientDealsListActivity.this).create();
+                        //alertDialog.setTitle("DELETE");
+                        alertDialog.setMessage("Do you really want to delete this deal room.");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Delete",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+
+                                        if(default_deals != null) {
+                                            if (default_deals.contains(total_deals.get(position))){
+
+                                                Log.i("deleteDR CALLED", "Its default deal " + total_deals.get(position).getSpecCode());
 
 
-                        if(default_deals != null) {
-                            if (default_deals.contains(total_deals.get(position))){
+                                                String deals;
+                                                deals = General.getDefaultDeals(ClientDealsListActivity.this);
+                                                java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+                                                }.getType();
+                                                HashMap<String, String> deals1 = gson.fromJson(deals, type);
 
-                                Log.i("deleteDR CALLED", "Its default deal " + total_deals.get(position).getSpecCode());
+                                                Log.i("TRACE", "hashmap:" + deals1);
+
+                                                if (deals1 == null) {
+                                                    deals1 = new HashMap<String, String>();
+
+                                                }
+
+                                                Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
+
+                                                while (iter.hasNext()) {
+                                                    Map.Entry<String,String> entry = iter.next();
+                                                    Log.i("DELETE DEFAULT DROOM","entry.getKey"+entry.getKey());
+                                                    if(total_deals.get(position).getOkId().equalsIgnoreCase(entry.getKey())){
+                                                        iter.remove();
+                                                        Log.i("DELETE DEFAULT DROOM", "entry.getKey removed" + entry.getKey());
+                                                        Log.i("DELETE DEFAULT DROOM", "default droomsremoved" + entry.getKey());
+                                                        Log.i("DELETE DEFAULT DROOM", "default droomsremoved okid" + total_deals.get(position).getOkId());
+                                                        Log.i("DELETE DEFAULT DROOM","entry.getKey removed"+entry.getValue());
+                                                        // RefreshDrooms = true;
+                                                    }
+                                                }
+                                                Log.i(TAG,"after deal "+deals1);
+                                                Log.i("Default deals in shared","I am here2");
+                                                Gson g = new Gson();
+                                                String hashMapString = g.toJson(deals1);
+                                                General.saveDefaultDeals(ClientDealsListActivity.this, hashMapString);
+
+                                                deleteDealingroom("1",total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
+                                                default_deals.clear();
+                                                loadDefaultDeals();
+
+                                            }
+                                        }
 
 
-                                String deals;
-                                deals = General.getDefaultDeals(ClientDealsListActivity.this);
-                                java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
-                                }.getType();
-                                HashMap<String, String> deals1 = gson.fromJson(deals, type);
+                                        if(listBrokerDeals_new != null) {
+                                            if (listBrokerDeals_new.contains(total_deals.get(position))) {
 
-                                Log.i("TRACE", "hashmap:" + deals1);
+                                                Log.i("deleteDR CALLED", "Its HDroom " + total_deals.get(position).getSpecCode());
 
-                                if (deals1 == null) {
-                                    deals1 = new HashMap<String, String>();
 
-                                }
+                                                deleteDealingroom("0",total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
+                                                //on delete droom delete that room OK id from mutedOKIds
 
-                                Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
+                                                Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(ClientDealsListActivity.this));
+                                                if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
+                                                    mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
 
-                                while (iter.hasNext()) {
-                                    Map.Entry<String,String> entry = iter.next();
-                                    Log.i("DELETE DEFAULT DROOM","entry.getKey"+entry.getKey());
-                                    if(total_deals.get(position).getOkId().equalsIgnoreCase(entry.getKey())){
-                                        iter.remove();
-                                        Log.i("DELETE DEFAULT DROOM", "entry.getKey removed" + entry.getKey());
-                                        Log.i("DELETE DEFAULT DROOM", "default droomsremoved" + entry.getKey());
-                                        Log.i("DELETE DEFAULT DROOM", "default droomsremoved okid" + total_deals.get(position).getOkId());
-                                        Log.i("DELETE DEFAULT DROOM","entry.getKey removed"+entry.getValue());
-                                       // RefreshDrooms = true;
+                                                    if(mutedOKIds.contains(total_deals.get(position).getOkId()))
+                                                        mutedOKIds.remove(total_deals.get(position).getOkId());
+
+                                                }
+
+                                                General.saveMutedOKIds(ClientDealsListActivity.this, mutedOKIds);
+
+                                                Log.i("MUTE", "muted from shared" + General.getMutedOKIds(ClientDealsListActivity.this));
+
+                                            }
+                                        }
+
                                     }
-                                }
-                                Log.i(TAG,"after deal "+deals1);
-                                Log.i("Default deals in shared","I am here2");
-                                Gson g = new Gson();
-                                String hashMapString = g.toJson(deals1);
-                                General.saveDefaultDeals(ClientDealsListActivity.this, hashMapString);
-
-                                deleteDealingroom("1",total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
-                                default_deals.clear();
-                                loadDefaultDeals();
-
-                            }
-                        }
+                                });
+                        alertDialog.show();
 
 
-                        if(listBrokerDeals_new != null) {
-                            if (listBrokerDeals_new.contains(total_deals.get(position))) {
 
-                                Log.i("deleteDR CALLED", "Its HDroom " + total_deals.get(position).getSpecCode());
-
-
-                                deleteDealingroom("0",total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
-                                //on delete droom delete that room OK id from mutedOKIds
-
-                                Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(ClientDealsListActivity.this));
-                                if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
-                                    mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
-
-                                    if(mutedOKIds.contains(total_deals.get(position).getOkId()))
-                                        mutedOKIds.remove(total_deals.get(position).getOkId());
-
-                                }
-
-                                General.saveMutedOKIds(ClientDealsListActivity.this, mutedOKIds);
-
-                                Log.i("MUTE", "muted from shared" + General.getMutedOKIds(ClientDealsListActivity.this));
-
-                            }
-                        }
-
-                        // delete
 //					delete(item);
 //                        listAdapter.remove(position);
 //                        listAdapter.notifyDataSetChanged();
@@ -470,6 +491,22 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Register mMessageReceiver to receive messages.
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Unregister since the activity is not visible
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
+
+    }
+
 
     private void init() {
 
@@ -490,6 +527,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 new String[]{"30", "15"},
                 new String[]{"Rental", "Resale"
                 }));
+
         mCustomPhasedSeekbar.setListener((this));
 
         Log.i("Phaseseekbar", "oncreate value " + General.getSharedPreferences(this, AppConstants.TT));
@@ -685,7 +723,15 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, ClientMainActivity.class));
+
+        Intent intent = new Intent(this, ClientMainActivity.class);
+        intent.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+   //     startActivity(new Intent(this, ClientMainActivity.class));
+     //   finish();
     }
 
 
@@ -870,6 +916,7 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
                     intent.putExtra("userRole", "client");
 
                     intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                    intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
                     Log.i("TRACE", "ment" + AppConstants.OK_ID);
 
                     startActivity(intent);
@@ -896,7 +943,7 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
 
         RestAdapter restAdapter = new RestAdapter
                 .Builder()
-                .setEndpoint(AppConstants.SERVER_BASE_URL)
+                .setEndpoint(AppConstants.SERVER_BASE_URL_101)
                 .setConverter(new GsonConverter(gson))
 
                 .build();
@@ -1082,6 +1129,7 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
                                         Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                                         intent.putExtra("userRole", "client");
                                         intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                                        intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
                                         intent.putExtra("isDefaultDeal",brokerDeals.getdefaultDeal());
                                         Log.i("TRACE DEALS FLAG 2", "FLAG " + brokerDeals.getdefaultDeal());
                                         startActivity(intent);
@@ -1293,6 +1341,14 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
 
 
     }
+    private  void networkConnectivity(){
+        SnackbarManager.show(
+                Snackbar.with(this)
+                        .position(Snackbar.SnackbarPosition.TOP)
+                        .text("INTERNET CONNECTIVITY NOT AVAILABLE")
+                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+    }
+
 }
 
 

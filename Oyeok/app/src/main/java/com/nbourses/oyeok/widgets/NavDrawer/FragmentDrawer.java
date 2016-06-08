@@ -42,6 +42,7 @@ public class FragmentDrawer extends Fragment {
     private FragmentDrawerListener drawerListener;
     public MDrawerListener mDrawerListener;
     List<NavDrawerItem> navDrawerItems;
+    private Boolean signupSuccessflag = false;
 
 
     public void setmDrawerListener(MDrawerListener mDrawerListener) {
@@ -148,6 +149,11 @@ public class FragmentDrawer extends Fragment {
                 getActivity().invalidateOptionsMenu();
                 if(mDrawerListener != null ) {
                     mDrawerListener.drawerOpened();
+//                    signupSuccessflag = true;
+//                    Log.i("signupSuccessflag s","signupSuccessflag "+signupSuccessflag);
+//                        Intent i = new Intent(AppConstants.SIGNUPSUCCESSFLAG);
+//                       i.putExtra("signupSuccessflag",signupSuccessflag);
+//                       LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
                 }
             }
 

@@ -163,6 +163,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 ////////////////////////////////////////////////////
     private AuthCallback authCallback;
     private String mobile_number="";
+   // private Boolean signupSuccessflag = false;
 
 
 
@@ -199,14 +200,21 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
             // run only when broker
 
-            bNames = b.getStringArray("bNames");
-            bPrice = b.getIntArray("bPrice");
+         try {
 
-            Log.i("Listings are", "bNames " + bNames + "bPrice " + bPrice);
+             // try catch to handle direct signup from deals button when building data not available
+             bNames = b.getStringArray("bNames");
+             bPrice = b.getIntArray("bPrice");
 
-            listings.put(bNames[0], (float) bPrice[0]);
-            listings.put(bNames[1], (float) bPrice[1]);
-            listings.put(bNames[0], (float) bPrice[0]);
+             Log.i("Listings are", "bNames " + bNames + "bPrice " + bPrice);
+
+             listings.put(bNames[0], (float) bPrice[0]);
+             listings.put(bNames[1], (float) bPrice[1]);
+             listings.put(bNames[2], (float) bPrice[2]);
+         }
+         catch(Exception e){
+
+         }
         }
 
 
@@ -769,6 +777,14 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 user1.userSignUp(user, new Callback<SignUp>() {
                     @Override
                     public void success(SignUp signUp, retrofit.client.Response response) {
+
+                        //Broadcast a map that signup has been done(to handle backs)
+//                        signupSuccessflag = true;
+//                        Log.i("signupSuccessflag s","signupSuccessflag "+signupSuccessflag);
+//                        Intent i = new Intent(AppConstants.SIGNUPSUCCESSFLAG);
+//                        i.putExtra("signupSuccessflag",signupSuccessflag);
+//                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
+
                         Log.i("TAG", "Inside signup success");
 //                        SnackbarManager.show(
 //                                Snackbar.with(context)
@@ -811,6 +827,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                         else
                         {
                             if(okBroker && !(lastFragment.equals("ChatBroker"))){
+
                                 jsonArray=b.getString("JsonArray");
                                 try {
                                     p=new JSONArray(jsonArray);

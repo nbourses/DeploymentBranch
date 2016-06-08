@@ -1,13 +1,13 @@
 package com.nbourses.oyeok.models;
 
-import com.activeandroid.Model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by rohit on 16/02/16.
  */
-public class HdRooms extends Model {
+public class HdRooms //extends Model
+{
     @Expose
     @SerializedName("user_id")
     private String userId;
