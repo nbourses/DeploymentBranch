@@ -191,7 +191,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
     CustomMapFragment customMapFragment;
     GPSTracker gpsTracker;
     static int x, y;
-    static int top, bottom, left, right, width, height;
+    static int top, bottom, left, right, width, height,truncate_first;
     private int llMin, llMax, orMin, orMax;
     private String name;
     private int []or_psf=new int[5], ll_pm=new int[5];
@@ -276,10 +276,10 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
 
         Mmarker = (ImageView) rootView.findViewById(R.id.Mmarker);
         try {
-            icon1 = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("buildingiconbeforeclick",35,65));//BitmapDescriptorFactory.fromResource(R.drawable.buildingiconbeforeclick);
+            icon1 = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("buildingiconbeforeclick",30,65));//BitmapDescriptorFactory.fromResource(R.drawable.buildingiconbeforeclick);
            // Bitmap yourBitmap=BitmapFactory.decodeResource(getContext().getResources(), R.drawable.click_building_icon);
            //Bitmap yourBitmap = Bitmap.createScaledBitmap(yourBitmap, 30, 65, true);
-            icon2 = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("click_building_icon",35,65));
+            icon2 = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("click_building_icon",50,68));
         }
         catch (Exception e)
         {
@@ -505,7 +505,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                                 mCustomerMarker[i].setIcon(icon2);
 
                                 search_building_icon.setVisibility(View.VISIBLE);
-                               // mCustomerMarker[i].showInfoWindow();
+                              // mCustomerMarker[i].showInfoWindow();
                                 horizontalPicker.setVisibility(View.GONE);
                                 tvFetchingrates.setVisibility(View.VISIBLE);
                                 tvRate.setVisibility(View.GONE);
@@ -514,7 +514,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                                 recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
                                // tvFetchingrates.setTextColor(Color.parseColor("#ffffff")); &#x20B9
                                 Log.i("coming soon","coming soon :"+marker.getTitle().toString());
-                                String text = "<font color=#ffffff size=13><i>Average Rate in last 1 WEEK</i><br><b>"+marker.getTitle().toString()+"</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font> <font color=#ff9f1c>"+General.currencyFormat(String.valueOf(ll_pm[i])).substring(3,General.currencyFormat(String.valueOf(ll_pm[i])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
+                                String text = "<font color=#ffffff size=13><i>Average Rate in last 1 WEEK</i><br><b>"+marker.getTitle().toString()+"</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font> <font color=#ff9f1c>"+General.currencyFormat(String.valueOf(ll_pm[i])).substring(2,General.currencyFormat(String.valueOf(ll_pm[i])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
                                 tvFetchingrates.setText(Html.fromHtml(text));
                                 tvFetchingrates.setTypeface(null,Typeface.BOLD);
 //                                tv_building.setVisibility(View.VISIBLE);Average Rate in last 1 WEEK
@@ -641,7 +641,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                             Log.i("MARKER","========================="+MarkerClicked);
 
 
-
+                            tvFetchingrates.setVisibility(View.VISIBLE);
                             if(!MarkerClicked ) {
                                 mMarkerminmax.setVisibility(View.VISIBLE);
                                // Mmarker.setVisibility(View.VISIBLE);
@@ -1229,7 +1229,7 @@ try {
                 if(flag[INDEX]==true) {
                     Log.i("Index","index:"+INDEX+" "+MarkerClicked);
                  // tvFetchingrates.setText(mCustomerMarker[INDEX].getTitle().toString()+" @ "+ll_pm[INDEX]);
-                    String text = "<font color=#ffffff><i>Average Rate in last 1 WEEK</i><br><b><b>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+General.currencyFormat(String.valueOf(ll_pm[INDEX])).substring(3,General.currencyFormat(String.valueOf(ll_pm[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font>";
+                    String text = "<font color=#ffffff><i>Average Rate in last 1 WEEK</i><br><b><b>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+General.currencyFormat(String.valueOf(ll_pm[INDEX])).substring(2,General.currencyFormat(String.valueOf(ll_pm[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font>";
                     tvFetchingrates.setText(Html.fromHtml(text));
                    // tvFetchingrates.setTypeface(Typeface.DEFAULT_BOLD);
                    //Log.i("Index","gettitle"+mCustomerMarker[INDEX].getTitle()) ;
@@ -1242,7 +1242,7 @@ try {
                 dbHelper.save("brokerType", "For Sale");
                 if(flag[INDEX]==true) {
                  // tvFetchingrates.setText(mCustomerMarker[INDEX].getTitle().toString()+" @ "+or_psf[INDEX]);
-                    String text = "<font color=#ffffff><i>Average Rate in last 1 WEEK</i><br><b><b>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+General.currencyFormat(String.valueOf(or_psf[INDEX])).substring(3,General.currencyFormat(String.valueOf(or_psf[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/psf</sub></font>";
+                    String text = "<font color=#ffffff><i>Average Rate in last 1 WEEK</i><br><b><b>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+General.currencyFormat(String.valueOf(or_psf[INDEX])).substring(2,General.currencyFormat(String.valueOf(or_psf[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/psf</sub></font>";
                     tvFetchingrates.setText(Html.fromHtml(text));
                 }
                 updateHorizontalPicker();
