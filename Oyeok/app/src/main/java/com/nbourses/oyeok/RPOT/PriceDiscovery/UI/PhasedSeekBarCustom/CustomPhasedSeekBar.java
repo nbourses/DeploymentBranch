@@ -30,9 +30,9 @@ import com.nbourses.oyeok.helpers.General;
  */
 public class CustomPhasedSeekBar extends View {
 
-    protected static final int[] STATE_NORMAL = new int[] {};
-    protected static final int[] STATE_SELECTED = new int[] { android.R.attr.state_selected };
-    protected static final int[] STATE_PRESSED = new int[] { android.R.attr.state_pressed };
+    protected static final int[] STATE_NORMAL = new int[]{};
+    protected static final int[] STATE_SELECTED = new int[]{android.R.attr.state_selected};
+    protected static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
     protected int[] mState = STATE_SELECTED;
 
     protected boolean mFirstDraw = true;
@@ -48,7 +48,7 @@ public class CustomPhasedSeekBar extends View {
 
     protected int[][] mAnchors;
     protected int mCurrentItem;
-    protected int widthHalf  = 0;
+    protected int widthHalf = 0;
     protected int heightHalf = 0;
 
     protected CustomPhasedAdapter mAdapter;
@@ -65,7 +65,7 @@ public class CustomPhasedSeekBar extends View {
 
     public CustomPhasedSeekBar(Context context) {
         super(context);
-        init(context,null,0);
+        init(context, null, 0);
     }
 
     public CustomPhasedSeekBar(Context context, AttributeSet attrs) {
@@ -79,9 +79,7 @@ public class CustomPhasedSeekBar extends View {
     }
 
 
-
-
-    protected void init(Context mContext,AttributeSet attrs, int defStyleAttr) {
+    protected void init(Context mContext, AttributeSet attrs, int defStyleAttr) {
 
         General.setSharedPreferences(getContext(), AppConstants.TT, AppConstants.RENTAL);
 
@@ -104,21 +102,20 @@ public class CustomPhasedSeekBar extends View {
     }
 
 
-
     public int getNavBarHeight(Context c) {
         int result = 0;
         boolean hasMenuKey = ViewConfiguration.get(c).hasPermanentMenuKey();
         boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
 
-        if(!hasMenuKey && !hasBackKey) {
+        if (!hasMenuKey && !hasBackKey) {
             //The device has a navigation bar
             Resources resources = getContext().getResources();
 
             int orientation = getResources().getConfiguration().orientation;
             int resourceId;
-            if (isTablet(c)){
+            if (isTablet(c)) {
                 resourceId = resources.getIdentifier(orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height" : "navigation_bar_height_landscape", "dimen", "android");
-            }  else {
+            } else {
                 resourceId = resources.getIdentifier(orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height" : "navigation_bar_width", "dimen", "android");
             }
 
@@ -136,14 +133,11 @@ public class CustomPhasedSeekBar extends View {
     }
 
 
-
-
     protected void configure(Canvas canvas) {
 
-        int m=getNavBarHeight(mContext);
+        int m = getNavBarHeight(mContext);
         int bottompadding = 0;
-        if(m>0)
-        {
+        if (m > 0) {
             bottompadding += m;
         }
         Rect rect = new Rect((int) mBackgroundPaddingRect.left,
@@ -155,24 +149,24 @@ public class CustomPhasedSeekBar extends View {
         //initially current and center elements cordinates are same
 
         mCurrentX = mPivotX = getWidth() / 2;
-        mCurrentY = mPivotY = (getHeight())/2;
+        mCurrentY = mPivotY = (getHeight()) / 2;
 
         //count of items in adapter
-        int count = getCount();
+        int count = 2;//getCount();
 
         //width of each item to occupy
         int widthBase = rect.width() / count;
 
         //to make calculations from center for each item calculated width base same for height
-         widthHalf = widthBase / 2;
+        widthHalf = widthBase / 2;
         int heightBase = rect.height() / count;
-         heightHalf = heightBase / 2;
+        heightHalf = heightBase / 2;
 
         //Integer array for storing each and every items co-ordinates
         mAnchors = new int[count][2];
         for (int i = 0, j = 1; i < count; i++, j++) {
-            mAnchors[i][0] =  widthBase * j - widthHalf + rect.left;
-            mAnchors[i][1] =  mPivotY;
+            mAnchors[i][0] = widthBase * j - widthHalf + rect.left;
+            mAnchors[i][1] = mPivotY;
         }
         mItemHalfWidth = widthHalf;
 
@@ -192,7 +186,7 @@ public class CustomPhasedSeekBar extends View {
         mCircleStrokePaint.setStrokeWidth(2 * DPTOPX_SCALE);
         mCircleStrokePaint.setStyle(Paint.Style.STROKE);
 
-         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         //Typeface tp = Typeface.create()
         paint.setStyle(Paint.Style.FILL);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
@@ -202,9 +196,16 @@ public class CustomPhasedSeekBar extends View {
 
     }
 
-      protected int getCount() {
-        return isInEditMode() ? 3 : mAdapter.getCount();
+    protected int getCount() {
+
+//          Log.i("PHASEDSEEKBAR","getcount "+mAdapter.getCount());
+
+            return isInEditMode() ? 3 : mAdapter.getCount();
+
+
     }
+
+
 
     protected void setCurrentItem(int currentItem) {
         String TT;
@@ -253,6 +254,7 @@ public class CustomPhasedSeekBar extends View {
         Drawable itemOff;
         Drawable itemOn;
         StateListDrawable stateListDrawable;
+        //int count = 2;//getCount();
         int count = getCount();
 
         if (!mUpdateFromPosition) {
@@ -271,6 +273,9 @@ public class CustomPhasedSeekBar extends View {
 
             setCurrentItem(minIndex);
             //get the latest drawable state(differs for unselected,selected and focused)
+            Log.i("PHASED","minIndex "+minIndex);
+            Log.i("PHASED","mAdapter "+mAdapter);
+            Log.i("PHASED","mAdapter.getItem(minIndex) "+mAdapter.getItem(minIndex));
             stateListDrawable = mAdapter.getItem(minIndex);
         } else {
             //If not dragging change currentx and current y to current items coordinates stored in integer array

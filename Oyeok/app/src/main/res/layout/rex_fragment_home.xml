@@ -195,12 +195,13 @@
                                 android:layout_height="66dp"
                                 android:backgroundTint="@color/yellow"
                                 android:text="Oye"
+                                android:textStyle="bold"
                                 android:gravity="center"
                                 android:paddingLeft="10dp"
                                 android:paddingRight="10dp"
                                 android:background="@drawable/deal_circle"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/sixteen_sp"
+                                android:textSize="20sp"
                                 android:layout_alignParentRight="true"/>
 
                             <ImageView
@@ -225,13 +226,14 @@
                             android:layout_width="66dp"
                             android:layout_height="66dp"
                             android:backgroundTint="@color/yellow"
-                            android:text="Industry"
-                            android:gravity="center_vertical"
+                            android:text="Home"
+                            android:textStyle="bold|italic"
+                            android:gravity="center"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
                             android:background="@drawable/deal_circle"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/twelve_sp"
+                            android:textSize="14sp"
                             android:layout_alignParentRight="true" />
 
 

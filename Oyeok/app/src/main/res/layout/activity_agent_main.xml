@@ -63,4 +63,16 @@
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+   <!-- <LinearLayout
+        android:id="@+id/container_broker_preok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/preok_layout"
+            layout="@layout/fragment_broker_preok" />
+    </LinearLayout> -->
+
 </RelativeLayout>

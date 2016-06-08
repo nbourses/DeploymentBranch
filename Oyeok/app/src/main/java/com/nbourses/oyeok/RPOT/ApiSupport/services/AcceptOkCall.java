@@ -23,14 +23,15 @@ import com.nispok.snackbar.SnackbarManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 
 /**
  * Created by DADDU_DON on 12/30/2015.
@@ -44,7 +45,7 @@ public class AcceptOkCall {
     }
 
     OnAcceptOkSuccess mCallBack;
-    public void acceptOk(HashMap<String, Float> listings, JSONArray m, int position, final DBHelper dbHelper, final Activity activity) {
+    public void acceptOk(final HashMap<String, Float> listings, JSONArray m, int position, final DBHelper dbHelper, final Activity activity) {
         String oyeId=null,oyeUserId=null,tt = null,size=null,price=null,reqAvl=null;
         Firebase.setAndroidContext(activity);
         droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl,activity);
@@ -72,10 +73,11 @@ public class AcceptOkCall {
         //DBHelper dbHelper1= new DBHelper();
 
 
-        for (Map.Entry<String, Float> entry : listings.entrySet())
-        {
-            acceptOk.setListings(entry.getKey(),entry.getValue());
-        }
+//        for (Map.Entry<String, Float> entry : listings.entrySet())
+//        {
+        Log.i("TRACEOK","listings "+listings);
+            acceptOk.setListings(listings);
+//        }
 
        //
         acceptOk.setDeviceId("Hardware");
@@ -107,6 +109,21 @@ public class AcceptOkCall {
                     @Override
                     public void success(AcceptOk acceptOk, Response response) {
                         Log.i("TRACEOK", "if called "+response);
+
+                        String strResponse =  new String(((TypedByteArray)response.getBody()).getBytes());
+                        try {
+                            JSONObject jsonResponse = new JSONObject(strResponse);
+                            JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
+                            Log.i("TRACEOK", "Response listings" + jsonResponseData);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.i("Exception ","message : "+e.getMessage());
+                        }
+
+
+
+
                         if (acceptOk.responseData.getMessage() == null) {
                             Log.i("TRACEOK", "if called "+response);
 
@@ -148,11 +165,15 @@ public class AcceptOkCall {
 
 
 
+
+
                                 Intent openDealsListing = new Intent(activity, BrokerDealsListActivity.class);
                                 //openDealsListing.putExtra("serverMessage", acceptOk.responseData.getMessage());
                                // Log.i("TRACEOK", "serverMessage " + acceptOk.responseData.getMessage());
                                // Log.i("TRACEBROKERSIGNUP","3");
                                 activity.startActivity(openDealsListing);
+
+
 
 
                             }

@@ -26,11 +26,25 @@
             android:textSize="16sp" /> -->
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:id="@+id/dealPtype"
             android:src="@drawable/home"
-            android:background="@drawable/shape_circle" />
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Mumbai"
+            android:id="@+id/locality"
+            android:textStyle="bold"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/greenish_blue"
+            android:gravity="center_horizontal"
+            android:textSize="12sp" />
+        <!-- android:background="@drawable/shape_circle"-->
 
     </RelativeLayout>
 

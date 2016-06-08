@@ -92,6 +92,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                 holder.txtDescription = (TextView) v.findViewById(R.id.txtDescription);
                 holder.txtTime = (TextView) v.findViewById(R.id.txtTime);
                 holder.txtFirstChar = (TextView) v.findViewById(R.id.txtFirstChar);
+                holder.locality = (TextView) v.findViewById(R.id.locality);
 
                 v.setTag(holder);
             } else {
@@ -129,17 +130,26 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
             String[] split = spec.split("-");
             //StringBuilder sb = new StringBuilder();
+            String intend  = split[0];
+            String tt = split[1].toUpperCase();
+            String pstype =split[2];
+            String price = split[3];
 
-            String intend = split[0].toUpperCase();
-            String pstype =split[1];
-            String price = split[2];
+            if(tt.equalsIgnoreCase("LL")){
+                tt = "Rent";
+            }
+            else if(tt.equalsIgnoreCase("OR")){
+                tt = "Sale";
+            }
 
-            if(intend.equals("LL")){
-                intend = "Rent";
+            if(intend.equalsIgnoreCase("REQ")){
+                intend = "required at";
             }
-            else if(intend.equals("OR")){
-                intend = "Sale";
+            else if(intend.equalsIgnoreCase("AVL")){
+                intend = "available for";
             }
+
+
 
             String ptype = null;
 
@@ -182,7 +192,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
 
 
-                String description = ptype + " property ("+pstype+") for " +intend+ " at  " + General.currencyFormat(price)+".";
+                String description = ptype + " property ("+pstype+") " +intend+ " " + General.currencyFormat(price)+".";
 
             Log.i("Deal data","Deal data is"+deal.getName());
 
@@ -205,7 +215,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                 holder.dealPtype.setImageResource(R.drawable.home);
             else if(ptype.equalsIgnoreCase("shop"))
                 holder.dealPtype.setImageResource(R.drawable.shop);
-            else if(ptype.equalsIgnoreCase("industry"))
+            else if(ptype.equalsIgnoreCase("industrial"))
                 holder.dealPtype.setImageResource(R.drawable.industry);
 
             //  holder.txtDescription.setText(deal.getMobileNo());
@@ -213,7 +223,16 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
            // holder.txtTime.setText("23.11");
 
-            holder.txtTime.setText("");
+            Log.i("HDROOM locality","locality is "+deal.getLocality());
+          try {
+              if ((!deal.getLocality().isEmpty())) {
+                  Log.i("HDROOM locality", "locality is 1 " + deal.getLocality());
+                  holder.locality.setText(deal.getLocality());
+              } else {
+                  holder.locality.setText("Mumbai");
+              }
+          }
+          catch(Exception e){}
 
 
 
@@ -245,6 +264,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
         public TextView txtTime;
         public TextView txtFirstChar;
         public ImageView dealPtype;
+        public TextView locality;
 
     }
 

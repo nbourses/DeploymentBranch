@@ -322,19 +322,25 @@ public class BrokerMap extends DashboardClientFragment {
                         if (isNetworkAvailable()) {
                             new LocationUpdater().execute();
                         }
+
+                       // tv_change_region.setText(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
+
+                       // tv_change_region.addTextChangedListener(TextWatcher watcher);
+
                         //tv_change_region.setText("");
-                        Log.i("t1", "Sharedpref_lng_above" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-                        // tv_change_region.setText(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-                        Log.i("t1", "Sharedpref_lng_below" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+                        // Log.i("t1", "Sharedpref_lng_above" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+                        // // tv_change_region.setText(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+                        // Log.i("t1", "Sharedpref_lng_below" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
 
 
-                        Intent intent = new Intent(AppConstants.Broker_Locality_Change);
-                        intent.putExtra("broker_locality_change", SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-                        Log.i("sendbroadcast", "====================");
-                        Log.i("sendbroadcast", "====================" + LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent));
+                        // Intent intent = new Intent(AppConstants.Broker_Locality_Change);
+                        // intent.putExtra("broker_locality_change", SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+                        // Log.i("sendbroadcast", "====================");
+                        // Log.i("sendbroadcast", "====================" + LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent));
 
 
                         // tv_change_region.addTextChangedListener(TextWatcher watcher);
+
                         //locationName.changeLocation(tv_change_region.getText().toString());
                     } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
 

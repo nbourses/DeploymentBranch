@@ -70,7 +70,7 @@ public class Avail_Sale_Broker_Sellers_New extends Fragment implements CircularS
             displayOkText = (TextView) v.findViewById(R.id.displayOkText);
             mOkbutton = (Button) v.findViewById(R.id.okButton);
             dbHelper=new DBHelper(getContext());
-        ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
+            ok_broker_mainScreen=(Ok_Broker_MainScreen)getParentFragment();
             pickContact = (Button) v.findViewById(R.id.pickContact);
             contactName = (TextView) v.findViewById(R.id.contactText);
             droom= (Button) v.findViewById(R.id.droom);

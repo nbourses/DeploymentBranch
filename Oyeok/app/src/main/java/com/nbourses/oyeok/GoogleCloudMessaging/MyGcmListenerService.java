@@ -96,7 +96,9 @@ public class MyGcmListenerService extends GcmListenerService {
         Log.i(TAG,"Title is "+title);
 
         if(title.equalsIgnoreCase("Oye")){
-
+            badgeCount++;
+            General.setBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT,badgeCount);
+            ShortcutBadger.applyCount(this, badgeCount);
             rentalCount = General.getBadgeCount(getApplicationContext(),AppConstants.RENTAL_COUNT);
             resaleCount = General.getBadgeCount(getApplicationContext(),AppConstants.RESALE_COUNT);
             tenantsCount = General.getBadgeCount(getApplicationContext(),AppConstants.TENANTS_COUNT);
@@ -114,10 +116,10 @@ public class MyGcmListenerService extends GcmListenerService {
             //for (int i = 0; i < split.length; i++) {
 
                 intend = split[0];
-                ptype = split[1];
-                pstype = split[2];
-                price = split[3];
-                tType = split[4];
+                tType = split[1];
+                ptype = split[2];
+                pstype = split[3];
+                price = split[4];
          //  DecimalFormat formatter = new DecimalFormat();
 
             price = General.currencyFormat(price);
@@ -384,6 +386,9 @@ public class MyGcmListenerService extends GcmListenerService {
 */
 
         if(title.equalsIgnoreCase("Oyeok")) {
+            badgeCount++;
+            General.setBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT,badgeCount);
+            ShortcutBadger.applyCount(this, badgeCount);
             if(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equals("client"))
             message = "We have just assigned a broker to your request.";
             else

@@ -1,6 +1,9 @@
 package com.nbourses.oyeok.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -8,6 +11,7 @@ import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -101,7 +105,22 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     private BrokerDealsListAdapter listAdapter;
     private SwipeMenuItem MuteItem,unMuteItem;
     private SwipeMenuCreator creator;
+  //  private Boolean signupSuccessflag = false;
 
+    private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            networkConnectivity();
+        }
+    };
+//    private BroadcastReceiver signupSuccessFlag = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            Log.i("signupSuccessflag rec","signupSuccessflag ");
+//            signupSuccessflag = intent.getExtras().getBoolean("signupSuccessflag");
+//            Log.i("signupSuccessflag r","signupSuccessflag "+signupSuccessflag);
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +146,20 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     protected void onResume() {
         super.onResume();
 //        init();
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
+     //   LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(signupSuccessFlag, new IntentFilter(AppConstants.SIGNUPSUCCESSFLAG));
+
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Unregister since the activity is not visible
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
+     //   LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(signupSuccessFlag);
+
+
     }
 
     private void init() {
@@ -141,23 +174,23 @@ Log.i("SWIPE","inside swipe menu creator");
 
 //                menu1[0] = menu;
                 // create "More" item
-                SwipeMenuItem MoreItem = new SwipeMenuItem(
-                        getApplicationContext());
-                // set item background
-                MoreItem.setBackground(new ColorDrawable(getResources().getColor(R.color.grey)));
-                // set item width
-                MoreItem.setWidth(listAdapter.dp2px(90));
-                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(90));
-                // set item title
-                MoreItem.setIcon(R.drawable.more);
-                MoreItem.setTitle("More");
-                // set item title fontsize
-                MoreItem.setTitleSize(18);
-                // set item title font color
-                MoreItem.setTitleColor(R.color.black);
-                // add to more
-
-                menu.addMenuItem(MoreItem);
+//                SwipeMenuItem MoreItem = new SwipeMenuItem(
+//                        getApplicationContext());
+//                // set item background
+//                MoreItem.setBackground(new ColorDrawable(getResources().getColor(R.color.grey)));
+//                // set item width
+//                MoreItem.setWidth(listAdapter.dp2px(90));
+//                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(90));
+//                // set item title
+//                MoreItem.setIcon(R.drawable.more);
+//                MoreItem.setTitle("More");
+//                // set item title fontsize
+//                MoreItem.setTitleSize(18);
+//                // set item title font color
+//                MoreItem.setTitleColor(R.color.black);
+//                // add to more
+//
+//                menu.addMenuItem(MoreItem);
 
 
                 // create "unmute" item
@@ -169,7 +202,7 @@ Log.i("SWIPE","inside swipe menu creator");
                 MuteItem.setWidth(listAdapter.dp2px(90));
                 // set item title
                 MuteItem.setIcon(R.drawable.unmute);
-                MuteItem.setTitle("unmute");
+                MuteItem.setTitle("Mute");
                 // set item title fontsize
                 MuteItem.setTitleSize(18);
                 // set item title font color
@@ -188,7 +221,7 @@ Log.i("SWIPE","inside swipe menu creator");
                 deleteItem.setWidth(listAdapter.dp2px(90));
                 // set a icon
                 deleteItem.setIcon(R.drawable.delete);
-                deleteItem.setTitle("delete");
+                deleteItem.setTitle("Delete");
                 MuteItem.setTitleSize(18);
                 // set item title font color
                 deleteItem.setTitleColor(R.color.white);
@@ -232,13 +265,13 @@ Log.i("SWIPE","inside swipe menu creator");
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 //           ApplicationInfo item =  listAdapter.getItem(position);
                 switch (index) {
-                    case 0:
+                    case 2:
 
                         Log.i("OPEN OPTION", "=================");
                         //open
 //                        open(item);
                         break;
-                    case 1:
+                    case 0:
 
                         Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(BrokerDealsListActivity.this));
                         if(!(General.getMutedOKIds(BrokerDealsListActivity.this) == null)) {
@@ -321,7 +354,7 @@ Log.i("SWIPE","inside swipe menu creator");
 //                        listAdapter.remove(position);
 //                        listAdapter.notifyDataSetChanged();
                         break;
-                    case 2:
+                    case 1:
 
                         Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
 
@@ -543,7 +576,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
         RestAdapter restAdapter = new RestAdapter
                 .Builder()
-                .setEndpoint(AppConstants.SERVER_BASE_URL)
+                .setEndpoint(AppConstants.SERVER_BASE_URL_101)
                 .setConverter(new GsonConverter(gson))
                 .build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
@@ -638,7 +671,17 @@ Log.i("SWIPE","inside swipe menu creator");
 
                                     Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                                     intent.putExtra("userRole", "broker");
+                                    Bundle bundle = new Bundle();
+
+                                    String[] bNames = new String[]{"Building1","Building2","BUilding3"};
+                                    int[] bPrice = new int[]{35000,50000,65000};
+
+
+                                    bundle.putIntArray("bPrice",bPrice);
+                                    bundle.putStringArray("bNames",bNames);
+
                                     intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                                    intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
                                     startActivity(intent);
                                 }
                             });
@@ -727,7 +770,21 @@ Log.i("SWIPE","inside swipe menu creator");
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, BrokerMainActivity.class));
+//        Log.i("signupSuccessflag back","signupSuccessflag "+signupSuccessflag);
+//        signupSuccessflag = true;
+//        Log.i("signupSuccessflag back1","signupSuccessflag "+signupSuccessflag);
+//        if(signupSuccessflag){
+            Intent intent = new Intent(this, BrokerMainActivity.class);
+            intent.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+//        }
+//        else {
+////        startActivity(new Intent(this, BrokerMainActivity.class));
+//            finish();
+//        }
     }
 
     private void loadFragment(Fragment fragment, Bundle args, int containerId, String title)
@@ -769,4 +826,12 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
     }
+    private  void networkConnectivity(){
+        SnackbarManager.show(
+                Snackbar.with(this)
+                        .position(Snackbar.SnackbarPosition.TOP)
+                        .text("INTERNET CONNECTIVITY NOT AVAILABLE")
+                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+    }
+
 }

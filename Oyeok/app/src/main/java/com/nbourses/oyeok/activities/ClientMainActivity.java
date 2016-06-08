@@ -1,7 +1,9 @@
 package com.nbourses.oyeok.activities;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -32,6 +34,7 @@ import android.widget.TextView;
 import com.firebase.client.Firebase;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
@@ -54,6 +57,7 @@ import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class ClientMainActivity extends AppCompatActivity implements NetworkInterface, FragmentDrawer.FragmentDrawerListener, OnOyeClick {
 
@@ -96,7 +100,13 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.hdroomsCount)
     TextView hdroomsCount;
 
+
+    @Bind(R.id.tv_dealinfo)
+    TextView tv_dealinfo;
+
+
 Intent lintent;
+
 
     private WebView webView;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
@@ -119,21 +129,26 @@ Intent lintent;
         }
     };
 
-//    private BroadcastReceiver onNotice= new BroadcastReceiver() {
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            // intent can contain anydata
-//            Log.d("sushil","onReceive called");
-//            if (intent.getExtras() != null) {
-//                Log.d("sushil","onReceive called"+intent.getExtras().getString(" client_heading"));
-//                //tv_client_heading.setText(intent.getExtras().getString("client_heading"));
-//                getSupportActionBar().setTitle(intent.getExtras().getString("client_heading"));
-//            }
-//           //tv_client_heading.setText("");
-//
-//        }
-//    };
+    private BroadcastReceiver oyebuttondata = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getExtras().getString("tv_dealinfo") != null){
+                String oyedata = intent.getExtras().getString("tv_dealinfo")+"@"+ SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
+                tv_dealinfo.setText(oyedata);
+            }
+        }
+    };
+
+    private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            networkConnectivity();
+
+        }
+    };
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,9 +156,14 @@ Intent lintent;
 
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
+
+
+        ShortcutBadger.removeCount(this);
+
 //        lintent=getIntent();
 //        String txt=lintent.getStringExtra("client_heading");
       //  getSupportActionBar().setTitle(txt);
+
        //
        // recIntent.getStringExtra("key");
         if (General.isNetworkAvailable(getApplicationContext())) {
@@ -172,6 +192,9 @@ Intent lintent;
         super.onResume();
         // Register mMessageReceiver to receive messages.
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(oyebuttondata, new IntentFilter(AppConstants.ON_FILTER_VALUE_UPDATE));
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
     }
 
     @Override
@@ -179,12 +202,17 @@ Intent lintent;
         super.onPause();
         // Unregister since the activity is not visible
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(closeOyeScreenSlide);
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(oyebuttondata);
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
+
     }
 
     /**
      * init all components
      */
     private void init() {
+
+
         if(General.getBadgeCount(this,AppConstants.HDROOMS_COUNT)<=0)
             hdroomsCount.setVisibility(View.GONE);
         else {
@@ -358,6 +386,8 @@ Intent lintent;
 
     public void onClickButton(Bundle args) {
         if (!isShowing) {
+
+
             isShowing = true;
 //            OyeIntentFragment oye = new OyeIntentFragment();
 
@@ -575,8 +605,27 @@ Intent lintent;
 
             }else {
                 //create new deal
-                General.publishOye(getApplicationContext());
-                closeOyeScreen();
+
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Dou you want to publish this oye?")
+                        .setCancelable(true)
+                        .setPositiveButton("Publish", new DialogInterface.OnClickListener() {
+                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                General.publishOye(getApplicationContext());
+                                closeOyeScreen();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                dialog.cancel();
+                            }
+                        });
+                final AlertDialog alert = builder.create();
+                alert.show();
+
+
+
+
             }
         }
     }
@@ -587,12 +636,16 @@ Intent lintent;
                 (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
                         slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
             closeOyeScreen();
-        } else {
-            super.onBackPressed();
+
         }
-        if(webView != null){
+        else if(webView != null){
             Intent back = new Intent(this, ClientMainActivity.class);
             startActivity(back);
+            finish();
+        }
+        else{
+            super.onBackPressed();
+
         }
 
     }
@@ -601,6 +654,10 @@ Intent lintent;
 
     @OnClick(R.id.btnMyDeals)
     public void onBtnMyDealsClick(View v) {
+        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) > 0) {
+            General.setBadgeCount(this, AppConstants.HDROOMS_COUNT,0);
+            hdroomsCount.setVisibility(View.GONE);
+        }
         Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
         openDealsListing.putExtra("defaul_deal_flag","false");
         startActivity(openDealsListing);
@@ -611,6 +668,14 @@ Intent lintent;
     public void NetworkStatusChanged(String status)
     {
         Log.i("TRACE NETWORK","status ");
+    }
+
+    private  void networkConnectivity(){
+        SnackbarManager.show(
+                Snackbar.with(this)
+                        .position(Snackbar.SnackbarPosition.TOP)
+                        .text("INTERNET CONNECTIVITY NOT AVAILABLE")
+                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
     }
 
 }

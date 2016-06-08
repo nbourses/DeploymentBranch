@@ -4,7 +4,10 @@ package com.nbourses.oyeok.fragments;
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -17,6 +20,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -221,6 +225,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private boolean pricechart = false;
     private HashMap<String, Float> listings;
     private int permissionCheckForDeviceId;
+    private Boolean buildingSliderflag = false;
 
     Animation bounce;
     Animation zoomin;
@@ -230,6 +235,20 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     public BrokerPreokFragment() {
         // Required empty public constructor
     }
+
+    private BroadcastReceiver slideDownBuildings = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+   Log.i("time to slide down","slide down");
+            buildingSlider.startAnimation(slide_down);
+            buildingSlider.setVisibility(View.GONE);
+            buildingSliderflag = false;
+
+            if(buildingsSelected.size() !=0)
+                buildingsSelected.clear();
+            selectB.performClick();
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -247,11 +266,25 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(slideDownBuildings, new IntentFilter(AppConstants.SLIDEDOWNBUILDINGS));
+
+        preok();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(slideDownBuildings);
+    }
+
 
 
     private void init() {
 
         highlighter = new ChartHighlighter(chart);
+
         slide_up = AnimationUtils.loadAnimation(getContext(),
                 R.anim.slide_up);
         slide_down = AnimationUtils.loadAnimation(getContext(),
@@ -324,6 +357,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             hdroomsCount.setVisibility(View.VISIBLE);
             hdroomsCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT)));
         }
+
 
 
         try {
@@ -407,13 +441,15 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         }
 
 
-
+Log.i("PHASE","before adapter set");
         mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(),
                 new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
                 new String[]{"30", "15"},
                 new String[]{"Rental", "Resale"
                 }));
         mCustomPhasedSeekbar.setListener(this);
+
+        Log.i("PHASE","after adapter set");
 
         txtPreviouslySelectedOption = txtOption1;
         txtPreviouslySelectedOption.setBackgroundResource(R.color.greenish_blue);
@@ -445,6 +481,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         circularSeekbar.setValues(arr.toString());
 
     }
+
+
 
 
 
@@ -610,6 +648,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             chart.highlightValues(null);
             entries.clear();
             labels.clear();
+
             chart.editEntryValue = true;
             for (int i = 0; i < buildingsSelected.size(); i++) {
                 entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(i)), i));
@@ -622,7 +661,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
         }
 
-        Log.i("GRAPH", "entries " + entries + "buildingPrice.get(i) " + buildingPrice.get(1));
+
 
 
 
@@ -645,6 +684,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         brokerBuildings.setPage("1");
         brokerBuildings.setLng(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
         brokerBuildings.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+
         brokerBuildings.setPropertyType("home");
 
         RestAdapter restAdapter = new RestAdapter.Builder()
@@ -660,12 +700,17 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
 
-                    Log.i("BROKER BUILDINGS CALLED","success");
+                    Log.i("BROKER BUILDINGS CALLED","success response "+response);
 
+                    Log.i("BROKER BUILDINGS","LAT1 "+General.getSharedPreferences(getActivity(),AppConstants.MY_LAT));
+                    Log.i("BROKER BUILDINGS","LNG1 "+General.getSharedPreferences(getActivity(),AppConstants.MY_LNG));
+                    Log.i("BROKER BUILDINGS","LAT "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+                    Log.i("BROKER BUILDINGS","LNG "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
 
                     JsonObject k = jsonElement.getAsJsonObject();
                     try {
                         JSONObject ne = new JSONObject(k.toString());
+                        Log.i("BROKER BUILDINGS CALLED","success ne "+ne);
                         buildings = ne.getJSONObject("responseData").getJSONArray("buildings");
                         Log.i("BROKER BUILDINGS CALLED","buildings"+ne.getJSONObject("responseData"));
 
@@ -790,7 +835,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(AppConstants.SERVER_BASE_URL_101)
+                .setEndpoint(AppConstants.SERVER_BASE_URL)
                 .build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
@@ -903,6 +948,13 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             a.setmCallBack(BrokerPreokFragment.this);
             a.acceptOk(listings, jsonObjectArray, selectedItemPosition, dbHelper, getActivity());
 
+            General.setBadgeCount(getContext(),AppConstants.RENTAL_COUNT,0);
+            General.setBadgeCount(getContext(),AppConstants.RESALE_COUNT,0);
+            General.setBadgeCount(getContext(),AppConstants.TENANTS_COUNT,0);
+            General.setBadgeCount(getContext(),AppConstants.OWNERS_COUNT,0);
+            General.setBadgeCount(getContext(),AppConstants.BUYER_COUNT,0);
+            General.setBadgeCount(getContext(),AppConstants.SELLER_COUNT,0);
+
 
         }
 
@@ -984,6 +1036,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     }
     @OnClick({R.id.txtOption1, R.id.txtOption2})
     public void onOptionClick(View v) {
+        jsonObjectArray = null;
+        notClicked.setVisibility(View.VISIBLE);
 
         //okButton.setAnimation(zoomin);
         //okButton.setAnimation(zoomout);
@@ -1053,10 +1107,15 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     public void onPositionSelected(int position, int count) {
         animatebadges();
 
+
+
         currentSeekbarPosition = position;
         Log.i("PREOK CALLED","currentSeekbarPosition"+currentSeekbarPosition);
 
         if (position == 0) {
+
+            jsonObjectArray = null;
+            notClicked.setVisibility(View.VISIBLE);
 
             rentText.setVisibility(View.GONE);
             texPtype.setVisibility(View.GONE);
@@ -1065,6 +1124,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             resaleCount.setVisibility(View.GONE);
 
 
+            Log.i("CONTEXT","object "+getContext());
             if(General.getBadgeCount(getContext(),AppConstants.RENTAL_COUNT)<=0)
                 rentalCount.setVisibility(View.GONE);
             else {
@@ -1140,6 +1200,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
         }
         else if (position == 1) {
+            jsonObjectArray = null;
+            notClicked.setVisibility(View.VISIBLE);
+
             rentText.setVisibility(View.GONE);
             texPtype.setVisibility(View.GONE);
             texPstype.setVisibility(View.GONE);
@@ -1151,18 +1214,23 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                 resaleCount.setVisibility(View.VISIBLE);
                 resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
             }
-            if(General.getBadgeCount(getContext(),AppConstants.BUYER_COUNT)<=0)
+            if(General.getBadgeCount(getContext(),AppConstants.BUYER_COUNT)<=0) {
+                Log.i("BADGE","BUYER COUNT5 "+General.getBadgeCount(getContext(),AppConstants.BUYER_COUNT));
                 //option1Count.setVisibility(View.GONE);
                 option1Count.setVisibility(View.GONE);
+            }
             else {
                 //option1Count.setVisibility(View.VISIBLE);
                 option1Count.setVisibility(View.VISIBLE);
                 option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
             }
-            if(General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT)<=0)
+            if(General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT)<=0) {
+                Log.i("BADGE","SELLER_COUNT1 "+General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT));
                 //option2Count.setVisibility(View.GONE);
                 option2Count.setVisibility(View.GONE);
+            }
             else {
+                Log.i("BADGE","SELLER_COUNT2 "+General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT));
                 //option2Count.setVisibility(View.VISIBLE);
                 option2Count.setVisibility(View.VISIBLE);
                 option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
@@ -1291,6 +1359,19 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
                 // contactText.setVisibility(View.GONE);
             }
             else if(show.equals("hide")) {
+                jsonObjectArray = null;
+                if(buildingSliderflag) {
+                    buildingSlider.startAnimation(slide_down);
+                    buildingSlider.setVisibility(View.GONE);
+                    buildingSliderflag = false;
+                    Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
+                    intent.putExtra("buildingSliderFlag",buildingSliderflag);
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
+                    if(buildingsSelected.size() !=0)
+                        buildingsSelected.clear();
+                    selectB.performClick();
+                }
                 notClicked.setVisibility(View.VISIBLE);
                 rentText.setVisibility(View.GONE);
                 //   displayOkText.setVisibility(View.GONE);
@@ -1322,6 +1403,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     public void onButtonsClick(View v) {
         if (okButton.getId() == v.getId()) {
 
+            Log.i("GRAPH","jsonObjectArray is "+jsonObjectArray);
 
 
             if (jsonObjectArray == null) {
@@ -1346,9 +1428,14 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
             else {
                 //show buildings
 
+
                 buildingSlider.startAnimation(slide_up);
                 buildingSlider.setVisibility(View.VISIBLE);
-
+                buildingSliderflag = true;
+                Log.i("brokerpreok","buildingSliderflag "+buildingSliderflag);
+                Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
+                intent.putExtra("buildingSliderFlag",buildingSliderflag);
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                 okBtn.setEnabled(false);
                 okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
                 okBtn.setText("OK");
@@ -1380,6 +1467,11 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 //            }
         }
         else if (deal.getId() == v.getId()) {
+            if (General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT) > 0) {
+                General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT,0);
+                hdroomsCount.setVisibility(View.GONE);
+            }
+
             //open deals listing
             Intent openDealsListing = new Intent(getActivity(), BrokerDealsListActivity.class);
             startActivity(openDealsListing);
@@ -1421,65 +1513,67 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     }
 
 
-    public void priceChart(){
 
 
-        setB.setClickable(false);
-        Log.i("GRAPH","scale before set chart2 "+ chart.getScaleX());
-        pricechart = true;
-        entries = new ArrayList<>();
-
-        entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(0)), 0));
-        entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(1)), 1));
-        entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(2)), 2));
-
-
-
-        buildingsSelected.clear();
-        dataset = new BarDataSet(entries, "3");
-
-        // creating labels
-        labels = new ArrayList<String>();
-        labels.add("January");
-        labels.add("February");
-        labels.add("March");
-        BarData data = new BarData(labels, dataset);
-        chart.setData(data);
-        chart.notifyDataSetChanged();
-        chart.invalidate();
-
-
-        // highlight all three buildings
-        Highlight h0 = new Highlight(0, 0);
-        Highlight h1 = new Highlight(1, 0);
-        Highlight h2 = new Highlight(2, 0);
-        chart.highlightValues(new Highlight[]{h0, h1, h2});
-
-
-        chart.setDescription("Set price for buildings.");
-
-        chart.animateY(2000);
-
-
-        chart.setScaleYEnabled(false);
-        //chart.setScaleEnabled(false);
-
-        chart.fitScreen();
-        chart.zoom(1.001f, 1f, 0, 0);
-        Log.i("GRAPH","scale after set chart2 "+ chart.getScaleX());
-
-        chart.setDragEnabled(true);
-
-        //   chart.setPinchZoom(false);
-        chart.setDoubleTapToZoomEnabled(false);
-        chart.setTouchEnabled(true);
-
-
-        // chart1.setOnChartValueSelectedListener(this);
-        chart.setOnChartGestureListener(this);
-
-
-    }
+//    public void priceChart(){
+//
+//
+//        setB.setClickable(false);
+//        Log.i("GRAPH","scale before set chart2 "+ chart.getScaleX());
+//        pricechart = true;
+//        entries = new ArrayList<>();
+//
+//        entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(0)), 0));
+//        entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(1)), 1));
+//        entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(2)), 2));
+//
+//
+//
+//        buildingsSelected.clear();
+//        dataset = new BarDataSet(entries, "3");
+//
+//        // creating labels
+//        labels = new ArrayList<String>();
+//        labels.add("January");
+//        labels.add("February");
+//        labels.add("March");
+//        BarData data = new BarData(labels, dataset);
+//        chart.setData(data);
+//        chart.notifyDataSetChanged();
+//        chart.invalidate();
+//
+//
+//        // highlight all three buildings
+//        Highlight h0 = new Highlight(0, 0);
+//        Highlight h1 = new Highlight(1, 0);
+//        Highlight h2 = new Highlight(2, 0);
+//        chart.highlightValues(new Highlight[]{h0, h1, h2});
+//
+//
+//        chart.setDescription("Set price for buildings.");
+//
+//        chart.animateY(2000);
+//
+//
+//        chart.setScaleYEnabled(false);
+//        //chart.setScaleEnabled(false);
+//
+//        chart.fitScreen();
+//        chart.zoom(1.001f, 1f, 0, 0);
+//        Log.i("GRAPH","scale after set chart2 "+ chart.getScaleX());
+//
+//        chart.setDragEnabled(true);
+//
+//        //   chart.setPinchZoom(false);
+//        chart.setDoubleTapToZoomEnabled(false);
+//        chart.setTouchEnabled(true);
+//
+//
+//        // chart1.setOnChartValueSelectedListener(this);
+//        chart.setOnChartGestureListener(this);
+//
+//
+//    }
 
 
     @Override
@@ -1686,6 +1780,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 
         }
+        else{
+            chart.highlightValues(null);
+        }
 
     }
 
@@ -1741,6 +1838,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
             }
         }
+        else{
+            chart.highlightValues(null);
+        }
 
 
 //        if (buildingsSelected.size() == 0) {
@@ -1790,6 +1890,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         Highlight h0 = new Highlight(3, 0);
         Highlight h1 = new Highlight(6, 0);
         Highlight h2 = new Highlight(9, 0);
+
         chart.highlightValues(new Highlight[]{h0, h1, h2});
 
         highlighter = chart.getHighlighter();
@@ -1834,16 +1935,13 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 
         //  Log.i("GRAPH","me onChartSingleTapped "+me);
-
 //
-
         //highlighter.getHighlight(me.getX(0),me.getY(0));
         highlight = highlighter.getHighlight(me.getX(),me.getY());
         // highlights = new ArrayList<Highlight>(Arrays.asList(highs));
 //        highlights.add(highlight);
 //        highs = highlights.toArray(new Highlight[highlights.size()]);
 //               chart.highlightValues(highs);
-
 //        Highlight h0 = new Highlight(0, 0);
 //        Highlight h1 = new Highlight(1, 0);
 //        Highlight h2 = new Highlight(2, 0);
@@ -1884,8 +1982,6 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         // Log.i("GRAPH","onChartTranslate "+me.getAction() +" "+me.getAxisValue(MotionEvent.AXIS_Y));
 
         // highlight = highlighter.getHighlight(me.getX(),me.getY());
-
-
         // e = dataset.getEntryForIndex(highlight.getXIndex());
 
 //        if(pricechart) {
@@ -1903,4 +1999,5 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 
     }
+
 }
