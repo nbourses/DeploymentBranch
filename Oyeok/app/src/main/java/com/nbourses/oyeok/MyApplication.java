@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
-import com.activeandroid.ActiveAndroid;
 import com.crashlytics.android.Crashlytics;
 import com.digits.sdk.android.AuthCallback;
 import com.digits.sdk.android.Digits;
@@ -62,7 +61,7 @@ public class MyApplication extends MultiDexApplication {
         Branch.getAutoInstance(this);
 
         //initialize active android library to store data in db
-        ActiveAndroid.initialize(this);
+       // ActiveAndroid.initialize(this);
     }
 
 

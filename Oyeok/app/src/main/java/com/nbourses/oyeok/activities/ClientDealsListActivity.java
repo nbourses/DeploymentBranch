@@ -38,7 +38,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.Database.SharedPrefs;
-
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.deleteHDroom;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
@@ -77,6 +76,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedByteArray;
+
+//import com.google.android.gms.appindexing.AppIndex;
 
 
 public class ClientDealsListActivity extends AppCompatActivity implements CustomPhasedListener {

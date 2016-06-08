@@ -36,3 +36,4 @@ public class CustomMapFragment extends SupportMapFragment {
        // mOriginalView.setOnDragListener(onDragListener);
     }
 }
+

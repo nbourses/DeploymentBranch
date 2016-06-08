@@ -147,6 +147,13 @@
             android:text="(Brokers,Visits,Listings)" />
 
     </GridLayout>
+
+    <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/webView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="invisible" />
+
     <!--<Button-->
         <!--android:id="@+id/btnOnOyeClick"-->
         <!--android:layout_width="fill_parent"-->

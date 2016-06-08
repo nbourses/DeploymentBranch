@@ -1,19 +1,15 @@
 package com.nbourses.oyeok.models;
 
-import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-import com.activeandroid.query.Select;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
 
 /**
  * Created by rohit on 12/02/16.
  */
-@Table(name = "PublishLetsOye")
-public class PublishLetsOye extends Model {
+//@Table(name = "PublishLetsOye")
+public class PublishLetsOye //extends Model {
+{
     @Expose
     @SerializedName("tt")
     @Column(name = "tt")
@@ -170,9 +166,9 @@ public class PublishLetsOye extends Model {
         this.gcmId = gcmId;
     }
 
-    public static List<PublishLetsOye> getAll() {
-        return new Select()
-                .from(PublishLetsOye.class)
-                .execute();
-    }
+//    public static List<PublishLetsOye> getAll() {
+//        return new Select()
+//                .from(PublishLetsOye.class)
+//                .execute();
+//    }
 }

@@ -1091,11 +1091,11 @@ public class HorizontalPicker extends View {
 
         if(mPressedItem == position) {
             defaultColor = mTextColor.getColorForState(new int[]{android.R.attr.state_pressed}, mTextColor.getDefaultColor());
-            selectedColor = Color.parseColor("#ff9f1c");
+            selectedColor = Color.parseColor("#2dc4b6");
             //selectedColor = mTextColor.getColorForState(new int[] { android.R.attr.state_pressed, android.R.attr.state_selected }, defaultColor);
         } else {
             defaultColor = mTextColor.getDefaultColor();
-            selectedColor = Color.parseColor("#ff9f1c");//FF2DC4B6
+            selectedColor = Color.parseColor("#2dc4b6");//FF2DC4B6   ff9f1c
             //selectedColor = mTextColor.getColorForState(new int[]{android.R.attr.state_selected }, defaultColor);
         }
         return (Integer) new ArgbEvaluator().evaluate(proportion, selectedColor, defaultColor);

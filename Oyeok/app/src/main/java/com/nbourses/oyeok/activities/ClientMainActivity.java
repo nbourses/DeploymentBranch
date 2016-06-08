@@ -74,6 +74,9 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
+
+    TextView tv_client_heading;
+
     @Bind(R.id.profile_image_main)
     ImageView profileImage;
 
@@ -93,7 +96,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.hdroomsCount)
     TextView hdroomsCount;
 
-
+Intent lintent;
 
     private WebView webView;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
@@ -116,15 +119,33 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
         }
     };
 
+//    private BroadcastReceiver onNotice= new BroadcastReceiver() {
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            // intent can contain anydata
+//            Log.d("sushil","onReceive called");
+//            if (intent.getExtras() != null) {
+//                Log.d("sushil","onReceive called"+intent.getExtras().getString(" client_heading"));
+//                //tv_client_heading.setText(intent.getExtras().getString("client_heading"));
+//                getSupportActionBar().setTitle(intent.getExtras().getString("client_heading"));
+//            }
+//           //tv_client_heading.setText("");
+//
+//        }
+//    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
-
+//        lintent=getIntent();
+//        String txt=lintent.getStringExtra("client_heading");
+      //  getSupportActionBar().setTitle(txt);
        //
-
+       // recIntent.getStringExtra("key");
         if (General.isNetworkAvailable(getApplicationContext())) {
 
             Log.i("TRACE", "network available");
@@ -248,7 +269,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
        getSupportActionBar().setDisplayShowHomeEnabled(true);
        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
   //      mToolbar.setNavigationIcon(R.drawable.home);
-       getSupportActionBar().setTitle("Client");
+      getSupportActionBar().setTitle("Live Region Rates");
 
     //    getSupportActionBar().setIcon(R.drawable.ic_launcher); // or setLogo()
     //    getSupportActionBar().setLogo(R.drawable.industry);
@@ -397,6 +418,12 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             webView.getSettings().setJavaScriptEnabled(true);
             webView.setWebViewClient(new WebViewClient());
             webView.loadUrl("http://www.facebook.com/nexchanges");
+
+
+
+
+
+
 
         }
         else if (itemTitle.equals(getString(R.string.aboutUs))) {

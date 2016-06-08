@@ -24,7 +24,7 @@
 
 
                 <LinearLayout
-                    android:id="@+id/recordWorkout"
+                    android:id="@+id/recordWorkout1"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/sixteen_dp"
@@ -118,9 +118,9 @@
                             android:id="@+id/seeRadioButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignEnd="@+id/recordWorkout"
-                            android:layout_alignRight="@+id/recordWorkout"
-                            android:layout_below="@+id/recordWorkout"
+                            android:layout_alignEnd="@+id/recordWorkout1"
+                            android:layout_alignRight="@+id/recordWorkout1"
+                            android:layout_below="@+id/recordWorkout1"
                             android:layout_weight="1"
                             android:checked="true"
                             android:text="SEE"

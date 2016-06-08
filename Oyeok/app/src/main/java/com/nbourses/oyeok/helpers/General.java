@@ -455,7 +455,7 @@ public static void saveMutedOKIds(Context context, Set<String> value) {
 
                                 //  if (jsonResponseData.getInt("code") == 1) {
                                 AppConstants.letsOye.setTime(formattedDate);
-                                AppConstants.letsOye.save();
+                               // AppConstants.letsOye.save();
                                 //  }
 
                                 // Create default deal here after letsoye success

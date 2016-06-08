@@ -2,15 +2,18 @@ package com.nbourses.oyeok.fragments;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +24,6 @@ import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,7 +36,9 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MapWrapperLayout;
+import com.nbourses.oyeok.helpers.AppConstants;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -58,35 +62,51 @@ import butterknife.Bind;
 /**
  * Created by sushil on 25/05/16.
  */
-public class BrokerMap extends DashboardClientFragment{
-@Bind(R.id.iv_markerpin)
+public class BrokerMap extends DashboardClientFragment {
+    @Bind(R.id.iv_markerpin)
     ImageView iv_markerpin;
-
-    @Bind(R.id.tv_change_region)
-    TextView tv_change_region;
-
+    private GetCurrentLocation getLocationActivity;
     GoogleMap gmap;
     CustomMapFragment customMapFragment;
     AutoCompleteTextView autoCompView;
     private BitmapDescriptor icon1;
-   // private ChangeLocation locationName;
-   private Point point;
+    private GetCurrentLocation.CurrentLocationCallback mcallback;
+    // private ChangeLocation locationName;
+    private Point point;
+    //SharedPreferences.OnSharedPreferenceChangeListener listener;
+    private static final String[] LOCATION_PERMS = {
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION
+    };
+    private static final String[] INITIAL_PERMS = {
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.READ_CONTACTS,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION
+    };
+    private static final String[] CAMERA_PERMS = {
+            android.Manifest.permission.CAMERA
+    };
+    private static final String[] CONTACTS_PERMS = {
+            android.Manifest.permission.READ_CONTACTS
+    };
+    private static final int INITIAL_REQUEST = 133;
+    private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
+    private final int MY_PERMISSION_FOR_CAMERA = 11;
+    // id_markerpin;
 
+    //TextView tv_change_region;
+    private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "", locality = "";
 
-   // id_markerpin;
-
-//TextView tv_change_region;
-    private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "",locality="";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.broker_map, container, false);
-        final View rootView1 = inflater.inflate(R.layout.toolbar, container, false);
-       // ButterKnife.bind(this, rootView);
-     //  ButterKnife.bind(this, rootView1);
-      tv_change_region=(TextView) rootView1.findViewById(R.id.tv_change_region);
-       // icon1 = BitmapDescriptorFactory.fromResource(R.drawable.iv_markerpin);
+        //  final View rootView1 = inflater.inflate(R.layout.toolbar, container, false);
+        // ButterKnife.bind(this, rootView);
+        //  ButterKnife.bind(this, rootView1);
+        //tv_change_region=(TextView) rootView1.findViewById(R.id.tv_change_region);
+        // icon1 = BitmapDescriptorFactory.fromResource(R.drawable.iv_markerpin);
         iv_markerpin = (ImageView) rootView.findViewById(R.id.iv_markerpin);
 
 //        tv_change_region = (TextView) rootView1.findViewById(R.id.tv_change_region);
@@ -98,8 +118,8 @@ public class BrokerMap extends DashboardClientFragment{
 
                 int[] locations = new int[2];
                 iv_markerpin.getLocationOnScreen(locations);
-                x = locations[0]+26;
-                y = locations[1]-60;
+                x = locations[0] + 26;
+                y = locations[1] - 60;
 //                x = left - (right - left) / 2;
 //                y = bottom;
                 bottom = rootView.getBottom();
@@ -132,25 +152,23 @@ public class BrokerMap extends DashboardClientFragment{
 
             }
         });
-if(customMapFragment==null) {
-    customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.g_map));
-    customMapFragment.getMap();
-}
+        if (customMapFragment == null) {
+            customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.g_map));
+            customMapFragment.getMap();
+        }
 
         customMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 gmap = googleMap;
-               double lat = 19.1269299;
-              double  lng = 72.8376545999999;
+//               double lat = 19.1269299;
+//              double  lng = 72.8376545999999;
 
+//                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                    // TODO: Consider calling
+//
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
-
-                    gmap.setMyLocationEnabled(true);
-
-
-
                     //    ActivityCompat#requestPermissions
                     // here to request the missing permissions, and then overriding
                     //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -159,26 +177,122 @@ if(customMapFragment==null) {
                     // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
+                gmap.setMyLocationEnabled(true);
+//
+//
+                // enableMyLocation();
+//
+//                    //    ActivityCompat#requestPermissions
+//                    // here to request the missing permissions, and then overriding
+//                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                    //                                          int[] grantResults)
+//                    // to handle the case where the user grants the permission. See the documentation
+//                    // for ActivityCompat#requestPermissions for more details.
+//                    return;
+//                }
+//
+////                    enableMyLocation();
+//               // Marker m = gmap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("").icon(icon1));
+//
+//                SharedPrefs.save(getContext(), SharedPrefs.MY_LAT, lat + "");
+//                    SharedPrefs.save(getContext(), SharedPrefs.MY_LNG, lng + "");
+//
+//                new LocationUpdater().execute();
+//
+//
+//
+//                    LatLng center = new LatLng(lat, lng);
+//
+//                    gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 12));
 
-//                    enableMyLocation();
-               // Marker m = gmap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("").icon(icon1));
 
-                SharedPrefs.save(getContext(), SharedPrefs.MY_LAT, lat + "");
-                    SharedPrefs.save(getContext(), SharedPrefs.MY_LNG, lng + "");
+            }
+        });
 
 
+        getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
 
+        /*try {
+            SharedPreferences prefs =
+                    PreferenceManager.getDefaultSharedPreferences(getContext());
+            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 
-                    LatLng center = new LatLng(lat, lng);
-
-                    gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 12));
+                    if (key.equals(SharedPrefs.MY_REGION)) {
+                        Log.i("loc","OnSharedPreferenceChangeListener 1");
+                        Log.i("loc","OnSharedPreferenceChangeListener 1 rent "+SharedPrefs.getString(getContext(), SharedPrefs.MY_REGION));
+                        if (SharedPrefs.getString(getContext(), SharedPrefs.MY_REGION) ==null ) {
+                            Log.i("loc","OnSharedPreferenceChangeListener 2");
+                            tv_change_region.setVisibility(View.GONE);
+                        }
+                        else {
+                            Log.i("loc","OnSharedPreferenceChangeListener 3");
+                            tv_change_region.setVisibility(View.VISIBLE);
+                            tv_change_region.setText(String.valueOf(SharedPrefs.getString(getContext(), SharedPrefs.MY_REGION)));
+                        }
+                    }
 
 
                 }
-            });
 
 
-     try {
+            };
+            prefs.registerOnSharedPreferenceChangeListener(listener);
+
+        }
+        catch (Exception e){
+            Log.e("loc", e.getMessage());
+        }
+*/
+
+
+        mcallback = new GetCurrentLocation.CurrentLocationCallback() {
+
+            @Override
+            public void onComplete(Location location) {
+                if (location != null) {
+                    lat = location.getLatitude();
+
+
+                    lng = location.getLongitude();
+                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+
+                    if (isNetworkAvailable()) {
+                        try {
+                            getRegion();
+                            new LocationUpdater().execute();
+
+                        } catch (Exception e) {
+                            Log.i("Exception", "caught in get region");
+                        }
+                    }
+
+                    LatLng currentLocation = new LatLng(lat, lng);
+                    // LatLng currentLocation= new LatLng(lat, lng);
+
+
+                    Log.i("bbt1","lat_long"+currentLocation);
+
+
+                    //Log.i("t1", "caught"+width+ " "+height);
+                    //broker_map.
+                    gmap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("I am here!").icon(icon1));
+
+
+                    //broker_map.addMarker(new MarkerOptions().position(currentLocation).title("current Location"));
+                    // broker_map.animateCamera(CameraUpdateFactory.newLatLng(currentLocation));
+                    gmap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+                    gmap.animateCamera(CameraUpdateFactory.zoomTo(12));
+
+                    //make retrofit call to get Min Max price
+
+                }
+            }
+        };
+
+
+        try {
             customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
                 @Override
                 public void onDrag(MotionEvent motionEvent) {
@@ -204,12 +318,23 @@ if(customMapFragment==null) {
                         Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
                         getRegion();
                         Log.i("t1", "latlong" + " " + currentLocation1);
-                       // gmap.addMarker(new MarkerOptions().position(currentLocation1));
+                        // gmap.addMarker(new MarkerOptions().position(currentLocation1));
                         if (isNetworkAvailable()) {
                             new LocationUpdater().execute();
                         }
-                        tv_change_region.setText(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
-                       // tv_change_region.addTextChangedListener(TextWatcher watcher);
+                        //tv_change_region.setText("");
+                        Log.i("t1", "Sharedpref_lng_above" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+                        // tv_change_region.setText(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+                        Log.i("t1", "Sharedpref_lng_below" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+
+
+                        Intent intent = new Intent(AppConstants.Broker_Locality_Change);
+                        intent.putExtra("broker_locality_change", SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+                        Log.i("sendbroadcast", "====================");
+                        Log.i("sendbroadcast", "====================" + LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent));
+
+
+                        // tv_change_region.addTextChangedListener(TextWatcher watcher);
                         //locationName.changeLocation(tv_change_region.getText().toString());
                     } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
 
@@ -220,8 +345,8 @@ if(customMapFragment==null) {
                 }
             });
 
-        }catch (Exception e){}
-
+        } catch (Exception e) {
+        }
 
 
         return rootView;
@@ -239,10 +364,9 @@ if(customMapFragment==null) {
 //    }
 
 
-//
+    //
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         gmap.animateCamera(CameraUpdateFactory.zoomTo(12));
         autoCompView.clearListSelection();
@@ -271,7 +395,7 @@ if(customMapFragment==null) {
                 is = entity.getContent();
 
             } catch (Exception e) {
-               // Log.e(TAG, "Error in http connection " + e.toString());
+                // Log.e(TAG, "Error in http connection " + e.toString());
             }
 
             // convert response to string
@@ -292,11 +416,12 @@ if(customMapFragment==null) {
             try {
                 jObject = new JSONObject(result);
             } catch (JSONException e) {
-               // Log.e(TAG, "Error parsing data " + e.toString());
+                // Log.e(TAG, "Error parsing data " + e.toString());
             }
 
             return jObject;
         }
+
         @Override
         protected String doInBackground(Double[] objects) {
             try {
@@ -311,7 +436,7 @@ if(customMapFragment==null) {
                     JSONArray address_components = zero.getJSONArray("address_components");
 
                     fullAddress = zero.getString("formatted_address");
-                  locality=  zero.getString("sublocality_level_1");
+                    locality = zero.getString("sublocality_level_1");
 
                     for (int i = 0; i < address_components.length(); i++) {
                         JSONObject zero2 = address_components.getJSONObject(i);
@@ -323,18 +448,20 @@ if(customMapFragment==null) {
                             if (Type.equalsIgnoreCase("street_number")) {
                                 Address1 += long_name;
                             } else if (Type.equalsIgnoreCase("route")) {
-                                Address1 += " "+long_name;
+                                Address1 += " " + long_name;
                             } else if (Type.equalsIgnoreCase("sublocality_level_2")) {
                                 Address2 = long_name;
-                            } else if (Type.equalsIgnoreCase("sublocality_level_1")){
-                                Address2 += " "+long_name;
-
                                 if (getActivity() != null)
-                                    SharedPrefs.save(getActivity(),SharedPrefs.MY_LOCALITY,long_name);
+                                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LOCALITY, long_name);
+                            } else if (Type.equalsIgnoreCase("sublocality_level_1")) {
+                                Address2 += " " + long_name;
+
+//                                if (getActivity() != null)
+//                                    SharedPrefs.save(getActivity(),SharedPrefs.MY_LOCALITY,long_name);
                             } else if (Type.equalsIgnoreCase("locality")) {
                                 // Address2 = Address2 + long_name + ", ";
                                 City = long_name;
-                                SharedPrefs.save(getActivity(),SharedPrefs.MY_CITY, City);
+                                SharedPrefs.save(getActivity(), SharedPrefs.MY_CITY, City);
                             } else if (Type.equalsIgnoreCase("administrative_area_level_2")) {
                                 County = long_name;
                             } else if (Type.equalsIgnoreCase("administrative_area_level_1")) {
@@ -343,7 +470,7 @@ if(customMapFragment==null) {
                                 Country = long_name;
                             } else if (Type.equalsIgnoreCase("postal_code")) {
                                 PIN = long_name;
-                                SharedPrefs.save(getActivity(),SharedPrefs.MY_PINCODE,PIN);
+                                SharedPrefs.save(getActivity(), SharedPrefs.MY_PINCODE, PIN);
                             }
                         }
                         if (getActivity() != null)
@@ -365,11 +492,12 @@ if(customMapFragment==null) {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             autoCompView.setText(s);
-            Log.i("address","address"+s);
+            Log.i("address", "address" + s);
             autoCompView.dismissDropDown();
-            // new LocationUpdater().execute();
+            //new LocationUpdater().execute();
         }
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -378,22 +506,22 @@ if(customMapFragment==null) {
     }
 
 
-    public void getLocationFromAddress(String strAddress){
+    public void getLocationFromAddress(String strAddress) {
 
         Geocoder coder = new Geocoder(getActivity());
         List<Address> address;
         //GeoPoint p1 = null;
 
         try {
-            address = coder.getFromLocationName(strAddress,5);
-            if (address==null) {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
                 //return null;
             }
-            Address location=address.get(0);
-            lat=location.getLatitude();
-            lng=location.getLongitude();
-            Log.i("lat="+location.getLatitude()," long="+location.getLongitude());
-            LatLng l=new LatLng(location.getLatitude(),location.getLongitude());
+            Address location = address.get(0);
+            lat = location.getLatitude();
+            lng = location.getLongitude();
+            Log.i("lat=" + location.getLatitude(), " long=" + location.getLongitude());
+            LatLng l = new LatLng(location.getLatitude(), location.getLongitude());
             Log.i("t1", "lng" + " " + lng);
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
@@ -410,21 +538,101 @@ if(customMapFragment==null) {
             gmap.moveCamera(CameraUpdateFactory.newLatLng(l));
             // broker_map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-
-
 
 
     }
 
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        try {
+            switch (requestCode) {
+                case MY_PERMISSION_FOR_CAMERA: {
+                    // If request is cancelled, the result arrays are empty.
+                    if (grantResults.length > 0
+                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    IntentIntegrator.forSupportFragment(DashboardClientFragment.this).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES).setCaptureActivity(CaptureActivityAnyOrientation.class).setOrientationLocked(false).initiateScan();
+                        // permission was granted, y-------------ay! Do the
+                        // contacts-related task you need to do.
 
+                    } else {
+                        // permission denied, boo! Disable the
+                        // functionality that depends on this permission.
+                    }
+                }
+                case LOCATION_REQUEST:
+                    if (grantResults.length > 0
+                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        customMapFragment.getMapAsync(new OnMapReadyCallback() {
+                            @Override
+                            public void onMapReady(GoogleMap googleMap) {
+                                gmap = googleMap;
+
+                                //enableMyLocation();
+
+                                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                    // TODO: Consider calling
+                                    //    ActivityCompat#requestPermissions
+                                    // here to request the missing permissions, and then overriding
+                                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                    //                                          int[] grantResults)
+                                    // to handle the case where the user grants the permission. See the documentation
+                                    // for ActivityCompat#requestPermissions for more details.
+                                    return;
+                                }
+                                gmap.setMyLocationEnabled(true);
+                                //setCameraListener();
+                                Log.i("t1", "broker_map" + gmap);
+                                //  geoFence.drawPloygon(map);
+                            }
+                        });
+                        getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+
+                    } else {
+                        // permission denied, boo! Disable the
+                        // functionality that depends on this permission.
+                    }
+                    break;
+                // other 'case' lines to check for other
+                // permissions this app might request
+            }
+            if (canAccessLocation()) {
+                new GetCurrentLocation(getActivity(), new GetCurrentLocation.CurrentLocationCallback() {
+                    @Override
+                    public void onComplete(Location location) {
+                        if (location != null) {
+                            lat = location.getLatitude();
+                            lng = location.getLongitude();
+                            LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                            Log.i("t1", "lat_long_getcurrentlocation" + " " + currentLocation);
+                            //  broker_map.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title("I am here!").icon(icon1).anchor(x,y));
+                            //   broker_map.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title("I am here!"));
+                            // point= map.getProjection().toScreenLocation(currentLocation);
+                            gmap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+                            gmap.animateCamera(CameraUpdateFactory.zoomTo(12));
+
+                        }
+                    }
+                });
+                getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
+                //Log.i("t1","mcallback"+""+mcallback);
+            }
+            else {
+                //Intent intent = new Intent(this, MainActivity.class);
+                // startActivity(intent);
+               // Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
+                //((DashboardActivity) getActivity()).showToastMessage("Offline Mode");
+            }
+
+        }catch (Exception e){}
+
+
+    }
 
 
 
