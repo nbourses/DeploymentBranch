@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
-        sothree:umanoPanelHeight="150dp"
+        sothree:umanoPanelHeight="135dp"
         sothree:umanoShadowHeight="4dp"
         sothree:umanoParallaxOffset="100dp"
         sothree:umanoDragView="@+id/dragView"
@@ -107,18 +107,23 @@
     <GridLayout
         android:id="@+id/btnOnOyeClick"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:clickable="true"
         android:background="@color/yellow"
         android:layout_alignParentBottom="true"
+        android:foregroundGravity="center"
 
         android:orientation="vertical"
         android:weightSum="1"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp">
 
 
        <LinearLayout
-           android:layout_gravity="center">
+           android:layout_gravity="center"
+           android:layout_marginTop="-2dp">
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
@@ -126,7 +131,9 @@
             android:layout_gravity="left|top"
             android:textColor="@color/White"
             android:layout_margin="5dp"
-            android:text="CONNECT NOW | List" />
+            android:text="CONNECT NOW | List"
+            android:textIsSelectable="false"
+            android:textStyle="bold|italic" />
         <TextView
             android:id="@+id/tv_dealinfo"
             android:layout_width="wrap_content"
@@ -134,9 +141,12 @@
             android:layout_gravity="left|top"
             android:textColor="@color/foreground_material_light"
             android:layout_margin="5dp"
-            android:text="2BHK Home @ Andheri"
-            android:singleLine="false" />
+            android:text="Find @ Andheri"
+            android:singleLine="false"
+            android:textStyle="bold|italic" />
        </LinearLayout>
+        <LinearLayout android:layout_gravity="center"
+            android:layout_marginTop="-2dp">
         <TextView
             android:id="@+id/textView3"
             android:layout_width="170dp"
@@ -144,7 +154,9 @@
             android:layout_gravity="center_horizontal|bottom"
             android:textColor="@color/White"
             android:layout_margin="5dp"
-            android:text="(Brokers,Visits,Listings)" />
+            android:text="(Brokers,Visits,Listings)"
+            android:textStyle="bold|italic" />
+        </LinearLayout>
 
     </GridLayout>
 

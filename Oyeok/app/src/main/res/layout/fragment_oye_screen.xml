@@ -373,39 +373,43 @@
     android:layout_width="wrap_content"
     android:layout_below="@+id/rootWrapper"
     android:layout_alignParentEnd="true"
-    android:layout_marginRight="10dp"
+    android:layout_marginRight="60dp"
     android:layout_marginTop="-10dp"
     android:orientation="horizontal"
+
     android:layout_height="wrap_content">
 
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="161dp"
         android:layout_height="30dp"
-        android:text="FD in Bank @ 6% Interest"
+        android:text="I like to pay my\nSECURITY DEPOSIT"
         android:id="@+id/tv_fd_bank"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginLeft="8dp"
-        android:textColor="@color/Black"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="-35dp"
+        android:layout_marginLeft="1dp"
+        android:textColor="@color/abc_secondary_text_material_light"
         android:textAlignment="center"
         android:foregroundGravity="center_horizontal"
         android:layout_alignBottom="@+id/checkBox"
         android:layout_alignParentStart="true"
-        android:textSize="13dp" />
+        android:textSize="13dp"
+        android:textStyle="bold|italic" />
 
 
     <CheckBox
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="Security Deposit can Earn @ 12% Interest Rate"
+        android:layout_marginTop="5dp"
+        android:text="Apply for finance\nSECURITY DEPOSIT"
         android:id="@+id/checkBox"
         android:layout_marginLeft="10dp"
         android:layout_below="@+id/rootWrapper"
         android:layout_alignParentEnd="true"
         android:textColor="@color/greenish_blue"
-        android:textSize="13dp" />
+        android:textSize="13dp"
+        android:textStyle="bold|italic" />
 
 
 
@@ -415,7 +419,7 @@
     <GridLayout
         android:id="@+id/btnOnOyeClick"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:clickable="true"
         android:background="@color/yellow"
 

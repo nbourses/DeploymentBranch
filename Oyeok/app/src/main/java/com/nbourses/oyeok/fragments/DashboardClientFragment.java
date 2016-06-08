@@ -228,6 +228,10 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
 
     public void setOyeButtonClickListener(OnOyeClick onOyeClick) {
         this.onOyeClick = onOyeClick;
+
+
+
+
     }
 
 
@@ -398,6 +402,14 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
         mVisits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                horizontalPicker.setVisibility(View.GONE);
+                tv_building.setVisibility(View.GONE);
+                tvRate.setVisibility(View.GONE);
+                rupeesymbol.setVisibility(View.GONE);
+                tvFetchingrates.setVisibility(View.VISIBLE);
+                String text = "<font color=#ffffff size=10><i>Range @ "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" | AREA = 1200sqft</i><br><b><b>"+llMin+"</b></b></font> <font color=#ffffff size=15>@</font>&nbsp&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+llMax+"</font><b><font color=#ff9f1c><sub>/m</sub></font>";
+                tvFetchingrates.setText(Html.fromHtml(text));
                 openOyeScreen();
             }
         });
@@ -490,6 +502,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                 @Override
                 public boolean onMarkerClick(Marker marker) {
                     MarkerClicked = true;
+                    intent =new Intent(getContext(), ClientMainActivity.class);
                    int i;
                     Log.i("MARKER ", "=========="+MarkerClicked);
                     for (i = 0; i < 5; i++) {
@@ -517,6 +530,9 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                                 String text = "<font color=#ffffff size=13><i>Average Rate in last 1 WEEK</i><br><b>"+marker.getTitle().toString()+"</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font> <font color=#ff9f1c>"+General.currencyFormat(String.valueOf(ll_pm[i])).substring(2,General.currencyFormat(String.valueOf(ll_pm[i])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
                                 tvFetchingrates.setText(Html.fromHtml(text));
                                 tvFetchingrates.setTypeface(null,Typeface.BOLD);
+
+                                intent.putExtra("client_heading", "Live Building Rates");
+                                //startActivity(intent);
 //                                tv_building.setVisibility(View.VISIBLE);Average Rate in last 1 WEEK
 //                                tv_building.setText("Average Rate in last 1 WEEK");
 //                                tv_building.setHeight(15);
@@ -553,7 +569,8 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
 //                                tv_building.setText("Average Rate @ This Locality");
 //                                tv_building.setTypeface(null, Typeface.ITALIC);
 //                                tv_building.setVisibility(View.VISIBLE);
-
+                                intent.putExtra("client_heading", "Live Region Rates");
+                                //startActivity(intent);
                                 //inputSearch.setBackgroundColor(Color.parseColor("#2dc4b6"));
                                 Log.i("coming soon","coming soon :"+marker.getTitle().toString()+recordWorkout);
                                // tvFetchingrates.setText(marker.getTitle().toString()+" @ "+marker.getSnippet().toString());
@@ -836,6 +853,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
         args.putString("brokerType", brokerType);
         args.putString("Address", SharedPrefs.getString(getActivity(), SharedPrefs.MY_REGION));
         onOyeClick.onClickButton(args);
+
     }
 
     private boolean isFlipped() {
@@ -990,8 +1008,8 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                             Log.i("TRACE", "RESPONSEDATAr" + response);
                             llMin = Integer.parseInt(getPrice.getResponseData().getPrice().getLlMin());
                             llMax = Integer.parseInt(getPrice.getResponseData().getPrice().getLlMax());
-                            Log.i("TRACE", "RESPONSEDATAr" + llMin);
-                            Log.i("TRACE", "RESPONSEDATAr" + llMax);
+                            Log.i("TRACE", "RESPONSEDATArr" + llMin);
+                            Log.i("TRACE", "RESPONSEDATArr" + llMax);
                             llMin = 5 * (Math.round(llMin / 5));
                             llMax = 5 * (Math.round(llMax / 5));
                             Log.i("TRACE", "RESPONSEDATAr" + llMin);
@@ -999,8 +1017,8 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
 
                             orMin = Integer.parseInt(getPrice.getResponseData().getPrice().getOrMin());
                             orMax = Integer.parseInt(getPrice.getResponseData().getPrice().getOrMax());
-                            Log.i("TRACE", "RESPONSEDATAr" + orMin);
-                            Log.i("TRACE", "RESPONSEDATAr" + orMax);
+                            Log.i("TRACE", "RESPONSEDATArr" + orMin);
+                            Log.i("TRACE", "RESPONSEDATArr" + orMax);
                             orMin = 500 * (Math.round(orMin / 500));
                             orMax = 500 * (Math.round(orMax / 500));
                             Log.i("TRACE", "RESPONSEDATAr" + orMin);

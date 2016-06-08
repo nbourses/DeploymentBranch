@@ -112,13 +112,13 @@ public class OyeScreenFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (buttonView.isChecked()) {
                     tv_fd_bank.setTextColor(getResources().getColor(R.color.greenish_blue));
-                    satView.setTextColor(getResources().getColor(R.color.black));
+                    satView.setTextColor(getResources().getColor(R.color.common_plus_signin_btn_text_light_focused));
                     //checked
                 }
                 else
                 {
                     satView.setTextColor(getResources().getColor(R.color.greenish_blue));
-                    tv_fd_bank.setTextColor(getResources().getColor(R.color.black));
+                    tv_fd_bank.setTextColor(getResources().getColor(R.color.common_plus_signin_btn_text_light_focused));
                     //not checked
                 }
 
