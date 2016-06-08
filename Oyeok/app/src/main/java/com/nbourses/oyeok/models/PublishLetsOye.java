@@ -1,15 +1,15 @@
 package com.nbourses.oyeok.models;
 
 import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by rohit on 12/02/16.
  */
-@Table(name = "PublishLetsOye")
-public class PublishLetsOye //extends Model
+
+//@Table(name = "PublishLetsOye")
+public class PublishLetsOye //extends Model {
 {
     @Expose
     @SerializedName("tt")

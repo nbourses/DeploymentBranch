@@ -81,7 +81,8 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
      //         txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
                 AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
                 AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
-                onFilterValueUpdate(bhkNumber+"<sub><small>"+bhkNumberValue+"</small></sub>",bhkNumber+""+bhkNumberValue);
+               // onFilterValueUpdate(bhkNumber+"<sub><small>"+bhkNumberValue+"</small></sub>",bhkNumber+""+bhkNumberValue);
+                onFilterValueUpdate(bhkNumber+""+bhkNumberValue,bhkNumber+""+bhkNumberValue);
                 break;
             case "shop":
                 General.saveBoolean(getContext(), "propertySubtypeFlag", false);
@@ -146,7 +147,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
             bhkNumberValue = "BHK";
             tv_dealinfo.setText("4+BHK");
         }
-        onFilterValueUpdate(bhkNumber+"<sub><small>"+bhkNumberValue+"</small></sub>",bhkNumber+""+bhkNumberValue);
+        onFilterValueUpdate(bhkNumber+""+bhkNumberValue,bhkNumber+""+bhkNumberValue);
         oyeButtonData = selectedPropertyType +" "+txtPreviousTextView.getText().toString();
         setOyeButtonData(oyeButtonData);
     }

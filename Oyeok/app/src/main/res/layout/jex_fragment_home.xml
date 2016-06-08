@@ -165,7 +165,7 @@
 
             android:background="@drawable/rectable_border_effect"
             android:orientation="horizontal"
-            android:id="@+id/recordWorkout">
+            android:id="@+id/recordWorkout1">
 
             <LinearLayout
                 android:layout_width="24dp"

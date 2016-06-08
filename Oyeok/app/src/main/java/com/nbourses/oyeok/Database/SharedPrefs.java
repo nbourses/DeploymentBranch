@@ -2,6 +2,8 @@ package com.nbourses.oyeok.Database;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.util.Set;
 
@@ -30,7 +32,12 @@ public class SharedPrefs {
     private static SharedPreferences getPrefs(Context context) {
         return context.getSharedPreferences(SHARED_PREFS_FILE_NAME, Context.MODE_PRIVATE);
     }
+    public static int getBadgeCount(Context context, String prefName) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Log.i("TRACE", "rt" + prefName);
 
+        return prefs.getInt(prefName, 0);
+    }
     //Strings
     public static void save(Context context, String key, String value) {
         getPrefs(context).edit().putString(key, value).commit();

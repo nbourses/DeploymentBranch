@@ -78,6 +78,9 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
+
+    TextView tv_client_heading;
+
     @Bind(R.id.profile_image_main)
     ImageView profileImage;
 
@@ -97,8 +100,12 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.hdroomsCount)
     TextView hdroomsCount;
 
+
     @Bind(R.id.tv_dealinfo)
     TextView tv_dealinfo;
+
+
+Intent lintent;
 
 
     private WebView webView;
@@ -140,6 +147,9 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
         }
     };
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,9 +157,15 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
 
-        ShortcutBadger.removeCount(this);
-       //
 
+        ShortcutBadger.removeCount(this);
+
+//        lintent=getIntent();
+//        String txt=lintent.getStringExtra("client_heading");
+      //  getSupportActionBar().setTitle(txt);
+
+       //
+       // recIntent.getStringExtra("key");
         if (General.isNetworkAvailable(getApplicationContext())) {
 
             Log.i("TRACE", "network available");
@@ -281,7 +297,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
        getSupportActionBar().setDisplayShowHomeEnabled(true);
        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
   //      mToolbar.setNavigationIcon(R.drawable.home);
-       getSupportActionBar().setTitle("Client");
+      getSupportActionBar().setTitle("Live Region Rates");
 
     //    getSupportActionBar().setIcon(R.drawable.ic_launcher); // or setLogo()
     //    getSupportActionBar().setLogo(R.drawable.industry);
@@ -432,6 +448,12 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             webView.getSettings().setJavaScriptEnabled(true);
             webView.setWebViewClient(new WebViewClient());
             webView.loadUrl("http://www.facebook.com/nexchanges");
+
+
+
+
+
+
 
         }
         else if (itemTitle.equals(getString(R.string.aboutUs))) {

@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by rohit on 16/02/16.
  */
+
 public class HdRooms //extends Model
 {
     @Expose

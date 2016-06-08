@@ -240,30 +240,33 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
           //  bNames = b.getStringArray("bNames");
           //  bPrice = b.getIntArray("bPrice");
-            String[] bNames = new String[]{"Building1","Building2","Building3"};
-            int[] bPrice = new int[]{35000,50000,65000};
-            Log.i("Listing card data","card data "+bNames+" "+bPrice+"channel_name "+channel_name);
-        try{
-            JSONObject jsonMsg = new JSONObject();
-            //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
-            jsonMsg.put("from", "LISTING");
-            //jsonMsg.put("to", "client");
 
-            jsonMsg.put("to", "client");
+        //Cardview
 
-
-            jsonMsg.put("message",String.valueOf(bNames[0]+"--"+bPrice[0]+"--"+bNames[1]+"--"+bPrice[1]+"--"+bNames[2]+"--"+bPrice[2]));
-
-            //Log.i("TRACE","messageText is "+messageText);
-            //Log.i(TAG,"messageText is"+messageText);
-            //publish message
-            pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
-            Log.i(TAG, "Listing message published");
-        }
-        catch(Exception e){
-            Log.i(TAG, "caught in listing msg exception "+e);
-
-        }
+//            String[] bNames = new String[]{"Building1","Building2","Building3"};
+//            int[] bPrice = new int[]{35000,50000,65000};
+//            Log.i("Listing card data","card data "+bNames+" "+bPrice+"channel_name "+channel_name);
+//        try{
+//            JSONObject jsonMsg = new JSONObject();
+//            //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
+//            jsonMsg.put("from", "LISTING");
+//            //jsonMsg.put("to", "client");
+//
+//            jsonMsg.put("to", "client");
+//
+//
+//            jsonMsg.put("message",String.valueOf(bNames[0]+"--"+bPrice[0]+"--"+bNames[1]+"--"+bPrice[1]+"--"+bNames[2]+"--"+bPrice[2]));
+//
+//            //Log.i("TRACE","messageText is "+messageText);
+//            //Log.i(TAG,"messageText is"+messageText);
+//            //publish message
+//            pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+//            Log.i(TAG, "Listing message published");
+//        }
+//        catch(Exception e){
+//            Log.i(TAG, "caught in listing msg exception "+e);
+//
+//        }
 
 
 
@@ -860,6 +863,7 @@ if(cachedmsgs.size() < 10) {
             Log.i("TEST","published to channel_name" +channel_name);
             if (channel_name.equals("my_channel")){
                 channel_name = General.getSharedPreferences(this, AppConstants.USER_ID);
+                pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
                 Log.i("Pubnub push","channel_name_userid case is "+channel_name);
                 Log.i("Pubnub push","GCM id is "+General.getSharedPreferences(this,AppConstants.GCM_ID));
                 // subscribe a channel for Pubnub push notifications start
@@ -877,8 +881,8 @@ if(cachedmsgs.size() < 10) {
 
             sendNotification(channel_name);
             pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
-// if channel name is ok id dont call pubnubwhere now
-            pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
+// if channel name is ok id dont call pubnubwhere now (moved above)
+    //        pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
 
         }
         catch (Exception e) {

@@ -469,7 +469,9 @@ public class General extends BroadcastReceiver {
 
                                 //  if (jsonResponseData.getInt("code") == 1) {
                                 AppConstants.letsOye.setTime(formattedDate);
+
 //                                AppConstants.letsOye.save();
+
                                 //  }
 
                                 // Create default deal here after letsoye success

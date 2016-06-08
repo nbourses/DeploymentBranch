@@ -224,13 +224,15 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
            // holder.txtTime.setText("23.11");
 
             Log.i("HDROOM locality","locality is "+deal.getLocality());
-           if((!deal.getLocality().isEmpty())) {
-               Log.i("HDROOM locality","locality is 1 "+deal.getLocality());
-               holder.locality.setText(deal.getLocality());
-           }
-            else{
-               holder.locality.setText("Mumbai");
-           }
+          try {
+              if ((!deal.getLocality().isEmpty())) {
+                  Log.i("HDROOM locality", "locality is 1 " + deal.getLocality());
+                  holder.locality.setText(deal.getLocality());
+              } else {
+                  holder.locality.setText("Mumbai");
+              }
+          }
+          catch(Exception e){}
 
 
 

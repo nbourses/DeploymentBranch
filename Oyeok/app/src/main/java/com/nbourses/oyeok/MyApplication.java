@@ -61,7 +61,10 @@ public class MyApplication extends MultiDexApplication {
         Branch.getAutoInstance(this);
 
         //initialize active android library to store data in db
-//        ActiveAndroid.initialize(this);
+
+
+       // ActiveAndroid.initialize(this);
+
     }
 
 

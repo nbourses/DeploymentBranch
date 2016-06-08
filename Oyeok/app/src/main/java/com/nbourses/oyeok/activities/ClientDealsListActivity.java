@@ -79,6 +79,8 @@ import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedByteArray;
 
+//import com.google.android.gms.appindexing.AppIndex;
+
 
 public class ClientDealsListActivity extends AppCompatActivity implements CustomPhasedListener {
 

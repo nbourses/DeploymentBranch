@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
-        sothree:umanoPanelHeight="160dp"
+        sothree:umanoPanelHeight="150dp"
         sothree:umanoShadowHeight="4dp"
         sothree:umanoParallaxOffset="100dp"
         sothree:umanoDragView="@+id/dragView"
@@ -149,6 +149,13 @@
             android:text="(Brokers,Visits,Listings)" />
 
     </GridLayout>
+
+    <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/webView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="invisible" />
+
     <!--<Button-->
         <!--android:id="@+id/btnOnOyeClick"-->
         <!--android:layout_width="fill_parent"-->
