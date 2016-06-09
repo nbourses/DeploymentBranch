@@ -205,8 +205,6 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
 
-
-
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         deals = General.getDefaultDeals(this);
 
@@ -282,38 +280,6 @@ public class MyGcmListenerService extends GcmListenerService {
                 String deals5 = General.getDefaultDeals(this);
                 Log.i("Default deals in shared","I am here");
                 Log.i("Default deals in shared","are" +deals5);
-
-
-
-
-        /*        Iterator it = d.iterator();
-                while (it.hasNext()) {
-                    String s = it.next().toString();
-
-                    if (s.equals(okId)) {
-//                        Log.i("TRACE","redundant deals comparison " +s +speccode);
-//                        Log.i("TRACE","Removed entries for " +s);
-//
-//                        deals1.values().removeAll(Collections.singleton(s));
-//                        Log.i("TRACE", "hashmap after removing redundant deals:" + deals1);
-//                        Toast.makeText(context, "Your old oye with same specs: " + speccode + " has been replaced with new one.", Toast.LENGTH_LONG).show();
-
-                    }
-                }
-*/
-                    //delete default dealing room for this ok Id  // what is user discards notification? dealing room bhi nahi khulega and default deal bhi delete ho jayegi
-                    // dealing room is already present at server so when SeeHDrooms call hoga then dealing room aa jayegi (But where is clients approval that he wants to chat with broker)
-                    // currently there is no choice to client if broker oks then mob no. exchange ho jayenge.
-
-
-                    // code for deleting default dealing room
-
-
-
-
-
-             /*
-  */
 
 
                     General.setSharedPreferences(getApplicationContext(), AppConstants.CLIENT_OK_ID, okId);

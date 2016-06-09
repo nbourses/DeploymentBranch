@@ -897,6 +897,8 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
 
     private void openOyeScreen() {
 
+
+
         if(android.os.Build.VERSION.SDK_INT >18) {
             Log.i("FLipanimator paused", "fipanimator paused");
             mFlipAnimator.end();

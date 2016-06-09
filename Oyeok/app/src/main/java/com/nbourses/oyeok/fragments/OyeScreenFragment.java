@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
@@ -72,8 +73,13 @@ public class OyeScreenFragment extends Fragment {
     @Bind(R.id.requestType)
     TextView requestType;
 
+    @Bind(R.id.budgetText)
+    TextView budgetText;
+
+
 
     TextView tv_dealinfo;
+
 
 
 
@@ -154,6 +160,7 @@ public class OyeScreenFragment extends Fragment {
 
         //set seek bar min and max value
         setMinMaxValueForDiscreteSeekBar();
+        setInitialValuesLoans();
 
         //budget bar listener
         budgetSeekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
@@ -213,11 +220,33 @@ public class OyeScreenFragment extends Fragment {
 
         if (txtOptionSee.getId() == v.getId()) {
             txtOptionSee.setBackgroundResource(R.color.greenish_blue);
+            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")){
+            tv_fd_bank.setText("I like to pay my \n SECURITY DEPOSIT");
+            satView.setText("Apply for finance \n SECURITY DEPOSIT");
+                budgetText.setText("My Rent Budget");
+            }
+            else{
+                tv_fd_bank.setText("I don't \n want loan");
+                satView.setText("I want LOAN \n to buy");
+                budgetText.setText("My Budget");
+
+            }
             AppConstants.letsOye.setReqAvl("req");
         }
 
         if (txtOptionShow.getId() == v.getId()) {
             txtOptionShow.setBackgroundResource(R.color.greenish_blue);
+            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")){
+            tv_fd_bank.setText("I like Monthly RENT CHEQUE(s)");
+            satView.setText("Apply for finance FULL ADVANCE RENT");
+                budgetText.setText(" My Asking Rent");
+            }
+            else{
+                tv_fd_bank.setText("No Loan On \n Property");
+                satView.setText("I have Loan On \n Propery");
+                budgetText.setText("Sale Price");
+
+            }
             AppConstants.letsOye.setReqAvl("avl");
         }
     }
@@ -296,6 +325,22 @@ public class OyeScreenFragment extends Fragment {
         }
     }
 
+    private void setInitialValuesLoans(){
+
+        if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")){
+            tv_fd_bank.setText("I like to pay my \n SECURITY DEPOSIT");
+            satView.setText("Apply for finance \n SECURITY DEPOSIT");
+            budgetText.setText("My Rent Budget");
+
+        }
+        else{
+            tv_fd_bank.setText("I don't \n want loan");
+            satView.setText("I want LOAN \n to buy");
+            budgetText.setText("My Budget");
+
+        }
+
+    }
 
 
 
