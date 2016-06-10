@@ -87,17 +87,17 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
             case "shop":
                 General.saveBoolean(getContext(), "propertySubtypeFlag", false);
                 rootView = inflater.inflate(R.layout.fragment_shop_click, container, false);
-                onFilterValueUpdate("SHO","default");
+                onFilterValueUpdate("SHOP","default");
                 break;
             case "industrial":
                 General.saveBoolean(getContext(),"propertySubtypeFlag",false);
                 rootView = inflater.inflate(R.layout.fragment_industry_click, container, false);
-                onFilterValueUpdate("IND","default");
+                onFilterValueUpdate("IND.","default");
                 break;
             case "office":
                 General.saveBoolean(getContext(), "propertySubtypeFlag", false);
                 rootView = inflater.inflate(R.layout.fragment_office_click, container, false);
-                onFilterValueUpdate("OFF","default");
+                onFilterValueUpdate("OFFC","default");
                 break;
             /*case "others":
                 rootView = inflater.inflate(R.layout.others_layout, container, false);

@@ -48,7 +48,7 @@
                     android:id="@+id/ll_marker"
                     android:visibility="visible"
                     android:layout_width="fill_parent"
-                    android:layout_height="75dp"
+                    android:layout_height="65dp"
                     android:layout_marginLeft="@dimen/sixteen_dp"
                     android:layout_marginRight="@dimen/sixteen_dp"
                     android:orientation="horizontal"
@@ -196,8 +196,8 @@
 
                             <TextView
                                 android:id="@+id/newVisits"
-                                android:layout_width="66dp"
-                                android:layout_height="66dp"
+                                android:layout_width="61dp"
+                                android:layout_height="61dp"
                                 android:backgroundTint="@color/yellow"
                                 android:text="Oye"
                                 android:textStyle="bold"
@@ -226,8 +226,8 @@
 
                             <TextView
                                 android:id="@+id/txtFilterValue"
-                                android:layout_width="66dp"
-                                android:layout_height="66dp"
+                                android:layout_width="61dp"
+                                android:layout_height="61dp"
                                 android:backgroundTint="@color/yellow"
                                 android:text="Home"
                                 android:textStyle="bold|italic"
@@ -351,9 +351,9 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:id="@+id/selected_property"
-                android:src="@drawable/search_building_icon"
+                android:src="@drawable/selected_property"
                 android:foregroundGravity="left"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:background="@android:color/transparent"
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="3dp" />

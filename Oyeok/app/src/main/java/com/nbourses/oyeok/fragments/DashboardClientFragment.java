@@ -150,7 +150,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
     private TextView mVisits;
     private ImageView mQrCode;
     private LinearLayout mMarkerPanel;
-
+    private Timer timer;
     private RelativeLayout mMarkerminmax;
     private GoogleMap map;
     private LinearLayout ll_marker;
@@ -324,6 +324,8 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
             Log.i("TIMESTAMP", "millis " + System.currentTimeMillis());
         }
 
+
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
 //TextView tv_client_heading=(TextView)
         //intent = new Intent(AppConstants.CLIENT_HEADING);
 //       intent =new Intent(getContext(), ClientMainActivity.class);
@@ -365,7 +367,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
         {
             Log.i("BITMAP","message "+e.getMessage());
         }
-       recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+      recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
         //selected_property = BitmapDescriptorFactory.fromResource(R.drawable.search_building_icon);
         search_building_icon = (ImageView) rootView.findViewById(R.id.selected_property);
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -585,7 +587,9 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                                 recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
                                // tvFetchingrates.setTextColor(Color.parseColor("#ffffff")); &#x20B9
                                 Log.i("coming soon","coming soon :"+marker.getTitle().toString());
-                                String text = "<font color=#ffffff size=13><i>Average Rate in last 1 WEEK</i><br><b>"+marker.getTitle().toString()+"</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font> <font color=#ff9f1c>"+General.currencyFormat(String.valueOf(ll_pm[i])).substring(2,General.currencyFormat(String.valueOf(ll_pm[i])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
+                                tv_building.setVisibility(View.VISIBLE);
+                                tv_building.setText("Average Rate in last 1 WEEK");
+                                String text = "<font color=#ffffff >"+marker.getTitle().toString()+"</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font> <font color=#ff9f1c>"+General.currencyFormat(String.valueOf(ll_pm[i])).substring(2,General.currencyFormat(String.valueOf(ll_pm[i])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
                                 tvFetchingrates.setText(Html.fromHtml(text));
                                 tvFetchingrates.setTypeface(null,Typeface.BOLD);
 
@@ -718,7 +722,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
 
                             Log.i("MARKER","========================="+MarkerClicked);
 
-
+                            tv_building.setText("Average Rate @ this Locality");
                             tvFetchingrates.setVisibility(View.VISIBLE);
                             if(!MarkerClicked ) {
                                 mMarkerminmax.setVisibility(View.VISIBLE);
@@ -854,26 +858,28 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
          */
         mFlipAnimator = ValueAnimator.ofFloat(0f, 1f);
         mFlipAnimator.addUpdateListener(new FlipListener(mVisits, txtFilterValue));
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (isFlipped()) {
-                                Log.i("mFlipAnimator","is flipped");
-                                mFlipAnimator.reverse();
-                            } else {
-                                Log.i("mFlipAnimator","is flipped not");
-                                mFlipAnimator.start();
-                            }
-                        }
-                    });
-                }
-            }
-        }, 2000, 2000);
+
+        StartAnimation();
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if (getActivity() != null) {
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if (isFlipped()) {
+//                                Log.i("mFlipAnimator","is flipped");
+//                                mFlipAnimator.reverse();
+//                            } else {
+//                                Log.i("mFlipAnimator","is flipped not");
+//                                mFlipAnimator.start();
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        }, 2000, 2000);
 
 
 
@@ -894,6 +900,56 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
 
         return rootView;
     }
+
+    private BroadcastReceiver closeOyeScreenSlide = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+//            Log.i("inside notification","=======");
+            StartAnimation();
+        }
+    };
+    private void StartAnimation()
+    {
+        Log.i("starting timer"," "+ timer);
+        if(timer == null) {
+            timer = new Timer();
+
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (isFlipped()) {
+                                    mFlipAnimator.reverse();
+                                } else {
+                                    mFlipAnimator.start();
+                                }
+                            }
+                        });
+                    }
+                }
+            }, 2000, 2000);
+
+        }
+    }
+
+    private  void CancelAnimation()
+    {
+        try {
+            if (timer != null) {
+                timer.cancel();
+
+                timer = null;
+
+//        if (isFlipped()) {
+                mFlipAnimator.start();
+//        }
+            }
+        }catch(Exception e){}
+    }
+
 
 
 
@@ -919,6 +975,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
     @OnClick(R.id.txtFilterValue)
     public void onTxtFilterValueClick(View v) {
         openOyeScreen();
+        CancelAnimation();
     }
 
     private void openOyeScreen() {
@@ -1008,12 +1065,16 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
         super.onResume();
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(onFilterValueUpdate, new IntentFilter(AppConstants.ON_FILTER_VALUE_UPDATE));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
+
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(onFilterValueUpdate);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(closeOyeScreenSlide);
     }
 
     @Override
@@ -1397,11 +1458,13 @@ try {
                 brokerType = "rent";
                 dbHelper.save(DatabaseConstants.brokerType, "LL");
                 dbHelper.save("brokerType", "On Rent");
-
+                updateHorizontalPicker();
                 Log.i("Index","index:"+INDEX+" "+MarkerClicked);
                 if(flag[INDEX]==true) {
                     Log.i("Index","index:"+INDEX+" "+MarkerClicked);
-                    String text = "<font color=#ffffff><i>Average Rate in last 1 WEEK</i><br><b><b>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+General.currencyFormat(String.valueOf(ll_pm[INDEX])).substring(2,General.currencyFormat(String.valueOf(ll_pm[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font>";
+                    tv_building.setVisibility(View.VISIBLE);
+                    tv_building.setText("Average Rate in last 1 WEEK");
+                    String text = "<font color=#ffffff>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+General.currencyFormat(String.valueOf(ll_pm[INDEX])).substring(2,General.currencyFormat(String.valueOf(ll_pm[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font>";
                     tvFetchingrates.setText(Html.fromHtml(text));
 
                 }
@@ -1409,6 +1472,7 @@ try {
                   //  onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),950,llMin*filterValueMultiplier,llMax*filterValueMultiplier);
 
                 updateHorizontalPicker();
+
             } else if (position == 1) {
                 tvRate.setText("/ sq.ft");
                 brokerType = "resale";
@@ -1416,7 +1480,9 @@ try {
                 dbHelper.save("brokerType", "For Sale");
 
                 if(flag[INDEX]==true) {
-                    String text = "<font color=#ffffff><i>Average Rate in last 1 WEEK</i><br><b><b>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+General.currencyFormat(String.valueOf(or_psf[INDEX])).substring(2,General.currencyFormat(String.valueOf(or_psf[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/psf</sub></font>";
+                    tv_building.setVisibility(View.VISIBLE);
+                    tv_building.setText("Average Rate in last 1 WEEK");
+                    String text = "<font color=#ffffff>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+General.currencyFormat(String.valueOf(or_psf[INDEX])).substring(2,General.currencyFormat(String.valueOf(or_psf[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/psf</sub></font>";
                     tvFetchingrates.setText(Html.fromHtml(text));
                 }
                // onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),950,orMin,orMax);
@@ -1769,7 +1835,7 @@ Log.i("TRACE11","llmin"+llmin);
     tv_building.setVisibility(View.VISIBLE);
     tv_building.setText("Range @ "+locality+" | AREA = "+area +"sqft");
     Log.i("TRACE11","tv_building"+tv_building.getText());
-    text = "<font color=#ff9f1c><sup>\u20B9</sup>"+llmin1+"<sub> "+psf+" </sub></b></b> <b>-</b> &nbsp<sup>\u20B9</sup>"+llmax1+"<b><sub>"+psf+"</sub></font>";
+    text = "<font color=#ff9f1c><b>\u20B9</b> "+llmin1+"<sub> "+psf+" </sub></b></b> <b> - </b> <b>\u20B9</b>"+llmax1+"<b><sub>"+psf+"</sub></font>";
     tvFetchingrates.setText(Html.fromHtml(text));
 
 

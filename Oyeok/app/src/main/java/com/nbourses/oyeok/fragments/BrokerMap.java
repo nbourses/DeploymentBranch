@@ -265,7 +265,7 @@ public class BrokerMap extends DashboardClientFragment {
 
                     //Log.i("t1", "caught"+width+ " "+height);
                     //broker_map.
-                    gmap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("I am here!").icon(icon1));
+                   // gmap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("I am here!").icon(icon1));
 
 
                     //broker_map.addMarker(new MarkerOptions().position(currentLocation).title("current Location"));
@@ -306,7 +306,7 @@ public class BrokerMap extends DashboardClientFragment {
                         Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
                         getRegion();
                         Log.i("t1", "latlong" + " " + currentLocation1);
-                        gmap.addMarker(new MarkerOptions().position(currentLocation1));
+                       // gmap.addMarker(new MarkerOptions().position(currentLocation1));
                         if (isNetworkAvailable()) {
                             new LocationUpdater().execute();
                         }
