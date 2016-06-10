@@ -2,7 +2,6 @@ package com.nbourses.oyeok.fragments;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.location.Address;
@@ -13,7 +12,6 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,7 +36,6 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MapWrapperLayout;
-import com.nbourses.oyeok.helpers.AppConstants;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -118,8 +115,8 @@ public class BrokerMap extends DashboardClientFragment {
 
                 int[] locations = new int[2];
                 iv_markerpin.getLocationOnScreen(locations);
-                x = locations[0] + 26;
-                y = locations[1] - 60;
+                x = locations[0] + 35;
+                y = locations[1] - 64;
 //                x = left - (right - left) / 2;
 //                y = bottom;
                 bottom = rootView.getBottom();
@@ -180,16 +177,7 @@ public class BrokerMap extends DashboardClientFragment {
                 gmap.setMyLocationEnabled(true);
 //
 //
-                // enableMyLocation();
-//
-//                    //    ActivityCompat#requestPermissions
-//                    // here to request the missing permissions, and then overriding
-//                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                    //                                          int[] grantResults)
-//                    // to handle the case where the user grants the permission. See the documentation
-//                    // for ActivityCompat#requestPermissions for more details.
-//                    return;
-//                }
+
 //
 ////                    enableMyLocation();
 //               // Marker m = gmap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("").icon(icon1));
@@ -205,12 +193,12 @@ public class BrokerMap extends DashboardClientFragment {
 //
 //                    gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 12));
 
-
+                getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
             }
         });
 
 
-        getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+
 
         /*try {
             SharedPreferences prefs =
@@ -318,7 +306,7 @@ public class BrokerMap extends DashboardClientFragment {
                         Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
                         getRegion();
                         Log.i("t1", "latlong" + " " + currentLocation1);
-                        // gmap.addMarker(new MarkerOptions().position(currentLocation1));
+                        gmap.addMarker(new MarkerOptions().position(currentLocation1));
                         if (isNetworkAvailable()) {
                             new LocationUpdater().execute();
                         }

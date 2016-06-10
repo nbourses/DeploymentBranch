@@ -105,7 +105,7 @@
         android:id="@+id/iv_markerpin"
         android:foregroundGravity="center_horizontal"
         android:src="@drawable/iv_markerpin"
-        android:layout_marginTop="170dp"
+        android:layout_marginTop="176dp"
         android:layout_below="@+id/linearLayout5"
         android:layout_centerHorizontal="true" />
 

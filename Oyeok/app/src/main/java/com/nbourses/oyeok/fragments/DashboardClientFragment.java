@@ -113,6 +113,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 
+import static java.lang.Math.log10;
+
 
 public class DashboardClientFragment extends Fragment implements GoogleMap.OnMapClickListener,CustomPhasedListener,AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList, HorizontalPicker.pickerPriceSelected, FragmentDrawer.MDrawerListener {
 
@@ -199,7 +201,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
     static int x, y;
     static int top, bottom, left, right, width, height,truncate_first;
     private int llMin, llMax, orMin, orMax;
-    private String name;
+    private String name,text;
 
     
     
@@ -237,6 +239,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                    // txtFilterValue.setText(Html.fromHtml(intent.getExtras().getString("filterValue")));
                     Log.i("filtervalue","filtervalue "+intent.getExtras().getString("filterValue"));
                     txtFilterValue.setText(intent.getExtras().getString("filterValue"));
+
                 }
                 if ((intent.getExtras().getString("filterValue") != null)) {
                     // txtFilterValue.setText(intent.getExtras().getString("filterValue"));
@@ -246,21 +249,45 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                     if (bhk.equalsIgnoreCase("1bhk")) {
                         filterValueMultiplier = 600;
                         updateHorizontalPicker();
+                        if (brokerType.equals("rent"))
+                        onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,llMin*filterValueMultiplier,llMax*filterValueMultiplier,"/month");
+                        else
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,orMin,orMax,"/psf");
                     } else if (bhk.equalsIgnoreCase("2bhk")) {
                         filterValueMultiplier = 950;
                         updateHorizontalPicker();
+                        if (brokerType.equals("rent"))
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,llMin*filterValueMultiplier,llMax*filterValueMultiplier,"/month");
+                        else
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,orMin,orMax,"/psf");
                     } else if (bhk.equalsIgnoreCase("3bhk")) {
                         filterValueMultiplier = 1600;
                         updateHorizontalPicker();
+                        if (brokerType.equals("rent"))
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,llMin*filterValueMultiplier,llMax*filterValueMultiplier,"/month");
+                        else
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,orMin,orMax,"/psf");
                     } else if (bhk.equalsIgnoreCase("4bhk")) {
                         filterValueMultiplier = 2100;
                         updateHorizontalPicker();
+                        if (brokerType.equals("rent"))
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,llMin*filterValueMultiplier,llMax*filterValueMultiplier,"/month");
+                        else
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,orMin,orMax,"/psf");
                     } else if (bhk.equalsIgnoreCase("4+bhk")) {
                         filterValueMultiplier = 3000;
                         updateHorizontalPicker();
+                        if (brokerType.equals("rent"))
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,llMin*filterValueMultiplier,llMax*filterValueMultiplier,"/month");
+                        else
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,orMin,orMax,"/psf");
                     } else {
                         filterValueMultiplier = 1000;
                         updateHorizontalPicker();
+                        if (brokerType.equals("rent"))
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,llMin*filterValueMultiplier,llMax*filterValueMultiplier,"/psf");
+                        else
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,orMin,orMax,"/psf");
                     }
 
 ///// check if required
@@ -452,13 +479,11 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
             @Override
             public void onClick(View v) {
 
-                horizontalPicker.setVisibility(View.GONE);
-                tv_building.setVisibility(View.GONE);
-                tvRate.setVisibility(View.GONE);
-                rupeesymbol.setVisibility(View.GONE);
-                tvFetchingrates.setVisibility(View.VISIBLE);
-                String text = "<font color=#ffffff size=10><i>Range @ "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" | AREA = 1200sqft</i><br><b><b>"+llMin+"</b></b></font> <font color=#ffffff size=15>@</font>&nbsp&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+llMax+"</font><b><font color=#ff9f1c><sub>/m</sub></font>";
-                tvFetchingrates.setText(Html.fromHtml(text));
+//
+//                if (brokerType.equals("rent"))
+//                    onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),950,llMin*filterValueMultiplier,llMax*filterValueMultiplier);
+//                else
+//                    onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),950,orMin,orMax);
                 openOyeScreen();
             }
         });
@@ -703,6 +728,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                                 rupeesymbol.setVisibility(View.VISIBLE);
                                 tvFetchingrates.setVisibility(View.VISIBLE);
                                 tv_building.setVisibility(View.VISIBLE);
+                                tv_building.setText("Average Rate @ this Locality");
                                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 //                                tv_building.setText("Average Rate @ This Locality");
 //                                tv_building.setTypeface(null, Typeface.ITALIC);
@@ -1196,9 +1222,9 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                             horizontalPicker.setVisibility(View.GONE);
                             tvRate.setVisibility(View.INVISIBLE);
                             rupeesymbol.setVisibility(View.INVISIBLE);
-                            tvFetchingrates.setVisibility(View.GONE);
-                            tvCommingsoon.setVisibility(View.VISIBLE);
-                            tvCommingsoon.setText("Coming Soon...");
+                            tvCommingsoon.setVisibility(View.GONE);
+                            tvFetchingrates.setVisibility(View.VISIBLE);
+                            tvFetchingrates.setText("Coming Soon...");
                             tvCommingsoon.setTypeface(null, Typeface.BOLD);
                             tvCommingsoon.setTextSize(18);
                             missingArea.setVisibility(View.VISIBLE);
@@ -1373,12 +1399,12 @@ try {
                 Log.i("Index","index:"+INDEX+" "+MarkerClicked);
                 if(flag[INDEX]==true) {
                     Log.i("Index","index:"+INDEX+" "+MarkerClicked);
-                 // tvFetchingrates.setText(mCustomerMarker[INDEX].getTitle().toString()+" @ "+ll_pm[INDEX]);
                     String text = "<font color=#ffffff><i>Average Rate in last 1 WEEK</i><br><b><b>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+General.currencyFormat(String.valueOf(ll_pm[INDEX])).substring(2,General.currencyFormat(String.valueOf(ll_pm[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font>";
                     tvFetchingrates.setText(Html.fromHtml(text));
-                   // tvFetchingrates.setTypeface(Typeface.DEFAULT_BOLD);
-                   //Log.i("Index","gettitle"+mCustomerMarker[INDEX].getTitle()) ;
+
                 }
+
+                  //  onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),950,llMin*filterValueMultiplier,llMax*filterValueMultiplier);
 
                 updateHorizontalPicker();
             } else if (position == 1) {
@@ -1388,10 +1414,10 @@ try {
                 dbHelper.save("brokerType", "For Sale");
 
                 if(flag[INDEX]==true) {
-                 // tvFetchingrates.setText(mCustomerMarker[INDEX].getTitle().toString()+" @ "+or_psf[INDEX]);
                     String text = "<font color=#ffffff><i>Average Rate in last 1 WEEK</i><br><b><b>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+General.currencyFormat(String.valueOf(or_psf[INDEX])).substring(2,General.currencyFormat(String.valueOf(or_psf[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/psf</sub></font>";
                     tvFetchingrates.setText(Html.fromHtml(text));
                 }
+               // onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),950,orMin,orMax);
 
                 updateHorizontalPicker();
             }
@@ -1722,8 +1748,101 @@ try {
 
 
 
+public void onoyeclickRateChange(String locality,int area,int llmin,int llmax,String psf){
+    horizontalPicker.setVisibility(View.GONE);
+    tv_building.setVisibility(View.GONE);
+    tvRate.setVisibility(View.GONE);
+    rupeesymbol.setVisibility(View.GONE);
+    tvFetchingrates.setVisibility(View.VISIBLE);
+
+    String llmin1;
+    String llmax1;
+    llmin1=numToVal(llmin);
+    llmax1=numToVal(llmax);
+
+Log.i("TRACE11","llmin"+llmin);
+    Log.i("TRACE11","llmax"+llmax);
+    Log.i("TRACE11","llmin"+llmin1);
+    Log.i("TRACE11","llmax"+llmax1);
+    tv_building.setVisibility(View.VISIBLE);
+    tv_building.setText("Range @ "+locality+" | AREA = "+area +"sqft");
+    Log.i("TRACE11","tv_building"+tv_building.getText());
+    text = "<font color=#ff9f1c><sup>\u20B9</sup>"+llmin1+"<sub> "+psf+" </sub></b></b> <b>-</b> &nbsp<sup>\u20B9</sup>"+llmax1+"<b><sub>"+psf+"</sub></font>";
+    tvFetchingrates.setText(Html.fromHtml(text));
 
 
+}
+
+
+    String numToVal(int no){
+        String str = "",v = "";
+
+        int twoWord = 0,val = 1;
+
+        int c = (no == 0 ? 1 : (int)(log10(no)+1));
+
+        if (c > 8) {
+
+            c = 8;
+        }
+        if (c%2 == 1){
+
+            c--;
+        }
+
+        c--;
+        //   int q = Int(pow(Double(10),Double(c)))
+        switch(c)
+        {
+            case 7:
+//            if(propertyType)
+                val = no/10000000;
+//            else
+//                val = no/100000;
+                no = no%10000000;
+                String formatted = String.format("%07d", no);
+                formatted = formatted.substring(0,1);
+
+                v = val+"."+formatted;
+                str = v+" cr";
+
+
+                twoWord++;
+                break;
+
+            case 5:
+
+                val = no/100000;
+
+                v = val+"";
+                no = no%100000;
+                String s2 = String.format("%05d", no);
+                s2 = s2.substring(0,1);
+
+                if (val != 0){
+                    str = str+v+"."+s2+" lacs";
+                    twoWord++;
+                }
+
+                break;
+
+            case 3:
+                val = no/1000;
+                v = val+"";
+                no = no%1000;
+                String.format("%05d", no);
+                String s3 = String.format("%03d", no);
+                s3 = s3.substring(0,1);
+                if (val != 0) {
+                    str = str+v+"."+s3+" k";
+                }
+                break;
+            default :
+                // print("noToWord Default")
+                break;
+        }
+        return str;
+    }
 
 
 

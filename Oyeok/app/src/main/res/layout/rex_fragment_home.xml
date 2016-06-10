@@ -107,13 +107,13 @@
                             android:id="@+id/tv_building"
                             android:textColor="@color/White"
                             android:singleLine="true"
-                            android:layout_alignEnd="@+id/tvCommingsoon"
-                            android:textSize="15dp"
+                            android:layout_marginRight="66dp"
+                            android:textSize="12sp"
                             android:visibility="visible"
                             android:gravity="top"
                             android:layout_alignParentTop="true"
-                            android:layout_alignBottom="@+id/rupeesymbol"
-                            android:layout_marginLeft="40dp" />
+                            android:layout_marginLeft="30dp"
+                            android:textStyle="bold|italic" />
 
                         <com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker
                             android:id="@+id/picker"
@@ -123,16 +123,17 @@
                             android:layout_marginTop="10dp"
                             android:textColor="@android:color/white"
                             android:background="@android:color/black"
-                            android:textSize="13sp"
+                            android:textSize="15sp"
                             android:ellipsize="marquee"
+                            android:textStyle="bold"
                             android:marqueeRepeatLimit="1"
                             android:focusable="true"
-                            android:focusableInTouchMode="true"
+
                             app:values="@array/hpicker"
                             app:dividerSize="10dp"
                             app:sideItems="@integer/sideItems"
                             android:layout_above="@+id/tvRate" />
-
+                        <!--android:focusableInTouchMode="true"-->
                         <TextView
                             android:id="@+id/rupeesymbol"
                             android:layout_width="wrap_content"
@@ -182,7 +183,9 @@
                                                     android:textColor="@color/White"
                                                     android:visibility="visible"
                                                     android:foregroundGravity="center"
-                                                    android:gravity="center" />
+                                                    android:gravity="center"
+                                                    android:textSize="12dp"
+                                                    android:textStyle="bold" />
                         </LinearLayout>
 
                         <RelativeLayout
@@ -219,23 +222,22 @@
                                 android:layout_toEndOf="@+id/beacons2"
                                 android:layout_marginStart="189dp" />
 
+                            <TextView
+                                android:id="@+id/txtFilterValue"
+                                android:layout_width="66dp"
+                                android:layout_height="66dp"
+                                android:backgroundTint="@color/yellow"
+                                android:text="Home"
+                                android:textStyle="bold|italic"
+                                android:gravity="center"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:background="@drawable/deal_circle"
+                                android:textColor="@color/white"
+                                android:textSize="14sp"
+                                android:layout_alignParentRight="true" />
+
                         </RelativeLayout>
-
-                        <TextView
-                            android:id="@+id/txtFilterValue"
-                            android:layout_width="66dp"
-                            android:layout_height="66dp"
-                            android:backgroundTint="@color/yellow"
-                            android:text="Home"
-                            android:textStyle="bold|italic"
-                            android:gravity="center"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
-                            android:background="@drawable/deal_circle"
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
-                            android:layout_alignParentRight="true" />
-
 
 
                     </RelativeLayout>
