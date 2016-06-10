@@ -54,9 +54,9 @@ public class AppConstants {
 
     public static final String PUBNUB_SUBSCRIBE_KEY = "sub-c-f662fb7c-b5ff-11e5-a916-0619f8945a4f";*/
 
-    public static final String PUBNUB_PUBLISH_KEY = "pub-c-9e6f8c01-05f2-4de3-85fd-4cc860681760";
+    public static final String PUBNUB_PUBLISH_KEY = "pub-c-d7dde449-a76a-465c-8545-1d1ee3f7da9c";
 
-    public static final String PUBNUB_SUBSCRIBE_KEY = "sub-c-f662fb7c-b5ff-11e5-a916-0619f8945a4f";
+    public static final String PUBNUB_SUBSCRIBE_KEY = "sub-c-ea3f9f6e-0625-11e6-a6dc-02ee2ddab7fe";
 
     public static final String PUBNUB_SECRET_KEY = "sec-c-NDUxZWZlNWItMDMxZi00ZjM4LWIyODYtMjE5ODVmNmZhZjBj";
     public static final String BADGE_COUNT = "badgeCount";

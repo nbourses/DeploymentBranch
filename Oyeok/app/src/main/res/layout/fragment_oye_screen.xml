@@ -252,7 +252,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="Budget"
-                    android:textColor="@color/colorPrimaryDark"/>
+                    android:textColor="@color/colorPrimaryDark"
+                    android:id="@+id/budgetText" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -264,7 +265,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/Rs"
-                        android:textColor="@color/colorPrimaryDark"/>
+                        android:textColor="@color/greenish_blue"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -276,7 +278,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="40,000"
-                        android:textColor="@color/colorPrimaryDark"/>
+                        android:textColor="@color/greenish_blue"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -370,50 +373,48 @@
     </LinearLayout>
 
 <LinearLayout
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_below="@+id/rootWrapper"
-    android:layout_alignParentEnd="true"
-    android:layout_marginRight="60dp"
     android:layout_marginTop="-10dp"
     android:orientation="horizontal"
 
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_alignParentEnd="true">
 
 
     <TextView
-        android:layout_width="161dp"
+        android:layout_width="0dp"
         android:layout_height="30dp"
         android:text="I like to pay my\nSECURITY DEPOSIT"
         android:id="@+id/tv_fd_bank"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="-35dp"
-        android:layout_marginLeft="1dp"
         android:textColor="@color/abc_secondary_text_material_light"
-        android:textAlignment="center"
-        android:foregroundGravity="center_horizontal"
         android:layout_alignBottom="@+id/checkBox"
         android:layout_alignParentStart="true"
         android:textSize="13dp"
-        android:textStyle="bold|italic" />
+        android:textStyle="bold|italic"
+        android:layout_weight="0.5"
+        android:foregroundGravity="center_horizontal"
+        android:paddingLeft="20dp"
+        android:textAlignment="textEnd" />
 
 
     <CheckBox
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
+        android:textAlignment="viewStart"
         android:layout_marginTop="5dp"
         android:text="Apply for finance\nSECURITY DEPOSIT"
         android:id="@+id/checkBox"
-        android:layout_marginLeft="10dp"
         android:layout_below="@+id/rootWrapper"
         android:layout_alignParentEnd="true"
         android:textColor="@color/greenish_blue"
         android:textSize="13dp"
-        android:textStyle="bold|italic" />
+        android:textStyle="bold|italic"
+        android:layout_weight="0.6" />
 
 
-
-   </LinearLayout>
+</LinearLayout>
 
 
     <GridLayout
@@ -428,7 +429,8 @@
         android:weightSum="1"
         android:visibility="invisible"
         android:layout_centerVertical="true"
-        android:layout_alignEnd="@+id/checkBox">
+        >
+        <!--android:layout_alignEnd="@+id/checkBox"-->
 
 
         <LinearLayout

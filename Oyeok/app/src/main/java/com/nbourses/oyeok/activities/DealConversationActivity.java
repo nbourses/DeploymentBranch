@@ -220,6 +220,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         Bundle bundle  = getIntent().getExtras();
         channel_name = bundle.getString(AppConstants.OK_ID); //my_channel if came from root item
+
+        Log.i("Deals Conv Act","channel name is the "+channel_name);
         specCode = bundle.getString(AppConstants.SPEC_CODE);
         isDefaultDeal = bundle.getBoolean("isDefaultDeal");
 
@@ -312,6 +314,49 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //            Log.i("CACHE", "cache from shared yo mana caught in exception " + e);
 //
 //        }
+
+
+
+
+
+        //test pubnub gcm
+
+        pubnub.enablePushNotificationsOnChannel(channel_name, General.getSharedPreferences(this,AppConstants.GCM_ID), new Callback() {
+            @Override
+            public void successCallback(String channel, Object message) {
+                super.successCallback(channel, message);
+
+                Log.i("PUBNUB PUSH","SUCCESSFUL======");
+            }
+
+            @Override
+            public void errorCallback(String channel, PubnubError error) {
+                super.errorCallback(channel, error);
+
+                Log.i("PUBNUB PUSH","Error======");
+            }
+        });
+// subscribe a channel for Pubnub push notifications end
+
+        pubnub.enablePushNotificationsOnChannel(
+                "04f0fmgry7877921a",
+                General.getSharedPreferences(this,AppConstants.GCM_ID));
+
+
+    try {
+        sendNotification("04f0fmgry7877921a_");
+    }
+    catch (Exception e)
+    {
+        Log.i("ERROR ON NOTIFICATION"," "+e.getMessage());
+    }
+
+
+
+
+
+
+
 
 
 
@@ -1054,6 +1099,59 @@ if(cachedmsgs.size() < 10) {
      */
 
     public void sendNotification(String channel_name) throws JSONException {
+
+        Log.i("INSIDE PUSH NOTIFY","============");
+        PnGcmMessage gcmMessage = new PnGcmMessage();
+
+        JSONObject json = new JSONObject();
+
+        try {
+            json.put("a","android===");
+        }
+        catch (JSONException e)
+        {
+
+        }
+
+        gcmMessage.setData(json);
+
+
+        Log.i("INSIDE PUSH NOTIFY","============");
+// Create APNS message
+
+        PnApnsMessage apnsMessage = new PnApnsMessage();
+        apnsMessage.setApsSound("melody");
+        apnsMessage.setApsAlert("Hi from android !!!");
+        apnsMessage.setApsBadge(4);
+        apnsMessage.put("C ","3");
+
+        PnMessage message = new PnMessage(pubnub, "", new Callback() {
+            @Override
+            public void successCallback(String channel, Object message) {
+                Log.i("TRACE NOTIFICATION","Successfull "+message);
+            }
+
+            @Override
+            public void errorCallback(String channel,PubnubError error)
+            {
+                Log.i("TRACE NOTIFICATION","Error "+error);
+            }
+        },gcmMessage);
+
+        message.put("b","20");
+
+        try {
+
+            message.publish();
+        }
+        catch (PubnubException e){
+            Log.i("INSIDE PUSH NOTIFY","ERROR============ "+e.getMessage());
+        }
+
+    }
+
+
+    public void sendNotification111(String channel_name) throws JSONException {
 
         PnGcmMessage gcmMessage = new PnGcmMessage();
 
