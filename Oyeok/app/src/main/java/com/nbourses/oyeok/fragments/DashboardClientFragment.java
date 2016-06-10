@@ -487,6 +487,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
 //                else
 //                    onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),950,orMin,orMax);
                 openOyeScreen();
+                CancelAnimation();
             }
         });
 

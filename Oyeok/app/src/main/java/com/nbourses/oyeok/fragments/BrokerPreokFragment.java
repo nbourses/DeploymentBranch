@@ -226,6 +226,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private HashMap<String, Float> listings;
     private int permissionCheckForDeviceId;
     private Boolean buildingSliderflag = false;
+    private Integer buildingsPage = 1;
+
 
     Animation bounce;
     Animation zoomin;
@@ -246,6 +248,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
             if(buildingsSelected.size() !=0)
                 buildingsSelected.clear();
+            selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
             selectB.performClick();
         }
     };
@@ -303,7 +306,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 //        buildingPrice.addAll(Arrays.asList(4,8,12,15,18,22,16,2,10,7));
 //        buildingNames.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
-        brokerbuildings();
+        brokerbuildings(buildingsPage);
 
 
 
@@ -624,21 +627,29 @@ Log.i("PHASE","before adapter set");
             pricechart = false;
             chart.fitScreen();
             chart.zoom(3.3f, 1f, 0, 0);
+
             try {
-                entries.clear();
-                labels.clear();
+                if(buildingsPage<=1) {
+//                    entries.clear();
+//                    labels.clear();
+                }
             }
             catch(Exception e)
             {
 
             }
+
             chart.editEntryValue = false;
+//            entries.clear();
             for (int i = 0; i < buildingPrice.size(); i++) {
 
+                Log.i("adding CHARTS","==========");
                 entries.add(new BarEntry(buildingPrice.get(i), i));
             }
 
-            dataset = new BarDataSet(entries, Integer.toString(buildingPrice.size()));
+            if(buildingPrice.size()>0) {
+                dataset = new BarDataSet(entries, Integer.toString(buildingPrice.size()));
+            }
             labels.addAll(buildingNames);
         }
         else
@@ -668,6 +679,7 @@ Log.i("PHASE","before adapter set");
         //labels.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
 
         Log.i("GRAPH", "labels " + labels);
+        Log.i("GRAPH", "labels " + dataset);
 
         BarData data = new BarData(labels, dataset);
         chart.setData(data); // set the data and list of lables into chart
@@ -675,13 +687,13 @@ Log.i("PHASE","before adapter set");
     }
 
 
-    public void brokerbuildings(){
-        Log.i("BROKER BUILDINGS CALLED","1");
+    public void brokerbuildings(final Integer buildingsPage){
+        Log.i("BROKER BUILDINGS CALLED","with page "+ buildingsPage);
 
         BrokerBuildings brokerBuildings = new BrokerBuildings();
         brokerBuildings.setDeviceId("Hardware");
         brokerBuildings.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
-        brokerBuildings.setPage("1");
+        brokerBuildings.setPage(buildingsPage.toString());
         brokerBuildings.setLng(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
         brokerBuildings.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
 
@@ -720,6 +732,7 @@ Log.i("PHASE","before adapter set");
                             // if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RESALE"))
 
 
+
                             buildingPriceOR.add(actor.getInt("or_psf"));
                             buildingPriceLL.add(actor.getInt("ll_pm"));
 
@@ -733,9 +746,10 @@ Log.i("PHASE","before adapter set");
 
 
                             //  Log.i("BROKER BUILDINGS CALLED","success"+price.getClass().getName()+" "+buildingPrice.getClass().getName());
+
                             buildingNames.add(name);
                             // buildingPrice.add(price);
-
+                            Log.i("BROKER BUILDINGS CALLED", "buildingNames" + buildingNames);
 
                             Log.i("STEP1","STEP1");
 
@@ -986,16 +1000,23 @@ Log.i("PHASE","before adapter set");
         if (v.getId() == selectB.getId()) {
             selectB.setBackgroundResource(R.color.greenish_blue);
             // chart.clear();
-            // if(entries.size() !=0)
+//             if(entries.size() !=0)
 //            entries.clear();
 //            if(labels.size() !=0)
 //            labels.clear();
-            //  if(buildingPrice.size() !=0)
-            //  buildingPrice.clear();
-            setB.setClickable(true);
+//              if(buildingPrice.size() !=0)
+//              buildingPrice.clear();
 
+            setB.setClickable(true);
+          //  clearChart();
             if(buildingsSelected.size() !=0)
-                buildingsSelected.clear();
+              buildingsSelected.clear();
+
+//            if(buildingNames.size() !=0)
+//                buildingNames.clear();
+//            if(buildingPrice.size() !=0)
+//                buildingPrice.clear();
+            selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
             Log.i("STEP3","STEP3");
             // chart();
             setChart();
@@ -1368,8 +1389,11 @@ Log.i("PHASE","before adapter set");
                     intent.putExtra("buildingSliderFlag",buildingSliderflag);
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
 
-                    if(buildingsSelected.size() !=0)
-                        buildingsSelected.clear();
+
+                    //clearChart();
+                   if(buildingsSelected.size() !=0)
+                     buildingsSelected.clear();
+                    selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
                     selectB.performClick();
                 }
                 notClicked.setVisibility(View.VISIBLE);
@@ -1513,6 +1537,17 @@ Log.i("PHASE","before adapter set");
     }
 
 
+   private void clearChart(){
+       try {
+           if (buildingsSelected.size() != 0)
+               buildingsSelected.clear();
+           if (buildingNames.size() != 0)
+               buildingNames.clear();
+           if (buildingPrice.size() != 0)
+               buildingPrice.clear();
+       }
+       catch(Exception e){}
+    }
 
 
 //    public void priceChart(){
@@ -1699,6 +1734,8 @@ Log.i("PHASE","before adapter set");
 
                 if (buildingsSelected.size() < 3) {
                     buildingsSelected.add(e.getXIndex());
+                    selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
+
                     Log.i("GRAPH10", "buildings selected after add " + buildingsSelected);
 
                     // for (int i = 0; i < buildingsSelected.size(); i++) {
@@ -1748,6 +1785,7 @@ Log.i("PHASE","before adapter set");
                 Log.i("GRAPH", "removed " + Integer.valueOf(e.getXIndex()));
                 // buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
                 buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
+                selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
                 Log.i("GRAPH", "after removing " + buildingsSelected);
                 //    for (int i = 0; i < buildingsSelected.size(); i++) {
 
@@ -1798,6 +1836,7 @@ Log.i("PHASE","before adapter set");
                 Log.i("GRAPH", "removed " + Integer.valueOf(chartIndex));
                 // buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
                 buildingsSelected.remove(Integer.valueOf(chartIndex));
+                selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
                 Log.i("GRAPH", "after removing " + buildingsSelected);
                 //    for (int i = 0; i < buildingsSelected.size(); i++) {
 
@@ -1952,9 +1991,11 @@ Log.i("PHASE","before adapter set");
 //        Highlight h2 = new Highlight(9, 0);
 //        chart.highlightValues(new Highlight[]{h0, h1, h2});
 
-        Log.i("GRAPH","me "+highlight.getXIndex());
+//        Log.i("GRAPH","me "+highlight.getXIndex());
 
         chartIndex = highlight.getXIndex();
+
+
 
 //        highlight();
 
@@ -1966,7 +2007,7 @@ Log.i("PHASE","before adapter set");
 
     @Override
     public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
-//        Log.i("GRAPH","onChartFling "+me2);
+        Log.i("GRAPH","onChartFling "+me2);
     }
 
     @Override
@@ -1978,7 +2019,29 @@ Log.i("PHASE","before adapter set");
 
     @Override
     public void onChartTranslate(MotionEvent me, float dX, float dY) {
-//        Log.i("GRAPH","onChartTranslate "+me);
+
+        if(!pricechart) {
+            try {
+                e = chart.getEntryByTouchPoint(me.getX(), me.getY());
+                Log.i("GRAPH", "onChartTranslate entry " + e + "  (buildingsPage-1)*10+6 " + (buildingsPage - 1) * 10 + 6);
+
+                if (e != null && e.getXIndex() >= ((buildingsPage - 1) * 10 + 6)) {
+
+                    buildingsPage++;
+                    if (buildingPriceOR.size() != 0)
+                        buildingPriceOR.clear();
+
+                    if (buildingPriceLL.size() != 0)
+                        buildingPriceLL.clear();
+                    brokerbuildings(buildingsPage);
+                }
+            }
+            catch(Exception e){
+
+            }
+        }
+
+    //    Log.i("GRAPH","onChartTranslate "+me);
         // Log.i("GRAPH","onChartTranslate "+me.getAction() +" "+me.getAxisValue(MotionEvent.AXIS_Y));
 
         // highlight = highlighter.getHighlight(me.getX(),me.getY());
