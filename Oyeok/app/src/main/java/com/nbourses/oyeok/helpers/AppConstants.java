@@ -24,6 +24,7 @@ public class AppConstants {
     public static final String LOCALITY_BROADCAST = "localityBroadcast";
 
     public static final String ON_FILTER_VALUE_UPDATE = "onFilterValueUpdate";
+    public static final String BROADCAST_MIN_MAX_VAL = "broadcastMinMaxValue";
 
     public static final String IS_LOGGED_IN_USER = "isLoggedInUser";
 

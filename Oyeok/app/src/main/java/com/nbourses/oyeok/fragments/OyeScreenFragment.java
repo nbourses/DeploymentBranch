@@ -1,5 +1,7 @@
 package com.nbourses.oyeok.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -77,11 +79,29 @@ public class OyeScreenFragment extends Fragment {
     TextView budgetText;
 
 
-
+//    DiscreteSeekBar discreteSeekBar;
     TextView tv_dealinfo;
 
 
-
+//    private void setMinMaxValueForDiscreteSeekBar() {
+//        if (bundle != null) {
+//            if (bundle.getString("brokerType").equalsIgnoreCase("rent")) {
+//                discreteSeekBar.setMin(AppConstants.minRent);
+//                discreteSeekBar.setMax(AppConstants.maxRent);
+//                txtSelected.setText("" + AppConstants.minRent);
+//
+////                txtMin.setText("15K");
+////                txtMax.setText("12L");
+//            } else {
+//                discreteSeekBar.setMin(AppConstants.minSale);
+//                discreteSeekBar.setMax(AppConstants.maxSale);
+//                txtSelected.setText("" + AppConstants.minSale);
+//
+////                txtMin.setText("70L");
+////                txtMax.setText("10CR");
+//            }
+//        }
+//    }
 
     private ImageView txtPreviouslySelectedPropertyType;
     private static final String propertyTypeDefaultColor = "#FFFFFF";
@@ -290,12 +310,27 @@ public class OyeScreenFragment extends Fragment {
     /**
      * set min and max value for seek bar
      */
+
+    private BroadcastReceiver BROADCAST_MIN_MAX_VAL = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+           AppConstants.minRent = intent.getExtras().getString("llmin");
+
+        }
+    };
+
+
+
+
+
     private void setMinMaxValueForDiscreteSeekBar() {
 
         if (bundle != null) {
 
             requestType.setText(bundle.getString("brokerType").toUpperCase());
             DecimalFormat formatter = new DecimalFormat();
+
 
             if (bundle.getString("brokerType").equalsIgnoreCase("rent")) {
                 budgetSeekBar.setMin(AppConstants.minRent);

@@ -72,7 +72,7 @@ public class OyeIntentFragment extends Fragment implements MyFragment.OnFragment
     TextView txtMin;
     @Bind(R.id.txtMax)
     TextView txtMax;
-    @Bind(R.id.txt_selected)
+    @Bind(R.id.txtSelected)
     TextView txtSelected;
 
 

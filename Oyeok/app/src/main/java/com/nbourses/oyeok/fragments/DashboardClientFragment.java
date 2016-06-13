@@ -1258,7 +1258,7 @@ map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
                             // private Marker mCustomerMarker;
 
-
+                            onFilterValueUpdate( llMin, llMax,orMin,orMax);
                             updateHorizontalPicker();
 
                             for (int i = 0; i < 5; i++) {
@@ -1828,6 +1828,21 @@ try {
     }
 
 
+
+
+
+    private void onFilterValueUpdate(int llMin, int llMax,int orMin,int orMax) {
+        Intent intent = new Intent(AppConstants.BROADCAST_MIN_MAX_VAL);
+        intent.putExtra("llmin", llMin);
+        intent.putExtra("llmax", llMax);
+        intent.putExtra("ormax", orMin);
+        intent.putExtra("ormax", orMax);
+        //intent.putExtra("tv_dealinfo",oyeButtonData);
+
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
+
+    }
 
 public void onoyeclickRateChange(String locality,int area,int llmin,int llmax,String psf){
     horizontalPicker.setVisibility(View.GONE);
