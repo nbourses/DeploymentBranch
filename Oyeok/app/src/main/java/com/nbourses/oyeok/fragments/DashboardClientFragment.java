@@ -26,6 +26,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -116,11 +117,11 @@ import retrofit.mime.TypedByteArray;
 import static java.lang.Math.log10;
 
 
-public class DashboardClientFragment extends Fragment implements GoogleMap.OnMapClickListener,CustomPhasedListener,AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList, HorizontalPicker.pickerPriceSelected, FragmentDrawer.MDrawerListener {
+public class DashboardClientFragment extends Fragment implements CustomPhasedListener,AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, ChatList, HorizontalPicker.pickerPriceSelected, FragmentDrawer.MDrawerListener {
 
 
 
-    //GoogleMap.OnCameraChangeListener,
+    //GoogleMap.OnCameraChangeListener,TouchableWrapper.UpdateMapAfterUserInterection
     private final String TAG = DashboardClientFragment.class.getSimpleName();
     private static final String[] INITIAL_PERMS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -162,7 +163,8 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
     private boolean flag[] = new boolean[5],clicked=false;
 
     boolean mflag = false;
-
+    private long lastTouched = 0;
+    private static final long SCROLL_TIME = 200L;
 
 
     private GeoFence geoFence;
@@ -207,7 +209,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
     
     private String filterValue;
     private String bhk;
-    private int filterValueMultiplier;
+    private int filterValueMultiplier=950;
 
 
     private int []or_psf=new int[5], ll_pm=new int[5];
@@ -244,45 +246,46 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                 if ((intent.getExtras().getString("filterValue") != null)) {
                     // txtFilterValue.setText(intent.getExtras().getString("filterValue"));
                     bhk = intent.getExtras().getString("bhk");
+                    Log.i("bhk","=================  "+bhk);
                     //filterValue =  intent.getExtras().getString("filterValue").toString();
 
-                    if (bhk.equalsIgnoreCase("1bhk")) {
+                    if (bhk.equalsIgnoreCase("1bhk") || bhk.equalsIgnoreCase("<600")) {
                         filterValueMultiplier = 600;
                         updateHorizontalPicker();
                         if (brokerType.equals("rent"))
                         onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,llMin*filterValueMultiplier,llMax*filterValueMultiplier,"/month");
                         else
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,orMin,orMax,"/psf");
-                    } else if (bhk.equalsIgnoreCase("2bhk")) {
+                    } else if (bhk.equalsIgnoreCase("2bhk")|| bhk.equalsIgnoreCase("<950")) {
                         filterValueMultiplier = 950;
                         updateHorizontalPicker();
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,llMin*filterValueMultiplier,llMax*filterValueMultiplier,"/month");
                         else
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,orMin,orMax,"/psf");
-                    } else if (bhk.equalsIgnoreCase("3bhk")) {
+                    } else if (bhk.equalsIgnoreCase("3bhk")|| bhk.equalsIgnoreCase("<1600")) {
                         filterValueMultiplier = 1600;
                         updateHorizontalPicker();
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,llMin*filterValueMultiplier,llMax*filterValueMultiplier,"/month");
                         else
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,orMin,orMax,"/psf");
-                    } else if (bhk.equalsIgnoreCase("4bhk")) {
+                    } else if (bhk.equalsIgnoreCase("4bhk")|| bhk.equalsIgnoreCase("<2100")) {
                         filterValueMultiplier = 2100;
                         updateHorizontalPicker();
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,llMin*filterValueMultiplier,llMax*filterValueMultiplier,"/month");
                         else
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,orMin,orMax,"/psf");
-                    } else if (bhk.equalsIgnoreCase("4+bhk")) {
+                    } else if (bhk.equalsIgnoreCase("4+bhk")|| bhk.equalsIgnoreCase("<3000")) {
                         filterValueMultiplier = 3000;
                         updateHorizontalPicker();
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,llMin*filterValueMultiplier,llMax*filterValueMultiplier,"/month");
                         else
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,orMin,orMax,"/psf");
-                    } else {
-                        filterValueMultiplier = 1000;
+                    } else if(bhk.equalsIgnoreCase("<300")){
+                        filterValueMultiplier = 300;
                         updateHorizontalPicker();
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier,llMin*filterValueMultiplier,llMax*filterValueMultiplier,"/psf");
@@ -511,28 +514,28 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                     if ((int) Build.VERSION.SDK_INT < 23) {
 
                         // getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
-                        customMapFragment.getMapAsync(new OnMapReadyCallback() {
-                            @Override
-                            public void onMapReady(GoogleMap googleMap) {
-
-                                map = googleMap;
-
-                               // map = googleMap;
-
-                                //lat = 19.1269299;
-                                //lng = 72.8376545999999;
-                                enableMyLocation();
-//                                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                        customMapFragment.getMapAsync(new OnMapReadyCallback() {
+//                            @Override
+//                            public void onMapReady(GoogleMap googleMap) {
 //
-//                                    map.setMyLocationEnabled(true);
-//                                    return;
-//                                }
-
-
-
-
-                            }
-                        });
+//                                map = googleMap;
+//
+//                               // map = googleMap;
+//
+//                                //lat = 19.1269299;
+//                                //lng = 72.8376545999999;
+//                                enableMyLocation();
+////                                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+////
+////                                    map.setMyLocationEnabled(true);
+////                                    return;
+////                                }
+//
+//
+//
+//
+//                            }
+//                        });
                         getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
                     }
 
@@ -557,7 +560,26 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                                             flag[i]=false;
 
                                         }*/
+map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+    @Override
+    public void onMapClick(LatLng latLng) {
 
+        Log.i("MA999999 ","MAP CLICK=========");
+//        mMarkerminmax.setVisibility(View.VISIBLE);
+//        // Mmarker.setVisibility(View.VISIBLE);
+//        //horizontalPicker.stopScrolling();
+//        tvRate.setVisibility(View.VISIBLE);
+//        rupeesymbol.setVisibility(View.VISIBLE);
+//        tvFetchingrates.setVisibility(View.VISIBLE);
+//        tv_building.setVisibility(View.VISIBLE);
+//        horizontalPicker.setVisibility(View.VISIBLE);
+//        tv_building.setText("Average Rate @ this Locality");
+
+
+    }
+
+
+});
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
@@ -594,15 +616,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                                 tvFetchingrates.setTypeface(null,Typeface.BOLD);
 
                                 intent.putExtra("client_heading", "Live Building Rates");
-                                //startActivity(intent);
-//                                tv_building.setVisibility(View.VISIBLE);Average Rate in last 1 WEEK
-//                                tv_building.setText("Average Rate in last 1 WEEK");
-//                                tv_building.setHeight(15);
-//                                tv_building.setTypeface(null, Typeface.ITALIC);
 
-//                                footer.setBackgroundColor(Color.parseColor("#2dc4b6"));
-//                                ((LinearLayout)rootView).addView(footer);
-                               // inputSearch.setBackgroundColor(Color.parseColor("#2dc4b6"));
                                lng= marker.getPosition().longitude;
                                 lat=marker.getPosition().latitude;
                                 Log.i("marker lat","==============marker position :"+marker.getPosition()+" "+lat+" "+lng);
@@ -639,6 +653,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                                 tvRate.setVisibility(View.VISIBLE);
                                 rupeesymbol.setVisibility(View.VISIBLE);
                                 tv_building.setVisibility(View.VISIBLE);
+                                tv_building.setText("Average Rate @ this Locality");
 
                             }
 
@@ -695,87 +710,105 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                     public void onDrag(MotionEvent motionEvent) {
                         //Log.d("t1", String.format("ME: %s", motionEvent));
 
-                        if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                            tvRate.setVisibility(View.INVISIBLE);
-                            rupeesymbol.setVisibility(View.INVISIBLE);
-                            Log.i("MARKER 111","========================="+MarkerClicked);
-                            //tv_building.setVisibility(View.GONE);
-//                    Point p= new Point(x,y);
-//                    LatLng currentLocation1;
-//                   currentLocation1= map.getProjection().fromScreenLocation(point);
-//                    lat=currentLocation1.latitude;
-//                    lng=currentLocation1.longitude;
+//                        if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+//                            tvRate.setVisibility(View.INVISIBLE);
+//                            rupeesymbol.setVisibility(View.INVISIBLE);
+//                            Log.i("MARKER 111","========================="+MarkerClicked);
+//                            //tv_building.setVisibility(View.GONE);
+////                    Point p= new Point(x,y);
+////                    LatLng currentLocation1;
+////                   currentLocation1= map.getProjection().fromScreenLocation(point);
+////                    lat=currentLocation1.latitude;
+////                    lng=currentLocation1.longitude;
+////
+////
+////                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+////                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+//                            //getRegion();
+//                            tvFetchingrates.setVisibility(View.INVISIBLE);
 //
-//
-//                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-//                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                            //getRegion();
-                            tvFetchingrates.setVisibility(View.INVISIBLE);
+//                           horizontalPicker.keepScrolling();
+////                           // clicked=false;
+////                           // MarkerClicked=false;
+//                        } else
+                          if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 
-                            horizontalPicker.keepScrolling();
-                           // clicked=false;
-                           // MarkerClicked=false;
-                        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                              //horizontalPicker.stopScrolling();
                             //mMarkerPanel.setVisibility(View.VISIBLE);
-                            horizontalPicker.stopScrolling();
+                            final long now = SystemClock.uptimeMillis();
+                            if (now - lastTouched > SCROLL_TIME) {
+
+                                horizontalPicker.keepScrolling();
 
 
-                            Log.i("MARKER","========================="+MarkerClicked);
+                                Log.i("MARKER", "=========================" + MarkerClicked);
 
-                            tv_building.setText("Average Rate @ this Locality");
-                            tvFetchingrates.setVisibility(View.VISIBLE);
-                            if(!MarkerClicked ) {
-                                mMarkerminmax.setVisibility(View.VISIBLE);
-                               // Mmarker.setVisibility(View.VISIBLE);
-                                //horizontalPicker.stopScrolling();
-                                tvRate.setVisibility(View.VISIBLE);
-                                rupeesymbol.setVisibility(View.VISIBLE);
-                                tvFetchingrates.setVisibility(View.VISIBLE);
-                                tv_building.setVisibility(View.VISIBLE);
                                 tv_building.setText("Average Rate @ this Locality");
-                                recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                                tvFetchingrates.setVisibility(View.VISIBLE);
+                               // if (!MarkerClicked) {
+                                    mMarkerminmax.setVisibility(View.VISIBLE);
+                                    // Mmarker.setVisibility(View.VISIBLE);
+                                    //horizontalPicker.stopScrolling();
+                                    tvRate.setVisibility(View.VISIBLE);
+                                    rupeesymbol.setVisibility(View.VISIBLE);
+                                    tvFetchingrates.setVisibility(View.VISIBLE);
+                                    tv_building.setVisibility(View.VISIBLE);
+                                    tv_building.setText("Average Rate @ this Locality");
+                                    recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 //                                tv_building.setText("Average Rate @ This Locality");
 //                                tv_building.setTypeface(null, Typeface.ITALIC);
-                                LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
-                                 Log.i("map", "============ map:" + " " + map);
-                                currentLocation1 = map.getProjection().fromScreenLocation(point);
-                                lat = currentLocation1.latitude;
-                                Log.i("t1", "lat" + " " + lat);
-                                lng = currentLocation1.longitude;
-                                Log.i("t1", "lng" + " " + lng);
-                                Log.i("MARKER-- ", "====================================");
-                                SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                                SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                                Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-                                Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-                                getRegion();
-                                ///horizontalPicker.stopScrolling();
-                                search_building_icon.setVisibility(View.INVISIBLE);
-
-                                getPrice();
-                                // getPrice();
-                                // mflag = false;
-
-
-                                Log.i("t1", "latlong" + " " + currentLocation1);
+                                    LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
+                                    Log.i("map", "============ map:" + " " + map);
+                                    currentLocation1 = map.getProjection().fromScreenLocation(point);
+                                    lat = currentLocation1.latitude;
+                                    Log.i("t1", "lat" + " " + lat);
+                                    lng = currentLocation1.longitude;
+                                    Log.i("t1", "lng" + " " + lng);
+                                    Log.i("MARKER-- ", "====================================");
+                                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+                                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                                    Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+                                    Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+                                    getRegion();
+                                    ///horizontalPicker.stopScrolling();
+                                    search_building_icon.setVisibility(View.INVISIBLE);
+                                horizontalPicker.stopScrolling();
+                                    getPrice();
+                                    // getPrice();
+                                    // mflag = false;
 
 
-                                if (isNetworkAvailable()) {
-                                    new LocationUpdater().execute();
-                                }
-                            }else{
-                                Log.i("Inside Map click else ","------"+MarkerClicked);
+                                    Log.i("t1", "latlong" + " " + currentLocation1);
 
 
-                                MarkerClicked=false;
-                            clicked=false;}
+                                    if (isNetworkAvailable()) {
+                                        new LocationUpdater().execute();
+                                    }
+//                                } else {
+//                                    Log.i("Inside Map click else ", "------" + MarkerClicked);
+//
+//
+////                                    MarkerClicked = false;
+////                                    clicked = false;
+//                                }
+
+                            }
 
                         } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                            lastTouched = SystemClock.uptimeMillis();
                             tvRate.setVisibility(View.INVISIBLE);
                             rupeesymbol.setVisibility(View.INVISIBLE);
                             tv_building.setVisibility(View.INVISIBLE);
                             LatLng currentLocation11;
                             Log.i("MotionEvent.ACTION_DOWN","========================="+MarkerClicked);
+
+
+
+                                      //recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+
+
+
+
 
 
 
@@ -1226,7 +1259,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                             // private Marker mCustomerMarker;
 
 
-
+                            updateHorizontalPicker();
 
                             for (int i = 0; i < 5; i++) {
 
@@ -1263,7 +1296,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                             //mflag=true;
 
                             // }
-                            updateHorizontalPicker();
+                           // updateHorizontalPicker();
 
                             horizontalPicker.setVisibility(View.VISIBLE);
                             tv_building.setVisibility(View.VISIBLE);
@@ -1343,7 +1376,7 @@ public class DashboardClientFragment extends Fragment implements GoogleMap.OnMap
                 //   horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
 
 
-                Log.i("HORRIZONTALPICKER","filterValue "+filterValue+" filterValueMultiplier "+filterValueMultiplier);
+                Log.i("HORRIZONTALPICKER","filterValue "+filterValue+" filterValueMultiplier "+filterValueMultiplier+"  LLmin && LLmax"+llMin+" "+llMax);
                 horizontalPicker.setInterval((llMin * filterValueMultiplier), (llMax * filterValueMultiplier), 10, HorizontalPicker.THOUSANDS);
             }
 
@@ -1593,27 +1626,7 @@ try {
         horizontalPicker.stopScrolling();
     }
 
-    @Override
-    public void onMapClick(LatLng latLng) {
 
-        Log.i("MARKER ","MAP CLICK=========");
-        tvFetchingrates.setVisibility(View.GONE);
-        tv_building.setVisibility(View.VISIBLE);
-        tvFetchingrates.setVisibility(View.GONE);
-        horizontalPicker.setVisibility(View.VISIBLE);
-        mCustomerMarker[INDEX].setIcon(icon1);
-
-//        for (int i =0 ; i < 5 ; i++)
-//        {
-//            mCustomerMarker[i].setIcon(icon1);
-//
-//
-//        }
-
-
-       // MarkerClicked = false;
-
-    }
 
 
 
@@ -1829,8 +1842,8 @@ public void onoyeclickRateChange(String locality,int area,int llmin,int llmax,St
     llmax1=numToVal(llmax);
 
 Log.i("TRACE11","llmin"+llmin);
-    Log.i("TRACE11","llmax"+llmax);
-    Log.i("TRACE11","llmin"+llmin1);
+    Log.i("TRACE11","llmax "+llmax);
+    Log.i("TRACE11","llmin "+llmin1);
     Log.i("TRACE11","llmax"+llmax1);
     tv_building.setVisibility(View.VISIBLE);
     tv_building.setText("Range @ "+locality+" | AREA = "+area +"sqft");
@@ -1912,6 +1925,30 @@ Log.i("TRACE11","llmin"+llmin);
         return str;
     }
 
+//    public void onUpdateMapAfterUserInterection() {
+//
+//
+//
+//
+//
+//
+//    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1970,7 +2007,7 @@ Log.i("TRACE11","llmin"+llmin);
     }*/
 
 
-}
+//}
 
 
 

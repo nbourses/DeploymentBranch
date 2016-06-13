@@ -68,7 +68,7 @@ public class AppConstants {
     public static final String SELLER_COUNT = "sellerCount";
     public static final String RENTAL_COUNT = "rentalCount";
     public static final String RESALE_COUNT = "resaleCount";
-    public static final String Broker_Locality_Change = "broker_locality_change";
+
     public static final String GCM_ID = "gcm_id";
     public static final String TT = "TT";
     public static final String RENTAL ="RENTAL";

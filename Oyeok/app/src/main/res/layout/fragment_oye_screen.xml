@@ -15,8 +15,8 @@
         android:weightSum="1">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/eight_dp"
             android:paddingRight="@dimen/eight_dp"
@@ -24,8 +24,8 @@
             android:paddingBottom="-35dp">
             <ImageView
                 android:id="@+id/btnCloseOyeScreenSlide"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:src="@drawable/icon_back"/>
 
             <TextView
@@ -33,10 +33,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="100dp"
+                android:layout_marginLeft="110dp"
                 android:gravity="center_horizontal"
                 android:text="Requirement"
-                android:textSize="18sp"/>
+                android:textSize="22sp"/>
         </LinearLayout>
 
         <View

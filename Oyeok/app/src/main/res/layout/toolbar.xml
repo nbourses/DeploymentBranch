@@ -6,16 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?attr/actionBarSize"
-    android:background="?attr/colorPrimary"
+    android:background="?attr/colorPrimaryDark"
     local:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     local:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 
     tools:showIn="@layout/activity_main">
 
+
+
+
+
+
+
     <Button
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:visibility="gone"
+        android:visibility="visible"
 
         android:background="@drawable/ic_menu_24dp"
         android:id="@+id/residemenu_rightmenu_titlebar"
