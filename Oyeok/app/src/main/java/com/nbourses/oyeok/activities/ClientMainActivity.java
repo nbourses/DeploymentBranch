@@ -33,6 +33,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
@@ -155,6 +157,18 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Check status of Google Play Services
+        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+
+// Check Google Play Service Available
+        try {
+            if (status != ConnectionResult.SUCCESS) {
+                GooglePlayServicesUtil.getErrorDialog(status, this, 2).show();
+            }
+        } catch (Exception e) {
+            Log.i("GooglePlayServiceUtil: ", "" + e.getMessage());
+        }
+
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
 
@@ -172,7 +186,6 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             Log.i("TRACE", "network available");
         }
         else
-
         {
             Log.i("TRACE", "network not availabile");
             SnackbarManager.show(

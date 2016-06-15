@@ -667,12 +667,18 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
                                 maxLimit = this.getYChartMax()*5;
 
                             if(value.y < maxLimit && value.y > 500) {
-                                entry.setVal((float) value.y);
-                                setAutoScaleMinMaxEnabled(true);
-                                notifyDataSetChanged();
+                                try {
+                                    entry.setVal((float) value.y);
+                                    setAutoScaleMinMaxEnabled(true);
+                                    notifyDataSetChanged();
+                                }
+                                catch(Exception e){
+
+                                }
                             }
 
                         }
+
                         break;
 
                     case MotionEvent.ACTION_DOWN:

@@ -260,7 +260,7 @@ public class OyeScreenFragment extends Fragment {
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")){
             tv_fd_bank.setText("I like Monthly RENT CHEQUE(s)");
             satView.setText("Apply for finance FULL ADVANCE RENT");
-                budgetText.setText(" My Asking Rent");
+                budgetText.setText("My Asking Rent");
             }
             else{
                 tv_fd_bank.setText("No Loan On \n Property");
