@@ -170,39 +170,38 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         onFilterValueUpdate(oyeButtonData,oyeButtonData);
     }
 
-//    @Nullable
-//    @OnClick({R.id.txtColdStorage, R.id.txtKitchen, R.id.txtWarehouse, R.id.txtManufacturing, R.id.txtWorkshop})
-//    public void onIndustryClick(View v) {
-//        General.saveBoolean(getContext(), "propertySubtypeFlag", true);
-//
-//
-//
-//        clean();
-//        txtPreviousTextView = (TextView) v;
-//        txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
-//        //txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
-//        AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
-//        tv_dealinfo.setText(txtPreviousTextView.getText().toString());
-//        AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
-//        oyeButtonData = txtPreviousTextView.getText().toString();
-//        setOyeButtonData(oyeButtonData);
-//    }
-//
-//    @Nullable
-//    @OnClick({R.id.txt10, R.id.txt20,
-//            R.id.txt50, R.id.txt100, R.id.txt200})
-//    public void onOfficeClick(View v) {
-//        General.saveBoolean(getContext(), "propertySubtypeFlag", true);
-//        clean();
-//        txtPreviousTextView = (TextView) v;
-//        txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
-//        //txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
-//        AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
-//        AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
-//        tv_dealinfo.setText(txtPreviousTextView.getText().toString());
-//        oyeButtonData = selectedPropertyType +" "+txtPreviousTextView.getText().toString();
-//        setOyeButtonData(oyeButtonData);
-//    }
+    @Nullable
+    @OnClick({R.id.txt300h, R.id.txt600h, R.id.txt950h,R.id.txt1600h,R.id.txt2100h,R.id.txt3000h})
+    public void onIndustryClick(View v) {
+        General.saveBoolean(getContext(), "propertySubtypeFlag", true);
+
+
+
+        clean();
+        txtPreviousTextView = (TextView) v;
+        txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
+        //txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
+        AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
+        tv_dealinfo.setText(txtPreviousTextView.getText().toString());
+        AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
+        oyeButtonData = txtPreviousTextView.getText().toString();
+        setOyeButtonData(oyeButtonData);
+    }
+
+    @Nullable
+    @OnClick({R.id.txt300h, R.id.txt600h, R.id.txt950h,R.id.txt1600h,R.id.txt2100h,R.id.txt3000h})
+    public void onOfficeClick(View v) {
+        General.saveBoolean(getContext(), "propertySubtypeFlag", true);
+        clean();
+        txtPreviousTextView = (TextView) v;
+        txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
+        //txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
+        AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
+        AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
+        tv_dealinfo.setText(txtPreviousTextView.getText().toString());
+        oyeButtonData = selectedPropertyType +" "+txtPreviousTextView.getText().toString();
+        setOyeButtonData(oyeButtonData);
+    }
 
     private void clean() {
         if (txtPreviousTextView != null)

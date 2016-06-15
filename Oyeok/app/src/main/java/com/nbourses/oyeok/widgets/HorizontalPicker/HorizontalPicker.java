@@ -1571,7 +1571,7 @@ public class HorizontalPicker extends View {
     }
 
 
-    String numToVal(int no){
+   public String numToVal(int no){
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         int truncate_first;
         if(currentapiVersion>=23)

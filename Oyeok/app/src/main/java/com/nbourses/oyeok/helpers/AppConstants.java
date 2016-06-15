@@ -6,11 +6,11 @@ import com.nbourses.oyeok.models.PublishLetsOye;
  * Created by rohit on 09/02/16.
  */
 public class AppConstants {
-    public static final int minRent = 20000;
-    public static final int maxRent = 1200000;
+    public static  int minRent = 20000;
+    public static  int maxRent = 1200000;
 
-    public static final int minSale = 9000000;
-    public static final int maxSale = 100000000;
+    public static  int minSale = 9000000;
+    public static  int maxSale = 100000000;
 
     public static String MY_LAT = "myLat";
     public static String MY_LNG = "myLong";

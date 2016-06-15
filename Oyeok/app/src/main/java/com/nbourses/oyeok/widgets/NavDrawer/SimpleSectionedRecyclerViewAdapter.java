@@ -1,8 +1,8 @@
 package com.nbourses.oyeok.widgets.NavDrawer;
 
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +15,11 @@ import java.util.Comparator;
 /**
  * Created by sushil on 11/06/16.
  */
+
+
+
 public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
     private final Context mContext;
     private static final int SECTION_TYPE = 0;
 
@@ -76,19 +80,12 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int typeView) {
-
-            if (typeView == SECTION_TYPE) {
-              //  try {
-                //Log.i("Exception","caught exception"+view);
-                final View view = LayoutInflater.from(mContext).inflate(mSectionResourceId, parent, false);
-                Log.i("Exception","caught exception"+view);
-            //}catch(Exception e){Log.i("Exception","caught exception"+e);}
-                return new SectionViewHolder(view, mTextResourceId);
-
-            } else {
-                return mBaseAdapter.onCreateViewHolder(parent, typeView - 1);
-            }
-
+        if (typeView == SECTION_TYPE) {
+            final View view = LayoutInflater.from(mContext).inflate(mSectionResourceId, parent, false);
+            return new SectionViewHolder(view,mTextResourceId);
+        }else{
+            return mBaseAdapter.onCreateViewHolder(parent, typeView -1);
+        }
     }
 
     @Override
@@ -190,6 +187,5 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
         return (mValid ? mBaseAdapter.getItemCount() + mSections.size() : 0);
     }
 
-
-
 }
+

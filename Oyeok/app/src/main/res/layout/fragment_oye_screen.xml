@@ -375,7 +375,7 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_below="@+id/rootWrapper"
-    android:layout_marginTop="-10dp"
+    android:layout_marginTop="8dp"
     android:orientation="horizontal"
 
     android:layout_height="wrap_content"

@@ -73,6 +73,7 @@ public class FragmentDrawer extends Fragment {
         for (int i = 0; i < titles.length; i++) {
             NavDrawerItem navItem = new NavDrawerItem();
            //   hh title[i].setText(titles[i]);
+
             navItem.setTitle(titles[i]);
             navItem.setIcon(icons[0]);
             Log.i("title","title"+titles);
@@ -131,8 +132,8 @@ public class FragmentDrawer extends Fragment {
         adapter = new NavigationDrawerAdapter(getActivity(), navDrawerItems);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        List<SimpleSectionedRecyclerViewAdapter.Section> sections =
-                new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
+        //List<SimpleSectionedRecyclerViewAdapter.Section> sections = new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
+        List<SimpleSectionedRecyclerViewAdapter.Section> sections = new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
 
         //Sections
         sections.add(new SimpleSectionedRecyclerViewAdapter.Section(2, "general"));
@@ -144,7 +145,7 @@ public class FragmentDrawer extends Fragment {
                 NavigationDrawerAdapter.selected_item = position;
                 recyclerView.getAdapter().notifyDataSetChanged();
                 drawerListener.onDrawerItemSelected(view, position, navDrawerItems.get(position).getTitle());
-                Log.i("title","=================================title"+navDrawerItems.get(position).getTitle()+"  "+navDrawerItems.get(position).getTitle());
+                Log.i("title","=================================title"+navDrawerItems.get(position).getTitle()+"  "+position);
                // navDrawerItems.get(position).set("#2dc4b6");
                 mDrawerLayout.closeDrawer(containerView);
             }
@@ -153,11 +154,23 @@ public class FragmentDrawer extends Fragment {
             public void onLongClick(View view, int position) {
             }
         }));
+//        SimpleSectionedRecyclerViewAdapter.Section[] dummy = new SimpleSectionedRecyclerViewAdapter.Section[sections.size()];
+//        SimpleSectionedRecyclerViewAdapter mSectionedAdapter = new
+//                SimpleSectionedRecyclerViewAdapter(getContext(), R.layout.section, R.id.section_text, adapter);
+//        mSectionedAdapter.setSections(sections.toArray(dummy));
+//        recyclerView.setAdapter(mSectionedAdapter);
+
+
+
         SimpleSectionedRecyclerViewAdapter.Section[] dummy = new SimpleSectionedRecyclerViewAdapter.Section[sections.size()];
         SimpleSectionedRecyclerViewAdapter mSectionedAdapter = new
                 SimpleSectionedRecyclerViewAdapter(getContext(), R.layout.section, R.id.section_text, adapter);
         mSectionedAdapter.setSections(sections.toArray(dummy));
+
+        //Apply this adapter to the RecyclerView
         recyclerView.setAdapter(mSectionedAdapter);
+
+
         return layout;
     }
 

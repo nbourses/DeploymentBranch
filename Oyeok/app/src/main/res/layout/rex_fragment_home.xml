@@ -183,20 +183,23 @@
 
                         <LinearLayout
                             android:layout_width="265dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="24dp"
                             android:orientation="vertical"
-                            android:layout_centerVertical="true"
-                            >
+                            android:weightSum="1"
+                            android:layout_above="@+id/tvRate"
+                            android:layout_below="@+id/tv_building">
                                                 <TextView
                                                     android:layout_width="255dp"
-                                                    android:layout_height="wrap_content"
+                                                    android:layout_height="match_parent"
                                                     android:id="@+id/tvFetchingRates"
                                                     android:textColor="@color/White"
                                                     android:visibility="visible"
                                                     android:foregroundGravity="center"
                                                     android:gravity="center"
                                                     android:textSize="12dp"
-                                                    android:textStyle="bold" />
+                                                    android:textStyle="bold"
+                                                    android:layout_marginTop="1dp"
+                                                    android:layout_weight="2.60" />
                         </LinearLayout>
 
                         <RelativeLayout
@@ -390,8 +393,8 @@
                     android:background="@android:color/transparent"
                     android:textColorHint="@color/white"
                     android:textColor="@color/white"
+                    android:cursorVisible="false"
                     android:textCursorDrawable="@color/white"
-                    android:drawableRight="@drawable/ic_search_24dp"
                     android:singleLine="false"
                     android:minLines="2"
                     android:lines="2"
@@ -400,6 +403,9 @@
                     android:textSize="15dp"
                     android:nestedScrollingEnabled="false"
                     android:foregroundGravity="center" />
+                <!--android:textCursorDrawable="@color/white"-->
+                <!--android:drawableRight="@drawable/ic_search_24dp"-->
+
 
                 <ImageView
                     android:layout_width="15dp"
@@ -411,6 +417,13 @@
 
 
             </LinearLayout>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="25dp"
+                android:id="@+id/ic_search"
+                android:src="@drawable/ic_search_24dp"
+                android:visibility="visible"
+                android:layout_marginTop="8dp" />
 
             <ImageView
                 android:layout_width="1dp"

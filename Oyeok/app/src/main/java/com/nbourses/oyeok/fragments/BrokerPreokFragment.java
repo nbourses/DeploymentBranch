@@ -1055,19 +1055,21 @@ Log.i("PHASE","before adapter set");
             //    option2Count.setVisibility(View.GONE);
             txtOption1.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption1.getText().toString();
-            Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
+            Log.i("PREOK CALLED11","currentOptionSelectedString"+currentOptionSelectedString);
 
             // update circular seekbar
 
             if (currentOptionSelectedString.equalsIgnoreCase(strSeekers))
                 currentOptionSelectedString = strTenants;
-            Log.i("PREOK CALLED","currentOptionSelectedString1 phase"+currentOptionSelectedString);
+            Log.i("PREOK CALLED1","currentOptionSelectedString1 phase"+currentOptionSelectedString);
             if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
-                Log.i("PREOK CALLED","values set phase"+jsonArrayReqLl.toString());
+                Log.i("PREOK CALLED1","values set phase"+jsonArrayReqLl.toString());
+                Log.i("tester","1"+currentOptionSelectedString);
                 circularSeekbar.setValues(jsonArrayReqLl.toString());
             }
             else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
-                Log.i("PREOK CALLED", "values set phase" + jsonArrayAvlLl.toString());
+                Log.i("PREOK CALLED1", "values set phase" + jsonArrayAvlLl.toString());
+                Log.i("tester","2"+currentOptionSelectedString);
                 circularSeekbar.setValues(jsonArrayAvlLl.toString());
             }
 
@@ -1078,7 +1080,7 @@ Log.i("PHASE","before adapter set");
             //  option1Count.setVisibility(View.GONE);
             txtOption2.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption2.getText().toString();
-            Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
+            Log.i("PREOK CALLED1","currentOptionSelectedString"+currentOptionSelectedString);
             rentText.setVisibility(View.GONE);
             //displayOkText.setVisibility(View.GONE);
             texPtype.setVisibility(View.GONE);
@@ -1087,14 +1089,16 @@ Log.i("PHASE","before adapter set");
 
             if (currentOptionSelectedString.equalsIgnoreCase(strTenants))
                 currentOptionSelectedString = strSeekers;
-            Log.i("PREOK CALLED","currentOptionSelectedString2 phase"+currentOptionSelectedString);
+            Log.i("PREOK CALLED1","currentOptionSelectedString2 phase"+currentOptionSelectedString);
 
             if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
-                Log.i("PREOK CALLED", "values set phase" + jsonArrayReqOr.toString());
+                Log.i("PREOK CALLED1", "values set phase" + jsonArrayReqOr.toString());
+                Log.i("tester","3"+currentOptionSelectedString);
                 circularSeekbar.setValues(jsonArrayReqOr.toString());
             }
             else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
-                Log.i("PREOK CALLED", "values set phase" + jsonArrayAvlOr.toString());
+                Log.i("PREOK CALLED1", "values set phase" + jsonArrayAvlOr.toString());
+                Log.i("tester","4"+currentOptionSelectedString);
                 circularSeekbar.setValues(jsonArrayAvlOr.toString());
             }
 

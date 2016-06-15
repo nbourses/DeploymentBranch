@@ -470,7 +470,7 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         dbHelper.save(DatabaseConstants.userRole,"Client");
 
 
-        ((MainActivity) getActivity()).setListener(this);
+       // ((MainActivity) getActivity()).setListener(this);
 
         rupeesymbol.bringToFront();
         tvRate.bringToFront();

@@ -84,7 +84,7 @@
         android:layout_height="wrap_content"
         android:text="Seater Office"
         android:gravity="center_horizontal"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
 
     </LinearLayout>

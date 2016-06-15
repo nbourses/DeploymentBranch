@@ -150,24 +150,24 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
             }
 
 
-
+Log.i("pstype","==============="+pstype);
             String ptype = null;
 
             if(pstype.equalsIgnoreCase("1bhk") || pstype.equalsIgnoreCase("2bhk") || pstype.equalsIgnoreCase("3bhk") || pstype.equalsIgnoreCase("4bhk") || pstype.equalsIgnoreCase("4+bhk")){
                 ptype = "home";
             }
-            else if(pstype.equalsIgnoreCase("retail outlet") || pstype.equalsIgnoreCase("food outlet") || pstype.equalsIgnoreCase("bank")){
+            else if(pstype.equalsIgnoreCase("<300") || pstype.equalsIgnoreCase("<600") || pstype.equalsIgnoreCase("<950") || pstype.equalsIgnoreCase("<1600")||pstype.equalsIgnoreCase("<2100")||pstype.equalsIgnoreCase("<3000")){
                 ptype = "shop";
             }
-            else if(pstype.equalsIgnoreCase("cold storage") || pstype.equalsIgnoreCase("kitchen") || pstype.equalsIgnoreCase("manufacturing") || pstype.equalsIgnoreCase("warehouse") || pstype.equalsIgnoreCase("workshop")){
+            else if(pstype.equalsIgnoreCase("<300") || pstype.equalsIgnoreCase("<600") || pstype.equalsIgnoreCase("<950") || pstype.equalsIgnoreCase("<1600")||pstype.equalsIgnoreCase("<2100")||pstype.equalsIgnoreCase("<3000")){
                 ptype = "industrial";
             }
-            else if(pstype.equalsIgnoreCase("<15") || pstype.equalsIgnoreCase("<35") || pstype.equalsIgnoreCase("<50") || pstype.equalsIgnoreCase("<100") || pstype.equalsIgnoreCase("100+")){
+            else if(pstype.equalsIgnoreCase("<300") || pstype.equalsIgnoreCase("<600") || pstype.equalsIgnoreCase("<950") || pstype.equalsIgnoreCase("<1600")||pstype.equalsIgnoreCase("<2100")||pstype.equalsIgnoreCase("<3000")){
                 ptype = "office";
-                pstype = pstype+" seater";
+               // pstype = pstype+" seater";
             }
 
-
+            Log.i("pstype","===============pstype"+pstype+ " =======ptype"+ptype);
 
 
 
@@ -209,16 +209,17 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
             else
             holder.txtTitle.setText("Broker "+name);
 
-            if(ptype.equalsIgnoreCase("office"))
+           /* if(ptype.equalsIgnoreCase("office"))
             holder.dealPtype.setImageResource(R.drawable.office);
             else if(ptype.equalsIgnoreCase("home"))
                 holder.dealPtype.setImageResource(R.drawable.home);
             else if(ptype.equalsIgnoreCase("shop"))
                 holder.dealPtype.setImageResource(R.drawable.shop);
             else if(ptype.equalsIgnoreCase("industrial"))
-                holder.dealPtype.setImageResource(R.drawable.industry);
+                holder.dealPtype.setImageResource(R.drawable.industry);*/
 
             //  holder.txtDescription.setText(deal.getMobileNo());
+            holder.dealPtype.setImageResource(R.drawable.home);
             holder.txtDescription.setText(description);
 
            // holder.txtTime.setText("23.11");
