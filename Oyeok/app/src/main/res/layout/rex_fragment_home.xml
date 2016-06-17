@@ -187,7 +187,7 @@
                             android:orientation="vertical"
                             android:weightSum="1"
                             android:layout_below="@+id/tv_building"
-                            android:layout_alignBottom="@+id/rupeesymbol">
+                            android:layout_alignBottom="@+id/tvRate">
                                                 <TextView
                                                     android:layout_width="255dp"
                                                     android:layout_height="match_parent"
