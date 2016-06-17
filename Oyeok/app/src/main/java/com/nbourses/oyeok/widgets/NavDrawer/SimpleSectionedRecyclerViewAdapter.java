@@ -13,11 +13,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * Created by sushil on 11/06/16.
+ * https://gist.github.com/gabrielemariotti/4c189fb1124df4556058
  */
-
-
-
 public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context mContext;
@@ -188,4 +185,3 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     }
 
 }
-

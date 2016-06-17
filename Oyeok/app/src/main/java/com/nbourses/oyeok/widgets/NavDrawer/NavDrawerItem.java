@@ -9,11 +9,11 @@ public class NavDrawerItem {
 
     }
 
-    public NavDrawerItem(boolean showNotify, String title) {
-        this.showNotify = showNotify;
-        this.title = title;
-        this.icon=icon;
-    }
+//    public NavDrawerItem(boolean showNotify, String title,int icon) {
+//        this.showNotify = showNotify;
+//        this.title = title;
+//        this.icon=icon;
+//    }
 
     public boolean isShowNotify() {
         return showNotify;

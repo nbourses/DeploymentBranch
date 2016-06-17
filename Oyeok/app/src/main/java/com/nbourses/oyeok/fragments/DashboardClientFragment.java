@@ -195,7 +195,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private TextView tvRate;
     private TextView rupeesymbol;
     private OnOyeClick onOyeClick;
-    private TextView tvCommingsoon;
+    //private TextView tvCommingsoon;
     private TextView tv_building;
     private TextView tvFetchingrates;
     CustomMapFragment customMapFragment;
@@ -419,7 +419,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         errorText = (TextView) rootView.findViewById(R.id.errorText);
 
         rupeesymbol = (TextView) rootView.findViewById(R.id.rupeesymbol);
-        tvCommingsoon = (TextView) rootView.findViewById(R.id.tvCommingsoon);
+       // tvCommingsoon = (TextView) rootView.findViewById(R.id.tvCommingsoon);
         tvRate = (TextView) rootView.findViewById(R.id.tvRate);
         tvFetchingrates = (TextView) rootView.findViewById(R.id.tvFetchingRates);
         tv_building = (TextView) rootView.findViewById(R.id.tv_building);
@@ -643,7 +643,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 Log.i("coming soon","coming soon :"+marker.getTitle().toString());
                                 tv_building.setVisibility(View.VISIBLE);
                                 tv_building.setText("Average Rate in last 1 WEEK");
-                                String text = "<font color=#ffffff >"+marker.getTitle().toString()+"</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font> <font color=#ff9f1c>"+General.currencyFormat(String.valueOf(ll_pm[i])).substring(2,General.currencyFormat(String.valueOf(ll_pm[i])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
+                                String text = "<font color=#ffffff >"+marker.getTitle().toString()+"</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 "+General.currencyFormat(String.valueOf(ll_pm[i])).substring(2,General.currencyFormat(String.valueOf(ll_pm[i])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
                                 tvFetchingrates.setText(Html.fromHtml(text));
                                 tvFetchingrates.setTypeface(null,Typeface.BOLD);
 
@@ -764,14 +764,14 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 ////                           // MarkerClicked=false;
 //                        } else
                           if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-
-                              //horizontalPicker.stopScrolling();
+                             // horizontalPicker.keepScrolling();
+                             // horizontalPicker.stopScrolling();
                             //mMarkerPanel.setVisibility(View.VISIBLE);
                             final long now = SystemClock.uptimeMillis();
                             if (now - lastTouched > SCROLL_TIME) {
 
-                                horizontalPicker.keepScrolling();
 
+                                horizontalPicker.keepScrolling();
 
                                 Log.i("MARKER", "=========================" + MarkerClicked);
 
@@ -828,8 +828,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                         } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                             lastTouched = SystemClock.uptimeMillis();
-                            tvRate.setVisibility(View.INVISIBLE);
-                            rupeesymbol.setVisibility(View.INVISIBLE);
+//                            tvRate.setVisibility(View.GONE);
+                             // horizontalPicker.keepScrolling();
+                            //rupeesymbol.setVisibility(View.INVISIBLE);
                            // tv_building.setVisibility(View.INVISIBLE);
                             LatLng currentLocation11;
                             Log.i("MotionEvent.ACTION_DOWN","========================="+MarkerClicked);
@@ -845,8 +846,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
                         }
-                        SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                        SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+//                        SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+//                        SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
                     }
                 });
             }
@@ -1245,7 +1246,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         tvRate.setVisibility(View.GONE);
         rupeesymbol.setVisibility(View.GONE);
         tvFetchingrates.setVisibility(View.VISIBLE);
-        tvCommingsoon.setVisibility(View.GONE);
+       // tvCommingsoon.setVisibility(View.GONE);
         tvFetchingrates.setText("Fetching Rates....");
         //tvFetchingrates.setm
         //tvCommingsoon.setHeight(18);
@@ -1348,7 +1349,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                             tvRate.setVisibility(View.VISIBLE);
                             rupeesymbol.setVisibility(View.VISIBLE);
-                            tvCommingsoon.setVisibility(View.INVISIBLE);
+                          //  tvCommingsoon.setVisibility(View.INVISIBLE);
                             tvFetchingrates.setVisibility(View.INVISIBLE);
 
                             missingArea.setVisibility(View.INVISIBLE);
@@ -1358,16 +1359,20 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                             Snackbar.with(getActivity())
                                     .text("We don't cater here yet")
                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());*/
+                            for (int i = 0; i < 5; i++) {
 
+                                if (mCustomerMarker[i] != null)
+                                    mCustomerMarker[i].remove();
+                            }
                             tv_building.setVisibility(View.INVISIBLE);
                             horizontalPicker.setVisibility(View.GONE);
                             tvRate.setVisibility(View.INVISIBLE);
                             rupeesymbol.setVisibility(View.INVISIBLE);
-                            tvCommingsoon.setVisibility(View.GONE);
+                           // tvCommingsoon.setVisibility(View.GONE);
                             tvFetchingrates.setVisibility(View.VISIBLE);
                             tvFetchingrates.setText("Coming Soon...");
-                            tvCommingsoon.setTypeface(null, Typeface.BOLD);
-                            tvCommingsoon.setTextSize(18);
+                           // tvCommingsoon.setTypeface(null, Typeface.BOLD);
+                           // tvCommingsoon.setTextSize(18);
                             missingArea.setVisibility(View.VISIBLE);
 
                         }
@@ -1543,7 +1548,7 @@ try {
                     Log.i("Index","index:"+INDEX+" "+MarkerClicked);
                     tv_building.setVisibility(View.VISIBLE);
                     tv_building.setText("Average Rate in last 1 WEEK");
-                    String text = "<font color=#ffffff>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+General.currencyFormat(String.valueOf(ll_pm[INDEX])).substring(2,General.currencyFormat(String.valueOf(ll_pm[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font>";
+                    String text = "<font color=#ffffff>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c>\u20B9"+General.currencyFormat(String.valueOf(ll_pm[INDEX])).substring(2,General.currencyFormat(String.valueOf(ll_pm[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font>";
                     tvFetchingrates.setText(Html.fromHtml(text));
 
                 }
@@ -1561,7 +1566,7 @@ try {
                 if(flag[INDEX]==true) {
                     tv_building.setVisibility(View.VISIBLE);
                     tv_building.setText("Average Rate in last 1 WEEK");
-                    String text = "<font color=#ffffff>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c><sup>\u20B9</sup> </font><font color=#ff9f1c>"+General.currencyFormat(String.valueOf(or_psf[INDEX])).substring(2,General.currencyFormat(String.valueOf(or_psf[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/psf</sub></font>";
+                    String text = "<font color=#ffffff>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9"+General.currencyFormat(String.valueOf(or_psf[INDEX])).substring(2,General.currencyFormat(String.valueOf(or_psf[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/psf</sub></font>";
                     tvFetchingrates.setText(Html.fromHtml(text));
                 }
                // onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),950,orMin,orMax);

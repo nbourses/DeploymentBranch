@@ -132,8 +132,9 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
             //StringBuilder sb = new StringBuilder();
             String intend  = split[0];
             String tt = split[1].toUpperCase();
-            String pstype =split[2];
-            String price = split[3];
+            String ptype=split[2];
+            String pstype =split[3];
+            String price = split[4];
 
             if(tt.equalsIgnoreCase("LL")){
                 tt = "Rent";
@@ -150,7 +151,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
             }
 
 
-Log.i("pstype","==============="+pstype);
+/*Log.i("pstype","==============="+pstype);
             String ptype = null;
 
             if(pstype.equalsIgnoreCase("1bhk") || pstype.equalsIgnoreCase("2bhk") || pstype.equalsIgnoreCase("3bhk") || pstype.equalsIgnoreCase("4bhk") || pstype.equalsIgnoreCase("4+bhk")){
@@ -167,7 +168,7 @@ Log.i("pstype","==============="+pstype);
                // pstype = pstype+" seater";
             }
 
-            Log.i("pstype","===============pstype"+pstype+ " =======ptype"+ptype);
+            Log.i("pstype","===============pstype"+pstype+ " =======ptype"+ptype);*/
 
 
 
@@ -209,17 +210,17 @@ Log.i("pstype","==============="+pstype);
             else
             holder.txtTitle.setText("Broker "+name);
 
-           /* if(ptype.equalsIgnoreCase("office"))
+            if(ptype.equalsIgnoreCase("office"))
             holder.dealPtype.setImageResource(R.drawable.office);
             else if(ptype.equalsIgnoreCase("home"))
                 holder.dealPtype.setImageResource(R.drawable.home);
             else if(ptype.equalsIgnoreCase("shop"))
                 holder.dealPtype.setImageResource(R.drawable.shop);
             else if(ptype.equalsIgnoreCase("industrial"))
-                holder.dealPtype.setImageResource(R.drawable.industry);*/
+                holder.dealPtype.setImageResource(R.drawable.industry);
 
             //  holder.txtDescription.setText(deal.getMobileNo());
-            holder.dealPtype.setImageResource(R.drawable.home);
+
             holder.txtDescription.setText(description);
 
            // holder.txtTime.setText("23.11");

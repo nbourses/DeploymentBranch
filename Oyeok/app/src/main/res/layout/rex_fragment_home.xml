@@ -9,7 +9,7 @@
     <RelativeLayout
         android:id="@+id/top"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/ll_map"
@@ -129,7 +129,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="50dp"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="5dp"
                             android:textColor="@android:color/white"
                             android:background="@android:color/black"
                             android:textSize="15sp"
@@ -137,7 +137,7 @@
                             android:textStyle="bold"
                             android:marqueeRepeatLimit="1"
                             android:focusable="true"
-
+                            android:layout_below="@+id/tv_building"
                             app:values="@array/hpicker"
                             app:dividerSize="10dp"
                             app:sideItems="@integer/sideItems"
@@ -165,29 +165,29 @@
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="120dp"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/tvCommingsoon"
-                            android:layout_marginRight="30dp"
-                            android:layout_alignBottom="@+id/picker"
-                            android:layout_alignEnd="@+id/picker"
-                            android:layout_alignTop="@+id/picker"
-                            android:textColor="@color/White"
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:id="@+id/tvCommingsoon"-->
+                            <!--android:layout_marginRight="30dp"-->
+                            <!--android:layout_alignBottom="@+id/picker"-->
+                            <!--android:layout_alignEnd="@+id/picker"-->
+                            <!--android:layout_alignTop="@+id/picker"-->
+                            <!--android:textColor="@color/White"-->
 
-                            android:foregroundGravity="center_vertical"
-                            android:layout_marginLeft="50dp"
-                            android:layout_marginTop="15dp" />
+                            <!--android:foregroundGravity="center_vertical"-->
+                            <!--android:layout_marginLeft="50dp"-->
+                            <!--android:layout_marginTop="15dp" />-->
                         <!--    android:layout_toEndOf="@+id/tvFetchingRates"
                         android:layout_toEndOf="@+id/beacons2"-->
 
                         <LinearLayout
                             android:layout_width="265dp"
-                            android:layout_height="24dp"
+                            android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:weightSum="1"
-                            android:layout_above="@+id/tvRate"
-                            android:layout_below="@+id/tv_building">
+                            android:layout_below="@+id/tv_building"
+                            android:layout_alignBottom="@+id/rupeesymbol">
                                                 <TextView
                                                     android:layout_width="255dp"
                                                     android:layout_height="match_parent"
@@ -196,10 +196,8 @@
                                                     android:visibility="visible"
                                                     android:foregroundGravity="center"
                                                     android:gravity="center"
-                                                    android:textSize="12dp"
-                                                    android:textStyle="bold"
-                                                    android:layout_marginTop="1dp"
-                                                    android:layout_weight="2.60" />
+                                                    android:textSize="12sp"
+                                                    android:textStyle="bold" />
                         </LinearLayout>
 
                         <RelativeLayout
