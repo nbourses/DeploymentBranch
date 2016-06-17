@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
@@ -163,6 +164,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     @Bind(R.id.selectB)
     TextView selectB;
 
+    @Bind(R.id.leadPrompt)
+    TextView leadPrompt;
+
 
 
 //
@@ -220,6 +224,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private Entry e;
     ArrayList<String> buildingNames;
     ArrayList<Integer> buildingPrice;
+    ArrayList<Integer> LLbuildingPrice = new ArrayList<Integer>();
+    ArrayList<Integer> ORbuildingPrice = new ArrayList<Integer>();
     ArrayList<Integer> buildingPriceLL = new ArrayList<Integer>();
     ArrayList<Integer> buildingPriceOR = new ArrayList<Integer>();
     private boolean pricechart = false;
@@ -227,6 +233,19 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private int permissionCheckForDeviceId;
     private Boolean buildingSliderflag = false;
     private Integer buildingsPage = 1;
+
+    //lead description variables
+
+    private String lookingSeeking = "Tenant is looking for";
+    private String atFor = "at";
+
+    private long mSampleDurationTime = 5; // 5 msec
+    private boolean continueToRun = true;
+    private Handler mHandler;
+    private float fl = 1f;
+    private int count =1;
+    private boolean pagination = false;
+
 
 
     Animation bounce;
@@ -285,6 +304,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 
     private void init() {
+
 
         highlighter = new ChartHighlighter(chart);
 
@@ -559,6 +579,23 @@ Log.i("PHASE","before adapter set");
 
         chart.setOnChartValueSelectedListener(this);
         chart.setOnChartGestureListener(this);
+        float fr = buildingNames.size() * 0.33f;
+        Log.i("FR is", "fr is " + fr);
+        if(!pagination) {
+
+            chart.fitScreen();
+            chart.zoomAndCenterAnimated(fr, 1f, 0, 0, YAxis.AxisDependency.LEFT, 2000);
+        }
+        else{
+            pagination = false;
+            chart.fitScreen();
+            //chart.zoomAndCenterAnimated(fr, 1f, 0, 0, YAxis.AxisDependency.RIGHT, 2000);
+            chart.zoom(fr, 1f, 0, 0);
+            Log.i("yo mana","yo mana "+fr +" "+((buildingsPage - 1) * 10 + 7));
+//            chart.moveViewToX((buildingsPage - 1) * 10 + 7);
+
+
+        }
 
 
       /*  }
@@ -625,13 +662,36 @@ Log.i("PHASE","before adapter set");
 
         if(buildingsSelected.size()!=3) {
             pricechart = false;
-            chart.fitScreen();
-            chart.zoom(3.3f, 1f, 0, 0);
+
+
+
+
+
+//            for (Float fl = 1f;fl<= 3.3f;fl = fl+ 0.1f){
+//               // try {
+//                    //Thread.sleep(500);
+//                    chart.zoom(fl, 1f, 0, 0);
+////                } catch (InterruptedException e1) {
+////                    e1.printStackTrace();
+////                }
+//            }
+
+//            new CountDownTimer(30000, 1000) {
+//
+//                public void onTick(long millisUntilFinished) {
+//                    chart.
+//                }
+//
+//                public void onFinish() {
+//
+//                }
+//            }.start();
+
 
             try {
                 if(buildingsPage<=1) {
-//                    entries.clear();
-//                    labels.clear();
+                  entries.clear();
+                  labels.clear();
                 }
             }
             catch(Exception e)
@@ -649,6 +709,8 @@ Log.i("PHASE","before adapter set");
 
             if(buildingPrice.size()>0) {
                 dataset = new BarDataSet(entries, Integer.toString(buildingPrice.size()));
+               dataset.setColors(new int[] { R.color.greenish_blue, R.color.google_yellow, R.color.red_light}, getContext());
+              //  dataset.setColors(new int[] { R.color.red, R.color.green, R.color.blue, R.color.orange }, 50);
             }
             labels.addAll(buildingNames);
         }
@@ -669,6 +731,7 @@ Log.i("PHASE","before adapter set");
 
 
             dataset = new BarDataSet(entries, Integer.toString(buildingsSelected.size()));
+            dataset.setColors(new int[] { R.color.greenish_blue, R.color.google_yellow, R.color.red_light}, getContext());
 
         }
 
@@ -686,6 +749,33 @@ Log.i("PHASE","before adapter set");
 
     }
 
+    private final Runnable mRunnable = new Runnable() {
+
+        //...
+        public void run() {
+
+                fl = fl+0.00005f;
+            count++;
+        //fl<=1.3499997f
+if(count<=220) {
+    chart.zoom(fl, 1f, 0, 0);
+
+    Log.i("ZOOM leve set", "zoom level set "+fl);
+}else{
+    fl = 1;
+    count = 1;
+    continueToRun = false;
+}
+            // do your stuff here, like update
+            // this block of code you going to reach every  second
+
+            if(continueToRun == true){
+                mHandler.postDelayed(mRunnable, mSampleDurationTime);
+            }
+
+        }
+
+    };
 
     public void brokerbuildings(final Integer buildingsPage){
         Log.i("BROKER BUILDINGS CALLED","with page "+ buildingsPage);
@@ -742,6 +832,7 @@ Log.i("PHASE","before adapter set");
 
 
 
+
                             // Log.i("BROKER BUILDINGS CALLED","success"+name+" "+price);
 
 
@@ -755,7 +846,10 @@ Log.i("PHASE","before adapter set");
 
 
                         }
-                        buildingPrice.addAll(buildingPriceLL);
+                        LLbuildingPrice.addAll(buildingPriceLL);
+                        ORbuildingPrice.addAll(buildingPriceOR);
+                        Log.i("BROKER BUILDINGS CALLED", "LLbuildingPrice" +  LLbuildingPrice);
+                        buildingPrice.addAll(LLbuildingPrice);
                         Log.i("BROKER BUILDINGS CALLED", "buildingPrice" +  buildingPrice);
 
 
@@ -769,7 +863,7 @@ Log.i("PHASE","before adapter set");
                         Log.i("BROKER BUILDINGS CALLED","buildingNames"+buildingNames);
                         Log.i("BROKER BUILDINGS CALLED","buildingPrice"+buildingPrice);
 
-
+                        if(buildings.length()>0)
                         chart();
 
 //                        jsonArrayReqLl = neighbours.getJSONArray("recent");;//neighbours.getJSONArray("req_ll");
@@ -869,12 +963,13 @@ Log.i("PHASE","before adapter set");
                         jsonArrayAvlLl = neighbours.getJSONArray("avl_ll");//neighbours.getJSONArray("avl_ll");
 
                         jsonArrayReqOr = neighbours.getJSONArray("req_or");//neighbours.getJSONArray("req_or");
-                        jsonArrayAvlOr = neighbours.getJSONArray("avl_or");//neighbours.getJSONArray("avl_or");
+                        jsonArrayAvlOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_or");
 
                         Log.i("PREOK CALLED","jsonArrayReqLl"+jsonArrayReqLl);
                         Log.i("PREOK CALLED","jsonArrayAvlLl"+jsonArrayAvlLl);
                         Log.i("PREOK CALLED","jsonArrayReqOr"+jsonArrayReqOr);
                         Log.i("PREOK CALLED","jsonArrayAvlOr"+jsonArrayAvlOr);
+
 
 
                         // jsonArrayPreokRecent = neighbours.getJSONArray("recent");
@@ -1019,10 +1114,34 @@ Log.i("PHASE","before adapter set");
             selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
             Log.i("STEP3","STEP3");
             // chart();
+            if(labels.size() != 0)
+                labels.clear();
+            if(dataset.getStackSize() !=0)
+                dataset.clear();
             setChart();
 
             chart.animateY(1500);
+
+
+
             animation.start();
+
+
+
+            mHandler = new Handler();
+            chart.fitScreen();
+            continueToRun = true;
+            fl = 1;
+            count = 1;
+           // mHandler.postDelayed(mRunnable, mSampleDurationTime);
+            chart.zoomAndCenterAnimated(3.3f,1f,0,0, YAxis.AxisDependency.LEFT ,2000);
+
+//            chart.fitScreen();
+//
+//
+//                chart.zoom(3.3f, 1f, 0, 0);
+//                Log.i("ZOOM leve set","zoom level set");
+
 
         }
         else if (v.getId() == setB.getId()) {
@@ -1070,7 +1189,9 @@ Log.i("PHASE","before adapter set");
 
         if (v.getId() == txtOption1.getId()) {
             rentText.setVisibility(View.GONE);
-            texPtype.setVisibility(View.GONE);
+           // texPtype.setVisibility(View.GONE);
+            texPtype.setText("Please select a Lead and press OK.");
+
             texPstype.setVisibility(View.GONE);
 //            option2CountCont2.setVisibility(View.GONE);
             //    option2Count.setVisibility(View.GONE);
@@ -1084,10 +1205,12 @@ Log.i("PHASE","before adapter set");
                 currentOptionSelectedString = strTenants;
             Log.i("PREOK CALLED","currentOptionSelectedString1 phase"+currentOptionSelectedString);
             if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
+                lookingSeeking = "Tenant is looking for";
                 Log.i("PREOK CALLED","values set phase"+jsonArrayReqLl.toString());
                 circularSeekbar.setValues(jsonArrayReqLl.toString());
             }
             else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
+                lookingSeeking = "Owner is having";
                 Log.i("PREOK CALLED", "values set phase" + jsonArrayAvlLl.toString());
                 circularSeekbar.setValues(jsonArrayAvlLl.toString());
             }
@@ -1102,7 +1225,8 @@ Log.i("PHASE","before adapter set");
             Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
             rentText.setVisibility(View.GONE);
             //displayOkText.setVisibility(View.GONE);
-            texPtype.setVisibility(View.GONE);
+           // texPtype.setVisibility(View.GONE);
+            texPtype.setText("Please select a Lead and press OK.");
             texPstype.setVisibility(View.GONE);
             // update circular seekbar
 
@@ -1111,6 +1235,7 @@ Log.i("PHASE","before adapter set");
             Log.i("PREOK CALLED","currentOptionSelectedString2 phase"+currentOptionSelectedString);
 
             if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
+                lookingSeeking = "Owner is having";
                 Log.i("PREOK CALLED", "values set phase" + jsonArrayReqOr.toString());
                 circularSeekbar.setValues(jsonArrayReqOr.toString());
             }
@@ -1134,12 +1259,13 @@ Log.i("PHASE","before adapter set");
         Log.i("PREOK CALLED","currentSeekbarPosition"+currentSeekbarPosition);
 
         if (position == 0) {
-
+            atFor = "at";
             jsonObjectArray = null;
             notClicked.setVisibility(View.VISIBLE);
 
             rentText.setVisibility(View.GONE);
-            texPtype.setVisibility(View.GONE);
+           // texPtype.setVisibility(View.GONE);
+            texPtype.setText("Please select a Lead and press OK.");
             texPstype.setVisibility(View.GONE);
 
             resaleCount.setVisibility(View.GONE);
@@ -1221,11 +1347,13 @@ Log.i("PHASE","before adapter set");
 
         }
         else if (position == 1) {
+            atFor = "for";
             jsonObjectArray = null;
             notClicked.setVisibility(View.VISIBLE);
 
             rentText.setVisibility(View.GONE);
-            texPtype.setVisibility(View.GONE);
+           // texPtype.setVisibility(View.GONE);
+            texPtype.setText("Please select a Lead and press OK.");
             texPstype.setVisibility(View.GONE);
 
             rentalCount.setVisibility(View.GONE);
@@ -1302,7 +1430,7 @@ Log.i("PHASE","before adapter set");
 
             try {
                 buildingPrice.clear();
-                buildingPrice.addAll(buildingPriceOR);
+                buildingPrice.addAll(ORbuildingPrice);
                 setChart();
             }catch(Exception e){
 
@@ -1328,7 +1456,11 @@ Log.i("PHASE","before adapter set");
 
     @Override
     public void onclick(int position, JSONArray m, String show, int x_c, int y_c) {
+        deal.setEnabled(true);
+        deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.orange));
         try {
+            leadPrompt.setVisibility(View.VISIBLE);
+            leadPrompt.setText("Please select a Lead and press OK");
             jsonObjectArray = m;
             selectedItemPosition = position;
             String ptype = null;
@@ -1336,6 +1468,8 @@ Log.i("PHASE","before adapter set");
             pstype = jsonObjectArray.getJSONObject(position).getString("property_subtype");
             Log.i("debug circ","inside onclick");
             Log.i("debug circ","inside onclick m "+jsonObjectArray);
+
+
 
 
           /*  if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
@@ -1356,9 +1490,12 @@ Log.i("PHASE","before adapter set");
 
             Log.i(TAG,"property_type "+ptype);
             Log.i(TAG, "property_subtype " + pstype);
+            texPtype.setText("Property type: "+ptype);
+            texPstype.setText("Property subtype: "+pstype);
 
-            texPtype.setText("Property Type: "+ptype);
+       /*     texPtype.setText("Property Type: "+ptype);
             texPstype.setText("Property Subtype: "+pstype);
+            */
             //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL"))
                 rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))+" /m.");
@@ -1370,16 +1507,21 @@ Log.i("PHASE","before adapter set");
             Log.i(TAG, "show is " + show);
 
             if(show.equals("show")) {
+
                 notClicked.setVisibility(View.GONE);
+                leadPrompt.setVisibility(View.GONE);
                 rentText.setVisibility(View.VISIBLE);
                 //   displayOkText.setVisibility(View.VISIBLE);
                 texPtype.setVisibility(View.VISIBLE);
                 texPstype.setVisibility(View.VISIBLE);
 
+                deal.setEnabled(false);
+                deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
                 // pickContact.setVisibility(View.GONE);
                 // contactText.setVisibility(View.GONE);
             }
             else if(show.equals("hide")) {
+
                 jsonObjectArray = null;
                 if(buildingSliderflag) {
                     buildingSlider.startAnimation(slide_down);
@@ -1436,7 +1578,7 @@ Log.i("PHASE","before adapter set");
                 SnackbarManager.show(
                         com.nispok.snackbar.Snackbar.with(getActivity())
                                 .position(Snackbar.SnackbarPosition.BOTTOM)
-                                .text("Please select a deal")
+                                .text("Please select a Lead and then press OK.")
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 //                if (buildingSlider.getVisibility() == View.GONE) {
 //                    TranslateAnimation animate = new TranslateAnimation(0, 0, 0 , buildingSlider.getHeight());
@@ -1456,6 +1598,9 @@ Log.i("PHASE","before adapter set");
                 buildingSlider.startAnimation(slide_up);
                 buildingSlider.setVisibility(View.VISIBLE);
                 buildingSliderflag = true;
+                float fr = buildingNames.size() * 0.33f;
+                chart.fitScreen();
+                chart.zoomAndCenterAnimated(fr,1f,0,0, YAxis.AxisDependency.RIGHT ,2000);
                 Log.i("brokerpreok","buildingSliderflag "+buildingSliderflag);
                 Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
                 intent.putExtra("buildingSliderFlag",buildingSliderflag);
@@ -1537,17 +1682,7 @@ Log.i("PHASE","before adapter set");
     }
 
 
-   private void clearChart(){
-       try {
-           if (buildingsSelected.size() != 0)
-               buildingsSelected.clear();
-           if (buildingNames.size() != 0)
-               buildingNames.clear();
-           if (buildingPrice.size() != 0)
-               buildingPrice.clear();
-       }
-       catch(Exception e){}
-    }
+
 
 
 //    public void priceChart(){
@@ -1557,7 +1692,7 @@ Log.i("PHASE","before adapter set");
 //        Log.i("GRAPH","scale before set chart2 "+ chart.getScaleX());
 //        pricechart = true;
 //        entries = new ArrayList<>();
-//
+
 //        entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(0)), 0));
 //        entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(1)), 1));
 //        entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(2)), 2));
@@ -2023,16 +2158,23 @@ Log.i("PHASE","before adapter set");
         if(!pricechart) {
             try {
                 e = chart.getEntryByTouchPoint(me.getX(), me.getY());
-                Log.i("GRAPH", "onChartTranslate entry " + e + "  (buildingsPage-1)*10+6 " + (buildingsPage - 1) * 10 + 6);
+                Log.i("GRAPH", "onChartTranslate entry " + e + "  (buildingsPage-1)*10+6 " + ((buildingsPage - 1) * 10 + 6));
+
 
                 if (e != null && e.getXIndex() >= ((buildingsPage - 1) * 10 + 6)) {
 
                     buildingsPage++;
-                    if (buildingPriceOR.size() != 0)
+                    if (buildingPriceOR.size() != 0) {
                         buildingPriceOR.clear();
+                        LLbuildingPrice.clear();
+                    }
 
-                    if (buildingPriceLL.size() != 0)
+
+                    if (buildingPriceLL.size() != 0) {
                         buildingPriceLL.clear();
+                        ORbuildingPrice.clear();
+                    }
+                    pagination = true;
                     brokerbuildings(buildingsPage);
                 }
             }

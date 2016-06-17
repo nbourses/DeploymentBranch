@@ -87,12 +87,14 @@
         android:id="@+id/linearLayout3">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:textSize="10sp"
             android:id="@+id/txtTime"
             android:layout_marginRight="8dp"
-            android:textColor="#000000" />
+            android:textColor="#000000"
+            android:text="Last month"
+            android:textAlignment="viewEnd" />
 
 
 
@@ -103,7 +105,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_toStartOf="@+id/linearLayout3"
-        android:layout_marginRight="40dp"
+        android:layout_marginRight="5dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="8dp"
         android:background="@color/yellow"

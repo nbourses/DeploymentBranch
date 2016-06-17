@@ -36,7 +36,7 @@
         android:layout_height="match_parent"
         app:circlenew_color="#81C784"
         android:layout_marginBottom="60dp"
-        app:circlenew_stroke_width="5dp"/>
+        app:circlenew_stroke_width="5dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -126,7 +126,7 @@
         <Button
             android:id="@+id/deal"
             android:textColor="@color/white"
-            android:text="Deal"
+            android:text="Deals"
             android:background="@color/yellow"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
@@ -152,11 +152,6 @@
 
 
     </RelativeLayout>
-
-
-
-
-
 
 
     </LinearLayout>
@@ -185,14 +180,14 @@
 
         <TextView
             android:id="@+id/texPtype"
-            android:visibility="gone"
+            android:visibility="visible"
             android:gravity="center"
             android:textSize="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
-            android:text="Property Type: Shop"/>
+            android:text="Please select a Lead and press OK."/>
 
         <TextView
         android:id="@+id/texPstype"
@@ -215,25 +210,40 @@
         android:layout_gravity="center"
         android:layout_marginBottom="10dp"
         android:text="50L Rs"/>
-  <!--  <Button
-        android:id="@+id/pickContact"
-        android:visibility="visible"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:background="@drawable/ic_pick_contact"
-        android:layout_marginBottom="50dp"
-        android:layout_marginRight="30dp"/>
 
-    <TextView
-        android:id="@+id/contactText"
-        android:visibility="visible"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:layout_marginBottom="50dp"
-        android:layout_marginLeft="25dp"
-        android:text="Select\nClient"/> -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Please select a Lead"
+            android:id="@+id/leadPrompt"
+            android:layout_gravity="center_horizontal|top"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:visibility="gone"
+            android:textSize="15dp" />
+
+        <!--  <Button
+              android:id="@+id/pickContact"
+              android:visibility="visible"
+              android:layout_width="30dp"
+              android:layout_height="30dp"
+              android:layout_gravity="center"
+              android:background="@drawable/ic_pick_contact"
+              android:layout_marginBottom="50dp"
+              android:layout_marginRight="30dp"/>
+
+          <TextView
+              android:id="@+id/contactText"
+              android:visibility="visible"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:layout_gravity="center"
+              android:layout_marginBottom="50dp"
+              android:layout_marginLeft="25dp"
+              android:text="Select\nClient"/> -->
     </LinearLayout>
 </FrameLayout>

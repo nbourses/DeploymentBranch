@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
@@ -54,6 +55,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -121,6 +123,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     String[] bNames = new String[3];
     int[] bPrice = new int[3];
     Bundle b;
+    private String lastMessageTime;
 
 
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
@@ -763,7 +766,7 @@ if(cachedmsgs.size() < 10) {
                     message.setMessageStatus(ChatMessageStatus.SENT);
                     message.setMessageText(body);
                     message.setUserType(userType);
-                    message.setMessageTime(new Date().getTime());
+                   // message.setMessageTime(new Date().getTime());
                     message.setMessageTime(Long.valueOf(timetoken)/10000);
 
 
@@ -926,6 +929,7 @@ if(cachedmsgs.size() < 10) {
 
             sendNotification(channel_name);
             pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+            lastMessageTime = String.valueOf(System.currentTimeMillis());
 // if channel name is ok id dont call pubnubwhere now (moved above)
     //        pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
 
@@ -983,6 +987,7 @@ if(cachedmsgs.size() < 10) {
                            Log.i("Pubnub push","inside pubnub where now its first msg ");
                            pubnub.publish("my_channel", jsonMsgtoWhereNow, true, new Callback() {
                            });
+                           lastMessageTime = String.valueOf(System.currentTimeMillis());
 
                            Log.i("TEST","first message" +firstMessage);
                        }
@@ -1077,6 +1082,8 @@ if(cachedmsgs.size() < 10) {
                         //Log.i(TAG,"messageText is"+messageText);
                         //publish message
                         pubnub.publish(channel, jsonMsg, true, new Callback() {});
+                        //default deal time we are storing at default deal creation
+                        //lastMessageTime = String.valueOf(System.currentTimeMillis());
                         Log.i(TAG, "Default message published");
 
 
@@ -1306,11 +1313,50 @@ private  void networkConnectivity(){
 
     }
 
+    private void storeDealTime(){
+        String dealTime;
+        HashMap<String, String> dealTime1;
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        dealTime = General.getDealTime(this);
+
+
+        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+
+
+        if(gson.fromJson(dealTime, type) != null) {
+            dealTime1 = gson.fromJson(dealTime, type);
+            Log.i("dealtime","DealTime1 "+dealTime1);
+        }
+        else {
+            dealTime1 = new HashMap<>();
+            Log.i("dealtime","DealTime2 "+dealTime1);
+        }
+
+
+        Log.i("dealtime","DealTime "+channel_name);
+        Log.i("dealtime","DealTime "+lastMessageTime);
+        Log.i("dealtime","DealTime "+gson.fromJson(dealTime, type));
+if(lastMessageTime != null)
+        dealTime1.put(channel_name,lastMessageTime);
+
+        Gson g = new Gson();
+        String hashMapString = g.toJson(dealTime1);
+        General.saveDealTime(this, hashMapString);
+        Log.i("dealtime","DealTime3 "+General.getDealTime(this));
+
+
+
+    }
+
     @Override
     public void onBackPressed() {
 
-        General.setSharedPreferences(this,channel_name+AppConstants.CACHE,cachedmsgs.toString());
-        Log.i("CHAT","cache "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
+        General.setSharedPreferences(this, channel_name + AppConstants.CACHE, cachedmsgs.toString());
+        Log.i("CHAT", "cache " + General.getSharedPreferences(this, channel_name + AppConstants.CACHE));
+
+        storeDealTime();
+
+        //onbackpressed save time of last message , so get time n a l=global variable
 
 //        SharedPreferences appSharedPrefs = PreferenceManager
 //                .getDefaultSharedPreferences(this.getApplicationContext());
@@ -1326,13 +1372,18 @@ private  void networkConnectivity(){
 //        General.setSharedPreferences(this,channel_name+AppConstants.CACHE,cachedmsgs.toString());
 //       Log.i("CACHE","cache got from shared  "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
 //
+        if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            Intent back = new Intent(this, ClientDealsListActivity.class); // to refresh adapter to display newly saved last message time
+            startActivity(back);
+        } else {
 
+            Intent back = new Intent(this, BrokerDealsListActivity.class); // to refresh adapter to display newly saved last message time
+            startActivity(back);
 
-
-        super.onBackPressed();
+            // super.onBackPressed();
         }
 
 
-
+    }
 
 }

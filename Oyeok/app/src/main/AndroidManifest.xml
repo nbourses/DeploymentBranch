@@ -93,7 +93,31 @@
             android:screenOrientation="portrait" >
         </activity>
 
-        <!-- start pubnub register our Broadcast Receiver and Service -->
+        <!-- start pubnub register our Broadcast Receiver and Service
+        <receiver
+             android:name=".GoogleCloudMessaging.GcmBroadcastReceiver"
+             android:permission="com.google.android.c2dm.permission.SEND" >
+             <intent-filter>
+                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                 <category android:name="com.nbourses.oyeok" />
+             </intent-filter>
+         </receiver>
+
+         <service android:name=".GoogleCloudMessaging.GcmIntentService" />
+
+         <meta-data
+             android:name="com.google.android.gms.version"
+             android:value="@integer/google_play_services_version" />
+-->
+        <!-- stop pubnub register our Broadcast Receiver and Service -->
+
+
+
+
+
+
+
         <receiver
             android:name=".GoogleCloudMessaging.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
@@ -109,7 +133,7 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <!-- stop pubnub register our Broadcast Receiver and Service -->
+
 
 
         <!--
@@ -141,6 +165,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
+
+
+
+
+
+
+
+
+
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
@@ -174,6 +207,7 @@
             android:name=".GoogleCloudMessaging.RegistrationIntentService"
             android:exported="false" >
         </service>
+
 
         <meta-data
             android:name="io.fabric.ApiKey"

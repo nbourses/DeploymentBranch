@@ -30,7 +30,7 @@ public class ChatListAdapter extends BaseAdapter {
     private ArrayList<ChatMessage> chatMessages;
     private Context context;
     private Boolean isDefaultDeal = false;
-    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("HH:mm");
+    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("h:mm a");
 
     public ChatListAdapter(ArrayList<ChatMessage> chatMessages, Boolean isDefaultDeal, Context context) {
         this.chatMessages = chatMessages;

@@ -183,8 +183,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         listViewDeals.setVisibility(View.VISIBLE);
 //        fragment_container1.setVisibility(View.GONE);
 
-        Intent myIntent = getIntent();
-        default_deal_flag = myIntent.getExtras().getBoolean("default_deal_flag");
+      //  Intent myIntent = getIntent();
+     //   default_deal_flag = myIntent.getExtras().getBoolean("default_deal_flag");
 
 
         ButterKnife.bind(this);

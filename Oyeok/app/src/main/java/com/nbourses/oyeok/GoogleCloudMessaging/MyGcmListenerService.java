@@ -61,6 +61,7 @@ public class MyGcmListenerService extends GcmListenerService {
     private Boolean OR = false;
     private Boolean REQ = false;
     private Boolean AVL = false;
+
     /**
      * Called when message is received.
      *
@@ -69,10 +70,11 @@ public class MyGcmListenerService extends GcmListenerService {
      *             For Set of keys use data.keySet().
      */
     // [START receive_message]
+
+
     @Override
     public void onMessageReceived(String from, Bundle data) {
-
-
+        Log.i(TAG,"bundle data is inside");
         Log.i(TAG,"bundle data is "+data);
         //clear all badge counts
 //        General.setBadgeCount(getApplicationContext(),AppConstants.HDROOMS_COUNT,0);
@@ -254,6 +256,13 @@ public class MyGcmListenerService extends GcmListenerService {
                 okId = jsonObjectMsg.getString("ok_id");
                 Log.d(TAG, "okId is: " + okId);
 
+// store ok time for deals list
+                storeDealTime(okId);
+
+
+
+
+
 
                // Collection d = deals1.values();
 
@@ -433,5 +442,26 @@ public class MyGcmListenerService extends GcmListenerService {
         }
         notificationManager.notify(NOTIFICATION_ID++ /* ID of notification */, notificationBuilder.build());
         Log.d(TAG,"Notified");
+    }
+    private void storeDealTime(String okId){
+        String dealTime;
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        dealTime = General.getDealTime(this);
+
+        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+        HashMap<String, String> dealTime1 = gson.fromJson(dealTime, type);
+        if (dealTime1 == null) {
+            dealTime1 = new HashMap<String, String>();
+
+        }
+        dealTime1.put(okId,String.valueOf(System.currentTimeMillis()));
+
+        Gson g = new Gson();
+        String hashMapString = g.toJson(dealTime1);
+        General.saveDealTime(this, hashMapString);
+        Log.i("dealtime","DealTime "+General.getDealTime(this));
+
+
+
     }
 }

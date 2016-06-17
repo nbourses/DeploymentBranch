@@ -10,12 +10,21 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.BrokerDeals;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -27,6 +36,9 @@ public class BrokerDealsListAdapter extends BaseAdapter {
     private boolean default_deal;
 
     private Context context;
+    private BrokerDeals deal;
+    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("h:mm a");
+    public static final SimpleDateFormat SIMPLE_DATE_FORMAT1 = new SimpleDateFormat("DD:mm:yyyy");
 
     public BrokerDealsListAdapter(ArrayList<BrokerDeals> dealses, Context context) {
         this.dealses = dealses;
@@ -103,7 +115,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
             //this block handles both default deals and hd rooms
 
-            BrokerDeals deal = dealses.get(position);
+            deal = dealses.get(position);
 
 
             Log.i("HDROOMS CRASH","deal.getSpecCode"+deal.getSpecCode());
@@ -126,14 +138,15 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
             String spec = (!deal.getSpecCode().equals("")) ? deal.getSpecCode() : "None";
 
-
+            Log.i("spec code is","spec hd rooms res "+spec);
 
             String[] split = spec.split("-");
             //StringBuilder sb = new StringBuilder();
             String intend  = split[0];
             String tt = split[1].toUpperCase();
-            String pstype =split[2];
-            String price = split[3];
+            String ptype =split[2];
+            String pstype =split[3];
+            String price = split[4];
 
             if(tt.equalsIgnoreCase("LL")){
                 tt = "Rent";
@@ -151,21 +164,21 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
 
 
-            String ptype = null;
+//            String ptype = null;
 
-            if(pstype.equalsIgnoreCase("1bhk") || pstype.equalsIgnoreCase("2bhk") || pstype.equalsIgnoreCase("3bhk") || pstype.equalsIgnoreCase("4bhk") || pstype.equalsIgnoreCase("4+bhk")){
-                ptype = "home";
-            }
-            else if(pstype.equalsIgnoreCase("retail outlet") || pstype.equalsIgnoreCase("food outlet") || pstype.equalsIgnoreCase("bank")){
-                ptype = "shop";
-            }
-            else if(pstype.equalsIgnoreCase("cold storage") || pstype.equalsIgnoreCase("kitchen") || pstype.equalsIgnoreCase("manufacturing") || pstype.equalsIgnoreCase("warehouse") || pstype.equalsIgnoreCase("workshop")){
-                ptype = "industrial";
-            }
-            else if(pstype.equalsIgnoreCase("<15") || pstype.equalsIgnoreCase("<35") || pstype.equalsIgnoreCase("<50") || pstype.equalsIgnoreCase("<100") || pstype.equalsIgnoreCase("100+")){
-                ptype = "office";
-                pstype = pstype+" seater";
-            }
+//            if(pstype.equalsIgnoreCase("1bhk") || pstype.equalsIgnoreCase("2bhk") || pstype.equalsIgnoreCase("3bhk") || pstype.equalsIgnoreCase("4bhk") || pstype.equalsIgnoreCase("4+bhk")){
+//                ptype = "home";
+//            }
+//            else if(pstype.equalsIgnoreCase("retail outlet") || pstype.equalsIgnoreCase("food outlet") || pstype.equalsIgnoreCase("bank")){
+//                ptype = "shop";
+//            }
+//            else if(pstype.equalsIgnoreCase("cold storage") || pstype.equalsIgnoreCase("kitchen") || pstype.equalsIgnoreCase("manufacturing") || pstype.equalsIgnoreCase("warehouse") || pstype.equalsIgnoreCase("workshop")){
+//                ptype = "industrial";
+//            }
+//            else if(pstype.equalsIgnoreCase("<15") || pstype.equalsIgnoreCase("<35") || pstype.equalsIgnoreCase("<50") || pstype.equalsIgnoreCase("<100") || pstype.equalsIgnoreCase("100+")){
+//                ptype = "office";
+//                pstype = pstype+" seater";
+//            }
 
 
 
@@ -218,10 +231,37 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
             else if(ptype.equalsIgnoreCase("industrial"))
                 holder.dealPtype.setImageResource(R.drawable.industry);
 
+
             //  holder.txtDescription.setText(deal.getMobileNo());
             holder.txtDescription.setText(description);
 
-           // holder.txtTime.setText("23.11");
+            // get time from shared if not available then assign random date from last few months
+            String time = fetchTime();
+
+
+
+if(time != null){
+    Date date=new Date(Long.parseLong(time));
+    Calendar c1 = Calendar.getInstance(); // today
+    c1.add(Calendar.DAY_OF_YEAR, -1); // yesterday
+
+    Calendar c2 = Calendar.getInstance();
+    c2.setTime(date); // your date
+
+    if (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+            && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR)) {
+        holder.txtTime.setText("Yesterday");
+    }
+    if (c1.get(Calendar.YEAR) > c2.get(Calendar.YEAR)
+            && c1.get(Calendar.DAY_OF_YEAR) > c2.get(Calendar.DAY_OF_YEAR)) {
+        holder.txtTime.setText(SIMPLE_DATE_FORMAT1.format(Long.parseLong(time)));
+    }
+
+                holder.txtTime.setText(SIMPLE_DATE_FORMAT.format(Long.parseLong(time)));
+            }
+            else
+                holder.txtTime.setText("Last month");
+           // holder.txtTime.setText(dfDateTime.format(gc.getTime()));
 
             Log.i("HDROOM locality","locality is "+deal.getLocality());
           try {
@@ -251,7 +291,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
             holder.txtDescription.setText("");
 
-            holder.txtTime.setText("23.11");
+            holder.txtTime.setText("23:11");
         }
 
         return v;
@@ -272,5 +312,52 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
         Log.i("TRACE1","dp"+" "+dp);
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,dp,context.getResources().getDisplayMetrics());
     }
+
+
+
+
+
+
+
+
+
+
+
+    private String fetchTime(){
+
+        String time = null;
+            String dealTime;
+            HashMap<String, String> dealTime1;
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            dealTime = General.getDealTime(context);
+
+
+            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+
+                dealTime1 = gson.fromJson(dealTime, type);
+
+        if (dealTime1 == null) {
+            dealTime1 = new HashMap<String, String>();
+
+        }
+
+
+        Iterator<Map.Entry<String,String>> iter = dealTime1.entrySet().iterator();
+
+        while (iter.hasNext()) {
+            Map.Entry<String,String> entry = iter.next();
+            if(deal.getOkId().equalsIgnoreCase(entry.getKey())){
+                time = entry.getValue();
+
+            }
+
+        }
+        return time;
+
+
+
+    }
+
+
 }
 
