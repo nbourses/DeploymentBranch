@@ -6,11 +6,11 @@ import com.nbourses.oyeok.models.PublishLetsOye;
  * Created by rohit on 09/02/16.
  */
 public class AppConstants {
-    public static final int minRent = 20000;
-    public static final int maxRent = 1200000;
+    public static  int minRent = 20000;
+    public static  int maxRent = 1200000;
 
-    public static final int minSale = 9000000;
-    public static final int maxSale = 100000000;
+    public static  int minSale = 9000000;
+    public static  int maxSale = 100000000;
 
     public static String MY_LAT = "myLat";
     public static String MY_LNG = "myLong";
@@ -24,6 +24,7 @@ public class AppConstants {
     public static final String LOCALITY_BROADCAST = "localityBroadcast";
 
     public static final String ON_FILTER_VALUE_UPDATE = "onFilterValueUpdate";
+    public static final String BROADCAST_MIN_MAX_VAL = "broadcastMinMaxValue";
 
     public static final String IS_LOGGED_IN_USER = "isLoggedInUser";
 
@@ -68,7 +69,7 @@ public class AppConstants {
     public static final String SELLER_COUNT = "sellerCount";
     public static final String RENTAL_COUNT = "rentalCount";
     public static final String RESALE_COUNT = "resaleCount";
-    public static final String Broker_Locality_Change = "broker_locality_change";
+
     public static final String GCM_ID = "gcm_id";
     public static final String TT = "TT";
     public static final String RENTAL ="RENTAL";

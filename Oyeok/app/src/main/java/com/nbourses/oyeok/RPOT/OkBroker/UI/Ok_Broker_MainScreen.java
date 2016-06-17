@@ -1,10 +1,12 @@
 package com.nbourses.oyeok.RPOT.OkBroker.UI;
 
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -13,6 +15,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -79,7 +82,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -87,7 +89,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class Ok_Broker_MainScreen extends Fragment implements ClientMainActivity.openMapsClicked,CustomPhasedListener {
+public class Ok_Broker_MainScreen extends Fragment implements ClientMainActivity.openMapsClicked, CustomPhasedListener {
 
     private static final String TAG = Ok_Broker_MainScreen.class.getSimpleName();
     private ViewPager mPager;
@@ -98,37 +100,37 @@ public class Ok_Broker_MainScreen extends Fragment implements ClientMainActivity
     private boolean mFirst = false;
     private CustomMapFragment customMapFragment;
     private GoogleMap map;
-    public int noOfOkRequired=0;
+    public int noOfOkRequired = 0;
     private MyPagerAdapter adapter;
     private int mInterval = 5000; // 5 seconds by default, can be changed later
     private Handler mHandler;
     protected float DPTOPX_SCALE;// = getResources().getDisplayMetrics().density;
 
     private CustomPhasedSeekBar mCustomPhasedSeekbar;
-    private int currentItem,currentCount;
+    private int currentItem, currentCount;
     private Button earnOk;
-    private int totalTime=100000,currentTime=0;
+    private int totalTime = 100000, currentTime = 0;
     private ImageButton bPinLocation;
     private LatLng latlng;
     DBHelper dbHelper;
-    int intervalCount=0;
+    int intervalCount = 0;
     HourGlassDetails hourGlassDetails;
-    int leftHourGlasses=2;
+    int leftHourGlasses = 2;
     HourGlassFirebase hourGlassFirebase;
-    String coolOffString="";
-    int filledHourGlass=5;
-    int percentage=0;
-    int coolOff=0;
+    String coolOffString = "";
+    int filledHourGlass = 5;
+    int percentage = 0;
+    int coolOff = 0;
     DroomChatFirebase droomChatFirebase;
     Double lat, lng;
     String pincode, region, fullAddress;
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "";
     Toolbar mToolbar;
-    TextView timeCount1,timeCount2,timeCount3,timeCount4,timeCount5,totalTimeTextView;
-    ImageView hourGlass1,hourGlass2,hourGlass3,hourGlass4,hourGlass5;
-    ImageView aboveImageView,aboveImageView1,aboveImageView2,aboveImageView3,aboveImageView4,aboveImageView5;
-    ImageView belowImageView,belowImageView1,belowImageView2,belowImageView3,belowImageView4,belowImageView5;
-    ImageView aboveAboveImageView,aboveAboveImageView1,aboveAboveImageView2,aboveAboveImageView3,aboveAboveImageView4,aboveAboveImageView5;
+    TextView timeCount1, timeCount2, timeCount3, timeCount4, timeCount5, totalTimeTextView;
+    ImageView hourGlass1, hourGlass2, hourGlass3, hourGlass4, hourGlass5;
+    ImageView aboveImageView, aboveImageView1, aboveImageView2, aboveImageView3, aboveImageView4, aboveImageView5;
+    ImageView belowImageView, belowImageView1, belowImageView2, belowImageView3, belowImageView4, belowImageView5;
+    ImageView aboveAboveImageView, aboveAboveImageView1, aboveAboveImageView2, aboveAboveImageView3, aboveAboveImageView4, aboveAboveImageView5;
     HashMap<String, Float> listings = new HashMap<String, Float>();
 
     //MainActivity mActivity = new MainActivity();
@@ -143,60 +145,60 @@ public class Ok_Broker_MainScreen extends Fragment implements ClientMainActivity
 //        display.getSize(size);
 //        int width = size.x;
 //        PagerSlidingTabStrip.width = width / 2;
-       View  v= inflater.inflate(R.layout.broker_main_screen, container, false);
+        View v = inflater.inflate(R.layout.broker_main_screen, container, false);
 //        ((MainActivity)getActivity()).setMapsClicked(this);
 
         //mHideShow = (LinearLayout) v.findViewById(R.id.showMap);
         mMapView = (FrameLayout) v.findViewById(R.id.mapView);
-        bPinLocation = (ImageButton)v.findViewById(R.id.bPinLocation);
+        bPinLocation = (ImageButton) v.findViewById(R.id.bPinLocation);
 
-        hourGlass1= (ImageView) v.findViewById(R.id.hglass_imageView1);
-        aboveImageView1= (ImageView) v.findViewById(R.id.imageView_above1);
-        belowImageView1= (ImageView) v.findViewById(R.id.imageView_below1);
-        aboveAboveImageView1= (ImageView) v.findViewById(R.id.imageView_above_above1);
-        timeCount1= (TextView) v.findViewById(R.id.timeCount1);
+        hourGlass1 = (ImageView) v.findViewById(R.id.hglass_imageView1);
+        aboveImageView1 = (ImageView) v.findViewById(R.id.imageView_above1);
+        belowImageView1 = (ImageView) v.findViewById(R.id.imageView_below1);
+        aboveAboveImageView1 = (ImageView) v.findViewById(R.id.imageView_above_above1);
+        timeCount1 = (TextView) v.findViewById(R.id.timeCount1);
 
-        hourGlass2= (ImageView) v.findViewById(R.id.hglass_imageView2);
-        aboveImageView2= (ImageView) v.findViewById(R.id.imageView_above2);
-        belowImageView2= (ImageView) v.findViewById(R.id.imageView_below2);
-        aboveAboveImageView2= (ImageView) v.findViewById(R.id.imageView_above_above2);
-        timeCount2= (TextView) v.findViewById(R.id.timeCount2);
+        hourGlass2 = (ImageView) v.findViewById(R.id.hglass_imageView2);
+        aboveImageView2 = (ImageView) v.findViewById(R.id.imageView_above2);
+        belowImageView2 = (ImageView) v.findViewById(R.id.imageView_below2);
+        aboveAboveImageView2 = (ImageView) v.findViewById(R.id.imageView_above_above2);
+        timeCount2 = (TextView) v.findViewById(R.id.timeCount2);
 
-        hourGlass3= (ImageView) v.findViewById(R.id.hglass_imageView3);
-        aboveImageView3= (ImageView) v.findViewById(R.id.imageView_above3);
-        belowImageView3= (ImageView) v.findViewById(R.id.imageView_below3);
-        aboveAboveImageView3= (ImageView) v.findViewById(R.id.imageView_above_above3);
-        timeCount3= (TextView) v.findViewById(R.id.timeCount3);
+        hourGlass3 = (ImageView) v.findViewById(R.id.hglass_imageView3);
+        aboveImageView3 = (ImageView) v.findViewById(R.id.imageView_above3);
+        belowImageView3 = (ImageView) v.findViewById(R.id.imageView_below3);
+        aboveAboveImageView3 = (ImageView) v.findViewById(R.id.imageView_above_above3);
+        timeCount3 = (TextView) v.findViewById(R.id.timeCount3);
 
-        hourGlass4= (ImageView) v.findViewById(R.id.hglass_imageView4);
-        aboveImageView4= (ImageView) v.findViewById(R.id.imageView_above4);
-        belowImageView4= (ImageView) v.findViewById(R.id.imageView_below4);
-        aboveAboveImageView4= (ImageView) v.findViewById(R.id.imageView_above_above4);
-        timeCount4= (TextView) v.findViewById(R.id.timeCount4);
+        hourGlass4 = (ImageView) v.findViewById(R.id.hglass_imageView4);
+        aboveImageView4 = (ImageView) v.findViewById(R.id.imageView_above4);
+        belowImageView4 = (ImageView) v.findViewById(R.id.imageView_below4);
+        aboveAboveImageView4 = (ImageView) v.findViewById(R.id.imageView_above_above4);
+        timeCount4 = (TextView) v.findViewById(R.id.timeCount4);
 
-        hourGlass5= (ImageView) v.findViewById(R.id.hglass_imageView5);
-        aboveImageView5= (ImageView) v.findViewById(R.id.imageView_above5);
-        belowImageView5= (ImageView) v.findViewById(R.id.imageView_below5);
-        aboveAboveImageView5= (ImageView) v.findViewById(R.id.imageView_above_above5);
-        timeCount5= (TextView) v.findViewById(R.id.timeCount5);
+        hourGlass5 = (ImageView) v.findViewById(R.id.hglass_imageView5);
+        aboveImageView5 = (ImageView) v.findViewById(R.id.imageView_above5);
+        belowImageView5 = (ImageView) v.findViewById(R.id.imageView_below5);
+        aboveAboveImageView5 = (ImageView) v.findViewById(R.id.imageView_above_above5);
+        timeCount5 = (TextView) v.findViewById(R.id.timeCount5);
 
-        totalTimeTextView= (TextView) v.findViewById(R.id.total_time_textView);
-        popup= (LinearLayout) v.findViewById(R.id.popup_element);
+        totalTimeTextView = (TextView) v.findViewById(R.id.total_time_textView);
+        popup = (LinearLayout) v.findViewById(R.id.popup_element);
 
-        hourGlassFirebase=new HourGlassFirebase(getActivity(),DatabaseConstants.firebaseUrl);
+        hourGlassFirebase = new HourGlassFirebase(getActivity(), DatabaseConstants.firebaseUrl);
 
-        dbHelper=new DBHelper(getContext());
+        dbHelper = new DBHelper(getContext());
 
 
-        if(!dbHelper.getValue(DatabaseConstants.userId).equals("null")) {
-            hourGlassDetails=hourGlassFirebase.getHourGlassDetails();
-            filledHourGlass=hourGlassDetails.getWholeHourGlass();
-            percentage=hourGlassDetails.getPercentage();
+        if (!dbHelper.getValue(DatabaseConstants.userId).equals("null")) {
+            hourGlassDetails = hourGlassFirebase.getHourGlassDetails();
+            filledHourGlass = hourGlassDetails.getWholeHourGlass();
+            percentage = hourGlassDetails.getPercentage();
         }
 
-        timeCount1.setText("" + totalTime/1000);
-        timeCount2.setText(""+ totalTime/1000);
-        timeCount3.setText(""+totalTime/1000);
+        timeCount1.setText("" + totalTime / 1000);
+        timeCount2.setText("" + totalTime / 1000);
+        timeCount3.setText("" + totalTime / 1000);
         timeCount4.setText("" + totalTime / 1000);
         timeCount5.setText("" + totalTime / 1000);
 
@@ -204,20 +206,20 @@ public class Ok_Broker_MainScreen extends Fragment implements ClientMainActivity
         fillHourGlasses(filledHourGlass, percentage);
         updateTotalTime();
 
-        leftHourGlasses=500-filledHourGlass*100-percentage; //time in sec
+        leftHourGlasses = 500 - filledHourGlass * 100 - percentage; //time in sec
 
 
-       // earnOk = (Button) v.findViewById(R.id.earnOk);
-        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable())
+        // earnOk = (Button) v.findViewById(R.id.earnOk);
+        if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable())
             preok();
-        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl,getActivity());
+        droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl, getActivity());
         mPager = (ViewPager) v.findViewById(R.id.pager);
-        mTabs  = (SlidingTabLayout) v.findViewById(R.id.tabs);
+        mTabs = (SlidingTabLayout) v.findViewById(R.id.tabs);
         //mTabs.setDistributeEvenly(true);
         ArrayList<PagerItem> pagerItems = new ArrayList<PagerItem>();
         pagerItems.add(new PagerItem("Tenants", new Req_Rental_Broker_Tenants()));
         pagerItems.add(new PagerItem("Owners", new Avail_Rental_Broker_Landlords()));
-        adapter = new MyPagerAdapter(getChildFragmentManager(),pagerItems);
+        adapter = new MyPagerAdapter(getChildFragmentManager(), pagerItems);
         mTabs.setDistributeEvenly(true);
         mTabs.setBackgroundColor(Color.parseColor("#031625"));
         mPager.setAdapter(adapter);
@@ -228,8 +230,8 @@ public class Ok_Broker_MainScreen extends Fragment implements ClientMainActivity
         }*/
         //Log.i("Test",droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId)).toString());
 
-            mCustomPhasedSeekbar = (CustomPhasedSeekBar) v.findViewById(R.id.phasedSeekBar);
-            if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
+        mCustomPhasedSeekbar = (CustomPhasedSeekBar) v.findViewById(R.id.phasedSeekBar);
+        if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{"Rental", "Sale"}));
         else
             mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.broker_type1_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.broker_type1_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Loan", "Auction"}));
@@ -237,6 +239,16 @@ public class Ok_Broker_MainScreen extends Fragment implements ClientMainActivity
         bPinLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
                 map.setMyLocationEnabled(true);
             }
         });
@@ -367,7 +379,16 @@ public class Ok_Broker_MainScreen extends Fragment implements ClientMainActivity
                             @Override
                             public void onMapReady(GoogleMap googleMap) {
                                 map = googleMap;
-
+                                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                    // TODO: Consider calling
+                                    //    ActivityCompat#requestPermissions
+                                    // here to request the missing permissions, and then overriding
+                                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                    //                                          int[] grantResults)
+                                    // to handle the case where the user grants the permission. See the documentation
+                                    // for ActivityCompat#requestPermissions for more details.
+                                    return;
+                                }
                                 map.setMyLocationEnabled(false);
                                 //plotMyNeighboursHail.markerpos(my_user_id, pointer_lng, pointer_lat, which_type, my_role, broker_map);
                                 //selectedLocation = broker_map.getCameraPosition().target;

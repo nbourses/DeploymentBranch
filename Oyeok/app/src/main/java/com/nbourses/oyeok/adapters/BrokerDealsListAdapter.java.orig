@@ -144,8 +144,11 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
             //StringBuilder sb = new StringBuilder();
             String intend  = split[0];
             String tt = split[1].toUpperCase();
-
+<<<<<<< HEAD
+            String ptype =split[2];
+=======
             String ptype=split[2];
+>>>>>>> 69a1a3a72ac4367b92e722c36cf992848652eb8d
             String pstype =split[3];
             String price = split[4];
 
@@ -164,7 +167,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
             }
 
 
-
+<<<<<<< HEAD
 
 //            String ptype = null;
 
@@ -181,10 +184,26 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 //                ptype = "office";
 //                pstype = pstype+" seater";
 //            }
+=======
+/*Log.i("pstype","==============="+pstype);
+            String ptype = null;
 
+            if(pstype.equalsIgnoreCase("1bhk") || pstype.equalsIgnoreCase("2bhk") || pstype.equalsIgnoreCase("3bhk") || pstype.equalsIgnoreCase("4bhk") || pstype.equalsIgnoreCase("4+bhk")){
+                ptype = "home";
+            }
+            else if(pstype.equalsIgnoreCase("<300") || pstype.equalsIgnoreCase("<600") || pstype.equalsIgnoreCase("<950") || pstype.equalsIgnoreCase("<1600")||pstype.equalsIgnoreCase("<2100")||pstype.equalsIgnoreCase("<3000")){
+                ptype = "shop";
+            }
+            else if(pstype.equalsIgnoreCase("<300") || pstype.equalsIgnoreCase("<600") || pstype.equalsIgnoreCase("<950") || pstype.equalsIgnoreCase("<1600")||pstype.equalsIgnoreCase("<2100")||pstype.equalsIgnoreCase("<3000")){
+                ptype = "industrial";
+            }
+            else if(pstype.equalsIgnoreCase("<300") || pstype.equalsIgnoreCase("<600") || pstype.equalsIgnoreCase("<950") || pstype.equalsIgnoreCase("<1600")||pstype.equalsIgnoreCase("<2100")||pstype.equalsIgnoreCase("<3000")){
+                ptype = "office";
+               // pstype = pstype+" seater";
+            }
+>>>>>>> 69a1a3a72ac4367b92e722c36cf992848652eb8d
 
-
-          
+            Log.i("pstype","===============pstype"+pstype+ " =======ptype"+ptype);*/
 
 
 

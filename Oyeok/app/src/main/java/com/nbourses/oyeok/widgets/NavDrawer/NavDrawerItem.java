@@ -3,16 +3,17 @@ package com.nbourses.oyeok.widgets.NavDrawer;
 public class NavDrawerItem {
     private boolean showNotify;
     private String title;
-
+    private int icon;
 
     public NavDrawerItem() {
 
     }
 
-    public NavDrawerItem(boolean showNotify, String title) {
-        this.showNotify = showNotify;
-        this.title = title;
-    }
+//    public NavDrawerItem(boolean showNotify, String title,int icon) {
+//        this.showNotify = showNotify;
+//        this.title = title;
+//        this.icon=icon;
+//    }
 
     public boolean isShowNotify() {
         return showNotify;
@@ -25,8 +26,18 @@ public class NavDrawerItem {
     public String getTitle() {
         return title;
     }
+    public int getIcon() {
+
+        return icon;
+    }
+    public void setIcon(int icon) {
+        this.icon = icon;
+    }
 
     public void setTitle(String title) {
         this.title = title;
     }
+
+//    public Color setTextColor(int i) {
+//    }
 }

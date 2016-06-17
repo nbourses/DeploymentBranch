@@ -1,6 +1,9 @@
 package com.nbourses.oyeok.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -57,7 +60,7 @@ public class OyeScreenFragment extends Fragment {
     @Bind(R.id.tv_fd_bank)
     TextView tv_fd_bank;
 
-    @Bind(R.id.loadContainer)
+     @Bind(R.id.loadContainer)
     LinearLayout loadContainer;
 
     @Bind(R.id.budgetSeekBar)
@@ -77,11 +80,29 @@ public class OyeScreenFragment extends Fragment {
     TextView budgetText;
 
 
-
+//    DiscreteSeekBar discreteSeekBar;
     TextView tv_dealinfo;
 
 
-
+//    private void setMinMaxValueForDiscreteSeekBar() {
+//        if (bundle != null) {
+//            if (bundle.getString("brokerType").equalsIgnoreCase("rent")) {
+//                discreteSeekBar.setMin(AppConstants.minRent);
+//                discreteSeekBar.setMax(AppConstants.maxRent);
+//                txtSelected.setText("" + AppConstants.minRent);
+//
+////                txtMin.setText("15K");
+////                txtMax.setText("12L");
+//            } else {
+//                discreteSeekBar.setMin(AppConstants.minSale);
+//                discreteSeekBar.setMax(AppConstants.maxSale);
+//                txtSelected.setText("" + AppConstants.minSale);
+//
+////                txtMin.setText("70L");
+////                txtMax.setText("10CR");
+//            }
+//        }
+//    }
 
     private ImageView txtPreviouslySelectedPropertyType;
     private static final String propertyTypeDefaultColor = "#FFFFFF";
@@ -290,12 +311,40 @@ public class OyeScreenFragment extends Fragment {
     /**
      * set min and max value for seek bar
      */
+
+    private BroadcastReceiver BroadCastMinMaxValue = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Log.i("llmin111111","llmin ++++++++++++++++++++++++++"+intent.getExtras().getString("llmin"));
+
+            AppConstants.minRent = intent.getExtras().getInt("llmin");
+            Log.i("llmin111111"," min rent"+AppConstants.minRent);
+            AppConstants.minRent=AppConstants.minRent/2;
+            AppConstants.maxRent  = intent.getExtras().getInt("llmax");
+            AppConstants.maxRent=AppConstants.maxRent+AppConstants.maxRent/2;
+            Log.i("llmin111111","max rent"+AppConstants.maxRent);
+            AppConstants.minSale  = intent.getExtras().getInt("ormin");
+            Log.i("llmin111111","min Sale"+AppConstants.minSale);
+            AppConstants.minSale  = AppConstants.minSale/2;
+            AppConstants.maxSale  = intent.getExtras().getInt("ormax");
+            Log.i("llmin111111","max Sale"+AppConstants.maxSale);
+            AppConstants.maxSale = (AppConstants.maxSale + (AppConstants.maxSale/2));
+            setMinMaxValueForDiscreteSeekBar();
+        }
+    };
+
+
+
+
+
     private void setMinMaxValueForDiscreteSeekBar() {
 
         if (bundle != null) {
 
             requestType.setText(bundle.getString("brokerType").toUpperCase());
             DecimalFormat formatter = new DecimalFormat();
+
 
             if (bundle.getString("brokerType").equalsIgnoreCase("rent")) {
                 budgetSeekBar.setMin(AppConstants.minRent);
@@ -346,7 +395,23 @@ public class OyeScreenFragment extends Fragment {
 
 
 
+    @Override
+    public void onResume() {
 
+        super.onResume();
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(BroadCastMinMaxValue, new IntentFilter(AppConstants.BROADCAST_MIN_MAX_VAL));
+
+
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+       LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(BroadCastMinMaxValue);
+
+    }
 
 
 
@@ -357,6 +422,8 @@ public class OyeScreenFragment extends Fragment {
     public void onBtnCloseOyeScreenSlideClick(View v) {
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+//        DashboardClientFragment d=new DashboardClientFragment();
+//        d.UpdateRatePanel();
     }
 
 

@@ -21,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
@@ -107,7 +108,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     TextView tv_dealinfo;
 
 
-Intent lintent;
+
 
 
     private WebView webView;
@@ -198,6 +199,7 @@ Intent lintent;
         //General.settSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER, yes);
 //       General.setSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER, "yes");
         init();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
     @Override
@@ -206,7 +208,6 @@ Intent lintent;
         // Register mMessageReceiver to receive messages.
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(oyebuttondata, new IntentFilter(AppConstants.ON_FILTER_VALUE_UPDATE));
-
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
     }
 
@@ -649,6 +650,9 @@ Intent lintent;
                 (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
                         slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
             closeOyeScreen();
+//            DashboardClientFragment d=new DashboardClientFragment();
+//            d.UpdateRatePanel();
+
 
         }
         else if(webView != null){
@@ -660,6 +664,9 @@ Intent lintent;
             super.onBackPressed();
 
         }
+        Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
 
     }
 

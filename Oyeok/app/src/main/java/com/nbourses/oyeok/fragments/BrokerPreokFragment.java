@@ -1197,14 +1197,15 @@ if(count<=220) {
             //    option2Count.setVisibility(View.GONE);
             txtOption1.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption1.getText().toString();
-            Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
+            Log.i("PREOK CALLED11","currentOptionSelectedString"+currentOptionSelectedString);
 
             // update circular seekbar
 
             if (currentOptionSelectedString.equalsIgnoreCase(strSeekers))
                 currentOptionSelectedString = strTenants;
-            Log.i("PREOK CALLED","currentOptionSelectedString1 phase"+currentOptionSelectedString);
+            Log.i("PREOK CALLED1","currentOptionSelectedString1 phase"+currentOptionSelectedString);
             if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
+
                 lookingSeeking = "Tenant is looking for";
                 Log.i("PREOK CALLED","values set phase"+jsonArrayReqLl.toString());
                 circularSeekbar.setValues(jsonArrayReqLl.toString());
@@ -1212,6 +1213,7 @@ if(count<=220) {
             else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 lookingSeeking = "Owner is having";
                 Log.i("PREOK CALLED", "values set phase" + jsonArrayAvlLl.toString());
+
                 circularSeekbar.setValues(jsonArrayAvlLl.toString());
             }
 
@@ -1222,7 +1224,7 @@ if(count<=220) {
             //  option1Count.setVisibility(View.GONE);
             txtOption2.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption2.getText().toString();
-            Log.i("PREOK CALLED","currentOptionSelectedString"+currentOptionSelectedString);
+            Log.i("PREOK CALLED1","currentOptionSelectedString"+currentOptionSelectedString);
             rentText.setVisibility(View.GONE);
             //displayOkText.setVisibility(View.GONE);
            // texPtype.setVisibility(View.GONE);
@@ -1232,15 +1234,18 @@ if(count<=220) {
 
             if (currentOptionSelectedString.equalsIgnoreCase(strTenants))
                 currentOptionSelectedString = strSeekers;
-            Log.i("PREOK CALLED","currentOptionSelectedString2 phase"+currentOptionSelectedString);
+            Log.i("PREOK CALLED1","currentOptionSelectedString2 phase"+currentOptionSelectedString);
 
             if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
+
                 lookingSeeking = "Owner is having";
                 Log.i("PREOK CALLED", "values set phase" + jsonArrayReqOr.toString());
+
                 circularSeekbar.setValues(jsonArrayReqOr.toString());
             }
             else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
-                Log.i("PREOK CALLED", "values set phase" + jsonArrayAvlOr.toString());
+                Log.i("PREOK CALLED1", "values set phase" + jsonArrayAvlOr.toString());
+                Log.i("tester","4"+currentOptionSelectedString);
                 circularSeekbar.setValues(jsonArrayAvlOr.toString());
             }
 

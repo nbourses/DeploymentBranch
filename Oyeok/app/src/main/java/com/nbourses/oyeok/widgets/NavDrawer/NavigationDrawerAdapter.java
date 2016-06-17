@@ -2,10 +2,13 @@ package com.nbourses.oyeok.widgets.NavDrawer;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
@@ -20,6 +23,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     List<NavDrawerItem> data = Collections.emptyList();
     private LayoutInflater inflater;
     private Context context;
+    public static int selected_item = 0;
 
     public NavigationDrawerAdapter(Context context, List<NavDrawerItem> data) {
         this.context = context;
@@ -41,13 +45,34 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+
+
+        if(position == selected_item) {
+            Log.i("Positions","Position1================= :"+position+"selected_item :"+selected_item);
+            holder.title.setTextColor(Color.parseColor("#2dc4b6"));
+         // holder.imgViewIcon.setBackgroundResource(R.drawable.deal_circle);
+        } else {
+            Log.i("Positions","Position2================= :"+position+"selected_item :"+selected_item);
+            holder.title.setTextColor(Color.parseColor("#ffffff")); //actually you should set to the normal text color
+            //holder.imgViewIcon.setBackgroundResource(0);
+        }
         NavDrawerItem current = data.get(position);
         holder.title.setText(current.getTitle());
-        if(position == 2) {
+       holder.imgViewIcon.setImageResource(current.getIcon());
 
+
+
+
+//        NavDrawerItem current = data.get(position);
+//        holder.title.setText(current.getTitle());
+
+
+        if(position == 2) {
+            Log.i("Positions","Position3================= :"+position+"selected_item :"+selected_item);
             if(General.getBadgeCount(context,AppConstants.HDROOMS_COUNT)<=0)
                 holder.supportCount.setVisibility(View.GONE);
             else {
+                Log.i("Positions","Position4================= :"+position+"selected_item :"+selected_item);
                 holder.supportCount.setVisibility(View.VISIBLE);
                 holder.supportCount.setText(String.valueOf(General.getBadgeCount(context, AppConstants.HDROOMS_COUNT)));
 
@@ -66,11 +91,13 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         TextView supportCount;
+        public ImageView imgViewIcon;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
             supportCount = (TextView) itemView.findViewById(R.id.supportCount);
+            imgViewIcon = (ImageView) itemView.findViewById(R.id.drawer_icon);
         }
     }
 }

@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
@@ -38,6 +39,7 @@ public class FragmentDrawer extends Fragment {
     private View containerView;
     private DBHelper dbHelper;
     String userType="";
+    private static TextView[] title = null;
     private static String[] titles = null;
     private FragmentDrawerListener drawerListener;
     public MDrawerListener mDrawerListener;
@@ -62,11 +64,19 @@ public class FragmentDrawer extends Fragment {
 
     public static List<NavDrawerItem> getData() {
         List<NavDrawerItem> data = new ArrayList<>();
+       int[] icons = {R.drawable.menu_option_icon};
+      //  ImageView icon= new ImageView(R.drawable.menu_option_icon);
+
+
 
         // preparing navigation drawer items
         for (int i = 0; i < titles.length; i++) {
             NavDrawerItem navItem = new NavDrawerItem();
+           //   hh title[i].setText(titles[i]);
+
             navItem.setTitle(titles[i]);
+            navItem.setIcon(icons[0]);
+            Log.i("title","title"+titles);
             data.add(navItem);
         }
         return data;
@@ -87,6 +97,8 @@ public class FragmentDrawer extends Fragment {
 
         if(General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
             titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_no_signup);
+
+
         }
         else {
             if (General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
@@ -115,15 +127,41 @@ public class FragmentDrawer extends Fragment {
 
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL));
 
         navDrawerItems = getData();
         adapter = new NavigationDrawerAdapter(getActivity(), navDrawerItems);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+       recyclerView.setAdapter(adapter);
+
+    final List<SimpleSectionedRecyclerViewAdapter.Section> sections = new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
+
+//Sections
+
+        sections.add(new SimpleSectionedRecyclerViewAdapter.Section(2,"general"));
+
+
+
+        //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
+                if(position>sections.size())
+                    position=position-1;
+
+
+
+
+                Log.i("title","=================================position"+position+" "+navDrawerItems.get(position));
+
+                NavigationDrawerAdapter.selected_item = position;
+                recyclerView.getAdapter().notifyDataSetChanged();
+                recyclerView.getAdapter().getItemId(position);
+//                recyclerView.getAdapter().notifyItemChanged();
                 drawerListener.onDrawerItemSelected(view, position, navDrawerItems.get(position).getTitle());
+                Log.i("title","=================================title"+navDrawerItems.get(position).getTitle()+"  "+position+sections.size());
+               // navDrawerItems.get(position).set("#2dc4b6");
                 mDrawerLayout.closeDrawer(containerView);
             }
 
@@ -131,6 +169,19 @@ public class FragmentDrawer extends Fragment {
             public void onLongClick(View view, int position) {
             }
         }));
+        //Add your adapter to the sectionAdapter
+        SimpleSectionedRecyclerViewAdapter.Section[] dummy = new SimpleSectionedRecyclerViewAdapter.Section[sections.size()];
+        SimpleSectionedRecyclerViewAdapter mSectionedAdapter = new
+                SimpleSectionedRecyclerViewAdapter(getContext(),R.layout.section,R.id.section_text,adapter);
+        mSectionedAdapter.setSections(sections.toArray(dummy));
+
+        //Apply this adapter to the RecyclerView
+        recyclerView.setAdapter(mSectionedAdapter);
+
+
+
+
+
 
         return layout;
     }
@@ -219,7 +270,7 @@ public class FragmentDrawer extends Fragment {
                 public void onLongPress(MotionEvent e) {
                     View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
                     if (child != null && clickListener != null) {
-                        clickListener.onLongClick(child, recyclerView.getChildPosition(child));
+                        clickListener.onLongClick(child, recyclerView.getChildAdapterPosition(child));
                     }
                 }
             });
@@ -230,7 +281,7 @@ public class FragmentDrawer extends Fragment {
 
             View child = rv.findChildViewUnder(e.getX(), e.getY());
             if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
-                clickListener.onClick(child, rv.getChildPosition(child));
+                clickListener.onClick(child, rv.getChildAdapterPosition(child));
             }
             return false;
         }
