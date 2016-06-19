@@ -118,8 +118,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
             deal = dealses.get(position);
 
 
-            Log.i("HDROOMS CRASH","deal.getSpecCode"+deal.getSpecCode());
-
+            Log.i("HDROOMS CRASH", "deal.getSpecCode" + deal.getSpecCode());
 
 
 //            String userName = (!deal.getSpecCode().equals("")) ? deal.getSpecCode() : "None";
@@ -134,36 +133,34 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 //            holder.txtTime.setText("23.11");
 
 
-            String name = deal.getName().toUpperCase();
+            try {
+                String name = deal.getName().toUpperCase();
 
-            String spec = (!deal.getSpecCode().equals("")) ? deal.getSpecCode() : "None";
+                String spec = (!deal.getSpecCode().equals("")) ? deal.getSpecCode() : "None";
 
-            Log.i("spec code is","spec hd rooms res "+spec);
+                Log.i("spec code is", "spec hd rooms res " + spec);
+                Log.i("spec code ok id is", "ok id is " + deal.getOkId());
 
-            String[] split = spec.split("-");
-            //StringBuilder sb = new StringBuilder();
-            String intend  = split[0];
-            String tt = split[1].toUpperCase();
+                String[] split = spec.split("-");
+                //StringBuilder sb = new StringBuilder();
+                String intend = split[0];
+                String tt = split[1].toUpperCase();
 
-            String ptype=split[2];
-            String pstype =split[3];
-            String price = split[4];
+                String ptype = split[2];
+                String pstype = split[3];
+                String price = split[4];
 
-            if(tt.equalsIgnoreCase("LL")){
-                tt = "Rent";
-            }
-            else if(tt.equalsIgnoreCase("OR")){
-                tt = "Sale";
-            }
+                if (tt.equalsIgnoreCase("LL")) {
+                    tt = "Rent";
+                } else if (tt.equalsIgnoreCase("OR")) {
+                    tt = "Sale";
+                }
 
-            if(intend.equalsIgnoreCase("REQ")){
-                intend = "required at";
-            }
-            else if(intend.equalsIgnoreCase("AVL")){
-                intend = "available for";
-            }
-
-
+                if (intend.equalsIgnoreCase("REQ")) {
+                    intend = "required at";
+                } else if (intend.equalsIgnoreCase("AVL")) {
+                    intend = "available for";
+                }
 
 
 //            String ptype = null;
@@ -183,11 +180,6 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 //            }
 
 
-
-          
-
-
-
 //            Iterator<BrokerDeals> it = dealses.iterator();
 //
 //          //  listBrokerDeals_new = new ArrayList<BrokerDeals>();
@@ -205,81 +197,81 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 ////                }
 //                }
 
-            Log.i("CHAT","default deal flag is "+default_deal);
+                Log.i("CHAT", "default deal flag is " + default_deal);
 
 
+                String description = ptype + " property (" + pstype + ") " + intend + " " + General.currencyFormat(price) + ".";
 
-                String description = ptype + " property ("+pstype+") " +intend+ " " + General.currencyFormat(price)+".";
+                Log.i("Deal data", "Deal data is" + deal.getName());
 
-            Log.i("Deal data","Deal data is"+deal.getName());
+                //         holder.txtFirstChar.setText(name.substring(0, 1).toUpperCase());
 
-   //         holder.txtFirstChar.setText(name.substring(0, 1).toUpperCase());
+                Log.i("Deal data", "Deal data is" + deal.getName());
 
-            Log.i("Deal data","Deal data is"+deal.getName());
-
-           // String specs = String.valueOf(spec.charAt(0)).toUpperCase() + spec.subSequence(1, spec.length());
-
+                // String specs = String.valueOf(spec.charAt(0)).toUpperCase() + spec.subSequence(1, spec.length());
 
 
-            if(General.getSharedPreferences(context, AppConstants.NAME).equalsIgnoreCase(name) || General.getSharedPreferences(context,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
-                holder.txtTitle.setText(name);
-            else
-            holder.txtTitle.setText("Broker "+name);
+                if (General.getSharedPreferences(context, AppConstants.NAME).equalsIgnoreCase(name) || General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+                    holder.txtTitle.setText(name);
+                else
+                    holder.txtTitle.setText("Broker " + name);
 
-            if(ptype.equalsIgnoreCase("office"))
-            holder.dealPtype.setImageResource(R.drawable.office);
-            else if(ptype.equalsIgnoreCase("home"))
-                holder.dealPtype.setImageResource(R.drawable.home);
-            else if(ptype.equalsIgnoreCase("shop"))
-                holder.dealPtype.setImageResource(R.drawable.shop);
-            else if(ptype.equalsIgnoreCase("industrial"))
-                holder.dealPtype.setImageResource(R.drawable.industry);
-
-
-            //  holder.txtDescription.setText(deal.getMobileNo());
-
-            holder.txtDescription.setText(description);
-
-            // get time from shared if not available then assign random date from last few months
-            String time = fetchTime();
+                if (ptype.equalsIgnoreCase("office"))
+                    holder.dealPtype.setImageResource(R.drawable.office);
+                else if (ptype.equalsIgnoreCase("home"))
+                    holder.dealPtype.setImageResource(R.drawable.home);
+                else if (ptype.equalsIgnoreCase("shop"))
+                    holder.dealPtype.setImageResource(R.drawable.shop);
+                else if (ptype.equalsIgnoreCase("industrial"))
+                    holder.dealPtype.setImageResource(R.drawable.industry);
 
 
+                //  holder.txtDescription.setText(deal.getMobileNo());
 
-if(time != null){
-    Date date=new Date(Long.parseLong(time));
-    Calendar c1 = Calendar.getInstance(); // today
-    c1.add(Calendar.DAY_OF_YEAR, -1); // yesterday
+                holder.txtDescription.setText(description);
 
-    Calendar c2 = Calendar.getInstance();
-    c2.setTime(date); // your date
+                // get time from shared if not available then assign random date from last few months
+                String time = fetchTime();
 
-    if (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
-            && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR)) {
-        holder.txtTime.setText("Yesterday");
-    }
-    if (c1.get(Calendar.YEAR) > c2.get(Calendar.YEAR)
-            && c1.get(Calendar.DAY_OF_YEAR) > c2.get(Calendar.DAY_OF_YEAR)) {
-        holder.txtTime.setText(SIMPLE_DATE_FORMAT1.format(Long.parseLong(time)));
-    }
 
-                holder.txtTime.setText(SIMPLE_DATE_FORMAT.format(Long.parseLong(time)));
+                if (time != null) {
+                    Date date = new Date(Long.parseLong(time));
+                    Calendar c1 = Calendar.getInstance(); // today
+                    c1.add(Calendar.DAY_OF_YEAR, -1); // yesterday
+
+                    Calendar c2 = Calendar.getInstance();
+                    c2.setTime(date); // your date
+
+                    if (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+                            && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR)) {
+                        holder.txtTime.setText("Yesterday");
+                    }
+                    if (c1.get(Calendar.YEAR) > c2.get(Calendar.YEAR)
+                            && c1.get(Calendar.DAY_OF_YEAR) > c2.get(Calendar.DAY_OF_YEAR)) {
+                        holder.txtTime.setText(SIMPLE_DATE_FORMAT1.format(Long.parseLong(time)));
+                    }
+
+                    holder.txtTime.setText(SIMPLE_DATE_FORMAT.format(Long.parseLong(time)));
+                } else
+                    holder.txtTime.setText("Last month");
+                // holder.txtTime.setText(dfDateTime.format(gc.getTime()));
+
+                Log.i("HDROOM locality", "locality is " + deal.getLocality());
+                try {
+                    if ((!deal.getLocality().isEmpty())) {
+                        Log.i("HDROOM locality", "locality is 1 " + deal.getLocality());
+                        holder.locality.setText(deal.getLocality());
+                    } else {
+                        holder.locality.setText("Mumbai");
+                    }
+                } catch (Exception e) {
+                }
+
+
             }
-            else
-                holder.txtTime.setText("Last month");
-           // holder.txtTime.setText(dfDateTime.format(gc.getTime()));
-
-            Log.i("HDROOM locality","locality is "+deal.getLocality());
-          try {
-              if ((!deal.getLocality().isEmpty())) {
-                  Log.i("HDROOM locality", "locality is 1 " + deal.getLocality());
-                  holder.locality.setText(deal.getLocality());
-              } else {
-                  holder.locality.setText("Mumbai");
-              }
-          }
-          catch(Exception e){}
-
-
+            catch (Exception e) {
+                Log.i("brokerDealsListAdapter","deals spec code may not be proper "+e);
+            }
 
         }
         else if(this.default_deal)

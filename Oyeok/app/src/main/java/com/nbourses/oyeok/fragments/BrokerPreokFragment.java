@@ -15,7 +15,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -152,8 +151,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     @Bind(R.id.buildingSlider)
     RelativeLayout buildingSlider;
 
-    @Bind(R.id.chart)
-    BarChart chart;
+//    @Bind(R.id.chart)
+//    BarChart chart;
 
     @Bind(R.id.okBtn)
     Button okBtn;
@@ -245,7 +244,14 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private float fl = 1f;
     private int count =1;
     private boolean pagination = false;
-
+    private BarChart chart;
+    private View  v;
+    private int rentalCount1;
+    private int resaleCount1;
+    private int tenantsCount1;
+    private int ownersCount1;
+    private int buyerCount1;
+    private int sellerCount1;
 
 
     Animation bounce;
@@ -272,17 +278,51 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         }
     };
 
+    private BroadcastReceiver badgeCountBroadcast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Log.i("gcm local broadcast","gcm local broadcast");
+            if(intent.getExtras().getInt(AppConstants.RENTAL_COUNT) != 0 ){
+                Log.i("gcm local broadcast","gcm local broadcast1");
+                rentalCount1 = intent.getExtras().getInt(AppConstants.RENTAL_COUNT);
+
+            }
+
+            if(intent.getExtras().getInt(AppConstants.RESALE_COUNT) != 0){
+                resaleCount1 = intent.getExtras().getInt(AppConstants.RESALE_COUNT);
+            }
+            if(intent.getExtras().getInt(AppConstants.TENANTS_COUNT) != 0){
+                Log.i("gcm local broadcast","gcm local broadcast2");
+                tenantsCount1 = intent.getExtras().getInt(AppConstants.TENANTS_COUNT);
+            }
+            if(intent.getExtras().getInt(AppConstants.OWNERS_COUNT) != 0){
+                ownersCount1 = intent.getExtras().getInt(AppConstants.OWNERS_COUNT);
+            }
+            if(intent.getExtras().getInt(AppConstants.BUYER_COUNT) != 0){
+                buyerCount1 = intent.getExtras().getInt(AppConstants.BUYER_COUNT);
+            }
+            if(intent.getExtras().getInt(AppConstants.SELLER_COUNT) != 0){
+                sellerCount1 = intent.getExtras().getInt(AppConstants.SELLER_COUNT);
+            }
+
+            setBadges();
+        }
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View  v = inflater.inflate(R.layout.fragment_broker_preok, container, false);
+        v = inflater.inflate(R.layout.fragment_broker_preok, container, false);
         ButterKnife.bind(this, v);
         bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
         zoomin = AnimationUtils.loadAnimation(getContext(), R.anim.zoomin);
         zoomout = AnimationUtils.loadAnimation(getContext(), R.anim.zoomout);
 
 
+
+       chart = (BarChart) v.findViewById(R.id.chart);
         init();
 
         return v;
@@ -292,13 +332,14 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     public void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(slideDownBuildings, new IntentFilter(AppConstants.SLIDEDOWNBUILDINGS));
-
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(badgeCountBroadcast, new IntentFilter(AppConstants.BADGE_COUNT_BROADCAST));
         preok();
     }
     @Override
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(slideDownBuildings);
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(badgeCountBroadcast);
     }
 
 
@@ -383,85 +424,83 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
 
 
-        try {
-            SharedPreferences prefs =
-                    PreferenceManager.getDefaultSharedPreferences(getContext());
-            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 
-                    if (key.equals(AppConstants.RENTAL_COUNT)) {
-                        Log.i(TAG,"OnSharedPreferenceChangeListener 1");
-                        Log.i(TAG,"OnSharedPreferenceChangeListener 1 rent "+General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT));
-                        if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) <= 0) {
-                            Log.i(TAG,"OnSharedPreferenceChangeListener 2");
-                            rentalCount.setVisibility(View.GONE);
-                        }
-                        else {
-                            Log.i(TAG,"OnSharedPreferenceChangeListener 3");
-                            rentalCount.setVisibility(View.VISIBLE);
-                            rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
-                        }
-                    }
-                    if (key.equals(AppConstants.RESALE_COUNT)) {
-                        if (General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT) <= 0)
-                            resaleCount.setVisibility(View.GONE);
-                        else {
-                            resaleCount.setVisibility(View.VISIBLE);
-                            resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
-                        }
+//            SharedPreferences prefs =
+//                    PreferenceManager.getDefaultSharedPreferences(getContext());
+//            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+//                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+//                    try {
+//                        if (key.equals(AppConstants.RENTAL_COUNT)) {
+//                            Log.i(TAG, "OnSharedPreferenceChangeListener 1");
+//                            Log.i(TAG, "OnSharedPreferenceChangeListener 1 rent " + General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT));
+//                            if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) <= 0) {
+//                                Log.i(TAG, "OnSharedPreferenceChangeListener 2");
+//                                rentalCount.setVisibility(View.GONE);
+//                            } else {
+//                                Log.i(TAG, "OnSharedPreferenceChangeListener 3");
+//                                rentalCount.setVisibility(View.VISIBLE);
+//                                rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
+//                            }
+//                        }
+//                        if (key.equals(AppConstants.RESALE_COUNT)) {
+//                            if (General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT) <= 0)
+//                                resaleCount.setVisibility(View.GONE);
+//                            else {
+//                                resaleCount.setVisibility(View.VISIBLE);
+//                                resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
+//                            }
+//
+//
+//                        }
+//
+//                        if (key.equals(AppConstants.TENANTS_COUNT)) {
+//                            if (General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT) <= 0)
+//                                option1Count.setVisibility(View.GONE);
+//                            else {
+//                                option1Count.setVisibility(View.VISIBLE);
+//                                option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
+//                            }
+//
+//                        }
+//                        if (key.equals(AppConstants.OWNERS_COUNT)) {
+//                            if (General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT) <= 0)
+//                                option2Count.setVisibility(View.GONE);
+//                            else {
+//                                option2Count.setVisibility(View.VISIBLE);
+//                                option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT)));
+//                            }
+//
+//                        }
+//
+//                        if (key.equals(AppConstants.BUYER_COUNT)) {
+//                            if (General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT) <= 0)
+//                                option1Count.setVisibility(View.GONE);
+//                            else {
+//                                option1Count.setVisibility(View.VISIBLE);
+//                                option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
+//                            }
+//
+//                        }
+//
+//                        if (key.equals(AppConstants.SELLER_COUNT)) {
+//                            if (General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT) <= 0)
+//                                option2Count.setVisibility(View.GONE);
+//                            else {
+//                                option2Count.setVisibility(View.VISIBLE);
+//                                option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
+//                            }
+//
+//                        }
+//
+//                    } catch (Exception e) {
+//                        Log.e(TAG, e.getMessage());
+//                    }
+//                }
+//
+//            };
+//            prefs.registerOnSharedPreferenceChangeListener(listener);
 
 
-                    }
-
-                    if (key.equals(AppConstants.TENANTS_COUNT)) {
-                        if (General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT) <= 0)
-                            option1Count.setVisibility(View.GONE);
-                        else {
-                            option1Count.setVisibility(View.VISIBLE);
-                            option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
-                        }
-
-                    }
-                    if (key.equals(AppConstants.OWNERS_COUNT)) {
-                        if (General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT) <= 0)
-                            option2Count.setVisibility(View.GONE);
-                        else {
-                            option2Count.setVisibility(View.VISIBLE);
-                            option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT)));
-                        }
-
-                    }
-
-                    if (key.equals(AppConstants.BUYER_COUNT)) {
-                        if (General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT) <= 0)
-                            option1Count.setVisibility(View.GONE);
-                        else {
-                            option1Count.setVisibility(View.VISIBLE);
-                            option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
-                        }
-
-                    }
-
-                    if (key.equals(AppConstants.SELLER_COUNT)) {
-                        if (General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT) <= 0)
-                            option2Count.setVisibility(View.GONE);
-                        else {
-                            option2Count.setVisibility(View.VISIBLE);
-                            option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
-                        }
-
-                    }
-
-                }
-
-
-            };
-            prefs.registerOnSharedPreferenceChangeListener(listener);
-
-        }
-        catch (Exception e){
-            Log.e(TAG, e.getMessage());
-        }
 
 
 Log.i("PHASE","before adapter set");
@@ -513,6 +552,7 @@ Log.i("PHASE","before adapter set");
         Log.i("GRAPH","scale before set chart 1"+ chart.getScaleX());
         // pricechart = false;
 
+
         entries = new ArrayList<>();
         labels = new ArrayList<String>();
 
@@ -547,7 +587,7 @@ Log.i("PHASE","before adapter set");
         chart.setDescription("Select three Buildings.");
 
 
-        chart.animateY(1500);
+        //chart.animateY(1500);
 
 
 //            chart.setScaleYEnabled(false);
@@ -579,23 +619,7 @@ Log.i("PHASE","before adapter set");
 
         chart.setOnChartValueSelectedListener(this);
         chart.setOnChartGestureListener(this);
-        float fr = buildingNames.size() * 0.33f;
-        Log.i("FR is", "fr is " + fr);
-        if(!pagination) {
 
-            chart.fitScreen();
-            chart.zoomAndCenterAnimated(fr, 1f, 0, 0, YAxis.AxisDependency.LEFT, 2000);
-        }
-        else{
-            pagination = false;
-            chart.fitScreen();
-            //chart.zoomAndCenterAnimated(fr, 1f, 0, 0, YAxis.AxisDependency.RIGHT, 2000);
-            chart.zoom(fr, 1f, 0, 0);
-            Log.i("yo mana","yo mana "+fr +" "+((buildingsPage - 1) * 10 + 7));
-//            chart.moveViewToX((buildingsPage - 1) * 10 + 7);
-
-
-        }
 
 
       /*  }
@@ -658,12 +682,35 @@ Log.i("PHASE","before adapter set");
 
     void setChart()
     {
-        chart.highlightValues(null);
+
 
         if(buildingsSelected.size()!=3) {
             pricechart = false;
 
+            chart.highlightValues(null);
 
+            float fr = buildingNames.size() * 0.33f;
+            Log.i("FR is", "fr is " + fr);
+            if(!pagination) {
+
+                // chart.fitScreen();
+                //chart.zoomAndCenterAnimated(fr, 1f, 0, 0, YAxis.AxisDependency.LEFT, 2000);
+            }
+            else{
+
+                pagination = false;
+                //
+                Log.i("yo mana","yo mana "+fr +" "+((buildingsPage - 1) * 10 + 7));
+                // chart.zoomAndCenterAnimated(6.6f, 1f, 0, 0, YAxis.AxisDependency.RIGHT, 2000);
+                chart.fitScreen();
+                Log.i("yo mana","yo mana "+fr +" "+((buildingsPage - 1) * 10 + 7));
+                //chart.moveViewToX(10);
+                chart.moveViewToX(((buildingsPage*10)-14));
+                chart.zoom(fr, 1f, 0, 0);
+                // chart.moveViewToX((buildingsPage - 1) * 10 + 7);
+
+
+            }
 
 
 
@@ -699,6 +746,8 @@ Log.i("PHASE","before adapter set");
 
             }
 
+
+
             chart.editEntryValue = false;
 //            entries.clear();
             for (int i = 0; i < buildingPrice.size(); i++) {
@@ -718,6 +767,7 @@ Log.i("PHASE","before adapter set");
         {
             pricechart = true;
             chart.fitScreen();
+
             chart.highlightValues(null);
             entries.clear();
             labels.clear();
@@ -729,6 +779,7 @@ Log.i("PHASE","before adapter set");
             }
             //buildingsSelected.clear();
 
+//chart = (BarChart) v.findViewById(R.id.chart);
 
             dataset = new BarDataSet(entries, Integer.toString(buildingsSelected.size()));
             dataset.setColors(new int[] { R.color.greenish_blue, R.color.google_yellow, R.color.red_light}, getContext());
@@ -744,6 +795,8 @@ Log.i("PHASE","before adapter set");
         Log.i("GRAPH", "labels " + labels);
         Log.i("GRAPH", "labels " + dataset);
 
+
+       // chart = (BarChart) v.findViewById(R.id.chart);
         BarData data = new BarData(labels, dataset);
         chart.setData(data); // set the data and list of lables into chart
 
@@ -1256,7 +1309,7 @@ if(count<=220) {
 
     @Override
     public void onPositionSelected(int position, int count) {
-        animatebadges();
+
 
 
 
@@ -1277,34 +1330,45 @@ if(count<=220) {
 
 
             Log.i("CONTEXT","object "+getContext());
-            if(General.getBadgeCount(getContext(),AppConstants.RENTAL_COUNT)<=0)
+            if(General.getBadgeCount(getContext(),AppConstants.RENTAL_COUNT)<=0){
                 rentalCount.setVisibility(View.GONE);
+                option1Count.setVisibility(View.GONE);
+                option2Count.setVisibility(View.GONE);
+            }
             else {
                 rentalCount.setVisibility(View.VISIBLE);
                 rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
+
+                if(General.getBadgeCount(getContext(),AppConstants.TENANTS_COUNT)<=0) {
+                    //option1Count.setVisibility(View.GONE);
+                    Log.i(TAG,"itha "+AppConstants.TENANTS_COUNT);
+                    option1Count.setVisibility(View.GONE);
+                }
+                else {
+                    //option1Count.setVisibility(View.VISIBLE);
+                    option1Count.setVisibility(View.VISIBLE);
+                    option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
+                }
+                if(General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT)<=0) {
+                    Log.i(TAG,"ownerscount1"+General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT));
+                    //option2Count.setVisibility(View.GONE);
+                    option2Count.setVisibility(View.GONE);
+
+                }
+                else {
+                    Log.i(TAG,"ownerscount2"+General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT));
+                    //option2Count.setVisibility(View.VISIBLE);
+                    option2Count.setVisibility(View.VISIBLE);
+                    option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT)));
+                }
+            }
+            if(General.getBadgeCount(getContext(),AppConstants.RESALE_COUNT)>0){
+                resaleCount.setVisibility(View.VISIBLE);
+                resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
             }
 
-            if(General.getBadgeCount(getContext(),AppConstants.TENANTS_COUNT)<=0)
-                //option1Count.setVisibility(View.GONE);
-                option1Count.setVisibility(View.GONE);
-            else {
-                //option1Count.setVisibility(View.VISIBLE);
-                option1Count.setVisibility(View.VISIBLE);
-                option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
-            }
-            if(General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT)<=0) {
-                Log.i(TAG,"ownerscount1"+General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT));
-                //option2Count.setVisibility(View.GONE);
-                option2Count.setVisibility(View.GONE);
 
-            }
-            else {
-                Log.i(TAG,"ownerscount2"+General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT));
-                //option2Count.setVisibility(View.VISIBLE);
-                option2Count.setVisibility(View.VISIBLE);
-                option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT)));
-            }
-
+            animatebadges();
 
 
 
@@ -1362,35 +1426,48 @@ if(count<=220) {
             texPstype.setVisibility(View.GONE);
 
             rentalCount.setVisibility(View.GONE);
-            if(General.getBadgeCount(getContext(),AppConstants.RESALE_COUNT)<=0)
+            option1Count.setVisibility(View.INVISIBLE);
+            option2Count.setVisibility(View.INVISIBLE);
+            
+            if(General.getBadgeCount(getContext(),AppConstants.RESALE_COUNT)<=0) {
                 resaleCount.setVisibility(View.GONE);
-            else {
-                resaleCount.setVisibility(View.VISIBLE);
-                resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
-            }
-            if(General.getBadgeCount(getContext(),AppConstants.BUYER_COUNT)<=0) {
-                Log.i("BADGE","BUYER COUNT5 "+General.getBadgeCount(getContext(),AppConstants.BUYER_COUNT));
-                //option1Count.setVisibility(View.GONE);
                 option1Count.setVisibility(View.GONE);
-            }
-            else {
-                //option1Count.setVisibility(View.VISIBLE);
-                option1Count.setVisibility(View.VISIBLE);
-                option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
-            }
-            if(General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT)<=0) {
-                Log.i("BADGE","SELLER_COUNT1 "+General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT));
-                //option2Count.setVisibility(View.GONE);
                 option2Count.setVisibility(View.GONE);
             }
             else {
-                Log.i("BADGE","SELLER_COUNT2 "+General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT));
-                //option2Count.setVisibility(View.VISIBLE);
-                option2Count.setVisibility(View.VISIBLE);
-                option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
+                resaleCount.setVisibility(View.VISIBLE);
+                resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
+
+                if(General.getBadgeCount(getContext(),AppConstants.BUYER_COUNT)<=0) {
+                    Log.i("BADGE","BUYER COUNT5 "+General.getBadgeCount(getContext(),AppConstants.BUYER_COUNT));
+                    //option1Count.setVisibility(View.GONE);
+                    option1Count.setVisibility(View.GONE);
+                }
+                else {
+                    //option1Count.setVisibility(View.VISIBLE);
+                    option1Count.setVisibility(View.VISIBLE);
+                    option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
+                }
+                if(General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT)<=0) {
+                    Log.i("BADGE","SELLER_COUNT1 "+General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT));
+                    //option2Count.setVisibility(View.GONE);
+                    option2Count.setVisibility(View.GONE);
+                }
+                else {
+                    Log.i("BADGE","SELLER_COUNT2 "+General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT));
+                    //option2Count.setVisibility(View.VISIBLE);
+                    option2Count.setVisibility(View.VISIBLE);
+                    option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
+                }
+
+            }
+            if(General.getBadgeCount(getContext(),AppConstants.RENTAL_COUNT)>0){
+                rentalCount.setVisibility(View.VISIBLE);
+                rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
             }
 
 
+            animatebadges();
 
             //sale
             //Buyer, Seller
@@ -1604,8 +1681,8 @@ if(count<=220) {
                 buildingSlider.setVisibility(View.VISIBLE);
                 buildingSliderflag = true;
                 float fr = buildingNames.size() * 0.33f;
-                chart.fitScreen();
-                chart.zoomAndCenterAnimated(fr,1f,0,0, YAxis.AxisDependency.RIGHT ,2000);
+               //chart.fitScreen();
+               chart.zoomAndCenterAnimated(fr,1f,0,0, YAxis.AxisDependency.LEFT ,2000);
                 Log.i("brokerpreok","buildingSliderflag "+buildingSliderflag);
                 Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
                 intent.putExtra("buildingSliderFlag",buildingSliderflag);
@@ -1680,10 +1757,100 @@ if(count<=220) {
         startActivity(openDealsListing);
     }
     public void animatebadges(){
-        option1Count.startAnimation(bounce);
-        option2Count.startAnimation(bounce);
-        rentalCount.startAnimation(bounce);
-        resaleCount.startAnimation(bounce);
+//        if(General.getBadgeCount(getContext(),AppConstants.RENTAL_COUNT)>0) {
+//            rentalCount.startAnimation(bounce);
+//if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("resale")) {
+//    if (General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT) > 0) {
+//        option1Count.startAnimation(bounce);
+//    }
+//    if (General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT) > 0) {
+//        option2Count.startAnimation(bounce);
+//    }
+//}
+//        }
+//        if(General.getBadgeCount(getContext(),AppConstants.RESALE_COUNT)>0) {
+//            resaleCount.startAnimation(bounce);
+//
+//            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("rental")) {
+//                if (General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT) > 0) {
+//                    option1Count.startAnimation(bounce);
+//                }
+//                if (General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT) > 0) {
+//                    option2Count.startAnimation(bounce);
+//                }
+//            }
+//
+//
+//
+//        }
+
+
+    }
+
+    private void setBadges(){
+        if(rentalCount1 == 0){
+            Log.i("gcm local broadcast","gcm local broadcast5");
+            rentalCount.setVisibility(View.GONE);
+//            option1Count.setVisibility(View.GONE);
+//            option2Count.setVisibility(View.GONE);
+
+        }
+     else {
+            Log.i("gcm local broadcast","gcm local broadcast3");
+        rentalCount.setVisibility(View.VISIBLE);
+        rentalCount.setText(String.valueOf(rentalCount1));
+
+            if(tenantsCount1 == 0){
+                option1Count.setVisibility(View.GONE);
+            }
+            else {
+                Log.i("gcm local broadcast","gcm local broadcast4 " +tenantsCount1);
+                option1Count.setVisibility(View.VISIBLE);
+                option1Count.setText(String.valueOf(tenantsCount1));
+            }
+
+            if(ownersCount1 == 0){
+                option2Count.setVisibility(View.GONE);
+            }
+            else {
+                Log.i(TAG, "OnSharedPreferenceChangeListener 3");
+                option2Count.setVisibility(View.VISIBLE);
+                option2Count.setText(String.valueOf(ownersCount1));
+            }
+
+         }
+
+        if(resaleCount1 == 0){
+            resaleCount.setVisibility(View.GONE);
+//            option1Count.setVisibility(View.GONE);
+//            option2Count.setVisibility(View.GONE);
+
+        }
+        else {
+            Log.i(TAG, "OnSharedPreferenceChangeListener 3");
+            resaleCount.setVisibility(View.VISIBLE);
+            resaleCount.setText(String.valueOf(resaleCount1));
+
+//            if(buyerCount1 == 0){
+//                option1Count.setVisibility(View.GONE);
+//            }
+//            else {
+//                Log.i(TAG, "OnSharedPreferenceChangeListener 3");
+//                option1Count.setVisibility(View.VISIBLE);
+//                option1Count.setText(String.valueOf(buyerCount1));
+//            }
+//
+//            if(sellerCount1 == 0){
+//                option2Count.setVisibility(View.GONE);
+//            }
+//            else {
+//                Log.i(TAG, "OnSharedPreferenceChangeListener 3");
+//                option2Count.setVisibility(View.VISIBLE);
+//                option2Count.setText(String.valueOf(sellerCount1));
+//            }
+        }
+
+
     }
 
 
@@ -2165,22 +2332,29 @@ if(count<=220) {
                 e = chart.getEntryByTouchPoint(me.getX(), me.getY());
                 Log.i("GRAPH", "onChartTranslate entry " + e + "  (buildingsPage-1)*10+6 " + ((buildingsPage - 1) * 10 + 6));
 
+                if (buildingsPage < 3) {
+                    Log.i("buildingsPage","buildingsPage "+buildingsPage);
+                    if (e != null && e.getXIndex() >= ((buildingsPage - 1) * 10 + 6)) {
 
-                if (e != null && e.getXIndex() >= ((buildingsPage - 1) * 10 + 6)) {
+                        buildingsPage++;
+                        if (buildingPriceOR.size() != 0) {
+                            buildingPriceOR.clear();
+                            LLbuildingPrice.clear();
+                        }
 
-                    buildingsPage++;
-                    if (buildingPriceOR.size() != 0) {
-                        buildingPriceOR.clear();
-                        LLbuildingPrice.clear();
+
+                        if (buildingPriceLL.size() != 0) {
+                            buildingPriceLL.clear();
+                            ORbuildingPrice.clear();
+                        }
+                        pagination = true;
+chart.clear();
+//                        float fr = buildingNames.size() * 0.33f;
+//                        chart.fitScreen();
+                        //chart.zoom(9.3f,1f,0,0);
+                       // chart.zoomAndCenterAnimated(6.6f,1f,0,0, YAxis.AxisDependency.LEFT ,2000);
+                        brokerbuildings(buildingsPage);
                     }
-
-
-                    if (buildingPriceLL.size() != 0) {
-                        buildingPriceLL.clear();
-                        ORbuildingPrice.clear();
-                    }
-                    pagination = true;
-                    brokerbuildings(buildingsPage);
                 }
             }
             catch(Exception e){

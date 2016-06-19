@@ -50,7 +50,7 @@ android {
         minSdkVersion 18
         multiDexEnabled true
         targetSdkVersion 23
-        versionCode 20
+        versionCode 21
         versionName "1.0"
     }
     buildTypes {

@@ -1083,7 +1083,7 @@ if(cachedmsgs.size() < 10) {
                         //publish message
                         pubnub.publish(channel, jsonMsg, true, new Callback() {});
                         //default deal time we are storing at default deal creation
-                        //lastMessageTime = String.valueOf(System.currentTimeMillis());
+                        lastMessageTime = String.valueOf(System.currentTimeMillis());
                         Log.i(TAG, "Default message published");
 
 

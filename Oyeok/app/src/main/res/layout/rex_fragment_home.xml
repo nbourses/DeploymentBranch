@@ -183,21 +183,22 @@
 
                         <LinearLayout
                             android:layout_width="265dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="fill_parent"
                             android:orientation="vertical"
-                            android:weightSum="1"
+
                             android:layout_below="@+id/tv_building"
-                            android:layout_alignBottom="@+id/rupeesymbol">
-                                                <TextView
-                                                    android:layout_width="255dp"
-                                                    android:layout_height="match_parent"
-                                                    android:id="@+id/tvFetchingRates"
-                                                    android:textColor="@color/White"
-                                                    android:visibility="visible"
-                                                    android:foregroundGravity="center"
-                                                    android:gravity="center"
-                                                    android:textSize="12sp"
-                                                    android:textStyle="bold" />
+                            android:layout_alignBottom="@+id/tvRate">
+                            <TextView
+                                android:layout_width="255dp"
+                                android:layout_height="match_parent"
+                                android:id="@+id/tvFetchingRates"
+                                android:textColor="@color/White"
+                                android:visibility="visible"
+                                android:foregroundGravity="top|center"
+                                android:layout_marginTop="-5dp"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
                         </LinearLayout>
 
                         <RelativeLayout

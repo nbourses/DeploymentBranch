@@ -21,6 +21,8 @@ public class AppConstants {
     public static final String CLOSE_OYE_SCREEN_SLIDE = "closeOyeScreenSlide";
     public static final String OYE_BUTTON_DATA = "oyeButtonData";
 
+    public static final String BADGE_COUNT_BROADCAST = "badgeCountBroadcast";
+
     public static final String LOCALITY_BROADCAST = "localityBroadcast";
 
     public static final String ON_FILTER_VALUE_UPDATE = "onFilterValueUpdate";

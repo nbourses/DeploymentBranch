@@ -195,6 +195,15 @@ public class MyGcmListenerService extends GcmListenerService {
             General.setBadgeCount(getApplicationContext(),AppConstants.BUYER_COUNT,buyerCount);
             General.setBadgeCount(getApplicationContext(),AppConstants.SELLER_COUNT,sellerCount);
 
+            Intent intent = new Intent(AppConstants.BADGE_COUNT_BROADCAST);
+            intent.putExtra(AppConstants.RENTAL_COUNT,rentalCount);
+            intent.putExtra(AppConstants.RESALE_COUNT,resaleCount);
+            intent.putExtra(AppConstants.TENANTS_COUNT,tenantsCount);
+            intent.putExtra(AppConstants.OWNERS_COUNT,ownersCount);
+            intent.putExtra(AppConstants.BUYER_COUNT,buyerCount);
+            intent.putExtra(AppConstants.SELLER_COUNT,sellerCount);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
             Log.i(TAG,"rentalCount "+rentalCount);
             Log.i(TAG,"resaleCount "+resaleCount);
             Log.i(TAG,"tenantsCount "+tenantsCount);

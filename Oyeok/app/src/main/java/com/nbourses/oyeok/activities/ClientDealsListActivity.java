@@ -581,10 +581,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     Log.i(TAG, "entry.getKeystring" + entry.getKey().toString());
                     Log.i(TAG, "entry.getvalue" + entry.getValue());
 
-                    Log.d("CHATTRACE", "default drooms" + entry);
+
                     String ok_id = entry.getKey();
                     String specs = entry.getValue();
                     String name = General.getSharedPreferences(this, AppConstants.NAME);  //name of client to show in default deal title
+                    Log.i("specs","specs "+specs);
                     BrokerDeals dealsa = new BrokerDeals(name, ok_id, specs, true);
 
                     if (default_deals == null) {
@@ -592,6 +593,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     }
                     Log.i(TAG, "default deals are" + default_deals);
                     default_deals.add(dealsa);
+
 
 
                 }
@@ -661,16 +663,18 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
                         if (default_deals != null) {
+                            //Log.i(TAG, "default deals are1" + default_deals.get(0).getSpecCode());
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
                             listViewDeals.setAdapter(listAdapter);
                             Log.i("inside adapter ", "object " + listAdapter);
 
                             BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-
+                            Log.i(TAG, "default deals are17" + brokerDeals.getSpecCode());
                             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                             intent.putExtra("userRole", "client");
-
+                            intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
                             intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                            intent.putExtra("isDefaultDeal",brokerDeals.getdefaultDeal());
                             Log.i("TRACE", "ment" + AppConstants.OK_ID);
 
                             startActivity(intent);
@@ -916,7 +920,6 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
 
                     Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                     intent.putExtra("userRole", "client");
-
                     intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
                     intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
                     Log.i("TRACE", "ment" + AppConstants.OK_ID);
@@ -1127,7 +1130,7 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
 
 
                                         BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-
+                                        Log.i("getSpecCode","getSpecCode yo 2 "+brokerDeals.getSpecCode());
                                         Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                                         intent.putExtra("userRole", "client");
                                         intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());

@@ -136,7 +136,8 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getExtras().getString("tv_dealinfo") != null){
-                String oyedata = intent.getExtras().getString("tv_dealinfo")+"@"+ SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
+               // String oyedata = intent.getExtras().getString("tv_dealinfo")+"@"+ SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
+                String oyedata = "@"+ SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
                 tv_dealinfo.setText(oyedata);
             }
         }
