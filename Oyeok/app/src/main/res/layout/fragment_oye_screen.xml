@@ -375,9 +375,9 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_below="@+id/rootWrapper"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="18dp"
     android:orientation="horizontal"
-
+    android:id="@+id/lt"
     android:layout_height="wrap_content"
     android:layout_alignParentEnd="true">
 
@@ -420,38 +420,53 @@
     <GridLayout
         android:id="@+id/btnOnOyeClick"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="40dp"
         android:clickable="true"
         android:background="@color/yellow"
-
+        android:layout_below="@+id/lt"
+        android:foregroundGravity="center"
 
         android:orientation="vertical"
         android:weightSum="1"
-        android:visibility="invisible"
-        android:layout_centerVertical="true"
-        >
-        <!--android:layout_alignEnd="@+id/checkBox"-->
+        android:visibility="visible"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="1dp">
 
 
-        <LinearLayout
-            android:layout_gravity="center">
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|top"
-                android:textColor="@color/White"
-                android:layout_margin="5dp"
-                android:text="CONNECT NOW | List" />
-            <TextView
-                android:id="@+id/tv_dealinfo11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/foreground_material_light"
-                android:layout_margin="5dp"
-                android:text="2BHK Home @ Andheri"
-                android:singleLine="false" />
-        </LinearLayout>
+       <LinearLayout
+           android:layout_gravity="center"
+           android:layout_marginTop="-2dp">
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|top"
+            android:textColor="@color/White"
+            android:layout_margin="5dp"
+            android:text="CONNECT NOW | Find @"
+
+            android:textIsSelectable="false"
+            android:textStyle="bold|italic" />
+
+
+
+        <TextView
+            android:id="@+id/tv_dealinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|top"
+            android:textColor="@color/foreground_material_light"
+            android:text=""
+            android:singleLine="false"
+            android:textStyle="bold|italic"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp" />
+       </LinearLayout>
+        <LinearLayout android:layout_gravity="center"
+            android:layout_marginTop="-2dp">
         <TextView
             android:id="@+id/textView3"
             android:layout_width="170dp"
@@ -459,8 +474,9 @@
             android:layout_gravity="center_horizontal|bottom"
             android:textColor="@color/White"
             android:layout_margin="5dp"
-            android:text="(Brokers,Visits,Listings)" />
+            android:text="(Brokers,Visits,Listings)"
+            android:textStyle="bold|italic" />
+        </LinearLayout>
 
     </GridLayout>
-
 </RelativeLayout>

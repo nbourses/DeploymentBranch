@@ -310,7 +310,7 @@ public class CircularSeekBarNew extends View {
                    d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));  // Gray
 //                    }
 //                }
-//                catch (JSONException e) {
+//                catch (JSONException e) {#BDBDBD
 //                    e.printStackTrace();
 //                }
 
@@ -1101,5 +1101,84 @@ public class CircularSeekBarNew extends View {
         return str;
 
     }
+
+
+
+
+    public  void onTabclick(){
+        float x = 50.0f;
+        float y = 50.0f;
+        int x_c = (int)x;
+        int y_c = (int)y;
+
+        for(int i=0;i<imagesRect.size();i++)
+        {
+            Rect m = imagesRect.get(i);
+            if(m.contains(x_c,y_c))
+            {
+
+
+                Log.i("Debug Circ","index is" +index);
+
+                Log.i("Debug Circ","mImageAction " +mImageAction);
+                if(i == index)
+                {
+                    index = -1;
+                    if(mImageAction != null)
+                    {
+                        mImageAction.onclick(i,values,"hide",x_c,y_c);
+                        Log.i("BrokerPreokFragment","hidden passed");
+                    }
+                }else
+                {
+                    index = i;
+//                           // user role is no more part of preok so was catching in exception, leading hiding of property description and double touch on property icon problem
+//
+//                            try {
+//
+//                                if(values.getJSONObject(i).getString("user_role").equalsIgnoreCase("client")) {
+//                                    mImageAction.onclick(i, values, "showHalf",x_c,y_c);
+//                                    Log.i("BrokerPreokFragment", "showHalf passed");
+//                                    //remember changes
+//
+//                                }else
+//                                {//remember changes
+                    mImageAction.onclick(i, values, "show",x_c,y_c);
+                    Log.i("BrokerPreokFragment", "show passed");
+                    // sushil comment
+//                                    if(mImageAction != null)
+//                                     {
+//                                        mImageAction.onclick(i,values,"hide", x_c, y_c);
+//                                    }
+                    invalidate();
+
+//                                }
+//
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+                }
+                //pw = new PopupWindow(, 300, 470, true);
+                // display the popup in the center
+                //pw.showAtLocation(R.id.circularseekbar, Gravity.CENTER, 0, 0);
+                invalidate();
+                break;
+
+            }else
+            {
+                index = -1;
+                if(mImageAction != null)
+                {
+                    mImageAction.onclick(i,values,"hide", x_c, y_c);
+                }
+                invalidate();
+            }
+        }
+
+    }
+
+
+
+
 
 }

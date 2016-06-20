@@ -1,5 +1,6 @@
 package com.nbourses.oyeok.GoogleCloudMessaging;
 
+import android.app.ActivityManager;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -57,4 +58,21 @@ public class GcmIntentService extends IntentService {
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
+
+
+    public boolean check(){
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE))
+        {
+            if ("com.nbourses.oyeok.GoogleCloudMessaging.GcmIntentService"
+                    .equals(service.service.getClassName()))
+            {
+                Log.i("notifications","========================");
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }

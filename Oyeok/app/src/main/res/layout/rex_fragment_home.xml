@@ -63,7 +63,7 @@
                     android:orientation="horizontal"
                     android:background="@drawable/maker_bg">
 
-                    <LinearLayout
+                  <!--  <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:orientation="vertical"
@@ -88,7 +88,7 @@
                             android:textSize="@dimen/fourteen_sp"
                             android:gravity="center" />
 
-                    </LinearLayout>
+                    </LinearLayout>-->
 
                     <RelativeLayout
                         android:id="@+id/markerpanelminmax"
@@ -183,9 +183,9 @@
 
                         <LinearLayout
                             android:layout_width="265dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="fill_parent"
                             android:orientation="vertical"
-                            android:weightSum="1"
+
                             android:layout_below="@+id/tv_building"
                             android:layout_alignBottom="@+id/tvRate">
                                                 <TextView
@@ -194,15 +194,18 @@
                                                     android:id="@+id/tvFetchingRates"
                                                     android:textColor="@color/White"
                                                     android:visibility="visible"
-                                                    android:foregroundGravity="center"
+                                                    android:foregroundGravity="top|center"
+                                                    android:layout_marginTop="-5dp"
                                                     android:gravity="center"
                                                     android:textSize="12sp"
                                                     android:textStyle="bold" />
                         </LinearLayout>
 
-                        <RelativeLayout
+                       <!-- <RelativeLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" >
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            >-->
 
                             <TextView
                                 android:id="@+id/newVisits"
@@ -219,7 +222,7 @@
                                 android:textSize="20sp"
                                 android:layout_alignParentRight="true"/>
 
-                            <ImageView
+                            <!--<ImageView
                                 android:layout_width="15dp"
                                 android:layout_height="15dp"
                                 android:id="@+id/beacons2"
@@ -232,7 +235,7 @@
                                 android:id="@+id/beacons3"
                                 android:layout_alignParentTop="true"
                                 android:layout_toEndOf="@+id/beacons2"
-                                android:layout_marginStart="189dp" />
+                                android:layout_marginStart="189dp" />-->
 
                             <TextView
                                 android:id="@+id/txtFilterValue"
@@ -249,7 +252,7 @@
                                 android:textSize="14sp"
                                 android:layout_alignParentRight="true" />
 
-                        </RelativeLayout>
+                        <!--</RelativeLayout>-->
 
 
                     </RelativeLayout>

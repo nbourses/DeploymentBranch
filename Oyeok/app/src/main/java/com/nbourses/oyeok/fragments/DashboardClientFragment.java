@@ -337,7 +337,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             Log.i("TIMESTAMP", "millis " + System.currentTimeMillis());
         }
 
-
+        Log.i("notifications","sendNotification =========================="+ SharedPrefs.getString(getContext(),SharedPrefs.MY_GCM_ID));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
 //TextView tv_client_heading=(TextView)
         //intent = new Intent(AppConstants.CLIENT_HEADING);
@@ -1904,7 +1904,7 @@ public void onoyeclickRateChange(String locality,int area,int llmin,int llmax,St
     horizontalPicker.setVisibility(View.GONE);
     tv_building.setVisibility(View.GONE);
     tvRate.setVisibility(View.GONE);
-    rupeesymbol.setVisibility(View.GONE);
+    rupeesymbol.setVisibility(View.INVISIBLE);
     tvFetchingrates.setVisibility(View.VISIBLE);
 
     String llmin1;

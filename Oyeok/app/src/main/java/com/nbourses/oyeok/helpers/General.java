@@ -302,6 +302,7 @@ public class General extends BroadcastReceiver {
             String intend;
             String tt;
             String pstype;
+            String ptype;
             String price;
             final String speccode;
             Log.i("TRACE", "in publishOye");
@@ -319,9 +320,12 @@ public class General extends BroadcastReceiver {
             intend = jsonObj.getString("req_avl");
 
             tt = jsonObj.getString("tt");
+            ptype = jsonObj.getString("ptype");
             pstype = jsonObj.getString("property_subtype");
             price = jsonObj.getString("price");
-            speccode = intend.toUpperCase() + "-" + tt + "-" + pstype + "-" + price;
+
+
+            speccode = intend.toUpperCase() + "-" + tt + ptype+"-" + pstype + "-" + price;
             Log.i("TRACE", "speccode is" + speccode);
 
             General.setSharedPreferences(context, "MY_SPEC_CODE", speccode);

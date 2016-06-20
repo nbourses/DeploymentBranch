@@ -1087,11 +1087,14 @@ Log.i("PHASE","before adapter set");
                 Log.i("PREOK CALLED1","values set phase"+jsonArrayReqLl.toString());
                 Log.i("tester","1"+currentOptionSelectedString);
                 circularSeekbar.setValues(jsonArrayReqLl.toString());
+               // onclick(,null,null,-1);
+                circularSeekbar.onTabclick();
             }
             else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 Log.i("PREOK CALLED1", "values set phase" + jsonArrayAvlLl.toString());
                 Log.i("tester","2"+currentOptionSelectedString);
                 circularSeekbar.setValues(jsonArrayAvlLl.toString());
+                circularSeekbar.onTabclick();
             }
 
         }
@@ -1116,11 +1119,13 @@ Log.i("PHASE","before adapter set");
                 Log.i("PREOK CALLED1", "values set phase" + jsonArrayReqOr.toString());
                 Log.i("tester","3"+currentOptionSelectedString);
                 circularSeekbar.setValues(jsonArrayReqOr.toString());
+                circularSeekbar.onTabclick();
             }
             else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
                 Log.i("PREOK CALLED1", "values set phase" + jsonArrayAvlOr.toString());
                 Log.i("tester","4"+currentOptionSelectedString);
                 circularSeekbar.setValues(jsonArrayAvlOr.toString());
+                circularSeekbar.onTabclick();
             }
 
         }
@@ -1203,6 +1208,7 @@ Log.i("PHASE","before adapter set");
             else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 Log.i("PREOK CALLED12", "values set" + jsonArrayAvlLl.toString());
                 circularSeekbar.setValues(jsonArrayAvlLl.toString());
+
             }
 
             //added
@@ -2066,5 +2072,109 @@ Log.i("PHASE","before adapter set");
 
 
     }
+
+
+
+
+
+    public void onTabclick(int position, JSONArray m, String show, int x_c, int y_c) {
+        try {
+            jsonObjectArray = m;
+            selectedItemPosition = position;
+            String ptype = null;
+            String pstype;
+            pstype = jsonObjectArray.getJSONObject(position).getString("property_subtype");
+            Log.i("debug circ","inside onclick");
+            Log.i("debug circ","inside onclick m "+jsonObjectArray);
+
+
+          /*  if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
+                ptype = "home";
+            }
+            else if(pstype.equals("retail outlet") || pstype.equals("food outlet") || pstype.equals("shop")){
+                ptype = "shop";
+            }
+            else if(pstype.equals("cold storage") || pstype.equals("kitchen") || pstype.equals("manufacturing") || pstype.equals("warehouse") || pstype.equals("workshop")){
+                ptype = "industrial";
+            }
+            else if(pstype.equals("<15") || pstype.equals("<35") || pstype.equals("<50") || pstype.equals("<100") || pstype.equals("100+")){
+                ptype = "office";
+            }
+            */
+
+            ptype = jsonObjectArray.getJSONObject(position).getString("property_type");
+
+            Log.i(TAG,"property_type "+ptype);
+            Log.i(TAG, "property_subtype " + pstype);
+
+            texPtype.setText("Property Type: "+ptype);
+            texPstype.setText("Property Subtype: "+pstype);
+            //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
+            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL"))
+                rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))+" /m.");
+            else
+                rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")));
+            //  rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /m.");
+            //      displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used.");
+
+            Log.i(TAG, "show is " + show);
+
+            if(show.equals("show")) {
+                notClicked.setVisibility(View.GONE);
+                rentText.setVisibility(View.VISIBLE);
+                //   displayOkText.setVisibility(View.VISIBLE);
+                texPtype.setVisibility(View.VISIBLE);
+                texPstype.setVisibility(View.VISIBLE);
+
+                // pickContact.setVisibility(View.GONE);
+                // contactText.setVisibility(View.GONE);
+            }
+            else if(show.equals("hide")) {
+                jsonObjectArray = null;
+                if(buildingSliderflag) {
+                    buildingSlider.startAnimation(slide_down);
+                    buildingSlider.setVisibility(View.GONE);
+                    buildingSliderflag = false;
+                    Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
+                    intent.putExtra("buildingSliderFlag",buildingSliderflag);
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
+
+                    //clearChart();
+                    if(buildingsSelected.size() !=0)
+                        buildingsSelected.clear();
+                    selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
+                    selectB.performClick();
+                }
+                notClicked.setVisibility(View.VISIBLE);
+                rentText.setVisibility(View.GONE);
+                //   displayOkText.setVisibility(View.GONE);
+                texPtype.setVisibility(View.GONE);
+                texPstype.setVisibility(View.GONE);
+                // pickContact.setVisibility(View.GONE);
+                // contactText.setVisibility(View.GONE);
+            }
+            else {
+                notClicked.setVisibility(View.GONE);
+                rentText.setVisibility(View.VISIBLE);
+                //   displayOkText.setVisibility(View.VISIBLE);
+                texPtype.setVisibility(View.VISIBLE);
+                texPstype.setVisibility(View.VISIBLE);
+                //  pickContact.setVisibility(View.VISIBLE);
+                //  contactText.setVisibility(View.VISIBLE);
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
 
 }

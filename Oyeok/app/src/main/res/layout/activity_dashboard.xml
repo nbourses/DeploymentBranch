@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
-        sothree:umanoPanelHeight="135dp"
+        sothree:umanoPanelHeight="125dp"
         sothree:umanoShadowHeight="4dp"
         sothree:umanoParallaxOffset="100dp"
         sothree:umanoDragView="@+id/dragView"
@@ -105,7 +105,7 @@
             </ScrollView>
         </LinearLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
-    <GridLayout
+   <!-- <GridLayout
         android:id="@+id/btnOnOyeClick"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -116,7 +116,7 @@
 
         android:orientation="vertical"
         android:weightSum="1"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="5dp">
@@ -165,8 +165,7 @@
             android:textStyle="bold|italic" />
         </LinearLayout>
 
-    </GridLayout>
-
+    </GridLayout>-->
 
 
     <!--<Button-->

@@ -68,12 +68,15 @@ public class MyGcmListenerService extends GcmListenerService {
      * @param data Data bundle containing message data as key/value pairs.
      *             For Set of keys use data.keySet().
      */
+   // Log.i("notifications","bundle data is "+data);
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
 
 
         Log.i(TAG,"bundle data is "+data);
+        Log.i("notifications","bundle data is "+data);
+
         //clear all badge counts
 //        General.setBadgeCount(getApplicationContext(),AppConstants.HDROOMS_COUNT,0);
 //        General.setBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT,0);

@@ -26,7 +26,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -37,7 +36,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
-import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
@@ -97,15 +95,14 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.toast_layout)
     LinearLayout toastLayout;
 
-    @Bind(R.id.btnOnOyeClick)
-    GridLayout btnOnOyeClick;
+
 
     @Bind(R.id.hdroomsCount)
     TextView hdroomsCount;
 
 
-    @Bind(R.id.tv_dealinfo)
-    TextView tv_dealinfo;
+    /*@Bind(R.id.tv_dealinfo)
+    TextView tv_dealinfo;*/
 
 
 
@@ -135,11 +132,74 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     private BroadcastReceiver oyebuttondata = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getExtras().getString("tv_dealinfo") != null){
+            /*if(intent.getExtras().getString("tv_dealinfo") != null){
                // intent.getExtras().getString("tv_dealinfo")+
                 String oyedata = SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
                 tv_dealinfo.setText(oyedata);
             }
+            */
+            if(intent.getExtras().getString("isclicked")=="true") {
+                Boolean s = General.retriveBoolean(getBaseContext(), "propertySubtypeFlag");
+
+                if (General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                    Log.i("TRACE", "clicked oyebutton if");
+                    //show ƒlo up screen
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArray("propertySpecification", null);
+                    bundle.putString("lastFragment", "OyeIntentSpecs");
+
+                    if (s.equals(false)) {
+                        SnackbarManager.show(
+                                Snackbar.with(getBaseContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text("Please select property subtype")
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    } else {
+
+                        SignUpFragment signUpFragment = new SignUpFragment();
+                        loadFragment(signUpFragment, bundle, R.id.container_oye, "");
+                        Log.i("Signup called =", "Sign up");
+                        // btnOnOyeClick.setVisibility(View.GONE);
+                    }
+                } else {
+                    Log.i("already", "Signed up");
+                    if (s.equals(false)) {
+                        SnackbarManager.show(
+                                Snackbar.with(getBaseContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text("Please select property subtype")
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+                    } else {
+                        //create new deal
+
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
+                        builder.setMessage("Dou you want to publish this oye?")
+                                .setCancelable(true)
+                                .setPositiveButton("Publish", new DialogInterface.OnClickListener() {
+                                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                        General.publishOye(getApplicationContext());
+                                        closeOyeScreen();
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        final AlertDialog alert = builder.create();
+                        alert.show();
+
+
+                    }
+                }
+
+
+            }
+
+
+
+
         }
     };
 
@@ -172,7 +232,6 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
-
 
         ShortcutBadger.removeCount(this);
 
@@ -414,7 +473,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             slidingLayout.setAnchorPoint(0.5f);
             slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
 
-            btnOnOyeClick.setVisibility(View.VISIBLE);
+           // btnOnOyeClick.setVisibility(View.VISIBLE);
         }
         else {
             closeOyeScreen();
@@ -424,7 +483,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     private void closeOyeScreen() {
         isShowing = false;
         slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-        btnOnOyeClick.setVisibility(View.GONE);
+       // btnOnOyeClick.setVisibility(View.GONE);
     }
 
     @Override
@@ -583,7 +642,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
         toastLayout.setAnimation(m);
     }
 
-    @OnClick(R.id.btnOnOyeClick)
+    /*@OnClick(R.id.btnOnOyeClick)
     public void submitOyeOk(View v) {
         Log.i("TRACE", "oyebutton");
         Boolean s = General.retriveBoolean(this, "propertySubtypeFlag");
@@ -643,7 +702,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
             }
         }
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
@@ -698,6 +757,15 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
                         .text("INTERNET CONNECTIVITY NOT AVAILABLE")
                         .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
     }
+
+
+
+
+
+
+
+
+
 
 }
 
