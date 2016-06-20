@@ -916,7 +916,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         tvRate.bringToFront();
         ll_marker.bringToFront();
        // txtFilterValue.setText(Html.fromHtml(getResources().getString(R.string.default_2_bhk)));
-        txtFilterValue.setText("2 BHK");
+        txtFilterValue.setText("2BHK");
 
 
         /**

@@ -132,12 +132,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     private BroadcastReceiver oyebuttondata = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            /*if(intent.getExtras().getString("tv_dealinfo") != null){
-               // intent.getExtras().getString("tv_dealinfo")+
-                String oyedata = SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
-                tv_dealinfo.setText(oyedata);
-            }
-            */
+
             if(intent.getExtras().getString("isclicked")=="true") {
                 Boolean s = General.retriveBoolean(getBaseContext(), "propertySubtypeFlag");
 

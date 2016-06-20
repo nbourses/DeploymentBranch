@@ -71,6 +71,7 @@ public class CircularSeekBarNew extends View {
     private static final String TAG = "CircularSeekBarNew";
     private int difference;
     private JSONArray tempvalues = new JSONArray();
+    private Drawable d = null;
 
     public CircularSeekBarNew(Context context) {
         super(context);
@@ -219,7 +220,7 @@ public class CircularSeekBarNew extends View {
         {
             //Get drawables according to property type.Needs to be worked on
             //Drawable d = getResources().getDrawable(drawables[i % 4]);
-            Drawable d = null;
+           // Drawable d = null;
             String ptype = "home";
             String pstype;
             try {
@@ -931,6 +932,7 @@ public class CircularSeekBarNew extends View {
                         }else
                         {
                             index = i;
+
 //                           // user role is no more part of preok so was catching in exception, leading hiding of property description and double touch on property icon problem
 //
 //                            try {
@@ -1105,6 +1107,7 @@ public class CircularSeekBarNew extends View {
 
 
 
+
     public  void onTabclick(){
         float x = 50.0f;
         float y = 50.0f;
@@ -1176,6 +1179,7 @@ public class CircularSeekBarNew extends View {
         }
 
     }
+
 
 
 

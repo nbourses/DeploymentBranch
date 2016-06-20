@@ -156,6 +156,23 @@ public class General extends BroadcastReceiver {
         return prefs.getString("DefaultDeals", null);
     }
 
+    public static void saveDealTime(Context context, String value) {
+
+        Log.i("TRACE", "save default deal inside" + value);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("DealTime", value);
+        editor.commit();
+
+    }
+
+    public static String getDealTime(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+
+        return prefs.getString("DealTime", null);
+    }
+
 
    /* public static void saveDefaultDeals(Context context,String key, String value) {
 
@@ -301,6 +318,7 @@ public class General extends BroadcastReceiver {
         try {
             String intend;
             String tt;
+            String ptype;
             String pstype;
             String ptype;
             String price;
@@ -320,12 +338,11 @@ public class General extends BroadcastReceiver {
             intend = jsonObj.getString("req_avl");
 
             tt = jsonObj.getString("tt");
-            ptype = jsonObj.getString("ptype");
+            ptype = jsonObj.getString("property_type");
             pstype = jsonObj.getString("property_subtype");
             price = jsonObj.getString("price");
+            speccode = intend.toUpperCase() + "-" + tt + "-" +ptype+ "-" + pstype + "-" + price;
 
-
-            speccode = intend.toUpperCase() + "-" + tt + ptype+"-" + pstype + "-" + price;
             Log.i("TRACE", "speccode is" + speccode);
 
             General.setSharedPreferences(context, "MY_SPEC_CODE", speccode);
@@ -497,6 +514,8 @@ public class General extends BroadcastReceiver {
                                 // HashMap<String, String> hashMap = new HashMap<String, String>();
                                 Log.i("TRACE", "hashmap entry" + General.getSharedPreferences(context, "OK_ID"));
 
+                                storeDealTime(jsonResponseData.getString("ok_id"),context);
+
                                 //Check here if new default deal is redundant Uncomment to replace old oyes with new with same specs
                    /*
 
@@ -631,6 +650,29 @@ public class General extends BroadcastReceiver {
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));*/
 
         }
+    }
+
+
+    public static void storeDealTime(String okId, Context context){
+        String dealTime;
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        dealTime = General.getDealTime(context);
+
+        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+        HashMap<String, String> dealTime1 = gson.fromJson(dealTime, type);
+        if (dealTime1 == null) {
+            dealTime1 = new HashMap<String, String>();
+
+        }
+        dealTime1.put(okId,String.valueOf(System.currentTimeMillis()));
+
+        Gson g = new Gson();
+        String hashMapString = g.toJson(dealTime1);
+        General.saveDealTime(context, hashMapString);
+        Log.i("dealtime","DealTime "+General.getDealTime(context));
+
+
+
     }
 }
 

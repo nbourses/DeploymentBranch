@@ -99,13 +99,13 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="@color/tw__transparent"
         android:id="@+id/iv_markerpin"
         android:foregroundGravity="center_horizontal"
-        android:src="@drawable/iv_markerpin"
-        android:layout_marginTop="176dp"
+        android:src="@drawable/broker_marker"
+        android:layout_marginTop="155dp"
         android:layout_below="@+id/linearLayout5"
         android:layout_centerHorizontal="true" />
 

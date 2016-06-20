@@ -61,6 +61,7 @@ public class MyGcmListenerService extends GcmListenerService {
     private Boolean OR = false;
     private Boolean REQ = false;
     private Boolean AVL = false;
+
     /**
      * Called when message is received.
      *
@@ -70,10 +71,11 @@ public class MyGcmListenerService extends GcmListenerService {
      */
    // Log.i("notifications","bundle data is "+data);
     // [START receive_message]
+
+
     @Override
     public void onMessageReceived(String from, Bundle data) {
-
-
+        Log.i(TAG,"bundle data is inside");
         Log.i(TAG,"bundle data is "+data);
         Log.i("notifications","bundle data is "+data);
 
@@ -196,6 +198,15 @@ public class MyGcmListenerService extends GcmListenerService {
             General.setBadgeCount(getApplicationContext(),AppConstants.BUYER_COUNT,buyerCount);
             General.setBadgeCount(getApplicationContext(),AppConstants.SELLER_COUNT,sellerCount);
 
+            Intent intent = new Intent(AppConstants.BADGE_COUNT_BROADCAST);
+            intent.putExtra(AppConstants.RENTAL_COUNT,rentalCount);
+            intent.putExtra(AppConstants.RESALE_COUNT,resaleCount);
+            intent.putExtra(AppConstants.TENANTS_COUNT,tenantsCount);
+            intent.putExtra(AppConstants.OWNERS_COUNT,ownersCount);
+            intent.putExtra(AppConstants.BUYER_COUNT,buyerCount);
+            intent.putExtra(AppConstants.SELLER_COUNT,sellerCount);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
             Log.i(TAG,"rentalCount "+rentalCount);
             Log.i(TAG,"resaleCount "+resaleCount);
             Log.i(TAG,"tenantsCount "+tenantsCount);
@@ -256,6 +267,13 @@ public class MyGcmListenerService extends GcmListenerService {
                 Log.d(TAG, "text is " + message);
                 okId = jsonObjectMsg.getString("ok_id");
                 Log.d(TAG, "okId is: " + okId);
+
+// store ok time for deals list
+                storeDealTime(okId);
+
+
+
+
 
 
                // Collection d = deals1.values();
@@ -436,5 +454,26 @@ public class MyGcmListenerService extends GcmListenerService {
         }
         notificationManager.notify(NOTIFICATION_ID++ /* ID of notification */, notificationBuilder.build());
         Log.d(TAG,"Notified");
+    }
+    private void storeDealTime(String okId){
+        String dealTime;
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        dealTime = General.getDealTime(this);
+
+        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+        HashMap<String, String> dealTime1 = gson.fromJson(dealTime, type);
+        if (dealTime1 == null) {
+            dealTime1 = new HashMap<String, String>();
+
+        }
+        dealTime1.put(okId,String.valueOf(System.currentTimeMillis()));
+
+        Gson g = new Gson();
+        String hashMapString = g.toJson(dealTime1);
+        General.saveDealTime(this, hashMapString);
+        Log.i("dealtime","DealTime "+General.getDealTime(this));
+
+
+
     }
 }

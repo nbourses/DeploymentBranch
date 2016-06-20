@@ -199,6 +199,7 @@
                                                     android:gravity="center"
                                                     android:textSize="12sp"
                                                     android:textStyle="bold" />
+
                         </LinearLayout>
 
                        <!-- <RelativeLayout
@@ -445,38 +446,7 @@
             </LinearLayout>
 
         </LinearLayout>
-        <!--
-        <<<<<<< HEAD
-                    <Button
-                        android:layout_width="fill_parent"
-                        android:layout_height="@dimen/thirtysix_dp"
-                        android:gravity="center"
-                        android:layout_marginRight="@dimen/four_dp"
-                        android:background="@drawable/button_greenishblue"
-                        android:text="Oye A Broker"
-                        android:id="@+id/newVisits"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/sixteen_sp"
-                        android:layout_weight="1" />
-
-
-                    <Button
-                        android:id="@+id/linearlayout_drooms"
-                        android:layout_width="fill_parent"
-                        android:layout_height="@dimen/thirtysix_dp"
-                        android:layout_marginLeft="@dimen/four_dp"
-                        android:gravity="center"
-                        android:textAllCaps="false"
-                        android:background="#FFB74D"
-                        android:text="Drooms"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/sixteen_sp"
-                        android:layout_weight="1" />
-
-                    </LinearLayout>
-        =======
-        >>>>>>> 83a4472e498b9ce118288e01cbf3165a2fdef17f -->
+   
 
         <View
             android:id="@+id/border_line"
