@@ -37,6 +37,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -61,6 +63,16 @@ public class General extends BroadcastReceiver {
 //    {
 //        this.networkInfo = networkInfo;
 //    }
+
+   public static Realm realmconfig(Context context){
+        RealmConfiguration config = new RealmConfiguration
+                .Builder(context)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+       Realm myRealm = Realm.getInstance(config);
+        return myRealm;
+    }
+
 
     public static void saveSet(Context context,String name, Set<String> value) {
 // for storing catched msgs

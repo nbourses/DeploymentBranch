@@ -14,6 +14,7 @@ public class AppConstants {
 
     public static String MY_LAT = "myLat";
     public static String MY_LNG = "myLong";
+    public static String LOCALITY = "locality";
     public static final String SIGNUPSUCCESSFLAG = "signupSuccessFlag";
     public static final String SLIDEDOWNBUILDINGS = "slideDownBuildings";
     public static final String BUILDINGSLIDERFLAG = "buildingSliderFlag";
@@ -82,6 +83,8 @@ public class AppConstants {
     public static final String SPEC_CODE = "specCode";
     public static final String CACHE = "_cache";   // dynamic channel_name_CACHE
 
-
+// REALM dB model app constants by Ritesh
+//USERINFO MODEL
+    public static final String MOBILE_NUMBER = "mobileNumber";
 
 }

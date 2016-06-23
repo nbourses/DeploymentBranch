@@ -36,6 +36,10 @@ repositories {
 
 
 android {
+    // added to solve duplicate files copied in apk (butterknife and realm)
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
     useLibrary 'org.apache.http.legacy'
     dexOptions {
         javaMaxHeapSize "4g"
@@ -214,7 +218,7 @@ dependencies {
 //        all*.exclude  module: 'auth'
 //    }
 
-   
+
 
  //  compile files('src/main/java/com/nbourses/oyeok/lib/android-support-v4.jar')
 
@@ -226,10 +230,8 @@ dependencies {
     compile 'me.leolin:ShortcutBadger:1.1.4@aar'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
    // compile 'com.nineoldandroids:library:2.4.0+'
-
-
-
-
+    compile 'io.realm:realm-android:0.84.1'
     compile project(':MPChartLib')
+
 
 }

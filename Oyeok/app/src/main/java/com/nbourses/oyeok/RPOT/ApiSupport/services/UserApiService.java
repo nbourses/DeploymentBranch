@@ -100,7 +100,7 @@ import retrofit.http.POST;
 
         //Pratik's playground
         //SignUp removed from the user flow
-        @POST("/1/user/signup")
+        @POST("/1.1/user/signup")
         void userSignUp(@Body User user, Callback<SignUp> callback);
 
 

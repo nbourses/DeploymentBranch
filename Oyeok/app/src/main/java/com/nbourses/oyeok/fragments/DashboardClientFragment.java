@@ -655,6 +655,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                                 SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                                 SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                                General.setSharedPreferences(getContext(),AppConstants.MY_LAT,lat + "");
+                                General.setSharedPreferences(getContext(),AppConstants.MY_LNG,lng + "");
                                 new LocationUpdater().execute();
                                 //if   (General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("rent")){
                                // tvFetchingrates.setText(marker.getTitle().toString()+" @ "+General.currencyFormat(String.valueOf(ll_pm[i])));
@@ -799,6 +801,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                     Log.i("MARKER-- ", "====================================");
                                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                                General.setSharedPreferences(getContext(),AppConstants.MY_LAT,lat + "");
+                                General.setSharedPreferences(getContext(),AppConstants.MY_LNG,lng + "");
                                     Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
                                     Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
                                     getRegion();
@@ -867,6 +871,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     lng = location.getLongitude();
                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                    General.setSharedPreferences(getContext(),AppConstants.MY_LAT,lat + "");
+                    General.setSharedPreferences(getContext(),AppConstants.MY_LNG,lng + "");
                     if (isNetworkAvailable()) {
                         try {
                             getRegion();
@@ -1603,6 +1609,7 @@ try {
         try {
             region = addresses.get(0).getSubLocality();
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LOCALITY, region);
+            General.setSharedPreferences(getContext(),AppConstants.LOCALITY,region);
             Log.i("localityBroadcast","localityBroadcast3 "+region);
 
             Intent intent = new Intent(AppConstants.LOCALITY_BROADCAST);
@@ -1667,8 +1674,12 @@ try {
 
     @Override
     public void priceSelected(String val) {
-
-        map.animateCamera(CameraUpdateFactory.zoomTo(12));
+try {
+    map.animateCamera(CameraUpdateFactory.zoomTo(12));
+}
+catch(Exception e){
+    Log.i(TAG,"Caught in exception Zoom map to 12 "+e);
+}
 
     }
 
@@ -1754,8 +1765,10 @@ try {
                                 Address2 = long_name;
                             } else if (Type.equalsIgnoreCase("sublocality_level_1")) {
                                 Address2 += " " + long_name;
-                                if (getActivity() != null)
+                                if (getActivity() != null) {
                                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LOCALITY, long_name);
+                                    General.setSharedPreferences(getContext(), AppConstants.LOCALITY, region);
+                                }
                             } else if (Type.equalsIgnoreCase("locality")) {
                                 // Address2 = Address2 + long_name + ", ";
                                 City = long_name;
@@ -1845,6 +1858,8 @@ try {
             Log.i("t1", "lng" + " " + lng);
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+            General.setSharedPreferences(getContext(),AppConstants.MY_LAT,lat + "");
+            General.setSharedPreferences(getContext(),AppConstants.MY_LNG,lng + "");
 
 
             //Marker marker = broker_map.addMarker(new MarkerOptions()

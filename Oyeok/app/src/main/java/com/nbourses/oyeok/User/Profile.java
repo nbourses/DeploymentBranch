@@ -33,6 +33,7 @@ import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
+import io.realm.Realm;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -47,6 +48,8 @@ public class Profile extends Fragment {
     DBHelper dbhelper;
     String filePath="";
 
+    private Realm myRealm;
+
     public Profile() {
     }
 
@@ -60,6 +63,11 @@ public class Profile extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View layout= inflater.inflate(R.layout.fragment_profile, container, false);
+
+        myRealm = General.realmconfig(getContext());
+
+
+
         dbhelper=new DBHelper(getActivity());
         username_txt=(EditText)layout.findViewById(R.id.txt_user);
         updateProfile= (Button)layout.findViewById(R.id.update_profile);

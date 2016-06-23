@@ -996,7 +996,7 @@ if(count<=220) {
 
 
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(AppConstants.SERVER_BASE_URL)
+                .setEndpoint(AppConstants.SERVER_BASE_URL_101)
                 .build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
@@ -1016,7 +1016,7 @@ if(count<=220) {
                         jsonArrayAvlLl = neighbours.getJSONArray("avl_ll");//neighbours.getJSONArray("avl_ll");
 
                         jsonArrayReqOr = neighbours.getJSONArray("req_or");//neighbours.getJSONArray("req_or");
-                        jsonArrayAvlOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_or");
+                        jsonArrayAvlOr = neighbours.getJSONArray("avl_or");//neighbours.getJSONArray("avl_or");
 
                         Log.i("PREOK CALLED","jsonArrayReqLl"+jsonArrayReqLl);
                         Log.i("PREOK CALLED","jsonArrayAvlLl"+jsonArrayAvlLl);

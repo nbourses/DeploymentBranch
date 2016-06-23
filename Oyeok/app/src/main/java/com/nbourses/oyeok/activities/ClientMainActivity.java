@@ -228,6 +228,78 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     private void init() {
 
 
+//        RealmConfiguration config = new RealmConfiguration
+//                .Builder(this)
+//                .deleteRealmIfMigrationNeeded()
+//                .build();
+//        Realm myRealm = Realm.getInstance(config);
+
+
+
+//        myRealm.beginTransaction();
+//
+//        // Create an object
+//        Country country1 = myRealm.createObject(Country.class);
+//
+//        // Set its fields
+//        country1.setName("Norway");
+//        country1.setPopulation(5165800);
+//
+//        myRealm.commitTransaction();
+//
+//
+//        Country country2 = new Country();
+//        country2.setName("Russia");
+//        country2.setPopulation(146430430);
+//
+//
+//        myRealm.beginTransaction();
+//        Country copyOfCountry2 = myRealm.copyToRealm(country2);
+//        myRealm.commitTransaction();
+
+
+
+//        RealmResults<Country> results1 =
+//                myRealm.where(Country.class).findAll();
+//
+//        for(Country c:results1) {
+//            Log.d("results2", c.getName());
+//        }
+
+
+//        myRealm.beginTransaction();
+//        UserInfo user = myRealm.createObject(UserInfo.class);
+//       // UserInfo user = new UserInfo();
+//        user.setName("Rapp");
+//        user.setMobileNumber("146430430");
+//
+//
+//
+//        UserInfo copyOfCountry = myRealm.copyToRealmOrUpdate(user);
+//        myRealm.commitTransaction();
+
+
+
+//        UserInfo usera = new UserInfo();
+//        usera.setName("Rapter");
+//        usera.setMobileNumber("1464304308");
+//
+//
+//        myRealm.beginTransaction();
+//        UserInfo copyOfCountry2 = myRealm.copyToRealmOrUpdate(usera);
+//        myRealm.commitTransaction();
+//
+//        RealmResults<UserInfo> results4 =
+//                myRealm.where(UserInfo.class).findAll();
+//        Log.i(TAG,"insider1 ");
+//        for(UserInfo c:results4) {
+////            Log.i(TAG,"insider2 ");
+////            Log.i(TAG,"insider3 "+c.getName());
+////            Log.i(TAG,"insider4 "+c.getEmailId());
+//        }
+
+
+
         if(General.getBadgeCount(this,AppConstants.HDROOMS_COUNT)<=0)
             hdroomsCount.setVisibility(View.GONE);
         else {

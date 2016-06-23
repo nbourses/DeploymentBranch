@@ -39,6 +39,7 @@ import com.nbourses.oyeok.enums.ChatMessageUserType;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.ChatMessage;
+import com.nbourses.oyeok.realmModels.UserInfo;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.pubnub.api.Callback;
@@ -60,6 +61,9 @@ import java.util.HashMap;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 import static android.util.Log.i;
 
@@ -125,6 +129,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     Bundle b;
     private String lastMessageTime;
 
+    private RealmConfiguration config;
+    private Realm myRealm;
+
 
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
         @Override
@@ -165,6 +172,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_deal_conversation);
+
+
         ButterKnife.bind(this);
         texrating = (TextView) findViewById(R.id.texRating);
         ratingBar.setOnRatingBarChangeListener(this);
@@ -203,8 +212,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
 
         super.onPause();
-        if (pubnub != null)
-            pubnub.unsubscribeAll();
+      //  if (pubnub != null)
+         //   pubnub.unsubscribeAll();
 
     }
 
@@ -212,7 +221,23 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private void init() {
 
+        try {
 
+            Realm myRealm = General.realmconfig(this);
+            RealmResults<UserInfo> results1 =
+                    myRealm.where(UserInfo.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findAll();
+
+            UserInfo myPuppy = myRealm.where(UserInfo.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findFirst();
+
+            Log.i(TAG, "my name is " + myPuppy.getName());
+
+            for (UserInfo c : results1) {
+                Log.i(TAG, "insidero2 ");
+                Log.i(TAG, "insidero3 " + c.getName());
+                Log.i(TAG, "insidero4 " + c.getEmailId());
+                Log.i(TAG, "insidero4 " + c.getUserId());
+            }
+        }catch(Exception e){}
 
         edtTypeMsg.addTextChangedListener(edtTypeMsgListener);
 
@@ -324,7 +349,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         //test pubnub gcm
 
-        pubnub.enablePushNotificationsOnChannel(channel_name, General.getSharedPreferences(this,AppConstants.GCM_ID), new Callback() {
+        pubnub.enablePushNotificationsOnChannel("t9i9e2x6se110871a_", General.getSharedPreferences(this,AppConstants.GCM_ID), new Callback() {
             @Override
             public void successCallback(String channel, Object message) {
                 super.successCallback(channel, message);
@@ -342,12 +367,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 // subscribe a channel for Pubnub push notifications end
 
         pubnub.enablePushNotificationsOnChannel(
-                "04f0fmgry7877921a",
+                "t9i9e2x6se110871a_",
                 General.getSharedPreferences(this,AppConstants.GCM_ID));
 
 
     try {
-        sendNotification("04f0fmgry7877921a_");
+        sendNotification("ci1qnk9074361a_");
     }
     catch (Exception e)
     {
@@ -377,7 +402,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             pubnub.enablePushNotificationsOnChannel(
                     channel_name,
-                    General.getSharedPreferences(this,AppConstants.GCM_ID));
+                    "dOtsO1_3XFs:APA91bHuog28jPdP3_A5mGbd12K20c2S7aHIL5OI6rlfyChGG7GH7QJWNWmTpS4ivtc_g-eysnuPLn5DHFCNoWawh_sSeONxByb1YzAHPR8TV6VifmjcPCx_ugPjJ_TgJeB4pr0Obr5C");
 
             // subscribe a channel for Pubnub push notifications end
 

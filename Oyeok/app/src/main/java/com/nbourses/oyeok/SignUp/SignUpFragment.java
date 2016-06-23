@@ -1,8 +1,10 @@
 package com.nbourses.oyeok.SignUp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.LocationManager;
@@ -35,8 +37,6 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
-import com.nbourses.oyeok.Firebase.HourGlassDetails;
-import com.nbourses.oyeok.Firebase.HourGlassFirebase;
 import com.nbourses.oyeok.Firebase.UserProfileFirebase;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.MobileVerify;
@@ -48,12 +48,14 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
-import com.nbourses.oyeok.RPOT.Utils.Constant;
 import com.nbourses.oyeok.User.UserProfileViewModel;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
+import com.nbourses.oyeok.activities.BrokerMainActivity;
 import com.nbourses.oyeok.activities.ClientDealsListActivity;
+import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.realmModels.UserInfo;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -64,6 +66,8 @@ import org.json.JSONException;
 import java.util.HashMap;
 
 import butterknife.Bind;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -101,6 +105,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     private FrameLayout fragment_container1;
     private LinearLayout supportChat;
     private ListView listViewDeals;
+    private Boolean redirectBroker = false;
+    private Boolean redirectClient = false;
 
 
 
@@ -158,6 +164,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     private String role_of_user;
     private Activity activity;
     private Button submit;
+    private String oldRole;
+    private Realm myRealm;
+
     ////////////////////////////////////////////////////
     // Variables defined for digits authentication
 ////////////////////////////////////////////////////
@@ -172,6 +181,13 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
     HashMap<String, Float> listings = new HashMap<String, Float>();
 
+
+
+
+
+    UserInfo userInfo = new UserInfo();
+
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -184,7 +200,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-
+        myRealm = General.realmconfig(getContext());
 
 
         b=getArguments();
@@ -754,9 +770,22 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
         user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-        user.setDeviceId("deviceId");
+        user.setDeviceId("hardware");
         user.setPlatform("android");
         user.setLocality(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
+
+        Log.i("TAG", "role before signup call "+user.getUserRole() +okBroker);
+        Log.i("TAG", "role before signup call "+user.getMobileCode());
+        Log.i("TAG", "role before signup call "+user.getMobileNo());
+        Log.i("TAG", "role before signup call "+user.getEmail());
+        Log.i("TAG", "role before signup call "+user.getName());
+        Log.i("TAG", "role before signup call "+user.getPushToken());
+        Log.i("TAG", "role before signup call "+user.getGcmId());
+        Log.i("TAG", "role before signup call "+user.getLatitude());
+        Log.i("TAG", "role before signup call "+user.getLongitude());
+        Log.i("TAG", "role before signup call "+user.getDeviceId());
+        Log.i("TAG", "role before signup call "+user.getPlatform());
+        Log.i("TAG", "role before signup call "+user.getLocality());
 
 		/*user.setUserRole(dbHelper.getValue("userRole");
         regid = UserProfileViewModel.getGcmId();
@@ -794,7 +823,103 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
 
 
+//
+//        userInfo.setName("fatyaa");
+//        user.setEmailId("dukatii@gmail.com");
+//
+//        myRealm.beginTransaction();
+//        UserInfo users = myRealm.copyToRealm(user);
+//        myRealm.commitTransaction();
+
+                        // Set its fields
+
+
+
+
+
+//                        RealmResults<UserInfo> results1 =
+//                                myRealm.where(UserInfo.class).findAll();
+//
+//                        for(UserInfo c:results1) {
+//                            Log.d("results1", c.getName());
+//                        }
+
+
                         my_user_id = signUp.responseData.getUserId();
+                      //  String ab = signUp.getError();
+
+
+                        if(signUp.getError().equals(2)){
+                            SnackbarManager.show(
+                                    Snackbar.with(getActivity())
+                                            .position(Snackbar.SnackbarPosition.TOP)
+                                            .text(signUp.responseData.getMessage())
+                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
+                          if(signUp.responseData.getMessage().contains("client")){
+                              oldRole = "client";
+                              okBroker = false;
+                              General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
+                              dbHelper.save(DatabaseConstants.userRole, "Client");
+                              userInfo.setUserRole("client");
+
+                          }  else{
+                              oldRole = "broker";
+                              okBroker = true;
+                              General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"broker");
+                              dbHelper.save(DatabaseConstants.userRole, "Broker");
+                              userInfo.setUserRole("broker");
+
+                          }
+
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setMessage("Do you want to signup in "+oldRole)
+                                    .setCancelable(true)
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                            Log.i(TAG,"yoyoyo11 "+oldRole +" "+redirectClient);
+                                            if(oldRole.equalsIgnoreCase("broker")){
+                                                redirectBroker = true;
+                                            }
+                                            if(oldRole.equalsIgnoreCase("client")){
+                                                redirectClient = true;
+                                                Log.i(TAG,"yoyoyo12 "+oldRole +" "+redirectClient);
+                                            }
+                                            signup_success();
+                                        }
+                                    })
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                            dialog.cancel();
+                                            Intent intent = new Intent(getContext(), ClientMainActivity.class);
+
+                                            startActivity(intent);
+                                        }
+                                    });
+                            final AlertDialog alert = builder.create();
+                            alert.show();
+                            Log.i("TRACE", "message is chal "+signUp.responseData.getMessage());
+
+                            submit.setEnabled(true);
+                            submit.setBackgroundColor(ContextCompat.getColor(context, R.color.greenish_blue));
+                            submit.setText("DONE");
+
+
+                            if (redirectToOyeIntentSpecs) {
+                                Fragment fragment = null;
+                                Bundle bundle = new Bundle();
+                                bundle.putString("cameFrom", "SignUp");
+                                bundle.putStringArray("propertySpecification", propertySpecification);
+                                fragment = new OyeIntentSpecs();
+                                fragment.setArguments(bundle);
+                                String title = "Oye Specifications";
+                                FragmentManager fragmentManager = getFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.container_map, fragment);
+                                fragmentTransaction.commit();
+                            }
+
+                            return;
+                        }
 
                         Log.i("TRACE", "Userid" +my_user_id);
 
@@ -803,17 +928,46 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                         General.setSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER, "yes");
                         General.setSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
 
+                        //save in realm
+                        try {
+                            userInfo.setUserId(my_user_id);
+                            userInfo.setIsLoggedInUser("yes");
+                            userInfo.setUserRole(role_of_user.toLowerCase());
+                            userInfo.setName(Sname);
+                            userInfo.setEmailId(Semail);
+                            userInfo.setMobileNumber(mobile_number);
+                            userInfo.setLat(General.getSharedPreferences(getContext(), AppConstants.MY_LAT));
+                            userInfo.setLng(General.getSharedPreferences(getContext(), AppConstants.MY_LNG));
+                            userInfo.setLocality(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
+
+                            myRealm.beginTransaction();
+                            UserInfo users = myRealm.copyToRealmOrUpdate(userInfo);
+                            myRealm.commitTransaction();
+
+                            RealmResults<UserInfo> results1 =
+                                    myRealm.where(UserInfo.class).findAll();
+
+                            for (UserInfo c : results1) {
+                                Log.i(TAG, "insiderr2 ");
+                                Log.i(TAG, "insiderr3 " + c.getName());
+                                Log.i(TAG, "insiderr4 " + c.getEmailId());
+                            }
+                        }
+                        catch(Exception e){
+                            Log.i(TAG,"Caught in exdception UseerInfo Realm "+e );
+                        }
+
                       Log.i("TRACE", "bef saveDb");
                         dbHelper.save(DatabaseConstants.userId, my_user_id);
                         SharedPrefs.save(getActivity(), "UserId", my_user_id);
-                        Log.i("Firebase", userProfileViewModel.getUserProfile().toString());
-                        userProfileFirebase = new UserProfileFirebase(Constant.FIREBASE_URL, my_user_id);
-                        userProfileFirebase.setUserProfileValues(userProfileViewModel.getUserProfile());
-                        HourGlassDetails hourGlassDetails=new HourGlassDetails();
-                        hourGlassDetails.setPercentage(0);
-                        hourGlassDetails.setWholeHourGlass(5);
-                        HourGlassFirebase hourGlassFirebase=new HourGlassFirebase(getActivity(),DatabaseConstants.firebaseUrl);
-                        hourGlassFirebase.saveHourGlassDetails(hourGlassDetails);
+//                        Log.i("Firebase", userProfileViewModel.getUserProfile().toString());
+//                        userProfileFirebase = new UserProfileFirebase(Constant.FIREBASE_URL, my_user_id);
+//                        userProfileFirebase.setUserProfileValues(userProfileViewModel.getUserProfile());
+//                        HourGlassDetails hourGlassDetails=new HourGlassDetails();
+//                        hourGlassDetails.setPercentage(0);
+//                        hourGlassDetails.setWholeHourGlass(5);
+//                        HourGlassFirebase hourGlassFirebase=new HourGlassFirebase(getActivity(),DatabaseConstants.firebaseUrl);
+//                        hourGlassFirebase.saveHourGlassDetails(hourGlassDetails);
                         dbHelper.save(DatabaseConstants.name, Sname);
                         dbHelper.save(DatabaseConstants.email,Semail);
                         dbHelper.save(DatabaseConstants.mobileNumber,mobile_number);
@@ -822,11 +976,38 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                         } else
                             dbHelper.save(DatabaseConstants.user, "Client");
 
-                        if (redirectToOyeIntentSpecs)
+                        if (redirectToOyeIntentSpecs) {
+
                             letsOye();
+                        }
                         else
                         {
-                            if(okBroker && !(lastFragment.equals("ChatBroker"))){
+
+
+                            if(redirectBroker){
+
+                            Intent intent = new Intent(getContext(),BrokerMainActivity.class);
+                            intent.putExtra("userRole", "broker");
+                            //intent.putExtra("default_deal_flag",true);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                    Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+
+                        }
+                            else if(redirectClient){
+
+                                Intent intent = new Intent(getContext(),ClientMainActivity.class);
+                                intent.putExtra("userRole", "client");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                    Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+
+                                //intent.putExtra("default_deal_flag",true);
+                                startActivity(intent);
+                            }
+                            else if(okBroker && !(lastFragment.equals("ChatBroker"))){
 
                                 jsonArray=b.getString("JsonArray");
                                 try {
