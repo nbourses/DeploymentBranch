@@ -469,14 +469,14 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <fragment
+        <!--<fragment
             android:id="@+id/map"
             android:layout_below="@+id/seekbar_linearlayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:name="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment"
             android:orientation="vertical">
-        </fragment>
+        </fragment>-->
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"

@@ -105,6 +105,12 @@
             </ScrollView>
         </LinearLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/container_Signup">
+    </FrameLayout>
    <!-- <GridLayout
         android:id="@+id/btnOnOyeClick"
         android:layout_width="match_parent"

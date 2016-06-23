@@ -4,11 +4,16 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -22,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -61,6 +67,8 @@ import com.nispok.snackbar.SnackbarManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 
 import butterknife.Bind;
@@ -102,7 +110,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     private LinearLayout supportChat;
     private ListView listViewDeals;
 
-
+    private static final int RESULT_LOAD_IMAGE = 1;
 
     /* @Bind(R.id.edit) TextView edit;
      @Bind(R.id.etname) EditText name;
@@ -120,7 +128,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
     //    ClientMainActivity activity;
     DBHelper dbHelper;
-
+    private static Bitmap Image = null;
+    private static Bitmap rotateImage = null;
     String picturePath, mobile;
     private static final int SELECT_PHOTO = 1;
     GoogleCloudMessaging gcm;
@@ -132,6 +141,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     JSONArray p;
     String PROJECT_NUMBER = "463092685367";
     TextView fbdata;
+    Button already_registered_tab,new_user_tab;
     Boolean okBroker=false;
     Boolean success = false, is_role_selected=false, validation_success, email_success;
     String subphone=null;
@@ -153,11 +163,15 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     LinearLayout llotp;
     String[] propertySpecification;
     Boolean redirectToOyeIntentSpecs=false;
+    Boolean newUser=true;
     Bundle b;
+    TextView tvcontent,tvheading;
     String lastFragment="";
+    ImageView editProfile_pic;
     private String role_of_user;
     private Activity activity;
     private Button submit;
+    ImageView profile_pic;
     ////////////////////////////////////////////////////
     // Variables defined for digits authentication
 ////////////////////////////////////////////////////
@@ -232,10 +246,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         listViewDeals = (ListView) view1.findViewById(R.id.listViewDeals);
 
 
+
         if(lastFragment.equals("RentalBrokerAvailable")||lastFragment.equals("RentalBrokerRequirement")||
                 lastFragment.equals("SaleBrokerAvailable")||lastFragment.equals("SaleBrokerRequirement") ||
                 lastFragment.equals("BrokerPreokFragment")||lastFragment.equals("ChatBroker")) {
-            okBroker = true;
+                okBroker = true;
+
             redirectToOyeIntentSpecs = false;
         }
 
@@ -250,8 +266,10 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         }
 
         Log.i("Signup called =", "view assigned");
+
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
         dbHelper=new DBHelper(getActivity());
+
 
         Log.i("Signup called =", "view assigned");
        //digits//
@@ -340,9 +358,112 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         });
 */
 
+
+
+
+
+         profile_pic = (ImageView) view.findViewById(R.id.profile_pic);
+        already_registered_tab=(Button) view.findViewById(R.id.already_registered_tab);
+         new_user_tab=(Button) view.findViewById(R.id.new_user_tab);
         name= (EditText) view.findViewById(R.id.etname);
         email= (EditText) view.findViewById(R.id.etemail);
         submit=(Button)view.findViewById(R.id.submitprofile);
+        tvheading= (TextView) view.findViewById(R.id.tvheading);
+        tvcontent= (TextView) view.findViewById(R.id.tvcontent);
+         editProfile_pic = (ImageView) view.findViewById(R.id.editProfile_pic);
+
+        if(okBroker==false) {
+            tvheading.setText(R.string.client_sign_up_heading);
+            tvcontent.setText(R.string.client_sign_up_content);
+        }
+        else
+        {
+            tvheading.setText(R.string.broker_sign_up_heading);
+            tvcontent.setText(R.string.broker_sign_up_content);
+        }
+
+        editProfile_pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v2) {
+
+//                Intent i = new Intent(
+//                        Intent.ACTION_PICK,
+//                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//
+//                startActivityForResult(i, RESULT_LOAD_IMAGE);
+
+//                Intent intent = new Intent();
+//                intent.setType("image/*");
+//                intent.setAction(Intent.ACTION_GET_CONTENT);
+//                startActivityForResult(Intent.createChooser(intent, "Select Picture"), RESULT_LOAD_IMAGE);
+
+                profile_pic.setImageBitmap(null);
+                if (Image != null)
+                    Image.recycle();
+                Intent intent1 = new Intent();
+                intent1.setType("image/*");
+                intent1.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent1, "Select Picture"), RESULT_LOAD_IMAGE);
+
+
+            }
+        });
+
+  already_registered_tab.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        newUser=false;
+        name.setVisibility(View.GONE);
+        email.setVisibility(View.GONE);
+        already_registered_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
+        new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
+
+        submit.setText("LOGIN");
+        if(okBroker==false) {
+            tvheading.setText(R.string.client_log_in_heading);
+            tvcontent.setText(R.string.client_sign_up_content);
+        }
+        else
+        {
+            tvheading.setText(R.string.broker_log_in_heading);
+            tvcontent.setText(R.string.broker_sign_up_content);
+        }
+    }
+});
+
+ new_user_tab.setOnClickListener(new View.OnClickListener() {
+ @Override
+  public void onClick(View v) {
+  //   submit.setVisibility(View.VISIBLE);
+     newUser=true;
+     name.setVisibility(View.VISIBLE);
+     email.setVisibility(View.VISIBLE);
+     already_registered_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
+     new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
+     submit.setText("REGISTER");
+
+     if(okBroker==false) {
+         tvheading.setText(R.string.client_sign_up_heading);
+         tvcontent.setText(R.string.client_sign_up_content);
+     }
+     else
+     {
+         tvheading.setText(R.string.broker_sign_up_heading);
+         tvcontent.setText(R.string.broker_sign_up_content);
+     }
+
+
+
+            }
+        });
+
+
+
+
+
+
+//        onClickOldUser();
+//        onClickNewUser();
 
 
 
@@ -401,6 +522,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         });   */
 
 
+
+
+
+
+
+
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -426,20 +553,21 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 Log.i("TRACE", "after validationCheck");
 
                 // //validation_success = roleSelected();
+if(newUser==true) {
+    context = getContext();
+    if (Sname.matches("")) {
+        SnackbarManager.show(
+                Snackbar.with(activity)
+                        .position(Snackbar.SnackbarPosition.TOP)
+                        .text("Please enter name.")
+                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
+        return;
+    } else
+        email_success = isEmailValid(Semail);
 
-                context = getContext();
-                if (Sname.matches("")) {
-                    SnackbarManager.show(
-                            Snackbar.with(activity)
-                                    .position(Snackbar.SnackbarPosition.TOP)
-                                    .text("Please enter name.")
-                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
-                    return;
-                }
-                else
-                    email_success = isEmailValid(Semail);
-
-                if (email_success)
+    if (email_success)
+        Digits.authenticate(authCallback, R.style.CustomDigitsTheme);
+}else
                     Digits.authenticate(authCallback, R.style.CustomDigitsTheme);
 
 
@@ -1271,5 +1399,72 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         fragmentTransaction.commitAllowingStateLoss();
 
     }
+
+
+
+
+
+   /* @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RESULT_LOAD_IMAGE  && resultCode != 0  && null != data) {
+            Uri selectedImage = data.getData();
+
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+            Cursor cursor = getContext().getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+Bitmap newImage=(BitmapFactory.decodeFile(picturePath));
+            profile_pic.setImageBitmap(newImage);
+
+        }
+
+
+    }*/
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode != 0) {
+            Uri mImageUri = data.getData();
+            try {
+                Image = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), mImageUri);
+                if (getOrientation(getContext(), mImageUri) != 0) {
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(getOrientation(getContext(), mImageUri));
+                    if (rotateImage != null)
+                        rotateImage.recycle();
+                    rotateImage = Bitmap.createBitmap(Image, 0, 0, Image.getWidth(), Image.getHeight(), matrix,true);
+                    profile_pic.setImageBitmap(rotateImage);
+                } else
+                    profile_pic.setImageBitmap(Image);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+    public static int getOrientation(Context context, Uri photoUri) {
+        Cursor cursor = context.getContentResolver().query(photoUri,
+                new String[] { MediaStore.Images.ImageColumns.ORIENTATION },null, null, null);
+
+        if (cursor.getCount() != 1) {
+            return -1;
+        }
+        cursor.moveToFirst();
+        return cursor.getInt(0);
+    }
+
+
+
 
 }

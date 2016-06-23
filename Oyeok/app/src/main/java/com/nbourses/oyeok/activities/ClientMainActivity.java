@@ -1,6 +1,5 @@
 package com.nbourses.oyeok.activities;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -38,6 +38,7 @@ import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
+import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.fragments.OyeScreenFragment;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -150,9 +151,15 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
                                         .text("Please select property subtype")
                                         .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
                     } else {
+                        if (slidingLayout != null &&
+                                (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
+                                        slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
+                            closeOyeScreen();
+
+                        }
 
                         SignUpFragment signUpFragment = new SignUpFragment();
-                        loadFragment(signUpFragment, bundle, R.id.container_oye, "");
+                        loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
                         Log.i("Signup called =", "Sign up");
                         // btnOnOyeClick.setVisibility(View.GONE);
                     }
@@ -168,22 +175,9 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
                     } else {
                         //create new deal
 
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
-                        builder.setMessage("Dou you want to publish this oye?")
-                                .setCancelable(true)
-                                .setPositiveButton("Publish", new DialogInterface.OnClickListener() {
-                                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                                        General.publishOye(getApplicationContext());
-                                        closeOyeScreen();
-                                    }
-                                })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-                        final AlertDialog alert = builder.create();
-                        alert.show();
+                        alertbuilder();
+
+
 
 
                     }
@@ -207,7 +201,27 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     };
 
 
+private void alertbuilder()
 
+{
+    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setMessage("Dou you want to publish this oye?")
+            .setCancelable(true)
+            .setPositiveButton("Publish", new DialogInterface.OnClickListener() {
+                public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                    General.publishOye(getBaseContext());
+                    closeOyeScreen();
+                }
+            })
+            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                    dialog.cancel();
+                }
+            });
+    final AlertDialog alert = builder.create();
+    alert.show();
+
+}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -446,6 +460,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.addToBackStack(title);
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
 
@@ -541,7 +556,12 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             //setContentView(R.layout.browser);
             loadFragment(frag, null, R.id.container_map, title);
         }
+        else if (itemTitle.equals(getString(R.string.settings))) {
+            AppSetting appSetting=new AppSetting();
+            loadFragment(appSetting,null,R.id.container_Signup,"");
 
+
+        }
 
 
         if (fragment != null) {
@@ -701,13 +721,17 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
     @Override
     public void onBackPressed() {
+
+        if(getFragmentManager().getBackStackEntryCount() >0)
+        {
+            Log.i("BACK PRESSED","===================");
+            getFragmentManager().popBackStack();
+        }
+
         if (slidingLayout != null &&
                 (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
                         slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
             closeOyeScreen();
-//            DashboardClientFragment d=new DashboardClientFragment();
-//            d.UpdateRatePanel();
-
 
         }
         else if(webView != null){
@@ -716,9 +740,12 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             finish();
         }
         else{
+            Log.i("BACK PRESSED"," closing app =================== "+getFragmentManager().getBackStackEntryCount());
             super.onBackPressed();
 
         }
+
+
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 

@@ -4,10 +4,11 @@
     <gradient
         android:startColor="#ffffffff"
         android:endColor="#ffffffff"
-        android:angle="45"/>
+        android:angle="90"/>
     <padding android:left="7dp"
-        android:top="13dp"
+        android:top="7dp"
         android:right="7dp"
         android:bottom="7dp" />
-    <corners android:radius="50dp" />
+    <corners android:radius="10dp" />
 </shape>
+    <!--android:angle="90"-->

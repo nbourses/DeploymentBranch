@@ -1098,7 +1098,8 @@ if(count<=220) {
 
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_map, fragment);
+            fragmentTransaction.replace(R.id.container_sign, fragment);
+           // fragmentTransaction.replace(R.id.container_map, fragment);
             fragmentTransaction.commit();
         } else {
             //here broker is registered

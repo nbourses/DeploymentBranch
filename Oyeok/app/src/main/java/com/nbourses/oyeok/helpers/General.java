@@ -320,7 +320,7 @@ public class General extends BroadcastReceiver {
             String tt;
             String ptype;
             String pstype;
-            String ptype;
+            //String ptype;
             String price;
             final String speccode;
             Log.i("TRACE", "in publishOye");

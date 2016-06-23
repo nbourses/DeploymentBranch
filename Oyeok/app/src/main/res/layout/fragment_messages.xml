@@ -60,7 +60,7 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/profile_image"
+                    android:id="@+id/profile_pic"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/broker"
@@ -70,7 +70,7 @@
 
                 <TextView
                     android:id="@+id/broker_name"
-                    android:layout_below="@+id/profile_image"
+                    android:layout_below="@+id/profile_pic"
                     android:layout_marginTop="@dimen/eight_dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sixteen_sp"
@@ -100,7 +100,7 @@
                 android:layout_alignParentTop="false">
                 <TextView
                     android:id="@+id/tv_oyeok"
-                    android:layout_below="@+id/profile_image"
+                    android:layout_below="@+id/profile_pic"
                     android:layout_marginTop="@dimen/eight_dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sixteen_sp"
@@ -110,7 +110,7 @@
 
                 <TextView
                     android:id="@+id/tv_oyeok_rating"
-                    android:layout_below="@+id/profile_image"
+                    android:layout_below="@+id/profile_pic"
                     android:layout_marginTop="@dimen/eight_dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sixteen_sp"
@@ -132,7 +132,7 @@
 
                     <TextView
                         android:id="@+id/tv_activedealsk"
-                        android:layout_below="@+id/profile_image"
+                        android:layout_below="@+id/profile_pic"
                         android:layout_marginTop="@dimen/eight_dp"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sixteen_sp"
@@ -143,7 +143,7 @@
 
                     <TextView
                         android:id="@+id/tv_activedeals_rating"
-                        android:layout_below="@+id/profile_image"
+                        android:layout_below="@+id/profile_pic"
                         android:layout_marginTop="@dimen/eight_dp"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sixteen_sp"
@@ -162,7 +162,7 @@
 
                     <TextView
                         android:id="@+id/tv_closeddeals"
-                        android:layout_below="@+id/profile_image"
+                        android:layout_below="@+id/profile_pic"
                         android:layout_marginTop="@dimen/eight_dp"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sixteen_sp"
@@ -173,7 +173,7 @@
 
                     <TextView
                         android:id="@+id/tv_closeddeals_rating"
-                        android:layout_below="@+id/profile_image"
+                        android:layout_below="@+id/profile_pic"
                         android:layout_marginTop="@dimen/eight_dp"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sixteen_sp"

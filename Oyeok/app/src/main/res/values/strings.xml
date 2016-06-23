@@ -19,6 +19,7 @@
     <string name="notifications">Notifications</string>
     <string name="likeOnFb">Like us on Facebook</string>
     <string name="aboutUs">About us</string>
+    <string name="settings">Settings</string>
     <string name="updateProfile">Update Profile</string>
 
 
@@ -39,11 +40,6 @@
     <string name="tweet">Tweet</string>
 
 
-
-
-
-
-
     <string name="memberinfo">Member /n Info</string>
 
 
@@ -57,11 +53,12 @@
         <item>@string/useAsClient</item>
         <item>@string/brokerOk</item>
         <item>@string/shareApp</item>
-      <!--  <item>@string/supportChat</item> -->
+        <!--  <item>@string/supportChat</item> -->
         <item>@string/notifications</item>
         <item>@string/likeOnFb</item>
         <item>@string/aboutUs</item>
-     <!--   <item>@string/updateProfile</item> -->
+        <item>@string/settings</item>
+        <!--   <item>@string/updateProfile</item> -->
 
     </string-array>
 
@@ -73,6 +70,8 @@
         <item>@string/notifications</item>
         <item>@string/likeOnFb</item>
         <item>@string/aboutUs</item>
+        <item>@string/settings</item>
+
         <!--   <item>@string/updateProfile</item> -->
 
     </string-array>
@@ -85,6 +84,7 @@
         <item>@string/notifications</item>
         <item>@string/likeOnFb</item>
         <item>@string/aboutUs</item>
+        <item>@string/settings</item>
         <!--   <item>@string/updateProfile</item> -->
     </string-array>
 
@@ -117,5 +117,16 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="average_rate_this_locality">Average Rate @ This Locality</string>
-
+    <string name="already_registered">Already Registered</string>
+    <string name="new_user">New User</string>
+    <string name="edit">Edit</string>
+    <string name="sign_up_login">Sign Up/Login</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="client_sign_up_content"><![CDATA[(Check locality rates,Check Building rates,\nReponse < 5 min from 50 Brokers,\nschedule site visit and close faster)]]></string>
+    <string name="client_sign_up_heading">You are registering as a Customer</string>
+    <string name="broker_sign_up_heading">You are registering as a Broker</string>
+    <string name="broker_sign_up_content">(Get free leads,do site visits,chat with customer,\nsave time with automatic listing\nand close faster)</string>
+    <string name="client_log_in_heading">You are Logging in as a Customer</string>
+    <string name="broker_log_in_heading">You are Logging in as a Broker</string>
 </resources>

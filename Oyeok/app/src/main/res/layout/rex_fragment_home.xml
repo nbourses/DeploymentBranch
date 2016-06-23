@@ -446,7 +446,7 @@
             </LinearLayout>
 
         </LinearLayout>
-   
+
 
         <View
             android:id="@+id/border_line"

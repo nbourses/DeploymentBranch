@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/eight_dp"
     android:background="#FFFFFF"
     android:orientation="vertical">
@@ -375,7 +375,7 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_below="@+id/rootWrapper"
-    android:layout_marginTop="18dp"
+    android:layout_marginTop="8dp"
     android:orientation="horizontal"
     android:id="@+id/lt"
     android:layout_height="wrap_content"
@@ -425,13 +425,11 @@
         android:background="@color/yellow"
         android:layout_below="@+id/lt"
         android:foregroundGravity="center"
-
         android:orientation="vertical"
-        android:weightSum="1"
         android:visibility="visible"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="1dp">
 
 
@@ -479,4 +477,17 @@
         </LinearLayout>
 
     </GridLayout>
+    <TextView
+        android:id="@+id/tv_dealinfo11"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:textColor="@color/foreground_material_light"
+        android:text=""
+        android:singleLine="false"
+        android:layout_below="@+id/btnOnOyeClick"
+        android:textStyle="bold|italic"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp" />
 </RelativeLayout>
