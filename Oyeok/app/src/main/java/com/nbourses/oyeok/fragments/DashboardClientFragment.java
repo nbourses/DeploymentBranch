@@ -318,9 +318,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     public void setOyeButtonClickListener(OnOyeClick onOyeClick) {
         this.onOyeClick = onOyeClick;
-
-
-
+        
 
     }
 
