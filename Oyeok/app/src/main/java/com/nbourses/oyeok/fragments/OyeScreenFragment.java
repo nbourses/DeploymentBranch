@@ -351,21 +351,25 @@ public class OyeScreenFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            Log.i("llmin111111","llmin ++++++++++++++++++++++++++"+intent.getExtras().getString("llmin"));
-
-            AppConstants.minRent = intent.getExtras().getInt("llmin");
-            Log.i("llmin111111"," min rent"+AppConstants.minRent);
-            AppConstants.minRent=AppConstants.minRent/2;
-            AppConstants.maxRent  = intent.getExtras().getInt("llmax");
-            AppConstants.maxRent=AppConstants.maxRent+AppConstants.maxRent/2;
-            Log.i("llmin111111","max rent"+AppConstants.maxRent);
-            AppConstants.minSale  = intent.getExtras().getInt("ormin");
-            Log.i("llmin111111","min Sale"+AppConstants.minSale);
-            AppConstants.minSale  = AppConstants.minSale/2;
-            AppConstants.maxSale  = intent.getExtras().getInt("ormax");
-            Log.i("llmin111111","max Sale"+AppConstants.maxSale);
-            AppConstants.maxSale = (AppConstants.maxSale + (AppConstants.maxSale/2));
+            Log.i("llmin111111", "llmin ++++++++++++++++++++++++++" + intent.getExtras().getString("llmin"));
+            if (intent.getExtras().getString("llmin") != "0")
+            {
+                AppConstants.minRent = intent.getExtras().getInt("llmin");
+            Log.i("llmin111111", " min rent" + AppConstants.minRent);
+            AppConstants.minRent = AppConstants.minRent / 2;
+            AppConstants.maxRent = intent.getExtras().getInt("llmax");
+            AppConstants.maxRent = AppConstants.maxRent + AppConstants.maxRent / 2;
+            Log.i("llmin111111", "max rent" + AppConstants.maxRent);
+            AppConstants.minSale = intent.getExtras().getInt("ormin");
+            Log.i("llmin111111", "min Sale" + AppConstants.minSale);
+            AppConstants.minSale = AppConstants.minSale / 2;
+            AppConstants.maxSale = intent.getExtras().getInt("ormax");
+            Log.i("llmin111111", "max Sale" + AppConstants.maxSale);
+            AppConstants.maxSale = (AppConstants.maxSale + (AppConstants.maxSale / 2));
+        }
             setMinMaxValueForDiscreteSeekBar();
+
+
         }
     };
 
