@@ -188,6 +188,17 @@
                             android:weightSum="1"
                             android:layout_above="@+id/tvRate"
                             android:layout_below="@+id/tv_building">
+                            <com.skyfishjy.library.RippleBackground
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:id="@+id/content3"
+                                app:rb_color="#ff0000"
+                                app:rb_radius="5dp"
+                                app:rb_rippleAmount="4"
+                                app:rb_duration="3000"
+                                app:rb_scale="6">
                                                 <TextView
                                                     android:layout_width="255dp"
                                                     android:layout_height="match_parent"
@@ -200,11 +211,25 @@
                                                     android:textStyle="bold"
                                                     android:layout_marginTop="1dp"
                                                     android:layout_weight="2.60" />
+                            </com.skyfishjy.library.RippleBackground>
                         </LinearLayout>
 
+                        <com.skyfishjy.library.RippleBackground
+                            xmlns:android="http://schemas.android.com/apk/res/android"
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/content"
+                            app:rb_color="#ff0000"
+                            app:rb_radius="5dp"
+                            app:rb_rippleAmount="4"
+                            app:rb_duration="3000"
+                            app:rb_scale="6"
+                            android:layout_alignParentRight="true">
                         <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" >
+
 
                             <TextView
                                 android:id="@+id/newVisits"
@@ -221,20 +246,20 @@
                                 android:textSize="20sp"
                                 android:layout_alignParentRight="true"/>
 
-                            <ImageView
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:id="@+id/beacons2"
-                                android:layout_alignParentTop="true"
-                                android:layout_alignParentStart="true" />
+                            <!--<ImageView-->
+                                <!--android:layout_width="15dp"-->
+                                <!--android:layout_height="15dp"-->
+                                <!--android:id="@+id/beacons2"-->
+                                <!--android:layout_alignParentTop="true"-->
+                                <!--android:layout_alignParentStart="true" />-->
 
-                            <ImageView
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:id="@+id/beacons3"
-                                android:layout_alignParentTop="true"
-                                android:layout_toEndOf="@+id/beacons2"
-                                android:layout_marginStart="189dp" />
+                            <!--<ImageView-->
+                                <!--android:layout_width="15dp"-->
+                                <!--android:layout_height="15dp"-->
+                                <!--android:id="@+id/beacons3"-->
+                                <!--android:layout_alignParentTop="true"-->
+                                <!--android:layout_toEndOf="@+id/beacons2"-->
+                                <!--android:layout_marginStart="189dp" />-->
 
                             <TextView
                                 android:id="@+id/txtFilterValue"
@@ -251,8 +276,9 @@
                                 android:textSize="14sp"
                                 android:layout_alignParentRight="true" />
 
-                        </RelativeLayout>
 
+                        </RelativeLayout>
+                        </com.skyfishjy.library.RippleBackground>
 
                     </RelativeLayout>
 
@@ -384,7 +410,17 @@
                 android:weightSum="1"
                 android:id="@+id/route"
                 android:nestedScrollingEnabled="false">
-
+                <com.skyfishjy.library.RippleBackground
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/content2"
+                    app:rb_color="#ff0000"
+                    app:rb_radius="5dp"
+                    app:rb_rippleAmount="4"
+                    app:rb_duration="3000"
+                    app:rb_scale="6">
                 <AutoCompleteTextView android:id="@+id/inputSearch"
                     android:inputType="textMultiLine|textPostalAddress"
                     android:layout_width="fill_parent"
@@ -403,6 +439,7 @@
                     android:textSize="15dp"
                     android:nestedScrollingEnabled="false"
                     android:foregroundGravity="center" />
+                </com.skyfishjy.library.RippleBackground>
                 <!--android:textCursorDrawable="@color/white"-->
                 <!--android:drawableRight="@drawable/ic_search_24dp"-->
 

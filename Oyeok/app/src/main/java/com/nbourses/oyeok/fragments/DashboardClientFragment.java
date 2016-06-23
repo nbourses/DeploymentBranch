@@ -85,6 +85,7 @@ import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.interfaces.OnOyeClick;
 import com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
+import com.skyfishjy.library.RippleBackground;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -113,6 +114,8 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 import static java.lang.Math.log10;
 
@@ -211,7 +214,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private String bhk;
     private int filterValueMultiplier=950;
 
-
+    private int countertut;
     private int []or_psf=new int[5], ll_pm=new int[5];
     private LatLng loc;
     LinearLayout recordWorkout;
@@ -361,6 +364,42 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         mMarkerminmax = (RelativeLayout) rootView.findViewById(R.id.markerpanelminmax);
         ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
         recordWorkout = (LinearLayout) rootView.findViewById(R.id.recordWorkout);
+
+
+        //tutorial and alert beacon
+        final RippleBackground rippleBackground1=(RippleBackground)rootView.findViewById(R.id.content);
+        final RippleBackground rippleBackground2=(RippleBackground)rootView.findViewById(R.id.content2);
+        final RippleBackground rippleBackground3=(RippleBackground)rootView.findViewById(R.id.content3);
+
+        countertut=0;
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this.getActivity());
+
+        sequence.addSequenceItem(rootView.findViewById(R.id.phasedSeekBar),
+                "Select Transaction Type", "GOT IT");
+
+        sequence.addSequenceItem(rootView.findViewById(R.id.ic_search),
+                "Select Your Location", "GOT IT");
+
+        sequence.addSequenceItem(rootView.findViewById(R.id.tvFetchingRates),
+                "Select Your Budget Price", "GOT IT");
+        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
+            @Override
+                public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
+                countertut++;
+                if(countertut==3) {
+                 rippleBackground1.startRippleAnimation();
+                  rippleBackground2.startRippleAnimation();
+                   rippleBackground3.startRippleAnimation();
+                }
+                }
+        });
+        sequence.start();
+
+
+
+
+
+
 
 //        footer = new LinearLayout(getContext());
 //        footer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 8));
