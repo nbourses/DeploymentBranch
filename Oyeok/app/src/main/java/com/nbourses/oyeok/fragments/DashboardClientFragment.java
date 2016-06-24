@@ -85,6 +85,9 @@ import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.interfaces.OnOyeClick;
 import com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+import com.skyfishjy.library.RippleBackground;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -113,6 +116,8 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 import static java.lang.Math.log10;
 
@@ -186,7 +191,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     //View rootView;
     HashMap<String, HashMap<String, String>> chatListData;
 
-    View rootView;
+     View rootView;
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "";
     AutoCompleteTextView autoCompView;
     private RelativeLayout errorView;
@@ -205,20 +210,20 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private int llMin, llMax, orMin, orMax;
     private String name,text;
 
-    
-    
+    private static int count=0;
+   private static final String ischeck="true";
     private String filterValue;
     private String bhk;
     private int filterValueMultiplier=950;
 
-
+    private int countertut;
     private int []or_psf=new int[5], ll_pm=new int[5];
     private LatLng loc;
     LinearLayout recordWorkout;
     
     Intent intent ;
 
-
+String  Walkthrough;
     AutoCompleteTextView inputSearch;
      private  int INDEX;
     @Bind(R.id.seekbar_linearlayout)
@@ -232,6 +237,25 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     ValueAnimator mFlipAnimator;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
+
+
+
+    private BroadcastReceiver oncheckWalkthrough=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("walkthrough","walkthrough1"+intent.getExtras().getString("checkWalkthrough"));
+            if(intent.getExtras().getBoolean("checkWalkthrough")==true){
+                Log.i("walkthrough","walkthrough2"+intent.getExtras().getBoolean("checkWalkthrough"));
+               // Walkthrough=intent.getExtras().getString("checkWalkthrough");
+
+                Log.i("walkthrough","walkthrough3"+Walkthrough);
+
+            }
+
+        }
+    };
+
     private BroadcastReceiver onFilterValueUpdate = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -315,9 +339,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     public void setOyeButtonClickListener(OnOyeClick onOyeClick) {
         this.onOyeClick = onOyeClick;
-
-
-
+        
 
     }
 
@@ -361,6 +383,40 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         mMarkerminmax = (RelativeLayout) rootView.findViewById(R.id.markerpanelminmax);
         ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
         recordWorkout = (LinearLayout) rootView.findViewById(R.id.recordWorkout);
+
+        Walkthrough=SharedPrefs.getString(getContext(),SharedPrefs.CHECK_WALKTHROUGH);
+        Log.i("ischecked","walkthrough3dashboard"+Walkthrough);
+
+//        final RippleBackground rippleBackground1 = (RippleBackground) rootView.findViewById(R.id.client_content);
+//        final RippleBackground rippleBackground2 = (RippleBackground) rootView.findViewById(R.id.client_content2);
+//        final RippleBackground rippleBackground3 = (RippleBackground) rootView.findViewById(R.id.client_content3);
+//       // final RippleBackground rippleBackground4 = (RippleBackground) rootView.findViewById(R.id.content4);
+//        countertut = 0;
+//        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this.getActivity());
+//
+//        sequence.addSequenceItem(rootView.findViewById(R.id.phasedSeekBar),
+//                "Select Transaction Type", "GOT IT");
+//
+//        sequence.addSequenceItem(rootView.findViewById(R.id.ic_search),
+//                "Select Your Location", "GOT IT");
+//
+//        sequence.addSequenceItem(rootView.findViewById(R.id.tvFetchingRates),
+//                "Select Your Budget Price", "GOT IT");
+//        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
+//            @Override
+//            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
+//                countertut++;
+//                if (countertut == 3) {
+//                    rippleBackground1.startRippleAnimation();
+//                    rippleBackground2.startRippleAnimation();
+//                    rippleBackground3.startRippleAnimation();
+//                   // rippleBackground4.startRippleAnimation();
+//                }
+//            }
+//        });
+//        sequence.start();
+
+
 
 //        footer = new LinearLayout(getContext());
 //        footer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 8));
@@ -742,30 +798,31 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     public void onDrag(MotionEvent motionEvent) {
                         //Log.d("t1", String.format("ME: %s", motionEvent));
 
-//                        if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-//                            tvRate.setVisibility(View.INVISIBLE);
-//                            rupeesymbol.setVisibility(View.INVISIBLE);
-//                            Log.i("MARKER 111","========================="+MarkerClicked);
-//                            //tv_building.setVisibility(View.GONE);
-////                    Point p= new Point(x,y);
-////                    LatLng currentLocation1;
-////                   currentLocation1= map.getProjection().fromScreenLocation(point);
-////                    lat=currentLocation1.latitude;
-////                    lng=currentLocation1.longitude;
-////
-////
-////                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-////                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-//                            //getRegion();
-//                            tvFetchingrates.setVisibility(View.INVISIBLE);
+                        if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                            tvRate.setVisibility(View.INVISIBLE);
+                            rupeesymbol.setVisibility(View.INVISIBLE);
+                            Log.i("MARKER 111","========================="+MarkerClicked);
+                            //tv_building.setVisibility(View.GONE);
+//                    Point p= new Point(x,y);
+//                    LatLng currentLocation1;
+//                   currentLocation1= map.getProjection().fromScreenLocation(point);
+//                    lat=currentLocation1.latitude;
+//                    lng=currentLocation1.longitude;
 //
-//                           horizontalPicker.keepScrolling();
-////                           // clicked=false;
-////                           // MarkerClicked=false;
-//                        } else
+//
+//                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+//                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                            //getRegion();
+                            tvFetchingrates.setVisibility(View.INVISIBLE);
+
+                           horizontalPicker.keepScrolling();
+//                            horizontalPicker.
+//                           // clicked=false;
+//                           // MarkerClicked=false;
+                        } else
                           if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                              // horizontalPicker.keepScrolling();
-                             // horizontalPicker.stopScrolling();
+                             horizontalPicker.stopScrolling();
                             //mMarkerPanel.setVisibility(View.VISIBLE);
                             final long now = SystemClock.uptimeMillis();
                             if (now - lastTouched > SCROLL_TIME) {
@@ -960,7 +1017,13 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 //}
 
-
+        if(Walkthrough.equalsIgnoreCase("true")) {
+            Log.i("ischecked","walkthrough3dashboard1111111"+Walkthrough);
+            tutorialAlert(rootView);
+//    beaconAlet(rootView);
+            Walkthrough="false";
+//    SharedPrefs.save(getContext(),SharedPrefs.CHECK_WALKTHROUGH,Walkthrough);
+        }
 
 
 
@@ -1145,6 +1208,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(onFilterValueUpdate, new IntentFilter(AppConstants.ON_FILTER_VALUE_UPDATE));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(oncheckWalkthrough, new IntentFilter(AppConstants.CHECK_WALKTHROUGH));
+        //LocalBroadcastManager.getInstance(getContext()).registerReceiver(oncheckbeacon, new IntentFilter(AppConstants.CHECK_BEACON));
 
 
     }
@@ -1154,6 +1219,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         super.onPause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(onFilterValueUpdate);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(closeOyeScreenSlide);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oncheckWalkthrough);
+       // LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oncheckbeacon);
+
     }
 
     @Override
@@ -1537,11 +1605,17 @@ try {
     public void onPositionSelected(int position, int count) {
         if (count == 2) {
             if (position == 0) {
+//                if() {
+                //for(int i=0;i<2;i++)
+                   // horizontalPicker.keepScrolling();
+//                lastTouched = SystemClock.uptimeMillis();
+//                }
                 tvRate.setText("/ month");
                 brokerType = "rent";
                 dbHelper.save(DatabaseConstants.brokerType, "LL");
                 dbHelper.save("brokerType", "On Rent");
-                updateHorizontalPicker();
+//                updateHorizontalPicker();
+
                // BroadCastMinMaxValue(llMin,llMax,orMin,orMax);
                 Log.i("Index","index:"+INDEX+" "+MarkerClicked);
                 if(flag[INDEX]==true) {
@@ -1554,15 +1628,20 @@ try {
                 }
 
                   //  onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),950,llMin*filterValueMultiplier,llMax*filterValueMultiplier);
-
+//                final long now = SystemClock.uptimeMillis();
+//                if(now-lastTouched>SCROLL_TIME)
+                //horizontalPicker.stopScrolling();
                 updateHorizontalPicker();
 
             } else if (position == 1) {
+               // for(int i=0;i<2;i++)
+               // horizontalPicker.keepScrolling();
                 tvRate.setText("/ sq.ft");
                 brokerType = "resale";
                 dbHelper.save(DatabaseConstants.brokerType, "OR");
                 dbHelper.save("brokerType", "For Sale");
                // BroadCastMinMaxValue(llMin,llMax,orMin,orMax);
+
                 if(flag[INDEX]==true) {
                     tv_building.setVisibility(View.VISIBLE);
                     tv_building.setText("Average Rate in last 1 WEEK");
@@ -1570,7 +1649,7 @@ try {
                     tvFetchingrates.setText(Html.fromHtml(text));
                 }
                // onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),950,orMin,orMax);
-
+               // horizontalPicker.stopScrolling();
                 updateHorizontalPicker();
             }
         }
@@ -2071,6 +2150,105 @@ Log.i("TRACE11","llmin"+llmin);
 
 
 
+public void tutorialAlert(final View rootView) {
+    //tutorial and alert beacon
+
+    // final RippleBackground rippleBackground4 = (RippleBackground) rootView.findViewById(R.id.content4);
+    countertut = 0;
+    MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this.getActivity());
+
+    sequence.addSequenceItem(rootView.findViewById(R.id.phasedSeekBar),
+            "Select Transaction Type", "GOT IT");
+
+    sequence.addSequenceItem(rootView.findViewById(R.id.ic_search),
+            "Select Your Location", "GOT IT");
+
+    sequence.addSequenceItem(rootView.findViewById(R.id.tvFetchingRates),
+            "Select Your Budget Price", "GOT IT");
+    sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
+        @Override
+        public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
+            countertut++;
+            if (countertut == 3) {
+
+                try {
+                    beaconAlet(rootView);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // rippleBackground4.startRippleAnimation();
+            }
+        }
+    });
+    sequence.start();
+
+
+}
+
+
+
+public void beaconAlet(View rootView) throws InterruptedException {
+
+    final RippleBackground rippleBackground1 = (RippleBackground) rootView.findViewById(R.id.client_content);
+    final RippleBackground rippleBackground2 = (RippleBackground) rootView.findViewById(R.id.client_content2);
+    final RippleBackground rippleBackground3 = (RippleBackground) rootView.findViewById(R.id.client_content3);
+
+
+
+    Log.i("time","===================1==  ");
+    rippleBackground1.startRippleAnimation();
+lastTouched=SystemClock.currentThreadTimeMillis();
+//        Thread.sleep(500);
+
+
+        SnackbarManager.show(
+                Snackbar.with(getActivity())
+                        .text("We don't cater here yet1")
+                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
+    rippleBackground1.isRippleAnimationRunning();
+    rippleBackground1.stopRippleAnimation();
+
+//   if(rippleBackground1.isRippleAnimationRunning()) {
+
+
+       // Thread.sleep(500);
+    Thread.sleep(1500);
+    Log.i("time","===================2==  ");
+        rippleBackground2.startRippleAnimation();
+        SnackbarManager.show(
+        Snackbar.with(getActivity())
+                .text("We don't cater here yet2")
+                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+        Thread.sleep(1500);
+//    }
+//    else if(rippleBackground2.isRippleAnimationRunning()) {
+    Log.i("time","===================3==  ");
+       rippleBackground2.stopRippleAnimation();
+    Thread.sleep(1500);
+        rippleBackground3.startRippleAnimation();
+        SnackbarManager.show(
+        Snackbar.with(getActivity())
+                .text("We don't cater here ye3")
+                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+        Thread.sleep(1500);
+       rippleBackground3.stopRippleAnimation();
+//    }
+//count++;
+//while(count!=9)
+//{
+//    beaconAlet(rootView);
+//}
+}
+
+
+
+
+
+
+
+
+
 
 }
 
@@ -2092,61 +2270,6 @@ Log.i("TRACE11","llmin"+llmin);
 
 
 
-   /* @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case LOCATION_PERMISSION_REQUEST_CODE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
-
-                    customMapFragment.getMapAsync(new OnMapReadyCallback() {
-                        @Override
-                        public void onMapReady(GoogleMap googleMap) {
-                            map = googleMap;
-                            //lat = 19.1269299;
-                            //lng = 72.8376545999999;
-                            enableMyLocation();
-                               if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                                    map.setMyLocationEnabled(true);
-                                    return;
-                               }
-                            lat = gpsTracker.getLatitude();
-                            Log.i("lat", "===================" + lat);
-                            lng = gpsTracker.getLongitude();
-                            Log.i("lat", "===================" + lng);
-                            SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                            SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                            getPrice();
-                            new LocationUpdater().execute();
-                            LatLng center = new LatLng(lat,lng);
-                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 12));
-
-
-                        }
-                    });
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }*/
-
-
-//}
 
 
 

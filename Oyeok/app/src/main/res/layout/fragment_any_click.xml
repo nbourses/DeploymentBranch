@@ -61,5 +61,16 @@
         android:text="&lt;3000"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/twelve_sp"/>
+    <TextView
+        android:id="@+id/txtsqft"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginLeft="12dp"
+        android:padding="4dp"
+        android:text="Sqft"
+        android:background="@drawable/gradient_greenish_blue"
+        android:textColor="@color/white"
+        android:textSize="@dimen/twelve_sp"
+        android:textStyle="bold|italic" />
 
 </LinearLayout>

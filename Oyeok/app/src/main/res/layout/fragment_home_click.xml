@@ -77,14 +77,28 @@
         android:text="4+BHK"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/twelve_sp"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/txtsqft"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="30dp"-->
+        <!--android:layout_marginLeft="12dp"-->
+        <!--android:padding="4dp"-->
+        <!--android:text="Sqft"-->
+        <!--android:background="@color/greenish_blue"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:textSize="@dimen/twelve_sp"/>-->
+
 </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Seater Office"
-        android:gravity="center_horizontal"
-        android:visibility="gone" />
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Seater Office"-->
+        <!--android:gravity="center_horizontal"-->
+        <!--android:visibility="gone" />-->
+
+
 
 
     </LinearLayout>

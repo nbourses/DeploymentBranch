@@ -84,6 +84,8 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -319,6 +321,39 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
         zoomin = AnimationUtils.loadAnimation(getContext(), R.anim.zoomin);
         zoomout = AnimationUtils.loadAnimation(getContext(), R.anim.zoomout);
+        /*final RippleBackground rippleBackground1=(RippleBackground)v.findViewById(R.id.content);
+        rippleBackground1.startRippleAnimation();
+        final RippleBackground rippleBackground2=(RippleBackground)v.findViewById(R.id.content1);
+        rippleBackground1.startRippleAnimation();*/
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this.getActivity());
+        sequence.addSequenceItem(v.findViewById(R.id.iv_client_type),
+                "Select client type", "GOT IT");
+
+        sequence.addSequenceItem(v.findViewById(R.id.imageView111),
+                "Select lead type to check the requirement", "GOT IT");
+
+
+        sequence.addSequenceItem(v.findViewById(R.id.okButton),
+                "Press 'ok' to select three property for visit", "GOT IT");
+        sequence.addSequenceItem(v.findViewById(R.id.iv_transection_type),
+                "Select Transaction Type", "GOT IT");
+
+//        sequence.addSequenceItem(v.findViewById(R.id.ic_search),
+//                "Select Lead", "GOT IT");
+
+
+        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
+            @Override
+            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
+
+
+            }
+        });
+        sequence.start();
+
+
+
 
 
 

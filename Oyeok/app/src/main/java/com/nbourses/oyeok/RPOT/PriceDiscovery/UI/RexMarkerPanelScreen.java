@@ -39,6 +39,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -90,6 +91,7 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 
 import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
@@ -229,6 +231,10 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
 
             }
         });
+
+
+        //tutorial
+
 
 
         mDrooms.setOnClickListener(new View.OnClickListener() {
@@ -475,6 +481,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         rupeesymbol.bringToFront();
         tvRate.bringToFront();
         ll_marker.bringToFront();
+
+
 
         return rootView;
     }

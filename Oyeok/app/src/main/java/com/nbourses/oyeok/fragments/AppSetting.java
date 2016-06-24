@@ -2,62 +2,115 @@ package com.nbourses.oyeok.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 
 
 public class AppSetting extends Fragment {
-   /* // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;*/
 
-    /*private OnFragmentInteractionListener mListener;*/
 
     public AppSetting() {
-        // Required empty public constructor
+
     }
 
-
-    // TODO: Rename and change types and number of parameters
-   /* public static AppSetting newInstance(String param1, String param2) {
-        AppSetting fragment = new AppSetting();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-
-
-
-    }*/
-
+    CheckBox checkBoxWalkthrough;
+    CheckBox checkBoxBeacon;
+    String walkthrough;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_app_setting, container, false);
+        View v=inflater.inflate(R.layout.fragment_app_setting, container, false);
 
+         checkBoxBeacon=  (CheckBox) v.findViewById(R.id.check_beacon);
 
+       checkBoxWalkthrough=  (CheckBox) v.findViewById(R.id.check_walkthrough);
+        walkthrough= SharedPrefs.getString(getContext(),SharedPrefs.CHECK_WALKTHROUGH);
+        Log.i("ischecked","ischecked1"+walkthrough);
+        if(walkthrough.equalsIgnoreCase("true")) {
+            Log.i("ischecked","ischecked1========="+walkthrough);
+            checkBoxWalkthrough.setChecked(true);
+        }
+//
+        checkBoxWalkthrough.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
+//        StringBuffer result = new StringBuffer();
+//        result.append("WALKTHROUGH ").append(checkBoxWalkthrough.isChecked());
+        Log.i("ischecked","wal"+isChecked);
+        if(isChecked){
+            checkBoxWalkthrough.setChecked(true);
+         SharedPrefs.save(getContext(),SharedPrefs.CHECK_WALKTHROUGH,isChecked+"");
+//            Intent intent = new Intent(AppConstants.CHECK_WALKTHROUGH);
+//            intent.putExtra("checkWalkthrough", "true");
+            Log.i("ischecked","wal1"+isChecked);
+
+        }
+        else {
+            checkBoxWalkthrough.setChecked(false);
+            SharedPrefs.save(getContext(), SharedPrefs.CHECK_WALKTHROUGH, isChecked + "");
+            Log.i("ischecked","wal"+isChecked);
+            checkBoxWalkthrough.toggle();
+        }
     }
+   });
+
+
+        checkBoxBeacon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked==true){
+                    SharedPrefs.save(getContext(),SharedPrefs.CHECK_BEACON,isChecked+"");
+//                    Intent intent = new Intent(AppConstants.CHECK_BEACON);
+//                    intent.putExtra("checkBeacon", isChecked);
+
+                }
+            }
+        });
+
+
+
+
+
+
+
+return v;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /*// TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

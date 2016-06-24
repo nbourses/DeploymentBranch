@@ -72,6 +72,7 @@ public class CircularSeekBarNew extends View {
     private int difference;
     private JSONArray tempvalues = new JSONArray();
     private Drawable d = null;
+    public int [] drawables= {R.drawable.ic_broker_home, R.drawable.ic_industrial_oye_intent_specs, R.drawable.ic_shop, R.drawable.ic_loans};;
 
     public CircularSeekBarNew(Context context) {
         super(context);
@@ -188,7 +189,7 @@ public class CircularSeekBarNew extends View {
 
      // int [] drawables = {R.drawable.home, R.drawable.industry, R.drawable.shop, R.drawable.office};
 
-      int [] drawables = {R.drawable.ic_broker_home, R.drawable.ic_industrial_oye_intent_specs, R.drawable.ic_shop, R.drawable.ic_loans};
+//       drawables = {R.drawable.ic_broker_home, R.drawable.ic_industrial_oye_intent_specs, R.drawable.ic_shop, R.drawable.ic_loans};
 
 
         //Draw an arc with 300 sweep angle with mcirclepaint
@@ -271,6 +272,7 @@ public class CircularSeekBarNew extends View {
                     d = getResources().getDrawable(drawables[0]);
                     Log.i("TRACE","image selected "+getResources().getDrawable(drawables[0]));
                     Log.i("TRACE","image selected "+drawables[0]);
+
                 }
                 else if(ptype.equals("industrial")){
                     d = getResources().getDrawable(drawables[1]);
@@ -372,7 +374,8 @@ public class CircularSeekBarNew extends View {
 //
 //
 //            int textwidth = left+(width/2);
-            d.draw(canvas);
+          d.draw(canvas);
+
 
 
             // user role is no more part of preok so was catching in exception, leading hiding of property description and double touch on property icon problem

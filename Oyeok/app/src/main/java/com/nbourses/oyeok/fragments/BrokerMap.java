@@ -519,7 +519,7 @@ public class BrokerMap extends DashboardClientFragment {
             Log.i("t1", "lng" + " " + lng);
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-            gmap.addMarker(new MarkerOptions().position(l).title("marker"));
+            //gmap.addMarker(new MarkerOptions().position(l).title("marker"));
 
             //Marker marker = broker_map.addMarker(new MarkerOptions()
             //     .position(l)
