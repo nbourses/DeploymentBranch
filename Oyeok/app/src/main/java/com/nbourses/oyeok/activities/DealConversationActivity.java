@@ -39,7 +39,8 @@ import com.nbourses.oyeok.enums.ChatMessageUserType;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.ChatMessage;
-import com.nbourses.oyeok.realmModels.UserInfo;
+import com.nbourses.oyeok.realmModels.DealTime;
+import com.nbourses.oyeok.realmModels.Message;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.pubnub.api.Callback;
@@ -131,6 +132,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private RealmConfiguration config;
     private Realm myRealm;
+    private Message message;
+    private JSONArray jsonArrayHistory;
 
 
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
@@ -221,23 +224,23 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private void init() {
 
-        try {
-
-            Realm myRealm = General.realmconfig(this);
-            RealmResults<UserInfo> results1 =
-                    myRealm.where(UserInfo.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findAll();
-
-            UserInfo myPuppy = myRealm.where(UserInfo.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findFirst();
-
-            Log.i(TAG, "my name is " + myPuppy.getName());
-
-            for (UserInfo c : results1) {
-                Log.i(TAG, "insidero2 ");
-                Log.i(TAG, "insidero3 " + c.getName());
-                Log.i(TAG, "insidero4 " + c.getEmailId());
-                Log.i(TAG, "insidero4 " + c.getUserId());
-            }
-        }catch(Exception e){}
+//        try {
+//
+//            Realm myRealm = General.realmconfig(this);
+//            RealmResults<UserInfo> results1 =
+//                    myRealm.where(UserInfo.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findAll();
+//
+//            UserInfo myPuppy = myRealm.where(UserInfo.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findFirst();
+//
+//            Log.i(TAG, "my name is " + myPuppy.getName());
+//
+//            for (UserInfo c : results1) {
+//                Log.i(TAG, "insidero2 ");
+//                Log.i(TAG, "insidero3 " + c.getName());
+//                Log.i(TAG, "insidero4 " + c.getEmailId());
+//                Log.i(TAG, "insidero4 " + c.getUserId());
+//            }
+//        }catch(Exception e){}
 
         edtTypeMsg.addTextChangedListener(edtTypeMsgListener);
 
@@ -762,9 +765,9 @@ if(cachedmsgs.size() < 10) {
                 Log.i("CHAT","samosa1 "+jsonMsg.getString("message"));
 
                 if (j.has("message") && j.has("from") && j.has("to")) {
-                    Log.i("CHAT","samosa");
+                    Log.i("CHAT","here");
                     body = j.getString("message");
-                    Log.i("CHAT","papdi "+body);
+                    Log.i("CHAT","here is "+body);
 
                     if (j.getString("from").equalsIgnoreCase("DEFAULT")){
                         Log.i("CONVER", "DEFAULT set");
@@ -785,8 +788,6 @@ if(cachedmsgs.size() < 10) {
 
                     //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
                     //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
-
-
                     message.setUserName(roleOfUser);
                     message.setMessageStatus(ChatMessageStatus.SENT);
                     message.setMessageText(body);
@@ -798,6 +799,8 @@ if(cachedmsgs.size() < 10) {
 
 
                     chatMessages.add(message);
+
+
                     Log.i(TAG, "message after adding to chatMessages" + chatMessages);
 
                     runOnUiThread(new Runnable() {
@@ -1072,12 +1075,18 @@ if(cachedmsgs.size() < 10) {
                         for (int i = 0; i < jsonArrayHistoryLength; i++) {
                             JSONObject jsonMsg = jsonArrayHistory.getJSONObject(i);
 
+
                             Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub jsonArrayResponse" + jsonArrayResponse);
                             Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub jsonArrayHistory" + jsonArrayHistory);
                             Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub" + jsonMsg);
                             displayMessage(jsonMsg);
 
+
                         }
+
+
+
+
                     }
                     else{
                         Log.i(TAG, "loadhistory empty");
@@ -1113,10 +1122,12 @@ if(cachedmsgs.size() < 10) {
 
 
                     }
+
                 }
                 catch (Exception e) {
                     e.printStackTrace();
                 }
+
             }
             public void errorCallback(String channel, PubnubError error) {
             }
@@ -1323,7 +1334,80 @@ private  void networkConnectivity(){
                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 }
 
-    private void cacheMessages(JSONArray msgs){
+    private void cacheMessages(JSONArray jsonArrayHistory){
+        //JSONArray jsonArrayHistory = loadFinalHistory();
+
+        try {
+            int jsonArrayHistoryLength = jsonArrayHistory.length();
+            Log.i(TAG, "here is the 1 jsonArrayHistory "+jsonArrayHistory);
+            Log.i(TAG, "here is the 1 jsonArrayHistoryLength "+jsonArrayHistoryLength);
+//            myRealm = General.realmconfig(this);
+//            myRealm.beginTransaction();
+            for (int i = 0; i < jsonArrayHistoryLength; i++) {
+                JSONObject jsonMsg = jsonArrayHistory.getJSONObject(i);
+
+
+
+                Log.i(TAG, "here is the 1 jsonMsg "+jsonMsg);
+
+                if (jsonMsg.has("message")) {
+                    JSONObject j = jsonMsg.getJSONObject("message");
+                    String timetoken = jsonMsg.getString("timetoken");
+                    Log.i(TAG, "here is the 1  " + jsonMsg.getString("message"));
+                    String from = j.getString("from");
+                    String to = j.getString("to");
+                    String body = j.getString("message");
+                    Log.i(TAG,"here is the 1 2 "+from+" "+to+" "+body);
+
+                    tester(from,to,body,timetoken);
+
+//                    if (j.has("message") && j.has("from") && j.has("to")) {
+//                        Log.i(TAG, "here is the");
+////                        String from = j.getString("from");
+////                        String to = j.getString("to");
+////                        String body = j.getString("message");
+//                        //test(timetoken,from,to,body);
+//
+//
+//                        try {
+//
+//                            myRealm = General.realmconfig(this);
+//                            myRealm.beginTransaction();
+//                            message = myRealm.createObject(Message.class); //new Message();
+//                            message.setOk_id(channel_name);
+//                            message.setMessage(body);
+//                            message.setTimestamp(timetoken);
+//                            message.setFrom(from);
+//                            message.setTo(to);
+//
+//
+//                            myRealm.copyToRealm(message);
+//                        }catch(Exception e){
+//                            Log.i(TAG,"here is the "+"message is "+j+" "+e);
+//                        }
+//                        finally{
+//                            Log.i(TAG,"In finally cache "+"message is"+message.getMessage());
+//
+//                          myRealm.commitTransaction();
+//
+//                        }
+//                        Log.i(TAG, "here is the 1 jsonMsg 2 "+jsonMsg);
+//
+//
+//                    }
+                }
+            }
+
+           // myRealm.commitTransaction();
+
+
+        }
+            catch(Exception e){
+                Log.i(TAG,"Caught in exception in caching messages in Realm "+e);
+
+            }
+
+
 //        JSONObject jo = new JSONObject();
 //
 //// populate the array
@@ -1333,10 +1417,70 @@ private  void networkConnectivity(){
 //            e.printStackTrace();
 //        }
 
-        General.setSharedPreferences(this,channel_name+AppConstants.CACHE,msgs.toString());
-        Log.i("CHAT","cache "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
+//        General.setSharedPreferences(this,channel_name+AppConstants.CACHE,msgs.toString());
+//        Log.i("CHAT","cache "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
 
     }
+    private void tester(String from, String to, String body, String timetoken){
+
+        try{
+
+                    myRealm = General.realmconfig(this);
+                    myRealm.beginTransaction();
+                   //
+            // message = myRealm.createObject(Message.class); //new Message();
+                 message = myRealm.createObject(Message.class); //new Message();
+                    message.setOk_id(channel_name);
+                    message.setMessage(body);
+                    message.setTimestamp(timetoken);
+                    message.setFrom(from);
+                    message.setTo(to);
+
+
+                    myRealm.copyToRealmOrUpdate(message);
+                }catch(Exception e){
+                    Log.i(TAG,"here is the "+"message is  "+e);
+                }
+                finally{
+                    Log.i(TAG,"In finally cache "+"message is"+message.getMessage());
+
+                    myRealm.commitTransaction();
+
+                }
+
+
+
+
+
+    }
+
+    private void test(String timetoken, String from, String to, String body){
+        Log.i(TAG,"here is the called with "+body);
+//        try {
+        myRealm = General.realmconfig(this);
+            message = myRealm.createObject(Message.class); //new Message();
+
+            message.setOk_id(channel_name);
+            message.setMessage(body);
+            message.setTimestamp(timetoken);
+            message.setFrom(from);
+            message.setTo(to);
+
+        //myRealm.beginTransaction();
+            myRealm.copyToRealm(message);
+        //myRealm.commitTransaction();
+//        }catch(Exception e){
+//            Log.i(TAG,"here is the message is "+e);
+//        }
+//        finally{
+//            Log.i(TAG,"In finally cache "+"message is"+message.getMessage());
+//
+//
+//
+//        }
+
+    }
+
 
     private void storeDealTime(){
         String dealTime;
@@ -1371,6 +1515,68 @@ if(lastMessageTime != null)
 
 
 
+        //store dealtimestamp in realm db
+Log.i(TAG,"lastMessageTime rapter "+lastMessageTime);
+        try {
+            if(lastMessageTime != null) {
+            Realm myRealm = General.realmconfig(this);
+            DealTime dealtime = new DealTime();
+
+                dealtime.setOk_id(channel_name);
+                dealtime.setTimestamp(lastMessageTime);
+
+
+            myRealm.beginTransaction();
+            myRealm.copyToRealmOrUpdate(dealtime);
+            myRealm.commitTransaction();
+
+            }
+        }
+        catch(Exception e){
+            Log.i(TAG,"caught in exception deleting default droom timestamp");
+        }
+
+        try{
+            Realm myRealm = General.realmconfig(this);
+            RealmResults<DealTime> results1 =
+                    myRealm.where(DealTime.class).findAll();
+            Log.i(TAG, "insider timestamp " +results1);
+            for (DealTime c : results1) {
+                Log.i(TAG, "insider timestamp " + c.getOk_id());
+                Log.i(TAG, "insider timestamp " + c.getTimestamp());
+            }
+        }
+        catch(Exception e){}
+
+
+    }
+
+    private void loadFinalHistory(){
+        Callback callback = new Callback() {
+            JSONArray jsonArrayHistory;
+            public void successCallback(String channel, Object response) {
+                Log.i(TAG, "inside loadHistoryFromPubnub channel name is2 yo");
+                try {
+                    JSONArray jsonArrayResponse = new JSONArray(response.toString());
+                    Log.i(TAG, "inside loadHistoryFromPubnub channel name is2 yo jsonArrayResponse "+jsonArrayResponse);
+                    jsonArrayHistory = jsonArrayResponse.getJSONArray(0);
+                    Log.i(TAG, "inside loadHistoryFromPubnub channel name is2 yo jsonArrayHistory "+jsonArrayHistory);
+                    cacheMessages(jsonArrayHistory);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+            public void errorCallback(String channel, PubnubError error) {
+            }
+        };
+        // pubnub.history(channel_name, 10, false, callback);
+        pubnub.history(channel_name,true, 10,callback);
+        Log.i(TAG, "inside loadHistoryFromPubnub channel name is2 yo jsonArrayHistory 1 "+jsonArrayHistory);
+
+
     }
 
     @Override
@@ -1380,6 +1586,40 @@ if(lastMessageTime != null)
         Log.i("CHAT", "cache " + General.getSharedPreferences(this, channel_name + AppConstants.CACHE));
 
         storeDealTime();
+
+       // cacheMessages(jsonArrayHistory);
+
+        //loadFinalHistory();
+
+//        try {
+//            RealmResults<Message> results1 =
+//                    myRealm.where(Message.class).findAll();
+//            Log.i(TAG, "insiderr cached msgs is the "+results1);
+//            for (Message c : results1) {
+//                Log.i(TAG, "insiderr cached msgs ");
+//                Log.i(TAG, "insiderr cached msgs " + c.getMessage());
+//                Log.i(TAG, "insiderr cached msgs " + c.getTimestamp());
+//            }
+//
+//        }
+//        catch(Exception e){
+//            Log.i(TAG, "Caught in exception read cache msgs realm "+e);
+//        }
+//
+//        try {
+//
+//            Realm myRealm = General.realmconfig(this);
+//            RealmResults<Message> results1 =
+//                    myRealm.where(Message.class).equalTo("message", "Hi").findAll();
+//
+//
+//
+//            for (Message c : results1) {
+//                Log.i(TAG, "insidero2 ");
+//                Log.i(TAG, "insidero3 " + c.getOk_id());
+//
+//            }
+//        }catch(Exception e){Log.i(TAG, "Caught in exception read cache msgs realm yo "+e);}
 
         //onbackpressed save time of last message , so get time n a l=global variable
 
