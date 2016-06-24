@@ -22,6 +22,8 @@ import com.nbourses.oyeok.activities.BrokerMainActivity;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.realmModels.DealTime;
+import com.nbourses.oyeok.realmModels.DefaultDeals;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +32,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 /**
@@ -302,6 +306,33 @@ public class MyGcmListenerService extends GcmListenerService {
                 Log.i("Default deals in shared","I am here");
                 Log.i("Default deals in shared","are" +deals5);
 
+                //Delete ddroom from realm
+                try {
+                    Realm myRealm = General.realmconfig(this);
+                    RealmResults<DefaultDeals> result = myRealm.where(DefaultDeals.class).equalTo(AppConstants.OK_ID, okId).findAll();
+
+                    myRealm.beginTransaction();
+                    result.clear();
+                    RefreshDrooms = true;
+                    myRealm.commitTransaction();
+                }
+                catch(Exception e){
+                    Log.i(TAG,"caught in exception deleting default droom");
+                }
+
+                try{
+                    Realm myRealm = General.realmconfig(this);
+                    RealmResults<DefaultDeals> results1 =
+                            myRealm.where(DefaultDeals.class).findAll();
+                    Log.i(TAG, "insiderrer3 " +results1);
+                    for (DefaultDeals c : results1) {
+                        Log.i(TAG, "insiderrer3 " + c.getOk_id());
+                        Log.i(TAG, "insiderrer4 " + c.getSpec_code());
+                    }
+                }
+                catch(Exception e){}
+
+
 
                     General.setSharedPreferences(getApplicationContext(), AppConstants.CLIENT_OK_ID, okId);
                 if(RefreshDrooms){
@@ -473,6 +504,36 @@ public class MyGcmListenerService extends GcmListenerService {
         General.saveDealTime(this, hashMapString);
         Log.i("dealtime","DealTime "+General.getDealTime(this));
 
+
+        //store dealtimestamp in realm db
+
+        try {
+            Realm myRealm = General.realmconfig(this);
+             DealTime dealtime = new DealTime();
+
+          dealtime.setOk_id(okId);
+            dealtime.setTimestamp(String.valueOf(System.currentTimeMillis()));
+
+            myRealm.beginTransaction();
+            myRealm.copyToRealmOrUpdate(dealtime);
+            myRealm.commitTransaction();
+
+      }
+      catch(Exception e){
+          Log.i(TAG,"caught in exception deleting default droom timestamp "+e);
+        }
+
+        try{
+            Realm mmyRealm = General.realmconfig(this);
+            RealmResults<DealTime> results1 =
+                    mmyRealm.where(DealTime.class).findAll();
+            Log.i(TAG, "insider timestamp " +results1);
+            for (DealTime c : results1) {
+                Log.i(TAG, "insider timestamp " + c.getOk_id());
+                Log.i(TAG, "insider timestamp " + c.getTimestamp());
+            }
+        }
+        catch(Exception e){}
 
 
     }

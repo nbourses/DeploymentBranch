@@ -53,6 +53,7 @@ import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.BrokerDeals;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.PublishLetsOye;
+import com.nbourses.oyeok.realmModels.DefaultDeals;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
@@ -72,6 +73,8 @@ import java.util.Set;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -136,6 +139,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     private ArrayList<BrokerDeals> listBrokerDeals_new;
     private Set<String> mutedOKIds = new HashSet<String>();
     private int position;   //position of swipe menu item
+    private Realm myRealm;
+    private DefaultDeals defaultDeals;
+
 
 
 
@@ -162,6 +168,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+try {
+    myRealm = General.realmconfig(this);
+}
+catch(Exception e){}
+
 
         IntentFilter filter = new IntentFilter("okeyed");
         LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
@@ -582,8 +593,24 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     Log.i(TAG, "entry.getvalue" + entry.getValue());
 
 
+
                     String ok_id = entry.getKey();
                     String specs = entry.getValue();
+
+                    try {
+                        DefaultDeals defaultDeals = new DefaultDeals();
+                        defaultDeals.setOk_id(ok_id);
+                        defaultDeals.setSpec_code(specs);
+                        myRealm.beginTransaction();
+                        DefaultDeals defaultDeals1 = myRealm.copyToRealmOrUpdate(defaultDeals);
+                        myRealm.commitTransaction();
+
+                    }
+                    catch(Exception e){
+
+                    }
+
+
                     String name = General.getSharedPreferences(this, AppConstants.NAME);  //name of client to show in default deal title
                     Log.i("specs","specs "+specs);
                     BrokerDeals dealsa = new BrokerDeals(name, ok_id, specs, true);
@@ -595,6 +622,20 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     default_deals.add(dealsa);
 
 
+
+                }
+                try{
+                RealmResults<DefaultDeals> results1 =
+                        myRealm.where(DefaultDeals.class).findAll();
+
+                for(DefaultDeals c:results1) {
+                    // Log.i(TAG,"insiderro2 ");
+                    Log.i(TAG, "insiderro3 " + c.getOk_id());
+                    Log.i(TAG, "insiderro4 " + c.getSpec_code());
+                }
+
+                }
+                catch(Exception e){
 
                 }
             }

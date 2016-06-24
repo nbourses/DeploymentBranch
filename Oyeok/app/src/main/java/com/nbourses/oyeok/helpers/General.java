@@ -20,6 +20,7 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.models.PublishLetsOye;
+import com.nbourses.oyeok.realmModels.DefaultDeals;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
@@ -37,6 +38,9 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -55,12 +59,23 @@ public class General extends BroadcastReceiver {
     private NetworkInterface networkInfo;
 
 
+
     //  private static Set<String> defaultDeals ;
 
     //    public General(NetworkInterface networkInfo)
 //    {
 //        this.networkInfo = networkInfo;
 //    }
+
+   public static Realm realmconfig(Context context){
+        RealmConfiguration config = new RealmConfiguration
+                .Builder(context)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+       Realm myRealm = Realm.getInstance(config);
+        return myRealm;
+    }
+
 
     public static void saveSet(Context context,String name, Set<String> value) {
 // for storing catched msgs
@@ -323,6 +338,7 @@ public class General extends BroadcastReceiver {
             //String ptype;
             String price;
             final String speccode;
+            final Realm myRealm = realmconfig(context);
             Log.i("TRACE", "in publishOye");
             //Made gson final to access it in success
             final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -463,6 +479,8 @@ public class General extends BroadcastReceiver {
                             JSONObject jsonResponse = new JSONObject(strResponse);
                             JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
                             Log.i("TRACE", "Response data" + jsonResponse.getString("responseData"));
+
+                            //change this msg with error code
                             if ("Exhausted your daily limit of Oyes today. Pls try tomorrow".equals(jsonResponseData.getString("message"))) {
                                 Log.i("TRACE", "Hello user, " + jsonResponseData.getString("message"));
 
@@ -561,6 +579,35 @@ public class General extends BroadcastReceiver {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+
+
+                        //to do: use Appconstants.OKID replace all dependencies
+                        try {
+
+                            DefaultDeals defaultDeals = new DefaultDeals();
+                            defaultDeals.setOk_id(General.getSharedPreferences(context, "OK_ID"));
+                            defaultDeals.setSpec_code(speccode);
+                            myRealm.beginTransaction();
+                            DefaultDeals defaultDeals1 = myRealm.copyToRealmOrUpdate(defaultDeals);
+                            myRealm.commitTransaction();
+                        }
+                        catch(Exception e){}
+
+                        try{
+                            RealmResults<DefaultDeals> results1 =
+                                    myRealm.where(DefaultDeals.class).findAll();
+
+                            for(DefaultDeals r:results1) {
+                                // Log.i(TAG,"insiderro2 ");
+                                Log.i(TAG, "insiderrou3 " + r.getOk_id());
+                                Log.i(TAG, "insiderrou4 " + r.getSpec_code());
+                            }
+
+                        }
+                        catch(Exception e){
+
+                        }
+
                         Log.i("TRACE", "open intent deal listing");
                         //open deals listing
                         Intent openDealsListing = new Intent(context, ClientDealsListActivity.class);
