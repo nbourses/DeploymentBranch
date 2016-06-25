@@ -1417,7 +1417,9 @@ String  Walkthrough;
 
                             // }
                            // updateHorizontalPicker();
-
+                            mVisits.setEnabled(true);
+                            txtFilterValue.setEnabled(true);
+                            StartAnimation();
                             horizontalPicker.setVisibility(View.VISIBLE);
                             tv_building.setVisibility(View.VISIBLE);
 
@@ -1425,6 +1427,7 @@ String  Walkthrough;
                             rupeesymbol.setVisibility(View.VISIBLE);
                           //  tvCommingsoon.setVisibility(View.INVISIBLE);
                             tvFetchingrates.setVisibility(View.INVISIBLE);
+
 
                             missingArea.setVisibility(View.INVISIBLE);
                         } else {
@@ -1448,7 +1451,10 @@ String  Walkthrough;
                            // tvCommingsoon.setTypeface(null, Typeface.BOLD);
                            // tvCommingsoon.setTextSize(18);
                             missingArea.setVisibility(View.VISIBLE);
-
+                            mVisits.setEnabled(false);
+                            txtFilterValue.setEnabled(false);
+                            CancelAnimation();
+                            //missingArea.setVisibility(View.VISIBLE);
                         }
                     } else {
                     /*SnackbarManager.show(
@@ -2186,11 +2192,11 @@ public void tutorialAlert(final View rootView) {
             countertut++;
             if (countertut == 3) {
 
-                try {
-                    beaconAlet(rootView);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    //beaconAlert(rootView);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 // rippleBackground4.startRippleAnimation();
             }
         }
@@ -2202,7 +2208,7 @@ public void tutorialAlert(final View rootView) {
 
 
 
-public void beaconAlet(final View rootView) throws InterruptedException {
+public void beaconAlert(final View rootView) throws InterruptedException {
 
     final RippleBackground rippleBackground1 = (RippleBackground) rootView.findViewById(R.id.client_content);
     final RippleBackground rippleBackground2 = (RippleBackground) rootView.findViewById(R.id.client_content2);

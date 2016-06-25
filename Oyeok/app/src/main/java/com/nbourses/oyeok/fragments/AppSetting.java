@@ -59,7 +59,7 @@ public class AppSetting extends Fragment {
             checkBoxWalkthrough.setChecked(false);
             SharedPrefs.save(getContext(), SharedPrefs.CHECK_WALKTHROUGH, isChecked + "");
             Log.i("ischecked","wal"+isChecked);
-            checkBoxWalkthrough.toggle();
+            
         }
     }
    });

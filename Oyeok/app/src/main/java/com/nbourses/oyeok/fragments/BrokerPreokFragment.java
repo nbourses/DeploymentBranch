@@ -254,7 +254,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private int ownersCount1;
     private int buyerCount1;
     private int sellerCount1;
-
+private String Walkthrough;
 
     Animation bounce;
     Animation zoomin;
@@ -326,31 +326,6 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         final RippleBackground rippleBackground2=(RippleBackground)v.findViewById(R.id.content1);
         rippleBackground1.startRippleAnimation();*/
 
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this.getActivity());
-        sequence.addSequenceItem(v.findViewById(R.id.iv_client_type),
-                "Select client type", "GOT IT");
-
-        sequence.addSequenceItem(v.findViewById(R.id.imageView111),
-                "Select lead type to check the requirement", "GOT IT");
-
-
-        sequence.addSequenceItem(v.findViewById(R.id.okButton),
-                "Press 'ok' to select three property for visit", "GOT IT");
-        sequence.addSequenceItem(v.findViewById(R.id.iv_transection_type),
-                "Select Transaction Type", "GOT IT");
-
-//        sequence.addSequenceItem(v.findViewById(R.id.ic_search),
-//                "Select Lead", "GOT IT");
-
-
-        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
-            @Override
-            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
-
-
-            }
-        });
-        sequence.start();
 
 
 
@@ -359,7 +334,15 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
        chart = (BarChart) v.findViewById(R.id.chart);
         init();
-
+        Walkthrough=SharedPrefs.getString(getContext(),SharedPrefs.CHECK_WALKTHROUGH);
+        Log.i("ischecked","walkthrough3_broker"+Walkthrough);
+        if(Walkthrough.equalsIgnoreCase("true")) {
+            Log.i("ischecked","walkthrough3_broker1111111"+Walkthrough);
+            walkthroughBroker(v);
+//    beaconAlet(rootView);
+            Walkthrough="false";
+//    SharedPrefs.save(getContext(),SharedPrefs.CHECK_WALKTHROUGH,Walkthrough);
+        }
         return v;
     }
 
@@ -2525,9 +2508,34 @@ chart.clear();
         }
     }
 
+public void walkthroughBroker(View v) {
+    MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this.getActivity());
+    sequence.addSequenceItem(v.findViewById(R.id.iv_client_type),
+            "Select client type", "GOT IT");
+    sequence.addSequenceItem(v.findViewById(R.id.iv_transection_type),
+            "Select Transaction Type", "GOT IT");
+    sequence.addSequenceItem(v.findViewById(R.id.imageView111),
+            "Select lead type to check the requirement", "GOT IT");
 
 
+    sequence.addSequenceItem(v.findViewById(R.id.okButton),
+            "Press 'ok' to select three property for visit", "GOT IT");
 
+
+//        sequence.addSequenceItem(v.findViewById(R.id.ic_search),
+//                "Select Lead", "GOT IT");
+
+
+    sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
+        @Override
+        public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
+
+
+        }
+    });
+    sequence.start();
+
+}
 
 
 }
