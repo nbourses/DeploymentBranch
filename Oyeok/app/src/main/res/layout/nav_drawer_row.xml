@@ -19,8 +19,8 @@
             android:visibility="gone" />
         <ImageView
             android:id="@+id/drawer_icon"
-            android:layout_width="42dip"
-            android:layout_height="match_parent"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/menu_option_icon"
            />

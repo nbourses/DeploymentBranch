@@ -62,6 +62,8 @@
 
     </string-array>
 
+
+
     <string-array name="nav_drawer_labels_signup_client">
         <item>@string/profile</item>
         <!--<item>@string/brokerOk</item>-->
@@ -76,6 +78,7 @@
 
     </string-array>
 
+
     <string-array name="nav_drawer_labels_signup_broker">
         <item>@string/profile</item>
         <!--<item>@string/brokerOk</item>-->
@@ -87,6 +90,8 @@
         <item>@string/settings</item>
         <!--   <item>@string/updateProfile</item> -->
     </string-array>
+
+
 
     <string name="title_messages">Messages</string>
     <string name="title_friends">Friends</string>
