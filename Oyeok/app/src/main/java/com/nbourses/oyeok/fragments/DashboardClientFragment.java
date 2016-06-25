@@ -384,8 +384,15 @@ String  Walkthrough;
         ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
         recordWorkout = (LinearLayout) rootView.findViewById(R.id.recordWorkout);
 
-        Walkthrough=SharedPrefs.getString(getContext(),SharedPrefs.CHECK_WALKTHROUGH);
-        Log.i("ischecked","walkthrough3dashboard"+Walkthrough);
+
+       if(SharedPrefs.getString(getContext(),SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("")){
+           Walkthrough = "true";
+           SharedPrefs.save(getContext(), SharedPrefs.CHECK_WALKTHROUGH,"false");
+       }
+        else {
+           Walkthrough = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_WALKTHROUGH);
+           Log.i("ischecked", "walkthrough3dashboard" + Walkthrough);
+       }
 
 //        final RippleBackground rippleBackground1 = (RippleBackground) rootView.findViewById(R.id.client_content);
 //        final RippleBackground rippleBackground2 = (RippleBackground) rootView.findViewById(R.id.client_content2);
@@ -1560,6 +1567,8 @@ try {
                         enableMyLocation();
 //                            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //
+
+                        getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
 //                                return;
 //                            }
 //                            map.setMyLocationEnabled(true);
@@ -1567,8 +1576,9 @@ try {
                         Log.i("t1", "broker_map" + map);
                         //  geoFence.drawPloygon(map);
                     }
+
                 });
-                getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+                //getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
 
             } else {
                 // permission denied, boo! Disable the
@@ -1594,10 +1604,10 @@ try {
                     map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
 
                 }
-
+                getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
             }
         });
-        getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
+       // getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
         //Log.i("t1","mcallback"+""+mcallback);
     }
         else {

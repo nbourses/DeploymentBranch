@@ -903,6 +903,7 @@ if(newUser==true) {
         user.setDeviceId("hardware");
         user.setPlatform("android");
         user.setLocality(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
+        Log.i(TAG,"fakat 5 "+user.getUserRole() + okBroker);
 
         Log.i("TAG", "role before signup call "+user.getUserRole() +okBroker);
         Log.i("TAG", "role before signup call "+user.getMobileCode());
@@ -976,7 +977,20 @@ if(newUser==true) {
 
 
                         my_user_id = signUp.responseData.getUserId();
-                      //  String ab = signUp.getError();
+                        Log.i(TAG,"fakata response "+response.toString());
+                        Log.i(TAG,"fakata user id "+my_user_id);
+                        Log.i(TAG,"fakata name "+signUp.responseData.getName());
+                        Log.i(TAG,"fakata email "+signUp.responseData.getEmail());
+
+                        General.setSharedPreferences(getContext(),AppConstants.NAME,signUp.responseData.getName());
+                        dbHelper.save(DatabaseConstants.name, signUp.responseData.getName());
+
+                        General.setSharedPreferences(getContext(),AppConstants.EMAIL,signUp.responseData.getEmail());
+                        dbHelper.save(DatabaseConstants.email, signUp.responseData.getName());
+                        Log.i(TAG,"fakata name 1 "+dbHelper.getValue(DatabaseConstants.name));
+                        Log.i(TAG,"fakata email 1 "+dbHelper.getValue(DatabaseConstants.email));
+
+                        //  String ab = signUp.getError();
 
 
                         if(signUp.getError().equals(2)){
@@ -986,17 +1000,21 @@ if(newUser==true) {
                                             .text(signUp.responseData.getMessage())
                                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
                           if(signUp.responseData.getMessage().contains("client")){
+
                               oldRole = "client";
                               okBroker = false;
                               General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                               dbHelper.save(DatabaseConstants.userRole, "Client");
+                              Log.i(TAG,"fakat 1 "+General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
                               userInfo.setUserRole("client");
 
                           }  else{
+
                               oldRole = "broker";
                               okBroker = true;
                               General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"broker");
                               dbHelper.save(DatabaseConstants.userRole, "Broker");
+                              Log.i(TAG,"fakat 2 "+General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
                               userInfo.setUserRole("broker");
 
                           }
@@ -1008,10 +1026,18 @@ if(newUser==true) {
                                         public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                                             Log.i(TAG,"yoyoyo11 "+oldRole +" "+redirectClient);
                                             if(oldRole.equalsIgnoreCase("broker")){
+
+                                                Log.i(TAG,"fakat 3 "+oldRole);
+
+                                                Log.i(TAG,"yo man pro ");
                                                 redirectBroker = true;
+                                                okBroker = true;
                                             }
                                             if(oldRole.equalsIgnoreCase("client")){
+                                                Log.i(TAG,"fakat 4 "+oldRole);
+                                                Log.i(TAG,"yo man pro no man ");
                                                 redirectClient = true;
+                                                okBroker = false;
                                                 Log.i(TAG,"yoyoyo12 "+oldRole +" "+redirectClient);
                                             }
                                             signup_success();
@@ -1049,6 +1075,8 @@ if(newUser==true) {
                             }
 
                             return;
+                        }else{
+                            General.setSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
                         }
 
                         Log.i("TRACE", "Userid" +my_user_id);
@@ -1056,7 +1084,7 @@ if(newUser==true) {
                         //store user_id in shared preferences
                         General.setSharedPreferences(getActivity(), AppConstants.USER_ID, my_user_id);
                         General.setSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER, "yes");
-                        General.setSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
+
 
                         //save in realm
                         try {

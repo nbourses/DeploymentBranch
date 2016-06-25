@@ -249,7 +249,7 @@
     <color name="header_normal">#ffe74c3c</color>
     <color name="header_pressed">#ffc0392b</color>
     <color name="menu_section_header">#FFDDDDDD</color>
-    <color name="Black">#102445</color>
+    <color name="Black">#000000</color>
     <color name="White">#ffffff</color>
     <color name="custom_color_darkblue">#181c31</color>
 

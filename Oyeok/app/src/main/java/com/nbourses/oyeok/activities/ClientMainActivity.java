@@ -532,7 +532,7 @@ private void alertbuilder()
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.addToBackStack(title);
+        //fragmentTransaction.addToBackStack(title);
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
 
@@ -794,11 +794,11 @@ private void alertbuilder()
     @Override
     public void onBackPressed() {
 
-        if(getFragmentManager().getBackStackEntryCount() >0)
-        {
-            Log.i("BACK PRESSED","===================");
-            getFragmentManager().popBackStack();
-        }
+//        if(getFragmentManager().getBackStackEntryCount() >0)
+//        {
+//            Log.i("BACK PRESSED","===================");
+//            getFragmentManager().popBackStack();
+//        }
 
         if (slidingLayout != null &&
                 (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||

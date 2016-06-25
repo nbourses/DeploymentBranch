@@ -71,6 +71,8 @@ public class Profile extends Fragment {
         dbhelper=new DBHelper(getActivity());
         username_txt=(EditText)layout.findViewById(R.id.txt_user);
         updateProfile= (Button)layout.findViewById(R.id.update_profile);
+        Log.i("TAG","fakata name 12 "+dbhelper.getValue(DatabaseConstants.name));
+        Log.i("TAG","fakata email 12 "+dbhelper.getValue(DatabaseConstants.email));
         if(!dbhelper.getValue(DatabaseConstants.name).equals("null")) {
             Log.i("Profile","name "+dbhelper.getValue(DatabaseConstants.name));
             username_txt.setText(dbhelper.getValue(DatabaseConstants.name));

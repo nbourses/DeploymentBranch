@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -25,11 +26,15 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Intent intent = null;
-                if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
-                        General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("broker")) {
+                Log.i("splash","is logged in yo man " +General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER));
+                Log.i("splash","is logged in yo man 3 " +General.getSharedPreferences(context, AppConstants.ROLE_OF_USER));
+                if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") &&
+                        General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                    Log.i("splash","is logged in yo man 1 ");
                     intent = new Intent(context, BrokerMainActivity.class);
                 }
                 else {
+                    Log.i("splash","is logged in yo man 2 ");
                     intent = new Intent(context, ClientMainActivity.class);
                 }
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

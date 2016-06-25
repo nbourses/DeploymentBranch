@@ -44,6 +44,7 @@ import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.User.Profile;
+import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nbourses.oyeok.widgets.resideMenu.ResideMenu;
@@ -167,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         setContentView(R.layout.activity_main);
 
 
-
+        Log.i("MAIN", "MAIN");
 
         if (General.isNetworkAvailable(getApplicationContext())){
 
@@ -213,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
 
 
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(this,
@@ -220,10 +222,16 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         }
         else
         {
-            if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
-                changeFragment(new Ok_Broker_MainScreen(),null,"Broker HomeScreen");
-            else
-                changeFragment(new RexMarkerPanelScreen(),null,"Oye HomeScreen");
+            //if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+            Log.i("MAIN","gadbad "+General.getSharedPreferences(this, AppConstants.ROLE_OF_USER));
+            if(General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                Log.i("MAIN","gadbad 1");
+                changeFragment(new Ok_Broker_MainScreen(), null, "Broker HomeScreen");
+            }
+            else {
+                Log.i("MAIN","gadbad 1");
+                changeFragment(new RexMarkerPanelScreen(), null, "Oye HomeScreen");
+            }
         }
 
 
@@ -312,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         setUpMenuChangeUserRole();
 
-        if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+        if(dbHelper.getValue(DatabaseConstants.user).equalsIgnoreCase("Broker"))
             changeFragment(new Ok_Broker_MainScreen(),null,"Broker HomeScreen");
         else
             changeFragment(new RexMarkerPanelScreen(), null,"Oye HomeScreen");
@@ -433,7 +441,7 @@ toastLayout.setOnClickListener(new View.OnClickListener() {
             case android.R.id.home:
                 //Do stuff
                 //Toast.makeText(this,"getscalled",Toast.LENGTH_LONG).show();
-                if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+                if(dbHelper.getValue(DatabaseConstants.user).equalsIgnoreCase("Broker"))
                 {
                     changeFragment(new Ok_Broker_MainScreen(), null, "MarkerPanel");
                 }else {
@@ -494,7 +502,7 @@ toastLayout.setOnClickListener(new View.OnClickListener() {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED)
                     {
-                        if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
+                        if(dbHelper.getValue(DatabaseConstants.user).equalsIgnoreCase("Broker"))
                             changeFragment(new Ok_Broker_MainScreen(),null,"Broker HomeScreen");
                         else
                             changeFragment(new RexMarkerPanelScreen(),null,"Oye HomeScreen");
@@ -526,7 +534,7 @@ toastLayout.setOnClickListener(new View.OnClickListener() {
         switch (position) {
 
             case 0:
-            if (dbHelper.getValue(DatabaseConstants.user).equals("null"))
+            if (dbHelper.getValue(DatabaseConstants.user).equalsIgnoreCase("null"))
             {
                 Bundle bundle = new Bundle();
                 //bundle.putStringArray("propertySpecification",propertySpecification);

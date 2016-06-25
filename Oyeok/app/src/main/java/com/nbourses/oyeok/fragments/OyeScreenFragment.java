@@ -26,6 +26,8 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
@@ -485,11 +487,20 @@ public class OyeScreenFragment extends Fragment {
 
     @OnClick(R.id.btnOnOyeClick)
     public void submitOyeOk(View v) {
-        isclicked="true";
-        Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
-        intent.putExtra("isclicked",isclicked);
-        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-        Log.i("isclicked","isclicked===============================");
+        Log.i("TAG","property subtype selected" +General.retriveBoolean(getContext(), "propertySubtypeFlag"));
+        if(General.retriveBoolean(getContext(), "propertySubtypeFlag")) {
+            isclicked = "true";
+            Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
+            intent.putExtra("isclicked", isclicked);
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+            Log.i("isclicked", "isclicked===============================");
+        }else{
+            SnackbarManager.show(
+                    Snackbar.with(getContext())
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("Please select property subtype.")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+        }
     }
 
 
