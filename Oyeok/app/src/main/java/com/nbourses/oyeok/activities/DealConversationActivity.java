@@ -1359,8 +1359,22 @@ private  void networkConnectivity(){
                     String body = j.getString("message");
                     Log.i(TAG,"here is the 1 2 "+from+" "+to+" "+body);
 
-                    tester(from,to,body,timetoken);
+                    myRealm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            Log.i(TAG,"here is the 1 2 andar");
+                            Message message = realm.createObject(Message.class);
+                            message.setOk_id(channel_name);
+                            message.setMessage("body");
+                            message.setTimestamp("timetoken");
+                            message.setFrom("from");
+                            message.setTo("to");
+                            Log.i(TAG,"here is the 1 2 khali");
+                        }
+                    });
 
+                   // tester(from,to,body,timetoken);
+                    Log.i(TAG,"here is the 1 3 I am back "+body);
 //                    if (j.has("message") && j.has("from") && j.has("to")) {
 //                        Log.i(TAG, "here is the");
 ////                        String from = j.getString("from");
@@ -1422,29 +1436,47 @@ private  void networkConnectivity(){
 
     }
     private void tester(String from, String to, String body, String timetoken){
+        Log.i(TAG,"here is the 1 3 "+body);
 
+        Realm myRealm = General.realmconfig(this);
+        Log.i(TAG,"here is the 11 "+body);
         try{
+            Log.i(TAG,"here is the 12 "+body);
 
-                    myRealm = General.realmconfig(this);
-                    myRealm.beginTransaction();
-                   //
-            // message = myRealm.createObject(Message.class); //new Message();
-                 message = myRealm.createObject(Message.class); //new Message();
+
+            myRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    Message message = realm.createObject(Message.class);
                     message.setOk_id(channel_name);
-                    message.setMessage(body);
-                    message.setTimestamp(timetoken);
-                    message.setFrom(from);
-                    message.setTo(to);
+                    message.setMessage("body");
+                    message.setTimestamp("timetoken");
+                    message.setFrom("from");
+                    message.setTo("to");
+                }
+            });
 
 
-                    myRealm.copyToRealmOrUpdate(message);
+
+                   //
+//            Message message = new Message();
+//
+//                // message = myRealm.createObject(Message.class); //new Message();
+//                    message.setOk_id(channel_name);
+//                    message.setMessage(body);
+//                    message.setTimestamp(timetoken);
+//                    message.setFrom(from);
+//                    message.setTo(to);
+//
+//            Realma.beginTransaction();
+//                   Realma.copyToRealmOrUpdate(message);
                 }catch(Exception e){
-                    Log.i(TAG,"here is the "+"message is  "+e);
+                    Log.i(TAG,"here is the locha  "+e);
                 }
                 finally{
                     Log.i(TAG,"In finally cache "+"message is"+message.getMessage());
 
-                    myRealm.commitTransaction();
+                   // Realma.commitTransaction();
 
                 }
 
@@ -1587,9 +1619,8 @@ Log.i(TAG,"lastMessageTime rapter "+lastMessageTime);
 
         storeDealTime();
 
-       // cacheMessages(jsonArrayHistory);
 
-        //loadFinalHistory();
+       // loadFinalHistory();
 
 //        try {
 //            RealmResults<Message> results1 =

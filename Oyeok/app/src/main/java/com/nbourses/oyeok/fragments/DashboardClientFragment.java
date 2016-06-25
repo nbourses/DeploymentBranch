@@ -2087,6 +2087,75 @@ Log.i("TRACE11","llmin"+llmin);
 
 
 
+
+//    public void beaconAlert(final View rootView) throws InterruptedException {
+//
+//        final RippleBackground rippleBackground1 = (RippleBackground) rootView.findViewById(R.id.client_content);
+//        final RippleBackground rippleBackground2 = (RippleBackground) rootView.findViewById(R.id.client_content2);
+//        final RippleBackground rippleBackground3 = (RippleBackground) rootView.findViewById(R.id.client_content3);
+//
+//        int delay = 1000; // delay for 1 sec.
+//        int period = 10000; // repeat every 10 sec.
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask()
+//        {
+//            public void run()
+//            {final RippleBackground rippleBackground1 = (RippleBackground) rootView.findViewById(R.id.client_content);
+//                rippleBackground1.startRippleAnimation(); // display the data
+//                SnackbarManager.show(
+//                        Snackbar.with(getActivity())
+//                                .text("We don't cater here yet1")
+//                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+//                Log.i("time","===================1==  ");
+//            }
+//        }, delay);
+//
+//
+//
+//
+//        timer.schedule(new TimerTask()
+//        {
+//            public void run()
+//            {
+//                rippleBackground1.stopRippleAnimation();
+//                Log.i("time","===================2==  ");
+//                rippleBackground2.startRippleAnimation();
+//                SnackbarManager.show(
+//                        Snackbar.with(getActivity())
+//                                .text("We don't cater here yet2")
+//                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+//            }
+//        }, delay);
+//
+//
+//        timer.schedule(new TimerTask()
+//        {
+//            public void run()
+//            {
+//                Log.i("time","===================3==  ");
+//                rippleBackground2.stopRippleAnimation();
+//
+//                rippleBackground3.startRippleAnimation();
+//                SnackbarManager.show(
+//                        Snackbar.with(getActivity())
+//                                .text("We don't cater here ye3")
+//                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+//            }
+//        }, delay);
+//
+//
+//
+//        rippleBackground3.stopRippleAnimation();
+////    }
+////count++;
+////while(count!=9)
+////{
+////    beaconAlet(rootView);
+////}
+//    }
+//
+
+
 }
 
 
