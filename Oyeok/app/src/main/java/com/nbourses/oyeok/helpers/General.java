@@ -335,6 +335,7 @@ public class General extends BroadcastReceiver {
             String tt;
             String ptype;
             String pstype;
+            //String ptype;
             String price;
             final String speccode;
             final Realm myRealm = realmconfig(context);
@@ -357,6 +358,7 @@ public class General extends BroadcastReceiver {
             pstype = jsonObj.getString("property_subtype");
             price = jsonObj.getString("price");
             speccode = intend.toUpperCase() + "-" + tt + "-" +ptype+ "-" + pstype + "-" + price;
+
             Log.i("TRACE", "speccode is" + speccode);
 
             General.setSharedPreferences(context, "MY_SPEC_CODE", speccode);

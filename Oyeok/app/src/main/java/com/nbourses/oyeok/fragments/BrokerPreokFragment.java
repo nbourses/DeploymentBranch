@@ -84,6 +84,8 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -252,7 +254,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private int ownersCount1;
     private int buyerCount1;
     private int sellerCount1;
-
+private String Walkthrough;
 
     Animation bounce;
     Animation zoomin;
@@ -319,12 +321,28 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
         bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
         zoomin = AnimationUtils.loadAnimation(getContext(), R.anim.zoomin);
         zoomout = AnimationUtils.loadAnimation(getContext(), R.anim.zoomout);
+        /*final RippleBackground rippleBackground1=(RippleBackground)v.findViewById(R.id.content);
+        rippleBackground1.startRippleAnimation();
+        final RippleBackground rippleBackground2=(RippleBackground)v.findViewById(R.id.content1);
+        rippleBackground1.startRippleAnimation();*/
+
+
+
+
 
 
 
        chart = (BarChart) v.findViewById(R.id.chart);
         init();
-
+        Walkthrough=SharedPrefs.getString(getContext(),SharedPrefs.CHECK_WALKTHROUGH);
+        Log.i("ischecked","walkthrough3_broker"+Walkthrough);
+        if(Walkthrough.equalsIgnoreCase("true")) {
+            Log.i("ischecked","walkthrough3_broker1111111"+Walkthrough);
+            walkthroughBroker(v);
+//    beaconAlet(rootView);
+            Walkthrough="false";
+//    SharedPrefs.save(getContext(),SharedPrefs.CHECK_WALKTHROUGH,Walkthrough);
+        }
         return v;
     }
 
@@ -1098,7 +1116,8 @@ if(count<=220) {
 
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_map, fragment);
+            fragmentTransaction.replace(R.id.container_sign, fragment);
+           // fragmentTransaction.replace(R.id.container_map, fragment);
             fragmentTransaction.commit();
         } else {
             //here broker is registered
@@ -1262,12 +1281,15 @@ if(count<=220) {
                 lookingSeeking = "Tenant is looking for";
                 Log.i("PREOK CALLED","values set phase"+jsonArrayReqLl.toString());
                 circularSeekbar.setValues(jsonArrayReqLl.toString());
+               // onclick(,null,null,-1);
+                circularSeekbar.onTabclick();
             }
             else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 lookingSeeking = "Owner is having";
                 Log.i("PREOK CALLED", "values set phase" + jsonArrayAvlLl.toString());
 
                 circularSeekbar.setValues(jsonArrayAvlLl.toString());
+                circularSeekbar.onTabclick();
             }
 
         }
@@ -1295,11 +1317,13 @@ if(count<=220) {
                 Log.i("PREOK CALLED", "values set phase" + jsonArrayReqOr.toString());
 
                 circularSeekbar.setValues(jsonArrayReqOr.toString());
+                circularSeekbar.onTabclick();
             }
             else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
                 Log.i("PREOK CALLED1", "values set phase" + jsonArrayAvlOr.toString());
                 Log.i("tester","4"+currentOptionSelectedString);
                 circularSeekbar.setValues(jsonArrayAvlOr.toString());
+                circularSeekbar.onTabclick();
             }
 
         }
@@ -1394,6 +1418,7 @@ if(count<=220) {
             else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 Log.i("PREOK CALLED12", "values set" + jsonArrayAvlLl.toString());
                 circularSeekbar.setValues(jsonArrayAvlLl.toString());
+
             }
 
             //added
@@ -2383,5 +2408,134 @@ chart.clear();
 
 
     }
+
+
+
+
+
+    public void onTabclick(int position, JSONArray m, String show, int x_c, int y_c) {
+        try {
+            jsonObjectArray = m;
+            selectedItemPosition = position;
+            String ptype = null;
+            String pstype;
+            pstype = jsonObjectArray.getJSONObject(position).getString("property_subtype");
+            Log.i("debug circ","inside onclick");
+            Log.i("debug circ","inside onclick m "+jsonObjectArray);
+
+
+          /*  if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
+                ptype = "home";
+            }
+            else if(pstype.equals("retail outlet") || pstype.equals("food outlet") || pstype.equals("shop")){
+                ptype = "shop";
+            }
+            else if(pstype.equals("cold storage") || pstype.equals("kitchen") || pstype.equals("manufacturing") || pstype.equals("warehouse") || pstype.equals("workshop")){
+                ptype = "industrial";
+            }
+            else if(pstype.equals("<15") || pstype.equals("<35") || pstype.equals("<50") || pstype.equals("<100") || pstype.equals("100+")){
+                ptype = "office";
+            }
+            */
+
+            ptype = jsonObjectArray.getJSONObject(position).getString("property_type");
+
+            Log.i(TAG,"property_type "+ptype);
+            Log.i(TAG, "property_subtype " + pstype);
+
+            texPtype.setText("Property Type: "+ptype);
+            texPstype.setText("Property Subtype: "+pstype);
+            //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
+            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL"))
+                rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))+" /m.");
+            else
+                rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")));
+            //  rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /m.");
+            //      displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used.");
+
+            Log.i(TAG, "show is " + show);
+
+            if(show.equals("show")) {
+                notClicked.setVisibility(View.GONE);
+                rentText.setVisibility(View.VISIBLE);
+                //   displayOkText.setVisibility(View.VISIBLE);
+                texPtype.setVisibility(View.VISIBLE);
+                texPstype.setVisibility(View.VISIBLE);
+
+                // pickContact.setVisibility(View.GONE);
+                // contactText.setVisibility(View.GONE);
+            }
+            else if(show.equals("hide")) {
+                jsonObjectArray = null;
+                if(buildingSliderflag) {
+                    buildingSlider.startAnimation(slide_down);
+                    buildingSlider.setVisibility(View.GONE);
+                    buildingSliderflag = false;
+                    Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
+                    intent.putExtra("buildingSliderFlag",buildingSliderflag);
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
+
+                    //clearChart();
+                    if(buildingsSelected.size() !=0)
+                        buildingsSelected.clear();
+                    selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
+                    selectB.performClick();
+                }
+                notClicked.setVisibility(View.VISIBLE);
+                rentText.setVisibility(View.GONE);
+                //   displayOkText.setVisibility(View.GONE);
+                texPtype.setVisibility(View.GONE);
+                texPstype.setVisibility(View.GONE);
+                // pickContact.setVisibility(View.GONE);
+                // contactText.setVisibility(View.GONE);
+            }
+            else {
+                notClicked.setVisibility(View.GONE);
+                rentText.setVisibility(View.VISIBLE);
+                //   displayOkText.setVisibility(View.VISIBLE);
+                texPtype.setVisibility(View.VISIBLE);
+                texPstype.setVisibility(View.VISIBLE);
+                //  pickContact.setVisibility(View.VISIBLE);
+                //  contactText.setVisibility(View.VISIBLE);
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+public void walkthroughBroker(View v) {
+    MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this.getActivity());
+    sequence.addSequenceItem(v.findViewById(R.id.iv_client_type),
+            "Select client type", "GOT IT");
+    sequence.addSequenceItem(v.findViewById(R.id.iv_transection_type),
+            "Select Transaction Type", "GOT IT");
+    sequence.addSequenceItem(v.findViewById(R.id.imageView111),
+            "Select lead type to check the requirement", "GOT IT");
+
+
+    sequence.addSequenceItem(v.findViewById(R.id.okButton),
+            "Press 'ok' to select three property for visit", "GOT IT");
+
+
+//        sequence.addSequenceItem(v.findViewById(R.id.ic_search),
+//                "Select Lead", "GOT IT");
+
+
+    sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
+        @Override
+        public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
+
+
+        }
+    });
+    sequence.start();
+
+}
+
 
 }

@@ -1,6 +1,5 @@
 package com.nbourses.oyeok.activities;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,7 +26,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -37,9 +36,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
-import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
+import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.fragments.OyeScreenFragment;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -97,15 +96,14 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.toast_layout)
     LinearLayout toastLayout;
 
-    @Bind(R.id.btnOnOyeClick)
-    GridLayout btnOnOyeClick;
+
 
     @Bind(R.id.hdroomsCount)
     TextView hdroomsCount;
 
 
-    @Bind(R.id.tv_dealinfo)
-    TextView tv_dealinfo;
+    /*@Bind(R.id.tv_dealinfo)
+    TextView tv_dealinfo;*/
 
 
 
@@ -135,11 +133,62 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     private BroadcastReceiver oyebuttondata = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getExtras().getString("tv_dealinfo") != null){
-               // String oyedata = intent.getExtras().getString("tv_dealinfo")+"@"+ SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
-                String oyedata = "@"+ SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
-                tv_dealinfo.setText(oyedata);
+
+            if(intent.getExtras().getString("isclicked")=="true") {
+                Boolean s = General.retriveBoolean(getBaseContext(), "propertySubtypeFlag");
+
+                if (General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                    Log.i("TRACE", "clicked oyebutton if");
+                    //show ƒlo up screen
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArray("propertySpecification", null);
+                    bundle.putString("lastFragment", "OyeIntentSpecs");
+
+                    if (s.equals(false)) {
+                        SnackbarManager.show(
+                                Snackbar.with(getBaseContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text("Please select property subtype")
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    } else {
+                        if (slidingLayout != null &&
+                                (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
+                                        slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
+                            closeOyeScreen();
+
+                        }
+
+                        SignUpFragment signUpFragment = new SignUpFragment();
+                        loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
+                        Log.i("Signup called =", "Sign up");
+                        // btnOnOyeClick.setVisibility(View.GONE);
+                    }
+                } else {
+                    Log.i("already", "Signed up");
+                    if (s.equals(false)) {
+                        SnackbarManager.show(
+                                Snackbar.with(getBaseContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text("Please select property subtype")
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+                    } else {
+                        //create new deal
+
+                        alertbuilder();
+
+
+
+
+                    }
+                }
+
+
             }
+
+
+
+
         }
     };
 
@@ -152,7 +201,27 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     };
 
 
+private void alertbuilder()
 
+{
+    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setMessage("Dou you want to publish this oye?")
+            .setCancelable(true)
+            .setPositiveButton("Publish", new DialogInterface.OnClickListener() {
+                public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                    General.publishOye(getBaseContext());
+                    closeOyeScreen();
+                }
+            })
+            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                    dialog.cancel();
+                }
+            });
+    final AlertDialog alert = builder.create();
+    alert.show();
+
+}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,7 +241,6 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
-
 
         ShortcutBadger.removeCount(this);
 
@@ -464,6 +532,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.addToBackStack(title);
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
 
@@ -486,7 +555,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             slidingLayout.setAnchorPoint(0.5f);
             slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
 
-            btnOnOyeClick.setVisibility(View.VISIBLE);
+           // btnOnOyeClick.setVisibility(View.VISIBLE);
         }
         else {
             closeOyeScreen();
@@ -496,7 +565,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     private void closeOyeScreen() {
         isShowing = false;
         slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-        btnOnOyeClick.setVisibility(View.GONE);
+       // btnOnOyeClick.setVisibility(View.GONE);
     }
 
     @Override
@@ -559,7 +628,12 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             //setContentView(R.layout.browser);
             loadFragment(frag, null, R.id.container_map, title);
         }
+        else if (itemTitle.equals(getString(R.string.settings))) {
+            AppSetting appSetting=new AppSetting();
+            loadFragment(appSetting,null,R.id.container_Signup,"");
 
+
+        }
 
 
         if (fragment != null) {
@@ -655,7 +729,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
         toastLayout.setAnimation(m);
     }
 
-    @OnClick(R.id.btnOnOyeClick)
+    /*@OnClick(R.id.btnOnOyeClick)
     public void submitOyeOk(View v) {
         Log.i("TRACE", "oyebutton");
         Boolean s = General.retriveBoolean(this, "propertySubtypeFlag");
@@ -715,17 +789,21 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
             }
         }
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
+
+        if(getFragmentManager().getBackStackEntryCount() >0)
+        {
+            Log.i("BACK PRESSED","===================");
+            getFragmentManager().popBackStack();
+        }
+
         if (slidingLayout != null &&
                 (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
                         slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
             closeOyeScreen();
-//            DashboardClientFragment d=new DashboardClientFragment();
-//            d.UpdateRatePanel();
-
 
         }
         else if(webView != null){
@@ -734,9 +812,12 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             finish();
         }
         else{
+            Log.i("BACK PRESSED"," closing app =================== "+getFragmentManager().getBackStackEntryCount());
             super.onBackPressed();
 
         }
+
+
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
@@ -770,6 +851,15 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
                         .text("INTERNET CONNECTIVITY NOT AVAILABLE")
                         .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
     }
+
+
+
+
+
+
+
+
+
 
 }
 

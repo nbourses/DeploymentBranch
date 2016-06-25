@@ -35,6 +35,7 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.GoogleCloudMessaging.MyGcmListenerService;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.BrokerMap;
 import com.nbourses.oyeok.fragments.BrokerPreokFragment;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -461,6 +462,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.addToBackStack(title);
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -514,10 +516,19 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
         }
+        else if (itemTitle.equals(getString(R.string.settings))) {
+            AppSetting appSetting=new AppSetting();
+            loadFragment(appSetting,null,R.id.container_sign,"");
 
-       if (fragment != null) {
+
+        }
+
+
+
+       if (fragment != null && !itemTitle.equals(getString(R.string.settings))) {
             loadFragment(fragment, null, R.id.container_map, title);
         }
+
     }
 
     @Override
@@ -575,6 +586,16 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         Log.i("ONBACKPRESSED","buildingSliderflag "+buildingSliderflag);
 
         Log.i("ONBACKPRESSED","broker main activity ");
+
+
+        if(getFragmentManager().getBackStackEntryCount() >0)
+        {
+            Log.i("BACK PRESSED","===================");
+            getFragmentManager().popBackStack();
+        }
+
+
+
         if(webView != null){
 //            Log.i("ONBACKPRESSED","broker main activity webview");
             webView = null;
@@ -619,6 +640,8 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
         }
+
+
 
         if(buildingSliderflag == true){
             Log.i("ONBACKPRESSED","buildingSliderflag "+buildingSliderflag);

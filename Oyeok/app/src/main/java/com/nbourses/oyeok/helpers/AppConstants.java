@@ -23,6 +23,8 @@ public class AppConstants {
     public static final String OYE_BUTTON_DATA = "oyeButtonData";
 
     public static final String BADGE_COUNT_BROADCAST = "badgeCountBroadcast";
+    public static final String CHECK_BEACON = "checkBeacon";
+    public static final String CHECK_WALKTHROUGH = "checkWalkthrough";
 
     public static final String LOCALITY_BROADCAST = "localityBroadcast";
 

@@ -2,6 +2,7 @@ package com.nbourses.oyeok.widgets.NavDrawer;
 
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -45,6 +46,7 @@ public class FragmentDrawer extends Fragment {
     public MDrawerListener mDrawerListener;
     List<NavDrawerItem> navDrawerItems;
     private Boolean signupSuccessflag = false;
+    private static TypedArray icons;//={R.drawable.menu_option_icon,R.drawable.menu_option_icon,R.drawable.shareapp,R.drawable.notifications,R.drawable.facebook,R.drawable.aboutusicon,R.drawable.setting1};
 
 
     public void setmDrawerListener(MDrawerListener mDrawerListener) {
@@ -64,7 +66,7 @@ public class FragmentDrawer extends Fragment {
 
     public static List<NavDrawerItem> getData() {
         List<NavDrawerItem> data = new ArrayList<>();
-       int[] icons = {R.drawable.menu_option_icon};
+      // int[] icons = {R.drawable.menu_option_icon,R.drawable.shareapp,R.drawable.notifications,R.drawable.facebook,R.drawable.aboutusicon,R.drawable.setting1};
       //  ImageView icon= new ImageView(R.drawable.menu_option_icon);
 
 
@@ -75,10 +77,11 @@ public class FragmentDrawer extends Fragment {
            //   hh title[i].setText(titles[i]);
 
             navItem.setTitle(titles[i]);
-            navItem.setIcon(icons[0]);
+            navItem.setIcon(icons.getResourceId(i,-1));
             Log.i("title","title"+titles);
             data.add(navItem);
         }
+        icons.recycle();
         return data;
     }
 
@@ -97,15 +100,17 @@ public class FragmentDrawer extends Fragment {
 
         if(General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
             titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_no_signup);
-
+            icons = getActivity().getResources().obtainTypedArray(R.array.nav_drawer_labels_no_signup_icon);
 
         }
         else {
             if (General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                 titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_signup_broker);
+                icons = getActivity().getResources().obtainTypedArray(R.array.nav_drawer_labels_signup_broker_icon);
             }
             else {
                 titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_signup_client);
+                icons = getActivity().getResources().obtainTypedArray(R.array.nav_drawer_labels_signup_client_icon);
             }
         }
 

@@ -94,7 +94,7 @@ public class Profile extends Fragment {
             role_txt.setText(dbhelper.getValue(DatabaseConstants.user));
         }
 
-        profileImage= (ImageView)layout.findViewById(R.id.profile_image);
+        profileImage= (ImageView)layout.findViewById(R.id.profile_pic);
 //        if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
 //            Log.i("Profile","name "+dbhelper.getValue(DatabaseConstants.imageFilePath));
 //            filePath = dbhelper.getValue(DatabaseConstants.imageFilePath);

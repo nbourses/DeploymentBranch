@@ -72,6 +72,7 @@ public class CircularSeekBarNew extends View {
     private int difference;
     private JSONArray tempvalues = new JSONArray();
     private Drawable d = null;
+    public int [] drawables= {R.drawable.ic_broker_home, R.drawable.ic_industrial_oye_intent_specs, R.drawable.ic_shop, R.drawable.ic_loans};;
 
     public CircularSeekBarNew(Context context) {
         super(context);
@@ -188,7 +189,7 @@ public class CircularSeekBarNew extends View {
 
      // int [] drawables = {R.drawable.home, R.drawable.industry, R.drawable.shop, R.drawable.office};
 
-      int [] drawables = {R.drawable.ic_broker_home, R.drawable.ic_industrial_oye_intent_specs, R.drawable.ic_shop, R.drawable.ic_loans};
+//       drawables = {R.drawable.ic_broker_home, R.drawable.ic_industrial_oye_intent_specs, R.drawable.ic_shop, R.drawable.ic_loans};
 
 
         //Draw an arc with 300 sweep angle with mcirclepaint
@@ -271,6 +272,7 @@ public class CircularSeekBarNew extends View {
                     d = getResources().getDrawable(drawables[0]);
                     Log.i("TRACE","image selected "+getResources().getDrawable(drawables[0]));
                     Log.i("TRACE","image selected "+drawables[0]);
+
                 }
                 else if(ptype.equals("industrial")){
                     d = getResources().getDrawable(drawables[1]);
@@ -311,7 +313,7 @@ public class CircularSeekBarNew extends View {
                    d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));  // Gray
 //                    }
 //                }
-//                catch (JSONException e) {
+//                catch (JSONException e) {#BDBDBD
 //                    e.printStackTrace();
 //                }
 
@@ -372,7 +374,8 @@ public class CircularSeekBarNew extends View {
 //
 //
 //            int textwidth = left+(width/2);
-            d.draw(canvas);
+          d.draw(canvas);
+
 
 
             // user role is no more part of preok so was catching in exception, leading hiding of property description and double touch on property icon problem
@@ -1104,8 +1107,85 @@ public class CircularSeekBarNew extends View {
 
     }
 
-    public void grayout() {
-        d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));
+
+
+
+
+    public  void onTabclick(){
+        float x = 50.0f;
+        float y = 50.0f;
+        int x_c = (int)x;
+        int y_c = (int)y;
+
+        for(int i=0;i<imagesRect.size();i++)
+        {
+            Rect m = imagesRect.get(i);
+            if(m.contains(x_c,y_c))
+            {
+
+
+                Log.i("Debug Circ","index is" +index);
+
+                Log.i("Debug Circ","mImageAction " +mImageAction);
+                if(i == index)
+                {
+                    index = -1;
+                    if(mImageAction != null)
+                    {
+                        mImageAction.onclick(i,values,"hide",x_c,y_c);
+                        Log.i("BrokerPreokFragment","hidden passed");
+                    }
+                }else
+                {
+                    index = i;
+//                           // user role is no more part of preok so was catching in exception, leading hiding of property description and double touch on property icon problem
+//
+//                            try {
+//
+//                                if(values.getJSONObject(i).getString("user_role").equalsIgnoreCase("client")) {
+//                                    mImageAction.onclick(i, values, "showHalf",x_c,y_c);
+//                                    Log.i("BrokerPreokFragment", "showHalf passed");
+//                                    //remember changes
+//
+//                                }else
+//                                {//remember changes
+                    mImageAction.onclick(i, values, "show",x_c,y_c);
+                    Log.i("BrokerPreokFragment", "show passed");
+                    // sushil comment
+//                                    if(mImageAction != null)
+//                                     {
+//                                        mImageAction.onclick(i,values,"hide", x_c, y_c);
+//                                    }
+                    invalidate();
+
+//                                }
+//
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+                }
+                //pw = new PopupWindow(, 300, 470, true);
+                // display the popup in the center
+                //pw.showAtLocation(R.id.circularseekbar, Gravity.CENTER, 0, 0);
+                invalidate();
+                break;
+
+            }else
+            {
+                index = -1;
+                if(mImageAction != null)
+                {
+                    mImageAction.onclick(i,values,"hide", x_c, y_c);
+                }
+                invalidate();
+            }
+        }
+
     }
+
+
+
+
+
 
 }

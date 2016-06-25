@@ -265,6 +265,9 @@
                 android:text="Total Available Time: 500"/>
         </LinearLayout>
 
+
+
+
         <LinearLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
@@ -272,17 +275,30 @@
             android:orientation="horizontal"
             android:layout_below="@+id/combined_layout">
 
+
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1">
 
-                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+                <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="40dp">
 
-
+                    <com.skyfishjy.library.RippleBackground
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/content"
+                        app:rb_color="#ff0000"
+                        app:rb_radius="4dp"
+                        app:rb_rippleAmount="4"
+                        app:rb_duration="3000"
+                        app:rb_scale="6">
                     <TextView
                         android:id="@+id/txtOption1"
                         android:layout_width="fill_parent"
@@ -291,6 +307,9 @@
                         android:gravity="center"
                         android:textColor="#FFFFFF"
                         android:background="@color/colorPrimaryDark"/>
+
+                 </com.skyfishjy.library.RippleBackground>
+
 
                     <TextView
                         android:id="@+id/option1Count"
@@ -308,10 +327,18 @@
                         android:textSize="11sp"
                         android:background="@drawable/circle_badge"
                         android:visibility="gone" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/iv_client_type"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true" />
                 </RelativeLayout>
 
 
             </LinearLayout>
+
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -359,6 +386,9 @@
 
         </LinearLayout>
 
+
+
+
         <FrameLayout
             android:id="@+id/pager"
             android:layout_below="@id/tabs"
@@ -366,6 +396,14 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/seekbar_linearlayout">
             <include layout="@layout/fragment_broker_preok_common"/>
+
+            <ImageView
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:id="@+id/imageView111"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="70dp" />
         </FrameLayout>
 
       <RelativeLayout
@@ -392,13 +430,32 @@
                       android:layout_weight="1"
                       android:visibility="gone" />
 
-                  <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
+
+
+                   <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
                       android:id="@+id/phasedSeekBar"
                       android:layout_width="match_parent"
                       android:layout_height="match_parent"
                       android:textAlignment="center" />
 
             </LinearLayout>
+
+          <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+          <ImageView
+              android:layout_width="80dp"
+              android:layout_height="70dp"
+              android:id="@+id/iv_transection_type"
+          android:layout_marginLeft="60dp"
+              android:layout_marginRight="-150dp"
+              android:layout_marginBottom="10dp"
+              android:layout_marginTop="-10dp"
+              android:visibility="invisible" />
+
+          </LinearLayout>
             <LinearLayout
                 android:id="@+id/box"
                 android:layout_width="wrap_content"
@@ -469,14 +526,14 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <fragment
+        <!--<fragment
             android:id="@+id/map"
             android:layout_below="@+id/seekbar_linearlayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:name="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment"
             android:orientation="vertical">
-        </fragment>
+        </fragment>-->
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"

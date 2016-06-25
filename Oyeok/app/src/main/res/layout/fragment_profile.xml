@@ -11,7 +11,7 @@
         <ImageView
             android:layout_width="188dp"
             android:layout_height="match_parent"
-            android:id="@+id/profile_image"
+            android:id="@+id/profile_pic"
             android:layout_gravity="left|top"
             android:src="@drawable/ic_profile"
             android:layout_marginLeft="10dp"

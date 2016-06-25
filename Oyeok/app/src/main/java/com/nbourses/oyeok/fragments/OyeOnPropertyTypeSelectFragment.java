@@ -29,7 +29,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     private View rootView;
     private TextView txtPreviousTextView;
 
-    TextView tv_dealinfo;
+//    TextView tv_dealinfo;
     private static final String propertyTypeDefaultColor = "#FFFFFF";
     private String bhkNumber = "2";
     private String bhkNumberValue = "BHK";
@@ -51,8 +51,8 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView1 = inflater.inflate(R.layout.activity_dashboard, container, false);
-        tv_dealinfo=(TextView)rootView1.findViewById(R.id.tv_dealinfo);
+//        View rootView1 = inflater.inflate(R.layout.activity_dashboard, container, false);
+//        tv_dealinfo=(TextView)rootView1.findViewById(R.id.tv_dealinfo);
         Bundle bundle = getArguments();
         selectedPropertyType = bundle.getString("propertyType");
 
@@ -125,27 +125,27 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         */ if (v.getId() == R.id.txt1Bhk) {
             bhkNumber = "1";
             bhkNumberValue = "BHK";
-            tv_dealinfo.setText("1BHK");
+//            tv_dealinfo.setText("1BHK");
         }
         else if (v.getId() == R.id.txt2Bhk) {
             bhkNumber = "2";
             bhkNumberValue = "BHK";
-            tv_dealinfo.setText("2BHK");
+//            tv_dealinfo.setText("2BHK");
         }
         else if (v.getId() == R.id.txt3Bhk) {
             bhkNumber = "3";
             bhkNumberValue = "BHK";
-            tv_dealinfo.setText("3BHK");
+           // tv_dealinfo.setText("3BHK");
         }
         else if (v.getId() == R.id.txt4Bhk) {
             bhkNumber = "4";
             bhkNumberValue = "BHK";
-            tv_dealinfo.setText("4BHK");
+           // tv_dealinfo.setText("4BHK");
         }
         else if (v.getId() == R.id.txtAbove4Bhk) {
             bhkNumber = "4+";
             bhkNumberValue = "BHK";
-            tv_dealinfo.setText("4+BHK");
+           // tv_dealinfo.setText("4+BHK");
         }
         onFilterValueUpdate(bhkNumber+""+bhkNumberValue,bhkNumber+""+bhkNumberValue);
         oyeButtonData = selectedPropertyType +" "+txtPreviousTextView.getText().toString();
@@ -163,7 +163,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         //txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
         AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
         Log.i("retail","==========================="+txtPreviousTextView.getText().toString());
-        tv_dealinfo.setText(txtPreviousTextView.getText().toString());
+      //  tv_dealinfo.setText(txtPreviousTextView.getText().toString());
         AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
         oyeButtonData = txtPreviousTextView.getText().toString();
         setOyeButtonData(oyeButtonData);
@@ -182,7 +182,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
         //txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
         AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
-        tv_dealinfo.setText(txtPreviousTextView.getText().toString());
+//        tv_dealinfo.setText(txtPreviousTextView.getText().toString());
         AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
         oyeButtonData = txtPreviousTextView.getText().toString();
         setOyeButtonData(oyeButtonData);
@@ -198,7 +198,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         //txtPreviousTextView.setBackgroundResource(R.drawable.buy_option_circle);
         AppConstants.letsOye.setPropertySubType(txtPreviousTextView.getText().toString());
         AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
-        tv_dealinfo.setText(txtPreviousTextView.getText().toString());
+//        tv_dealinfo.setText(txtPreviousTextView.getText().toString());
         oyeButtonData = selectedPropertyType +" "+txtPreviousTextView.getText().toString();
         setOyeButtonData(oyeButtonData);
     }
@@ -213,7 +213,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
         intent.putExtra("filterValue", filterValue);
         intent.putExtra("bhk", bhk);
-        intent.putExtra("tv_dealinfo",oyeButtonData);
+//        intent.putExtra("tv_dealinfo",oyeButtonData);
 
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
 

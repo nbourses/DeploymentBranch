@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
-        sothree:umanoPanelHeight="135dp"
+        sothree:umanoPanelHeight="125dp"
         sothree:umanoShadowHeight="4dp"
         sothree:umanoParallaxOffset="100dp"
         sothree:umanoDragView="@+id/dragView"
@@ -105,7 +105,13 @@
             </ScrollView>
         </LinearLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
-    <GridLayout
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/container_Signup">
+    </FrameLayout>
+   <!-- <GridLayout
         android:id="@+id/btnOnOyeClick"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -116,7 +122,7 @@
 
         android:orientation="vertical"
         android:weightSum="1"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="5dp">
@@ -132,7 +138,7 @@
             android:layout_gravity="left|top"
             android:textColor="@color/White"
             android:layout_margin="5dp"
-            android:text="CONNECT NOW | List"
+            android:text="CONNECT NOW | Find @"
 
             android:textIsSelectable="false"
             android:textStyle="bold|italic" />
@@ -145,10 +151,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left|top"
             android:textColor="@color/foreground_material_light"
-            android:layout_margin="5dp"
-            android:text="Find @ Andheri"
+            android:text="Andheri"
             android:singleLine="false"
-            android:textStyle="bold|italic" />
+            android:textStyle="bold|italic"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp" />
        </LinearLayout>
         <LinearLayout android:layout_gravity="center"
             android:layout_marginTop="-2dp">
@@ -163,8 +171,7 @@
             android:textStyle="bold|italic" />
         </LinearLayout>
 
-    </GridLayout>
-
+    </GridLayout>-->
 
 
     <!--<Button-->

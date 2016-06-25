@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -55,6 +56,9 @@ public class OyeScreenFragment extends Fragment {
     @Bind(R.id.txtOptionSee)
     TextView txtOptionSee;
 
+    @Bind(R.id.btnOnOyeClick)
+    GridLayout btnOnOyeClick;
+
     @Bind(R.id.txtOptionShow)
     TextView txtOptionShow;
     @Bind(R.id.tv_fd_bank)
@@ -81,7 +85,10 @@ public class OyeScreenFragment extends Fragment {
 
 
 //    DiscreteSeekBar discreteSeekBar;
+@Bind(R.id.tv_dealinfo)
     TextView tv_dealinfo;
+
+   String isclicked;
 
 
 //    private void setMinMaxValueForDiscreteSeekBar() {
@@ -113,6 +120,9 @@ public class OyeScreenFragment extends Fragment {
         // Required empty public constructor
     }
 
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -121,15 +131,16 @@ public class OyeScreenFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_oye_screen, container, false);
         ButterKnife.bind(this, rootView);
 
-        View rootView1 = inflater.inflate(R.layout.activity_dashboard, container, false);
+//        View rootView1 = inflater.inflate(R.layout.activity_dashboard, container, false);
       satView = (CheckBox) rootView.findViewById(R.id.checkBox);
         satView.setVisibility(View.VISIBLE);
         bundle = getArguments();
       tv_fd_bank=(TextView)rootView.findViewById(R.id.tv_fd_bank);
-        tv_dealinfo=(TextView)rootView1.findViewById(R.id.tv_dealinfo);
+        tv_dealinfo=(TextView)rootView.findViewById(R.id.tv_dealinfo);
 
 
 
+        //tv_dealinfo.setText("sushil");
 
             init();
 
@@ -160,6 +171,30 @@ public class OyeScreenFragment extends Fragment {
 
 
     }
+
+
+
+    private BroadcastReceiver oyebuttondata = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+           // if(intent.getExtras().getString("tv_dealinfo") != null) {
+                // intent.getExtras().getString("tv_dealinfo")+
+                String oyedata = SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
+                tv_dealinfo.setText(oyedata);
+               // setdealtext(oyedata);
+               // tv_dealinfo.setText("sushil");
+                Log.i("oyedata","oyedata==============="+oyedata);
+
+            //}
+
+        }
+    };
+
+
+
+
+
+
 
     private void init() {
 
@@ -285,26 +320,26 @@ public class OyeScreenFragment extends Fragment {
             txtHome.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("home");
             loadHomeOptionView("home");
-            tv_dealinfo.setText(tv_dealinfo.getText()+" "+"home");
+            //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"home");
 
         }
         else if(txtShop.getId() == v.getId()) {
             txtShop.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("shop");
             loadHomeOptionView("shop");
-            tv_dealinfo.setText(tv_dealinfo.getText()+" "+"shop");
+           // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"shop");
         }
         else if(txtIndustrial.getId() == v.getId()) {
             txtIndustrial.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("industrial");
             loadHomeOptionView("industrial");
-            tv_dealinfo.setText(tv_dealinfo.getText()+" "+"industrial");
+           // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"industrial");
         }
         else if(txtOffice.getId() == v.getId()) {
             txtOffice.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("office");
             loadHomeOptionView("office");
-            tv_dealinfo.setText(tv_dealinfo.getText()+" "+"office");
+            //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"office");
         }
     }
 
@@ -316,21 +351,25 @@ public class OyeScreenFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            Log.i("llmin111111","llmin ++++++++++++++++++++++++++"+intent.getExtras().getString("llmin"));
-
-            AppConstants.minRent = intent.getExtras().getInt("llmin");
-            Log.i("llmin111111"," min rent"+AppConstants.minRent);
-            AppConstants.minRent=AppConstants.minRent/2;
-            AppConstants.maxRent  = intent.getExtras().getInt("llmax");
-            AppConstants.maxRent=AppConstants.maxRent+AppConstants.maxRent/2;
-            Log.i("llmin111111","max rent"+AppConstants.maxRent);
-            AppConstants.minSale  = intent.getExtras().getInt("ormin");
-            Log.i("llmin111111","min Sale"+AppConstants.minSale);
-            AppConstants.minSale  = AppConstants.minSale/2;
-            AppConstants.maxSale  = intent.getExtras().getInt("ormax");
-            Log.i("llmin111111","max Sale"+AppConstants.maxSale);
-            AppConstants.maxSale = (AppConstants.maxSale + (AppConstants.maxSale/2));
+            Log.i("llmin111111", "llmin ++++++++++++++++++++++++++" + intent.getExtras().getString("llmin"));
+            if (intent.getExtras().getString("llmin") != "0")
+            {
+                AppConstants.minRent = intent.getExtras().getInt("llmin");
+            Log.i("llmin111111", " min rent" + AppConstants.minRent);
+            AppConstants.minRent = AppConstants.minRent / 2;
+            AppConstants.maxRent = intent.getExtras().getInt("llmax");
+            AppConstants.maxRent = AppConstants.maxRent + AppConstants.maxRent / 2;
+            Log.i("llmin111111", "max rent" + AppConstants.maxRent);
+            AppConstants.minSale = intent.getExtras().getInt("ormin");
+            Log.i("llmin111111", "min Sale" + AppConstants.minSale);
+            AppConstants.minSale = AppConstants.minSale / 2;
+            AppConstants.maxSale = intent.getExtras().getInt("ormax");
+            Log.i("llmin111111", "max Sale" + AppConstants.maxSale);
+            AppConstants.maxSale = (AppConstants.maxSale + (AppConstants.maxSale / 2));
+        }
             setMinMaxValueForDiscreteSeekBar();
+
+
         }
     };
 
@@ -402,7 +441,7 @@ public class OyeScreenFragment extends Fragment {
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(BroadCastMinMaxValue, new IntentFilter(AppConstants.BROADCAST_MIN_MAX_VAL));
 
-
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(oyebuttondata, new IntentFilter(AppConstants.ON_FILTER_VALUE_UPDATE));
 
     }
 
@@ -442,6 +481,16 @@ public class OyeScreenFragment extends Fragment {
 //
 //        });
 
+
+
+    @OnClick(R.id.btnOnOyeClick)
+    public void submitOyeOk(View v) {
+        isclicked="true";
+        Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
+        intent.putExtra("isclicked",isclicked);
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+        Log.i("isclicked","isclicked===============================");
+    }
 
 
 

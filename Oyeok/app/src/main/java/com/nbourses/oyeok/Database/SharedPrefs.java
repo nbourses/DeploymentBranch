@@ -22,6 +22,8 @@ public class SharedPrefs {
     public static String MY_PINCODE = "myPincode";
     public static String MY_REGION = "myRegion";
     public static String MY_SPEC_CODE = "mySpecCode";
+    public static final String CHECK_BEACON = "true";
+    public static final String CHECK_WALKTHROUGH = "true";
     //public static String MY_PROPERTY_SUBTYPE = "myPropertySubtype";
     //public static String MY_TT = "myTT";
     //public static String MY_Price = "myPrice";
