@@ -2202,51 +2202,63 @@ public void tutorialAlert(final View rootView) {
 
 
 
-public void beaconAlet(View rootView) throws InterruptedException {
+public void beaconAlet(final View rootView) throws InterruptedException {
 
     final RippleBackground rippleBackground1 = (RippleBackground) rootView.findViewById(R.id.client_content);
     final RippleBackground rippleBackground2 = (RippleBackground) rootView.findViewById(R.id.client_content2);
     final RippleBackground rippleBackground3 = (RippleBackground) rootView.findViewById(R.id.client_content3);
 
+    int delay = 1000; // delay for 1 sec.
+    int period = 10000; // repeat every 10 sec.
+    Timer timer = new Timer();
+    timer.schedule(new TimerTask()
+    {
+        public void run()
+        {final RippleBackground rippleBackground1 = (RippleBackground) rootView.findViewById(R.id.client_content);
+            rippleBackground1.startRippleAnimation(); // display the data
+            SnackbarManager.show(
+                    Snackbar.with(getActivity())
+                            .text("We don't cater here yet1")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+            Log.i("time","===================1==  ");
+        }
+    }, delay);
 
 
-    Log.i("time","===================1==  ");
-    rippleBackground1.startRippleAnimation();
-lastTouched=SystemClock.currentThreadTimeMillis();
-//        Thread.sleep(500);
 
 
-        SnackbarManager.show(
-                Snackbar.with(getActivity())
-                        .text("We don't cater here yet1")
-                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+    timer.schedule(new TimerTask()
+    {
+        public void run()
+        {
+            rippleBackground1.stopRippleAnimation();
+            Log.i("time","===================2==  ");
+            rippleBackground2.startRippleAnimation();
+            SnackbarManager.show(
+                    Snackbar.with(getActivity())
+                            .text("We don't cater here yet2")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+        }
+    }, delay);
 
-    rippleBackground1.isRippleAnimationRunning();
-    rippleBackground1.stopRippleAnimation();
 
-//   if(rippleBackground1.isRippleAnimationRunning()) {
+    timer.schedule(new TimerTask()
+    {
+        public void run()
+        {
+            Log.i("time","===================3==  ");
+            rippleBackground2.stopRippleAnimation();
+
+            rippleBackground3.startRippleAnimation();
+            SnackbarManager.show(
+                    Snackbar.with(getActivity())
+                            .text("We don't cater here ye3")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+        }
+    }, delay);
 
 
-       // Thread.sleep(500);
-    Thread.sleep(1500);
-    Log.i("time","===================2==  ");
-        rippleBackground2.startRippleAnimation();
-        SnackbarManager.show(
-        Snackbar.with(getActivity())
-                .text("We don't cater here yet2")
-                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
-        Thread.sleep(1500);
-//    }
-//    else if(rippleBackground2.isRippleAnimationRunning()) {
-    Log.i("time","===================3==  ");
-       rippleBackground2.stopRippleAnimation();
-    Thread.sleep(1500);
-        rippleBackground3.startRippleAnimation();
-        SnackbarManager.show(
-        Snackbar.with(getActivity())
-                .text("We don't cater here ye3")
-                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
-        Thread.sleep(1500);
+
        rippleBackground3.stopRippleAnimation();
 //    }
 //count++;
