@@ -976,19 +976,32 @@ if(newUser==true) {
 //                        }
 
 
-                        my_user_id = signUp.responseData.getUserId();
-                        Log.i(TAG,"fakata response "+response.toString());
-                        Log.i(TAG,"fakata user id "+my_user_id);
-                        Log.i(TAG,"fakata name "+signUp.responseData.getName());
-                        Log.i(TAG,"fakata email "+signUp.responseData.getEmail());
 
-                        General.setSharedPreferences(getContext(),AppConstants.NAME,signUp.responseData.getName());
-                        dbHelper.save(DatabaseConstants.name, signUp.responseData.getName());
 
-                        General.setSharedPreferences(getContext(),AppConstants.EMAIL,signUp.responseData.getEmail());
-                        dbHelper.save(DatabaseConstants.email, signUp.responseData.getName());
-                        Log.i(TAG,"fakata name 1 "+dbHelper.getValue(DatabaseConstants.name));
-                        Log.i(TAG,"fakata email 1 "+dbHelper.getValue(DatabaseConstants.email));
+                       try {
+                           my_user_id = signUp.responseData.getUserId();
+
+                           Log.i(TAG,"fakata user id "+my_user_id);
+                           Log.i(TAG, "fakata email " + signUp.responseData.getEmail());
+                           if (!signUp.responseData.getName().equalsIgnoreCase("null")) {
+                               Log.i(TAG, "fakata name " + signUp.responseData.getName());
+                               General.setSharedPreferences(getContext(), AppConstants.NAME, signUp.responseData.getName());
+                               dbHelper.save(DatabaseConstants.name, signUp.responseData.getName());
+                           }
+
+
+                           if (!signUp.responseData.getEmail().equalsIgnoreCase("null")) {
+                               Log.i(TAG, "fakata name " + signUp.responseData.getEmail());
+                               General.setSharedPreferences(getContext(), AppConstants.EMAIL, signUp.responseData.getEmail());
+                               dbHelper.save(DatabaseConstants.email, signUp.responseData.getEmail());
+                           }
+                           Log.i("TAG","fakata name 12 "+dbHelper.getValue(DatabaseConstants.name));
+                           Log.i("TAG","fakata email 12 "+dbHelper.getValue(DatabaseConstants.email));
+                           Log.i("TAG","fakata email 13 "+General.getSharedPreferences(getContext(), AppConstants.NAME));
+                           Log.i("TAG","fakata email 13 "+General.getSharedPreferences(getContext(), AppConstants.EMAIL));
+                       }catch(Exception e){
+                           Log.i(TAG,"caught in exception sign up success fakata 14 "+e);
+                       }
 
                         //  String ab = signUp.getError();
 
@@ -1003,6 +1016,7 @@ if(newUser==true) {
 
                               oldRole = "client";
                               okBroker = false;
+                              role_of_user = "client";
                               General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                               dbHelper.save(DatabaseConstants.userRole, "Client");
                               Log.i(TAG,"fakat 1 "+General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
@@ -1012,6 +1026,7 @@ if(newUser==true) {
 
                               oldRole = "broker";
                               okBroker = true;
+                              role_of_user = "broker";
                               General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"broker");
                               dbHelper.save(DatabaseConstants.userRole, "Broker");
                               Log.i(TAG,"fakat 2 "+General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
@@ -1020,7 +1035,7 @@ if(newUser==true) {
                           }
 
                             final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                            builder.setMessage("Do you want to signup in "+oldRole)
+                            builder.setMessage("Do you want to Login as a "+oldRole)
                                     .setCancelable(true)
                                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                         public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
@@ -1076,7 +1091,8 @@ if(newUser==true) {
 
                             return;
                         }else{
-                            General.setSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
+                            Log.i("TAG","suspecto "+role_of_user);
+                            //General.setSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
                         }
 
                         Log.i("TRACE", "Userid" +my_user_id);
@@ -1129,6 +1145,7 @@ if(newUser==true) {
                         dbHelper.save(DatabaseConstants.name, Sname);
                         dbHelper.save(DatabaseConstants.email,Semail);
                         dbHelper.save(DatabaseConstants.mobileNumber,mobile_number);
+                        General.setSharedPreferences(getContext(), AppConstants.MOBILE_NUMBER,mobile_number);
                         if (dbHelper.getValue(DatabaseConstants.userRole).equals("Broker")) {
                             dbHelper.save(DatabaseConstants.user, "Broker");
                         } else

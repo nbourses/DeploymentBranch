@@ -89,5 +89,8 @@ public class AppConstants {
 // REALM dB model app constants by Ritesh
 //USERINFO MODEL
     public static final String MOBILE_NUMBER = "mobileNumber";
+    public static final String PTYPE = "ptype";
+    public static final String PSTYPE = "pstype";
+    public static final String PRICE = "price";
 
 }

@@ -28,8 +28,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
@@ -144,7 +142,7 @@ public class BrokerMap extends DashboardClientFragment {
                 autoCompView.clearListSelection();
                 autoCompView.setText("");
                 autoCompView.showDropDown();
-//                new LocationUpdater().execute();
+    //           new LocationUpdater().execute();
 
 
             }
@@ -367,6 +365,7 @@ public class BrokerMap extends DashboardClientFragment {
         //rem
         getLocationFromAddress(autoCompView.getText().toString());
         if (isNetworkAvailable()) {
+            getRegion();
             new LocationUpdater().execute();
         }
     }
@@ -445,8 +444,11 @@ public class BrokerMap extends DashboardClientFragment {
                                 Address1 += " " + long_name;
                             } else if (Type.equalsIgnoreCase("sublocality_level_2")) {
                                 Address2 = long_name;
-                                if (getActivity() != null)
+                                if (getActivity() != null) {
+
                                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LOCALITY, long_name);
+                                }
+
                             } else if (Type.equalsIgnoreCase("sublocality_level_1")) {
                                 Address2 += " " + long_name;
 
@@ -527,7 +529,7 @@ public class BrokerMap extends DashboardClientFragment {
             //.snippet("Description")
             //.icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(getContext(), Mmarker))));
 
-            Marker m = gmap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("I am here!").icon(icon1));
+           // Marker m = gmap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("I am here!").icon(icon1));
             // broker_map.animateCamera(CameraUpdateFactory.newLatLng(l));
             gmap.moveCamera(CameraUpdateFactory.newLatLng(l));
             // broker_map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));

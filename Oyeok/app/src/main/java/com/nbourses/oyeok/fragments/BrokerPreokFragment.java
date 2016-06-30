@@ -237,7 +237,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     //lead description variables
 
-    private String lookingSeeking = "Tenant is looking for";
+    private String lookingSeeking = "Tenant is looking";
     private String atFor = "at";
 
     private long mSampleDurationTime = 5; // 5 msec
@@ -275,7 +275,7 @@ private String Walkthrough;
 
             if(buildingsSelected.size() !=0)
                 buildingsSelected.clear();
-            selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
+            selectB.setText("Selected buildings ["+buildingsSelected.size()+"]");
             selectB.performClick();
         }
     };
@@ -633,6 +633,8 @@ Log.i("PHASE","before adapter set");
         xAxis.setLabelsToSkip(0);
         chart.setDoubleTapToZoomEnabled(false);
         chart.setTouchEnabled(true);
+        chart.setDrawHighlightArrow(true);
+
 
 
         chart.setOnChartValueSelectedListener(this);
@@ -1183,7 +1185,7 @@ if(count<=220) {
 //                buildingNames.clear();
 //            if(buildingPrice.size() !=0)
 //                buildingPrice.clear();
-            selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
+            selectB.setText("Selected buildings ["+buildingsSelected.size()+"]");
             Log.i("STEP3","STEP3");
             // chart();
             if(labels.size() != 0)
@@ -1253,13 +1255,28 @@ if(count<=220) {
 
         //okButton.setAnimation(zoomin);
         //okButton.setAnimation(zoomout);
-
+        circularSeekbar.onTabclick();
         if (txtPreviouslySelectedOption != null)
             txtPreviouslySelectedOption.setBackgroundResource(R.color.colorPrimaryDark);
 
         txtPreviouslySelectedOption = (TextView) v;
 
         if (v.getId() == txtOption1.getId()) {
+
+            Log.i("PREOK CALLED11","yoyoyoy1 "+General.getSharedPreferences(getContext(),AppConstants.TT));
+
+            Log.i("PREOK CALLED11","jetcool"+currentOptionSelectedString);
+
+            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("rental")){
+                lookingSeeking = "Tenant is looking for";
+                //texPtype.setText("Tenant is looking for");
+                Log.i("PREOK CALLED", "tototo" + lookingSeeking);
+            }
+            else if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("resale")){
+                lookingSeeking = "Buyer is looking for";
+               // texPtype.setText("Buyer is looking for");
+                Log.i("PREOK CALLED", "tototo" + lookingSeeking);
+            }
             rentText.setVisibility(View.GONE);
            // texPtype.setVisibility(View.GONE);
             texPtype.setText("Please select a Lead and press OK.");
@@ -1278,22 +1295,34 @@ if(count<=220) {
             Log.i("PREOK CALLED1","currentOptionSelectedString1 phase"+currentOptionSelectedString);
             if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
 
-                lookingSeeking = "Tenant is looking for";
+
                 Log.i("PREOK CALLED","values set phase"+jsonArrayReqLl.toString());
                 circularSeekbar.setValues(jsonArrayReqLl.toString());
-               // onclick(,null,null,-1);
-                circularSeekbar.onTabclick();
+
+
             }
             else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
-                lookingSeeking = "Owner is having";
+
                 Log.i("PREOK CALLED", "values set phase" + jsonArrayAvlLl.toString());
 
                 circularSeekbar.setValues(jsonArrayAvlLl.toString());
-                circularSeekbar.onTabclick();
+
             }
 
         }
         else if (v.getId() == txtOption2.getId()) {
+            Log.i("PREOK CALLED11","yoyoyoy2 "+General.getSharedPreferences(getContext(),AppConstants.TT));
+            Log.i("PREOK CALLED11","jetcool"+currentOptionSelectedString);
+            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("rental")){
+                lookingSeeking = "Owner is having";
+                //texPtype.setText("Owner is having");
+                Log.i("PREOK CALLED", "tototo" + lookingSeeking + " "+ txtOption2.getText().toString());
+            }
+            else if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("resale")){
+                lookingSeeking = "Seller is having";
+               // texPtype.setText("Seller is having");
+                Log.i("PREOK CALLED", "tototo" + lookingSeeking);
+            }
 
             //           option2CountCont1.setVisibility(View.GONE);
             //  option1Count.setVisibility(View.GONE);
@@ -1309,21 +1338,24 @@ if(count<=220) {
 
             if (currentOptionSelectedString.equalsIgnoreCase(strTenants))
                 currentOptionSelectedString = strSeekers;
-            Log.i("PREOK CALLED1","currentOptionSelectedString2 phase"+currentOptionSelectedString);
 
+            Log.i(TAG,"jsonArrayReqOr yo "+jsonArrayReqOr);
             if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
+                Log.i(TAG,"jsonArrayReqOr yo 1"+jsonArrayReqOr);
 
-                lookingSeeking = "Owner is having";
+               // Log.i(TAG,"lookingSeeking "+lookingSeeking);
                 Log.i("PREOK CALLED", "values set phase" + jsonArrayReqOr.toString());
 
                 circularSeekbar.setValues(jsonArrayReqOr.toString());
-                circularSeekbar.onTabclick();
+
             }
             else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
+                Log.i(TAG,"jsonArrayReqOr yo 2"+jsonArrayReqOr);
+
                 Log.i("PREOK CALLED1", "values set phase" + jsonArrayAvlOr.toString());
                 Log.i("tester","4"+currentOptionSelectedString);
                 circularSeekbar.setValues(jsonArrayAvlOr.toString());
-                circularSeekbar.onTabclick();
+
             }
 
         }
@@ -1336,13 +1368,20 @@ if(count<=220) {
 
 
 
-
+        circularSeekbar.onTabclick();
         currentSeekbarPosition = position;
         Log.i("PREOK CALLED","currentSeekbarPosition"+currentSeekbarPosition);
 
         if (position == 0) {
             atFor = "at";
             jsonObjectArray = null;
+
+//      if(txtOption2.getText().toString().equalsIgnoreCase("Tenants"))
+//            lookingSeeking = "Tenant is looking for";
+//            else if(txtOption2.getText().toString().equalsIgnoreCase("Owners"))
+//                lookingSeeking = "Owner is having";
+
+
             notClicked.setVisibility(View.VISIBLE);
 
             rentText.setVisibility(View.GONE);
@@ -1352,46 +1391,46 @@ if(count<=220) {
 
             resaleCount.setVisibility(View.GONE);
 
+try {
+    Log.i("CONTEXT", "object " + getContext());
+    if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) <= 0) {
+        rentalCount.setVisibility(View.GONE);
+        option1Count.setVisibility(View.GONE);
+        option2Count.setVisibility(View.GONE);
+    } else {
+        rentalCount.setVisibility(View.VISIBLE);
+        rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
 
-            Log.i("CONTEXT","object "+getContext());
-            if(General.getBadgeCount(getContext(),AppConstants.RENTAL_COUNT)<=0){
-                rentalCount.setVisibility(View.GONE);
-                option1Count.setVisibility(View.GONE);
-                option2Count.setVisibility(View.GONE);
-            }
-            else {
-                rentalCount.setVisibility(View.VISIBLE);
-                rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
+        if (General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT) <= 0) {
+            //option1Count.setVisibility(View.GONE);
+            Log.i(TAG, "itha " + AppConstants.TENANTS_COUNT);
+            option1Count.setVisibility(View.GONE);
+        } else {
+            //option1Count.setVisibility(View.VISIBLE);
+            option1Count.setVisibility(View.VISIBLE);
+            option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
+        }
+        if (General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT) <= 0) {
+            Log.i(TAG, "ownerscount1" + General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT));
+            //option2Count.setVisibility(View.GONE);
+            option2Count.setVisibility(View.GONE);
 
-                if(General.getBadgeCount(getContext(),AppConstants.TENANTS_COUNT)<=0) {
-                    //option1Count.setVisibility(View.GONE);
-                    Log.i(TAG,"itha "+AppConstants.TENANTS_COUNT);
-                    option1Count.setVisibility(View.GONE);
-                }
-                else {
-                    //option1Count.setVisibility(View.VISIBLE);
-                    option1Count.setVisibility(View.VISIBLE);
-                    option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
-                }
-                if(General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT)<=0) {
-                    Log.i(TAG,"ownerscount1"+General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT));
-                    //option2Count.setVisibility(View.GONE);
-                    option2Count.setVisibility(View.GONE);
+        } else {
+            Log.i(TAG, "ownerscount2" + General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT));
+            //option2Count.setVisibility(View.VISIBLE);
+            option2Count.setVisibility(View.VISIBLE);
+            option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT)));
+        }
+    }
+    if (General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT) > 0) {
+        resaleCount.setVisibility(View.VISIBLE);
+        resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
+    }
 
-                }
-                else {
-                    Log.i(TAG,"ownerscount2"+General.getBadgeCount(getContext(),AppConstants.OWNERS_COUNT));
-                    //option2Count.setVisibility(View.VISIBLE);
-                    option2Count.setVisibility(View.VISIBLE);
-                    option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT)));
-                }
-            }
-            if(General.getBadgeCount(getContext(),AppConstants.RESALE_COUNT)>0){
-                resaleCount.setVisibility(View.VISIBLE);
-                resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
-            }
+}
+catch (Exception e){
 
-
+}
             animatebadges();
 
 
@@ -1404,10 +1443,12 @@ if(count<=220) {
 
             if (currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
                 currentOptionSelectedString = strTenants;
+                lookingSeeking = "Tenant is looking for";
                 Log.i("PREOK CALLED10", "currentOptionSelectedString1" + currentOptionSelectedString);
             }
             if (currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
                 currentOptionSelectedString = strOwners;
+                lookingSeeking = "Owner is having";
                 Log.i("PREOK CALLED13", "currentOptionSelectedString1" + currentOptionSelectedString);
             }
 
@@ -1443,6 +1484,12 @@ if(count<=220) {
         else if (position == 1) {
             atFor = "for";
             jsonObjectArray = null;
+
+//            if(txtOption2.getText().toString().equalsIgnoreCase("Buyer"))
+//                lookingSeeking = "Buyer is looking for";
+//            else if(txtOption2.getText().toString().equalsIgnoreCase("Seller"))
+//                lookingSeeking = "Seller is having";
+
             notClicked.setVisibility(View.VISIBLE);
 
             rentText.setVisibility(View.GONE);
@@ -1454,43 +1501,46 @@ if(count<=220) {
             option1Count.setVisibility(View.INVISIBLE);
             option2Count.setVisibility(View.INVISIBLE);
             
-            if(General.getBadgeCount(getContext(),AppConstants.RESALE_COUNT)<=0) {
-                resaleCount.setVisibility(View.GONE);
-                option1Count.setVisibility(View.GONE);
-                option2Count.setVisibility(View.GONE);
-            }
-            else {
-                resaleCount.setVisibility(View.VISIBLE);
-                resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
+   try {
+       if (General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT) <= 0) {
+           resaleCount.setVisibility(View.GONE);
+           option1Count.setVisibility(View.GONE);
+           option2Count.setVisibility(View.GONE);
+       } else {
+           resaleCount.setVisibility(View.VISIBLE);
+           resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
 
-                if(General.getBadgeCount(getContext(),AppConstants.BUYER_COUNT)<=0) {
-                    Log.i("BADGE","BUYER COUNT5 "+General.getBadgeCount(getContext(),AppConstants.BUYER_COUNT));
-                    //option1Count.setVisibility(View.GONE);
-                    option1Count.setVisibility(View.GONE);
-                }
-                else {
-                    //option1Count.setVisibility(View.VISIBLE);
-                    option1Count.setVisibility(View.VISIBLE);
-                    option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
-                }
-                if(General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT)<=0) {
-                    Log.i("BADGE","SELLER_COUNT1 "+General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT));
-                    //option2Count.setVisibility(View.GONE);
-                    option2Count.setVisibility(View.GONE);
-                }
-                else {
-                    Log.i("BADGE","SELLER_COUNT2 "+General.getBadgeCount(getContext(),AppConstants.SELLER_COUNT));
-                    //option2Count.setVisibility(View.VISIBLE);
-                    option2Count.setVisibility(View.VISIBLE);
-                    option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
-                }
+           if (General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT) <= 0) {
+               Log.i("BADGE", "BUYER COUNT5 " + General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT));
+               //option1Count.setVisibility(View.GONE);
+               option1Count.setVisibility(View.GONE);
+           } else {
+               //option1Count.setVisibility(View.VISIBLE);
+               option1Count.setVisibility(View.VISIBLE);
+               option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
+           }
+           if (General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT) <= 0) {
+               Log.i("BADGE", "SELLER_COUNT1 " + General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT));
+               //option2Count.setVisibility(View.GONE);
+               option2Count.setVisibility(View.GONE);
+           } else {
+               Log.i("BADGE", "SELLER_COUNT2 " + General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT));
+               //option2Count.setVisibility(View.VISIBLE);
+               option2Count.setVisibility(View.VISIBLE);
+               option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
+           }
 
-            }
-            if(General.getBadgeCount(getContext(),AppConstants.RENTAL_COUNT)>0){
-                rentalCount.setVisibility(View.VISIBLE);
-                rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
-            }
+       }
+       if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) > 0) {
+           rentalCount.setVisibility(View.VISIBLE);
+           rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
+       }
 
+
+        }
+        catch (Exception e){
+
+        }
 
             animatebadges();
 
@@ -1503,10 +1553,12 @@ if(count<=220) {
 
             if (currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
                 currentOptionSelectedString = strSeekers;
+                lookingSeeking = "Buyer is looking for";
                 Log.i("PREOK CALLED16", "currentOptionSelectedString2" + currentOptionSelectedString);
             }
             if (currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 currentOptionSelectedString = strSeller;
+                lookingSeeking = "Seller is having";
                 Log.i("PREOK CALLED19", "currentOptionSelectedString2" + currentOptionSelectedString);
             }
 
@@ -1579,6 +1631,7 @@ if(count<=220) {
 
 
 
+
           /*  if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
                 ptype = "home";
             }
@@ -1597,19 +1650,25 @@ if(count<=220) {
 
             Log.i(TAG,"property_type "+ptype);
             Log.i(TAG, "property_subtype " + pstype);
-            texPtype.setText("Property type: "+ptype);
-            texPstype.setText("Property subtype: "+pstype);
+           // texPtype.setText("Property type: "+ptype);
+            texPtype.setText(lookingSeeking);
+           // texPstype.setText("Property subtype: "+pstype);
+            texPstype.setText(ptype.substring(0, 1).toUpperCase() + ptype.substring(1)+" ("+pstype+")");
 
        /*     texPtype.setText("Property Type: "+ptype);
             texPstype.setText("Property Subtype: "+pstype);
             */
             //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL"))
-                rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))+" /m.");
+                rentText.setText("@"+General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))+" /m.");
             else
-                rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")));
+                rentText.setText("@"+General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")));
             //  rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /m.");
             //      displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used.");
+
+            General.setSharedPreferences(getContext(),AppConstants.PTYPE,ptype);
+            General.setSharedPreferences(getContext(),AppConstants.PSTYPE,pstype);
+            General.setSharedPreferences(getContext(),AppConstants.PRICE,jsonObjectArray.getJSONObject(position).getString("price"));
 
             Log.i(TAG, "show is " + show);
 
@@ -1642,7 +1701,7 @@ if(count<=220) {
                     //clearChart();
                    if(buildingsSelected.size() !=0)
                      buildingsSelected.clear();
-                    selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
+                    selectB.setText("Selected buildings ["+buildingsSelected.size()+"]");
                     selectB.performClick();
                 }
                 notClicked.setVisibility(View.VISIBLE);
@@ -2066,7 +2125,7 @@ if(count<=220) {
 
                 if (buildingsSelected.size() < 3) {
                     buildingsSelected.add(e.getXIndex());
-                    selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
+                    selectB.setText("Selected buildings ["+buildingsSelected.size()+"]");
 
                     Log.i("GRAPH10", "buildings selected after add " + buildingsSelected);
 
@@ -2117,7 +2176,7 @@ if(count<=220) {
                 Log.i("GRAPH", "removed " + Integer.valueOf(e.getXIndex()));
                 // buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
                 buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
-                selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
+                selectB.setText("Selected buildings ["+buildingsSelected.size()+"]");
                 Log.i("GRAPH", "after removing " + buildingsSelected);
                 //    for (int i = 0; i < buildingsSelected.size(); i++) {
 
@@ -2168,7 +2227,7 @@ if(count<=220) {
                 Log.i("GRAPH", "removed " + Integer.valueOf(chartIndex));
                 // buildingsSelected.remove(Integer.valueOf(e.getXIndex()));
                 buildingsSelected.remove(Integer.valueOf(chartIndex));
-                selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
+                selectB.setText("Selected buildings ["+buildingsSelected.size()+"]");
                 Log.i("GRAPH", "after removing " + buildingsSelected);
                 //    for (int i = 0; i < buildingsSelected.size(); i++) {
 
@@ -2442,14 +2501,14 @@ chart.clear();
 
             Log.i(TAG,"property_type "+ptype);
             Log.i(TAG, "property_subtype " + pstype);
-
-            texPtype.setText("Property Type: "+ptype);
-            texPstype.setText("Property Subtype: "+pstype);
+            texPtype.setText(lookingSeeking);
+            //texPtype.setText("Property Type: "+ptype);
+            texPstype.setText(ptype.substring(0, 1).toUpperCase() + ptype.substring(1)+" ("+pstype+")");
             //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL"))
-                rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))+" /m.");
+                rentText.setText("@"+General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))+" /m.");
             else
-                rentText.setText(General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")));
+                rentText.setText("@"+General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")));
             //  rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /m.");
             //      displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used.");
 
@@ -2479,7 +2538,7 @@ chart.clear();
                     //clearChart();
                     if(buildingsSelected.size() !=0)
                         buildingsSelected.clear();
-                    selectB.setText("Select buildings ["+buildingsSelected.size()+"]");
+                    selectB.setText("Selected buildings ["+buildingsSelected.size()+"]");
                     selectB.performClick();
                 }
                 notClicked.setVisibility(View.VISIBLE);

@@ -142,10 +142,13 @@ public class OyeIntentSpecs extends Fragment implements MyFragment.OnFragmentInt
 
 
 
+try {
+    ((MainActivity) getActivity()).changeDrawerToggle(false, "OyeABroker");
 
-        ((MainActivity)getActivity()).changeDrawerToggle(false,"OyeABroker");
+}
+catch(Exception e){
 
-
+}
 
         discreteSeekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override

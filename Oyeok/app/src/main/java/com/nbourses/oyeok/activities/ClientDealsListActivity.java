@@ -137,10 +137,15 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     private String TT = "LL";
     private ArrayList<BrokerDeals> total_deals;
     private ArrayList<BrokerDeals> listBrokerDeals_new;
+    private ArrayList<BrokerDeals> listBrokerDealsLL;
+    private ArrayList<BrokerDeals> listBrokerDealsOR;
     private Set<String> mutedOKIds = new HashSet<String>();
     private int position;   //position of swipe menu item
     private Realm myRealm;
     private DefaultDeals defaultDeals;
+    private ArrayList<String> defaultOkIds = new ArrayList<String>();
+    private ArrayList<String> matchedOkIds;
+    private ArrayList<BrokerDeals> reset;
 
 
 
@@ -168,10 +173,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-try {
-    myRealm = General.realmconfig(this);
-}
-catch(Exception e){}
+        try {
+            myRealm = General.realmconfig(this);
+        }
+        catch(Exception e){}
 
 
         IntentFilter filter = new IntentFilter("okeyed");
@@ -194,8 +199,8 @@ catch(Exception e){}
         listViewDeals.setVisibility(View.VISIBLE);
 //        fragment_container1.setVisibility(View.GONE);
 
-      //  Intent myIntent = getIntent();
-     //   default_deal_flag = myIntent.getExtras().getBoolean("default_deal_flag");
+        //  Intent myIntent = getIntent();
+        //   default_deal_flag = myIntent.getExtras().getBoolean("default_deal_flag");
 
 
         ButterKnife.bind(this);
@@ -258,7 +263,7 @@ catch(Exception e){}
                 // set item width
                 deleteItem.setWidth(listAdapter.dp2px(90));
                 // set a icon
-               deleteItem.setIcon(R.drawable.delete);
+                deleteItem.setIcon(R.drawable.delete);
                 deleteItem.setTitle("delete");
                 MuteItem.setTitleSize(18);
                 // set item title font color
@@ -283,7 +288,7 @@ catch(Exception e){}
         listViewDeals.setOnMenuItemClickListener(new OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int pos, SwipeMenu menu, int index) {
-     //           ApplicationInfo item =  listAdapter.getItem(position);
+                //           ApplicationInfo item =  listAdapter.getItem(position);
                 position = pos;
                 switch (index) {
                     case 2:
@@ -293,6 +298,11 @@ catch(Exception e){}
 //                        open(item);
                         break;
                     case 0:
+
+                        if(listBrokerDeals_new.isEmpty()){
+                            total_deals = new ArrayList<BrokerDeals>();
+                            total_deals.addAll(default_deals);
+                        }
 
                         Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(ClientDealsListActivity.this));
                         if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
@@ -330,6 +340,15 @@ catch(Exception e){}
 //                        listAdapter.notifyDataSetChanged();
                         break;
                     case 1:
+                        Log.i(TAG,"wadala listBrokerDeals_new "+listBrokerDeals_new);
+                        Log.i(TAG,"wadala total_deals "+total_deals);
+                        Log.i(TAG,"wadala default deals "+default_deals);
+
+                        if(listBrokerDeals_new.isEmpty()){
+                            Log.i(TAG,"wadala default deals 1 ");
+                            total_deals = new ArrayList<BrokerDeals>();
+                            total_deals.addAll(default_deals);
+                        }
 
                         Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
 
@@ -344,6 +363,7 @@ catch(Exception e){}
                                         dialog.dismiss();
 
                                         if(default_deals != null) {
+                                            Log.i(TAG,"wadala default deals 2 ");
                                             if (default_deals.contains(total_deals.get(position))){
 
                                                 Log.i("deleteDR CALLED", "Its default deal " + total_deals.get(position).getSpecCode());
@@ -385,12 +405,14 @@ catch(Exception e){}
                                                 deleteDealingroom("1",total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
                                                 default_deals.clear();
                                                 loadDefaultDeals();
+                                                loadBrokerDeals();
 
                                             }
                                         }
 
 
                                         if(listBrokerDeals_new != null) {
+                                            Log.i(TAG,"wadala default deals 2 ");
                                             if (listBrokerDeals_new.contains(total_deals.get(position))) {
 
                                                 Log.i("deleteDR CALLED", "Its HDroom " + total_deals.get(position).getSpecCode());
@@ -412,6 +434,12 @@ catch(Exception e){}
 
                                                 Log.i("MUTE", "muted from shared" + General.getMutedOKIds(ClientDealsListActivity.this));
 
+                                                if(default_deals != null)
+                                                    default_deals.clear();
+                                                if(listBrokerDeals_new != null)
+                                                    listBrokerDeals_new.clear();
+                                                loadDefaultDeals();
+                                                loadBrokerDeals();
                                             }
                                         }
 
@@ -583,6 +611,11 @@ catch(Exception e){}
 
             if (deals1 != null) {
 
+                if (defaultOkIds != null)
+                    defaultOkIds.clear();
+                else
+                    defaultOkIds = new ArrayList<String>();
+
 
                 Iterator<Map.Entry<String, String>> iter = deals1.entrySet().iterator();
 
@@ -601,6 +634,8 @@ catch(Exception e){}
                         DefaultDeals defaultDeals = new DefaultDeals();
                         defaultDeals.setOk_id(ok_id);
                         defaultDeals.setSpec_code(specs);
+
+                        defaultOkIds.add(ok_id);
                         myRealm.beginTransaction();
                         DefaultDeals defaultDeals1 = myRealm.copyToRealmOrUpdate(defaultDeals);
                         myRealm.commitTransaction();
@@ -615,24 +650,28 @@ catch(Exception e){}
                     Log.i("specs","specs "+specs);
                     BrokerDeals dealsa = new BrokerDeals(name, ok_id, specs, true);
 
-                    if (default_deals == null) {
-                        default_deals = new ArrayList<BrokerDeals>();
+
+                    if (dealsa.getSpecCode().contains(TT + "-")) {
+                        if (default_deals == null) {
+                            default_deals = new ArrayList<BrokerDeals>();
+                        }
+
+
+                        Log.i(TAG, "default deals are" + default_deals);
+                        default_deals.add(dealsa);
+
+
                     }
-                    Log.i(TAG, "default deals are" + default_deals);
-                    default_deals.add(dealsa);
-
-
-
                 }
                 try{
-                RealmResults<DefaultDeals> results1 =
-                        myRealm.where(DefaultDeals.class).findAll();
+                    RealmResults<DefaultDeals> results1 =
+                            myRealm.where(DefaultDeals.class).findAll();
 
-                for(DefaultDeals c:results1) {
-                    // Log.i(TAG,"insiderro2 ");
-                    Log.i(TAG, "insiderro3 " + c.getOk_id());
-                    Log.i(TAG, "insiderro4 " + c.getSpec_code());
-                }
+                    for(DefaultDeals c:results1) {
+                        // Log.i(TAG,"insiderro2 ");
+                        Log.i(TAG, "insiderro3 " + c.getOk_id());
+                        Log.i(TAG, "insiderro4 " + c.getSpec_code());
+                    }
 
                 }
                 catch(Exception e){
@@ -682,9 +721,6 @@ catch(Exception e){}
     //Log.i("TRACE", "ele"+default_deals);
     //deals = new BrokerDeals(General.getSharedPreferences(this, "MY_SPEC_CODE"));
     // Log.i("TRACE", "ment");
-
-
-
             } */
             //Log.i("TRACE", "ele"+default_deals);
             //deals = new BrokerDeals(General.getSharedPreferences(this, "MY_SPEC_CODE"));
@@ -777,52 +813,52 @@ catch(Exception e){}
                         Intent.FLAG_ACTIVITY_CLEAR_TASK |
                         Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-   //     startActivity(new Intent(this, ClientMainActivity.class));
-     //   finish();
+        //     startActivity(new Intent(this, ClientMainActivity.class));
+        //   finish();
     }
 
 
 
 
-private void deleteDealingroom(String deleteOyeId,String deleteOKId, final String specCode){
+    private void deleteDealingroom(String deleteOyeId,String deleteOKId, final String specCode){
+
+        Log.i(TAG,"wadala default deals 3 ");
 
 
+        deleteHDroom deleteHDroom  = new deleteHDroom();
+        deleteHDroom.setOkId(deleteOKId);
+        deleteHDroom.setDeleteOyeId(deleteOyeId);
+        deleteHDroom.setUserId(General.getSharedPreferences(this,AppConstants.USER_ID));
+        deleteHDroom.setPage("1");
+        deleteHDroom.setGcmId(General.getSharedPreferences(this,AppConstants.GCM_ID));
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(AppConstants.SERVER_BASE_URL)
+                .build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
 
 
-    deleteHDroom deleteHDroom  = new deleteHDroom();
-    deleteHDroom.setOkId(deleteOKId);
-    deleteHDroom.setDeleteOyeId(deleteOyeId);
-    deleteHDroom.setUserId(General.getSharedPreferences(this,AppConstants.USER_ID));
-    deleteHDroom.setPage("1");
-    deleteHDroom.setGcmId(General.getSharedPreferences(this,AppConstants.GCM_ID));
+        try {
+            oyeokApiService.deleteHDroom(deleteHDroom, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
 
-    RestAdapter restAdapter = new RestAdapter.Builder()
-            .setEndpoint(AppConstants.SERVER_BASE_URL)
-            .build();
-    restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+                    Log.i("deleteDR CALLED","success");
+                    loadBrokerDeals();
 
-    OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
-
-
-    try {
-        oyeokApiService.deleteHDroom(deleteHDroom, new Callback<JsonElement>() {
-            @Override
-            public void success(JsonElement jsonElement, Response response) {
-
-                Log.i("deleteDR CALLED","success");
-                loadBrokerDeals();
-
-                SnackbarManager.show(
-                        Snackbar.with(ClientDealsListActivity.this)
-                                .position(Snackbar.SnackbarPosition.TOP)
-                                .text(specCode + " deleted")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    SnackbarManager.show(
+                            Snackbar.with(ClientDealsListActivity.this)
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text(specCode + " deleted")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
 
-                        JsonObject k = jsonElement.getAsJsonObject();
-                try {
-                    JSONObject ne = new JSONObject(k.toString());
-                    String success = ne.getString("success");
+                    JsonObject k = jsonElement.getAsJsonObject();
+                    try {
+                        JSONObject ne = new JSONObject(k.toString());
+                        String success = ne.getString("success");
 
 
 
@@ -831,25 +867,25 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
 
 
 
-                catch (JSONException e) {
-                    Log.e(TAG, e.getMessage());
-                    Log.i("deleteDR CALLED","Failed "+e.getMessage());
+                    catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
+                        Log.i("deleteDR CALLED","Failed "+e.getMessage());
+                    }
+
+
+
+
                 }
 
+                @Override
+                public void failure(RetrofitError error) {
 
-
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
-    catch (Exception e){
-        Log.e(TAG, e.getMessage());
-    }
+                }
+            });
+        }
+        catch (Exception e){
+            Log.e(TAG, e.getMessage());
+        }
 
 
     }
@@ -877,6 +913,11 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
 
         if (deals1 != null) {
 
+            if (defaultOkIds != null)
+                defaultOkIds.clear();
+            else
+                defaultOkIds = new ArrayList<String>();
+
 
             Iterator<Map.Entry<String, String>> iter = deals1.entrySet().iterator();
 
@@ -889,14 +930,21 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
                 Log.d("CHATTRACE", "default drooms" + entry);
                 String ok_id = entry.getKey();
                 String specs = entry.getValue();
+                defaultOkIds.add(ok_id);
                 String name = General.getSharedPreferences(this, AppConstants.NAME);  //name of client to show in default deal title
                 BrokerDeals dealsa = new BrokerDeals(name, ok_id, specs, true);
 
-                if (default_deals == null) {
-                    default_deals = new ArrayList<BrokerDeals>();
+                if (dealsa.getSpecCode().contains(TT + "-")) {
+                    if (default_deals == null) {
+                        default_deals = new ArrayList<BrokerDeals>();
+                    }
+
+
+                    Log.i(TAG, "default deals are" + default_deals);
+                    default_deals.add(dealsa);
+
+
                 }
-                Log.i(TAG, "default deals are" + default_deals);
-                default_deals.add(dealsa);
 
             }
         }
@@ -1047,15 +1095,42 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
                         Log.i("TRACE", "list broker deals" + listBrokerDeals);
 
                         Iterator<BrokerDeals> it = listBrokerDeals.iterator();
-
-                       listBrokerDeals_new = new ArrayList<BrokerDeals>();
+                        listBrokerDealsLL = new ArrayList<BrokerDeals>();
+                        listBrokerDealsOR = new ArrayList<BrokerDeals>();
+                        listBrokerDeals_new = new ArrayList<BrokerDeals>();
                         while (it.hasNext()) {
                             BrokerDeals deals = it.next();
 
                             Log.i("TRACE==","deals.are"+deals);
                             Log.i("TRACE==","deals.ok_id"+deals.getOkId());
                             if(!(deals.getOkId() == null))
-                            {   if(deals.getSpecCode().contains(TT+"-")) {
+                            {
+
+                                if(defaultOkIds.contains(deals.getOkId())){
+                                if(matchedOkIds==null)
+                                    matchedOkIds = new ArrayList<String>();
+                                matchedOkIds.add(deals.getOkId());
+
+                            }
+                                Log.i(TAG,"chakala default ok ids are matched ok ids "+matchedOkIds);
+                                if(matchedOkIds != null){
+                                    Log.i(TAG,"chakala default ok ids are matched ok ids 2 "+matchedOkIds);
+                                    deleteDefaultDeals();
+                                    if(default_deals != null)
+                                        default_deals.clear();
+                                    if(listBrokerDeals_new != null)
+                                        listBrokerDeals_new.clear();
+                                    loadDefaultDeals();
+                                    loadBrokerDeals();
+
+                                }
+
+
+
+
+
+
+                                if(deals.getSpecCode().contains(TT+"-")) {
                                 Log.i("DEALREFRESHPHASESEEKBA","deal spec code "+deals.getSpecCode()+" for "+TT);
 
                                 listBrokerDeals_new.add(deals);
@@ -1136,8 +1211,8 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
 
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
 
-                         //after rental resale deals
-                         listViewDeals.setAdapter(listAdapter);
+                            //after rental resale deals
+                            listViewDeals.setAdapter(listAdapter);
                             listAdapter.notifyDataSetChanged();
 
 
@@ -1186,6 +1261,15 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
                             }
 
                         } else {
+                            Log.i(TAG,"chakala empty aahe listviewdeals_new");
+                            if(default_deals == null) {
+                                reset = new ArrayList<BrokerDeals>();
+                                BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(reset, getApplicationContext());
+
+                                //after rental resale deals
+                                listViewDeals.setAdapter(listAdapter);
+                                listAdapter.notifyDataSetChanged();
+                            }
 //                            displayTextMessage(null);
                         }
                     } else {
@@ -1206,6 +1290,35 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
             }
         });
     }
+
+    private void deleteDefaultDeals() {
+
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        deals = General.getDefaultDeals(this);
+
+        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+        HashMap<String, String> deals1 = gson.fromJson(deals, type);
+
+        Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
+
+        while (iter.hasNext()) {
+            Map.Entry<String,String> entry = iter.next();
+            Log.d(TAG,"entry.getKey"+entry.getKey());
+            if(matchedOkIds.contains(entry.getKey())){
+                iter.remove();
+
+            }
+        }
+        Log.i(TAG,"after deal "+deals1);
+
+        Gson g = new Gson();
+        String hashMapString = g.toJson(deals1);
+        General.saveDefaultDeals(this, hashMapString);
+
+
+
+    }
+
 
     /*private void displayTextMessage(String message) {
         if (message == null)
@@ -1370,12 +1483,23 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
 
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
             TT = "LL";
+            if (default_deals != null) {
+                default_deals.clear();
+            }
+
+
+            loadDefaultDeals();
             loadBrokerDeals();
         }
         else{
 
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RESALE);
             TT = "OR";
+            if (default_deals != null) {
+                default_deals.clear();
+            }
+
+            loadDefaultDeals();
             loadBrokerDeals();
         }
 
@@ -1406,21 +1530,17 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
             Toast.makeText(getApplicationContext(), "Action_2", Toast.LENGTH_SHORT).show();
             Log.i("swipe", "fullswipelistview");
         }
-
         @Override
         public void HalfSwipeListView(int position) {
             // TODO Auto-generated method stub
             Toast.makeText(getApplicationContext(), "Action_1", Toast.LENGTH_SHORT).show();
             Log.i("swipe", "halfswipelistview");
         }
-
         @Override
         public void LoadDataForScroll(int count) {
             // TODO Auto-generated method stub
             Log.i("swipe", "LoaddatafromScroll");
-
         }
-
         @Override
         public void onDismiss(ListView listView, int[] reverseSortedPositions) {
             // TODO Auto-generated method stub
@@ -1431,20 +1551,11 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
             //}
             Log.i("swipe", "OnDismiss");
         }
-
         @Override
         public void OnClickListView(int position) {
             // TODO Auto-generated method stub
             Log.i("swipe", "OnclickView");
-
-
-
-
-
-
-
             *//*if(!General.getSharedPreferences(getApplicationContext() ,AppConstants.USER_ID).isEmpty())  {
-
                 Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                 intent.putExtra("userRole", "client");
 //        intent.putExtra("channel_name","my_channel");
@@ -1459,29 +1570,21 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
                 Bundle bundle = new Bundle();
                 bundle.putStringArray("Chat", null);
                 bundle.putString("lastFragment", "Chat");
-
 //            FrameLayout frame = new FrameLayout(this);
 //            frame.setId(SIGNUP_VIEW_ID);
 //            setContentView(frame, new LayoutParams(
 //                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-
-
                 SignUpFragment signUpFragment = new SignUpFragment();
 //            signUpFragment.getView().bringToFront();
                 loadFragment(signUpFragment, bundle, R.id.fragment_container1, "");
                 Log.i("Signup called =", "Sign up");
-
             }*//*
             // startActivity(new Intent(getApplicationContext(),TestActivity.class));
         }
-
     };
-
-
     @Override
     public void onStart() {
         super.onStart();
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
@@ -1497,11 +1600,9 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
         );
         AppIndex.AppIndexApi.start(client, viewAction);
     }
-
     @Override
     public void onStop() {
         super.onStop();
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
@@ -1571,6 +1672,4 @@ class SearchingBrokersAdapter extends BaseAdapter
         return row;  //Return modified relativelayout object
     }
 }
-
 */
-

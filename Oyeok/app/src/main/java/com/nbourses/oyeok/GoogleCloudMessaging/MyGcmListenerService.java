@@ -223,6 +223,8 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
 
+
+
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         deals = General.getDefaultDeals(this);
 
@@ -412,7 +414,8 @@ public class MyGcmListenerService extends GcmListenerService {
             else
              message = "We have just created a dealing room on your request.";
         }
-        Log.d(TAG,"OnMessageReceived MyGcmListenerService sending notification");
+
+
 
        if(!message.equalsIgnoreCase("hello"))
         this.sendNotification(title, message);

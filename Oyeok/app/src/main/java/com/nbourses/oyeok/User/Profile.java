@@ -73,27 +73,33 @@ public class Profile extends Fragment {
         updateProfile= (Button)layout.findViewById(R.id.update_profile);
         Log.i("TAG","fakata name 12 "+dbhelper.getValue(DatabaseConstants.name));
         Log.i("TAG","fakata email 12 "+dbhelper.getValue(DatabaseConstants.email));
-        if(!dbhelper.getValue(DatabaseConstants.name).equals("null")) {
-            Log.i("Profile","name "+dbhelper.getValue(DatabaseConstants.name));
-            username_txt.setText(dbhelper.getValue(DatabaseConstants.name));
+        Log.i("TAG","fakata email 13 "+General.getSharedPreferences(getContext(), AppConstants.NAME));
+        Log.i("TAG","fakata email 13 "+General.getSharedPreferences(getContext(), AppConstants.EMAIL));
+        Log.i("TAG","fakata email 14 "+General.getSharedPreferences(getContext(), AppConstants.MOBILE_NUMBER));
+        Log.i("TAG","fakata email 14 "+General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER));
+
+
+        if(!General.getSharedPreferences(getContext(), AppConstants.NAME).equals("null")) {
+            Log.i("Profile","name "+General.getSharedPreferences(getContext(), AppConstants.NAME));
+            username_txt.setText(General.getSharedPreferences(getContext(), AppConstants.NAME));
         }
 
         phoneTxt= (TextView) layout.findViewById(R.id.txt_phone);
-        if(!dbhelper.getValue(DatabaseConstants.mobileNumber).equals("null")) {
-            Log.i("Profile","name "+dbhelper.getValue(DatabaseConstants.mobileNumber));
-            phoneTxt.setText(dbhelper.getValue(DatabaseConstants.mobileNumber));
+        if(!General.getSharedPreferences(getContext(), AppConstants.MOBILE_NUMBER).equals("null")) {
+            Log.i("Profile","name "+General.getSharedPreferences(getContext(), AppConstants.MOBILE_NUMBER));
+            phoneTxt.setText(General.getSharedPreferences(getContext(), AppConstants.MOBILE_NUMBER));
         }
 
         emailTxt=(EditText)layout.findViewById(R.id.txt_email);
-        if(!dbhelper.getValue(DatabaseConstants.email).equals("null")) {
-            Log.i("Profile","email "+dbhelper.getValue(DatabaseConstants.email));
-            emailTxt.setText(dbhelper.getValue(DatabaseConstants.email));
+        if(!General.getSharedPreferences(getContext(), AppConstants.EMAIL).equals("null")) {
+            Log.i("Profile","email "+General.getSharedPreferences(getContext(), AppConstants.EMAIL));
+            emailTxt.setText(General.getSharedPreferences(getContext(), AppConstants.EMAIL));
         }
 
         role_txt=(TextView)layout.findViewById(R.id.txt_role);
-        if(!dbhelper.getValue(DatabaseConstants.user).equals("null")) {
-            Log.i("Profile","user "+dbhelper.getValue(DatabaseConstants.user));
-            role_txt.setText(dbhelper.getValue(DatabaseConstants.user));
+        if(!General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER).equals("null")) {
+            Log.i("Profile","user "+General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER));
+            role_txt.setText(General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER));
         }
 
         profileImage= (ImageView)layout.findViewById(R.id.profile_pic);
@@ -191,6 +197,7 @@ public class Profile extends Fragment {
 
 
                         dbhelper.save(DatabaseConstants.email, emailTxt.getText().toString());
+                General.setSharedPreferences(getContext(), AppConstants.EMAIL,emailTxt.getText().toString());
                 dbhelper.save(DatabaseConstants.name,username_txt.getText().toString());
                 General.setSharedPreferences(getContext(),AppConstants.NAME,username_txt.getText().toString());
                 dbhelper.save(DatabaseConstants.imageFilePath,filePath);

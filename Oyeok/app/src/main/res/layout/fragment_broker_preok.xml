@@ -608,14 +608,15 @@
                 android:background="@color/colorPrimaryDark"
 
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Select buildings [0]"
+                android:text="Selected buildings [0]"
                 android:id="@+id/selectB"
                 android:layout_alignParentTop="true"
                 android:gravity="center"
                 android:layout_alignParentStart="true"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:textSize="15sp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -631,7 +632,8 @@
                 android:layout_centerHorizontal="true"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:textSize="15sp" />
         </LinearLayout>
 
     </RelativeLayout>

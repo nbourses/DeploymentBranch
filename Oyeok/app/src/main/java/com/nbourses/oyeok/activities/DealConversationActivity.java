@@ -118,6 +118,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private static final String[] suggestionsLLReq = {"I need Society with good security/surveillance.", "I need parking.", "I need new construction."};
     private static final String[] suggestionsORReq = {"I need Society with good security/surveillance.", "I need parking.", "I need new construction."};
+    private static final String[] suggestionsBroker = {"Do you need Society with good security/surveillance?", "Do you need parking?", "Do you need new construction?", "Are you Ready for negotiation?"};
 
     private Boolean isDefaultDeal;
     private Boolean firstMessage = false;
@@ -533,22 +534,27 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             else
                 adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsForBrokerArray);
         }
-        else if(specCode.contains("LL")){
-            if(specCode.contains("REQ")){
-                adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsLLReq);
-            }
-            else{
-                adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsLLAvl);
-            }
 
+        else if (userRole.equals("client")) {
+            if (specCode.contains("LL")) {
+                if (specCode.contains("REQ")) {
+                    adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsLLReq);
+                } else {
+                    adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsLLAvl);
+                }
+
+            } else {
+                if (specCode.contains("REQ")) {
+                    adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsORReq);
+                } else {
+                    adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsORAvl);
+                }
+
+
+            }
         }
         else{
-            if(specCode.contains("REQ")){
-                adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsORReq);
-            }
-            else{
-                adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsORAvl);
-            }
+                    adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsBroker);
 
 
         }
@@ -1088,7 +1094,8 @@ if(cachedmsgs.size() < 10) {
 
 
                     }
-                    else{
+                    else {
+
                         Log.i(TAG, "loadhistory empty");
 
 
@@ -1101,24 +1108,39 @@ if(cachedmsgs.size() < 10) {
 
                         jsonMsg.put("to", "client");
 
-
-                        final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-                        String json = gson.toJson(AppConstants.letsOye);
-                        JSONObject jsonResponse = new JSONObject(json);
-
-
-                        Log.d(TAG, "AppConstants.letsOye " + jsonResponse.getString("property_subtype"));
+                       if(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+                           final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                           String json = gson.toJson(AppConstants.letsOye);
+                           JSONObject jsonResponse = new JSONObject(json);
 
 
+                           Log.d(TAG, "AppConstants.letsOye " + jsonResponse.getString("property_subtype"));
 
-                        jsonMsg.put("message", "You have initiated enquiry for requested "+jsonResponse.getString("property_subtype")+", "+jsonResponse.getString("property_type")+" property within budget "+General.currencyFormat(jsonResponse.getString("price"))+" Within a moment we are connecting you to our top 3 brokers.");
-                        //Log.i("TRACE","messageText is "+messageText);
-                        //Log.i(TAG,"messageText is"+messageText);
-                        //publish message
-                        pubnub.publish(channel, jsonMsg, true, new Callback() {});
+
+                           jsonMsg.put("message", "You have initiated enquiry for requested " + jsonResponse.getString("property_subtype") + ", " + jsonResponse.getString("property_type") + " property within budget " + General.currencyFormat(jsonResponse.getString("price")) + " Within a moment we are connecting you to our top 3 brokers.");
+                           //Log.i("TRACE","messageText is "+messageText);
+                           //Log.i(TAG,"messageText is"+messageText);
+                           //publish message
+
+                       }
+                        if(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+
+                           // prepare a default message now get ptype
+
+                            jsonMsg.put("message", "You have initiated enquiry for requested " + General.getSharedPreferences(getApplicationContext(),AppConstants.PSTYPE) + ", " + General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE) + " property within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(),AppConstants.PRICE)) + " Within a moment we are connecting you to our top 3 brokers.");
+
+
+
+                        }
+
+                           pubnub.publish(channel, jsonMsg, true, new Callback() {});
                         //default deal time we are storing at default deal creation
                         lastMessageTime = String.valueOf(System.currentTimeMillis());
                         Log.i(TAG, "Default message published");
+
+
+
+
 
 
                     }
