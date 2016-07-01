@@ -1653,17 +1653,22 @@ catch (Exception e){
            // texPtype.setText("Property type: "+ptype);
             texPtype.setText(lookingSeeking);
            // texPstype.setText("Property subtype: "+pstype);
-            texPstype.setText(ptype.substring(0, 1).toUpperCase() + ptype.substring(1)+" ("+pstype+")");
+if(ptype.equalsIgnoreCase("home"))
+    texPstype.setText(ptype.substring(0, 1).toUpperCase() + ptype.substring(1) + " (" + pstype + ")");
 
+            else
+    texPstype.setText(ptype.substring(0, 1).toUpperCase() + ptype.substring(1) + " (" + pstype + "sq.ft)");
        /*     texPtype.setText("Property Type: "+ptype);
             texPstype.setText("Property Subtype: "+pstype);
             */
             //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
-            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL"))
-                rentText.setText("@"+General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))+" /m.");
-            else
-                rentText.setText("@"+General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")));
-            //  rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /m.");
+            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")) {
+                rentText.setText("@" + General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")) + " /m.");
+
+            }
+                else {
+                rentText.setText("@" + General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")));
+            }//  rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /m.");
             //      displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used.");
 
             General.setSharedPreferences(getContext(),AppConstants.PTYPE,ptype);

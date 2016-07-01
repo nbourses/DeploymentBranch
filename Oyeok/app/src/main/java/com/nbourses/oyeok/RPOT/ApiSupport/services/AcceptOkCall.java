@@ -130,12 +130,15 @@ public class AcceptOkCall {
                            // Log.d(TAG, "getOyeId " + acceptOk.responseData.getOyeId());
                             Log.d(TAG, "getOkId " + acceptOk.responseData.getOkId());
 
+
+
                             //String coolOffString = acceptOk.responseData.getCoolOff();
                             //int coolOff = Integer.parseInt(coolOffString);
                             Bundle args = new Bundle();
                             args.putString("UserId1", acceptOk.responseData.getOkUserId()); //broker
                             args.putString("UserId2", acceptOk.responseData.getOyeUserId()); //client
                             args.putString("OkId", acceptOk.responseData.getOkId()); //channel id
+
 
                             Log.i("TRACEOK", "if called mCallBack"+mCallBack);
 
@@ -168,7 +171,8 @@ public class AcceptOkCall {
 
 
                                 Intent openDealsListing = new Intent(activity, BrokerDealsListActivity.class);
-                                //openDealsListing.putExtra("serverMessage", acceptOk.responseData.getMessage());
+                               openDealsListing.putExtra("OkAccepted","yes");
+                                openDealsListing.putExtra("OkId", acceptOk.responseData.getOkId());
                                // Log.i("TRACEOK", "serverMessage " + acceptOk.responseData.getMessage());
                                // Log.i("TRACEBROKERSIGNUP","3");
                                 activity.startActivity(openDealsListing);

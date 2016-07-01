@@ -383,6 +383,7 @@ public class OyeScreenFragment extends Fragment {
 
         if (bundle != null) {
 
+
             requestType.setText(bundle.getString("brokerType").toUpperCase());
             DecimalFormat formatter = new DecimalFormat();
 
@@ -390,6 +391,7 @@ public class OyeScreenFragment extends Fragment {
             if (bundle.getString("brokerType").equalsIgnoreCase("rent")) {
                 budgetSeekBar.setMin(AppConstants.minRent);
                 budgetSeekBar.setMax(AppConstants.maxRent);
+                budgetSeekBar.setProgress(AppConstants.minRent);
                // budgetSeekBar.setProgress(500);
                 txtSelected.setText(formatter.format(AppConstants.minRent));
 
@@ -402,6 +404,7 @@ public class OyeScreenFragment extends Fragment {
             else {
                 budgetSeekBar.setMin(AppConstants.minSale);
                 budgetSeekBar.setMax(AppConstants.maxSale);
+                budgetSeekBar.setProgress(AppConstants.minRent);
                // budgetSeekBar.setProgress(10);
                // budgetSeekBar.incrementProgressBy(10);
                 txtSelected.setText(formatter.format(AppConstants.minSale));

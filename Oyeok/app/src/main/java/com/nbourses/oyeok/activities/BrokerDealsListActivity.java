@@ -459,6 +459,23 @@ Log.i("SWIPE","inside swipe menu creator");
 
         //call API to load deals for broker
         Log.i("TRACEOK","before loadbroker deals ");
+        Bundle bundle = getIntent().getExtras();
+        try {
+            if (bundle != null) {
+                if (bundle.containsKey("OkAccepted") && bundle.containsKey("OkId")) {
+
+                    if (bundle.getString("OkAccepted").equalsIgnoreCase("yes")) {
+
+                        General.storeDealTime(bundle.getString("OkId"), this);
+
+                    }
+                }
+            }
+        }
+        catch(Exception e){
+            Log.i(TAG,"caught in exception saving accept deal time "+e);
+        }
+
         loadBrokerDeals();
         Log.i("TRACEOK", "after loadbroker deals ");
 
@@ -467,7 +484,7 @@ Log.i("SWIPE","inside swipe menu creator");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Bundle bundle = getIntent().getExtras();
+
         Log.i("TRACEOK","bundle is"+bundle);
         if (bundle != null) {
             if (bundle.containsKey("serverMessage")) {

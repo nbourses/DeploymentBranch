@@ -200,7 +200,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                 Log.i("CHAT", "default deal flag is " + default_deal);
 
 
-                String description = ptype + " property (" + pstype + ") " + intend + " " + General.currencyFormat(price) + ".";
+                String description = ptype.substring(0, 1).toUpperCase() + ptype.substring(1) + " property (" + pstype + ") " + intend + " " + General.currencyFormat(price) + ".";
 
                 Log.i("Deal data", "Deal data is" + deal.getName());
 

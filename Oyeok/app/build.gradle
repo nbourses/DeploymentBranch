@@ -232,6 +232,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.4.0'
 
     compile 'io.realm:realm-android:0.84.1'
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 
 
     compile project(':MPChartLib')

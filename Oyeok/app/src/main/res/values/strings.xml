@@ -7,6 +7,7 @@
     <string name="profile">User Profile</string>
     <string name="Oye">Oye</string>
 
+
     <string name="Rs">\u20B9</string>
     <string name="QrCode">QrCode</string>
     <string name="brokerOk">Become Broker</string>
@@ -134,4 +135,5 @@
     <string name="broker_sign_up_content">(Get free leads,do site visits,chat with customer,\nsave time with automatic listing\nand close faster)</string>
     <string name="client_log_in_heading">You are Logging in as a Customer</string>
     <string name="broker_log_in_heading">You are Logging in as a Broker</string>
+    <string name="facebook_app_id">273470946346289</string>
 </resources>

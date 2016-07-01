@@ -146,12 +146,14 @@ public class CircularSeekBarNew extends View {
         mCircleTextColor = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCircleTextColor.setColor(Color.parseColor("#000000"));
         //mCircleTextColor.setStyle(Paint.Style.FILL);
-        mCircleTextColor.setTextSize(10 * DPTOPX_SCALE);
+
+        mCircleTextColor.setTextSize(13 * DPTOPX_SCALE);
 
         mCircleRangeColor = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCircleRangeColor.setColor(Color.parseColor("#000000"));
         //mCircleTextColor.setStyle(Paint.Style.FILL);
-        mCircleRangeColor.setTextSize(12*DPTOPX_SCALE);
+        mCircleRangeColor.setTextSize(14*DPTOPX_SCALE);
+
 
         mEndLinecolor = new Paint(Paint.ANTI_ALIAS_FLAG);
         mEndLinecolor.setColor(mCircleColor);

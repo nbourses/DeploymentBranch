@@ -1092,7 +1092,7 @@ if(newUser==true) {
                             return;
                         }else{
                             Log.i("TAG","suspecto "+role_of_user);
-                            //General.setSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
+                            General.setSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
                         }
 
                         Log.i("TRACE", "Userid" +my_user_id);
