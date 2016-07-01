@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -20,13 +21,14 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         context = this;
-
+        if( SharedPrefs.getString(this,SharedPrefs.PERMISSION).equalsIgnoreCase(""))
+        SharedPrefs.save(this,SharedPrefs.PERMISSION,"true");
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 Intent intent = null;
-                if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
-                        General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("broker")) {
+                if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") &&
+                        General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                     intent = new Intent(context, BrokerMainActivity.class);
                 }
                 else {

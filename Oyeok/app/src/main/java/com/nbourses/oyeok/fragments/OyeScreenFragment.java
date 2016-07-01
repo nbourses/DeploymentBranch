@@ -82,12 +82,13 @@ public class OyeScreenFragment extends Fragment {
 
     @Bind(R.id.budgetText)
     TextView budgetText;
-
+    String oyedata="" ;
 
 //    DiscreteSeekBar discreteSeekBar;
 @Bind(R.id.tv_dealinfo)
     TextView tv_dealinfo;
-
+    @Bind(R.id.txtfixedString)
+    TextView txtfixedString;
    String isclicked;
 
 
@@ -140,10 +141,7 @@ public class OyeScreenFragment extends Fragment {
 
 
 
-        //tv_dealinfo.setText("sushil");
-
             init();
-
 
         satView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -179,11 +177,18 @@ public class OyeScreenFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
            // if(intent.getExtras().getString("tv_dealinfo") != null) {
                 // intent.getExtras().getString("tv_dealinfo")+
-                String oyedata = SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
+//            if(txtPreviouslySelectedOption.getText().toString().equalsIgnoreCase(txtOptionSee.getText().toString())){
+                 oyedata = SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY);
                 tv_dealinfo.setText(oyedata);
+                Log.i("oyedata","oyedata==============="+oyedata);
+
+
+
+
+
                // setdealtext(oyedata);
                // tv_dealinfo.setText("sushil");
-                Log.i("oyedata","oyedata==============="+oyedata);
+
 
             //}
 
@@ -216,6 +221,7 @@ public class OyeScreenFragment extends Fragment {
 
         //set seek bar min and max value
         setMinMaxValueForDiscreteSeekBar();
+
         setInitialValuesLoans();
 
         //budget bar listener
@@ -280,11 +286,13 @@ public class OyeScreenFragment extends Fragment {
             tv_fd_bank.setText("I like to pay my \n SECURITY DEPOSIT");
             satView.setText("Apply for finance \n SECURITY DEPOSIT");
                 budgetText.setText("My Rent Budget");
+                txtfixedString.setText("CONNECT NOW | FIND @ ");
             }
             else{
                 tv_fd_bank.setText("I don't \n want loan");
                 satView.setText("I want LOAN \n to buy");
                 budgetText.setText("My Budget");
+                txtfixedString.setText("CONNECT NOW | FIND @ ");
 
             }
             AppConstants.letsOye.setReqAvl("req");
@@ -296,11 +304,13 @@ public class OyeScreenFragment extends Fragment {
             tv_fd_bank.setText("I like Monthly RENT CHEQUE(s)");
             satView.setText("Apply for finance FULL ADVANCE RENT");
                 budgetText.setText("My Asking Rent");
+                txtfixedString.setText("CONNECT NOW | LIST @ ");
             }
             else{
                 tv_fd_bank.setText("No Loan On \n Property");
                 satView.setText("I have Loan On \n Propery");
                 budgetText.setText("Sale Price");
+                txtfixedString.setText("CONNECT NOW | LIST @ ");
 
             }
             AppConstants.letsOye.setReqAvl("avl");
@@ -356,16 +366,28 @@ public class OyeScreenFragment extends Fragment {
             {
                 AppConstants.minRent = intent.getExtras().getInt("llmin");
             Log.i("llmin111111", " min rent" + AppConstants.minRent);
+//                AppConstants.minRent = AppConstants.minRent / 1000;
+//                AppConstants.minRent = AppConstants.minRent * 1000;
             AppConstants.minRent = AppConstants.minRent / 2;
+
             AppConstants.maxRent = intent.getExtras().getInt("llmax");
+//                AppConstants.maxRent = AppConstants.maxRent + AppConstants.maxRent / 1000;
+//                AppConstants.maxRent = AppConstants.maxRent + AppConstants.maxRent  * 1000;
             AppConstants.maxRent = AppConstants.maxRent + AppConstants.maxRent / 2;
+
             Log.i("llmin111111", "max rent" + AppConstants.maxRent);
             AppConstants.minSale = intent.getExtras().getInt("ormin");
             Log.i("llmin111111", "min Sale" + AppConstants.minSale);
+//                AppConstants.minSale = AppConstants.minSale / 1000;
+//                AppConstants.minSale = AppConstants.minSale * 1000;
             AppConstants.minSale = AppConstants.minSale / 2;
+
             AppConstants.maxSale = intent.getExtras().getInt("ormax");
             Log.i("llmin111111", "max Sale" + AppConstants.maxSale);
+//                AppConstants.maxSale = (AppConstants.maxSale + (AppConstants.maxSale / 1000));
+//                AppConstants.maxSale = (AppConstants.maxSale + (AppConstants.maxSale * 1000));
             AppConstants.maxSale = (AppConstants.maxSale + (AppConstants.maxSale / 2));
+
         }
             setMinMaxValueForDiscreteSeekBar();
 
@@ -380,7 +402,7 @@ public class OyeScreenFragment extends Fragment {
     private void setMinMaxValueForDiscreteSeekBar() {
 
         if (bundle != null) {
-
+           // budgetSeekBar.setProgress(0);
             requestType.setText(bundle.getString("brokerType").toUpperCase());
             DecimalFormat formatter = new DecimalFormat();
 
@@ -419,12 +441,14 @@ public class OyeScreenFragment extends Fragment {
             tv_fd_bank.setText("I like to pay my \n SECURITY DEPOSIT");
             satView.setText("Apply for finance \n SECURITY DEPOSIT");
             budgetText.setText("My Rent Budget");
+            txtfixedString.setText("CONNECT NOW | FIND @ ");
 
         }
         else{
             tv_fd_bank.setText("I don't \n want loan");
             satView.setText("I want LOAN \n to buy");
             budgetText.setText("My Budget");
+            txtfixedString.setText("CONNECT NOW | FIND @ ");
 
         }
 
@@ -459,8 +483,13 @@ public class OyeScreenFragment extends Fragment {
 
     @OnClick(R.id.btnCloseOyeScreenSlide)
     public void onBtnCloseOyeScreenSlideClick(View v) {
+
+
+
+
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
 //        DashboardClientFragment d=new DashboardClientFragment();
 //        d.UpdateRatePanel();
     }

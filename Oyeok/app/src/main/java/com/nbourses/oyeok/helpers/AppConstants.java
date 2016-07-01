@@ -35,7 +35,8 @@ public class AppConstants {
 
     public static final String USER_ID = "userId";
     public static final String NAME = "name";
-    public static final String CLIENT_HEADING = "client_heading";
+    public static final String MARKERSELECTED = "markerSelected";
+
 
     public static PublishLetsOye letsOye = new PublishLetsOye();
 
