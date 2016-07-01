@@ -462,7 +462,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.addToBackStack(title);
+        //fragmentTransaction.addToBackStack(title);
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -501,7 +501,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             webView.setVisibility(View.VISIBLE);
             webView.getSettings().setJavaScriptEnabled(true);
             webView.setWebViewClient(new WebViewClient());
-            webView.loadUrl("http://www.facebook.com/nexchanges");
+            webView.loadUrl("http://www.facebook.com/hioyeok");
 
 
 
@@ -588,11 +588,11 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         Log.i("ONBACKPRESSED","broker main activity ");
 
 
-        if(getFragmentManager().getBackStackEntryCount() >0)
-        {
-            Log.i("BACK PRESSED","===================");
-            getFragmentManager().popBackStack();
-        }
+//        if(getFragmentManager().getBackStackEntryCount() >0)
+//        {
+//            Log.i("BACK PRESSED","===================");
+//            getFragmentManager().popBackStack();
+//        }
 
 
 

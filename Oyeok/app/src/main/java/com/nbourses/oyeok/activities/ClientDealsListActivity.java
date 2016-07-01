@@ -331,7 +331,8 @@ catch(Exception e){}
                         break;
                     case 1:
 
-                        Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
+
+                       // Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
 
 
                         Log.i("deleteDR CALLED", "spec code " + total_deals.get(position).getSpecCode());
@@ -742,7 +743,7 @@ catch(Exception e){}
 
             setSupportActionBar(mToolbar);
 
-            getSupportActionBar().setTitle("My Deals");
+            getSupportActionBar().setTitle("DEALING ROOMs");
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -978,7 +979,7 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
 
 
     private void loadBrokerDeals() {
-
+        Log.i("TRACE", "in Load broker deals=================");
 
         // String defaultOK = "{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"Searching for brokers\"}],\"for_oks\":[]}";
         // Log.i("TRACE","DefailtOK" +defaultOK);
@@ -1186,6 +1187,8 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
                             }
 
                         } else {
+                            Log.i("tottaldeal","totaldeal=============");
+                            //total_deals.addAll(default_deals);
 //                            displayTextMessage(null);
                         }
                     } else {
@@ -1371,12 +1374,14 @@ private void deleteDealingroom(String deleteOyeId,String deleteOKId, final Strin
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
             TT = "LL";
             loadBrokerDeals();
+            getSupportActionBar().setTitle("DEALING ROOMs (Rental)");
         }
         else{
 
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RESALE);
             TT = "OR";
             loadBrokerDeals();
+            getSupportActionBar().setTitle("DEALING ROOMs (Resale)");
         }
 
 
