@@ -304,26 +304,28 @@
 
 
     <integer-array name="nav_drawer_labels_signup_broker_icon">
-        <item>@drawable/menu_option_icon</item>
+        <item>@drawable/profile</item>
         <!--<item>@string/brokerOk</item>-->
+        <item>@drawable/notifications</item>
         <item>@drawable/shareapp</item>
         <!--  <item>@string/supportChat</item> -->
-        <item>@drawable/notifications</item>
+
         <item>@drawable/facebook</item>
-        <item>@drawable/aboutusicon</item>
+        <item>@drawable/aboutus</item>
         <item>@drawable/setting1</item>
         <!--   <item>@string/updateProfile</item> -->
     </integer-array>
 
 
     <integer-array name="nav_drawer_labels_signup_client_icon">
-        <item>@drawable/menu_option_icon</item>
+        <item>@drawable/profile</item>
         <!--<item>@string/brokerOk</item>-->
+        <item>@drawable/notifications</item>
         <item>@drawable/shareapp</item>
         <!--  <item>@string/supportChat</item> -->
-        <item>@drawable/notifications</item>
+
         <item>@drawable/facebook</item>
-        <item>@drawable/aboutusicon</item>
+        <item>@drawable/aboutus</item>
         <item>@drawable/setting1</item>
 
         <!--   <item>@string/updateProfile</item> -->
@@ -334,13 +336,14 @@
 
     <integer-array name="nav_drawer_labels_no_signup_icon">
         <!--<item>@string/signup</item>-->
-        <item>@drawable/menu_option_icon</item>
-        <item>@drawable/menu_option_icon</item>
+        <item>@drawable/client</item>
+        <item>@drawable/notifications</item>
         <item>@drawable/shareapp</item>
         <!--  <item>@string/supportChat</item> -->
-        <item>@drawable/notifications</item>
+
         <item>@drawable/facebook</item>
-        <item>@drawable/aboutusicon</item>
+        <item>@drawable/aboutus</item>
+        <item>@drawable/broker</item>
         <item>@drawable/setting1</item>
         <!--   <item>@string/updateProfile</item> -->
 
