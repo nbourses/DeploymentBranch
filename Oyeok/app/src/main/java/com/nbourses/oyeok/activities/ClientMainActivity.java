@@ -278,6 +278,7 @@ private void alertbuilder()
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(oyebuttondata, new IntentFilter(AppConstants.ON_FILTER_VALUE_UPDATE));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(markerstatus, new IntentFilter(AppConstants.MARKERSELECTED));
     }
 
     @Override
@@ -287,6 +288,7 @@ private void alertbuilder()
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(closeOyeScreenSlide);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(oyebuttondata);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(markerstatus);
 
     }
 
@@ -603,7 +605,7 @@ private void alertbuilder()
             webView.setVisibility(View.VISIBLE);
             webView.getSettings().setJavaScriptEnabled(true);
             webView.setWebViewClient(new WebViewClient());
-            webView.loadUrl("http://www.facebook.com/nexchanges");
+            webView.loadUrl("http://www.facebook.com/hioyeok");
 
 
 
@@ -856,7 +858,19 @@ private void alertbuilder()
 
 
 
-
+    private BroadcastReceiver markerstatus = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("markerstatus","markerstatus  :"+intent.getExtras().getString("markerClicked"));
+           if(intent.getExtras().getString("markerClicked").equalsIgnoreCase("true"))
+           {
+               getSupportActionBar().setTitle("Live Building Rates");
+           }
+            else{
+               getSupportActionBar().setTitle("Live Region Rates");
+           }
+        }
+    };
 
 
 

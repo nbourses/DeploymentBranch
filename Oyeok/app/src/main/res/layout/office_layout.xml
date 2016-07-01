@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="SEATER OFFICE"
-            android:id="@+id/textView2"
+            android:id="@+id/txtfixedString"
             android:textSize="15sp"
             android:layout_alignBottom="@+id/seatNoEditText"
             android:layout_alignLeft="@+id/textView"

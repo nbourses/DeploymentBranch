@@ -10,7 +10,7 @@
 
     <string name="Rs">\u20B9</string>
     <string name="QrCode">QrCode</string>
-    <string name="brokerOk">Become Broker</string>
+    <string name="brokerOk">Register As Broker</string>
     <string name="useAsClient">Use as a Client</string>
     <string name="signup">Signup</string>
     <string name="PayTM">PayTM</string>
@@ -52,12 +52,13 @@
     <string-array name="nav_drawer_labels_no_signup">
         <!--<item>@string/signup</item>-->
         <item>@string/useAsClient</item>
-        <item>@string/brokerOk</item>
+        <item>@string/notifications</item>
         <item>@string/shareApp</item>
         <!--  <item>@string/supportChat</item> -->
-        <item>@string/notifications</item>
+
         <item>@string/likeOnFb</item>
         <item>@string/aboutUs</item>
+        <item>@string/brokerOk</item>
         <item>@string/settings</item>
         <!--   <item>@string/updateProfile</item> -->
 
@@ -67,10 +68,11 @@
 
     <string-array name="nav_drawer_labels_signup_client">
         <item>@string/profile</item>
-        <!--<item>@string/brokerOk</item>-->
-        <item>@string/shareApp</item>
         <!--  <item>@string/supportChat</item> -->
         <item>@string/notifications</item>
+        <!--<item>@string/brokerOk</item>-->
+        <item>@string/shareApp</item>
+
         <item>@string/likeOnFb</item>
         <item>@string/aboutUs</item>
         <item>@string/settings</item>
@@ -83,9 +85,10 @@
     <string-array name="nav_drawer_labels_signup_broker">
         <item>@string/profile</item>
         <!--<item>@string/brokerOk</item>-->
-        <item>@string/shareApp</item>
+
         <!--  <item>@string/supportChat</item> -->
         <item>@string/notifications</item>
+        <item>@string/shareApp</item>
         <item>@string/likeOnFb</item>
         <item>@string/aboutUs</item>
         <item>@string/settings</item>

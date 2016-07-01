@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
@@ -68,6 +69,7 @@ import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.skyfishjy.library.RippleBackground;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -111,8 +113,8 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     @Bind(R.id.texPstype)
     TextView texPstype;
 
-    @Bind(R.id.beaconOK)
-    TextView beaconOK;
+//    @Bind(R.id.beaconOK)
+//    TextView beaconOK;
 
     @Bind(R.id.texPtype)
     TextView texPtype;
@@ -167,7 +169,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     @Bind(R.id.leadPrompt)
     TextView leadPrompt;
-
+    private int countertut;
 
 
 //
@@ -254,7 +256,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private int ownersCount1;
     private int buyerCount1;
     private int sellerCount1;
-private String Walkthrough;
+private String Walkthrough,beacon;
 
     Animation bounce;
     Animation zoomin;
@@ -334,15 +336,49 @@ private String Walkthrough;
 
        chart = (BarChart) v.findViewById(R.id.chart);
         init();
+
+
+
+
+        if(SharedPrefs.getString(getContext(),SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
+            beacon = "true";
+            SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
+        }
+        else {
+            beacon = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON);
+            Log.i("ischecked", "walkthrough3dashboard" + beacon);
+        }
+
+        if(SharedPrefs.getString(getContext(),SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("")) {
+            Walkthrough = "true";
+            SharedPrefs.save(getContext(), SharedPrefs.CHECK_WALKTHROUGH, "false");
+        }
+        else {
+            Walkthrough = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_WALKTHROUGH);
+            Log.i("ischecked", "walkthrough3dashboard" + Walkthrough);
+        }
+
         Walkthrough=SharedPrefs.getString(getContext(),SharedPrefs.CHECK_WALKTHROUGH);
         Log.i("ischecked","walkthrough3_broker"+Walkthrough);
+
+
+        //Tutorial and Beacon code
         if(Walkthrough.equalsIgnoreCase("true")) {
-            Log.i("ischecked","walkthrough3_broker1111111"+Walkthrough);
+            Log.i("ischecked","walkthrough3dashboard1111111"+Walkthrough);
             walkthroughBroker(v);
-//    beaconAlet(rootView);
             Walkthrough="false";
-//    SharedPrefs.save(getContext(),SharedPrefs.CHECK_WALKTHROUGH,Walkthrough);
+        } else if(beacon.equalsIgnoreCase("true") ) {
+            Log.i("ischecked","walkthrough3dashboard1111111"+beacon);
+            try {
+                beaconAlertBroker(v);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            beacon="false";
         }
+
+
+
         return v;
     }
 
@@ -405,7 +441,7 @@ private String Walkthrough;
 
             @Override
             public void onAnimationEnd(Animation arg0) {
-                beaconOK.startAnimation(zoomout);
+                //beaconOK.startAnimation(zoomout);
 
             }
         });
@@ -427,7 +463,7 @@ private String Walkthrough;
 
             @Override
             public void onAnimationEnd(Animation arg0) {
-                beaconOK.startAnimation(zoomin);
+                //beaconOK.startAnimation(zoomin);
 
             }
         });
@@ -2572,18 +2608,21 @@ chart.clear();
         }
     }
 
-public void walkthroughBroker(View v) {
+public void walkthroughBroker(final View v) {
+
+
+    countertut = 0;
     MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this.getActivity());
     sequence.addSequenceItem(v.findViewById(R.id.iv_client_type),
-            "Select client type", "GOT IT");
+            "         Select client type","", "      GOT IT! (Go to next screen)");
     sequence.addSequenceItem(v.findViewById(R.id.iv_transection_type),
-            "Select Transaction Type", "GOT IT");
+            "         Select Transaction Type","", "       GOT IT! (Go to next screen)");
     sequence.addSequenceItem(v.findViewById(R.id.imageView111),
-            "Select lead type to check the requirement", "GOT IT");
+            "         Select lead type to check the requirement","", "      GOT IT! (Go to next screen)");
 
 
     sequence.addSequenceItem(v.findViewById(R.id.okButton),
-            "Press 'ok' to select three property for visit", "GOT IT");
+            "Press 'OK' to select three Property for Visit","", "      GOT IT! (Go to next screen)");
 
 
 //        sequence.addSequenceItem(v.findViewById(R.id.ic_search),
@@ -2593,13 +2632,112 @@ public void walkthroughBroker(View v) {
     sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
         @Override
         public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
+            countertut++;
+            if (countertut == 4) {
+                Log.i("ischecked", "beacon_walk_broker==========  :" + beacon);
+                if (beacon.equalsIgnoreCase("true"))
 
-
+                    Log.i("ischecked", "beacon_walk1_broker  ==========   :" + beacon);
+                try {
+                    beaconAlertBroker(v);
+                } catch (InterruptedException e) {e.printStackTrace();}
+                // rippleBackground4.startRippleAnimation();
+            }
         }
     });
     sequence.start();
 
 }
+
+
+
+    public void beaconAlertBroker( final View rootView) throws InterruptedException {
+
+        final RippleBackground rippleBackground1 = (RippleBackground) rootView.findViewById(R.id.broker_content);
+        final RippleBackground rippleBackground2 = (RippleBackground) rootView.findViewById(R.id.broker_content1);
+        final RippleBackground rippleBackground3 = (RippleBackground) rootView.findViewById(R.id.broker_content3);
+//        start = System.currentTimeMillis();
+//        boolean ripple = true;
+//        long now;
+
+        new CountDownTimer(3000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                rippleBackground1.startRippleAnimation();
+
+
+
+
+                SnackbarManager.show(
+                        Snackbar.with(getActivity())
+                                .text("Select the Role")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+            }
+
+            public void onFinish() {
+
+                new CountDownTimer(3000, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        rippleBackground1.stopRippleAnimation();
+                        rippleBackground2.startRippleAnimation();
+                        SnackbarManager.show(
+                                Snackbar.with(getActivity())
+                                        .text("Select the Lead")
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
+                    }
+
+                    public void onFinish() {
+
+                        new CountDownTimer(3000, 1000) {
+
+                            public void onTick(long millisUntilFinished) {
+                                rippleBackground2.stopRippleAnimation();
+                                rippleBackground3.startRippleAnimation();
+                                SnackbarManager.show(
+                                        Snackbar.with(getActivity())
+                                                .text("Press 'OK' to select three Property for Visit")
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
+                            }
+
+                            public void onFinish() {
+
+                                rippleBackground3.stopRippleAnimation();
+
+                            }
+                        }.start();
+
+
+                    }
+                }.start();
+            }
+        }.start();
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

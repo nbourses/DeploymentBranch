@@ -350,7 +350,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             total_deals.addAll(default_deals);
                         }
 
-                        Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
+
+                       // Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
 
 
                         Log.i("deleteDR CALLED", "spec code " + total_deals.get(position).getSpecCode());
@@ -778,7 +779,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
             setSupportActionBar(mToolbar);
 
-            getSupportActionBar().setTitle("My Deals");
+            getSupportActionBar().setTitle("DEALING ROOMs");
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -1026,7 +1027,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
     private void loadBrokerDeals() {
-
+        Log.i("TRACE", "in Load broker deals=================");
 
         // String defaultOK = "{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"Searching for brokers\"}],\"for_oks\":[]}";
         // Log.i("TRACE","DefailtOK" +defaultOK);
@@ -1261,6 +1262,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             }
 
                         } else {
+
                             Log.i(TAG,"chakala empty aahe listviewdeals_new");
                             if(default_deals == null) {
                                 reset = new ArrayList<BrokerDeals>();
@@ -1270,6 +1272,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                 listViewDeals.setAdapter(listAdapter);
                                 listAdapter.notifyDataSetChanged();
                             }
+
+                            //total_deals.addAll(default_deals);
+
 //                            displayTextMessage(null);
                         }
                     } else {
@@ -1490,6 +1495,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
             loadDefaultDeals();
             loadBrokerDeals();
+            getSupportActionBar().setTitle("DEALING ROOMs (Rental)");
         }
         else{
 
@@ -1501,6 +1507,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
             loadDefaultDeals();
             loadBrokerDeals();
+            getSupportActionBar().setTitle("DEALING ROOMs (Resale)");
         }
 
 

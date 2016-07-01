@@ -7,8 +7,11 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.nbourses.oyeok.Database.SharedPrefs;
+
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -26,16 +29,18 @@ public class SplashScreenActivity extends AppCompatActivity {
 
 
         context = this;
-
+        if( SharedPrefs.getString(this,SharedPrefs.PERMISSION).equalsIgnoreCase(""))
+        SharedPrefs.save(this,SharedPrefs.PERMISSION,"true");
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 Intent intent = null;
+
                 Log.i("splash","is logged in yo man " +General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER));
                 Log.i("splash","is logged in yo man 3 " +General.getSharedPreferences(context, AppConstants.ROLE_OF_USER));
                 if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") &&
                         General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-                    Log.i("splash","is logged in yo man 1 ");
+  
                     intent = new Intent(context, BrokerMainActivity.class);
                 }
                 else {

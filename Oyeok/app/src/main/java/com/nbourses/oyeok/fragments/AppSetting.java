@@ -23,7 +23,7 @@ public class AppSetting extends Fragment {
 
     CheckBox checkBoxWalkthrough;
     CheckBox checkBoxBeacon;
-    String walkthrough;
+    String walkthrough,beacon;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -38,6 +38,12 @@ public class AppSetting extends Fragment {
         if(walkthrough.equalsIgnoreCase("true")) {
             Log.i("ischecked","ischecked1========="+walkthrough);
             checkBoxWalkthrough.setChecked(true);
+        }
+        beacon= SharedPrefs.getString(getContext(),SharedPrefs.CHECK_BEACON);
+        Log.i("ischecked","ischecked1"+beacon);
+        if(beacon.equalsIgnoreCase("true")) {
+            Log.i("ischecked","beacon========="+beacon);
+            checkBoxBeacon.setChecked(true);
         }
 //
         checkBoxWalkthrough.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -59,7 +65,7 @@ public class AppSetting extends Fragment {
             checkBoxWalkthrough.setChecked(false);
             SharedPrefs.save(getContext(), SharedPrefs.CHECK_WALKTHROUGH, isChecked + "");
             Log.i("ischecked","wal"+isChecked);
-            
+
         }
     }
    });
@@ -72,6 +78,11 @@ public class AppSetting extends Fragment {
                     SharedPrefs.save(getContext(),SharedPrefs.CHECK_BEACON,isChecked+"");
 //                    Intent intent = new Intent(AppConstants.CHECK_BEACON);
 //                    intent.putExtra("checkBeacon", isChecked);
+
+                }else {
+                    checkBoxBeacon.setChecked(false);
+                    SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, isChecked + "");
+                    Log.i("ischecked","wal"+isChecked);
 
                 }
             }
