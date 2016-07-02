@@ -69,7 +69,7 @@ public class HorizontalPicker extends View {
     /**
      * The coefficient by which to adjust (divide) the max fling velocity.
      */
-    private static final int SELECTOR_MAX_FLING_VELOCITY_ADJUSTMENT = 4;
+    private static final int SELECTOR_MAX_FLING_VELOCITY_ADJUSTMENT = 2;
 
     /**
      * The the duration for adjusting the selector wheel.
