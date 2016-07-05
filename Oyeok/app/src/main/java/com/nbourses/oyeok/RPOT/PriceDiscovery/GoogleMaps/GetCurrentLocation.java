@@ -3,22 +3,24 @@
 /**
  * Created by Abhishek on 08/05/15.
  */
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderApi;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
+    import android.Manifest;
+    import android.annotation.SuppressLint;
+    import android.app.Activity;
+    import android.content.Context;
+    import android.content.pm.PackageManager;
+    import android.location.Location;
+    import android.os.Bundle;
+    import android.support.v4.app.ActivityCompat;
+    import android.support.v4.content.ContextCompat;
+    import android.util.Log;
+
+    import com.google.android.gms.common.ConnectionResult;
+    import com.google.android.gms.common.api.GoogleApiClient;
+    import com.google.android.gms.location.FusedLocationProviderApi;
+    import com.google.android.gms.location.LocationListener;
+    import com.google.android.gms.location.LocationRequest;
+    import com.google.android.gms.location.LocationServices;
 
 public class GetCurrentLocation extends Activity implements LocationListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener{
 
@@ -104,16 +106,34 @@ public class GetCurrentLocation extends Activity implements LocationListener,Goo
             requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
             Log.i("Debug","prompt");
         }*/
+     try {
+         location = fusedLocationProviderApi.getLastLocation(googleApiClient);
+         Log.d("currentLocation", "\n ======> init.Location : " + location);
 
-        location = fusedLocationProviderApi.getLastLocation(googleApiClient);
-        Log.d("currentLocation", "\n ======> init.Location : " + location);
+         if (location != null) {
+             if (currentLocationCallback != null)
+                 currentLocationCallback.onComplete(location);
+         } else {
+             fusedLocationProviderApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+         }
 
-        if ( location != null ) {
-            if(currentLocationCallback != null)
-                currentLocationCallback.onComplete(location);
-        }else{
-            fusedLocationProviderApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-        }
+         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+
+             // return;
+         }
+     }
+     catch(Exception e){
+
+     }
+
+
+
+
+
+
+
+
 
     }
 

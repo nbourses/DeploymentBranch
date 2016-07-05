@@ -1163,7 +1163,7 @@ public class HorizontalPicker extends View {
     private int getScrollRange() {
         int scrollRange = 0;
         if(mValues != null && mValues.size() != 0) {
-            scrollRange = Math.max(0, ((mItemWidth + (int) mDividerSize) * (mValues.size() - 1)));
+            scrollRange = Math.max(0, ((mItemWidth + (int) mDividerSize) * (mValues.size() - 2)));
         }
         return scrollRange;
     }

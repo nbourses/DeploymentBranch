@@ -6,15 +6,18 @@ import com.nbourses.oyeok.models.PublishLetsOye;
  * Created by rohit on 09/02/16.
  */
 public class AppConstants {
-    public static  int minRent = 20000;
-    public static  int maxRent = 1200000;
+    public static  int minRent = 35;
+    public static  int maxRent = 60;
 
-    public static  int minSale = 9000000;
-    public static  int maxSale = 100000000;
+    public static  int minSale = 21500;
+    public static  int maxSale = 27000;
+
 
     public static String MY_LAT = "myLat";
     public static String MY_LNG = "myLong";
     public static String LOCALITY = "locality";
+    public static final String AUTOCOMPLETEFLAG1 = "autoCompleteFlag1";
+    public static final String AUTOCOMPLETEFLAG = "autoCompleteFlag";
     public static final String SIGNUPSUCCESSFLAG = "signupSuccessFlag";
     public static final String SLIDEDOWNBUILDINGS = "slideDownBuildings";
     public static final String BUILDINGSLIDERFLAG = "buildingSliderFlag";
@@ -97,5 +100,6 @@ public class AppConstants {
     public static final String PTYPE = "ptype";
     public static final String PSTYPE = "pstype";
     public static final String PRICE = "price";
+    public static Boolean SIGNUP_FLAG = false;
 
 }

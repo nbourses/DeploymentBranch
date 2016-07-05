@@ -363,8 +363,8 @@ public class OyeScreenFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            Log.i("llmin111111", "llmin ++++++++++++++++++++++++++" + intent.getExtras().getString("llmin"));
-            if (intent.getExtras().getString("llmin") != "0")
+            Log.i("llmin111111", "llmin ++++++++++++++++++++++++++" + intent.getExtras().getInt("llmin"));
+            if (intent.getExtras().getInt("llmin") != 0)
             {
                 AppConstants.minRent = intent.getExtras().getInt("llmin");
             Log.i("llmin111111", " min rent" + AppConstants.minRent);
@@ -445,16 +445,17 @@ public class OyeScreenFragment extends Fragment {
             tv_fd_bank.setText("I like to pay my \n SECURITY DEPOSIT");
             satView.setText("Apply for finance \n SECURITY DEPOSIT");
             budgetText.setText("My Rent Budget");
-            txtfixedString.setText("CONNECT NOW | FIND @ ");
+
 
         }
         else{
             tv_fd_bank.setText("I don't \n want loan");
             satView.setText("I want LOAN \n to buy");
             budgetText.setText("My Budget");
-            txtfixedString.setText("CONNECT NOW | FIND @ ");
+
 
         }
+        txtfixedString.setText("CONNECT NOW | FIND @ ");
 
     }
 

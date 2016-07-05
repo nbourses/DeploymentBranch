@@ -10,8 +10,8 @@
 
     <string name="Rs">\u20B9</string>
     <string name="QrCode">QrCode</string>
-    <string name="brokerOk">Register As Broker</string>
-    <string name="useAsClient">Use as a Client</string>
+    <string name="brokerOk">Self Register as Broker</string>
+    <string name="useAsClient">See Property Rates</string>
     <string name="signup">Signup</string>
     <string name="PayTM">PayTM</string>
     <string name="shareApp">Share App</string>
