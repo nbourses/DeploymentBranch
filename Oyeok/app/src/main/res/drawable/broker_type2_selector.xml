@@ -5,9 +5,11 @@
     <item android:drawable="@drawable/broker_type2_pressed" android:state_pressed="true"/>
     <item android:drawable="@drawable/broker_type2"/>-->
 
-    <item android:drawable="@drawable/sale" android:state_selected="true"/>
-    <item android:drawable="@drawable/sale" android:state_pressed="true"/>
+    <item android:drawable="@drawable/asset_buysell_deal_type_icon_v1" android:state_selected="true"/>
+    <item android:drawable="@drawable/asset_buysell_deal_type_icon_v1" android:state_pressed="true"/>
   <!-- <item android:drawable="@drawable/default_seekbar_circle_white"/> -->
-    <item android:drawable="@drawable/phased_seek_circle_default"/>
+    <item android:drawable="@drawable/phase_circle"/>
+    <!--<item android:drawable="@drawable/default_seekbar_circle_white"/>-->
+    <!--<item android:drawable="@drawable/asset_buysell_deal_type_icon_v1"></item>-->
 </selector>
 

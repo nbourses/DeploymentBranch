@@ -51,6 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:clickable="true"
                 android:layout_marginBottom="40dp">
 
                 <LinearLayout
@@ -129,10 +130,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="50dp"
-                            android:layout_marginTop="5dp"
+                            android:layout_marginTop="1dp"
                             android:textColor="@android:color/white"
                             android:background="@android:color/black"
-                            android:textSize="15sp"
+                            android:textSize="16sp"
                             android:ellipsize="marquee"
                             android:textStyle="bold"
                             android:marqueeRepeatLimit="1"
@@ -141,6 +142,8 @@
                             app:values="@array/hpicker"
                             app:dividerSize="10dp"
                             app:sideItems="@integer/sideItems"
+
+
                             android:layout_above="@+id/tvRate" />
                         <!--android:focusableInTouchMode="true"-->
                         <TextView
@@ -159,7 +162,7 @@
                             android:id="@+id/rupeesymbol"
                             android:layout_width="wrap_content"
                             android:text="@string/Rs"
-                            android:layout_marginLeft="100dp"
+                            android:layout_marginLeft="98dp"
                             android:layout_marginBottom="4dp"
                             android:textColor="@color/greenish_blue"
                             android:layout_height="wrap_content"
@@ -212,6 +215,7 @@
                                 android:layout_marginTop="-5dp"
                                 android:gravity="center"
                                 android:textSize="12sp"
+
                                 android:textStyle="bold" />
                             </com.skyfishjy.library.RippleBackground>
 
@@ -237,7 +241,7 @@
                             android:layout_width="61dp"
                             android:layout_height="61dp"
 
-                            android:text="Oye"
+
                             android:textStyle="bold"
                             android:gravity="center"
                             android:paddingLeft="10dp"
@@ -245,10 +249,11 @@
 
                             android:textColor="@color/white"
                             android:textSize="20sp"
-                            android:layout_alignParentRight="true"/>
+                            android:layout_alignParentRight="true"
+                            android:layout_margin="5dp" />
                              <!--android:background="@drawable/deal_circle"-->
 
-
+                             <!--android:text="Oye"-->
                         <!--<ImageView-->
                             <!--android:layout_width="15dp"-->
                             <!--android:layout_height="15dp"-->
@@ -410,6 +415,7 @@
             android:orientation="horizontal"
             android:id="@+id/recordWorkout"
             android:background="@android:color/transparent"
+            android:clickable="true"
             android:layout_margin="5dp">
             <!--@color/greenish_blue-->
             <LinearLayout
@@ -467,7 +473,7 @@
                     android:background="@android:color/transparent"
                     android:textColorHint="@color/white"
                     android:textColor="@color/white"
-                    android:cursorVisible="false"
+                    android:cursorVisible="true"
                     android:textCursorDrawable="@color/white"
                     android:singleLine="false"
                     android:minLines="2"

@@ -139,10 +139,10 @@
             android:layout_gravity="right"
             android:layout_marginRight="8dp"
             android:layout_alignParentRight="true"
-            android:text="DEALS"
+            android:text=""
             android:textSize="18sp"
             android:textColor="@color/white"
-            android:background="@drawable/rounded_deals_button" />
+            android:background="@drawable/asset_dealsbutton_v1" />
         </LinearLayout>
         <TextView
 

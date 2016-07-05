@@ -561,7 +561,7 @@ Log.i("PHASE","before adapter set");
         mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(),
                 new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
                 new String[]{"30", "15"},
-                new String[]{"Rental", "Resale"
+                new String[]{getContext().getResources().getString(R.string.Rental), getContext().getResources().getString(R.string.Resale)
                 }));
         mCustomPhasedSeekbar.setListener(this);
 
@@ -1411,7 +1411,10 @@ if(count<=220) {
         if (position == 0) {
             atFor = "at";
             jsonObjectArray = null;
-
+            SnackbarManager.show(
+                    Snackbar.with(getActivity())
+                            .text("Rental Property Type set")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
 //      if(txtOption2.getText().toString().equalsIgnoreCase("Tenants"))
 //            lookingSeeking = "Tenant is looking for";
 //            else if(txtOption2.getText().toString().equalsIgnoreCase("Owners"))
@@ -1520,7 +1523,10 @@ catch (Exception e){
         else if (position == 1) {
             atFor = "for";
             jsonObjectArray = null;
-
+            SnackbarManager.show(
+                    Snackbar.with(getActivity())
+                            .text("Resale Property Type set")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
 //            if(txtOption2.getText().toString().equalsIgnoreCase("Buyer"))
 //                lookingSeeking = "Buyer is looking for";
 //            else if(txtOption2.getText().toString().equalsIgnoreCase("Seller"))
