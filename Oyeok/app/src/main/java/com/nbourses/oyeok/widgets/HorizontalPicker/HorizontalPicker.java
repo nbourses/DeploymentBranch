@@ -139,7 +139,7 @@ public class HorizontalPicker extends View {
     private pickerPriceSelected mpicker;
 
     private Marquee mMarquee;
-    private int mMarqueeRepeatLimit = 3;
+    private int mMarqueeRepeatLimit = 1;
 
     private float mDividerSize = 0;
 
@@ -1163,7 +1163,7 @@ public class HorizontalPicker extends View {
     private int getScrollRange() {
         int scrollRange = 0;
         if(mValues != null && mValues.size() != 0) {
-            scrollRange = Math.max(0, ((mItemWidth + (int) mDividerSize) * (mValues.size() - 1)));
+            scrollRange = Math.max(0, ((mItemWidth + (int) mDividerSize) * (mValues.size() - 2)));
         }
         return scrollRange;
     }

@@ -68,7 +68,7 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
 
 //    @Bind(R.id.buildingSlider)
 //    RelativeLayout buildingSlider;
-
+boolean setting=false;
 
 
 
@@ -462,7 +462,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        //fragmentTransaction.addToBackStack(title);
+        fragmentTransaction.addToBackStack(title);
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -526,6 +526,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
        if (fragment != null && !itemTitle.equals(getString(R.string.settings))) {
+           setting=true;
             loadFragment(fragment, null, R.id.container_map, title);
         }
 
@@ -649,6 +650,13 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             Intent intent = new Intent(AppConstants.SLIDEDOWNBUILDINGS);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             buildingSliderflag = false;
+        }
+
+        if(setting==true){
+
+            setting=false;
+            getFragmentManager().popBackStack();
+
         }
 
 //        else if(DrawerFlag = true) {

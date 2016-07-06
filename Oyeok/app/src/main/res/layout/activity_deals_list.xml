@@ -86,6 +86,32 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 <!--android:fadeScrollbars="true"-->
                 <!--android:smoothScrollbar="true">-->
             <!--</ListView>-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/bgtxtlayout"
+            android:gravity="center_horizontal|bottom"
+            android:layout_above="@+id/phaseSeekbar"
+            android:weightSum="1"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="320dp"
+            android:layout_marginRight="10dp"
+            android:foregroundGravity="center_horizontal|bottom">
+            <TextView
+                android:layout_width="306dp"
+                android:layout_height="106dp"
+                android:id="@+id/bgtxt"
+                android:text="'OK' More Leads,\nTo Create Dealing\nRooms with new Client"
+
+                android:foregroundGravity="center_horizontal"
+
+                android:textSize="26sp"
+                android:layout_marginTop="50dp"
+                android:layout_weight="0.08"
+                android:gravity="center_horizontal|bottom" />
+        </LinearLayout>
+
 
         <com.baoyz.swipemenulistview.SwipeMenuListView
             android:id="@+id/listViewDeals"
@@ -94,6 +120,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_height="wrap_content"
             android:layout_below="@+id/view"
             android:layout_above="@+id/phaseSeekbar"/>
+
 
         <LinearLayout
             android:orientation="horizontal"

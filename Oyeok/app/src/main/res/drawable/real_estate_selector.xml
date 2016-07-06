@@ -4,9 +4,11 @@
     <!--<item android:drawable="@drawable/real_estate_agent_selected" android:state_selected="true"/>
     <item android:drawable="@drawable/real_estate_agent_pressed" android:state_pressed="true"/>
     <item android:drawable="@drawable/real_estate_agent"/>-->
-    <item android:drawable="@drawable/real_estate_home1" android:state_selected="true"/>
-    <item android:drawable="@drawable/real_estate_home1" android:state_pressed="true"/>
-   <item android:drawable="@drawable/phased_seek_circle_default"/>
-
+    <item android:drawable="@drawable/asset_rent_dealtype_icon_v1" android:state_selected="true"/>
+    <item android:drawable="@drawable/asset_rent_dealtype_icon_v1" android:state_pressed="true"/>
+   <item android:drawable="@drawable/phase_circle"/>
+    <!--<item android:drawable="@drawable/default_seekbar_circle_white"/>-->
+    <!--<item android:drawable="@drawable/asset_buysell_deal_type_icon_v11"></item>-->
+    <!--<item android:drawable="@drawable/asset_rent_dealtype_icon_v11"></item>-->
 </selector>
 
