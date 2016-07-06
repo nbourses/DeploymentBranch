@@ -1699,8 +1699,17 @@ try {
 
 
                 }catch (Exception e){}
+
 //                lastTouched = SystemClock.uptimeMillis();
 //                }
+
+                SnackbarManager.show(
+                        Snackbar.with(getActivity())
+                                .text("Rental Property Type set")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
+
+
                 tvRate.setText("/ month");
                 brokerType = "rent";
                 dbHelper.save(DatabaseConstants.brokerType, "LL");
