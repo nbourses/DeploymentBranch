@@ -1746,11 +1746,13 @@ try {
 
 
                 }catch (Exception e){}
+
                 SnackbarManager.show(
                         Snackbar.with(getActivity())
                                 .text("Rental Property Type set")
                                 .position(Snackbar.SnackbarPosition.TOP)
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
 
 
                 tvRate.setText("/ month");
@@ -1798,6 +1800,7 @@ try {
                 SnackbarManager.show(
                         Snackbar.with(getActivity())
                                 .text("Resale Property Type set")
+                                .position(Snackbar.SnackbarPosition.TOP)
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
                 updateHorizontalPicker();
                 tvRate.setText("/ sq.ft");
