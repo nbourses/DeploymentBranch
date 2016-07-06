@@ -1749,6 +1749,7 @@ try {
                 SnackbarManager.show(
                         Snackbar.with(getActivity())
                                 .text("Rental Property Type set")
+                                .position(Snackbar.SnackbarPosition.TOP)
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
 
 
