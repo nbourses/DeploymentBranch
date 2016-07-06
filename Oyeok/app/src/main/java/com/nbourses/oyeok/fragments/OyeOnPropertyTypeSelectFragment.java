@@ -27,7 +27,9 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
 
     private String selectedPropertyType;
     private View rootView;
+    private View rootView1;
     private TextView txtPreviousTextView;
+    private  TextView txtsqft;
 
 //    TextView tv_dealinfo;
     private static final String propertyTypeDefaultColor = "#FFFFFF";
@@ -55,7 +57,8 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
 //        tv_dealinfo=(TextView)rootView1.findViewById(R.id.tv_dealinfo);
         Bundle bundle = getArguments();
         selectedPropertyType = bundle.getString("propertyType");
-
+        rootView1 = inflater.inflate(R.layout.fragment_any_click, container, false);
+        txtsqft = (TextView) rootView1.findViewById(R.id.txtsqft);
         init(inflater, container);
 
         ButterKnife.bind(this, rootView);
@@ -70,9 +73,12 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
      */
     private void init(LayoutInflater inflater, ViewGroup container){
         switch (selectedPropertyType) {
+
             case "home":
+                txtsqft.setBackgroundResource(R.drawable.gradient_grey);
                 General.saveBoolean(getContext(), "propertySubtypeFlag", true);
                 rootView = inflater.inflate(R.layout.fragment_home_click, container, false);
+
 
                 //by default 2 BHK is selected
                 txtPreviousTextView = (TextView) rootView.findViewById(R.id.txt2Bhk);
@@ -85,17 +91,20 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
                 onFilterValueUpdate(bhkNumber+""+bhkNumberValue,bhkNumber+""+bhkNumberValue);
                 break;
             case "shop":
+                txtsqft.setBackgroundResource(R.drawable.gradient_grey);
                 General.saveBoolean(getContext(), "propertySubtypeFlag", false);
 
                 rootView = inflater.inflate(R.layout.fragment_any_click, container, false);
                 onFilterValueUpdate("SHOP","default");
                 break;
             case "industrial":
+                txtsqft.setBackgroundResource(R.drawable.gradient_grey);
                 General.saveBoolean(getContext(),"propertySubtypeFlag",false);
                 rootView = inflater.inflate(R.layout.fragment_any_click, container, false);
                 onFilterValueUpdate("IND.","default");
                 break;
             case "office":
+                txtsqft.setBackgroundResource(R.drawable.gradient_grey);
                 General.saveBoolean(getContext(), "propertySubtypeFlag", false);
                 rootView = inflater.inflate(R.layout.fragment_any_click, container, false);
                 onFilterValueUpdate("OFFC","default");
@@ -156,6 +165,9 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     @Nullable
     @OnClick({R.id.txt300h, R.id.txt600h, R.id.txt950h,R.id.txt1600h,R.id.txt2100h,R.id.txt3000h})
     public void onShopClick(View v) {
+
+        txtsqft.setBackgroundResource(R.drawable.gradient_greenish_blue);
+
         General.saveBoolean(getContext(), "propertySubtypeFlag", true);
         clean();
         Log.i("retail","===========================");
@@ -174,7 +186,9 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     @Nullable
     @OnClick({R.id.txt300h, R.id.txt600h, R.id.txt950h,R.id.txt1600h,R.id.txt2100h,R.id.txt3000h})
     public void onIndustryClick(View v) {
-        General.saveBoolean(getContext(), "propertySubtypeFlag", true);
+
+        txtsqft.setBackgroundResource(R.drawable.gradient_greenish_blue);
+                General.saveBoolean(getContext(), "propertySubtypeFlag", true);
 
 
 
@@ -192,6 +206,8 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     @Nullable
     @OnClick({R.id.txt300h, R.id.txt600h, R.id.txt950h,R.id.txt1600h,R.id.txt2100h,R.id.txt3000h})
     public void onOfficeClick(View v) {
+
+        txtsqft.setBackgroundResource(R.drawable.gradient_greenish_blue);
         General.saveBoolean(getContext(), "propertySubtypeFlag", true);
         clean();
         txtPreviousTextView = (TextView) v;

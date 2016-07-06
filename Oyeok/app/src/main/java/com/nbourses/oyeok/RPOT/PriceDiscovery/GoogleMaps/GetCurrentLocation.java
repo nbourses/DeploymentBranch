@@ -22,6 +22,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+
 public class GetCurrentLocation extends Activity implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     Context context;
@@ -105,6 +106,7 @@ public class GetCurrentLocation extends Activity implements LocationListener, Go
             requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
             Log.i("Debug","prompt");
         }*/
+
         try {
             location = fusedLocationProviderApi.getLastLocation(googleApiClient);
             Log.d("currentLocation", "\n ======> init.Location : " + location);
@@ -120,6 +122,7 @@ public class GetCurrentLocation extends Activity implements LocationListener, Go
                 // return;
             }
         }catch (Exception e){}
+
 
     }
 

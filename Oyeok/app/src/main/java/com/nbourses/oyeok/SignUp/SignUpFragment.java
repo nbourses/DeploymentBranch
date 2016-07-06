@@ -216,6 +216,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        AppConstants.SIGNUP_FLAG = true;
         myRealm = General.realmconfig(getContext());
 
 
@@ -229,25 +230,27 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         String[] bNames = new String[3];
         int[] bPrice = new int[3];
 
-        if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+      //  if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+        //if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")) {
             // run only when broker
-
          try {
 
              // try catch to handle direct signup from deals button when building data not available
              bNames = b.getStringArray("bNames");
              bPrice = b.getIntArray("bPrice");
 
-             Log.i("Listings are", "bNames " + bNames + "bPrice " + bPrice);
+             Log.i("Listings are", "marol bNames " + bNames + "bPrice " + bPrice);
 
              listings.put(bNames[0], (float) bPrice[0]);
              listings.put(bNames[1], (float) bPrice[1]);
              listings.put(bNames[2], (float) bPrice[2]);
+             Log.i("Listings are ","marol listings" +listings);
          }
          catch(Exception e){
+             Log.i(TAG,"caught in exception listings not reached signup");
 
          }
-        }
+       //}
 
 
         if(b.getString("lastFragment")!=null)

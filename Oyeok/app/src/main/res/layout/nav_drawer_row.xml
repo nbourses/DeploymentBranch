@@ -23,7 +23,6 @@
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/menu_option_icon"
            />
         <!--<ImageView-->
             <!--android:-->

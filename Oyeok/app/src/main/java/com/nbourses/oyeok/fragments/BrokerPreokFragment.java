@@ -1,7 +1,6 @@
 package com.nbourses.oyeok.fragments;
 
 
-import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -9,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -1022,18 +1020,18 @@ if(count<=220) {
 //        int permissionCheck = ContextCompat.checkSelfPermission(getContext(),
 //                Manifest.permission.WRITE_CALENDAR);
         //permissionCheckForDeviceId = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE);
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE)
-                == PackageManager.PERMISSION_GRANTED) {
-            Log.i("PREOK","getcontext "+General.getDeviceId(getContext()));
-            preok.setDeviceId(General.getDeviceId(getContext()));
-
-
-        }else{
+//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE)
+//                == PackageManager.PERMISSION_GRANTED) {
+//            Log.i("PREOK","getcontext "+General.getDeviceId(getContext()));
+//            preok.setDeviceId(General.getDeviceId(getContext()));
+//
+//
+//        }else{
            // preok.setDeviceId(General.getSharedPreferences(this,AppConstants.));
             preok.setDeviceId(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
             Log.i("PREOK","getcontext "+General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
 
-        }
+//        }
 
         preok.setUserRole("broker");
         preok.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
@@ -1042,7 +1040,7 @@ if(count<=220) {
         preok.setPlatform("android");
         Log.i("PREOK","user_id1 "+General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER));
         if(General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-            preok.setUserId("demo_id");
+            preok.setUserId(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
 
         }
         else {
@@ -1125,7 +1123,8 @@ if(count<=220) {
 
 
         if (!General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-            dbHelper.save(DatabaseConstants.userRole, "Broker");
+
+            dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
             //show sign up screen if broker is not registered
             Bundle bundle = new Bundle();
             bundle.putString("lastFragment", "BrokerPreokFragment");
@@ -1203,6 +1202,9 @@ if(count<=220) {
 
         txtPreviouslySelectedOptionB = (TextView) v;
         if (v.getId() == selectB.getId()) {
+            okBtn.setEnabled(false);
+            okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
+            okBtn.setText("OK");
             selectB.setBackgroundResource(R.color.greenish_blue);
             // chart.clear();
 //             if(entries.size() !=0)
@@ -1706,6 +1708,12 @@ if(ptype.equalsIgnoreCase("home"))
             //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")) {
                 rentText.setText("@" + General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")) + " /m.");
+                //rentText.setText(Html.fromHtml("<font size=50>"+"yo"+"</font>" + General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))));
+
+//                String download_styledText = "<font size='10'color='white'>"
+//                        + "Download" + "</font> " + "<br />"+""+"<font size='2'color='#883e33'>"
+//                        + "Save it now!"+"</font>";
+               // rentText.setText(Html.fromHtml(download_styledText));
 
             }
                 else {
@@ -1724,9 +1732,12 @@ if(ptype.equalsIgnoreCase("home"))
                 notClicked.setVisibility(View.GONE);
                 leadPrompt.setVisibility(View.GONE);
                 rentText.setVisibility(View.VISIBLE);
+
                 //   displayOkText.setVisibility(View.VISIBLE);
                 texPtype.setVisibility(View.VISIBLE);
                 texPstype.setVisibility(View.VISIBLE);
+
+                rentText.startAnimation(bounce);
 
                 deal.setEnabled(false);
                 deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
@@ -1920,6 +1931,7 @@ if(ptype.equalsIgnoreCase("home"))
 
     private void setBadges(){
         if(rentalCount1 == 0){
+            Log.i(TAG,"saki rental if "+rentalCount1);
             Log.i("gcm local broadcast","gcm local broadcast5");
             rentalCount.setVisibility(View.GONE);
 //            option1Count.setVisibility(View.GONE);
@@ -1927,23 +1939,29 @@ if(ptype.equalsIgnoreCase("home"))
 
         }
      else {
+            Log.i(TAG,"saki rental else "+rentalCount1);
+
             Log.i("gcm local broadcast","gcm local broadcast3");
         rentalCount.setVisibility(View.VISIBLE);
         rentalCount.setText(String.valueOf(rentalCount1));
 
             if(tenantsCount1 == 0){
+                Log.i(TAG,"saki ten if "+tenantsCount1);
                 option1Count.setVisibility(View.GONE);
             }
             else {
+                Log.i(TAG,"saki ten else "+tenantsCount1);
                 Log.i("gcm local broadcast","gcm local broadcast4 " +tenantsCount1);
                 option1Count.setVisibility(View.VISIBLE);
                 option1Count.setText(String.valueOf(tenantsCount1));
             }
 
             if(ownersCount1 == 0){
+                Log.i(TAG,"saki ow if "+ownersCount1);
                 option2Count.setVisibility(View.GONE);
             }
             else {
+                Log.i(TAG,"saki ow else "+ownersCount1);
                 Log.i(TAG, "OnSharedPreferenceChangeListener 3");
                 option2Count.setVisibility(View.VISIBLE);
                 option2Count.setText(String.valueOf(ownersCount1));
@@ -1952,33 +1970,39 @@ if(ptype.equalsIgnoreCase("home"))
          }
 
         if(resaleCount1 == 0){
+            Log.i(TAG,"saki resale if "+resaleCount1);
             resaleCount.setVisibility(View.GONE);
 //            option1Count.setVisibility(View.GONE);
 //            option2Count.setVisibility(View.GONE);
 
         }
         else {
+            Log.i(TAG,"saki resale else "+resaleCount1);
             Log.i(TAG, "OnSharedPreferenceChangeListener 3");
             resaleCount.setVisibility(View.VISIBLE);
             resaleCount.setText(String.valueOf(resaleCount1));
 
-//            if(buyerCount1 == 0){
-//                option1Count.setVisibility(View.GONE);
-//            }
-//            else {
-//                Log.i(TAG, "OnSharedPreferenceChangeListener 3");
-//                option1Count.setVisibility(View.VISIBLE);
-//                option1Count.setText(String.valueOf(buyerCount1));
-//            }
-//
-//            if(sellerCount1 == 0){
-//                option2Count.setVisibility(View.GONE);
-//            }
-//            else {
-//                Log.i(TAG, "OnSharedPreferenceChangeListener 3");
-//                option2Count.setVisibility(View.VISIBLE);
-//                option2Count.setText(String.valueOf(sellerCount1));
-//            }
+            if(buyerCount1 == 0){
+                Log.i(TAG,"saki buy if "+buyerCount1);
+                option1Count.setVisibility(View.GONE);
+            }
+            else {
+                Log.i(TAG,"saki buy else "+buyerCount1);
+                Log.i(TAG, "OnSharedPreferenceChangeListener 3");
+                option1Count.setVisibility(View.VISIBLE);
+                option1Count.setText(String.valueOf(buyerCount1));
+            }
+
+            if(sellerCount1 == 0){
+                Log.i(TAG,"saki buy if "+sellerCount1);
+                option2Count.setVisibility(View.GONE);
+            }
+            else {
+                Log.i(TAG,"saki buy else "+sellerCount1);
+                Log.i(TAG, "OnSharedPreferenceChangeListener 3");
+                option2Count.setVisibility(View.VISIBLE);
+                option2Count.setText(String.valueOf(sellerCount1));
+            }
         }
 
 

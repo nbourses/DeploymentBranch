@@ -110,6 +110,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
 
     private WebView webView;
+    private  Boolean autocomplete = false;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
 
     public interface openMapsClicked{
@@ -189,6 +190,19 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
 
 
+        }
+    };
+
+
+    private BroadcastReceiver autoComplete = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(intent.getExtras().getBoolean("autocomplete")==true) {
+                autocomplete = true;
+                Log.i(TAG,"hohohoh 1 "+autocomplete);
+
+            }
         }
     };
 
@@ -279,6 +293,8 @@ private void alertbuilder()
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(oyebuttondata, new IntentFilter(AppConstants.ON_FILTER_VALUE_UPDATE));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(markerstatus, new IntentFilter(AppConstants.MARKERSELECTED));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(autoComplete, new IntentFilter(AppConstants.AUTOCOMPLETEFLAG));
+
     }
 
     @Override
@@ -289,8 +305,10 @@ private void alertbuilder()
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(oyebuttondata);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(markerstatus);
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(autoComplete);
 
     }
+
 
     /**
      * init all components
@@ -802,16 +820,27 @@ private void alertbuilder()
 //            Log.i("BACK PRESSED","===================");
 //            getFragmentManager().popBackStack();
 //        }
-        Log.i("BACK PRESSED"," =================== setting"+setting);
+
+        if(autocomplete){
+
+            Intent intent = new Intent(AppConstants.AUTOCOMPLETEFLAG1);
+            intent.putExtra("autocomplete",true);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+        }
+
+        
 
 
-        if(setting==true){
+
+        else if(setting==true){
             Log.i("BACK PRESSED"," =================== setting"+setting);
             setting=false;
             getFragmentManager().popBackStack();
 
         }
-        if (slidingLayout != null &&
+       else if (slidingLayout != null &&
+
                 (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
                         slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
             closeOyeScreen();
@@ -820,6 +849,16 @@ private void alertbuilder()
         else if(webView != null){
             Intent back = new Intent(this, ClientMainActivity.class);
             startActivity(back);
+            finish();
+        }
+        else if(AppConstants.SIGNUP_FLAG){
+            if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")){
+            Intent back = new Intent(this, BrokerMainActivity.class);
+            startActivity(back);
+            }else{
+                Intent back = new Intent(this, ClientMainActivity.class);
+                startActivity(back);
+            }
             finish();
         }
         else{
