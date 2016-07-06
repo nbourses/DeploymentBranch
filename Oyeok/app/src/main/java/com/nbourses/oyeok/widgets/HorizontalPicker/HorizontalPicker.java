@@ -139,7 +139,7 @@ public class HorizontalPicker extends View {
     private pickerPriceSelected mpicker;
 
     private Marquee mMarquee;
-    private int mMarqueeRepeatLimit = 3;
+    private int mMarqueeRepeatLimit = 1;
 
     private float mDividerSize = 0;
 

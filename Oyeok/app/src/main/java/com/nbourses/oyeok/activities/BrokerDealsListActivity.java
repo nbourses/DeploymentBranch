@@ -21,6 +21,7 @@ import android.view.animation.BounceInterpolator;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -90,7 +91,8 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
 
     @Bind(R.id.phaseSeekbar)
     LinearLayout phaseSeekBar;
-
+    private TextView bgtxt;
+    private LinearLayout bgtxtlayout;
     /*@Bind(R.id.txtNoActiveDeal)
     TextView txtNoActiveDeal;
 
@@ -136,7 +138,9 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
         listViewDeals.setVisibility(View.VISIBLE);
         fragment_container1.setVisibility(View.GONE);
 
-
+        bgtxt=(TextView) findViewById(R.id.bgtxt) ;
+        bgtxtlayout = (LinearLayout) findViewById(R.id.bgtxtlayout);
+        bgtxt.setText("'OK' More Leads,\nTo Create Dealing\nRooms with new Client");
         ButterKnife.bind(this);
 
         init();
@@ -680,6 +684,10 @@ Log.i("SWIPE","inside swipe menu creator");
                             //list all broker deals
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(listBrokerDeals_new, getApplicationContext());
                             listViewDeals.setAdapter(listAdapter);
+                            if(listBrokerDeals_new.size() <3){
+                                bgtxtlayout.setVisibility(View.VISIBLE);
+                                bgtxt.setText("'OK' More Leads,\nTo Create Dealing\nRooms with new Client");
+                            }else{bgtxtlayout.setVisibility(View.GONE);}
                             listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -827,12 +835,20 @@ Log.i("SWIPE","inside swipe menu creator");
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
             TT = "LL";
             loadBrokerDeals();
+            SnackbarManager.show(
+                    Snackbar.with(this)
+                            .text("Rental Deal Type set")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
         }
         else{
 
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RESALE);
             TT = "OR";
             loadBrokerDeals();
+            SnackbarManager.show(
+                    Snackbar.with(this)
+                            .text("Resale Deal Type set")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
         }
 
 

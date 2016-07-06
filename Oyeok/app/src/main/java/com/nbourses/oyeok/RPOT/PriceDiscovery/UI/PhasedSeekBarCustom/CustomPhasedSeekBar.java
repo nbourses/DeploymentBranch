@@ -306,14 +306,14 @@ public class CustomPhasedSeekBar extends View {
                 canvas.drawLine(mAnchors[i][0] + (2 * widthHalf / 3), mAnchors[i][1], mAnchors[i][0] + widthHalf, mAnchors[i][1], mLinePaint);
             }
 
-            int width = itemOff.getIntrinsicWidth();
-            int height = itemOff.getIntrinsicHeight();
+            int width = itemOff.getIntrinsicWidth()/2;
+            int height = itemOff.getIntrinsicHeight()/2;
             int m = 2*widthHalf/3;
             int l = height/2;
             int radius = Math.min(l,m)/2;
 
-            canvas.drawCircle(mAnchors[i][0],mAnchors[i][1],radius,mCirclePaint);
-            canvas.drawCircle(mAnchors[i][0], mAnchors[i][1], radius, mCircleStrokePaint);
+//            canvas.drawCircle(mAnchors[i][0],mAnchors[i][1],radius,mCirclePaint);
+//            canvas.drawCircle(mAnchors[i][0], mAnchors[i][1], radius, mCircleStrokePaint);
 
 
             int left = mAnchors[i][0] - radius;
@@ -387,13 +387,13 @@ public class CustomPhasedSeekBar extends View {
             mCurrentY = mAnchors[mCurrentItem][1];
         }
 
-        canvas.drawCircle(mCurrentX, mCurrentY, radius, mCirclePaint);
-        canvas.drawCircle(mCurrentX, mCurrentY, radius, mCircleStrokePaint);
+//        canvas.drawCircle(mCurrentX, mCurrentY, radius, mCirclePaint);
+//        canvas.drawCircle(mCurrentX, mCurrentY, radius, mCircleStrokePaint);
         itemOn.setBounds(
-                mCurrentX - (width / 2),
-                mCurrentY - (height / 2),
-                mCurrentX + (width / 2),
-                mCurrentY + (height / 2));
+                mCurrentX - (width / 3),
+                mCurrentY - (height / 3),
+                mCurrentX + (width / 3),
+                mCurrentY + (height / 3));
 
         try{
             itemOn.draw(canvas);

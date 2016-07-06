@@ -40,6 +40,15 @@
     <string name="follow">Follow</string>
     <string name="tweet">Tweet</string>
 
+        <!--phasedseekbar String-->
+    <string name="Resale">Buy/Sale</string>
+    <string name="Rental">Rental</string>
+
+
+
+
+
+
 
     <string name="memberinfo">Member /n Info</string>
 

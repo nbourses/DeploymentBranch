@@ -80,7 +80,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
-
+   boolean setting=false;
     TextView tv_client_heading;
 
     @Bind(R.id.profile_image_main)
@@ -552,7 +552,7 @@ private void alertbuilder()
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        //fragmentTransaction.addToBackStack(title);
+        fragmentTransaction.addToBackStack(title);
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
 
@@ -651,6 +651,7 @@ private void alertbuilder()
         else if (itemTitle.equals(getString(R.string.settings))) {
             AppSetting appSetting=new AppSetting();
             loadFragment(appSetting,null,R.id.container_Signup,"");
+            setting=true;
 
 
         }
@@ -819,6 +820,7 @@ private void alertbuilder()
 //            Log.i("BACK PRESSED","===================");
 //            getFragmentManager().popBackStack();
 //        }
+
         if(autocomplete){
 
             Intent intent = new Intent(AppConstants.AUTOCOMPLETEFLAG1);
@@ -827,7 +829,18 @@ private void alertbuilder()
 
         }
 
-        else if (slidingLayout != null &&
+        
+
+
+
+        else if(setting==true){
+            Log.i("BACK PRESSED"," =================== setting"+setting);
+            setting=false;
+            getFragmentManager().popBackStack();
+
+        }
+       else if (slidingLayout != null &&
+
                 (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
                         slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
             closeOyeScreen();

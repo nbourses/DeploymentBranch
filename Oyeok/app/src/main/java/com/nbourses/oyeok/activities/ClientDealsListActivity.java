@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -147,7 +148,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     private ArrayList<String> matchedOkIds;
     private ArrayList<BrokerDeals> reset;
 
-
+   private TextView bgtxt;
+   private LinearLayout bgtxtlayout;
 
 
 
@@ -194,6 +196,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         fragment_container1 = (FrameLayout)findViewById(R.id.fragment_container1);
         //  listViewDeals.setAdapter(new SearchingBrokersAdapter(this));
 
+         bgtxt=(TextView) findViewById(R.id.bgtxt) ;
+        bgtxtlayout = (LinearLayout) findViewById(R.id.bgtxtlayout);
+        bgtxt.setText("'OYE' More Leads,\nTo Create Dealing\nRooms with new Client");
         listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
         supportChat.setVisibility(View.VISIBLE);
         listViewDeals.setVisibility(View.VISIBLE);
@@ -567,7 +572,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(this.getResources(),
                 new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
                 new String[]{"30", "15"},
-                new String[]{"Rental", "Resale"
+                new String[]{getBaseContext().getResources().getString(R.string.Rental), getBaseContext().getResources().getString(R.string.Resale)
                 }));
 
         mCustomPhasedSeekbar.setListener((this));
@@ -642,9 +647,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                         myRealm.commitTransaction();
 
                     }
+
                     catch(Exception e){
 
                     }
+
 
 
                     String name = General.getSharedPreferences(this, AppConstants.NAME);  //name of client to show in default deal title
@@ -731,7 +738,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
                 listViewDeals.setAdapter(listAdapter);
                 Log.i("inside adapter ", "object " + listAdapter);
-
+                if(default_deals.size() <3){
+                    bgtxtlayout.setVisibility(View.VISIBLE);
+                    bgtxt.setText("'OYE' More Leads,\nTo Create Dealing\nRooms with new Client");
+                }else{bgtxtlayout.setVisibility(View.GONE);}
                 listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -744,6 +754,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             //Log.i(TAG, "default deals are1" + default_deals.get(0).getSpecCode());
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
                             listViewDeals.setAdapter(listAdapter);
+
                             Log.i("inside adapter ", "object " + listAdapter);
 
                             BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
@@ -1211,7 +1222,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
-
+                            if(total_deals.size() <3){
+                                bgtxtlayout.setVisibility(View.VISIBLE);
+                                bgtxt.setText("'OYE' More Leads,\nTo Create Dealing\nRooms with new Client");
+                            }else{bgtxtlayout.setVisibility(View.GONE);}
                             //after rental resale deals
                             listViewDeals.setAdapter(listAdapter);
                             listAdapter.notifyDataSetChanged();
@@ -1496,6 +1510,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             loadDefaultDeals();
             loadBrokerDeals();
             getSupportActionBar().setTitle("DEALING ROOMs (Rental)");
+            SnackbarManager.show(
+                    Snackbar.with(this)
+                            .text("Rental Deals Type set")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
         }
         else{
 
@@ -1507,6 +1525,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
             loadDefaultDeals();
             loadBrokerDeals();
+            SnackbarManager.show(
+                    Snackbar.with(this)
+                            .text("Resale Deal Type set")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
             getSupportActionBar().setTitle("DEALING ROOMs (Resale)");
         }
 
