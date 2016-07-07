@@ -1416,6 +1416,7 @@ if(count<=220) {
             SnackbarManager.show(
                     Snackbar.with(getActivity())
                             .text("Rental Property Type set")
+                            .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
 //      if(txtOption2.getText().toString().equalsIgnoreCase("Tenants"))
 //            lookingSeeking = "Tenant is looking for";
@@ -1527,7 +1528,8 @@ catch (Exception e){
             jsonObjectArray = null;
             SnackbarManager.show(
                     Snackbar.with(getActivity())
-                            .text("Resale Property Type set")
+                            .text("Buy/Sell Property Type set")
+                            .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
 //            if(txtOption2.getText().toString().equalsIgnoreCase("Buyer"))
 //                lookingSeeking = "Buyer is looking for";

@@ -198,6 +198,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
          bgtxt=(TextView) findViewById(R.id.bgtxt) ;
         bgtxtlayout = (LinearLayout) findViewById(R.id.bgtxtlayout);
+        bgtxtlayout.setVisibility(View.VISIBLE);
         bgtxt.setText("'OYE' More Leads,\nTo Create Dealing\nRooms with new Client");
         listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
         supportChat.setVisibility(View.VISIBLE);
@@ -1513,6 +1514,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             SnackbarManager.show(
                     Snackbar.with(this)
                             .text("Rental Deals Type set")
+                            .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
         }
         else{
@@ -1527,7 +1529,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             loadBrokerDeals();
             SnackbarManager.show(
                     Snackbar.with(this)
-                            .text("Resale Deal Type set")
+                            .text("Buy/Sell Deal Type set")
+                            .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
             getSupportActionBar().setTitle("DEALING ROOMs (Resale)");
         }

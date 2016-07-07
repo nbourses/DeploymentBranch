@@ -833,13 +833,13 @@ private void alertbuilder()
 
 
 
-        else if(setting==true){
+        if(setting==true){
             Log.i("BACK PRESSED"," =================== setting"+setting);
             setting=false;
             getFragmentManager().popBackStack();
 
         }
-       else if (slidingLayout != null &&
+       if (slidingLayout != null &&
 
                 (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
                         slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {

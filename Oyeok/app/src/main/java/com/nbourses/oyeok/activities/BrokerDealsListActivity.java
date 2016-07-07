@@ -141,6 +141,7 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
         bgtxt=(TextView) findViewById(R.id.bgtxt) ;
         bgtxtlayout = (LinearLayout) findViewById(R.id.bgtxtlayout);
         bgtxt.setText("'OK' More Leads,\nTo Create Dealing\nRooms with new Client");
+        bgtxtlayout.setVisibility(View.VISIBLE);
         ButterKnife.bind(this);
 
         init();
@@ -838,6 +839,7 @@ Log.i("SWIPE","inside swipe menu creator");
             SnackbarManager.show(
                     Snackbar.with(this)
                             .text("Rental Deal Type set")
+                            .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
         }
         else{
@@ -847,7 +849,8 @@ Log.i("SWIPE","inside swipe menu creator");
             loadBrokerDeals();
             SnackbarManager.show(
                     Snackbar.with(this)
-                            .text("Resale Deal Type set")
+                            .text("Buy/Sell Deal Type set")
+                            .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
         }
 

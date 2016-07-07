@@ -148,8 +148,10 @@
                             app:dividerSize="10dp"
                             app:sideItems="@integer/sideItems"
 
+                            android:focusableInTouchMode="true"
 
                             android:layout_above="@+id/tvRate" />
+                        <!--app:values="@array/hpicker"-->
                         <!--android:focusableInTouchMode="true"-->
                         <TextView
                             android:id="@+id/tvRate"
