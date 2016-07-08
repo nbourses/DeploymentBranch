@@ -56,6 +56,7 @@ public class General extends BroadcastReceiver {
     public static HashMap<String, String> oyeDataHolder = new HashMap<String, String>();
     public static final String TAG = "General";
     public static Set<String> set;
+    public static Boolean clearChart = false;
     private NetworkInterface networkInfo;
 
 

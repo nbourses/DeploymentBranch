@@ -398,6 +398,18 @@ private String Walkthrough,beacon;
 
     private void init() {
 
+try {
+    if (General.clearChart) {
+        buildingPriceLL.clear();
+        buildingPriceOR.clear();
+        LLbuildingPrice.clear();
+        ORbuildingPrice.clear();
+        buildingPrice.clear();
+        General.clearChart = false;
+    }
+}catch(Exception e){
+    Log.i(TAG,"Caught in exception clearing chart after back from broker map "+e);
+}
 
         highlighter = new ChartHighlighter(chart);
 
@@ -1206,6 +1218,7 @@ if(count<=220) {
             okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
             okBtn.setText("OK");
             selectB.setBackgroundResource(R.color.greenish_blue);
+            chart.setDescription("Select three buildings.");
             // chart.clear();
 //             if(entries.size() !=0)
 //            entries.clear();
@@ -1258,6 +1271,7 @@ if(count<=220) {
         }
         else if (v.getId() == setB.getId()) {
             if(buildingsSelected.size() == 3) {
+                chart.setDescription("Please set price and click Ok.");
                 setB.setBackgroundResource(R.color.greenish_blue);
                 selectB.setBackgroundResource(R.color.colorPrimaryDark);
 
