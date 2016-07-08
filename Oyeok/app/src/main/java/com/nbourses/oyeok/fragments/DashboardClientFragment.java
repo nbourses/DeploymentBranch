@@ -995,16 +995,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 // getPrice();
                                 // mflag = false;
 
-// >>>>>>> sushil
-
-//                                     Log.i("t1", "latlong" + " " + currentLocation1);
-
-//                     }
-//                 });
-//             }
-
-// <<<<<<< HEAD
-// =======
                                 if (isNetworkAvailable()) {
                                     new LocationUpdater().execute();
                                 }
@@ -1804,6 +1794,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         Snackbar.with(getActivity())
                                 .text("Rental Property Type set")
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
 
 
                 tvRate.setText("/ month");
