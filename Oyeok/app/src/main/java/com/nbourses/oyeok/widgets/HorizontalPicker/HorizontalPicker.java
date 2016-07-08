@@ -1230,7 +1230,7 @@ public class HorizontalPicker extends View {
             ArrayList<CharSequence> valueList = new ArrayList<CharSequence>();
             int value = minValue;
             CharSequence object;
-            while (true) {
+            while (value!=maxValue) {
                 nIntervals++;
                 value += interval;
                 Log.i("TRACE", "Value"+value);
@@ -1285,6 +1285,8 @@ public class HorizontalPicker extends View {
 
     public interface OnScrollChanged {
         public void onScrollChanged();
+
+
     }
 
     private static final class Marquee extends Handler {
@@ -1440,36 +1442,29 @@ public class HorizontalPicker extends View {
         boolean shouldDrawGhost() {
             return mStatus == MARQUEE_RUNNING && Math.abs(mScroll) > mGhostStart;
         }
-
         boolean isRunning() {
             return mStatus == MARQUEE_RUNNING;
         }
-
         boolean isStopped() {
             return mStatus == MARQUEE_STOPPED;
         }
     }
 
     public static class SavedState extends BaseSavedState {
-
         private int mSelItem;
-
         public SavedState(Parcelable superState) {
             super(superState);
         }
-
         private SavedState(Parcel in) {
             super(in);
             mSelItem = in.readInt();
         }
-
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
 
             dest.writeInt(mSelItem);
         }
-
         @Override
         public String toString() {
             return  "HorizontalPicker.SavedState{"
@@ -1477,7 +1472,6 @@ public class HorizontalPicker extends View {
                     + " selItem=" + mSelItem
                     + "}";
         }
-
         @SuppressWarnings("hiding")
         public static final Parcelable.Creator<SavedState> CREATOR
                 = new Parcelable.Creator<SavedState>() {
@@ -1492,33 +1486,23 @@ public class HorizontalPicker extends View {
     }
 
     private static class PickerTouchHelper extends ExploreByTouchHelper {
-
         private HorizontalPicker mPicker;
-
         public PickerTouchHelper(HorizontalPicker picker) {
             super(picker);
             mPicker = picker;
         }
-
         @Override
         protected int getVirtualViewAt(float x, float y) {
-
             float itemWidth = mPicker.mItemWidth + mPicker.mDividerSize;
             float position = mPicker.getScrollX() + x - itemWidth * mPicker.mSideItems;
-
             float item = position / itemWidth;
-
             if (item < 0 || item > mPicker.mValues.size()) {
                 return INVALID_ID;
             }
-
             return (int) item;
-
         }
-
         @Override
         protected void getVisibleVirtualViews(List<Integer> virtualViewIds) {
-
             float itemWidth = mPicker.mItemWidth + mPicker.mDividerSize;
             float position = mPicker.getScrollX() - itemWidth * mPicker.mSideItems;
 
@@ -1540,14 +1524,11 @@ public class HorizontalPicker extends View {
             for (int i = 0; i < items; i++) {
                 virtualViewIds.add(first + i);
             }
-
         }
-
         @Override
         protected void onPopulateEventForVirtualView(int virtualViewId, AccessibilityEvent event) {
             event.setContentDescription(mPicker.mValues.get(virtualViewId));
         }
-
         @Override
         protected void onPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat node) {
 
@@ -1560,14 +1541,11 @@ public class HorizontalPicker extends View {
             node.setContentDescription(mPicker.mValues.get(virtualViewId));
             node.setBoundsInParent(new Rect(left, 0, right, mPicker.getHeight()));
             node.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
-
         }
-
         @Override
         protected boolean onPerformActionForVirtualView(int virtualViewId, int action, Bundle arguments) {
             return false;
         }
-
     }
 
 
@@ -1601,33 +1579,12 @@ public class HorizontalPicker extends View {
         {
             case 7:
 
-val=no;
+                val=no;
                 Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
                 str=format1.format(val);
                 String strWithoutSymbol2 = "";
-
                 strWithoutSymbol2 = str.substring(truncate_first,str.length()- 3);
                 str= strWithoutSymbol2;
-          /* if(propertyType)
-                val = no/10000000;
-=======
-                strWithoutSymbol2 = str.substring(3,str.length());
-                str= strWithoutSymbol2;
-//            if(propertyType)
-
-               /* val = no/10000000;
-
->>>>>>> 426bbb1a77894d57fa223202377e8e4c9af92440
-//            else
-//                val = no/100000;
-                no = no%10000000;
-                String formatted = String.format("%07d", no);
-                formatted = formatted.substring(0, 5);
-
-                v = val+"."+formatted;
-<<<<<<< HEAD
-                str = v+"Cr"; */
-
 
                 twoWord++;
                 break;
@@ -1637,56 +1594,26 @@ val=no;
 
                 Format format2 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
 
-
-               /* val = no/100000;
-
-                v = val+"";
-                no = no%100000;
-                String s2 = String.format("%05d", no);
-                s2 = s2.substring(0, 3);*/
-
                 if (val != 0){
-                   // str = str+v+"."+s2+"L";
-
-
                         str=format2.format(val);
                         String strWithoutSymbol1 = "";
                         strWithoutSymbol1 = str.substring(truncate_first,str.length()-3);
-
-
                         str= strWithoutSymbol1;
-
                     twoWord++;
                 }
-
                     break;
-
             case 3:
-
                 val=no;
                 Format format = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
-
-
-               /* val = no/1000;
-
-
-                v = val+"";
-               // no = no%1000;
-                String.format("%05d", no);
-                String s3 = String.format("%03d", no);
-                s3 = s3.substring(0,1);*/
                 if (val != 0) {
 
                     str = format.format(val);
                     String strWithoutSymbol = "";
                     strWithoutSymbol = str.substring(truncate_first,str.length()-3);
                     str= strWithoutSymbol;
-                    //str = str+v+"."+s3+"K";
-
                 }
                 break;
             default :
-                // print("noToWord Default")
                 break;
         }
         Log.i("TRACE","budget string"+str);

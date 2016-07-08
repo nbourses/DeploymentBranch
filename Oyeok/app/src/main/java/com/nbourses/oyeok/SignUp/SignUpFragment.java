@@ -493,8 +493,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
 
         Log.i("TRACE", "inside submit");
-
-        validationCheck();
+//rem
+       // validationCheck();
         Log.i("TRACE", "after validationCheck");
 
         // //validation_success = roleSelected();
@@ -569,7 +569,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
 
                 Log.i("TRACE", "inside submit");
-
+//rem
                 validationCheck();
                 Log.i("TRACE", "after validationCheck");
 
@@ -710,7 +710,8 @@ if(newUser==true) {
 
 
         Log.i("captured number0 =", Snumber);
-        validationCheck();
+        //rem
+     //   validationCheck();
 //        validation_success = numberValidation();
         email_success = isEmailValid(Semail);
 
@@ -1565,7 +1566,7 @@ if(newUser==true) {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                name.setError(null);
+               // name.setError(null);
 
             }
 
@@ -1578,7 +1579,7 @@ if(newUser==true) {
 
             @Override
             public void afterTextChanged(Editable s) {
-                name.setError(null);
+               // name.setError(null);
 
             }
         });

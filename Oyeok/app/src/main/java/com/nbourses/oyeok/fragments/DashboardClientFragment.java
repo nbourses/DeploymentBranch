@@ -190,7 +190,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     //View rootView;
     HashMap<String, HashMap<String, String>> chatListData;
 
-    View rootView;
+
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "";
     AutoCompleteTextView autoCompView;
     private RelativeLayout errorView;
@@ -365,6 +365,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         }
     };
 
+
+
     public void setOyeButtonClickListener(OnOyeClick onOyeClick) {
         this.onOyeClick = onOyeClick;
 
@@ -376,7 +378,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
+     final View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         ButterKnife.bind(this, rootView);
 
         gpsTracker = new GPSTracker(getContext());
@@ -949,7 +951,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 Log.i("MotionEvent.ACTION_UP", "=========================" + clicked);
                             }
 //
-                            if (now - lastTouched > SCROLL_TIME && !(motionEvent.getPointerCount() > 1)) {
+                            if (now - lastTouched > SCROLL_TIME && !(motionEvent.getPointerCount() > 1) && isNetworkAvailable()) {
                                 //map.getUiSettings().setScrollGesturesEnabled(true);
 
                                 // horizontalPicker.keepScrolling();
@@ -986,6 +988,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
                                 Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
                                 Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+
                                 getRegion();
                                 ///horizontalPicker.stopScrolling();
                                 search_building_icon.setVisibility(View.INVISIBLE);
@@ -1049,12 +1052,14 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
                    // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,MAP_ZOOM));
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,MAP_ZOOM));
 
 
                     //make retrofit call to get Min Max price
                     if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
                         try {
+
+                            Log.i("Network available","%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                             getPrice();
                         } catch (Exception e) {}
                     }
@@ -1775,35 +1780,19 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     public void onPositionSelected(int position, int count) {
         if (count == 2) {
             if (position == 0) {
-
-
-              
-
-
                 marquee(200, 100);
-
-
-             
-
-
-
-
-
 
                 SnackbarManager.show(
                         Snackbar.with(getActivity())
                                 .text("Rental Property Type set")
+                                .position(Snackbar.SnackbarPosition.TOP)
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
-
-
 
                 tvRate.setText("/ month");
                 brokerType = "rent";
                 dbHelper.save(DatabaseConstants.brokerType, "LL");
                 dbHelper.save("brokerType", "On Rent");
                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-                // getPrice();
-                // BroadCastMinMaxValue(llMin,llMax,orMin,orMax);
 
                 if(flag[INDEX]==true) {
 
@@ -1825,7 +1814,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                 SnackbarManager.show(
                         Snackbar.with(getActivity())
-                                .text("Resale Property Type set")
+                                .text("Buy/Sell Property Type set")
+                                .position(Snackbar.SnackbarPosition.TOP)
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
 
                 updateHorizontalPicker();
@@ -2095,7 +2085,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             Log.i(TAG,"locality automata "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
 
             getRegion();
-            getPrice();
+           // getPrice();
             buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier);
         }
     }
@@ -2104,6 +2094,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        Log.i("Checking network","====================");
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 

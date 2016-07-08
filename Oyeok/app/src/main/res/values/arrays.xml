@@ -288,18 +288,20 @@
 
     </string-array>
 
-    <string-array name="max_min">
-        <item>Max</item>
-        <item> </item>
-        <item></item>
-        <item></item>
-        <item>Min</item>
-    </string-array>
+    <!--<string-array name="max_min">-->
+        <!--<item>Max</item>-->
+        <!--<item> </item>-->
+        <!--<item></item>-->
+        <!--<item></item>-->
+        <!--<item>Min</item>-->
+    <!--</string-array>-->
     <string-array name="hpicker">
+        <!--<item>Max</item>-->
         <item>70000</item>
         <item>75000</item>
         <item>80000</item>
         <item>85000</item>
+        <!--<item>Min</item>-->
     </string-array>
 
 
