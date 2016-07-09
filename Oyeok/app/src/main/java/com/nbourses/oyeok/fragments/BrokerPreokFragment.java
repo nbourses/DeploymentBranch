@@ -921,15 +921,18 @@ if(count<=220) {
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
 
-                    Log.i("BROKER BUILDINGS CALLED","success response "+response);
 
-                    Log.i("BROKER BUILDINGS","LAT1 "+General.getSharedPreferences(getActivity(),AppConstants.MY_LAT));
-                    Log.i("BROKER BUILDINGS","LNG1 "+General.getSharedPreferences(getActivity(),AppConstants.MY_LNG));
-                    Log.i("BROKER BUILDINGS","LAT "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-                    Log.i("BROKER BUILDINGS","LNG "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
 
                     JsonObject k = jsonElement.getAsJsonObject();
                     try {
+
+                        Log.i("BROKER BUILDINGS CALLED","success response "+response);
+
+                        Log.i("BROKER BUILDINGS","LAT1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
+                        Log.i("BROKER BUILDINGS","LNG1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
+                        Log.i("BROKER BUILDINGS","LAT "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
+                        Log.i("BROKER BUILDINGS","LNG "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
+
                         JSONObject ne = new JSONObject(k.toString());
                         Log.i("BROKER BUILDINGS CALLED","success ne "+ne);
                         buildings = ne.getJSONObject("responseData").getJSONArray("buildings");
@@ -1134,7 +1137,7 @@ if(count<=220) {
         }
 
 
-        if (!General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+        if (!General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
 
             dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
             //show sign up screen if broker is not registered
@@ -1427,11 +1430,15 @@ if(count<=220) {
         if (position == 0) {
             atFor = "at";
             jsonObjectArray = null;
-            SnackbarManager.show(
-                    Snackbar.with(getActivity())
-                            .text("Rental Property Type set")
-                            .position(Snackbar.SnackbarPosition.TOP)
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+try {
+    SnackbarManager.show(
+            Snackbar.with(getContext())
+                    .position(Snackbar.SnackbarPosition.TOP)
+                    .text("Rental Property Type set")
+                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+}
+catch(Exception e){}
+
 //      if(txtOption2.getText().toString().equalsIgnoreCase("Tenants"))
 //            lookingSeeking = "Tenant is looking for";
 //            else if(txtOption2.getText().toString().equalsIgnoreCase("Owners"))
@@ -1540,11 +1547,15 @@ catch (Exception e){
         else if (position == 1) {
             atFor = "for";
             jsonObjectArray = null;
-            SnackbarManager.show(
-                    Snackbar.with(getActivity())
-                            .text("Buy/Sell Property Type set")
-                            .position(Snackbar.SnackbarPosition.TOP)
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+            try {
+                SnackbarManager.show(
+                        Snackbar.with(getContext())
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text("Buy/Sell Property Type set")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+            }
+            catch(Exception e){}
+
 //            if(txtOption2.getText().toString().equalsIgnoreCase("Buyer"))
 //                lookingSeeking = "Buyer is looking for";
 //            else if(txtOption2.getText().toString().equalsIgnoreCase("Seller"))

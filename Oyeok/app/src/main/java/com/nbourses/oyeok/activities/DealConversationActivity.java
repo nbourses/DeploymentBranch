@@ -216,8 +216,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
 
         super.onPause();
-      //  if (pubnub != null)
-         //   pubnub.unsubscribeAll();
+        //  if (pubnub != null)
+        //   pubnub.unsubscribeAll();
 
     }
 
@@ -272,8 +272,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //        }
 
 
-          //  bNames = b.getStringArray("bNames");
-          //  bPrice = b.getIntArray("bPrice");
+        //  bNames = b.getStringArray("bNames");
+        //  bPrice = b.getIntArray("bPrice");
 
         //Cardview
 
@@ -306,7 +306,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
 
-       // Log.i("CHAT","cache cache from shared yo mana string "+jsonArray +"    type is "+jsonArray.getClass().getName());
+        // Log.i("CHAT","cache cache from shared yo mana string "+jsonArray +"    type is "+jsonArray.getClass().getName());
 //
 
 
@@ -375,13 +375,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 General.getSharedPreferences(this,AppConstants.GCM_ID));
 
 
-    try {
-        sendNotification("ci1qnk9074361a_");
-    }
-    catch (Exception e)
-    {
-        Log.i("ERROR ON NOTIFICATION"," "+e.getMessage());
-    }
+        try {
+            sendNotification("ci1qnk9074361a_");
+        }
+        catch (Exception e)
+        {
+            Log.i("ERROR ON NOTIFICATION"," "+e.getMessage());
+        }
 
 
 
@@ -554,7 +554,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             }
         }
         else{
-                    adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsBroker);
+            adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsBroker);
 
 
         }
@@ -746,13 +746,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         Log.i("CONVER", "jsonMsg" + jsonMsg);
         Log.i(TAG, "inside displayMessage" + jsonMsg);
         //Read cachedmsgs from shared
-if(cachedmsgs.size() < 10) {
-    cachedmsgs.add(jsonMsg);
-}
+        if(cachedmsgs.size() < 10) {
+            cachedmsgs.add(jsonMsg);
+        }
         else{
-    cachedmsgs.remove(0);
-    cachedmsgs.add(jsonMsg);
-}
+            cachedmsgs.remove(0);
+            cachedmsgs.add(jsonMsg);
+        }
 
         Log.i("CACHE", "cachedmsgs after add" + cachedmsgs);
 
@@ -798,7 +798,7 @@ if(cachedmsgs.size() < 10) {
                     message.setMessageStatus(ChatMessageStatus.SENT);
                     message.setMessageText(body);
                     message.setUserType(userType);
-                   // message.setMessageTime(new Date().getTime());
+                    // message.setMessageTime(new Date().getTime());
                     message.setMessageTime(Long.valueOf(timetoken)/10000);
 
 
@@ -940,7 +940,7 @@ if(cachedmsgs.size() < 10) {
 
 
             Log.i("TEST","published to channel" +General.getSharedPreferences(this ,AppConstants.USER_ID));
-           // pubnub.publish(General.getSharedPreferences(this, AppConstants.USER_ID), jsonMsg, true, new Callback() {});
+            // pubnub.publish(General.getSharedPreferences(this, AppConstants.USER_ID), jsonMsg, true, new Callback() {});
 
             Log.i("TEST","published to channel_name" +channel_name);
             if (channel_name.equals("my_channel")){
@@ -965,7 +965,7 @@ if(cachedmsgs.size() < 10) {
             pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
             lastMessageTime = String.valueOf(System.currentTimeMillis());
 // if channel name is ok id dont call pubnubwhere now (moved above)
-    //        pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
+            //        pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
 
         }
         catch (Exception e) {
@@ -996,35 +996,35 @@ if(cachedmsgs.size() < 10) {
                     JSONObject obje = new JSONObject(response.toString());
                     JSONArray arr = obje.getJSONArray("channels");
                     firstMessage = false;
-             Log.i("TEST","uuid inside wherenow" +UUID);
+                    Log.i("TEST","uuid inside wherenow" +UUID);
                     Log.i("TEST","firstMessage" +firstMessage);
                     Log.i("TEST", "arr is" + arr);
 
 
                     for (int i = 0; i < arr.length(); i++){
-                                Log.i("WHERENOW", "successaab" + arr.getString(i));
-                                if(arr.getString(i).equals(UUID)){
-                                    present = true;
-                                    Log.i("TEST","contains UUID" +present);
-                                 }
-                           }
+                        Log.i("WHERENOW", "successaab" + arr.getString(i));
+                        if(arr.getString(i).equals(UUID)){
+                            present = true;
+                            Log.i("TEST","contains UUID" +present);
+                        }
+                    }
 
-                       if(present){
-                           firstMessage = false;
-                           Log.i("TEST", "first message" + firstMessage);
+                    if(present){
+                        firstMessage = false;
+                        Log.i("TEST", "first message" + firstMessage);
 
-                       }else
-                       {
-                           Log.i("TEST", "jsonMsgtoWhereNow in wherenow " + jsonMsgtoWhereNow);
-                           firstMessage = true;
-                           sendNotification("my_channel");
-                           Log.i("Pubnub push","inside pubnub where now its first msg ");
-                           pubnub.publish("my_channel", jsonMsgtoWhereNow, true, new Callback() {
-                           });
-                           lastMessageTime = String.valueOf(System.currentTimeMillis());
+                    }else
+                    {
+                        Log.i("TEST", "jsonMsgtoWhereNow in wherenow " + jsonMsgtoWhereNow);
+                        firstMessage = true;
+                        sendNotification("my_channel");
+                        Log.i("Pubnub push","inside pubnub where now its first msg ");
+                        pubnub.publish("my_channel", jsonMsgtoWhereNow, true, new Callback() {
+                        });
+                        lastMessageTime = String.valueOf(System.currentTimeMillis());
 
-                           Log.i("TEST","first message" +firstMessage);
-                       }
+                        Log.i("TEST","first message" +firstMessage);
+                    }
 
 
 //                    if (Arrays.asList(arr).contains(UUID)) {
@@ -1075,7 +1075,7 @@ if(cachedmsgs.size() < 10) {
                     JSONArray jsonArrayResponse = new JSONArray(response.toString());
                     JSONArray jsonArrayHistory = jsonArrayResponse.getJSONArray(0);
                     int jsonArrayHistoryLength = jsonArrayHistory.length();
-                   // cacheMessages(jsonArrayHistory);
+                    // cacheMessages(jsonArrayHistory);
                     if (jsonArrayHistory.length() > 0) {
                         Log.i(TAG, "loadhistory not empty");
                         for (int i = 0; i < jsonArrayHistoryLength; i++) {
@@ -1108,24 +1108,24 @@ if(cachedmsgs.size() < 10) {
 
                         jsonMsg.put("to", "client");
 
-                       if(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
-                           final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-                           String json = gson.toJson(AppConstants.letsOye);
-                           JSONObject jsonResponse = new JSONObject(json);
+                        if(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+                            final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                            String json = gson.toJson(AppConstants.letsOye);
+                            JSONObject jsonResponse = new JSONObject(json);
 
 
-                           Log.d(TAG, "AppConstants.letsOye " + jsonResponse.getString("property_subtype"));
+                            Log.d(TAG, "AppConstants.letsOye " + jsonResponse.getString("property_subtype"));
 
 
-                           jsonMsg.put("message", "You have initiated enquiry for requested " + jsonResponse.getString("property_subtype") + ", " + jsonResponse.getString("property_type") + " property within budget " + General.currencyFormat(jsonResponse.getString("price")) + " Within a moment we are connecting you to our top 3 brokers.");
-                           //Log.i("TRACE","messageText is "+messageText);
-                           //Log.i(TAG,"messageText is"+messageText);
-                           //publish message
+                            jsonMsg.put("message", "You have initiated enquiry for requested " + jsonResponse.getString("property_subtype") + ", " + jsonResponse.getString("property_type") + " property within budget " + General.currencyFormat(jsonResponse.getString("price")) + " Within a moment we are connecting you to our top 3 brokers.");
+                            //Log.i("TRACE","messageText is "+messageText);
+                            //Log.i(TAG,"messageText is"+messageText);
+                            //publish message
 
-                       }
+                        }
                         if(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
 
-                           // prepare a default message now get ptype
+                            // prepare a default message now get ptype
 
                             jsonMsg.put("message", "You have initiated enquiry for requested " + General.getSharedPreferences(getApplicationContext(),AppConstants.PSTYPE) + ", " + General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE) + " property within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(),AppConstants.PRICE)) + " Within a moment we are connecting you to our top 3 brokers.");
 
@@ -1133,7 +1133,7 @@ if(cachedmsgs.size() < 10) {
 
                         }
 
-                           pubnub.publish(channel, jsonMsg, true, new Callback() {});
+                        pubnub.publish(channel, jsonMsg, true, new Callback() {});
                         //default deal time we are storing at default deal creation
                         lastMessageTime = String.valueOf(System.currentTimeMillis());
                         Log.i(TAG, "Default message published");
@@ -1154,7 +1154,7 @@ if(cachedmsgs.size() < 10) {
             public void errorCallback(String channel, PubnubError error) {
             }
         };
-       // pubnub.history(channel_name, 10, false, callback);
+        // pubnub.history(channel_name, 10, false, callback);
         pubnub.history(channel_name,true, 10,callback);
     }
 
@@ -1347,14 +1347,14 @@ if(cachedmsgs.size() < 10) {
     }
 
 
-private  void networkConnectivity(){
-    Log.i("TRACE","networkConnectivity1");
-    SnackbarManager.show(
-            Snackbar.with(this)
-                    .position(Snackbar.SnackbarPosition.TOP)
-                    .text("INTERNET CONNECTIVITY NOT AVAILABLE")
-                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-}
+    private  void networkConnectivity(){
+        Log.i("TRACE","networkConnectivity1");
+        SnackbarManager.show(
+                Snackbar.with(this)
+                        .position(Snackbar.SnackbarPosition.TOP)
+                        .text("INTERNET CONNECTIVITY NOT AVAILABLE")
+                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+    }
 
     private void cacheMessages(JSONArray jsonArrayHistory){
         //JSONArray jsonArrayHistory = loadFinalHistory();
@@ -1395,7 +1395,7 @@ private  void networkConnectivity(){
                         }
                     });
 
-                   // tester(from,to,body,timetoken);
+                    // tester(from,to,body,timetoken);
                     Log.i(TAG,"here is the 1 3 I am back "+body);
 //                    if (j.has("message") && j.has("from") && j.has("to")) {
 //                        Log.i(TAG, "here is the");
@@ -1434,14 +1434,14 @@ private  void networkConnectivity(){
                 }
             }
 
-           // myRealm.commitTransaction();
+            // myRealm.commitTransaction();
 
 
         }
-            catch(Exception e){
-                Log.i(TAG,"Caught in exception in caching messages in Realm "+e);
+        catch(Exception e){
+            Log.i(TAG,"Caught in exception in caching messages in Realm "+e);
 
-            }
+        }
 
 
 //        JSONObject jo = new JSONObject();
@@ -1480,7 +1480,7 @@ private  void networkConnectivity(){
 
 
 
-                   //
+            //
 //            Message message = new Message();
 //
 //                // message = myRealm.createObject(Message.class); //new Message();
@@ -1492,15 +1492,15 @@ private  void networkConnectivity(){
 //
 //            Realma.beginTransaction();
 //                   Realma.copyToRealmOrUpdate(message);
-                }catch(Exception e){
-                    Log.i(TAG,"here is the locha  "+e);
-                }
-                finally{
-                    Log.i(TAG,"In finally cache "+"message is"+message.getMessage());
+        }catch(Exception e){
+            Log.i(TAG,"here is the locha  "+e);
+        }
+        finally{
+            Log.i(TAG,"In finally cache "+"message is"+message.getMessage());
 
-                   // Realma.commitTransaction();
+            // Realma.commitTransaction();
 
-                }
+        }
 
 
 
@@ -1512,16 +1512,16 @@ private  void networkConnectivity(){
         Log.i(TAG,"here is the called with "+body);
 //        try {
         myRealm = General.realmconfig(this);
-            message = myRealm.createObject(Message.class); //new Message();
+        message = myRealm.createObject(Message.class); //new Message();
 
-            message.setOk_id(channel_name);
-            message.setMessage(body);
-            message.setTimestamp(timetoken);
-            message.setFrom(from);
-            message.setTo(to);
+        message.setOk_id(channel_name);
+        message.setMessage(body);
+        message.setTimestamp(timetoken);
+        message.setFrom(from);
+        message.setTo(to);
 
         //myRealm.beginTransaction();
-            myRealm.copyToRealm(message);
+        myRealm.copyToRealm(message);
         //myRealm.commitTransaction();
 //        }catch(Exception e){
 //            Log.i(TAG,"here is the message is "+e);
@@ -1559,8 +1559,8 @@ private  void networkConnectivity(){
         Log.i("dealtime","DealTime "+channel_name);
         Log.i("dealtime","DealTime "+lastMessageTime);
         Log.i("dealtime","DealTime "+gson.fromJson(dealTime, type));
-if(lastMessageTime != null)
-        dealTime1.put(channel_name,lastMessageTime);
+        if(lastMessageTime != null)
+            dealTime1.put(channel_name,lastMessageTime);
 
         Gson g = new Gson();
         String hashMapString = g.toJson(dealTime1);
@@ -1570,19 +1570,19 @@ if(lastMessageTime != null)
 
 
         //store dealtimestamp in realm db
-Log.i(TAG,"lastMessageTime rapter "+lastMessageTime);
+        Log.i(TAG,"lastMessageTime rapter "+lastMessageTime);
         try {
             if(lastMessageTime != null) {
-            Realm myRealm = General.realmconfig(this);
-            DealTime dealtime = new DealTime();
+                Realm myRealm = General.realmconfig(this);
+                DealTime dealtime = new DealTime();
 
                 dealtime.setOk_id(channel_name);
                 dealtime.setTimestamp(lastMessageTime);
 
 
-            myRealm.beginTransaction();
-            myRealm.copyToRealmOrUpdate(dealtime);
-            myRealm.commitTransaction();
+                myRealm.beginTransaction();
+                myRealm.copyToRealmOrUpdate(dealtime);
+                myRealm.commitTransaction();
 
             }
         }
@@ -1642,7 +1642,7 @@ Log.i(TAG,"lastMessageTime rapter "+lastMessageTime);
         storeDealTime();
 
 
-       // loadFinalHistory();
+        // loadFinalHistory();
 
 //        try {
 //            RealmResults<Message> results1 =
