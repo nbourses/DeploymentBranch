@@ -212,14 +212,19 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                 // String specs = String.valueOf(spec.charAt(0)).toUpperCase() + spec.subSequence(1, spec.length());
 
 
-                if (General.getSharedPreferences(context, AppConstants.NAME).equalsIgnoreCase(name) || General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                if ( General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
 
-                    holder.txtTitle.setText("Searching brokers...");
-                    holder.listing.setText(" Listed ");
+                    holder.txtTitle.setText(name);
+                    holder.listing.setText(" Verified ");
                 }
                 else {
-                    holder.txtTitle.setText("Broker " + name);
-                    holder.listing.setText("Verified");
+                    if(General.getSharedPreferences(context, AppConstants.NAME).equalsIgnoreCase(name)) {
+                        holder.txtTitle.setText("Searching brokers..");
+                        holder.listing.setText(" Listed ");
+                    }else{
+                        holder.txtTitle.setText("Broker " + name);
+                        holder.listing.setText("Verified");
+                    }
                 }
 
                 if (ptype.equalsIgnoreCase("office"))

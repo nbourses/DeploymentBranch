@@ -135,6 +135,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
     @Bind(R.id.search)
     Button search;
+    @Bind(R.id.searchgone)
+    Button searchgone;
 
 //    @Bind(R.id.searchView)
 //    SearchView searchView;
@@ -187,6 +189,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     private ArrayList<String> defaultOkIds = new ArrayList<String>();
     private ArrayList<String> matchedOkIds;
     private ArrayList<BrokerDeals> reset;
+    private Boolean showbgtext = true;
 
    private TextView bgtxt;
    private LinearLayout bgtxtlayout;
@@ -611,7 +614,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchQuery = query;
+                searchQuery = query.trim();
                 // callSearch1(query);
                 Log.i(TAG,"1111111111");
 
@@ -627,7 +630,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchQuery = newText;
+                searchQuery = newText.trim();
                 Log.i(TAG,"newText "+searchQuery);
 
                 if(default_deals != null)
@@ -667,6 +670,12 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         if (!General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).isEmpty()) {
             phaseSeekBar.setVisibility(View.VISIBLE);
 
+        }
+        else{
+            search.setVisibility(View.GONE);
+            searchgone.setVisibility(View.GONE);
+            filter.setVisibility(View.GONE);
+            filtergone.setVisibility(View.GONE);
         }
 
 
@@ -1616,6 +1625,8 @@ Log.i(TAG,"hdroom madhe name "+deals.getLocality());
     public void onClickzFilter(View v) {
         filter.setVisibility(View.GONE);
         filtergone.setVisibility(View.VISIBLE);
+        searchgone.setVisibility(View.GONE);
+        search.setVisibility(View.VISIBLE);
         filterContainer.setVisibility(View.VISIBLE);
         filterContainer.startAnimation(bounce);
         supportChat.clearAnimation();
@@ -1626,10 +1637,10 @@ Log.i(TAG,"hdroom madhe name "+deals.getLocality());
         filterPtype = "home";
         General.filterSetSnackbar(this,filterPtype);
 
-        if(default_deals != null)
-            default_deals.clear();
         if(listBrokerDeals_new != null)
             listBrokerDeals_new.clear();
+        if(default_deals != null)
+            default_deals.clear();
         loadDefaultDeals();
         loadBrokerDeals();
 
@@ -1639,6 +1650,8 @@ Log.i(TAG,"hdroom madhe name "+deals.getLocality());
     public void onClickzFiltergone(View v) {
         filtergone.setVisibility(View.GONE);
         filter.setVisibility(View.VISIBLE);
+        searchgone.setVisibility(View.GONE);
+        search.setVisibility(View.VISIBLE);
         filterContainer.clearAnimation();
         filterContainer.setVisibility(View.GONE);
         searchView.clearAnimation();
@@ -1652,10 +1665,11 @@ Log.i(TAG,"hdroom madhe name "+deals.getLocality());
                         .position(Snackbar.SnackbarPosition.TOP)
                         .text("All filters removed.")
                         .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-        if(default_deals != null)
-            default_deals.clear();
+
         if(listBrokerDeals_new != null)
             listBrokerDeals_new.clear();
+        if(default_deals != null)
+            default_deals.clear();
         loadDefaultDeals();
         loadBrokerDeals();
 
@@ -1663,16 +1677,20 @@ Log.i(TAG,"hdroom madhe name "+deals.getLocality());
 
     @OnClick(R.id.search)
     public void onClickzSearch(View v) {
+        showbgtext = false;
 
         filterPtype = null;
+        searchgone.setVisibility(View.VISIBLE);
+        search.setVisibility(View.GONE);
         supportChat.clearAnimation();
         supportChat.setVisibility(View.GONE);
         filtergone.setVisibility(View.GONE);
         filter.setVisibility(View.VISIBLE);
-        if(default_deals != null)
-            default_deals.clear();
+
         if(listBrokerDeals_new != null)
             listBrokerDeals_new.clear();
+        if(default_deals != null)
+            default_deals.clear();
         loadDefaultDeals();
         loadBrokerDeals();
         filterContainer.clearAnimation();
@@ -1682,6 +1700,38 @@ Log.i(TAG,"hdroom madhe name "+deals.getLocality());
         searchView.setVisibility(View.VISIBLE);
         searchView.startAnimation(bounce);
         searchView.setIconified(false);
+
+
+
+
+    }
+
+    @OnClick(R.id.searchgone)
+    public void onClickzSearchgone(View v) {
+        showbgtext = true;
+
+        filterPtype = null;
+        searchQuery = null;
+        search.setVisibility(View.VISIBLE);
+        searchgone.setVisibility(View.GONE);
+        searchView.clearAnimation();
+        searchView.setVisibility(View.GONE);
+        supportChat.clearAnimation();
+        supportChat.setVisibility(View.VISIBLE);
+        supportChat.startAnimation(bounce);
+        filtergone.setVisibility(View.GONE);
+        filter.setVisibility(View.VISIBLE);
+
+        if(listBrokerDeals_new != null)
+            listBrokerDeals_new.clear();
+        if(default_deals != null)
+            default_deals.clear();
+        loadDefaultDeals();
+        loadBrokerDeals();
+        filterContainer.clearAnimation();
+        filterContainer.setVisibility(View.GONE);
+
+
 
 
 

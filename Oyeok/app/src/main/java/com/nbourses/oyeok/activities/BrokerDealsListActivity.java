@@ -147,6 +147,7 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     private String filterPtype = null;
     private SearchView searchView;
     Animation bounce;
+    private Boolean showbgtext = true;
   //  private Boolean signupSuccessflag = false;
 
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
@@ -212,7 +213,7 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                bgtxtlayout.setVisibility(View.VISIBLE);
+
                 searchQuery = query.trim();
                 // callSearch1(query);
                 Log.i(TAG,"1111111111");
@@ -227,7 +228,7 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                bgtxtlayout.setVisibility(View.GONE);
+
                 searchQuery = newText.trim();
                 Log.i(TAG,"newText "+searchQuery);
 
@@ -537,6 +538,12 @@ Log.i("SWIPE","inside swipe menu creator");
             phaseSeekBar.setVisibility(View.VISIBLE);
 
         }
+        else{
+            search.setVisibility(View.GONE);
+            searchgone.setVisibility(View.GONE);
+            filter.setVisibility(View.GONE);
+            filtergone.setVisibility(View.GONE);
+        }
 
         General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
 
@@ -812,7 +819,7 @@ Log.i("SWIPE","inside swipe menu creator");
                             //list all broker deals
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(listBrokerDeals_new, getApplicationContext());
                             listViewDeals.setAdapter(listAdapter);
-                            if(listBrokerDeals_new.size() <3){
+                            if(listBrokerDeals_new.size() <3 && showbgtext == true){
                                 bgtxtlayout.setVisibility(View.VISIBLE);
                                 bgtxt.setText("'OK' More Leads,\nTo Create Dealing\nRooms with new Client");
                             }else{bgtxtlayout.setVisibility(View.GONE);}
@@ -918,6 +925,8 @@ Log.i("SWIPE","inside swipe menu creator");
     public void onClickzFilter(View v) {
         filter.setVisibility(View.GONE);
         filtergone.setVisibility(View.VISIBLE);
+        searchgone.setVisibility(View.GONE);
+        search.setVisibility(View.VISIBLE);
         filterContainer.setVisibility(View.VISIBLE);
         filterContainer.startAnimation(bounce);
         supportChat.clearAnimation();
@@ -939,6 +948,8 @@ Log.i("SWIPE","inside swipe menu creator");
     public void onClickzFiltergone(View v) {
         filtergone.setVisibility(View.GONE);
         filter.setVisibility(View.VISIBLE);
+        searchgone.setVisibility(View.GONE);
+        search.setVisibility(View.VISIBLE);
         filterContainer.clearAnimation();
         filterContainer.setVisibility(View.GONE);
         searchView.clearAnimation();
@@ -961,6 +972,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
     @OnClick(R.id.search)
     public void onClickzSearch(View v) {
+        showbgtext = false;
 
         filterPtype = null;
         searchgone.setVisibility(View.VISIBLE);
@@ -988,6 +1000,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
     @OnClick(R.id.searchgone)
     public void onClickzSearchgone(View v) {
+        showbgtext = true;
 
         filterPtype = null;
         searchQuery = null;
