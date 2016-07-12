@@ -161,6 +161,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private ImageView search_building_icon;
     private BitmapDescriptor icon1;
     private BitmapDescriptor icon2;
+    long then;
+    long now;
 //    private Drawable icon1;
 //      private Drawable icon2;
 
@@ -553,15 +555,18 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     autoCompView.setText("");
                     autoCompView.showDropDown();
                     // new LocationUpdater().execute();
-                    hideOnSearch.setVisibility(View.VISIBLE);
-                    seekbar_linearlayout.setVisibility(View.GONE);
+                     hideOnSearch.setVisibility(View.VISIBLE);
+                    //seekbar_linearlayout.setVisibility(View.GONE);
+                    mPhasedSeekBar.setVisibility(View.GONE);
+                    //seekbar_linearlayout.setBackgroundColor(getResources().getColor(R.color.gray));
+                    seekbar_linearlayout.setAlpha(0.8f);
                     Intent intent = new Intent(AppConstants.AUTOCOMPLETEFLAG);
                     intent.putExtra("autocomplete", true);
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                     autoc = true;
 
                     //  ll_map.setAlpha(0.5f);
-                    //hideOnSearch.setAlpha(0.8f);
+                    //hideOnSearch.setAlpha(0.5f);
                 } catch (Exception e) {
                 }
 
@@ -1440,8 +1445,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     }
 
     public void getPrice() {
+
         //getRegion();
-        User user = new User();
+        if(General.isNetworkAvailable(getContext())) {
+            General.slowInternet(getContext());
+
+            User user = new User();
 
 //        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE)
 //                == PackageManager.PERMISSION_GRANTED) {
@@ -1456,199 +1465,211 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 //        }
 
-        user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
-        user.setUserRole("client");
-        user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-        user.setProperty_type("home");
-        user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-        Log.i("t1", "My_lng" + "  " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-        user.setLocality(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-        Log.i("t1", "My_lat" + "  " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+            user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+            user.setUserRole("client");
+            user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+            user.setProperty_type("home");
+            user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+            Log.i("t1", "My_lng" + "  " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+            user.setLocality(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+            Log.i("t1", "My_lat" + "  " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
 
-        user.setPlatform("android");
-        Log.i("my_locality", SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-        user.setPincode("400058");
+            user.setPlatform("android");
+            Log.i("my_locality", SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+            user.setPincode("400058");
 
-        if(General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-            user.setUserId(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
+            if (General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                user.setUserId(General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
 
-        }
-        else {
-            user.setUserId(General.getSharedPreferences(getContext(), AppConstants.USER_ID));
-            Log.i(TAG,"user_id "+General.getSharedPreferences(getContext(), AppConstants.USER_ID));
-        }
+            } else {
+                user.setUserId(General.getSharedPreferences(getContext(), AppConstants.USER_ID));
+                Log.i(TAG, "user_id " + General.getSharedPreferences(getContext(), AppConstants.USER_ID));
+            }
 
-        tv_building.setVisibility(View.INVISIBLE);
-        horizontalPicker.setVisibility(View.GONE);
-        tvRate.setVisibility(View.GONE);
-        rupeesymbol.setVisibility(View.GONE);
-        tvFetchingrates.setVisibility(View.VISIBLE);
-        // tvCommingsoon.setVisibility(View.GONE);
-        tvFetchingrates.setText("Fetching Rates....");
-        //tvFetchingrates.setm
-        //tvCommingsoon.setHeight(18);
+            tv_building.setVisibility(View.INVISIBLE);
+            horizontalPicker.setVisibility(View.GONE);
+            tvRate.setVisibility(View.GONE);
+            rupeesymbol.setVisibility(View.GONE);
+            tvFetchingrates.setVisibility(View.VISIBLE);
+            // tvCommingsoon.setVisibility(View.GONE);
+            tvFetchingrates.setText("Fetching Rates....");
+            //tvFetchingrates.setm
+            //tvCommingsoon.setHeight(18);
 
-        // tvCommingsoon.setTypeface(null, Typeface.BOLD);
-        //tvFetchingrates.setTypeface(null, Typeface.ITALIC);
-        tvFetchingrates.setTextSize(15);
-        //  missingArea.setVisibility(View.VISIBLE);
+            // tvCommingsoon.setTypeface(null, Typeface.BOLD);
+            //tvFetchingrates.setTypeface(null, Typeface.ITALIC);
+            tvFetchingrates.setTextSize(15);
+            //  missingArea.setVisibility(View.VISIBLE);
 
 
-        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_101).build();
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_101).build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
-        UserApiService userApiService = restAdapter.create(UserApiService.class);
+            UserApiService userApiService = restAdapter.create(UserApiService.class);
 
-        userApiService.getPrice(user, new Callback<GetPrice>() {
+            userApiService.getPrice(user, new Callback<GetPrice>() {
 
-            @Override
-            public void success(GetPrice getPrice, Response response) {
+                @Override
+                public void success(GetPrice getPrice, Response response) {
 
-                try {
+                    try {
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
 
-                    String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
-                    Log.e(TAG, "RETROFIT SUCCESS " + getPrice.getResponseData().getPrice().getLlMin().toString());
-                    JSONObject jsonResponse = new JSONObject(strResponse);
-                    JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
-                    // horizontalPicker.stopScrolling();
-                    Log.i("TRACE", "Response" + jsonResponseData);
-                    if (getPrice.getResponseData().getPrice().getLlMin() != null &&
-                            !getPrice.getResponseData().getPrice().getLlMin().equals("")) {
 
-                        Log.i("tt", "I am here price" + getPrice.getResponseData());
-                        Log.i("tt", "I am here price" + getPrice.getResponseData().getPrice());
+                        String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+                        Log.e(TAG, "RETROFIT SUCCESS " + getPrice.getResponseData().getPrice().getLlMin().toString());
+                        JSONObject jsonResponse = new JSONObject(strResponse);
+                        JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
+                        // horizontalPicker.stopScrolling();
+                        Log.i("TRACE", "Response" + jsonResponseData);
+                        if (getPrice.getResponseData().getPrice().getLlMin() != null &&
+                                !getPrice.getResponseData().getPrice().getLlMin().equals("")) {
+
+                            Log.i("tt", "I am here price" + getPrice.getResponseData());
+                            Log.i("tt", "I am here price" + getPrice.getResponseData().getPrice());
 //                       Log.i("tt", "I am here building" + getPrice.getResponseData().getBuildings());
-                        if (Integer.parseInt(getPrice.getResponseData().getPrice().getLlMin()) != 0) {
-                            Log.i("tt", "I am here" + 2);
-                            Log.i("TRACE", "RESPONSEDATAr" + response);
-                            llMin = Integer.parseInt(getPrice.getResponseData().getPrice().getLlMin());
-                            llMax = Integer.parseInt(getPrice.getResponseData().getPrice().getLlMax());
-                            Log.i("TRACE", "RESPONSEDATArr" + llMin);
-                            Log.i("TRACE", "RESPONSEDATArr" + llMax);
-                            llMin = 5 * (Math.round(llMin / 5));
-                            llMax = 5 * (Math.round(llMax / 5));
-                            Log.i("TRACE", "RESPONSEDATAr" + llMin);
-                            Log.i("TRACE", "RESPONSEDATAr" + llMax);
+                            if (Integer.parseInt(getPrice.getResponseData().getPrice().getLlMin()) != 0) {
+                                Log.i("tt", "I am here" + 2);
+                                Log.i("TRACE", "RESPONSEDATAr" + response);
+                                llMin = Integer.parseInt(getPrice.getResponseData().getPrice().getLlMin());
+                                llMax = Integer.parseInt(getPrice.getResponseData().getPrice().getLlMax());
+                                Log.i("TRACE", "RESPONSEDATArr" + llMin);
+                                Log.i("TRACE", "RESPONSEDATArr" + llMax);
+                                llMin = 5 * (Math.round(llMin / 5));
+                                llMax = 5 * (Math.round(llMax / 5));
+                                Log.i("TRACE", "RESPONSEDATAr" + llMin);
+                                Log.i("TRACE", "RESPONSEDATAr" + llMax);
 
-                            orMin = Integer.parseInt(getPrice.getResponseData().getPrice().getOrMin());
-                            orMax = Integer.parseInt(getPrice.getResponseData().getPrice().getOrMax());
-                            Log.i("TRACE", "RESPONSEDATArr" + orMin);
-                            Log.i("TRACE", "RESPONSEDATArr" + orMax);
-                            orMin = 500 * (Math.round(orMin / 500));
-                            orMax = 500 * (Math.round(orMax / 500));
-                            Log.i("TRACE", "RESPONSEDATAr" + orMin);
-                            Log.i("TRACE", "RESPONSEDATAr" + orMax);
-
-
-                            BroadCastMinMaxValue(llMin,llMax,orMin,orMax);
-
-                            updateHorizontalPicker();
-                            marquee(200, 100);
-
-                            for (int i = 0; i < 5; i++) {
-
-                                if (mCustomerMarker[i] != null)
-                                    mCustomerMarker[i].remove();
-                            }
+                                orMin = Integer.parseInt(getPrice.getResponseData().getPrice().getOrMin());
+                                orMax = Integer.parseInt(getPrice.getResponseData().getPrice().getOrMax());
+                                Log.i("TRACE", "RESPONSEDATArr" + orMin);
+                                Log.i("TRACE", "RESPONSEDATArr" + orMax);
+                                orMin = 500 * (Math.round(orMin / 500));
+                                orMax = 500 * (Math.round(orMax / 500));
+                                Log.i("TRACE", "RESPONSEDATAr" + orMin);
+                                Log.i("TRACE", "RESPONSEDATAr" + orMax);
 
 
-                            //if(mflag=false) {
+                                BroadCastMinMaxValue(llMin, llMax, orMin, orMax);
+
+                                updateHorizontalPicker();
+                                marquee(200, 100);
+
+                                for (int i = 0; i < 5; i++) {
+
+                                    if (mCustomerMarker[i] != null)
+                                        mCustomerMarker[i].remove();
+                                }
 
 
-                            for (int i = 0; i < 5; i++) {
-                                name = getPrice.getResponseData().getBuildings().get(i).getName();
-                                Log.i("TRACE", "RESPONSEDATAr" + name);
-
-                                or_psf[i] = Integer.parseInt(getPrice.getResponseData().getBuildings().get(i).getOrPsf());
-                                Log.i("TRACE", "RESPONSEDATAr" + or_psf);
-                                ll_pm[i] = Integer.parseInt(getPrice.getResponseData().getBuildings().get(i).getLlPm());
-
-                                Log.i("TRACE", "RESPONSEDATAr" + ll_pm);
-                                double lat = Double.parseDouble(getPrice.getResponseData().getBuildings().get(i).getLoc().get(1));
-                                Log.i("TRACE", "RESPONSEDATAr" + lat);
-                                double longi = Double.parseDouble(getPrice.getResponseData().getBuildings().get(i).getLoc().get(0));
-                                Log.i("TRACE", "RESPONSEDATAr" + longi);
-                                loc = new LatLng(lat, longi);
-                                Log.i("TRACE", "RESPONSEDATAr" + loc);
-                                Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
-
-                                mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc).title(name).snippet("Rent:"+ll_pm[i]+" "+"Sale"+ or_psf[i]).icon(icon1));
-
-                                Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
-                                flag[i] = false;
-                            }
-                            //mflag=true;
-
-                            // }
-                            // updateHorizontalPicker();
-
-                            mVisits.setEnabled(true);
-                            txtFilterValue.setEnabled(true);
-                            StartAnimation();
-                            horizontalPicker.setVisibility(View.VISIBLE);
-                            tv_building.setVisibility(View.VISIBLE);
-
-                            tvRate.setVisibility(View.VISIBLE);
-                            rupeesymbol.setVisibility(View.VISIBLE);
-                            //  tvCommingsoon.setVisibility(View.INVISIBLE);
-                            tvFetchingrates.setVisibility(View.INVISIBLE);
+                                //if(mflag=false) {
 
 
-                            missingArea.setVisibility(View.INVISIBLE);
-                        } else {
-                            Log.i("tt", "I am here" + 3);
+                                for (int i = 0; i < 5; i++) {
+                                    name = getPrice.getResponseData().getBuildings().get(i).getName();
+                                    Log.i("TRACE", "RESPONSEDATAr" + name);
+
+                                    or_psf[i] = Integer.parseInt(getPrice.getResponseData().getBuildings().get(i).getOrPsf());
+                                    Log.i("TRACE", "RESPONSEDATAr" + or_psf);
+                                    ll_pm[i] = Integer.parseInt(getPrice.getResponseData().getBuildings().get(i).getLlPm());
+
+                                    Log.i("TRACE", "RESPONSEDATAr" + ll_pm);
+                                    double lat = Double.parseDouble(getPrice.getResponseData().getBuildings().get(i).getLoc().get(1));
+                                    Log.i("TRACE", "RESPONSEDATAr" + lat);
+                                    double longi = Double.parseDouble(getPrice.getResponseData().getBuildings().get(i).getLoc().get(0));
+                                    Log.i("TRACE", "RESPONSEDATAr" + longi);
+                                    loc = new LatLng(lat, longi);
+                                    Log.i("TRACE", "RESPONSEDATAr" + loc);
+                                    Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
+
+                                    mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc).title(name).snippet("Rent:" + ll_pm[i] + " " + "Sale" + or_psf[i]).icon(icon1));
+
+                                    Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
+                                    flag[i] = false;
+                                }
+                                //mflag=true;
+
+                                // }
+                                // updateHorizontalPicker();
+
+                                mVisits.setEnabled(true);
+                                txtFilterValue.setEnabled(true);
+                                StartAnimation();
+                                horizontalPicker.setVisibility(View.VISIBLE);
+                                tv_building.setVisibility(View.VISIBLE);
+
+                                tvRate.setVisibility(View.VISIBLE);
+                                rupeesymbol.setVisibility(View.VISIBLE);
+                                //  tvCommingsoon.setVisibility(View.INVISIBLE);
+                                tvFetchingrates.setVisibility(View.INVISIBLE);
+
+
+                                missingArea.setVisibility(View.INVISIBLE);
+                            } else {
+                                Log.i("tt", "I am here" + 3);
                     /*SnackbarManager.show(
                             Snackbar.with(getActivity())
                                     .text("We don't cater here yet")
                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());*/
-                            //horizontalPicker.stopScrolling();
-                            for (int i = 0; i < 5; i++) {
+                                //horizontalPicker.stopScrolling();
+                                for (int i = 0; i < 5; i++) {
 
-                                if (mCustomerMarker[i] != null)
-                                    mCustomerMarker[i].remove();
+                                    if (mCustomerMarker[i] != null)
+                                        mCustomerMarker[i].remove();
+                                }
+                                tv_building.setVisibility(View.INVISIBLE);
+                                horizontalPicker.setVisibility(View.GONE);
+                                tvRate.setVisibility(View.INVISIBLE);
+                                rupeesymbol.setVisibility(View.INVISIBLE);
+                                // tvCommingsoon.setVisibility(View.GONE);
+                                tvFetchingrates.setVisibility(View.VISIBLE);
+                                tvFetchingrates.setText("Coming Soon...");
+                                // tvCommingsoon.setTypeface(null, Typeface.BOLD);
+                                // tvCommingsoon.setTextSize(18);
+                                missingArea.setVisibility(View.VISIBLE);
+                                mVisits.setEnabled(false);
+                                txtFilterValue.setEnabled(false);
+                                CancelAnimation();
+                                //missingArea.setVisibility(View.VISIBLE);
                             }
-                            tv_building.setVisibility(View.INVISIBLE);
-                            horizontalPicker.setVisibility(View.GONE);
-                            tvRate.setVisibility(View.INVISIBLE);
-                            rupeesymbol.setVisibility(View.INVISIBLE);
-                            // tvCommingsoon.setVisibility(View.GONE);
-                            tvFetchingrates.setVisibility(View.VISIBLE);
-                            tvFetchingrates.setText("Coming Soon...");
-                            // tvCommingsoon.setTypeface(null, Typeface.BOLD);
-                            // tvCommingsoon.setTextSize(18);
-                            missingArea.setVisibility(View.VISIBLE);
-                            mVisits.setEnabled(false);
-                            txtFilterValue.setEnabled(false);
-                            CancelAnimation();
-                            //missingArea.setVisibility(View.VISIBLE);
-                        }
-                    } else {
+                        } else {
                     /*SnackbarManager.show(
                             Snackbar.with(getActivity())
                                     .text("We don't cater here yet")
                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity()); */
 
 
-                        Log.i("GETPRICE", "Else mode ====== ");
+                            Log.i("GETPRICE", "Else mode ====== ");
 
 
 
                     /*missingArea.setAnimation(AnimationUtils.loadAnimation(getActivity(),
                             R.anim.slide_up));*/
+                        }
+                    } catch (Exception e) {
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
+                        Log.i("Price Error", " " + e.getMessage());
                     }
-                } catch (Exception e) {
-                    Log.i("Price Error", " " + e.getMessage());
+
+
                 }
 
+                @Override
+                public void failure(RetrofitError error) {
+                    General.slowInternetFlag = false;
+                    General.t.interrupt();
+                    Log.i("getPrice", "error: " + error.getMessage());
 
-            }
+                }
+            });
 
-            @Override
-            public void failure(RetrofitError error) {
-                Log.i("getPrice", "error: " + error.getMessage());
+        }
+        else{
+            General.internetConnectivityMsg(getContext());
 
-            }
-        });
+        }
     }
 
 
@@ -1848,6 +1869,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         hideOnSearch.setVisibility(View.GONE);
         seekbar_linearlayout.setVisibility(View.VISIBLE);
        // hideOnSearch.setAlpha(1f);
+        mPhasedSeekBar.setVisibility(View.VISIBLE);
         map.animateCamera(CameraUpdateFactory.zoomTo(12));
         autoCompView.clearListSelection();
         autoc = false;

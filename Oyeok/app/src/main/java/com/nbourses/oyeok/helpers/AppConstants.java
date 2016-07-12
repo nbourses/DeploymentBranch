@@ -12,6 +12,8 @@ public class AppConstants {
     public static  int minSale = 21500;
     public static  int maxSale = 27000;
 
+    public static final int slowInternet = 5;
+
 
     public static String MY_LAT = "myLat";
     public static String MY_LNG = "myLong";

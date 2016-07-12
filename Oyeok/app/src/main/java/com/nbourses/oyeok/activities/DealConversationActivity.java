@@ -250,8 +250,33 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         Log.i(TAG, "chatMessages are" + chatMessages);
 
 
-        Bundle bundle  = getIntent().getExtras();
-        channel_name = bundle.getString(AppConstants.OK_ID); //my_channel if came from root item
+
+        Bundle bundle = getIntent().getExtras();
+        try {
+            if (bundle != null) {
+                if (bundle.containsKey("OkAccepted") && bundle.containsKey(AppConstants.OK_ID)) {
+                    channel_name = bundle.getString(AppConstants.OK_ID);
+
+                    if (bundle.getString("OkAccepted").equalsIgnoreCase("yes")) {
+
+                        General.storeDealTime(bundle.getString(AppConstants.OK_ID), this);
+
+                    }
+                }
+
+                else if(bundle.containsKey(AppConstants.OK_ID)){
+                    channel_name = bundle.getString(AppConstants.OK_ID); //my_channel if came from root item
+                }
+
+            }
+        }
+        catch(Exception e){
+            Log.i(TAG,"caught in exception saving accept deal time "+e);
+        }
+
+
+       // Bundle bundle  = getIntent().getExtras();
+        //channel_name = bundle.getString(AppConstants.OK_ID); //my_channel if came from root item
 
         Log.i("Deals Conv Act","channel name is the "+channel_name);
         specCode = bundle.getString(AppConstants.SPEC_CODE);
@@ -636,7 +661,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             Log.i(TAG, "before loadHistoryFromPubnub");
             if(!channel_name.equals("my_channel")) {
-                loadHistoryFromPubnub(channel_name);
+              loadHistoryFromPubnub(channel_name);
             }
 
             pubnub.subscribe(channel_name, new Callback() {
@@ -1088,12 +1113,14 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                             displayMessage(jsonMsg);
 
 
+
                         }
 
 
 
 
                     }
+
                     else {
 
                         Log.i(TAG, "loadhistory empty");
@@ -1107,17 +1134,24 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
                         jsonMsg.put("to", "client");
+                        Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
+
 
                         if(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+//                            String ptype = General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE);
+//                            Log.i(TAG, "role of user def 1 "+ptype);
                             final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                           // Log.i(TAG, "role of user def 2 "+ptype.substring(0, 1).toUpperCase());
                             String json = gson.toJson(AppConstants.letsOye);
+                           // Log.i(TAG, "role of user def 3 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(1));
                             JSONObject jsonResponse = new JSONObject(json);
+                           // Log.i(TAG, "role of user def 4 ");
 
-
-                            Log.d(TAG, "AppConstants.letsOye " + jsonResponse.getString("property_subtype"));
-
-
-                            jsonMsg.put("message", "You have initiated enquiry for requested " + jsonResponse.getString("property_subtype") + ", " + jsonResponse.getString("property_type") + " property within budget " + General.currencyFormat(jsonResponse.getString("price")) + " Within a moment we are connecting you to our top 3 brokers.");
+                            Log.i(TAG,"Client have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price"))+".");
+                            //Log.i(TAG, "AppConstants.letsOye u " + jsonResponse.getString("property_subtype"));
+                            Log.i(TAG, "role of user def 5 ");
+                            jsonMsg.put("message", "Client have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price"))+".");
+                            Log.i(TAG, "role of user def 6 ");
                             //Log.i("TRACE","messageText is "+messageText);
                             //Log.i(TAG,"messageText is"+messageText);
                             //publish message
@@ -1126,10 +1160,10 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         if(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
 
                             // prepare a default message now get ptype
+                            String ptype = General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE);
 
-                            jsonMsg.put("message", "You have initiated enquiry for requested " + General.getSharedPreferences(getApplicationContext(),AppConstants.PSTYPE) + ", " + General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE) + " property within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(),AppConstants.PRICE)) + " Within a moment we are connecting you to our top 3 brokers.");
-
-
+                            jsonMsg.put("message", "Client have initiated enquiry for " + General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE).substring(1)
+                            + " property (" + General.getSharedPreferences(getApplicationContext(),AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(),AppConstants.PRICE)) + ".");
 
                         }
 

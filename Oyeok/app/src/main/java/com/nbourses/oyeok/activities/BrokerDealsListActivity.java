@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,10 +18,16 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -91,8 +98,32 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
 
     @Bind(R.id.phaseSeekbar)
     LinearLayout phaseSeekBar;
+
+    @Bind(R.id.filter)
+    Button filter;
+    @Bind(R.id.filtergone)
+    Button filtergone;
+    @Bind(R.id.filterContainer)
+    RelativeLayout filterContainer;
+
+    @Bind(R.id.txtHome)
+    ImageView txtHome;
+
+    @Bind(R.id.txtShop)
+    ImageView txtShop;
+
+    @Bind(R.id.txtIndustrial)
+    ImageView txtIndustrial;
+
+    @Bind(R.id.txtOffice)
+    ImageView txtOffice;
+
+    @Bind(R.id.search)
+    Button search;
     private TextView bgtxt;
     private LinearLayout bgtxtlayout;
+    private String searchQuery = null;
+
     /*@Bind(R.id.txtNoActiveDeal)
     TextView txtNoActiveDeal;
 
@@ -107,6 +138,12 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     private BrokerDealsListAdapter listAdapter;
     private SwipeMenuItem MuteItem,unMuteItem;
     private SwipeMenuCreator creator;
+
+    private ImageView txtPreviouslySelectedPropertyType;
+    private static final String propertyTypeDefaultColor = "#FFFFFF";
+    private String filterPtype = null;
+    private SearchView searchView;
+    Animation bounce;
   //  private Boolean signupSuccessflag = false;
 
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
@@ -168,6 +205,54 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     }
 
     private void init() {
+        searchView = (SearchView) findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchQuery = query;
+                // callSearch1(query);
+                Log.i(TAG,"1111111111");
+
+
+                if(listBrokerDeals_new != null)
+                    listBrokerDeals_new.clear();
+
+                loadBrokerDeals();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchQuery = newText;
+                Log.i(TAG,"newText "+searchQuery);
+
+
+                if(listBrokerDeals_new != null)
+                    listBrokerDeals_new.clear();
+
+                loadBrokerDeals();
+//              if (searchView.isExpanded() && TextUtils.isEmpty(newText)) {
+//                if(default_deals != null)
+//                    default_deals.clear();
+//                if(listBrokerDeals_new != null)
+//                    listBrokerDeals_new.clear();
+//                loadDefaultDeals();
+//                loadBrokerDeals();
+//              }
+                return true;
+            }
+
+
+
+        });
+
+        search.setVisibility(View.VISIBLE);
+
+        filter.setVisibility(View.VISIBLE);
+        txtPreviouslySelectedPropertyType = txtHome;
+        txtHome.setBackgroundResource(R.drawable.buy_option_circle);
+        bounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
 //        final SwipeMenu[] menu1 = new SwipeMenu[1];
         creator = new SwipeMenuCreator() {
@@ -325,9 +410,13 @@ Log.i("SWIPE","inside swipe menu creator");
                                                 .position(Snackbar.SnackbarPosition.TOP)
                                                 .text(listBrokerDeals_new.get(position).getSpecCode() + " unmuted!")
                                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+
+
                             }
                             else {
                                 mutedOKIds.add(listBrokerDeals_new.get(position).getOkId());
+
 
 
                               //   Log.i("SWIPE", "MuteItem " + MuteItem + " " + MuteItem.getIcon());
@@ -338,11 +427,15 @@ Log.i("SWIPE","inside swipe menu creator");
                                // MuteItem.setIcon(R.drawable.mute2);
                                // menu.addMenuItem(MuteItem);
 
+
+
+
                                 SnackbarManager.show(
                                         Snackbar.with(BrokerDealsListActivity.this)
                                                 .position(Snackbar.SnackbarPosition.TOP)
                                                 .text(listBrokerDeals_new.get(position).getSpecCode() + " muted!")
                                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
                             }
 
                         }
@@ -464,6 +557,9 @@ Log.i("SWIPE","inside swipe menu creator");
 
         //call API to load deals for broker
         Log.i("TRACEOK","before loadbroker deals ");
+        Bundle bundle = getIntent().getExtras();  // used below
+        /*
+        // now on okaccept dealconv called xso moved to dealconvact
         Bundle bundle = getIntent().getExtras();
         try {
             if (bundle != null) {
@@ -479,7 +575,7 @@ Log.i("SWIPE","inside swipe menu creator");
         }
         catch(Exception e){
             Log.i(TAG,"caught in exception saving accept deal time "+e);
-        }
+        }*/
 
         loadBrokerDeals();
         Log.i("TRACEOK", "after loadbroker deals ");
@@ -523,7 +619,8 @@ Log.i("SWIPE","inside swipe menu creator");
     private void deleteDealingroom(String deleteOKId, final String specCode){
 
 
-
+        if(General.isNetworkAvailable(this)) {
+            General.slowInternet(this);
 
         deleteHDroom deleteHDroom  = new deleteHDroom();
         deleteHDroom.setOkId(deleteOKId);
@@ -543,6 +640,9 @@ Log.i("SWIPE","inside swipe menu creator");
             oyeokApiService.deleteHDroom(deleteHDroom, new Callback<JsonElement>() {
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
+
+                    General.slowInternetFlag = false;
+                    General.t.interrupt();
 
                     Log.i("deleteDR CALLED","success");
                     loadBrokerDeals();
@@ -578,7 +678,8 @@ Log.i("SWIPE","inside swipe menu creator");
 
                 @Override
                 public void failure(RetrofitError error) {
-
+                    General.slowInternetFlag = false;
+                    General.t.interrupt();
                 }
             });
         }
@@ -586,12 +687,18 @@ Log.i("SWIPE","inside swipe menu creator");
             Log.e(TAG, e.getMessage());
         }
 
+        }else{
+
+            General.internetConnectivityMsg(this);
+        }
 
     }
 
 
 
     private void loadBrokerDeals() {
+        if(General.isNetworkAvailable(this)) {
+            General.slowInternet(this);
         Log.i("TRACEOK","inside loadbroker deals ");
 
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -631,6 +738,8 @@ Log.i("SWIPE","inside swipe menu creator");
 
             @Override
             public void success(PublishLetsOye letsOye, Response response) {
+                General.slowInternetFlag = false;
+                General.t.interrupt();
                 Log.i("TRACEOK", "inside hdrooms api call success ");
                 String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                 Log.i("TRACEOK", "strResponse "+strResponse);
@@ -665,8 +774,22 @@ Log.i("SWIPE","inside swipe menu creator");
                                 {
 
                                     if(deals.getSpecCode().contains(TT+"-")) {
-                                        Log.i("DEALREFRESHPHASESEEKBA", "deal spec code " + deals.getSpecCode() + " for " + TT);
-                                        listBrokerDeals_new.add(deals);
+                                        if((filterPtype != null)&&deals.getSpecCode().contains(filterPtype)) {
+                                            Log.i("DEALREFRESHPHASESEEKBA", "deal spec code " + deals.getSpecCode() + " for " + TT);
+
+                                            listBrokerDeals_new.add(deals);
+                                        }
+                                        else if (filterPtype == null) {
+
+                                            if(searchQuery != null)
+                                                if (deals.getSpecCode().contains(searchQuery) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
+                                                    listBrokerDeals_new.add(deals);
+                                                }
+
+                                            if(searchQuery == null)
+                                                listBrokerDeals_new.add(deals); // add all
+
+                                        }
                                     }
                                 }
 
@@ -730,11 +853,18 @@ Log.i("SWIPE","inside swipe menu creator");
 
             @Override
             public void failure(RetrofitError error) {
+                General.slowInternetFlag = false;
+                General.t.interrupt();
                 /*dismissProgressBar();
                 displayTextMessage(getString(R.string.no_internet_connection));*/
                 Log.i("TRACEOK", "hdrooms failure "+error);
             }
         });
+
+    }else{
+
+        General.internetConnectivityMsg(this);
+    }
     }
 
     @OnClick(R.id.dealItemRoot)
@@ -778,6 +908,119 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
 
+    }
+
+    @OnClick(R.id.filter)
+    public void onClickzFilter(View v) {
+        filter.setVisibility(View.GONE);
+        filtergone.setVisibility(View.VISIBLE);
+        filterContainer.setVisibility(View.VISIBLE);
+        filterContainer.startAnimation(bounce);
+        supportChat.clearAnimation();
+        supportChat.setVisibility(View.GONE);
+
+        searchView.clearAnimation();
+        searchView.setVisibility(View.GONE);
+        filterPtype = "home";
+        General.filterSetSnackbar(this,filterPtype);
+
+        if(listBrokerDeals_new != null)
+            listBrokerDeals_new.clear();
+
+        loadBrokerDeals();
+
+    }
+
+    @OnClick(R.id.filtergone)
+    public void onClickzFiltergone(View v) {
+        filtergone.setVisibility(View.GONE);
+        filter.setVisibility(View.VISIBLE);
+        filterContainer.clearAnimation();
+        filterContainer.setVisibility(View.GONE);
+        searchView.clearAnimation();
+        searchView.setVisibility(View.GONE);
+
+        supportChat.setVisibility(View.VISIBLE);
+        supportChat.startAnimation(bounce);
+        filterPtype = null;
+        SnackbarManager.show(
+                Snackbar.with(this)
+                        .position(Snackbar.SnackbarPosition.TOP)
+                        .text("All filters removed.")
+                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+        if(listBrokerDeals_new != null)
+            listBrokerDeals_new.clear();
+        loadBrokerDeals();
+
+    }
+
+    @OnClick(R.id.search)
+    public void onClickzSearch(View v) {
+
+        filterPtype = null;
+        supportChat.clearAnimation();
+        supportChat.setVisibility(View.GONE);
+        filtergone.setVisibility(View.GONE);
+        filter.setVisibility(View.VISIBLE);
+
+        if(listBrokerDeals_new != null)
+            listBrokerDeals_new.clear();
+        loadBrokerDeals();
+        filterContainer.clearAnimation();
+        filterContainer.setVisibility(View.GONE);
+        supportChat.setVisibility(View.GONE);
+
+        searchView.setVisibility(View.VISIBLE);
+        searchView.startAnimation(bounce);
+        searchView.setIconified(false);
+
+
+
+    }
+
+    @Nullable
+    @OnClick({R.id.txtHome, R.id.txtShop, R.id.txtIndustrial, R.id.txtOffice})
+    public void onPropertyTypeClick(View v) {
+
+        if(txtPreviouslySelectedPropertyType != null)
+            txtPreviouslySelectedPropertyType.setBackgroundColor(Color.parseColor(propertyTypeDefaultColor));
+
+        txtPreviouslySelectedPropertyType = (ImageView) v;
+
+        if (txtHome.getId() == v.getId()) {
+            txtHome.setBackgroundResource(R.drawable.buy_option_circle);
+            filterPtype = "home";
+            // AppConstants.letsOye.setPropertyType("home");
+            //  loadHomeOptionView("home");
+            //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"home");
+
+        }
+        else if(txtShop.getId() == v.getId()) {
+            txtShop.setBackgroundResource(R.drawable.buy_option_circle);
+            filterPtype = "shop";
+            // AppConstants.letsOye.setPropertyType("shop");
+            // loadHomeOptionView("shop");
+            // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"shop");
+        }
+        else if(txtIndustrial.getId() == v.getId()) {
+            txtIndustrial.setBackgroundResource(R.drawable.buy_option_circle);
+            filterPtype = "industrial";
+            // AppConstants.letsOye.setPropertyType("industrial");
+            // loadHomeOptionView("industrial");
+            // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"industrial");
+        }
+        else if(txtOffice.getId() == v.getId()) {
+            txtOffice.setBackgroundResource(R.drawable.buy_option_circle);
+            filterPtype = "office";
+            //AppConstants.letsOye.setPropertyType("office");
+            // loadHomeOptionView("office");
+            //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"office");
+        }
+        if(listBrokerDeals_new != null)
+            listBrokerDeals_new.clear();
+
+        loadBrokerDeals();
     }
 
     /*private void displayTextMessage(String message) {

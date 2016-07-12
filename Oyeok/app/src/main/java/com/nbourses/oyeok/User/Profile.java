@@ -166,6 +166,10 @@ public class Profile extends Fragment {
     };
 
     public void updateProfile() {
+
+        if(General.isNetworkAvailable(getContext())) {
+            General.slowInternet(getContext());
+
         String API = AppConstants.SERVER_BASE_URL;
         User user = new User();
         user.setMobileNo(phoneTxt.getText().toString());
@@ -188,6 +192,10 @@ public class Profile extends Fragment {
 
             @Override
             public void success(UpdateProfile updateProfile, Response response) {
+
+                General.slowInternetFlag = false;
+                General.t.interrupt();
+
                 Log.i("Profile","success"+response);
                 SnackbarManager.show(
                     Snackbar.with(getContext())
@@ -213,9 +221,18 @@ public class Profile extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+
+                General.slowInternetFlag = false;
+                General.t.interrupt();
+
                 Log.i("update profile", "failed "+error );
             }
         });
+
+    }else{
+
+        General.internetConnectivityMsg(getContext());
+    }
     }
 
     private boolean isNetworkAvailable() {
