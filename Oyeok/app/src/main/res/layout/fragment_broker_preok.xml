@@ -628,7 +628,7 @@
                 android:clickable="true"
                 android:background="@color/greenish_blue"
                 android:textColor="#FFFFFF"
-                android:textSize="30dp"
+                android:textSize="15sp"
                 android:visibility="visible" />
         </FrameLayout>
 

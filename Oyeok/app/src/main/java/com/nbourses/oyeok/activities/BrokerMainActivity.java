@@ -605,10 +605,12 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         }
         else if(gmap ==true){
             Log.i("ONBACKPRESSED","broker main activity gmap");
-           Intent back = new Intent(this, BrokerMainActivity.class);
-           startActivity(back);
+
+            Intent back = new Intent(this, BrokerMainActivity.class);
+            General.clearChart = true;
+            startActivity(back);
             gmap =false;
-           finish();
+            finish();
 
 
         }

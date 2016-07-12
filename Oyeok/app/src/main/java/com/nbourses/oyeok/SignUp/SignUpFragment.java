@@ -45,7 +45,6 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.Firebase.UserProfileFirebase;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.MobileVerify;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
@@ -511,11 +510,6 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         }
 
 
-
-
-
-
-
        // number= (EditText) view.findViewById(R.id.etnumber);
        // vcode= (EditText) view.findViewById(R.id.etvcode);
         llsignup = (LinearLayout)view.findViewById(R.id.llsignup);
@@ -541,13 +535,6 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 sendOtp();
             }
         });   */
-
-
-
-
-
-
-
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -696,135 +683,7 @@ if(newUser==true) {
     }
 
 
-    public void sendOtp(){
 
-       Log.i("TRACE","inside send otp");
-
-        Sname = name.getText().toString();
-        Semail = email.getText().toString();
-        Snumber = number.getText().toString();
-
-        //dbHelper.save(DatabaseConstants.name,Sname);
-        //dbHelper.save(DatabaseConstants.email,Semail);
-        //dbHelper.save(DatabaseConstants.mobileNumber,Snumber);
-
-
-        Log.i("captured number0 =", Snumber);
-        //rem
-     //   validationCheck();
-//        validation_success = numberValidation();
-        email_success = isEmailValid(Semail);
-
-//        FirebaseClass.save(this,FirebaseClass.MY_SHORTMOBILE_KEY,""+Snumber);
-        if(validation_success && email_success) {
-            //UserCredentials.saveString(this, PreferenceKeys.MY_SHORTMOBILE_KEY, Snumber);
-            userProfileViewModel.setName(Sname);
-            userProfileViewModel.setEmailId(Semail);
-            userProfileViewModel.setMobileNumber(Snumber);
-            /*Str_Lat = UserCredentials.getString(this, PreferenceKeys.MY_CUR_LAT);    //FirebaseClass.getString(this,FirebaseClass.MY_CUR_LAT);
-            Str_Lng = UserCredentials.getString(this, PreferenceKeys.MY_CUR_LNG);*/ //FirebaseClass.getString(this,FirebaseClass.MY_CUR_LNG);
-            Str_Lat = SharedPrefs.getString(getActivity(),SharedPrefs.MY_LAT);
-            Str_Lng = SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG);
-            String API = DatabaseConstants.serverUrl;
-
-            User user = new User();
-            user.setName(Sname);
-            user.setEmail(Semail);
-            user.setMobileNo(Snumber);
-            user.setMobileCode("+91");
-            if(okBroker)
-                user.setUserRole("broker");
-            else
-                user.setUserRole("client");
-
-            regid = userProfileViewModel.getGcmId();
-            user.setPushToken(regid);
-            user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
-            user.setLongitude(Str_Lng);
-            user.setLocality(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
-            user.setLatitude(Str_Lat);
-            user.setPlatform("android");
-            user.setDeviceId("Hardware");
-
-
-            /*user.setUserRole(dbHelper.getValue("userRole");
-            regid = UserProfileViewModel.getGcmId();
-            user.setGcmId(regid);
-            user.setLongitude(Double.parseDouble(dbHelper.getValue("currentLng")));
-            user.setLatitude(Double.parseDouble(dbHelper.getValue("currentLat")));
-            user.setDeviceId(dbHelper.getValue("deviceId"));*/
-
-            //User user = new User();
-            //////////////////////////////////////////////////
-            /*user.setName(Sname);
-            user.setEmail(Semail);
-            user.setMobileNo(Snumber);
-            user.setMobileCode("+91");
-            user.setUserRole(user_role);
-            regid = UserCredentials.getString(context, UserCredentials.KEY_GCM_ID);*/
-            regid=SharedPrefs.getString(getActivity(),SharedPrefs.MY_GCM_ID);
-            userProfileViewModel.setGcmId(regid);
-            userProfileViewModel.setLng(Str_Lng);
-            userProfileViewModel.setLat(Str_Lat);
-            userProfileViewModel.setDeviceId("Hardware");
-            //user.setDeviceId(FirebaseClass.getString(context,FirebaseClass.DEVICE_ID));
-
-            RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setEndpoint(API).build();
-            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-            UserApiService user1 = restAdapter.create(UserApiService.class);
-            llsignup.setVisibility(View.GONE);
-            llotp.setVisibility(View.VISIBLE);
-
-            if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
-                try{
-                    user1.verifyMobile(user, new Callback<MobileVerify>() {
-                        @Override
-
-                        public void success(MobileVerify mobileVerify, retrofit.client.Response response) {
-                            Log.i("TAG", "Inside Authentication success");
-                            //Toast.makeText(getContext(), "Authentication success", Toast.LENGTH_LONG).show();
-//                            ((ClientMainActivity)getActivity()).showToastMessage("Authentication success");
-                            //tv.setText(user.responseData.getUserId() + "hua");
-                            SnackbarManager.show(
-                                    com.nispok.snackbar.Snackbar.with(getActivity())
-                                            .position(Snackbar.SnackbarPosition.TOP)
-                                            .text("Please enter valid OTP number")
-                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-
-
-                            Log.i("otp test", "My otp in  is:" + mobileVerify.getSuccess() + mobileVerify.responseData.getOtp());
-                            otpReceived[0] = mobileVerify.responseData.getOtp();
-                            //Svcode=mobileVerify.responseData.getOtp();
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            //tv.setText(error.getMessage());
-                            //Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-//                            ((ClientMainActivity)getActivity()).showToastMessage(error.getMessage());
-                            SnackbarManager.show(
-                                    Snackbar.with(getActivity())
-                                            .position(Snackbar.SnackbarPosition.TOP)
-                                            .text(error.getMessage())
-                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
-                        }
-                    });
-                }catch (Exception e){
-                    Log.i("Exception","caught in OTP");
-                }
-            }
-            else{
-                //Toast.makeText(getContext(), "mobile verification in offline mode done", Toast.LENGTH_LONG).show();
-//                ((ClientMainActivity)getActivity()).showToastMessage("mobile verification in offline mode done");
-                SnackbarManager.show(
-                        Snackbar.with(getActivity())
-                                .position(Snackbar.SnackbarPosition.TOP)
-                                .text("Mobile verification in offline mode done")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
-            }
-        }
-    }
 
 
     public void submitButton() {
@@ -834,46 +693,9 @@ if(newUser==true) {
         submit.setText("Registering...");
 
 
-
-
-
-
-
-
-
-            /*Log.i("error", "Sending post request");
-
-            if (!Str_Lat.isEmpty() && !Str_Lng.isEmpty())
-                sendPostRequest(subphone, "+91", Semail, Sname, user_role, regid, Str_Lng, Str_Lat, picturePath);
-            else
-
-                Toast.makeText(
-                        getApplicationContext(),
-                        "Please enable location services",
-                        Toast.LENGTH_LONG).show();*/
-
            signup_success();
 
-    /*   ////     if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")) {
-                if (otpReceived[0].equals(Svcode)) {
-                    signup_success();
-                    Log.i("", "Validation success");
-                } else {
-                /*Toast.makeText(
-                        getContext(),
-                        "Please Enter Otp as mentioned in the SMS"+Svcode,
-                        Toast.LENGTH_LONG).show();
-                }
-      ////      }
-            else{
-                //Toast.makeText(getContext(), "otp validation in offline mode done", Toast.LENGTH_LONG).show();
-//                ((ClientMainActivity)getActivity()).showToastMessage("otp validation in offline mode done");
-                SnackbarManager.show(
-                        Snackbar.with(getActivity())
-                                .position(Snackbar.SnackbarPosition.TOP)
-                                .text("Otp validation in offline mode done")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
-            } */
+
         }
 
 
@@ -935,12 +757,17 @@ if(newUser==true) {
         General.setSharedPreferences(getContext(),AppConstants.NAME,Sname); //necessary to get name for default deal
 
 
-        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
+        if(General.isNetworkAvailable(getContext())) {
+            General.slowInternet(getContext());
+//        if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
             try {
                 UserApiService user1 = restAdapter.create(UserApiService.class);
                 user1.userSignUp(user, new Callback<SignUp>() {
                     @Override
                     public void success(SignUp signUp, retrofit.client.Response response) {
+
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
 
                         //Broadcast a map that signup has been done(to handle backs)
 //                        signupSuccessflag = true;
@@ -1281,6 +1108,9 @@ if(newUser==true) {
                         submit.setBackgroundColor(ContextCompat.getColor(context, R.color.greenish_blue));
                         submit.setText("DONE");
 
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
+
                         Log.i("TRACE","in signup failure");
                         Log.i("TRACE", "Inside signup Failure" + error);
 
@@ -1303,15 +1133,9 @@ if(newUser==true) {
             }catch (Exception e){
                 Log.i("Exception","caught in sign up");
             }
-        }
-        else{
-            //Toast.makeText(getContext(), "signup success in offline mode", Toast.LENGTH_LONG).show();
-//            ((ClientMainActivity)getActivity()).showToastMessage("signup success in offline mode");
-            SnackbarManager.show(
-                    Snackbar.with(getActivity())
-                            .position(Snackbar.SnackbarPosition.TOP)
-                            .text("Signup success in offline mode")
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
+        }else{
+
+            General.internetConnectivityMsg(getContext());
         }
 
 

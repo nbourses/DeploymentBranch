@@ -846,6 +846,7 @@ private void alertbuilder()
 
         }
 
+
        else if(setting==true){
             Log.i("BACK PRESSED"," =================== setting"+setting);
 //            getFragmentManager().popBackStack();
@@ -868,6 +869,7 @@ private void alertbuilder()
                 finish();
                 Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
+
 
             }else {
                 super.onBackPressed();

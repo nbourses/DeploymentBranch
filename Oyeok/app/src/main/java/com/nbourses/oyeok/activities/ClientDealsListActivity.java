@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -21,10 +22,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,7 +92,8 @@ import retrofit.mime.TypedByteArray;
 //import com.google.android.gms.appindexing.AppIndex;
 
 
-public class ClientDealsListActivity extends AppCompatActivity implements CustomPhasedListener {
+
+public class ClientDealsListActivity extends AppCompatActivity implements CustomPhasedListener{
 
 
     private List<PublishLetsOye> publishLetsOyes;
@@ -118,6 +125,39 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
+
+    @Bind(R.id.filter)
+    Button filter;
+
+
+    @Bind(R.id.filtergone)
+    Button filtergone;
+
+    @Bind(R.id.search)
+    Button search;
+
+//    @Bind(R.id.searchView)
+//    SearchView searchView;
+    @Bind(R.id.filterContainer)
+    RelativeLayout filterContainer;
+
+    @Bind(R.id.txtHome)
+    ImageView txtHome;
+
+    @Bind(R.id.txtShop)
+    ImageView txtShop;
+
+    @Bind(R.id.txtIndustrial)
+    ImageView txtIndustrial;
+
+    @Bind(R.id.txtOffice)
+    ImageView txtOffice;
+
+//    @Bind(R.id.searchView)
+//    SearchView searchView;
+
+
+
     private boolean default_deal_flag;
     private ArrayList<BrokerDeals> default_deals;
     //private BrokerDeals deals;
@@ -151,7 +191,15 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
    private TextView bgtxt;
    private LinearLayout bgtxtlayout;
 
+    private ImageView txtPreviouslySelectedPropertyType;
+    private static final String propertyTypeDefaultColor = "#FFFFFF";
+    private String filterPtype = null;
+    private String searchQuery = null;
+    private SearchView searchView;
 
+    Animation bounce;
+    Animation slideUp;
+    Animation slideDown;
 
 
     //private ListView listViewDeals;
@@ -199,7 +247,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
          bgtxt=(TextView) findViewById(R.id.bgtxt) ;
         bgtxtlayout = (LinearLayout) findViewById(R.id.bgtxtlayout);
         bgtxtlayout.setVisibility(View.VISIBLE);
+
         bgtxt.setText("Do More 'OYE'\n To Connect With More\n Other Brokers");
+
         listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
         supportChat.setVisibility(View.VISIBLE);
         listViewDeals.setVisibility(View.VISIBLE);
@@ -557,7 +607,60 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
     private void init() {
+        searchView = (SearchView) findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchQuery = query;
+                // callSearch1(query);
+                Log.i(TAG,"1111111111");
 
+                if(default_deals != null)
+                    default_deals.clear();
+                if(listBrokerDeals_new != null)
+                    listBrokerDeals_new.clear();
+                loadDefaultDeals();
+                loadBrokerDeals();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchQuery = newText;
+                Log.i(TAG,"newText "+searchQuery);
+
+                if(default_deals != null)
+                    default_deals.clear();
+                if(listBrokerDeals_new != null)
+                    listBrokerDeals_new.clear();
+                loadDefaultDeals();
+                loadBrokerDeals();
+//              if (searchView.isExpanded() && TextUtils.isEmpty(newText)) {
+//                if(default_deals != null)
+//                    default_deals.clear();
+//                if(listBrokerDeals_new != null)
+//                    listBrokerDeals_new.clear();
+//                loadDefaultDeals();
+//                loadBrokerDeals();
+//              }
+                return true;
+            }
+
+
+
+        });
+
+        search.setVisibility(View.VISIBLE);
+        //searchView.setVisibility(View.VISIBLE);
+        //supportChat.setVisibility(View.GONE);
+
+        filter.setVisibility(View.VISIBLE);
+        txtPreviouslySelectedPropertyType = txtHome;
+        txtHome.setBackgroundResource(R.drawable.buy_option_circle);
+        bounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
+        slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
         //if user is logged in then make phase seek bar visible, view is already made GONE from layout, on safer side we will still make it gone initially programatically
 
         phaseSeekBar.setVisibility(View.GONE);
@@ -661,16 +764,18 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
                     if (dealsa.getSpecCode().contains(TT + "-")) {
-                        if (default_deals == null) {
-                            default_deals = new ArrayList<BrokerDeals>();
+
+
+                            if (default_deals == null) {
+                                default_deals = new ArrayList<BrokerDeals>();
+                            }
+
+
+                            Log.i(TAG, "default deals are" + default_deals);
+                            default_deals.add(dealsa);
+
                         }
 
-
-                        Log.i(TAG, "default deals are" + default_deals);
-                        default_deals.add(dealsa);
-
-
-                    }
                 }
                 try{
                     RealmResults<DefaultDeals> results1 =
@@ -820,14 +925,14 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Override
     public void onBackPressed() {
 
-        Intent intent = new Intent(this, ClientMainActivity.class);
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                        Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        startActivity(new Intent(this, ClientMainActivity.class));
-        finish();
+//        Intent intent = new Intent(this, ClientMainActivity.class);
+//        intent.addFlags(
+//                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+//                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+//                        Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent);
+//        startActivity(new Intent(this, ClientMainActivity.class));
+//        finish();
         if(AppConstants.SIGNUP_FLAG){
 //            Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  "+getFragmentManager().getBackStackEntryCount()+" "+AppConstants.SIGNUP_FLAG);
 //            Intent intent = new Intent(this, ClientDealsListActivity.class);
@@ -851,7 +956,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
     private void deleteDealingroom(String deleteOyeId,String deleteOKId, final String specCode){
-
+        if(General.isNetworkAvailable(this)) {
+            General.slowInternet(this);
         Log.i(TAG,"wadala default deals 3 ");
 
 
@@ -874,7 +980,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             oyeokApiService.deleteHDroom(deleteHDroom, new Callback<JsonElement>() {
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
-
+                    General.slowInternetFlag = false;
+                    General.t.interrupt();
                     Log.i("deleteDR CALLED","success");
                     loadBrokerDeals();
 
@@ -909,7 +1016,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                 @Override
                 public void failure(RetrofitError error) {
-
+                    General.slowInternetFlag = false;
+                    General.t.interrupt();
                 }
             });
         }
@@ -917,6 +1025,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             Log.e(TAG, e.getMessage());
         }
 
+    }else{
+
+        General.internetConnectivityMsg(this);
+    }
 
     }
 
@@ -965,6 +1077,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 BrokerDeals dealsa = new BrokerDeals(name, ok_id, specs, true);
 
                 if (dealsa.getSpecCode().contains(TT + "-")) {
+
+                    if((filterPtype != null) && dealsa.getSpecCode().contains(filterPtype)){
+
+
                     if (default_deals == null) {
                         default_deals = new ArrayList<BrokerDeals>();
                     }
@@ -973,7 +1089,27 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     Log.i(TAG, "default deals are" + default_deals);
                     default_deals.add(dealsa);
 
+                }
+                    else if(filterPtype == null){
 
+                        if(searchQuery != null) {
+
+                            if (dealsa.getSpecCode().contains(searchQuery)/*|| dealsa.getName().contains(searchQuery)||dealsa.getLocality().contains(searchQuery)*/){
+
+                            if (default_deals == null) {
+                                default_deals = new ArrayList<BrokerDeals>();
+                            }
+
+
+                            Log.i(TAG, "default deals are" + default_deals);
+                            default_deals.add(dealsa);
+                        }
+                        }
+
+                        if(searchQuery == null)
+                            default_deals.add(dealsa); // add all
+
+                    }
                 }
 
             }
@@ -1056,6 +1192,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
     private void loadBrokerDeals() {
+        if(General.isNetworkAvailable(this)) {
+            General.slowInternet(this);
         Log.i("TRACE", "in Load broker deals=================");
 
         // String defaultOK = "{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"Searching for brokers\"}],\"for_oks\":[]}";
@@ -1097,7 +1235,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
             @Override
             public void success(PublishLetsOye letsOye, Response response) {
-
+                General.slowInternetFlag = false;
+                General.t.interrupt();
 
                 Log.i("TRACE", "in successs");
                 String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
@@ -1157,13 +1296,26 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
 
-
+Log.i(TAG,"hdroom madhe name "+deals.getLocality());
 
 
                                 if(deals.getSpecCode().contains(TT+"-")) {
-                                Log.i("DEALREFRESHPHASESEEKBA","deal spec code "+deals.getSpecCode()+" for "+TT);
+                                   if((filterPtype != null)&&deals.getSpecCode().contains(filterPtype)) {
+                                        Log.i("DEALREFRESHPHASESEEKBA", "deal spec code " + deals.getSpecCode() + " for " + TT);
 
-                                listBrokerDeals_new.add(deals);
+                                        listBrokerDeals_new.add(deals);
+                                    }
+                                    else if (filterPtype == null) {
+
+                                       if(searchQuery != null)
+                                           if (deals.getSpecCode().contains(searchQuery) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
+                                               listBrokerDeals_new.add(deals);
+                                           }
+
+                                       if(searchQuery == null)
+                                           listBrokerDeals_new.add(deals); // add all
+
+                                   }
 
                             }
                             }
@@ -1321,11 +1473,19 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
             @Override
             public void failure(RetrofitError error) {
+                General.slowInternetFlag = false;
+                General.t.interrupt();
+
                 Log.i("TRACE", "in failure");
 //                dismissProgressBar();
 //                displayTextMessage(getString(R.string.no_internet_connection));
             }
         });
+
+    }else{
+
+        General.internetConnectivityMsg(this);
+    }
     }
 
     private void deleteDefaultDeals() {
@@ -1457,6 +1617,133 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         }
         return super.onOptionsItemSelected(item);
     }*/
+
+
+    @OnClick(R.id.filter)
+    public void onClickzFilter(View v) {
+        filter.setVisibility(View.GONE);
+        filtergone.setVisibility(View.VISIBLE);
+        filterContainer.setVisibility(View.VISIBLE);
+        filterContainer.startAnimation(bounce);
+        supportChat.clearAnimation();
+        supportChat.setVisibility(View.GONE);
+
+        searchView.clearAnimation();
+        searchView.setVisibility(View.GONE);
+        filterPtype = "home";
+        General.filterSetSnackbar(this,filterPtype);
+
+        if(default_deals != null)
+            default_deals.clear();
+        if(listBrokerDeals_new != null)
+            listBrokerDeals_new.clear();
+        loadDefaultDeals();
+        loadBrokerDeals();
+
+    }
+
+    @OnClick(R.id.filtergone)
+    public void onClickzFiltergone(View v) {
+        filtergone.setVisibility(View.GONE);
+        filter.setVisibility(View.VISIBLE);
+        filterContainer.clearAnimation();
+        filterContainer.setVisibility(View.GONE);
+        searchView.clearAnimation();
+        searchView.setVisibility(View.GONE);
+
+        supportChat.setVisibility(View.VISIBLE);
+        supportChat.startAnimation(bounce);
+        filterPtype = null;
+        SnackbarManager.show(
+                Snackbar.with(this)
+                        .position(Snackbar.SnackbarPosition.TOP)
+                        .text("All filters removed.")
+                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+        if(default_deals != null)
+            default_deals.clear();
+        if(listBrokerDeals_new != null)
+            listBrokerDeals_new.clear();
+        loadDefaultDeals();
+        loadBrokerDeals();
+
+    }
+
+    @OnClick(R.id.search)
+    public void onClickzSearch(View v) {
+
+        filterPtype = null;
+        supportChat.clearAnimation();
+        supportChat.setVisibility(View.GONE);
+        filtergone.setVisibility(View.GONE);
+        filter.setVisibility(View.VISIBLE);
+        if(default_deals != null)
+            default_deals.clear();
+        if(listBrokerDeals_new != null)
+            listBrokerDeals_new.clear();
+        loadDefaultDeals();
+        loadBrokerDeals();
+        filterContainer.clearAnimation();
+        filterContainer.setVisibility(View.GONE);
+        supportChat.setVisibility(View.GONE);
+
+        searchView.setVisibility(View.VISIBLE);
+        searchView.startAnimation(bounce);
+        searchView.setIconified(false);
+
+
+
+    }
+
+    @Nullable
+    @OnClick({R.id.txtHome, R.id.txtShop, R.id.txtIndustrial, R.id.txtOffice})
+    public void onPropertyTypeClick(View v) {
+
+        if(txtPreviouslySelectedPropertyType != null)
+            txtPreviouslySelectedPropertyType.setBackgroundColor(Color.parseColor(propertyTypeDefaultColor));
+
+        txtPreviouslySelectedPropertyType = (ImageView) v;
+
+        if (txtHome.getId() == v.getId()) {
+            txtHome.setBackgroundResource(R.drawable.buy_option_circle);
+            filterPtype = "home";
+           // AppConstants.letsOye.setPropertyType("home");
+          //  loadHomeOptionView("home");
+            //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"home");
+
+        }
+        else if(txtShop.getId() == v.getId()) {
+            txtShop.setBackgroundResource(R.drawable.buy_option_circle);
+            filterPtype = "shop";
+           // AppConstants.letsOye.setPropertyType("shop");
+           // loadHomeOptionView("shop");
+            // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"shop");
+        }
+        else if(txtIndustrial.getId() == v.getId()) {
+            txtIndustrial.setBackgroundResource(R.drawable.buy_option_circle);
+            filterPtype = "industrial";
+           // AppConstants.letsOye.setPropertyType("industrial");
+           // loadHomeOptionView("industrial");
+            // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"industrial");
+        }
+        else if(txtOffice.getId() == v.getId()) {
+            txtOffice.setBackgroundResource(R.drawable.buy_option_circle);
+            filterPtype = "office";
+            //AppConstants.letsOye.setPropertyType("office");
+           // loadHomeOptionView("office");
+            //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"office");
+        }
+        General.filterSetSnackbar(this,filterPtype);
+        if(default_deals != null)
+            default_deals.clear();
+        if(listBrokerDeals_new != null)
+            listBrokerDeals_new.clear();
+        loadDefaultDeals();
+        loadBrokerDeals();
+    }
+
+
+
+
 
 
     private final BroadcastReceiver handlePushNewMessage = new BroadcastReceiver() {
