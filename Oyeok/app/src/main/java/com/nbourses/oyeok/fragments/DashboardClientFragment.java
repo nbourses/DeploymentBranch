@@ -206,7 +206,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     GPSTracker gpsTracker;
     static int x, y;
     static int top, bottom, left, right, width, height, truncate_first;
-    private int llMin, llMax, orMin, orMax;
+    private int llMin=35, llMax=60, orMin=21000, orMax=27000;
     private String name, text;
 
     private static int count = 0;
@@ -218,7 +218,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private int countertut;
     private int[] or_psf = new int[5], ll_pm = new int[5];
     private LatLng loc;
-    private ImageView myLoc;
+    private ImageView myLoc,ic_search;
     LinearLayout recordWorkout;
     boolean clicked = true;
     private String address;
@@ -256,14 +256,17 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if (intent.getExtras().getBoolean("autocomplete") == true) {
 
-                // autocomplete = true;
-                Log.i(TAG, "hohohoh 2");
-                hideOnSearch.setVisibility(View.GONE);
-                seekbar_linearlayout.setVisibility(View.VISIBLE);
-            }
+            try {
+                if (intent.getExtras().getBoolean("autocomplete") == true) {
+                    // autocomplete = true;
+                    Log.i(TAG, "hohohoh 2");
+                    hideOnSearch.setVisibility(View.GONE);
+                    seekbar_linearlayout.setVisibility(View.VISIBLE);
+                }
+            } catch (Exception e) {}
         }
+
     };
 
 
@@ -381,12 +384,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
      final View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         ButterKnife.bind(this, rootView);
 
-        gpsTracker = new GPSTracker(getContext());
-        myLoc = (ImageView) rootView.findViewById(R.id.myLoc);
+      //  gpsTracker = new GPSTracker(getContext());
+//        myLoc = (ImageView) rootView.findViewById(R.id.myLoc);
         hideOnSearch = (FrameLayout) rootView.findViewById(R.id.hideOnSearch);
         seekbar_linearlayout = (LinearLayout) rootView.findViewById(R.id.seekbar_linearlayout);
 //        hPicker = (RelativeLayout) rootView.findViewById(R.id.hPicker);
-
+       // View locationButton = suppormanagerObj.getView().findViewById(2);
         if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
             General.setSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI, String.valueOf(System.currentTimeMillis()));
             Log.i("TIMESTAMP", "millis " + System.currentTimeMillis());
@@ -427,13 +430,14 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         mMarkerminmax = (RelativeLayout) rootView.findViewById(R.id.markerpanelminmax);
         ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
         recordWorkout = (LinearLayout) rootView.findViewById(R.id.recordWorkout);
-
+        ic_search=(ImageView) rootView.findViewById(R.id.ic_search);
 
         if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
             beacon = "true";
             SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
         } else {
             beacon = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON);
+           // SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
             Log.i("ischecked", "walkthrough3dashboard" + beacon);
         }
 
@@ -478,12 +482,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 y = locations[1] - 90;
 //                x = left - (right - left) / 2;
 //                y = bottom;
-                bottom = Mmarker.getBottom();
-                top = Mmarker.getTop();
-                left = Mmarker.getLeft();
-                right = Mmarker.getRight();
-                width = Mmarker.getMeasuredWidth();
-                height = Mmarker.getMeasuredHeight();
+//                bottom = Mmarker.getBottom();
+//                top = Mmarker.getTop();
+//                left = Mmarker.getLeft();
+//                right = Mmarker.getRight();
+//                width = Mmarker.getMeasuredWidth();
+//                height = Mmarker.getMeasuredHeight();
                 Log.i("t1", "Bottom" + Mmarker.getBottom() + "top" + top + "left" + left + "right" + right);
                 Log.i("t1", "width" + width + "height " + height);
                 point = new Point(x, y);
@@ -538,6 +542,16 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
         mPhasedSeekBar.setListener(this);
 
+
+        ic_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                autoCompView.performClick();
+            }
+        });
+
+
+
         autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
         autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
         autoCompView.setOnItemClickListener(this);
@@ -549,6 +563,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             public void onClick(View view) {
 
                 try {
+                    autoCompView.setCursorVisible(true);
                     autoCompView.clearListSelection();
                     autoCompView.setText("");
                     autoCompView.showDropDown();
@@ -559,6 +574,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     intent.putExtra("autocomplete", true);
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                     autoc = true;
+                    Intent intent11 = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent11);
 
                     //  ll_map.setAlpha(0.5f);
                     //hideOnSearch.setAlpha(0.8f);
@@ -606,7 +623,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
                     clicked = true;
 
-
+                }
                     if (RatePanel == true) {
                         UpdateRatePanel();
                         RatePanel = false;
@@ -619,7 +636,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 //                openOyeScreen();
 //                CancelAnimation();
 
-                }
+
             }
         });
 
@@ -642,6 +659,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             customMapFragment.getMap().getUiSettings().setZoomControlsEnabled(true);
             map = customMapFragment.getMap();
 
+//            resetMyPositionButton();
             // geoFence = new GeoFence();
             //if (isNetworkAvailable()) {
 
@@ -658,19 +676,20 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                         // map = googleMap;
 
-//                            if(!isNetworkAvailable()) {
-//                                double lat11 = 19.1269299;
-//                                double lng11 = 72.8376545999999;
-//                                Log.i("slsl", "location====================: ");
-//                                LatLng currLatLong = new LatLng(lat11, lng11);
-//                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 8));
-//                            }
+                            if(!isNetworkAvailable()) {
+                                map = googleMap;
+                                double lat11 = 19.1269299;
+                                double lng11 = 72.8376545999999;
+                                Log.i("slsl", "location====================: ");
+                                LatLng currLatLong = new LatLng(lat11, lng11);
+                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 12));
+                            }
 
                         enableMyLocation();
-
+                        Log.i("slsl", "location====================: ");
                         getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
-
-//
+                       // map.setPadding(left, top, right, bottom);
+                       map.setPadding(0, -10, 0, 0);
 
 
                     }
@@ -693,7 +712,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 public boolean onMyLocationButtonClick() {
                     Log.i(TAG, "my Loc clicked ");
                     getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
-
+                    Intent intent11 = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent11);
                     //  buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier);
                     return false;
                 }
@@ -788,7 +808,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                             } else {
                                 mCustomerMarker[i].setIcon(icon1);
-                                search_building_icon.setVisibility(View.INVISIBLE);
+                                search_building_icon.setVisibility(View.GONE);
                                 flag[i] = false;
                                 horizontalPicker.setVisibility(View.VISIBLE);
                                 tvFetchingrates.setVisibility(View.INVISIBLE);
@@ -991,7 +1011,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                                 getRegion();
                                 ///horizontalPicker.stopScrolling();
-                                search_building_icon.setVisibility(View.INVISIBLE);
+                                search_building_icon.setVisibility(View.GONE);
                                 horizontalPicker.stopScrolling();
 
                                 getPrice();
@@ -1129,18 +1149,20 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             tutorialAlert(rootView);
 //    beaconAlet(rootView);
             Walkthrough="false";
-//    SharedPrefs.save(getContext(),SharedPrefs.CHECK_WALKTHROUGH,Walkthrough);
+    //SharedPrefs.save(getContext(),SharedPrefs.CHECK_WALKTHROUGH,Walkthrough);
         }
 
         else if(beacon.equalsIgnoreCase("true") ) {
-            Log.i("ischecked","walkthrough3dashboard1111111"+beacon);
+            Log.i("ischecked","walkthrough3dashboard1111111beacon"+beacon);
             try {
                 beaconAlert(rootView);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 //    beaconAlet(rootView);
+
             beacon="false";
+           // SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, beacon);
 //    SharedPrefs.save(getContext(),SharedPrefs.CHECK_WALKTHROUGH,Walkthrough);
         }
 
@@ -1174,6 +1196,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             StartAnimation();
             if(clicked==false){
                 oyebuttonBackgrountColorGreenishblue();
+                customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
                 clicked=true;
             }
 
@@ -1441,6 +1464,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     public void getPrice() {
         //getRegion();
+        mVisits.setEnabled(false);
+        txtFilterValue.setEnabled(false);
+        CancelAnimation();
         User user = new User();
 
 //        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE)
@@ -1664,10 +1690,10 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             //   horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
 
             Log.i("HORRIZONTALPICKER", "filterValue " + filterValue + " filterValueMultiplier " + filterValueMultiplier + "  LLmin && LLmax" + llMin + " " + llMax);
-            horizontalPicker.setInterval((llMin * filterValueMultiplier), (llMax * filterValueMultiplier), 10, HorizontalPicker.THOUSANDS);
+            horizontalPicker.setInterval((roundoff1(llMin * filterValueMultiplier)), (roundoff1(llMax * filterValueMultiplier)), 10, HorizontalPicker.THOUSANDS);
         } else {
             Log.i(TAG, "updateHorizontalPicker resale andro " + orMin + " " + orMax);
-            horizontalPicker.setInterval(orMin, orMax, 10, HorizontalPicker.THOUSANDS);
+            horizontalPicker.setInterval(roundoff1(orMin), roundoff1(orMax), 10, HorizontalPicker.THOUSANDS);
         }
     }
 }
@@ -2080,13 +2106,16 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             autoCompView.setText(s);
             Log.i("", "");
             autoCompView.dismissDropDown();
+            autoCompView.setCursorVisible(false);
             // new LocationUpdater().execute();
             Log.i(TAG,"locality automata ");
-            Log.i(TAG,"locality automata "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+            try {
+                Log.i(TAG, "locality automata " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
 
-            getRegion();
-           // getPrice();
-            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier);
+                getRegion();
+                // getPrice();
+                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+            }catch(Exception e){}
         }
     }
 
@@ -2208,6 +2237,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
         val=val/1000;
         val=val * 1000;
+        return  val;
+    }
+    private int   roundoff1(int val){
+
+        val=val/500;
+        val=val * 500;
         return  val;
     }
 
@@ -2397,7 +2432,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 //text = "<font color=#ff9f1c>Tenant/ <br>Property Owner <br>Choose<br> 'Rental'</font>";
 //    text2="<font color=#ff9f1c>Property <br>Buyer/Seller <br>Choose <br>'Resale'</font>";
         sequence.addSequenceItem(rootView.findViewById(R.id.phasedSeekBar),
-                "     Tenant/                       Property\nProperty Owner             Buyer/Seller\n\n    Choose                            Choose\n    'Rental'                             'Resale'" , "      GOT IT! (Go to next screen)");
+                "     Property                       Property\n Tenant/Owner             Buyer/Seller\n\n    Choose                            Choose\n    'Rental'                             'Resale'" , "      GOT IT! (Go to next screen)");
 //"     Tenant/                       Property\nProperty Owner             Buyer/Seller\n\n    Choose                            Choose\n    'Rental'                              'Resale'"
         sequence.addSequenceItem(rootView.findViewById(R.id.ic_search),
                 "                   Type Locality\n        1.Close to your Workplace\n  2.Your current/new neighbourhood\n       3.Where you want to Invest\n\n                              OR\n\n                You own a Property ?,\n      you can type name and address\n                of your building.\n", "     GOT IT! (Go to next screen)");
@@ -2411,15 +2446,17 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
                 countertut++;
                 if (countertut == 3) {
-                    Log.i("ischecked","beacon_walk==========  :"+beacon);
-                    if(beacon.equalsIgnoreCase("true"))
+                    Log.i("ischecked", "beacon_walk==========  :" + beacon);
 
-                        Log.i("ischecked","beacon_walk1  ==========   :"+beacon);
+
+
+
                     try {
-                        beaconAlert(rootView);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                        if (beacon.equalsIgnoreCase("true")) {
+                            beaconAlert(rootView);
+                            Log.i("ischecked", "beacon_walk1  ==========   :" + beacon);
+                        }
+                    } catch (InterruptedException e) {e.printStackTrace();}
                     // rippleBackground4.startRippleAnimation();
                 }
             }
@@ -2566,6 +2603,32 @@ public void oyebuttonBackgrountColorOrange(){
 
         }catch (Exception e){}
     }
+
+
+
+    private void resetMyPositionButton()
+    {
+        //deep paths for map controls
+        ViewGroup v1 = (ViewGroup)this.getView();
+        ViewGroup v2 = (ViewGroup)v1.getChildAt(0);
+        ViewGroup v3 = (ViewGroup)v2.getChildAt(0);
+        ViewGroup v4 = (ViewGroup)v3.getChildAt(1);
+
+        //my position button
+        View position =  (View)v4.getChildAt(0);
+
+        int positionWidth = position.getLayoutParams().width;
+        int positionHeight = position.getLayoutParams().height;
+
+        //lay out position button
+        RelativeLayout.LayoutParams positionParams = new RelativeLayout.LayoutParams(positionWidth,positionHeight);
+        int margin = positionWidth/5;
+        positionParams.setMargins(0, 0, 0, margin);
+        positionParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+        positionParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        position.setLayoutParams(positionParams);
+    }
+
 
 
 

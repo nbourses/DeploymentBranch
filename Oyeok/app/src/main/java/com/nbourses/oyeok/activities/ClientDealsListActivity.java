@@ -199,7 +199,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
          bgtxt=(TextView) findViewById(R.id.bgtxt) ;
         bgtxtlayout = (LinearLayout) findViewById(R.id.bgtxtlayout);
         bgtxtlayout.setVisibility(View.VISIBLE);
-        bgtxt.setText("'OYE' More Leads,\nTo Create Dealing\nRooms with new Client");
+        bgtxt.setText("Do More 'OYE'\n To Connect With More\n Other Brokers");
         listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
         supportChat.setVisibility(View.VISIBLE);
         listViewDeals.setVisibility(View.VISIBLE);
@@ -741,7 +741,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 Log.i("inside adapter ", "object " + listAdapter);
                 if(default_deals.size() <3){
                     bgtxtlayout.setVisibility(View.VISIBLE);
-                    bgtxt.setText("'OYE' More Leads,\nTo Create Dealing\nRooms with new Client");
+                    bgtxt.setText("Do More 'OYE'\nTo Connect With More\nOther Brokers");
                 }else{bgtxtlayout.setVisibility(View.GONE);}
                 listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -820,14 +820,28 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Override
     public void onBackPressed() {
 
-        Intent intent = new Intent(this, ClientMainActivity.class);
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                        Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        //     startActivity(new Intent(this, ClientMainActivity.class));
-        //   finish();
+//        Intent intent = new Intent(this, ClientMainActivity.class);
+//        intent.addFlags(
+//                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+//                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+//                        Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent);
+//             startActivity(new Intent(this, ClientMainActivity.class));
+//           finish();
+        if(AppConstants.SIGNUP_FLAG){
+//            Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  "+getFragmentManager().getBackStackEntryCount()+" "+AppConstants.SIGNUP_FLAG);
+//            Intent intent = new Intent(this, ClientDealsListActivity.class);
+//            startActivity(intent);
+//            getFragmentManager().popBackStack();
+            super.onBackPressed();
+            AppConstants.SIGNUP_FLAG=false;
+
+        }
+        else {
+            Log.i("SIGNUP_FLAG","onBackPressed=========");
+            this.finish();
+        }
+
     }
 
 
@@ -1225,7 +1239,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
                             if(total_deals.size() <3){
                                 bgtxtlayout.setVisibility(View.VISIBLE);
-                                bgtxt.setText("'OYE' More Leads,\nTo Create Dealing\nRooms with new Client");
+                                bgtxt.setText("Do More 'OYE'\nTo Connect With More\nOther Brokers");
                             }else{bgtxtlayout.setVisibility(View.GONE);}
                             //after rental resale deals
                             listViewDeals.setAdapter(listAdapter);
@@ -1377,9 +1391,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         }
         else
         {
-            supportChat.setVisibility(View.GONE);
-            view.setVisibility(View.GONE);
-            listViewDeals.setVisibility(View.GONE);
+//            supportChat.setVisibility(View.GONE);
+//            view.setVisibility(View.GONE);
+//            listViewDeals.setVisibility(View.GONE);
             fragment_container1.setVisibility(View.VISIBLE);
             Bundle bundle = new Bundle();
             bundle.putStringArray("Chat", null);
@@ -1395,6 +1409,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 //            signUpFragment.getView().bringToFront();
             loadFragment(signUpFragment, bundle, R.id.fragment_container1, "");
             Log.i("Signup called =", "Sign up");
+            Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  loadFragment  "+getFragmentManager().getBackStackEntryCount());
 
         }
     }
@@ -1475,15 +1490,17 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
     private void loadFragment(Fragment fragment, Bundle args, int containerId, String title) {
         //set arguments
+        //set arguments
         fragment.setArguments(args);
-//        fragment.getView().bringToFront();
+
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(containerId, fragment);
-        fragmentTransaction.show(fragment);
-        fragmentTransaction.commitAllowingStateLoss();
+        fragmentTransaction.addToBackStack(title);
 
+        fragmentTransaction.commitAllowingStateLoss();
+        Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  loadFragment1       "+getFragmentManager().getBackStackEntryCount());
         //set title
 //        getSupportActionBar().setTitle(title);
     }

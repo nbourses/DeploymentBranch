@@ -573,7 +573,7 @@ public class HorizontalPicker extends View {
     public void stopScrolling(){
         endlessScroll = false;
     }
-    @Override
+    /*@Override
     public boolean onTouchEvent(MotionEvent event) {
         if(!isEnabled()) {
             return false;
@@ -592,8 +592,13 @@ public class HorizontalPicker extends View {
 
                 float currentMoveX = event.getX();
 
+
+                Log.i("motion","ACTION_MOVE === "+currentMoveX);
+
                 int deltaMoveX = (int) (mLastDownEventX - currentMoveX);
-                Log.v(TAG,"DMX is: "+deltaMoveX);
+
+                Log.i("motion","ACTION_MOVE ===deltaMoveX  mLastDownEventX  "+deltaMoveX+"  "+mLastDownEventX );
+                Log.i(TAG,"DMX is: "+deltaMoveX);
 
                 if(mScrollingX ||
                         (Math.abs(deltaMoveX) > mTouchSlop) && mValues.size()!=0 && mValues.size() > 0) {
@@ -626,13 +631,12 @@ public class HorizontalPicker extends View {
                     }
 
                     mLastDownEventX = currentMoveX;
-                    invalidate();
 
                 }
 
                 break;
             case MotionEvent.ACTION_DOWN:
-
+                Log.i("motion","ACTION_DOWN");
                 if(!mAdjustScrollerX.isFinished()) {
                     mAdjustScrollerX.forceFinished(true);
                 } else if(!mFlingScrollerX.isFinished()) {
@@ -646,11 +650,16 @@ public class HorizontalPicker extends View {
                 if(!mScrollingX) {
                     mPressedItem = getPositionFromTouch(event.getX());
                 }
+
+                if(mPressedItem <= minValue)
+                {
+                    mPressedItem =-1;
+                }
                 invalidate();
 
                 break;
             case MotionEvent.ACTION_UP:
-
+                Log.i("motion","ACTION_UP");
                 VelocityTracker velocityTracker = mVelocityTracker;
                 velocityTracker.computeCurrentVelocity(1000, mMaximumFlingVelocity);
                 int initialVelocityX = (int) velocityTracker.getXVelocity();
@@ -689,6 +698,8 @@ public class HorizontalPicker extends View {
                 }
 
             case MotionEvent.ACTION_CANCEL:
+                Log.i("motion","ACTION_CANCEL");
+
                 mPressedItem = -1;
                 invalidate();
 
@@ -701,7 +712,7 @@ public class HorizontalPicker extends View {
         }
 
         return true;
-    }
+    }*/
 
     private void selectItem() {
         // post to the UI Thread to avoid potential interference with the OpenGL Thread
@@ -828,7 +839,9 @@ public class HorizontalPicker extends View {
 //        if (mValues != values) {
         if (values.size() > 0) {
             mValues = new ArrayList<CharSequence>();
+            Log.i("nintervals","mValues======"+mValues.size());
             mValues = values;
+            Log.i("nintervals","mValues======"+mValues.size());
 
             if (!mValues.isEmpty()) {
                 mLayouts = new ArrayList<BoringLayout>(mValues.size());
@@ -1218,7 +1231,7 @@ public class HorizontalPicker extends View {
         maxValue = max;
        // interval = Integer.valueOf((max - min)/nIntervals);
         int interval = 500;
-        setRupeeUnit(rupeeUnit);
+       // setRupeeUnit(rupeeUnit);
         /*Log.d(TAG, "minValue " + minValue);
         Log.d(TAG, "maxValue "+maxValue);
         Log.d(TAG, "interval "+interval);
@@ -1238,6 +1251,8 @@ public class HorizontalPicker extends View {
                // Log.i("TRACE", "object"+object);
                 if (value <= maxValue) {
                     valueList.add(object);
+                    //rem
+                   // mValues.add(object);
                 }
                 else
                     break;
