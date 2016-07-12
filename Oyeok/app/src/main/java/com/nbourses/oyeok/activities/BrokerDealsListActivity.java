@@ -1077,12 +1077,13 @@ Log.i("SWIPE","inside swipe menu creator");
 //        signupSuccessflag = true;
 //        Log.i("signupSuccessflag back1","signupSuccessflag "+signupSuccessflag);
 //        if(signupSuccessflag){
-            Intent intent = new Intent(this, BrokerMainActivity.class);
-            intent.addFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                            Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+//            Intent intent = new Intent(this, BrokerMainActivity.class);
+//            intent.addFlags(
+//                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+//                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+//                            Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent);
+        super.onBackPressed();
 //        }
 //        else {
 ////        startActivity(new Intent(this, BrokerMainActivity.class));

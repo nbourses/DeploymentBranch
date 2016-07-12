@@ -352,10 +352,13 @@ while(slowInternetFlag) {
     */
 
     public static String getSharedPreferences(Context context, String prefName) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        Log.i("TRACE", "rt" + prefName);
 
-        return prefs.getString(prefName, "");
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            Log.i("TRACE", "rt" + prefName);
+
+
+            return prefs.getString(prefName, "");
+
     }
 
     public static boolean isNetworkAvailable(Context context) {

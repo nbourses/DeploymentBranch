@@ -247,7 +247,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private int count =1;
     private boolean pagination = false;
     private BarChart chart;
-    private View  v;
+    public View  v;
     private int rentalCount1;
     private int resaleCount1;
     private int tenantsCount1;
@@ -925,8 +925,10 @@ if(count<=220) {
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
 
+
                     General.slowInternetFlag = false;
                     General.t.interrupt();
+
 
 
                     JsonObject k = jsonElement.getAsJsonObject();
@@ -1458,6 +1460,7 @@ if(count<=220) {
         if (position == 0) {
             atFor = "at";
             jsonObjectArray = null;
+
 try {
     SnackbarManager.show(
             Snackbar.with(getContext())
@@ -1466,6 +1469,7 @@ try {
                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 }
 catch(Exception e){}
+
 
 //      if(txtOption2.getText().toString().equalsIgnoreCase("Tenants"))
 //            lookingSeeking = "Tenant is looking for";
@@ -1575,6 +1579,7 @@ catch (Exception e){
         else if (position == 1) {
             atFor = "for";
             jsonObjectArray = null;
+
             try {
                 SnackbarManager.show(
                         Snackbar.with(getContext())
@@ -1583,6 +1588,7 @@ catch (Exception e){
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
             }
             catch(Exception e){}
+
 
 //            if(txtOption2.getText().toString().equalsIgnoreCase("Buyer"))
 //                lookingSeeking = "Buyer is looking for";
@@ -2736,10 +2742,11 @@ public void walkthroughBroker(final View v) {
             countertut++;
             if (countertut == 4) {
                 Log.i("ischecked", "beacon_walk_broker==========  :" + beacon);
-                if (beacon.equalsIgnoreCase("true"))
+
 
                     Log.i("ischecked", "beacon_walk1_broker  ==========   :" + beacon);
                 try {
+                    if (beacon.equalsIgnoreCase("true"))
                     beaconAlertBroker(v);
                 } catch (InterruptedException e) {e.printStackTrace();}
                 // rippleBackground4.startRippleAnimation();

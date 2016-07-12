@@ -696,6 +696,7 @@ if(newUser==true) {
 
 
 
+
     public void submitButton() {
 
         submit.setEnabled(false);
