@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.ConnectionResult;
@@ -80,7 +81,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-
+  private   int   backpress=0;
    boolean setting=false;
     TextView tv_client_heading;
 
@@ -850,9 +851,21 @@ private void alertbuilder()
 //            getFragmentManager().popBackStack();
             if(SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") || SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")){
                 super.onBackPressed();
-                Intent back = new Intent(this, ClientMainActivity.class);
-                startActivity(back);
-
+                finish();
+//                try {
+//                    DashboardClientFragment dash=new DashboardClientFragment();
+//                    dash.Wlak_Beacon();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                Intent inten = new Intent(this, ClientMainActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(inten);
+                startActivity(new Intent(this, ClientMainActivity.class));
+                finish();
                 Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
 
@@ -888,7 +901,25 @@ private void alertbuilder()
         else{
             Log.i("SIGNUP_FLAG"," closing app =================== 3"+getFragmentManager().getBackStackEntryCount());
 
-           this.finish();
+//            new AlertDialog.Builder(this)
+//                    .setTitle("Really Exit?")
+//                    .setMessage("Are you sure you want to exit?")
+//                    .setNegativeButton(android.R.string.no, null)
+//                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//
+//                        public void onClick(DialogInterface arg0, int arg1) {
+//                            ClientMainActivity.super.onBackPressed();
+//                        }
+//                    }).create().show();
+            if(backpress <1) {
+                backpress = (backpress + 1);
+                Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+            }else if (backpress>=1) {
+                backpress = 0;
+                this.finish();
+            }
+//            if(backpress==0);
+//           this.finish();
 //            super.onBackPressed();
 
         }
@@ -944,6 +975,27 @@ private void alertbuilder()
            }
         }
     };
+
+
+
+//    public void Wlak_Beacon() throws InterruptedException {
+//        DashboardClientFragment DashboardClient = new DashboardClientFragment();
+//
+//        if (SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") && SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")) {
+//
+//            DashboardClient.beaconAlert();
+//            DashboardClient.tutorialAlert();
+//
+//
+//        }else if (SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true")){
+//            DashboardClient.tutorialAlert();
+//        }else{
+//            DashboardClient.beaconAlert();
+//        }
+//
+//
+//    }
+
 
 
 

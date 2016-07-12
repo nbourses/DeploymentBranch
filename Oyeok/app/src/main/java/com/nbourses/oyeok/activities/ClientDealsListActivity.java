@@ -820,14 +820,14 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Override
     public void onBackPressed() {
 
-//        Intent intent = new Intent(this, ClientMainActivity.class);
-//        intent.addFlags(
-//                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-//                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
-//                        Intent.FLAG_ACTIVITY_NEW_TASK);
-//        startActivity(intent);
-//        startActivity(new Intent(this, ClientMainActivity.class));
-//        finish();
+        Intent intent = new Intent(this, ClientMainActivity.class);
+        intent.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        startActivity(new Intent(this, ClientMainActivity.class));
+        finish();
         if(AppConstants.SIGNUP_FLAG){
 //            Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  "+getFragmentManager().getBackStackEntryCount()+" "+AppConstants.SIGNUP_FLAG);
 //            Intent intent = new Intent(this, ClientDealsListActivity.class);

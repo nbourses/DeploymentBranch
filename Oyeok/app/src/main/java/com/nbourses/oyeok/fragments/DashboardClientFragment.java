@@ -227,7 +227,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private FrameLayout hideOnSearch;
     private Boolean autoc = false;
     private Boolean autocomplete = false;
-
+  public  static  View  rootView;
 
 //    Intent intent ;
 
@@ -381,7 +381,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-     final View rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
+   rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         ButterKnife.bind(this, rootView);
 
       //  gpsTracker = new GPSTracker(getContext());
@@ -2480,65 +2480,67 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         boolean ripple = true;
         long now;
 
-        new CountDownTimer(3000, 1000) {
+        try {
+            new CountDownTimer(3000, 1000) {
 
-            public void onTick(long millisUntilFinished) {
+                public void onTick(long millisUntilFinished) {
 
-                rippleBackground2.startRippleAnimation();
+                    rippleBackground2.startRippleAnimation();
+                    try {
 
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .text("Set Location")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }catch(Exception e){}
+                }
 
+                public void onFinish() {
 
+                    new CountDownTimer(3000, 1000) {
 
-                SnackbarManager.show(
-                        Snackbar.with(getActivity())
-                                .text("Set Location")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
-            }
+                        public void onTick(long millisUntilFinished) {
+                            rippleBackground2.stopRippleAnimation();
+                            rippleBackground3.startRippleAnimation();
+try {
+    SnackbarManager.show(
+            Snackbar.with(getContext())
+                    .text("Set your Budget")
+                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+}catch(Exception e){}
+                        }
 
-            public void onFinish() {
+                        public void onFinish() {
 
-                new CountDownTimer(3000, 1000) {
+                            new CountDownTimer(3000, 1000) {
 
-                    public void onTick(long millisUntilFinished) {
-                        rippleBackground2.stopRippleAnimation();
-                        rippleBackground3.startRippleAnimation();
+                                public void onTick(long millisUntilFinished) {
+                                    rippleBackground3.stopRippleAnimation();
 
-                        SnackbarManager.show(
-                                Snackbar.with(getActivity())
-                                        .text("Set your Budget")
-                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+                                    rippleBackground1.startRippleAnimation();
+                                    try {
+                                    SnackbarManager.show(
+                                            Snackbar.with(getContext())
+                                                    .text("Press oye button to send your requirement")
+                                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                    }catch(Exception e){}
+                                }
 
-                    }
+                                public void onFinish() {
 
-                    public void onFinish() {
+                                    rippleBackground1.stopRippleAnimation();
 
-                        new CountDownTimer(3000, 1000) {
-
-                            public void onTick(long millisUntilFinished) {
-                                rippleBackground3.stopRippleAnimation();
-
-                                rippleBackground1.startRippleAnimation();
-                                SnackbarManager.show(
-                                        Snackbar.with(getContext())
-                                                .text("Press oye button to send your requirement")
-                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-
-                            }
-
-                            public void onFinish() {
-
-                                rippleBackground1.stopRippleAnimation();
-
-                            }
-                        }.start();
-
-
-                    }
-                }.start();
-            }
-        }.start();
+                                }
+                            }.start();
 
 
+                        }
+                    }.start();
+                }
+            }.start();
+
+        } catch (Exception e) {
+        }
 
 
 
@@ -2631,7 +2633,66 @@ public void oyebuttonBackgrountColorOrange(){
 
 
 
+    public void Wlak_Beacon() throws InterruptedException {
 
+
+        /*if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") && SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")) {
+
+            beaconAlert(rootView);
+            tutorialAlert(rootView);
+
+
+        }else if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true")){
+            tutorialAlert(rootView);
+        }else{
+            beaconAlert(rootView);
+        }*/
+        if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
+            beacon = "true";
+            SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
+        } else {
+            beacon = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON);
+            // SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
+            Log.i("ischecked", "walkthrough3dashboard" + beacon);
+        }
+
+        if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("")) {
+            Walkthrough = "true";
+            SharedPrefs.save(getContext(), SharedPrefs.CHECK_WALKTHROUGH, "false");
+        } else {
+            Walkthrough = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_WALKTHROUGH);
+            Log.i("ischecked", "walkthrough3dashboard" + Walkthrough);
+        }
+
+
+
+        //Tutorial and Beacon code
+        if(Walkthrough.equalsIgnoreCase("true")) {
+            Log.i("ischecked","walkthrough3dashboard1111111"+Walkthrough);
+            tutorialAlert(rootView);
+
+            Walkthrough="false";
+
+        }
+        else if(beacon.equalsIgnoreCase("true") ) {
+            Log.i("ischecked","walkthrough3dashboard1111111beacon"+beacon);
+            try {
+                beaconAlert(rootView);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            beacon="false";
+
+        }
+
+
+
+
+
+
+
+    }
 
 
 
