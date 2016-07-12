@@ -247,7 +247,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private int count =1;
     private boolean pagination = false;
     private BarChart chart;
-    private View  v;
+    public View  v;
     private int rentalCount1;
     private int resaleCount1;
     private int tenantsCount1;
@@ -823,9 +823,13 @@ Log.i("PHASE","before adapter set");
             }
 
             if(buildingPrice.size()>0) {
+
                 dataset = new BarDataSet(entries, Integer.toString(buildingPrice.size()));
-               dataset.setColors(new int[] { R.color.greenish_blue, R.color.google_yellow, R.color.red_light}, getContext());
-              //  dataset.setColors(new int[] { R.color.red, R.color.green, R.color.blue, R.color.orange }, 50);
+                Log.i("GRAPH","buildingPrice "+buildingPrice+" entries "+entries+" labels "+labels+" dataset "+dataset);
+
+                    dataset.setColors(new int[]{R.color.greenish_blue, R.color.google_yellow, R.color.red_light}, getContext());
+                    //  dataset.setColors(new int[] { R.color.red, R.color.green, R.color.blue, R.color.orange }, 50);
+
             }
             labels.addAll(buildingNames);
         }
@@ -864,7 +868,7 @@ Log.i("PHASE","before adapter set");
 
        // chart = (BarChart) v.findViewById(R.id.chart);
         BarData data = new BarData(labels, dataset);
-        chart.setData(data); // set the data and list of lables into chart
+        chart.setData(data); // set the data and list of labels into chart
 
     }
 
@@ -885,8 +889,6 @@ if(count<=220) {
     count = 1;
     continueToRun = false;
 }
-            // do your stuff here, like update
-            // this block of code you going to reach every  second
 
             if(continueToRun == true){
                 mHandler.postDelayed(mRunnable, mSampleDurationTime);
@@ -895,8 +897,10 @@ if(count<=220) {
         }
 
     };
-
     public void brokerbuildings(final Integer buildingsPage){
+        if(General.isNetworkAvailable(getContext())) {
+        General.slowInternet(getContext());
+
         Log.i("BROKER BUILDINGS CALLED","with page "+ buildingsPage);
 
         BrokerBuildings brokerBuildings = new BrokerBuildings();
@@ -921,15 +925,22 @@ if(count<=220) {
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
 
-                    Log.i("BROKER BUILDINGS CALLED","success response "+response);
 
-                    Log.i("BROKER BUILDINGS","LAT1 "+General.getSharedPreferences(getActivity(),AppConstants.MY_LAT));
-                    Log.i("BROKER BUILDINGS","LNG1 "+General.getSharedPreferences(getActivity(),AppConstants.MY_LNG));
-                    Log.i("BROKER BUILDINGS","LAT "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-                    Log.i("BROKER BUILDINGS","LNG "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+                    General.slowInternetFlag = false;
+                    General.t.interrupt();
+
+
 
                     JsonObject k = jsonElement.getAsJsonObject();
                     try {
+
+                        Log.i("BROKER BUILDINGS CALLED","success response "+response);
+
+                        Log.i("BROKER BUILDINGS","LAT1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
+                        Log.i("BROKER BUILDINGS","LNG1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
+                        Log.i("BROKER BUILDINGS","LAT "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
+                        Log.i("BROKER BUILDINGS","LNG "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
+
                         JSONObject ne = new JSONObject(k.toString());
                         Log.i("BROKER BUILDINGS CALLED","success ne "+ne);
                         buildings = ne.getJSONObject("responseData").getJSONArray("buildings");
@@ -1012,12 +1023,20 @@ if(count<=220) {
 
                 @Override
                 public void failure(RetrofitError error) {
-
+                    General.slowInternetFlag = false;
+                    General.t.interrupt();
                 }
             });
+
+
         }
         catch (Exception e){
             Log.e(TAG, e.getMessage());
+        }
+
+        }else{
+
+            General.internetConnectivityMsg(getContext());
         }
     }
 
@@ -1026,12 +1045,17 @@ if(count<=220) {
      * load preok data by making server API call
      */
     public void preok() {
-        Log.i("TRACE","GCM id is"+SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
-        //preok params
-        Oyeok preok = new Oyeok();
+
+        if(General.isNetworkAvailable(getContext())) {
+
+            General.slowInternet(getContext());
+
+            Log.i("TRACE", "GCM id is" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+            //preok params
+            Oyeok preok = new Oyeok();
 //        int permissionCheck = ContextCompat.checkSelfPermission(getContext(),
 //                Manifest.permission.WRITE_CALENDAR);
-        //permissionCheckForDeviceId = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE);
+            //permissionCheckForDeviceId = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE);
 //        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE)
 //                == PackageManager.PERMISSION_GRANTED) {
 //            Log.i("PREOK","getcontext "+General.getDeviceId(getContext()));
@@ -1039,60 +1063,63 @@ if(count<=220) {
 //
 //
 //        }else{
-           // preok.setDeviceId(General.getSharedPreferences(this,AppConstants.));
-            preok.setDeviceId(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
-            Log.i("PREOK","getcontext "+General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
+            // preok.setDeviceId(General.getSharedPreferences(this,AppConstants.));
+            preok.setDeviceId(General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
+            Log.i("PREOK", "getcontext " + General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
 
 //        }
 
-        preok.setUserRole("broker");
-        preok.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
-        preok.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-        preok.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-        preok.setPlatform("android");
-        Log.i("PREOK","user_id1 "+General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER));
-        if(General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-            preok.setUserId(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
+            preok.setUserRole("broker");
+            preok.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+            preok.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+            preok.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+            preok.setPlatform("android");
+            Log.i("PREOK", "user_id1 " + General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER));
+            if (General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                preok.setUserId(General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
 
-        }
-        else {
-            preok.setUserId(General.getSharedPreferences(getContext(), AppConstants.USER_ID));
-            Log.i("PREOK","user_id "+General.getSharedPreferences(getContext(), AppConstants.USER_ID));
-        }
-
-
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(AppConstants.SERVER_BASE_URL_101)
-                .build();
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-
-        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
-        try {
-            oyeokApiService.preOk(preok, new Callback<JsonElement>() {
-                @Override
-                public void success(JsonElement jsonElement, Response response) {
-                    JsonObject k = jsonElement.getAsJsonObject();
-                    try {
-                        JSONObject ne = new JSONObject(k.toString());
-                        JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
-                        Log.i("PREOK CALLED","neighbours"+ne);
-                        Log.i("PREOK CALLED","neighbours"+neighbours);
-
-                        jsonArrayReqLl = neighbours.getJSONArray("req_ll");;//neighbours.getJSONArray("req_ll");
-                        jsonArrayAvlLl = neighbours.getJSONArray("avl_ll");//neighbours.getJSONArray("avl_ll");
-
-                        jsonArrayReqOr = neighbours.getJSONArray("req_or");//neighbours.getJSONArray("req_or");
-                        jsonArrayAvlOr = neighbours.getJSONArray("avl_or");//neighbours.getJSONArray("avl_or");
-
-                        Log.i("PREOK CALLED","jsonArrayReqLl"+jsonArrayReqLl);
-                        Log.i("PREOK CALLED","jsonArrayAvlLl"+jsonArrayAvlLl);
-                        Log.i("PREOK CALLED","jsonArrayReqOr"+jsonArrayReqOr);
-                        Log.i("PREOK CALLED","jsonArrayAvlOr"+jsonArrayAvlOr);
+            } else {
+                preok.setUserId(General.getSharedPreferences(getContext(), AppConstants.USER_ID));
+                Log.i("PREOK", "user_id " + General.getSharedPreferences(getContext(), AppConstants.USER_ID));
+            }
 
 
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setEndpoint(AppConstants.SERVER_BASE_URL_101)
+                    .build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
-                        // jsonArrayPreokRecent = neighbours.getJSONArray("recent");
-                        //if all values are empty then show from resent
+            OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+            try {
+                oyeokApiService.preOk(preok, new Callback<JsonElement>() {
+                    @Override
+                    public void success(JsonElement jsonElement, Response response) {
+                        //
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
+
+                        JsonObject k = jsonElement.getAsJsonObject();
+                        try {
+                            JSONObject ne = new JSONObject(k.toString());
+                            JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
+                            Log.i("PREOK CALLED", "neighbours" + ne);
+                            Log.i("PREOK CALLED", "neighbours" + neighbours);
+
+                            jsonArrayReqLl = neighbours.getJSONArray("req_ll");
+                            ;//neighbours.getJSONArray("req_ll");
+                            jsonArrayAvlLl = neighbours.getJSONArray("avl_ll");//neighbours.getJSONArray("avl_ll");
+
+                            jsonArrayReqOr = neighbours.getJSONArray("req_or");//neighbours.getJSONArray("req_or");
+                            jsonArrayAvlOr = neighbours.getJSONArray("avl_or");//neighbours.getJSONArray("avl_or");
+
+                            Log.i("PREOK CALLED", "jsonArrayReqLl" + jsonArrayReqLl);
+                            Log.i("PREOK CALLED", "jsonArrayAvlLl" + jsonArrayAvlLl);
+                            Log.i("PREOK CALLED", "jsonArrayReqOr" + jsonArrayReqOr);
+                            Log.i("PREOK CALLED", "jsonArrayAvlOr" + jsonArrayAvlOr);
+
+
+                            // jsonArrayPreokRecent = neighbours.getJSONArray("recent");
+                            //if all values are empty then show from resent
 //                        if (jsonArrayReqLl.length() == 0 && jsonArrayAvlLl.length() == 0 &&
 //                                jsonArrayReqOr.length() == 0 && jsonArrayAvlOr.length() == 0) {
 //                            jsonArrayReqLl = jsonArrayPreokRecent;
@@ -1102,20 +1129,26 @@ if(count<=220) {
 //                        }
 
 
-                        onPositionSelected(currentSeekbarPosition, currentCount);
+                            onPositionSelected(currentSeekbarPosition, currentCount);
+                        } catch (JSONException e) {
+                            Log.e(TAG, e.getMessage());
+                        }
                     }
-                    catch (JSONException e) {
-                        Log.e(TAG, e.getMessage());
-                    }
-                }
 
-                @Override
-                public void failure(RetrofitError error) {
-                }
-            });
-        }
-        catch (Exception e){
-            Log.e(TAG, e.getMessage());
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
+                    }
+                });
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            }
+
+        }else{
+
+            General.internetConnectivityMsg(getContext());
         }
     }
 
@@ -1134,7 +1167,7 @@ if(count<=220) {
         }
 
 
-        if (!General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+        if (!General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
 
             dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
             //show sign up screen if broker is not registered
@@ -1215,8 +1248,8 @@ if(count<=220) {
         txtPreviouslySelectedOptionB = (TextView) v;
         if (v.getId() == selectB.getId()) {
             okBtn.setEnabled(false);
-            okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
-            okBtn.setText("OK");
+            //okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
+            okBtn.setText("Choose 3 Buildings");
             selectB.setBackgroundResource(R.color.greenish_blue);
             chart.setDescription("Select three buildings.");
             // chart.clear();
@@ -1427,11 +1460,17 @@ if(count<=220) {
         if (position == 0) {
             atFor = "at";
             jsonObjectArray = null;
-            SnackbarManager.show(
-                    Snackbar.with(getActivity())
-                            .text("Rental Property Type set")
-                            .position(Snackbar.SnackbarPosition.TOP)
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
+try {
+    SnackbarManager.show(
+            Snackbar.with(getContext())
+                    .position(Snackbar.SnackbarPosition.TOP)
+                    .text("Rental Property Type set")
+                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+}
+catch(Exception e){}
+
+
 //      if(txtOption2.getText().toString().equalsIgnoreCase("Tenants"))
 //            lookingSeeking = "Tenant is looking for";
 //            else if(txtOption2.getText().toString().equalsIgnoreCase("Owners"))
@@ -1540,11 +1579,17 @@ catch (Exception e){
         else if (position == 1) {
             atFor = "for";
             jsonObjectArray = null;
-            SnackbarManager.show(
-                    Snackbar.with(getActivity())
-                            .text("Buy/Sell Property Type set")
-                            .position(Snackbar.SnackbarPosition.TOP)
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
+            try {
+                SnackbarManager.show(
+                        Snackbar.with(getContext())
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text("Buy/Sell Property Type set")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+            }
+            catch(Exception e){}
+
+
 //            if(txtOption2.getText().toString().equalsIgnoreCase("Buyer"))
 //                lookingSeeking = "Buyer is looking for";
 //            else if(txtOption2.getText().toString().equalsIgnoreCase("Seller"))
@@ -1846,8 +1891,8 @@ if(ptype.equalsIgnoreCase("home"))
                 intent.putExtra("buildingSliderFlag",buildingSliderflag);
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                 okBtn.setEnabled(false);
-                okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
-                okBtn.setText("OK");
+                //okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
+                okBtn.setText("Choose 3 Buildings");
 
             }
 //            else {
@@ -2219,18 +2264,21 @@ if(ptype.equalsIgnoreCase("home"))
                     // for (int i = 0; i < buildingsSelected.size(); i++) {
 
                     if (buildingsSelected.size() == 1) {
+                        okBtn.setText(buildingNames.get((buildingsSelected.get(0))));
                         Log.i("GRAPH10", "buildings selected " + buildingsSelected);
                         Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
                         chart.highlightValues(new Highlight[]{h0});
 
 
                     } else if (buildingsSelected.size() == 2) {
+                        okBtn.setText(buildingNames.get((buildingsSelected.get(0)))+", "+buildingNames.get((buildingsSelected.get(1))));
                         Log.i("GRAPH11", "buildings selected " + buildingsSelected);
                         Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
                         Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
                         chart.highlightValues(new Highlight[]{h0, h1});
 
                     } else {
+                        okBtn.setText(buildingNames.get((buildingsSelected.get(0)))+", "+buildingNames.get((buildingsSelected.get(1)))+", "+buildingNames.get((buildingsSelected.get(2))));
                         Log.i("GRAPH12", "buildings selected " + buildingsSelected);
                         Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
                         Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
@@ -2269,11 +2317,16 @@ if(ptype.equalsIgnoreCase("home"))
 
                 Log.i("GRAPH", "size " + buildingsSelected.size());
                 if (buildingsSelected.size() == 1) {
+                    okBtn.setText(buildingNames.get((buildingsSelected.get(0))));
+
                     Log.i("GRAPH20", "buildings selected " + buildingsSelected);
                     Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
                     chart.highlightValues(new Highlight[]{h0});
 
                 } else if (buildingsSelected.size() == 2) {
+
+                    okBtn.setText(buildingNames.get((buildingsSelected.get(0)))+", "+buildingNames.get((buildingsSelected.get(1))));
+
                     Log.i("GRAPH21", "buildings selected " + buildingsSelected);
                     Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
                     Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
@@ -2281,6 +2334,8 @@ if(ptype.equalsIgnoreCase("home"))
 
 
                 } else if (buildingsSelected.size() == 0) {
+                    okBtn.setText("Choose 3 buildings");
+
                     chart.highlightValues(null);
                 }
                 //        else if (buildingsSelected.size() == 3) {
@@ -2320,11 +2375,15 @@ if(ptype.equalsIgnoreCase("home"))
 
                 Log.i("GRAPH", "size " + buildingsSelected.size());
                 if (buildingsSelected.size() == 1) {
+                    okBtn.setText(buildingNames.get((buildingsSelected.get(0))));
+
                     Log.i("GRAPH20", "buildings selected " + buildingsSelected);
                     Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
                     chart.highlightValues(new Highlight[]{h0});
 
                 } else if (buildingsSelected.size() == 2) {
+                    okBtn.setText(buildingNames.get((buildingsSelected.get(0)))+", "+buildingNames.get((buildingsSelected.get(1))));
+
                     Log.i("GRAPH21", "buildings selected " + buildingsSelected);
                     Highlight h0 = new Highlight(buildingsSelected.get(0), 0);
                     Highlight h1 = new Highlight(buildingsSelected.get(1), 0);
@@ -2332,6 +2391,8 @@ if(ptype.equalsIgnoreCase("home"))
 
 
                 } else if (buildingsSelected.size() == 0) {
+                    okBtn.setText("Choose 3 buildings");
+
                     chart.highlightValues(null);
                 }
             } else if (buildingsSelected.size() == 3) {
@@ -2519,7 +2580,7 @@ if(ptype.equalsIgnoreCase("home"))
                             ORbuildingPrice.clear();
                         }
                         pagination = true;
-chart.clear();
+                        chart.clear();
 //                        float fr = buildingNames.size() * 0.33f;
 //                        chart.fitScreen();
                         //chart.zoom(9.3f,1f,0,0);
@@ -2681,10 +2742,11 @@ public void walkthroughBroker(final View v) {
             countertut++;
             if (countertut == 4) {
                 Log.i("ischecked", "beacon_walk_broker==========  :" + beacon);
-                if (beacon.equalsIgnoreCase("true"))
+
 
                     Log.i("ischecked", "beacon_walk1_broker  ==========   :" + beacon);
                 try {
+                    if (beacon.equalsIgnoreCase("true"))
                     beaconAlertBroker(v);
                 } catch (InterruptedException e) {e.printStackTrace();}
                 // rippleBackground4.startRippleAnimation();

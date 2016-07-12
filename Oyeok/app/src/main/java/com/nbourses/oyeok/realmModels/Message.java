@@ -8,7 +8,6 @@ import io.realm.RealmObject;
 public class Message extends RealmObject {
 
 
-
     private String ok_id;
     private String message;
     private String timestamp;

@@ -518,6 +518,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         }
         else if (itemTitle.equals(getString(R.string.settings))) {
             AppSetting appSetting=new AppSetting();
+            setting=true;
             loadFragment(appSetting,null,R.id.container_sign,"");
 
 
@@ -525,10 +526,13 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
 
-       if (fragment != null && !itemTitle.equals(getString(R.string.settings))) {
-           setting=true;
-            loadFragment(fragment, null, R.id.container_map, title);
-        }
+//       if (fragment != null && !itemTitle.equals(getString(R.string.settings))) {
+//
+//            loadFragment(fragment, null, R.id.container_map, title);
+//           Log.i("ONBACKPRESSED","broker main activity "+setting);
+//
+//           Log.i("ONBACKPRESSED","broker main activity "+setting);
+//        }
 
     }
 
@@ -586,53 +590,20 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         Log.i("ONBACKPRESSED","signupSuccessflag 432 "+signupSuccessflag);
         Log.i("ONBACKPRESSED","buildingSliderflag "+buildingSliderflag);
 
-        Log.i("ONBACKPRESSED","broker main activity ");
-
-
-//        if(getFragmentManager().getBackStackEntryCount() >0)
-//        {
-//            Log.i("BACK PRESSED","===================");
-//            getFragmentManager().popBackStack();
-//        }
-
-
+        Log.i("ONBACKPRESSED","broker main activity "+setting);
 
         if(webView != null){
-//            Log.i("ONBACKPRESSED","broker main activity webview");
+            if (webView.canGoBack()) {
+             webView.goBack();
+            }
+            else {
             webView = null;
-           Intent back = new Intent(this, BrokerMainActivity.class);
+            Intent back = new Intent(this, BrokerMainActivity.class);
             startActivity(back);
             finish();
-
-
+                 }
         }
-//        signupSuccessflag = true;
-//        if(signupSuccessflag){
-//            Log.i("ONBACKPRESSED","signupSuccessflag "+signupSuccessflag);
-//            signupSuccessflag = false;
-//            Intent back = new Intent(this, BrokerMainActivity.class);
-//            startActivity(back);
-//
-//
-//        }
-
-
-
-
-
-        // else if(gmap ==true){
-        //     Intent back = new Intent(this, BrokerMainActivity.class);
-        //     startActivity(back);
-        //     tv_change_region.setVisibility(View.VISIBLE);
-        //     tv_change_region.setText(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
-
-
-
-//        if (this.drawerFragment.isDrawerOpen(GravityCompat.START)) {
-//            this.drawerFragment.closeDrawer(GravityCompat.START);
-//        }
-
-        if(gmap ==true){
+        else if(gmap ==true){
             Log.i("ONBACKPRESSED","broker main activity gmap");
 
             Intent back = new Intent(this, BrokerMainActivity.class);
@@ -643,53 +614,51 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
         }
-
-
-
-        if(buildingSliderflag == true){
+        else if(buildingSliderflag == true){
             Log.i("ONBACKPRESSED","buildingSliderflag "+buildingSliderflag);
 
             Intent intent = new Intent(AppConstants.SLIDEDOWNBUILDINGS);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             buildingSliderflag = false;
+        }else if(setting==true){
+            Log.i("setting222","setting getFragmentManager().popBackStack(); "+SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH));
+            if(SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") || SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")){
+                //getFragmentManager().popBackStack();
+                Log.i("setting222","setting getFragmentManager().popBackStack(); "+setting+" "+SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON));
+                Intent back = new Intent(this, BrokerMainActivity.class);
+                startActivity(back);
+                getFragmentManager().popBackStack();
+                setting=false;
+
+            }else {
+                setting = false;
+              //  getFragmentManager().popBackStack();
+            }
+
         }
-
-        if(setting==true){
-
-            setting=false;
-            getFragmentManager().popBackStack();
-
-        }
-
-//        else if(DrawerFlag = true) {
-//               //just close the drawer dont finish activity
-//            DrawerFlag = false;
-//        }
-//        else if(openMapsFlag){
-//            //just close the drawer dont finish activity
-//           openMapsFlag = false;
-//        }
-//        else if (buildingSlider.getVisibility() == View.VISIBLE) {
-//            buildingSlider.startAnimation(slide_down);
-//            buildingSlider.setVisibility(View.GONE);
-//        }
         else{
 
-              //  this.finish();
-               super.onBackPressed();
+//            backpress = (backpress + 1);
+//            Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+//
+//            if (backpress>1) {
+//                backpress = 1;
+//                this.finish();
+//            }
+            super.onBackPressed();
+                this.finish();
+//               super.onBackPressed();
             //NavUtils.navigateUpFromSameTask(this);
 
         }
-//        tv_change_region.setVisibility(View.VISIBLE);
 
-//        tv_change_region.setText(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
-
-
-
-        //tv_change_region.setText(intent.getExtras().getString("broker_locality_change"));
 
 
     }
+
+
+
+
 
     private  void networkConnectivity(){
         SnackbarManager.show(
@@ -718,4 +687,34 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         }
         return false;
     }
+
+
+
+
+    public void Wlak_Beacon() throws InterruptedException {
+     BrokerPreokFragment preokFragment = new BrokerPreokFragment();
+
+        if (SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") && SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")) {
+
+            preokFragment.beaconAlertBroker(preokFragment.v);
+            preokFragment.walkthroughBroker(preokFragment.v);
+
+
+        }else if (SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true")){
+            preokFragment.walkthroughBroker(preokFragment.v);
+        }else{
+            preokFragment.beaconAlertBroker(preokFragment.v);
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+
 }

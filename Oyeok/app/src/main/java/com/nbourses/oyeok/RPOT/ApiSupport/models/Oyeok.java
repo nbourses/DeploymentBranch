@@ -14,6 +14,9 @@ public class Oyeok {
      * A unique identifier for the user
      *
      */
+    @SerializedName("url")
+    private String url;
+
     @SerializedName("oye_id")
     private String oyeId;
 
@@ -617,6 +620,14 @@ public class Oyeok {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
 

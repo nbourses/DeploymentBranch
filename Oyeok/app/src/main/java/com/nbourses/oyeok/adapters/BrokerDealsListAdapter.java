@@ -105,6 +105,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                 holder.txtTime = (TextView) v.findViewById(R.id.txtTime);
                 holder.txtFirstChar = (TextView) v.findViewById(R.id.txtFirstChar);
                 holder.locality = (TextView) v.findViewById(R.id.locality);
+                holder.listing = (TextView) v.findViewById(R.id.listing);
 
                 v.setTag(holder);
             } else {
@@ -211,10 +212,20 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                 // String specs = String.valueOf(spec.charAt(0)).toUpperCase() + spec.subSequence(1, spec.length());
 
 
-                if (General.getSharedPreferences(context, AppConstants.NAME).equalsIgnoreCase(name) || General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+                if ( General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+
                     holder.txtTitle.setText(name);
-                else
-                    holder.txtTitle.setText("Broker " + name);
+                    holder.listing.setText(" Verified ");
+                }
+                else {
+                    if(General.getSharedPreferences(context, AppConstants.NAME).equalsIgnoreCase(name)) {
+                        holder.txtTitle.setText("Searching brokers..");
+                        holder.listing.setText(" Listed ");
+                    }else{
+                        holder.txtTitle.setText("Broker " + name);
+                        holder.listing.setText("Verified");
+                    }
+                }
 
                 if (ptype.equalsIgnoreCase("office"))
                     holder.dealPtype.setImageResource(R.drawable.office);
@@ -302,6 +313,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
         public TextView txtFirstChar;
         public ImageView dealPtype;
         public TextView locality;
+        public TextView listing;
 
     }
 

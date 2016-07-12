@@ -25,6 +25,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             <include
                 android:id="@+id/toolbar"
                 layout="@layout/toolbar" />
+
+
         </LinearLayout>
 
         <!--<FrameLayout-->
@@ -35,23 +37,239 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             <!--android:visibility="gone"-->
             <!--android:layout_below="@+id/phaseSeekbar" />-->
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sufil"
+        android:layout_below="@+id/container_toolbar"
+        android:visibility="visible"
+        android:clickable="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/filterContainer"
+            android:visibility="gone"
+            android:clickable="true"
+            android:background="@drawable/filter_border">
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/oye_select"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textForRentSale"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:paddingTop="2dp">
+
+                <LinearLayout
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/txtHome"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:src="@drawable/home" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:scrollHorizontally="true"
+                        android:text="HOME"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/txtShop"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:src="@drawable/shop" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:scrollHorizontally="true"
+                        android:text="SHOP"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/txtIndustrial"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:src="@drawable/industry" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:scrollHorizontally="true"
+                        android:text="INDUSTRIAL"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/txtOffice"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:paddingLeft="10dp"
+
+                        android:paddingRight="10dp"
+                        android:src="@drawable/office" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:scrollHorizontally="true"
+                        android:text="OFFICE"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <!--       <LinearLayout
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_weight="1"
+                           android:gravity="center"
+                           android:orientation="vertical">
+
+                           <ImageView
+                               android:id="@+id/icon_others"
+                               android:layout_width="60dp"
+
+                               android:layout_height="60dp"
+                               android:paddingLeft="15dp"
+                               android:paddingRight="15dp"
+                               android:src="@drawable/ic_others_oye_intent_specs_selector" />
+
+                           <TextView
+                               android:layout_width="match_parent"
+                               android:layout_height="match_parent"
+                               android:ellipsize="end"
+                               android:gravity="center"
+                               android:maxLines="1"
+                               android:paddingBottom="5dp"
+                               android:scrollHorizontally="true"
+                               android:text="OTHERS" />
+                       </LinearLayout>   -->
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/loadContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/twelve_dp"
+                android:paddingLeft="@dimen/eight_dp"
+                android:paddingRight="@dimen/eight_dp">
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+
+
         <LinearLayout
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/supportChat"
-            android:layout_below="@+id/container_toolbar">
+            android:visibility="visible">
             <include layout="@layout/deal_item" />
+
         </LinearLayout>
+
+        <SearchView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:id="@+id/searchView"
+            android:visibility="gone"
+            android:background="@drawable/filter_border" />
+
+
+        <!--<LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:visibility="visible">-->
+
+        <!--<TextView
+            android:layout_width="328dp"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/textView2"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textSize="20sp"
+            android:visibility="gone" />
+
+        <SearchView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchView"
+            android:visibility="gone" />-->
+        <!--</LinearLayout>-->
+
+    </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
 
             android:background="?android:attr/listDivider"
-            android:layout_below="@+id/supportChat"
             android:id="@+id/view"
-            android:visibility="visible"/>
+            android:visibility="visible"
+            android:layout_below="@+id/sufil" />
 
         <!-- <com.cleveroad.androidmanimation.LoadingAnimationView
 
@@ -111,6 +329,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_marginTop="50dp"
                 android:layout_weight="0.08"
                 android:gravity="center_horizontal|bottom" />
+
         </LinearLayout>
 
 
@@ -119,8 +338,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
 
             android:layout_height="wrap_content"
-            android:layout_below="@+id/view"
-            android:layout_above="@+id/phaseSeekbar"/>
+            android:layout_above="@+id/phaseSeekbar"
+            android:layout_below="@+id/view" />
 
 
         <LinearLayout
@@ -143,7 +362,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 android:textAlignment="center"
                 android:visibility="visible"
                 android:clickable="false" />
+
         </LinearLayout>
+
+
 
         <!--<TextView
             android:id="@+id/txtNoActiveDeal"
@@ -165,6 +387,11 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="match_parent"
         android:id="@+id/fragment_container1"
         android:visibility="gone"
+
         android:layout_below="@+id/phaseSeekbar" />
+
+
+
+
 
  </android.support.v4.widget.DrawerLayout>

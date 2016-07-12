@@ -3,7 +3,6 @@ package com.nbourses.oyeok.RPOT.ApiSupport.services;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -17,9 +16,9 @@ import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AcceptOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
+import com.nbourses.oyeok.activities.DealConversationActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.SnackbarManager;
+import com.nbourses.oyeok.helpers.General;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,6 +45,10 @@ public class AcceptOkCall {
 
     OnAcceptOkSuccess mCallBack;
     public void acceptOk(final HashMap<String, Float> listings, JSONArray m, int position, final DBHelper dbHelper, final Activity activity) {
+
+        if(General.isNetworkAvailable(activity)) {
+            General.slowInternet(activity);
+
         String oyeId=null,oyeUserId=null,tt = null,size=null,price=null,reqAvl=null;
         Firebase.setAndroidContext(activity);
         droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl,activity);
@@ -103,11 +106,15 @@ public class AcceptOkCall {
         OyeokApiService user1 = restAdapter.create(OyeokApiService.class);
         Log.i("TRACEOK", "if called "+user1);
 //        if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable(activity))
-        if (isNetworkAvailable(activity)) {
+//        if (isNetworkAvailable(activity)) {
             try {
                 user1.acceptOk(acceptOk, new Callback<AcceptOk>() {
                     @Override
                     public void success(AcceptOk acceptOk, Response response) {
+
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
+
                         Log.i("TRACEOK", "if called "+response);
 
                         String strResponse =  new String(((TypedByteArray)response.getBody()).getBytes());
@@ -170,9 +177,15 @@ public class AcceptOkCall {
 
 
 
-                                Intent openDealsListing = new Intent(activity, BrokerDealsListActivity.class);
+                                Intent openDealsListing = new Intent(activity, DealConversationActivity.class);
+                                Bundle extra = new Bundle();
+                                extra.putSerializable("listings",listings);
+                                openDealsListing.putExtras(extra);
                                openDealsListing.putExtra("OkAccepted","yes");
-                                openDealsListing.putExtra("OkId", acceptOk.responseData.getOkId());
+                                openDealsListing.putExtra(AppConstants.OK_ID, acceptOk.responseData.getOkId());
+                                openDealsListing.putExtra("userRole", "broker");
+
+
                                // Log.i("TRACEOK", "serverMessage " + acceptOk.responseData.getMessage());
                                // Log.i("TRACEBROKERSIGNUP","3");
                                 activity.startActivity(openDealsListing);
@@ -212,6 +225,8 @@ public class AcceptOkCall {
 
                     @Override
                     public void failure(RetrofitError error) {
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
                     /*Log.i("accept error", error.getMessage());
                     Bundle args=new Bundle();
                     args.putString("UserId2","lub8aesblzt8gnokdjlofy5b1xcoduae");
@@ -246,14 +261,20 @@ public class AcceptOkCall {
             } catch (Exception e) {
                 Log.i("Exception", "caught in accept ok");
             }
-        }
-        else {
-            SnackbarManager.show(
-                    com.nispok.snackbar.Snackbar.with(activity)
-                            .position(Snackbar.SnackbarPosition.BOTTOM)
-                            .text("Please check your internet connection")
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-        }
+//        }
+//        else {
+//            SnackbarManager.show(
+//                    com.nispok.snackbar.Snackbar.with(activity)
+//                            .position(Snackbar.SnackbarPosition.BOTTOM)
+//                            .text("Please check your internet connection")
+//                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+//        }
+    }else{
+
+        General.internetConnectivityMsg(activity);
+    }
+
+
     }
 
     private boolean isNetworkAvailable(Activity activity) {

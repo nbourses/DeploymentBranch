@@ -251,7 +251,7 @@ dependencies {
 
     compile 'io.realm:realm-android:0.84.1'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-
+    compile 'br.com.mauker.materialsearchview:materialsearchview:1.1.1'
 
     compile project(':MPChartLib')
 

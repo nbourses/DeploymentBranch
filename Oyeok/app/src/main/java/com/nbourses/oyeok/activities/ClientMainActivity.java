@@ -30,12 +30,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AppSetting;
@@ -79,7 +81,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-
+  private   int   backpress=0;
    boolean setting=false;
     TextView tv_client_heading;
 
@@ -553,6 +555,7 @@ private void alertbuilder()
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.addToBackStack(title);
+        Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  loadFragment client "+getFragmentManager().getBackStackEntryCount());
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
 
@@ -657,9 +660,9 @@ private void alertbuilder()
         }
 
 
-        if (fragment != null) {
-            loadFragment(fragment, null, R.id.container_map, title);
-        }
+//        if (fragment != null) {
+//            loadFragment(fragment, null, R.id.container_map, title);
+//        }
     }
 
     private void shareReferralLink() {
@@ -814,62 +817,116 @@ private void alertbuilder()
 
     @Override
     public void onBackPressed() {
-
-//        if(getFragmentManager().getBackStackEntryCount() >0)
-//        {
-//            Log.i("BACK PRESSED","===================");
+        Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        if(AppConstants.SIGNUP_FLAG){
+//            if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")){
+//            Intent back = new Intent(this, BrokerMainActivity.class);
+//            startActivity(back);
+//            }
+//            else{
+//                Intent back = new Intent(this, ClientMainActivity.class);
+//                startActivity(back);
+//            }
+//            finish();
+            super.onBackPressed();
+//            Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            AppConstants.SIGNUP_FLAG=false;
+            Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff");
 //            getFragmentManager().popBackStack();
-//        }
+        }
 
-        if(autocomplete){
 
-            Intent intent = new Intent(AppConstants.AUTOCOMPLETEFLAG1);
+       else if(autocomplete){
+
+            Intent intentt = new Intent(AppConstants.AUTOCOMPLETEFLAG1);
             intent.putExtra("autocomplete",true);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intentt);
 
         }
 
-        
-
-
-
-        if(setting==true){
+       else if(setting==true){
             Log.i("BACK PRESSED"," =================== setting"+setting);
-            setting=false;
-            getFragmentManager().popBackStack();
+//            getFragmentManager().popBackStack();
+            if(SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") || SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")){
+                super.onBackPressed();
+                finish();
+//                try {
+//                    DashboardClientFragment dash=new DashboardClientFragment();
+//                    dash.Wlak_Beacon();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                Intent inten = new Intent(this, ClientMainActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(inten);
+                startActivity(new Intent(this, ClientMainActivity.class));
+                finish();
+                Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
+                setting = false;
+
+
+            }else {
+                super.onBackPressed();
+                Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
+                setting = false;
+            }
 
         }
-       if (slidingLayout != null &&
 
-                (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
-                        slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
-            closeOyeScreen();
-
-        }
         else if(webView != null){
-            Intent back = new Intent(this, ClientMainActivity.class);
-            startActivity(back);
-            finish();
-        }
-        else if(AppConstants.SIGNUP_FLAG){
-            if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")){
-            Intent back = new Intent(this, BrokerMainActivity.class);
-            startActivity(back);
-            }else{
+            if (webView.canGoBack()) {
+                webView.goBack();
+            }else {
+//                super.onBackPressed();
+                finish();
+                Log.i("SIGNUP_FLAG", " webView =================== 3");
+//                getFragmentManager().popBackStack();
                 Intent back = new Intent(this, ClientMainActivity.class);
                 startActivity(back);
             }
-            finish();
+//            finish();
+        } else if (slidingLayout != null && (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
+            closeOyeScreen();
+            Log.i("SIGNUP_FLAG"," closing app =================== 1");
+//           getFragmentManager().popBackStack();
+            Log.i("SIGNUP_FLAG"," closing app =================== 2");
+//            Intent inten = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+//            LocalBroadcastManager.getInstance(this).sendBroadcast(inten);
         }
+
         else{
-            Log.i("BACK PRESSED"," closing app =================== "+getFragmentManager().getBackStackEntryCount());
-            super.onBackPressed();
+            Log.i("SIGNUP_FLAG"," closing app =================== 3"+getFragmentManager().getBackStackEntryCount());
+
+//            new AlertDialog.Builder(this)
+//                    .setTitle("Really Exit?")
+//                    .setMessage("Are you sure you want to exit?")
+//                    .setNegativeButton(android.R.string.no, null)
+//                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//
+//                        public void onClick(DialogInterface arg0, int arg1) {
+//                            ClientMainActivity.super.onBackPressed();
+//                        }
+//                    }).create().show();
+            if(backpress <1) {
+                backpress = (backpress + 1);
+                Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+            }else if (backpress>=1) {
+                backpress = 0;
+                this.finish();
+            }
+//            if(backpress==0);
+//           this.finish();
+//            super.onBackPressed();
 
         }
 
 
-        Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
 
 
     }
@@ -919,6 +976,27 @@ private void alertbuilder()
            }
         }
     };
+
+
+
+//    public void Wlak_Beacon() throws InterruptedException {
+//        DashboardClientFragment DashboardClient = new DashboardClientFragment();
+//
+//        if (SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") && SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")) {
+//
+//            DashboardClient.beaconAlert();
+//            DashboardClient.tutorialAlert();
+//
+//
+//        }else if (SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true")){
+//            DashboardClient.tutorialAlert();
+//        }else{
+//            DashboardClient.beaconAlert();
+//        }
+//
+//
+//    }
+
 
 
 

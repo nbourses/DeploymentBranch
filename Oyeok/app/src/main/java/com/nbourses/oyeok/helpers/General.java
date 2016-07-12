@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.TelephonyManager;
@@ -18,7 +19,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
-import com.nbourses.oyeok.activities.ClientDealsListActivity;
+import com.nbourses.oyeok.activities.DealConversationActivity;
 import com.nbourses.oyeok.models.PublishLetsOye;
 import com.nbourses.oyeok.realmModels.DefaultDeals;
 import com.nispok.snackbar.Snackbar;
@@ -58,6 +59,74 @@ public class General extends BroadcastReceiver {
     public static Set<String> set;
     public static Boolean clearChart = false;
     private NetworkInterface networkInfo;
+    public static long startTime;
+    private static Context con;
+    public static Thread t;
+    public static Boolean slowInternetFlag;
+
+    public static void slowInternet(Context context) {
+       try {
+           General.startTime = SystemClock.uptimeMillis();
+        Log.i(TAG,"pokemon");
+            con = context;
+
+            t = new Thread(new Runnable() {
+                public void run() {
+                    slowInternetFlag = true;
+                    Log.i(TAG,"pokemon 1 "+((SystemClock.uptimeMillis() - startTime) / 1000.0));
+while(slowInternetFlag) {
+    if (((SystemClock.uptimeMillis() - startTime) / 1000.0) > AppConstants.slowInternet) {
+        Log.i(TAG, "pokemon Slow net connection ,Please move to better connectivity area.");
+        SnackbarManager.show(
+                Snackbar.with(con)
+                        .position(Snackbar.SnackbarPosition.TOP)
+                        .text("Slow net connection ,Please move to better connectivity area.")
+                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+        slowInternetFlag = false;
+        General.t.interrupt();
+
+    }
+}
+
+                }
+            });
+            t.start();
+        }
+        catch(Exception e){
+            Log.i(TAG,"Caught in exception slowInternet in General.java "+e);
+        }
+    }
+
+
+    public static void filterSetSnackbar(Context context, String filterPtype){
+        try {
+            SnackbarManager.show(
+                    Snackbar.with(context)
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("Current filter set to: " + filterPtype.substring(0, 1).toUpperCase() + filterPtype.substring(1) +" in "+(General.getSharedPreferences(context,AppConstants.TT).equalsIgnoreCase(AppConstants.RENTAL) ? "Rental" : "Resale"))
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+        }
+        catch(Exception e){
+            Log.i(TAG,"Caught in exception filterSetSnackbar in General.java "+e);
+        }
+
+    }
+
+    public static void internetConnectivityMsg(Context context) {
+        try {
+            SnackbarManager.show(
+                    Snackbar.with(context)
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("No internet Connectivity.")
+                            //.animation(true)
+                            .duration(Snackbar.SnackbarDuration.LENGTH_LONG)
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+        }
+        catch(Exception e){
+            Log.i(TAG,"Caught in exception internetConnectivityMsg in General.java "+e);
+        }
+
+    }
 
 
 
@@ -283,10 +352,13 @@ public class General extends BroadcastReceiver {
     */
 
     public static String getSharedPreferences(Context context, String prefName) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        Log.i("TRACE", "rt" + prefName);
 
-        return prefs.getString(prefName, "");
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            Log.i("TRACE", "rt" + prefName);
+
+
+            return prefs.getString(prefName, "");
+
     }
 
     public static boolean isNetworkAvailable(Context context) {
@@ -332,6 +404,10 @@ public class General extends BroadcastReceiver {
 
     public static void publishOye(final Context context) {
         try {
+
+            if(isNetworkAvailable(context)) {
+                slowInternet(context);
+
             String intend;
             String tt;
             String ptype;
@@ -361,6 +437,7 @@ public class General extends BroadcastReceiver {
             speccode = intend.toUpperCase() + "-" + tt + "-" +ptype+ "-" + pstype + "-" + price;
 
             Log.i("TRACE", "speccode is" + speccode);
+
 
             General.setSharedPreferences(context, "MY_SPEC_CODE", speccode);
             General.getSharedPreferences(context, "MY_SPEC_CODE");
@@ -428,7 +505,7 @@ public class General extends BroadcastReceiver {
 
             //  Log.i("TRACE","Okid from shared prefs is " +General.getSharedPreferences(context, "OK_ID"));
 
-            if (isNetworkAvailable(context)) {
+
                 Log.i("TRACE", "is networking available" + General.getSharedPreferences(context, AppConstants.USER_ID));
 
                 //set userId
@@ -458,6 +535,10 @@ public class General extends BroadcastReceiver {
                 oyeokApiService.publishOye(AppConstants.letsOye, new Callback<PublishLetsOye>() {
                     @Override
                     public void success(PublishLetsOye letsOye, Response response) {
+
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
+
                         Log.i("TRACE", "in success" + response);
                         String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                         Log.e(TAG, "RETROFIT SUCCESS " + strResponse);
@@ -611,8 +692,14 @@ public class General extends BroadcastReceiver {
 
                         Log.i("TRACE", "open intent deal listing");
                         //open deals listing
-                        Intent openDealsListing = new Intent(context, ClientDealsListActivity.class);
-                        openDealsListing.putExtra("default_deal_flag", true);
+                        Intent openDealsListing = new Intent(context, DealConversationActivity.class);
+                        //openDealsListing.putExtra("default_deal_flag", true);
+
+                        openDealsListing.putExtra("userRole", "client");
+                        openDealsListing.putExtra(AppConstants.SPEC_CODE, speccode);
+                        openDealsListing.putExtra(AppConstants.OK_ID, General.getSharedPreferences(context, "OK_ID"));
+                        openDealsListing.putExtra("isDefaultDeal",true);
+
                         openDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(openDealsListing);
 
@@ -622,10 +709,16 @@ public class General extends BroadcastReceiver {
 
                     @Override
                     public void failure(RetrofitError error) {
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
                         Log.e(TAG, "error " + error.getMessage());
                         Log.i("TRACE", "RetrofitError");
                     }
                 });
+            }
+            else{
+                General.internetConnectivityMsg(context);
+
             }
         } catch (Exception e) {
             e.printStackTrace();

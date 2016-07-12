@@ -416,10 +416,10 @@
             android:layout_above="@+id/seekbar_linearlayout">
             <include layout="@layout/fragment_broker_preok_common"/>
 <LinearLayout
-    android:layout_width="75dp"
-    android:layout_height="75dp"
-    android:layout_marginLeft="40dp"
-    android:layout_marginTop="225dp"
+    android:layout_width="105dp"
+    android:layout_height="85dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="240dp"
     android:layout_above="@+id/seekbar_linearlayout">
             <com.skyfishjy.library.RippleBackground
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -628,7 +628,7 @@
                 android:clickable="true"
                 android:background="@color/greenish_blue"
                 android:textColor="#FFFFFF"
-                android:textSize="30dp"
+                android:textSize="15sp"
                 android:visibility="visible" />
         </FrameLayout>
 
