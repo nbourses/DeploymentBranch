@@ -853,7 +853,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
                 listViewDeals.setAdapter(listAdapter);
                 Log.i("inside adapter ", "object " + listAdapter);
-                if(default_deals.size() <3){
+                if(default_deals.size() <3 && showbgtext == true){
                     bgtxtlayout.setVisibility(View.VISIBLE);
                     bgtxt.setText("Do More 'OYE'\nTo Connect With More\nOther Brokers");
                 }else{bgtxtlayout.setVisibility(View.GONE);}
@@ -1394,7 +1394,7 @@ Log.i(TAG,"hdroom madhe name "+deals.getLocality());
 
 
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
-                            if(total_deals.size() <3){
+                            if(total_deals.size() <3 && showbgtext == true){
                                 bgtxtlayout.setVisibility(View.VISIBLE);
                                 bgtxt.setText("Do More 'OYE'\nTo Connect With More\nOther Brokers");
                             }else{bgtxtlayout.setVisibility(View.GONE);}

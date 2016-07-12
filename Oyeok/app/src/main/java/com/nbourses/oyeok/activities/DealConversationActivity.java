@@ -282,9 +282,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         }
 
 
+        displayMessage();
 
-
-       // Bundle bundle  = getIntent().getExtras();
+        // Bundle bundle  = getIntent().getExtras();
         //channel_name = bundle.getString(AppConstants.OK_ID); //my_channel if came from root item
 
         Log.i("Deals Conv Act","channel name is the "+channel_name);
@@ -670,7 +670,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             Log.i(TAG, "before loadHistoryFromPubnub");
             if(!channel_name.equals("my_channel")) {
-              loadHistoryFromPubnub(channel_name);
+               // displayMessage();
+                loadHistoryFromPubnub(channel_name);
             }
 
             pubnub.subscribe(channel_name, new Callback() {
@@ -705,7 +706,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     }
             );
 
-            String channel = channel_name + "-pndebug";
+           /* String channel = channel_name + "-pndebug";
             Log.i("channel name for debug","====== "+channel);
             pubnub.subscribe(channel, new Callback() {
                         @Override
@@ -737,7 +738,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         public void errorCallback(String channel, PubnubError error) {
                         }
                     }
-            );
+            );*/
         }
         catch (PubnubException e) {
             e.getMessage();
@@ -780,13 +781,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         Log.i("CONVER", "jsonMsg" + jsonMsg);
         Log.i(TAG, "inside displayMessage" + jsonMsg);
         //Read cachedmsgs from shared
-        if(cachedmsgs.size() < 10) {
-            cachedmsgs.add(jsonMsg);
-        }
-        else{
-            cachedmsgs.remove(0);
-            cachedmsgs.add(jsonMsg);
-        }
+
 
         Log.i("CACHE", "cachedmsgs after add" + cachedmsgs);
 
@@ -922,6 +917,88 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             e.printStackTrace();
             Log.i(TAG, "caught in display message" + e);
         }
+    }
+
+
+    private void displayMessage(){
+//        listAdapter = new ChatListAdapter(chatMessages,isDefaultDeal, this);
+//        chatListView.setAdapter(listAdapter);
+        myRealm = General.realmconfig(this);
+        String body = null;
+        String timetoken = null;
+        ChatMessageUserType userType = null;
+        ChatMessage message;
+        String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
+
+        try {
+
+            //           Realm myRealm = General.realmconfig(this);
+            myRealm.beginTransaction();
+            RealmResults<Message> results1 =
+                    myRealm.where(Message.class).equalTo(AppConstants.OK_ID, channel_name).findAll();
+
+//            Message myPuppy = myRealm.where(Message.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findFirst();
+//
+//            Log.i(TAG, "my name is " + myPuppy.getName());
+
+            for (Message c : results1) {
+                Log.i(TAG, "until insiderou2 ");
+                Log.i(TAG, "until insiderou3 " + c.getOk_id());
+                Log.i(TAG, "until insiderou4 " + c.getTimestamp());
+                Log.i(TAG, "until insiderou4 " + c.getMessage());
+                Log.i(TAG, "until insiderou4 " + c.getFrom());
+                Log.i(TAG, "until insiderou4 " + c.getTo());
+
+                if (c.getFrom().equalsIgnoreCase("DEFAULT")) {
+                    Log.i("CONVER", "DEFAULT set");
+                    userType = ChatMessageUserType.DEFAULT;
+                } else if (c.getFrom().equalsIgnoreCase("LISTING")) {
+                    Log.i("CONVER", "LISTING set");
+                    userType = ChatMessageUserType.LISTING;
+                } else if (!c.getFrom().equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID))) {
+                    userType = ChatMessageUserType.SELF;
+                } else {
+                    userType = ChatMessageUserType.OTHER;
+                }
+
+                message = new ChatMessage();
+                message.setUserName(roleOfUser);
+                message.setMessageStatus(ChatMessageStatus.SENT);
+                message.setMessageText(c.getMessage());
+                message.setUserType(userType);
+                message.setMessageTime(Long.valueOf(c.getTimestamp())/10000);
+                chatMessages.add(message);
+
+
+                Log.i(TAG, "cache yo  message after adding to chatMessages" + chatMessages);
+
+                //  listAdapter.notifyDataSetChanged();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.i(TAG, "cache yo message runOnUiThread" + listAdapter);
+                        if (listAdapter != null) {
+                            Log.i(TAG, "cache yo message runOnUiThread  not null");
+
+                            listAdapter.notifyDataSetChanged();
+                        }
+                        Log.i(TAG, "cache yo message runOnUiThread edtTypeMsg1");
+                        edtTypeMsg.setText("");
+                        Log.i(TAG, "cache yo message runOnUiThread edtTypeMsg2");
+                    }
+                });
+            }
+        }catch(Exception e){
+            Log.i(TAG,"Caught in the exception reading cache from realm "+e);
+        }
+        finally {
+            chatMessages.clear();
+            myRealm.commitTransaction();
+            Log.i(TAG,"until fitra 4 "+myRealm.isInTransaction());
+        }
+
+
+
     }
 
     /**
@@ -1150,11 +1227,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //                            String ptype = General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE);
 //                            Log.i(TAG, "role of user def 1 "+ptype);
                             final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-                           // Log.i(TAG, "role of user def 2 "+ptype.substring(0, 1).toUpperCase());
+                            // Log.i(TAG, "role of user def 2 "+ptype.substring(0, 1).toUpperCase());
                             String json = gson.toJson(AppConstants.letsOye);
-                           // Log.i(TAG, "role of user def 3 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(1));
+                            // Log.i(TAG, "role of user def 3 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(1));
                             JSONObject jsonResponse = new JSONObject(json);
-                           // Log.i(TAG, "role of user def 4 ");
+                            // Log.i(TAG, "role of user def 4 ");
 
                             Log.i(TAG,"Client have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price"))+".");
                             //Log.i(TAG, "AppConstants.letsOye u " + jsonResponse.getString("property_subtype"));
@@ -1172,7 +1249,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                             String ptype = General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE);
 
                             jsonMsg.put("message", "Client have initiated enquiry for " + General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE).substring(1)
-                            + " property (" + General.getSharedPreferences(getApplicationContext(),AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(),AppConstants.PRICE)) + ".");
+                                    + " property (" + General.getSharedPreferences(getApplicationContext(),AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(),AppConstants.PRICE)) + ".");
 
                         }
 
@@ -1400,46 +1477,84 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     }
 
     private void cacheMessages(JSONArray jsonArrayHistory){
+        Log.i(TAG, "until cacheMessages called  ");
         //JSONArray jsonArrayHistory = loadFinalHistory();
+        myRealm = General.realmconfig(this);
+
+
+//        try {
+//
+//            //clear cache
+//            Log.i(TAG,"until 3 ");
+//            myRealm.beginTransaction();
+//            Log.i(TAG,"until 4 ");
+//            RealmResults<Message> result = myRealm.where(Message.class).equalTo(AppConstants.OK_ID,channel_name).findAll();
+//            Log.i(TAG,"until result to del is 6 "+result);
+//            result.clear();
+//
+//        }catch(Exception e){
+//            Log.i(TAG,"Caught in the exception clearing cache "+e );
+//        }
+//        finally{
+//            myRealm.commitTransaction();
+//        }
+
 
         try {
+
             int jsonArrayHistoryLength = jsonArrayHistory.length();
-            Log.i(TAG, "here is the 1 jsonArrayHistory "+jsonArrayHistory);
-            Log.i(TAG, "here is the 1 jsonArrayHistoryLength "+jsonArrayHistoryLength);
+            Log.i(TAG, "until here is the 1 jsonArrayHistory "+jsonArrayHistory);
+            Log.i(TAG, "until here is the 1 jsonArrayHistoryLength "+jsonArrayHistoryLength);
 //            myRealm = General.realmconfig(this);
-//            myRealm.beginTransaction();
+            myRealm = General.realmconfig(this);
+            myRealm.beginTransaction();
             for (int i = 0; i < jsonArrayHistoryLength; i++) {
                 JSONObject jsonMsg = jsonArrayHistory.getJSONObject(i);
 
 
 
-                Log.i(TAG, "here is the 1 jsonMsg "+jsonMsg);
+                Log.i(TAG, "until here is the 1 jsonMsg "+jsonMsg);
 
                 if (jsonMsg.has("message")) {
                     JSONObject j = jsonMsg.getJSONObject("message");
                     String timetoken = jsonMsg.getString("timetoken");
-                    Log.i(TAG, "here is the 1  " + jsonMsg.getString("message"));
+                    Log.i(TAG, "until here is the 1  " + jsonMsg.getString("message"));
                     String from = j.getString("from");
                     String to = j.getString("to");
                     String body = j.getString("message");
-                    Log.i(TAG,"here is the 1 2 "+from+" "+to+" "+body);
+                    Log.i(TAG,"until here is the 1 2 "+from+" "+to+" "+body);
 
-                    myRealm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            Log.i(TAG,"here is the 1 2 andar");
-                            Message message = realm.createObject(Message.class);
-                            message.setOk_id(channel_name);
-                            message.setMessage("body");
-                            message.setTimestamp("timetoken");
-                            message.setFrom("from");
-                            message.setTo("to");
-                            Log.i(TAG,"here is the 1 2 khali");
-                        }
-                    });
+                    message = new Message();
+                    Log.i(TAG,"until here is the 1 2 ithe "+myRealm.isInTransaction());
+//
+                    message = myRealm.createObject(Message.class); //new Message();
+                    Log.i(TAG,"until here is the 1 2 Tithe");
+                    message.setOk_id(channel_name);
+                    message.setMessage(body);
+                    message.setTimestamp(timetoken);
+                    message.setFrom(from);
+                    message.setTo(to);
+
+                    Log.i(TAG,"until here is the 246 "+body);
+                    myRealm.copyToRealm(message);
+                    Log.i(TAG,"until here is the 634 "+body);
+
+//                    myRealm.executeTransaction(new Realm.Transaction() {
+//                        @Override
+//                        public void execute(Realm realm) {
+//                            Log.i(TAG,"here is the 1 2 andar");
+//                            Message message = realm.createObject(Message.class);
+//                            message.setOk_id(channel_name);
+//                            message.setMessage("body");
+//                            message.setTimestamp("timetoken");
+//                            message.setFrom("from");
+//                            message.setTo("to");
+//                            Log.i(TAG,"here is the 1 2 khali");
+//                        }
+//                    });
 
                     // tester(from,to,body,timetoken);
-                    Log.i(TAG,"here is the 1 3 I am back "+body);
+                    Log.i(TAG,"until here is the 1 3 I am back "+body);
 //                    if (j.has("message") && j.has("from") && j.has("to")) {
 //                        Log.i(TAG, "here is the");
 ////                        String from = j.getString("from");
@@ -1485,6 +1600,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             Log.i(TAG,"Caught in exception in caching messages in Realm "+e);
 
         }
+        finally{
+
+
+            myRealm.commitTransaction();
+            Log.i(TAG,"until fitra 3 "+myRealm.isInTransaction());
+        }
 
 
 //        JSONObject jo = new JSONObject();
@@ -1498,6 +1619,30 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 //        General.setSharedPreferences(this,channel_name+AppConstants.CACHE,msgs.toString());
 //        Log.i("CHAT","cache "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
+
+        try {
+
+//            Realm myRealm = General.realmconfig(this);
+            RealmResults<Message> results1 =
+                    myRealm.where(Message.class).equalTo(AppConstants.OK_ID, channel_name).findAll();
+
+//            Message myPuppy = myRealm.where(Message.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findFirst();
+//
+//            Log.i(TAG, "my name is " + myPuppy.getName());
+
+            for (Message c : results1) {
+                Log.i(TAG, "until insiderou2 ");
+                Log.i(TAG, "until insiderou3 " + c.getOk_id());
+                Log.i(TAG, "until insiderou4 " + c.getTimestamp());
+                Log.i(TAG, "until insiderou4 " + c.getMessage());
+            }
+        }catch(Exception e){
+            Log.i(TAG,"Caught in the exception reading cache from realm "+e);
+        }
+        finally {
+            myRealm.commitTransaction();
+            Log.i(TAG,"until fitra 4 "+myRealm.isInTransaction());
+        }
 
     }
     private void tester(String from, String to, String body, String timetoken){
@@ -1648,6 +1793,27 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     }
 
+    private void clearCache(){
+        myRealm = General.realmconfig(this);
+        try {
+            //clear cache
+            Log.i(TAG,"until 31 ");
+
+            myRealm.beginTransaction();
+            Log.i(TAG,"until 41 ");
+            RealmResults<Message> result = myRealm.where(Message.class).equalTo(AppConstants.OK_ID,channel_name).findAll();
+            Log.i(TAG,"until end result to del is 5 "+result);
+            result.clear();
+
+        }catch(Exception e){
+            Log.i(TAG,"Caught in the exception clearing cache "+e );
+        }
+        finally{
+            myRealm.commitTransaction();
+            Log.i(TAG,"until fitra 1 "+myRealm.isInTransaction());
+        }
+    }
+
     private void loadFinalHistory(){
         Callback callback = new Callback() {
             JSONArray jsonArrayHistory;
@@ -1684,8 +1850,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         storeDealTime();
 
-
-        // loadFinalHistory();
+        clearCache();
+        loadFinalHistory();
 
 //        try {
 //            RealmResults<Message> results1 =
