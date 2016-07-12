@@ -826,8 +826,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 //                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
 //                        Intent.FLAG_ACTIVITY_NEW_TASK);
 //        startActivity(intent);
-//             startActivity(new Intent(this, ClientMainActivity.class));
-//           finish();
+//        startActivity(new Intent(this, ClientMainActivity.class));
+//        finish();
         if(AppConstants.SIGNUP_FLAG){
 //            Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  "+getFragmentManager().getBackStackEntryCount()+" "+AppConstants.SIGNUP_FLAG);
 //            Intent intent = new Intent(this, ClientDealsListActivity.class);
@@ -839,7 +839,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         }
         else {
             Log.i("SIGNUP_FLAG","onBackPressed=========");
-            this.finish();
+//            super.onBackPressed();
+            startActivity(new Intent(this, ClientMainActivity.class));
+            finish();
+//            this.finish();
         }
 
     }

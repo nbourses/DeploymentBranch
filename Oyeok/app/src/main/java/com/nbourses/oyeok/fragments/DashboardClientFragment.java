@@ -2519,9 +2519,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                                 rippleBackground1.startRippleAnimation();
                                 SnackbarManager.show(
-                                        Snackbar.with(getActivity())
+                                        Snackbar.with(getContext())
                                                 .text("Press oye button to send your requirement")
-                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
                             }
 
