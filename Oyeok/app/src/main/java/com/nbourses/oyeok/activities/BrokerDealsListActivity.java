@@ -120,6 +120,9 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
 
     @Bind(R.id.search)
     Button search;
+
+    @Bind(R.id.searchgone)
+    Button searchgone;
     private TextView bgtxt;
     private LinearLayout bgtxtlayout;
     private String searchQuery = null;
@@ -209,10 +212,10 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchQuery = query;
+                bgtxtlayout.setVisibility(View.VISIBLE);
+                searchQuery = query.trim();
                 // callSearch1(query);
                 Log.i(TAG,"1111111111");
-
 
                 if(listBrokerDeals_new != null)
                     listBrokerDeals_new.clear();
@@ -224,7 +227,8 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchQuery = newText;
+                bgtxtlayout.setVisibility(View.GONE);
+                searchQuery = newText.trim();
                 Log.i(TAG,"newText "+searchQuery);
 
 
@@ -959,6 +963,8 @@ Log.i("SWIPE","inside swipe menu creator");
     public void onClickzSearch(View v) {
 
         filterPtype = null;
+        searchgone.setVisibility(View.VISIBLE);
+        search.setVisibility(View.GONE);
         supportChat.clearAnimation();
         supportChat.setVisibility(View.GONE);
         filtergone.setVisibility(View.GONE);
@@ -974,6 +980,34 @@ Log.i("SWIPE","inside swipe menu creator");
         searchView.setVisibility(View.VISIBLE);
         searchView.startAnimation(bounce);
         searchView.setIconified(false);
+
+
+
+
+    }
+
+    @OnClick(R.id.searchgone)
+    public void onClickzSearchgone(View v) {
+
+        filterPtype = null;
+        searchQuery = null;
+        search.setVisibility(View.VISIBLE);
+        searchgone.setVisibility(View.GONE);
+        searchView.clearAnimation();
+        searchView.setVisibility(View.GONE);
+        supportChat.clearAnimation();
+        supportChat.setVisibility(View.VISIBLE);
+        supportChat.startAnimation(bounce);
+        filtergone.setVisibility(View.GONE);
+        filter.setVisibility(View.VISIBLE);
+
+        if(listBrokerDeals_new != null)
+            listBrokerDeals_new.clear();
+        loadBrokerDeals();
+        filterContainer.clearAnimation();
+        filterContainer.setVisibility(View.GONE);
+
+
 
 
 

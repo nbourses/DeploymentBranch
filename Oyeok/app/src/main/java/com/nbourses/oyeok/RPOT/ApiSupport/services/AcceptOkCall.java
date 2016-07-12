@@ -178,9 +178,14 @@ public class AcceptOkCall {
 
 
                                 Intent openDealsListing = new Intent(activity, DealConversationActivity.class);
+                                Bundle extra = new Bundle();
+                                extra.putSerializable("listings",listings);
+                                openDealsListing.putExtras(extra);
                                openDealsListing.putExtra("OkAccepted","yes");
                                 openDealsListing.putExtra(AppConstants.OK_ID, acceptOk.responseData.getOkId());
                                 openDealsListing.putExtra("userRole", "broker");
+
+
                                // Log.i("TRACEOK", "serverMessage " + acceptOk.responseData.getMessage());
                                // Log.i("TRACEBROKERSIGNUP","3");
                                 activity.startActivity(openDealsListing);

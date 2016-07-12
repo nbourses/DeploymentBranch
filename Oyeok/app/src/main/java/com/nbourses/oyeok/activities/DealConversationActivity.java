@@ -135,6 +135,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private Realm myRealm;
     private Message message;
     private JSONArray jsonArrayHistory;
+    private HashMap<String, Float> listings;
 
 
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
@@ -224,7 +225,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
     private void init() {
-
+        listings = new HashMap<String, Float>();
 //        try {
 //
 //            Realm myRealm = General.realmconfig(this);
@@ -262,17 +263,25 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         General.storeDealTime(bundle.getString(AppConstants.OK_ID), this);
 
                     }
+
                 }
 
                 else if(bundle.containsKey(AppConstants.OK_ID)){
                     channel_name = bundle.getString(AppConstants.OK_ID); //my_channel if came from root item
                 }
+                Log.i(TAG,"listing ghya listing 1 ");
+                if(bundle.containsKey("listings")){
+                    Log.i(TAG,"listing ghya listing 2 ");
+                    Log.i(TAG,"listing ghya listing "+bundle.getSerializable("listing"));
 
+                }
             }
         }
         catch(Exception e){
             Log.i(TAG,"caught in exception saving accept deal time "+e);
         }
+
+
 
 
        // Bundle bundle  = getIntent().getExtras();
