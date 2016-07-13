@@ -138,7 +138,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Bind(R.id.searchgone)
     Button searchgone;
 
-//    @Bind(R.id.searchView)
+    //    @Bind(R.id.searchView)
 //    SearchView searchView;
     @Bind(R.id.filterContainer)
     RelativeLayout filterContainer;
@@ -168,6 +168,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     private Boolean RefreshDrooms = false;
 
     private BrokerDealsListAdapter listAdapter;
+    private Boolean showbgtext = true;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -189,10 +190,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     private ArrayList<String> defaultOkIds = new ArrayList<String>();
     private ArrayList<String> matchedOkIds;
     private ArrayList<BrokerDeals> reset;
-    private Boolean showbgtext = true;
 
-   private TextView bgtxt;
-   private LinearLayout bgtxtlayout;
+    private TextView bgtxt;
+    private LinearLayout bgtxtlayout;
 
     private ImageView txtPreviouslySelectedPropertyType;
     private static final String propertyTypeDefaultColor = "#FFFFFF";
@@ -247,12 +247,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         fragment_container1 = (FrameLayout)findViewById(R.id.fragment_container1);
         //  listViewDeals.setAdapter(new SearchingBrokersAdapter(this));
 
-         bgtxt=(TextView) findViewById(R.id.bgtxt) ;
+        bgtxt=(TextView) findViewById(R.id.bgtxt) ;
         bgtxtlayout = (LinearLayout) findViewById(R.id.bgtxtlayout);
         bgtxtlayout.setVisibility(View.VISIBLE);
-
         bgtxt.setText("'OYE' More Leads,\nTo Create Dealing\nRooms with new Client");
-
         listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
         supportChat.setVisibility(View.VISIBLE);
         listViewDeals.setVisibility(View.VISIBLE);
@@ -410,7 +408,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                         }
 
 
-                       // Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
+                        // Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
 
 
                         Log.i("deleteDR CALLED", "spec code " + total_deals.get(position).getSpecCode());
@@ -671,12 +669,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             phaseSeekBar.setVisibility(View.VISIBLE);
 
         }
-        else{
-            search.setVisibility(View.GONE);
-            searchgone.setVisibility(View.GONE);
-            filter.setVisibility(View.GONE);
-            filtergone.setVisibility(View.GONE);
-        }
 
 
         General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
@@ -775,15 +767,15 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     if (dealsa.getSpecCode().contains(TT + "-")) {
 
 
-                            if (default_deals == null) {
-                                default_deals = new ArrayList<BrokerDeals>();
-                            }
-
-
-                            Log.i(TAG, "default deals are" + default_deals);
-                            default_deals.add(dealsa);
-
+                        if (default_deals == null) {
+                            default_deals = new ArrayList<BrokerDeals>();
                         }
+
+
+                        Log.i(TAG, "default deals are" + default_deals);
+                        default_deals.add(dealsa);
+
+                    }
 
                 }
                 try{
@@ -855,7 +847,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 Log.i("inside adapter ", "object " + listAdapter);
                 if(default_deals.size() <3 && showbgtext == true){
                     bgtxtlayout.setVisibility(View.VISIBLE);
-                    bgtxt.setText("Do More 'OYE'\nTo Connect With More\nOther Brokers");
+                    bgtxt.setText("'OYE' More Leads,\nTo Create Dealing\nRooms with new Client");
                 }else{bgtxtlayout.setVisibility(View.GONE);}
                 listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -934,24 +926,14 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Override
     public void onBackPressed() {
 
-
-        if(AppConstants.SIGNUP_FLAG){
-//            Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  "+getFragmentManager().getBackStackEntryCount()+" "+AppConstants.SIGNUP_FLAG);
-//            Intent intent = new Intent(this, ClientDealsListActivity.class);
-//            startActivity(intent);
-//            getFragmentManager().popBackStack();
-            super.onBackPressed();
-            AppConstants.SIGNUP_FLAG=false;
-
-        }
-        else {
-            Log.i("SIGNUP_FLAG","onBackPressed=========");
-//            super.onBackPressed();
-            startActivity(new Intent(this, ClientMainActivity.class));
-            finish();
-//            this.finish();
-        }
-
+        Intent intent = new Intent(this, ClientMainActivity.class);
+        intent.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        //     startActivity(new Intent(this, ClientMainActivity.class));
+        //   finish();
     }
 
 
@@ -960,77 +942,77 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     private void deleteDealingroom(String deleteOyeId,String deleteOKId, final String specCode){
         if(General.isNetworkAvailable(this)) {
             General.slowInternet(this);
-        Log.i(TAG,"wadala default deals 3 ");
+            Log.i(TAG,"wadala default deals 3 ");
 
 
-        deleteHDroom deleteHDroom  = new deleteHDroom();
-        deleteHDroom.setOkId(deleteOKId);
-        deleteHDroom.setDeleteOyeId(deleteOyeId);
-        deleteHDroom.setUserId(General.getSharedPreferences(this,AppConstants.USER_ID));
-        deleteHDroom.setPage("1");
-        deleteHDroom.setGcmId(General.getSharedPreferences(this,AppConstants.GCM_ID));
+            deleteHDroom deleteHDroom  = new deleteHDroom();
+            deleteHDroom.setOkId(deleteOKId);
+            deleteHDroom.setDeleteOyeId(deleteOyeId);
+            deleteHDroom.setUserId(General.getSharedPreferences(this,AppConstants.USER_ID));
+            deleteHDroom.setPage("1");
+            deleteHDroom.setGcmId(General.getSharedPreferences(this,AppConstants.GCM_ID));
 
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(AppConstants.SERVER_BASE_URL)
-                .build();
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setEndpoint(AppConstants.SERVER_BASE_URL)
+                    .build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
-        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
-
-
-        try {
-            oyeokApiService.deleteHDroom(deleteHDroom, new Callback<JsonElement>() {
-                @Override
-                public void success(JsonElement jsonElement, Response response) {
-                    General.slowInternetFlag = false;
-                    General.t.interrupt();
-                    Log.i("deleteDR CALLED","success");
-                    loadBrokerDeals();
-
-                    SnackbarManager.show(
-                            Snackbar.with(ClientDealsListActivity.this)
-                                    .position(Snackbar.SnackbarPosition.TOP)
-                                    .text(specCode + " deleted")
-                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+            OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
 
 
-                    JsonObject k = jsonElement.getAsJsonObject();
-                    try {
-                        JSONObject ne = new JSONObject(k.toString());
-                        String success = ne.getString("success");
+            try {
+                oyeokApiService.deleteHDroom(deleteHDroom, new Callback<JsonElement>() {
+                    @Override
+                    public void success(JsonElement jsonElement, Response response) {
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
+                        Log.i("deleteDR CALLED","success");
+                        loadBrokerDeals();
+
+                        SnackbarManager.show(
+                                Snackbar.with(ClientDealsListActivity.this)
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text(specCode + " deleted")
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+
+                        JsonObject k = jsonElement.getAsJsonObject();
+                        try {
+                            JSONObject ne = new JSONObject(k.toString());
+                            String success = ne.getString("success");
+
+
+
+
+                        }
+
+
+
+                        catch (JSONException e) {
+                            Log.e(TAG, e.getMessage());
+                            Log.i("deleteDR CALLED","Failed "+e.getMessage());
+                        }
 
 
 
 
                     }
 
-
-
-                    catch (JSONException e) {
-                        Log.e(TAG, e.getMessage());
-                        Log.i("deleteDR CALLED","Failed "+e.getMessage());
+                    @Override
+                    public void failure(RetrofitError error) {
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
                     }
+                });
+            }
+            catch (Exception e){
+                Log.e(TAG, e.getMessage());
+            }
 
+        }else{
 
-
-
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    General.slowInternetFlag = false;
-                    General.t.interrupt();
-                }
-            });
+            General.internetConnectivityMsg(this);
         }
-        catch (Exception e){
-            Log.e(TAG, e.getMessage());
-        }
-
-    }else{
-
-        General.internetConnectivityMsg(this);
-    }
 
     }
 
@@ -1083,29 +1065,29 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     if((filterPtype != null) && dealsa.getSpecCode().contains(filterPtype)){
 
 
-                    if (default_deals == null) {
-                        default_deals = new ArrayList<BrokerDeals>();
+                        if (default_deals == null) {
+                            default_deals = new ArrayList<BrokerDeals>();
+                        }
+
+
+                        Log.i(TAG, "default deals are" + default_deals);
+                        default_deals.add(dealsa);
+
                     }
-
-
-                    Log.i(TAG, "default deals are" + default_deals);
-                    default_deals.add(dealsa);
-
-                }
                     else if(filterPtype == null){
 
                         if(searchQuery != null) {
 
                             if (dealsa.getSpecCode().contains(searchQuery)/*|| dealsa.getName().contains(searchQuery)||dealsa.getLocality().contains(searchQuery)*/){
 
-                            if (default_deals == null) {
-                                default_deals = new ArrayList<BrokerDeals>();
+                                if (default_deals == null) {
+                                    default_deals = new ArrayList<BrokerDeals>();
+                                }
+
+
+                                Log.i(TAG, "default deals are" + default_deals);
+                                default_deals.add(dealsa);
                             }
-
-
-                            Log.i(TAG, "default deals are" + default_deals);
-                            default_deals.add(dealsa);
-                        }
                         }
 
                         if(searchQuery == null)
@@ -1196,58 +1178,58 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     private void loadBrokerDeals() {
         if(General.isNetworkAvailable(this)) {
             General.slowInternet(this);
-        Log.i("TRACE", "in Load broker deals=================");
+            Log.i("TRACE", "in Load broker deals=================");
 
-        // String defaultOK = "{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"Searching for brokers\"}],\"for_oks\":[]}";
-        // Log.i("TRACE","DefailtOK" +defaultOK);
-        // JSONObject jsonObj = new JSONObject("{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"LL-200+-15000\"}],\"for_oks\":[]}");
-
-
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
-        RestAdapter restAdapter = new RestAdapter
-                .Builder()
-                .setEndpoint(AppConstants.SERVER_BASE_URL_101)
-                .setConverter(new GsonConverter(gson))
-
-                .build();
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-
-        String deviceId = Settings.Secure.getString(this.getContentResolver(),
-                Settings.Secure.ANDROID_ID);
-
-        //params
-        HdRooms hdRooms = new HdRooms();
-        hdRooms.setUserRole("client");
-        hdRooms.setUserId(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
-        hdRooms.setGcmId(SharedPrefs.getString(getApplicationContext(), SharedPrefs.MY_GCM_ID));
-        hdRooms.setLat("123456789");
-        hdRooms.setLon("123456789");
-        hdRooms.setDeviceId(deviceId);
-        hdRooms.setPage("1");
+            // String defaultOK = "{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"Searching for brokers\"}],\"for_oks\":[]}";
+            // Log.i("TRACE","DefailtOK" +defaultOK);
+            // JSONObject jsonObj = new JSONObject("{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"LL-200+-15000\"}],\"for_oks\":[]}");
 
 
-        Log.i("TRACE", "in Load broker deals");
-        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
-        oyeokApiService.seeHdRooms(hdRooms, new Callback<PublishLetsOye>() {
-            @Override
-            protected Object clone() throws CloneNotSupportedException {
-                return super.clone();
-            }
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-            @Override
-            public void success(PublishLetsOye letsOye, Response response) {
-                General.slowInternetFlag = false;
-                General.t.interrupt();
+            RestAdapter restAdapter = new RestAdapter
+                    .Builder()
+                    .setEndpoint(AppConstants.SERVER_BASE_URL_101)
+                    .setConverter(new GsonConverter(gson))
 
-                Log.i("TRACE", "in successs");
-                String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
-                try {
-                    JSONObject jsonObjectServer = new JSONObject(strResponse);
-                    if (jsonObjectServer.getBoolean("success")) {
-                        JSONObject jsonObjectResponseData = new JSONObject(jsonObjectServer.getString("responseData"));
-                        Log.i("TRACE", "jsonObjectResponseData" + jsonObjectResponseData);
-                        Log.d("CHATTRACE", "default drooms" + jsonObjectResponseData);
+                    .build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+            String deviceId = Settings.Secure.getString(this.getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
+
+            //params
+            HdRooms hdRooms = new HdRooms();
+            hdRooms.setUserRole("client");
+            hdRooms.setUserId(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
+            hdRooms.setGcmId(SharedPrefs.getString(getApplicationContext(), SharedPrefs.MY_GCM_ID));
+            hdRooms.setLat("123456789");
+            hdRooms.setLon("123456789");
+            hdRooms.setDeviceId(deviceId);
+            hdRooms.setPage("1");
+
+
+            Log.i("TRACE", "in Load broker deals");
+            OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+            oyeokApiService.seeHdRooms(hdRooms, new Callback<PublishLetsOye>() {
+                @Override
+                protected Object clone() throws CloneNotSupportedException {
+                    return super.clone();
+                }
+
+                @Override
+                public void success(PublishLetsOye letsOye, Response response) {
+                    General.slowInternetFlag = false;
+                    General.t.interrupt();
+
+                    Log.i("TRACE", "in successs");
+                    String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+                    try {
+                        JSONObject jsonObjectServer = new JSONObject(strResponse);
+                        if (jsonObjectServer.getBoolean("success")) {
+                            JSONObject jsonObjectResponseData = new JSONObject(jsonObjectServer.getString("responseData"));
+                            Log.i("TRACE", "jsonObjectResponseData" + jsonObjectResponseData);
+                            Log.d("CHATTRACE", "default drooms" + jsonObjectResponseData);
 
 
 //                        JSONObject jsonObjectResponseData1 = new JSONObject(jsonObjectResponseData.getString("for_oyes"));
@@ -1258,85 +1240,85 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
 
-                        Gson gsonForOks = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-                        ArrayList<BrokerDeals> listBrokerDeals = (ArrayList<BrokerDeals>)
-                                gsonForOks.fromJson(jsonObjectResponseData.getString("for_oyes"),
-                                        new TypeToken<ArrayList<BrokerDeals>>() {
-                                        }.getType());
-                        Log.i("TRACE", "list broker deals" + listBrokerDeals);
+                            Gson gsonForOks = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                            ArrayList<BrokerDeals> listBrokerDeals = (ArrayList<BrokerDeals>)
+                                    gsonForOks.fromJson(jsonObjectResponseData.getString("for_oyes"),
+                                            new TypeToken<ArrayList<BrokerDeals>>() {
+                                            }.getType());
+                            Log.i("TRACE", "list broker deals" + listBrokerDeals);
 
-                        Iterator<BrokerDeals> it = listBrokerDeals.iterator();
-                        listBrokerDealsLL = new ArrayList<BrokerDeals>();
-                        listBrokerDealsOR = new ArrayList<BrokerDeals>();
-                        listBrokerDeals_new = new ArrayList<BrokerDeals>();
-                        while (it.hasNext()) {
-                            BrokerDeals deals = it.next();
+                            Iterator<BrokerDeals> it = listBrokerDeals.iterator();
+                            listBrokerDealsLL = new ArrayList<BrokerDeals>();
+                            listBrokerDealsOR = new ArrayList<BrokerDeals>();
+                            listBrokerDeals_new = new ArrayList<BrokerDeals>();
+                            while (it.hasNext()) {
+                                BrokerDeals deals = it.next();
 
-                            Log.i("TRACE==","deals.are"+deals);
-                            Log.i("TRACE==","deals.ok_id"+deals.getOkId());
-                            if(!(deals.getOkId() == null))
-                            {
+                                Log.i("TRACE==","deals.are"+deals);
+                                Log.i("TRACE==","deals.ok_id"+deals.getOkId());
+                                if(!(deals.getOkId() == null))
+                                {
 
-                                if(defaultOkIds.contains(deals.getOkId())){
-                                if(matchedOkIds==null)
-                                    matchedOkIds = new ArrayList<String>();
-                                matchedOkIds.add(deals.getOkId());
+                                    if(defaultOkIds.contains(deals.getOkId())){
+                                        if(matchedOkIds==null)
+                                            matchedOkIds = new ArrayList<String>();
+                                        matchedOkIds.add(deals.getOkId());
 
-                            }
-                                Log.i(TAG,"chakala default ok ids are matched ok ids "+matchedOkIds);
-                                if(matchedOkIds != null){
-                                    Log.i(TAG,"chakala default ok ids are matched ok ids 2 "+matchedOkIds);
-                                    deleteDefaultDeals();
-                                    if(default_deals != null)
-                                        default_deals.clear();
-                                    if(listBrokerDeals_new != null)
-                                        listBrokerDeals_new.clear();
-                                    loadDefaultDeals();
-                                    loadBrokerDeals();
+                                    }
+                                    Log.i(TAG,"chakala default ok ids are matched ok ids "+matchedOkIds);
+                                    if(matchedOkIds != null){
+                                        Log.i(TAG,"chakala default ok ids are matched ok ids 2 "+matchedOkIds);
+                                        deleteDefaultDeals();
+                                        if(default_deals != null)
+                                            default_deals.clear();
+                                        if(listBrokerDeals_new != null)
+                                            listBrokerDeals_new.clear();
+                                        loadDefaultDeals();
+                                        loadBrokerDeals();
 
+                                    }
+
+
+
+                                    Log.i(TAG,"hdroom madhe name "+deals.getLocality());
+
+
+                                    if(deals.getSpecCode().contains(TT+"-")) {
+                                        if((filterPtype != null)&&deals.getSpecCode().contains(filterPtype)) {
+                                            Log.i("DEALREFRESHPHASESEEKBA", "deal spec code " + deals.getSpecCode() + " for " + TT);
+
+                                            listBrokerDeals_new.add(deals);
+                                        }
+                                        else if (filterPtype == null) {
+
+                                            if(searchQuery != null)
+                                                if (deals.getSpecCode().contains(searchQuery) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
+                                                    listBrokerDeals_new.add(deals);
+                                                }
+
+                                            if(searchQuery == null)
+                                                listBrokerDeals_new.add(deals); // add all
+
+                                        }
+
+                                    }
                                 }
 
-
-
-Log.i(TAG,"hdroom madhe name "+deals.getLocality());
-
-
-                                if(deals.getSpecCode().contains(TT+"-")) {
-                                   if((filterPtype != null)&&deals.getSpecCode().contains(filterPtype)) {
-                                        Log.i("DEALREFRESHPHASESEEKBA", "deal spec code " + deals.getSpecCode() + " for " + TT);
-
-                                        listBrokerDeals_new.add(deals);
-                                    }
-                                    else if (filterPtype == null) {
-
-                                       if(searchQuery != null)
-                                           if (deals.getSpecCode().contains(searchQuery) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
-                                               listBrokerDeals_new.add(deals);
-                                           }
-
-                                       if(searchQuery == null)
-                                           listBrokerDeals_new.add(deals); // add all
-
-                                   }
-
                             }
-                            }
-
-                        }
 
 //                        if(!listBrokerDeals_new)
 //                            listBrokerDeals =
 
-                        Log.i("TRACE==", "list broker deals" + listBrokerDeals_new);
+                            Log.i("TRACE==", "list broker deals" + listBrokerDeals_new);
 
             /*            String[] FirstItem = {"Searching brokers for you."};
                         Log.i("TRACE", "firstitem" + FirstItem[0]);
                         ArrayAdapter<String> Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,FirstItem);
                         listViewDeals.setAdapter(Adapter); */
 
-                        // listViewDeals = (ListView) findViewById(R.id.listViewDeals);
+                            // listViewDeals = (ListView) findViewById(R.id.listViewDeals);
 
-                        ////                 listViewDeals.setAdapter(new SearchingBrokersAdapter(getApplicationContext()));
+                            ////                 listViewDeals.setAdapter(new SearchingBrokersAdapter(getApplicationContext()));
                   /*     listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                            @Override
                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -1361,133 +1343,133 @@ Log.i(TAG,"hdroom madhe name "+deals.getLocality());
                             listViewDeals.setAdapter(new SearchingBrokersAdapter(getApplicationContext()));
                         }   */
 
-                        if (listBrokerDeals_new.size() > 0) {
+                            if (listBrokerDeals_new.size() > 0) {
 
-                            Log.i("TRACE", "NOT inside default deal");
+                                Log.i("TRACE", "NOT inside default deal");
 //                            displayListView();
-                            //final int firstListItemPosition = listViewDeals.getFirstVisiblePosition();
-                            // String[] FirstItem = {"Searching brokers for you."};
-                            //String FirstItem = "Searching for brokers";
-                            //Log.i("TRACE","firstitem" +FirstItem[0]);
-                            //ArrayAdapter<String> Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,FirstItem);
-                            //ArrayAdapter<String> FirstItemAdapter = new ArrayAdapter<String>();
-                            // Log.i("TRACE","adapter" +Adapter);
-                            //listViewDeals.setAdapter(Adapter);
-                            //list all broker deals
+                                //final int firstListItemPosition = listViewDeals.getFirstVisiblePosition();
+                                // String[] FirstItem = {"Searching brokers for you."};
+                                //String FirstItem = "Searching for brokers";
+                                //Log.i("TRACE","firstitem" +FirstItem[0]);
+                                //ArrayAdapter<String> Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,FirstItem);
+                                //ArrayAdapter<String> FirstItemAdapter = new ArrayAdapter<String>();
+                                // Log.i("TRACE","adapter" +Adapter);
+                                //listViewDeals.setAdapter(Adapter);
+                                //list all broker deals
 
-                            total_deals = new ArrayList<BrokerDeals>();
-                            ;
-                            // if(default_deal_flag)
-                            // {
-                            //append default_deals with listBrokerDeals
+                                total_deals = new ArrayList<BrokerDeals>();
+                                ;
+                                // if(default_deal_flag)
+                                // {
+                                //append default_deals with listBrokerDeals
 
-                            Log.i("Shine", "default_deals2 " + default_deals);
-                            if(listBrokerDeals_new != null)
-                                total_deals.addAll(listBrokerDeals_new);
-                            if(default_deals != null)
+                                Log.i("Shine", "default_deals2 " + default_deals);
+                                if(listBrokerDeals_new != null)
+                                    total_deals.addAll(listBrokerDeals_new);
+                                if(default_deals != null)
 
-                                total_deals.addAll(default_deals);
+                                    total_deals.addAll(default_deals);
 
 //
-                            // }
+                                // }
 
 
 
-                            BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
-                            if(total_deals.size() <3 && showbgtext == true){
-                                bgtxtlayout.setVisibility(View.VISIBLE);
-                                bgtxt.setText("Do More 'OYE'\nTo Connect With More\nOther Brokers");
-                            }else{bgtxtlayout.setVisibility(View.GONE);}
-                            //after rental resale deals
-                            listViewDeals.setAdapter(listAdapter);
-                            listAdapter.notifyDataSetChanged();
-
-
-                            if(RefreshDrooms) {
-
-                                Log.i("Shine", "Drooms refreshed");
-                                listViewDeals.setAdapter(listAdapter);
-                                listAdapter.notifyDataSetChanged();
-                                //listViewDeals.setAdapter(null);
-                                //listViewDeals.setAdapter(listAdapter);
-                            }else {
-
-                                Log.i("Shine", "Drooms not refreshed");
-
-
-                                listViewDeals.setAdapter(listAdapter);
-
-                                listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-
-                                        Log.i("TRACE", "main deals adapter clicked" + position);
-
-
-                                        final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-                                        String json = gson.toJson(AppConstants.letsOye);
-
-                                        Log.d(TAG, "AppConstants.letsOye " + json);
-                                        Log.i("TRACE", "AppConstants.letsOye " + json);
-
-
-                                        BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-                                        Log.i("getSpecCode","getSpecCode yo 2 "+brokerDeals.getSpecCode());
-                                        Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
-                                        intent.putExtra("userRole", "client");
-                                        intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
-                                        intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
-                                        intent.putExtra("isDefaultDeal",brokerDeals.getdefaultDeal());
-                                        Log.i("TRACE DEALS FLAG 2", "FLAG " + brokerDeals.getdefaultDeal());
-                                        startActivity(intent);
-                                    }
-                                });
-
-
-                            }
-
-                        } else {
-
-                            Log.i(TAG,"chakala empty aahe listviewdeals_new");
-                            if(default_deals == null) {
-                                reset = new ArrayList<BrokerDeals>();
-                                BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(reset, getApplicationContext());
-
+                                BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
+                                if(total_deals.size() <3 && showbgtext == true){
+                                    bgtxtlayout.setVisibility(View.VISIBLE);
+                                    bgtxt.setText("'OYE' More Leads,\nTo Create Dealing\nRooms with new Client");
+                                }else{bgtxtlayout.setVisibility(View.GONE);}
                                 //after rental resale deals
                                 listViewDeals.setAdapter(listAdapter);
                                 listAdapter.notifyDataSetChanged();
-                            }
 
-                            //total_deals.addAll(default_deals);
+
+                                if(RefreshDrooms) {
+
+                                    Log.i("Shine", "Drooms refreshed");
+                                    listViewDeals.setAdapter(listAdapter);
+                                    listAdapter.notifyDataSetChanged();
+                                    //listViewDeals.setAdapter(null);
+                                    //listViewDeals.setAdapter(listAdapter);
+                                }else {
+
+                                    Log.i("Shine", "Drooms not refreshed");
+
+
+                                    listViewDeals.setAdapter(listAdapter);
+
+                                    listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+
+                                            Log.i("TRACE", "main deals adapter clicked" + position);
+
+
+                                            final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                                            String json = gson.toJson(AppConstants.letsOye);
+
+                                            Log.d(TAG, "AppConstants.letsOye " + json);
+                                            Log.i("TRACE", "AppConstants.letsOye " + json);
+
+
+                                            BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
+                                            Log.i("getSpecCode","getSpecCode yo 2 "+brokerDeals.getSpecCode());
+                                            Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+                                            intent.putExtra("userRole", "client");
+                                            intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                                            intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
+                                            intent.putExtra("isDefaultDeal",brokerDeals.getdefaultDeal());
+                                            Log.i("TRACE DEALS FLAG 2", "FLAG " + brokerDeals.getdefaultDeal());
+                                            startActivity(intent);
+                                        }
+                                    });
+
+
+                                }
+
+                            } else {
+
+                                Log.i(TAG,"chakala empty aahe listviewdeals_new");
+                                if(default_deals == null) {
+                                    reset = new ArrayList<BrokerDeals>();
+                                    BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(reset, getApplicationContext());
+
+                                    //after rental resale deals
+                                    listViewDeals.setAdapter(listAdapter);
+                                    listAdapter.notifyDataSetChanged();
+                                }
+
+                                //total_deals.addAll(default_deals);
 
 //                            displayTextMessage(null);
-                        }
-                    } else {
+                            }
+                        } else {
 //                        displayTextMessage(null);
-                    }
-                } catch (Exception e) {
+                        }
+                    } catch (Exception e) {
 //                    displayTextMessage(getString(R.string.no_internet_connection));
-                } finally {
+                    } finally {
 //                    dismissProgressBar();
+                    }
                 }
-            }
 
-            @Override
-            public void failure(RetrofitError error) {
-                General.slowInternetFlag = false;
-                General.t.interrupt();
+                @Override
+                public void failure(RetrofitError error) {
+                    General.slowInternetFlag = false;
+                    General.t.interrupt();
 
-                Log.i("TRACE", "in failure");
+                    Log.i("TRACE", "in failure");
 //                dismissProgressBar();
 //                displayTextMessage(getString(R.string.no_internet_connection));
-            }
-        });
+                }
+            });
 
-    }else{
+        }else{
 
-        General.internetConnectivityMsg(this);
-    }
+            General.internetConnectivityMsg(this);
+        }
     }
 
     private void deleteDefaultDeals() {
@@ -1556,9 +1538,9 @@ Log.i(TAG,"hdroom madhe name "+deals.getLocality());
         }
         else
         {
-//            supportChat.setVisibility(View.GONE);
-//            view.setVisibility(View.GONE);
-//            listViewDeals.setVisibility(View.GONE);
+            supportChat.setVisibility(View.GONE);
+            view.setVisibility(View.GONE);
+            listViewDeals.setVisibility(View.GONE);
             fragment_container1.setVisibility(View.VISIBLE);
             Bundle bundle = new Bundle();
             bundle.putStringArray("Chat", null);
@@ -1574,7 +1556,6 @@ Log.i(TAG,"hdroom madhe name "+deals.getLocality());
 //            signUpFragment.getView().bringToFront();
             loadFragment(signUpFragment, bundle, R.id.fragment_container1, "");
             Log.i("Signup called =", "Sign up");
-            Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  loadFragment  "+getFragmentManager().getBackStackEntryCount());
 
         }
     }
@@ -1749,30 +1730,30 @@ Log.i(TAG,"hdroom madhe name "+deals.getLocality());
         if (txtHome.getId() == v.getId()) {
             txtHome.setBackgroundResource(R.drawable.buy_option_circle);
             filterPtype = "home";
-           // AppConstants.letsOye.setPropertyType("home");
-          //  loadHomeOptionView("home");
+            // AppConstants.letsOye.setPropertyType("home");
+            //  loadHomeOptionView("home");
             //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"home");
 
         }
         else if(txtShop.getId() == v.getId()) {
             txtShop.setBackgroundResource(R.drawable.buy_option_circle);
             filterPtype = "shop";
-           // AppConstants.letsOye.setPropertyType("shop");
-           // loadHomeOptionView("shop");
+            // AppConstants.letsOye.setPropertyType("shop");
+            // loadHomeOptionView("shop");
             // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"shop");
         }
         else if(txtIndustrial.getId() == v.getId()) {
             txtIndustrial.setBackgroundResource(R.drawable.buy_option_circle);
             filterPtype = "industrial";
-           // AppConstants.letsOye.setPropertyType("industrial");
-           // loadHomeOptionView("industrial");
+            // AppConstants.letsOye.setPropertyType("industrial");
+            // loadHomeOptionView("industrial");
             // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"industrial");
         }
         else if(txtOffice.getId() == v.getId()) {
             txtOffice.setBackgroundResource(R.drawable.buy_option_circle);
             filterPtype = "office";
             //AppConstants.letsOye.setPropertyType("office");
-           // loadHomeOptionView("office");
+            // loadHomeOptionView("office");
             //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"office");
         }
         General.filterSetSnackbar(this,filterPtype);
@@ -1823,17 +1804,15 @@ Log.i(TAG,"hdroom madhe name "+deals.getLocality());
 
     private void loadFragment(Fragment fragment, Bundle args, int containerId, String title) {
         //set arguments
-        //set arguments
         fragment.setArguments(args);
-
+//        fragment.getView().bringToFront();
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(containerId, fragment);
-        fragmentTransaction.addToBackStack(title);
-
+        fragmentTransaction.show(fragment);
         fragmentTransaction.commitAllowingStateLoss();
-        Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  loadFragment1       "+getFragmentManager().getBackStackEntryCount());
+
         //set title
 //        getSupportActionBar().setTitle(title);
     }

@@ -1553,42 +1553,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //                        }
 //                    });
 
-                    // tester(from,to,body,timetoken);
+
                     Log.i(TAG,"until here is the 1 3 I am back "+body);
-//                    if (j.has("message") && j.has("from") && j.has("to")) {
-//                        Log.i(TAG, "here is the");
-////                        String from = j.getString("from");
-////                        String to = j.getString("to");
-////                        String body = j.getString("message");
-//                        //test(timetoken,from,to,body);
-//
-//
-//                        try {
-//
-//                            myRealm = General.realmconfig(this);
-//                            myRealm.beginTransaction();
-//                            message = myRealm.createObject(Message.class); //new Message();
-//                            message.setOk_id(channel_name);
-//                            message.setMessage(body);
-//                            message.setTimestamp(timetoken);
-//                            message.setFrom(from);
-//                            message.setTo(to);
-//
-//
-//                            myRealm.copyToRealm(message);
-//                        }catch(Exception e){
-//                            Log.i(TAG,"here is the "+"message is "+j+" "+e);
-//                        }
-//                        finally{
-//                            Log.i(TAG,"In finally cache "+"message is"+message.getMessage());
-//
-//                          myRealm.commitTransaction();
-//
-//                        }
-//                        Log.i(TAG, "here is the 1 jsonMsg 2 "+jsonMsg);
-//
-//
-//                    }
+
                 }
             }
 
@@ -1645,83 +1612,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         }
 
     }
-    private void tester(String from, String to, String body, String timetoken){
-        Log.i(TAG,"here is the 1 3 "+body);
 
-        Realm myRealm = General.realmconfig(this);
-        Log.i(TAG,"here is the 11 "+body);
-        try{
-            Log.i(TAG,"here is the 12 "+body);
-
-
-            myRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    Message message = realm.createObject(Message.class);
-                    message.setOk_id(channel_name);
-                    message.setMessage("body");
-                    message.setTimestamp("timetoken");
-                    message.setFrom("from");
-                    message.setTo("to");
-                }
-            });
-
-
-
-            //
-//            Message message = new Message();
-//
-//                // message = myRealm.createObject(Message.class); //new Message();
-//                    message.setOk_id(channel_name);
-//                    message.setMessage(body);
-//                    message.setTimestamp(timetoken);
-//                    message.setFrom(from);
-//                    message.setTo(to);
-//
-//            Realma.beginTransaction();
-//                   Realma.copyToRealmOrUpdate(message);
-        }catch(Exception e){
-            Log.i(TAG,"here is the locha  "+e);
-        }
-        finally{
-            Log.i(TAG,"In finally cache "+"message is"+message.getMessage());
-
-            // Realma.commitTransaction();
-
-        }
-
-
-
-
-
-    }
-
-    private void test(String timetoken, String from, String to, String body){
-        Log.i(TAG,"here is the called with "+body);
-//        try {
-        myRealm = General.realmconfig(this);
-        message = myRealm.createObject(Message.class); //new Message();
-
-        message.setOk_id(channel_name);
-        message.setMessage(body);
-        message.setTimestamp(timetoken);
-        message.setFrom(from);
-        message.setTo(to);
-
-        //myRealm.beginTransaction();
-        myRealm.copyToRealm(message);
-        //myRealm.commitTransaction();
-//        }catch(Exception e){
-//            Log.i(TAG,"here is the message is "+e);
-//        }
-//        finally{
-//            Log.i(TAG,"In finally cache "+"message is"+message.getMessage());
-//
-//
-//
-//        }
-
-    }
 
 
     private void storeDealTime(){
