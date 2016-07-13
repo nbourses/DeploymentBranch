@@ -44,6 +44,20 @@ public class BrokerDeals {
     @SerializedName("locality")
     private String locality;
 
+    public BrokerDeals(String name,String ok_id, String specs,String locality, Boolean default_deal)
+    { // Constructor for default deal
+        //this.okId = "default_id";
+
+
+        Log.i("IN BROKERDEALS ","FLAG "+default_deal);
+        this.okId = ok_id;
+        this.specCode = specs;
+        this.name = name;
+        this.locality = locality;
+
+        this.defaultDeal = default_deal;
+
+    }
     public BrokerDeals(String name,String ok_id, String specs, Boolean default_deal)
     { // Constructor for default deal
         //this.okId = "default_id";
@@ -53,8 +67,9 @@ public class BrokerDeals {
         this.okId = ok_id;
         this.specCode = specs;
         this.name = name;
+        this.locality = locality;
 
-        this.defaultDeal = default_deal;
+
 
     }
 

@@ -842,6 +842,8 @@ private void alertbuilder()
 
        else if(autocomplete){
 
+            Log.i("BACK PRESSED","  autocomplete"+autocomplete);
+//
             Intent intentt = new Intent(AppConstants.AUTOCOMPLETEFLAG1);
             intent.putExtra("autocomplete",true);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intentt);

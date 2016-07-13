@@ -257,7 +257,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private BroadcastReceiver autoComplete = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            Log.i(TAG, "hohohoh 34");
 
             try {
                 if (intent.getExtras().getBoolean("autocomplete") == true) {
