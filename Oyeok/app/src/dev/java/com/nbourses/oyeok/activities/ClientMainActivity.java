@@ -829,7 +829,9 @@ private void alertbuilder()
 //                startActivity(back);
 //            }
 //            finish();
-            super.onBackPressed();
+
+            getSupportFragmentManager().popBackStack();
+//            super.onBackPressed();
 //            Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
 //            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             AppConstants.SIGNUP_FLAG=false;
