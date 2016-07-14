@@ -36,7 +36,7 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 
-public class Req_Rental_Broker_Tenants extends Fragment implements CircularSeekBarNew.imageAction,OnAcceptOkSuccess {
+public class  Req_Rental_Broker_Tenants extends Fragment implements CircularSeekBarNew.imageAction,OnAcceptOkSuccess {
 
     CircularSeekBarNew cbn;
     //TextView mTitle;

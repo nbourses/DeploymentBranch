@@ -675,8 +675,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         map = googleMap;
 
                         // map = googleMap;
+                        final LocationManager Loc_manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-                            if(!isNetworkAvailable()) {
+                            if(!isNetworkAvailable() || !(Loc_manager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
                                 map = googleMap;
                                 double lat11 = 19.1269299;
                                 double lng11 = 72.8376545999999;
