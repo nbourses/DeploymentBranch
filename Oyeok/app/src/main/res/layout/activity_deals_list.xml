@@ -36,8 +36,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             <!--android:id="@+id/fragment_container1"-->
             <!--android:visibility="gone"-->
             <!--android:layout_below="@+id/phaseSeekbar" />-->
-<!--<<<<<<< HEAD
-=======-->
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -217,8 +216,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
 
 
-<!--&gt;>>>>>> chat_with_agnet-->
-
         <LinearLayout
 
             android:layout_width="match_parent"
@@ -389,10 +386,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="match_parent"
         android:id="@+id/fragment_container1"
         android:visibility="gone"
-        android:layout_below="@+id/phaseSeekbar" >
+        android:layout_below="@+id/phaseSeekbar" />
 
-
-    </FrameLayout>
 
 
  </android.support.v4.widget.DrawerLayout>
