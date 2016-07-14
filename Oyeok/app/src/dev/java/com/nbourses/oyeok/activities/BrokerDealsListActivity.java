@@ -814,7 +814,7 @@ Log.i("SWIPE","inside swipe menu creator");
                                     Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 3");
                                     halfDeals = new HalfDeals();
                                     Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 4 "+deals.getOkId());
-                                    //halfDeals = myRealm.createObject(HalfDeals.class);
+
 
                                     Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 9");
                                 halfDeals.setOk_id(deals.getOkId());
@@ -849,6 +849,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
                             }
                             myRealm.commitTransaction();
+
 
                             /*listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
                             listViewDeals.setAdapter(listAdapter);*/
@@ -896,18 +897,18 @@ Log.i("SWIPE","inside swipe menu creator");
                             });
                         }
                         else {
-//                            displayTextMessage(null);
+
                         }
                     }
                     else {
-//                        displayTextMessage(null);
+
                     }
                 }
                 catch (Exception e) {
-//                    displayTextMessage(getString(R.string.no_internet_connection));
+
                 }
                 finally {
-//                    dismissProgressBar();
+
                 }
             }
 

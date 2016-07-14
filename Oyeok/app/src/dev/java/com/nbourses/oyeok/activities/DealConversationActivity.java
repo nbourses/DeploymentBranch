@@ -921,8 +921,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
     private void displayMessage(){
-//        listAdapter = new ChatListAdapter(chatMessages,isDefaultDeal, this);
-//        chatListView.setAdapter(listAdapter);
         myRealm = General.realmconfig(this);
         String body = null;
         String timetoken = null;
@@ -942,12 +940,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //            Log.i(TAG, "my name is " + myPuppy.getName());
 
             for (Message c : results1) {
-                Log.i(TAG, "until insiderou2 ");
-                Log.i(TAG, "until insiderou3 " + c.getOk_id());
-                Log.i(TAG, "until insiderou4 " + c.getTimestamp());
-                Log.i(TAG, "until insiderou4 " + c.getMessage());
-                Log.i(TAG, "until insiderou4 " + c.getFrom());
-                Log.i(TAG, "until insiderou4 " + c.getTo());
+                Log.i(TAG, "until insideroui2 ");
+                Log.i(TAG, "until insideroui3 " + c.getOk_id());
+                Log.i(TAG, "until insideroui4 " + c.getTimestamp());
+                Log.i(TAG, "until insideroui4 " + c.getMessage());
+                Log.i(TAG, "until insideroui4 " + c.getFrom());
+                Log.i(TAG, "until insideroui4 " + c.getTo());
 
                 if (c.getFrom().equalsIgnoreCase("DEFAULT")) {
                     Log.i("CONVER", "DEFAULT set");
@@ -968,7 +966,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 message.setUserType(userType);
                 message.setMessageTime(Long.valueOf(c.getTimestamp())/10000);
                 chatMessages.add(message);
-
+                listAdapter = new ChatListAdapter(chatMessages,isDefaultDeal, this);
+                chatListView.setAdapter(listAdapter);
 
                 Log.i(TAG, "cache yo  message after adding to chatMessages" + chatMessages);
 
@@ -977,10 +976,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     @Override
                     public void run() {
                         Log.i(TAG, "cache yo message runOnUiThread" + listAdapter);
-                        if (listAdapter != null) {
-                            Log.i(TAG, "cache yo message runOnUiThread  not null");
 
-                            listAdapter.notifyDataSetChanged();
+
+                        if (chatMessages != null) {
+                            Log.i(TAG, "cache yo message runOnUiThread  not null");
+                           listAdapter.notifyDataSetChanged();
+
                         }
                         Log.i(TAG, "cache yo message runOnUiThread edtTypeMsg1");
                         edtTypeMsg.setText("");
@@ -1741,7 +1742,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         storeDealTime();
 
-        clearCache();
+       // clearCache();
         loadFinalHistory();
 
 //        try {
