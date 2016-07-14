@@ -745,7 +745,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Take Photo")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent, REQUEST_CAMERA);
+                      startActivityForResult(intent, REQUEST_CAMERA);
                 } else if (items[item].equals("Choose from Library")) {
                     Intent intent = new Intent(
                             Intent.ACTION_PICK,
@@ -1675,7 +1675,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         storeDealTime();
 
-
+        super.onBackPressed();
         // loadFinalHistory();
 
 //        try {
@@ -1725,12 +1725,23 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //       Log.i("CACHE","cache got from shared  "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
 //
         if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
-            Intent back = new Intent(this, ClientDealsListActivity.class); // to refresh adapter to display newly saved last message time
+            // to refresh adapter to display newly saved last message time
+            Intent back = new Intent(this, ClientDealsListActivity.class);
+            back.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+//            Intent back = new Intent(this, ClientDealsListActivity.class);
             startActivity(back);
+            finish();
         } else {
-
-            Intent back = new Intent(this, BrokerDealsListActivity.class); // to refresh adapter to display newly saved last message time
-            startActivity(back);
+            Intent intent = new Intent(this, BrokerDealsListActivity.class);
+            intent.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+//            Intent back = new Intent(this, BrokerDealsListActivity.class); // to refresh adapter to display newly saved last message time
+            startActivity(intent);
 
             // super.onBackPressed();
         }

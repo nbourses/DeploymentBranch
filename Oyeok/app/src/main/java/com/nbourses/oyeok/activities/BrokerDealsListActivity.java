@@ -883,9 +883,9 @@ Log.i("SWIPE","inside swipe menu creator");
         }
         else
         {
-            supportChat.setVisibility(View.GONE);
-            view.setVisibility(View.GONE);
-            listViewDeals.setVisibility(View.GONE);
+//            supportChat.setVisibility(View.GONE);
+//            view.setVisibility(View.GONE);
+//            listViewDeals.setVisibility(View.GONE);
             fragment_container1.setVisibility(View.VISIBLE);
             Bundle bundle = new Bundle();
             bundle.putStringArray("Chat", null);
@@ -1039,22 +1039,23 @@ Log.i("SWIPE","inside swipe menu creator");
 
     @Override
     public void onBackPressed() {
-//        Log.i("signupSuccessflag back","signupSuccessflag "+signupSuccessflag);
-//        signupSuccessflag = true;
-//        Log.i("signupSuccessflag back1","signupSuccessflag "+signupSuccessflag);
-//        if(signupSuccessflag){
-//            Intent intent = new Intent(this, BrokerMainActivity.class);
-//            intent.addFlags(
-//                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-//                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
-//                            Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(intent);
-        super.onBackPressed();
-//        }
-//        else {
-////        startActivity(new Intent(this, BrokerMainActivity.class));
-//            finish();
-//        }
+        if(AppConstants.SIGNUP_FLAG){
+
+            getSupportFragmentManager().popBackStack();
+
+            AppConstants.SIGNUP_FLAG=false;
+
+        }
+        else {
+
+            Intent intent = new Intent(this, BrokerMainActivity.class);
+            intent.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void loadFragment(Fragment fragment, Bundle args, int containerId, String title)
@@ -1065,7 +1066,9 @@ Log.i("SWIPE","inside swipe menu creator");
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
         fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.addToBackStack(title);
         fragmentTransaction.show(fragment);
         fragmentTransaction.commitAllowingStateLoss();
 

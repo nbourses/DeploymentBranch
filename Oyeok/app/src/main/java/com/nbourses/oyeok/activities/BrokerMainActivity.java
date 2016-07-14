@@ -28,6 +28,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.nbourses.oyeok.Database.DBHelper;
@@ -70,7 +71,7 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
 //    RelativeLayout buildingSlider;
 boolean setting=false;
 
-
+   int backpress;
 
     TextView tv_change_region;
  private boolean gmap=false;
@@ -462,8 +463,10 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.addToBackStack(title);
+
         fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.addToBackStack(title);
+        fragmentTransaction.show(fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -591,28 +594,47 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         Log.i("ONBACKPRESSED","buildingSliderflag "+buildingSliderflag);
 
         Log.i("ONBACKPRESSED","broker main activity "+setting);
+        if(AppConstants.SIGNUP_FLAG){
+            Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff"+getSupportFragmentManager().getBackStackEntryCount());
+//            super.onBackPressed();
+            getSupportFragmentManager().popBackStackImmediate();
+            AppConstants.SIGNUP_FLAG=false;
+            Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff"+getSupportFragmentManager().getBackStackEntryCount());
 
+            backpress = 0;
+        }else
         if(webView != null){
             if (webView.canGoBack()) {
              webView.goBack();
             }
             else {
             webView = null;
-            Intent back = new Intent(this, BrokerMainActivity.class);
-            startActivity(back);
-            finish();
+
+                Intent inten = new Intent(this, BrokerMainActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(inten);
+                finish();
+
+//            finish();
+                backpress = 0;
                  }
         }
         else if(gmap ==true){
             Log.i("ONBACKPRESSED","broker main activity gmap");
+super.onBackPressed();
+            int count = getFragmentManager().getBackStackEntryCount();
+            for(int i = 0; i < count; ++i) {
+                getFragmentManager().popBackStackImmediate();
+            }
 
-            Intent back = new Intent(this, BrokerMainActivity.class);
-            General.clearChart = true;
-            startActivity(back);
+
             gmap =false;
-            finish();
+//            finish();
 
-
+            backpress = 0;
         }
         else if(buildingSliderflag == true){
             Log.i("ONBACKPRESSED","buildingSliderflag "+buildingSliderflag);
@@ -620,35 +642,53 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             Intent intent = new Intent(AppConstants.SLIDEDOWNBUILDINGS);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             buildingSliderflag = false;
+            backpress = 0;
         }else if(setting==true){
-            Log.i("setting222","setting getFragmentManager().popBackStack(); "+SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH));
+            Log.i("BACK PRESSED"," =================== setting"+setting);
+//            getFragmentManager().popBackStack();
             if(SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") || SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")){
-                //getFragmentManager().popBackStack();
-                Log.i("setting222","setting getFragmentManager().popBackStack(); "+setting+" "+SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON));
-                Intent back = new Intent(this, BrokerMainActivity.class);
-                startActivity(back);
-                getFragmentManager().popBackStack();
-                setting=false;
+//                super.onBackPressed();
+//                getSupportFragmentManager().popBackStack();
+
+                int count = getFragmentManager().getBackStackEntryCount();
+                for(int i = 0; i < count; ++i) {
+                    getFragmentManager().popBackStackImmediate();
+                }
+
+                Intent inten = new Intent(this, BrokerMainActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(inten);
+                finish();
+                Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
+                setting = false;
+
+                backpress = 0;
+
 
             }else {
+                Log.i("BACK","FRAGMENT COUNT "+getSupportFragmentManager().getBackStackEntryCount());
+                getSupportFragmentManager().popBackStackImmediate();
+                //super.onBackPressed();
+                //finish();
+                Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
-              //  getFragmentManager().popBackStack();
+                backpress = 0;
             }
 
         }
         else{
 
-//            backpress = (backpress + 1);
-//            Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
-//
-//            if (backpress>1) {
-//                backpress = 1;
-//                this.finish();
-//            }
-            super.onBackPressed();
+            if(backpress <1) {
+                backpress = (backpress + 1);
+
+                Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+            }else if (backpress>=1) {
+                backpress = 0;
                 this.finish();
-//               super.onBackPressed();
-            //NavUtils.navigateUpFromSameTask(this);
+            }
 
         }
 

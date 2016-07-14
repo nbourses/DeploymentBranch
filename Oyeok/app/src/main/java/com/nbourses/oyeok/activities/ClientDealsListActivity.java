@@ -925,29 +925,27 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Override
     public void onBackPressed() {
 
-//        Intent intent = new Intent(this, ClientMainActivity.class);
-//        intent.addFlags(
-//                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-//                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
-//                        Intent.FLAG_ACTIVITY_NEW_TASK);
-//        startActivity(intent);
-//        startActivity(new Intent(this, ClientMainActivity.class));
-//        finish();
+
+
+        Log.i("BACK","FRAGMENT COUNT "+getSupportFragmentManager().getBackStackEntryCount());
         if(AppConstants.SIGNUP_FLAG){
-//            Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  "+getFragmentManager().getBackStackEntryCount()+" "+AppConstants.SIGNUP_FLAG);
-//            Intent intent = new Intent(this, ClientDealsListActivity.class);
-//            startActivity(intent);
-//            getFragmentManager().popBackStack();
-            super.onBackPressed();
+
+            getSupportFragmentManager().popBackStack();
+
             AppConstants.SIGNUP_FLAG=false;
 
         }
         else {
             Log.i("SIGNUP_FLAG","onBackPressed=========");
-//            super.onBackPressed();
-            startActivity(new Intent(this, ClientMainActivity.class));
-            finish();
-//            this.finish();
+
+            Log.i("BACK","FRAGMENT COUNT "+getSupportFragmentManager().getBackStackEntryCount());
+            Intent intent = new Intent(this, ClientMainActivity.class);
+            intent.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+           finish();
         }
 
     }
@@ -1784,12 +1782,18 @@ Log.i(TAG,"hdroom madhe name "+deals.getLocality());
         fragment.setArguments(args);
 
         //load fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        final FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.add(containerId, fragment);
         fragmentTransaction.addToBackStack(title);
-
         fragmentTransaction.commitAllowingStateLoss();
+        fragmentManager.executePendingTransactions();
+        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                Log.d("test", "backStackEntryCount: " + fragmentManager.getBackStackEntryCount());
+            }
+        });
         Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  loadFragment1       "+getFragmentManager().getBackStackEntryCount());
         //set title
 //        getSupportActionBar().setTitle(title);
