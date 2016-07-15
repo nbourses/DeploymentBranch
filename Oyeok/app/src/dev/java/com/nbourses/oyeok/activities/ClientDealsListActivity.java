@@ -135,8 +135,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 //    SearchView searchView;
 
 
-
-
 //    @Bind(R.id.searchView)
 //    SearchView searchView;
 
@@ -1087,15 +1085,22 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
     @Override
     public void onBackPressed() {
+        if(AppConstants.SIGNUP_FLAG){
+            getSupportFragmentManager().popBackStackImmediate();
+            Intent inten = new Intent(this, ClientDealsListActivity.class);
+            startActivity(inten);
+            finish();
+            AppConstants.SIGNUP_FLAG=false;
 
-        Intent intent = new Intent(this, ClientMainActivity.class);
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                        Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        //     startActivity(new Intent(this, ClientMainActivity.class));
-        //   finish();
+        }else {
+            Intent intent = new Intent(this, ClientMainActivity.class);
+            intent.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
     }
 
 
@@ -1105,7 +1110,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         if(General.isNetworkAvailable(this)) {
             General.slowInternet(this);
             Log.i(TAG,"wadala default deals 3 ");
-
 
             deleteHDroom deleteHDroom  = new deleteHDroom();
             deleteHDroom.setOkId(deleteOKId);
@@ -1497,8 +1501,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                             }
                             myRealm.commitTransaction();
-
-//
 
                             Log.i("TRACE==", "list broker deals" + listBrokerDeals_new);
 

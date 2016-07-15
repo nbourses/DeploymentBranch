@@ -264,7 +264,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     // autocomplete = true;
                     Log.i(TAG, "hohohoh 2");
                     hideOnSearch.setVisibility(View.GONE);
+                    mPhasedSeekBar.setVisibility(View.VISIBLE);
                     seekbar_linearlayout.setVisibility(View.VISIBLE);
+                    seekbar_linearlayout.setAlpha(1f);
                 }
             } catch (Exception e) {}
         }
@@ -272,20 +274,20 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     };
 
 
-//    private BroadcastReceiver oncheckWalkthrough=new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            Log.i("walkthrough","walkthrough1"+intent.getExtras().getString("checkWalkthrough"));
-//            if(intent.getExtras().getBoolean("checkWalkthrough")==true){
-//                Log.i("walkthrough","walkthrough2"+intent.getExtras().getBoolean("checkWalkthrough"));
-//               // Walkthrough=intent.getExtras().getString("checkWalkthrough");
-//
-//                Log.i("walkthrough","walkthrough3"+Walkthrough);
-//
-//            }
-//
-//        }
-//    };
+/*    private BroadcastReceiver oncheckWalkthrough=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("walkthrough","walkthrough1"+intent.getExtras().getString("checkWalkthrough"));
+            if(intent.getExtras().getBoolean("checkWalkthrough")==true){
+                Log.i("walkthrough","walkthrough2"+intent.getExtras().getBoolean("checkWalkthrough"));
+               // Walkthrough=intent.getExtras().getString("checkWalkthrough");
+
+                Log.i("walkthrough","walkthrough3"+Walkthrough);
+
+            }
+
+        }
+    };*/
 
     private BroadcastReceiver onFilterValueUpdate = new BroadcastReceiver() {
         @Override
@@ -359,12 +361,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
                     }
 
-///// check if required
-//                 try{
-//                // txtFilterValue.setText(Html.fromHtml(intent.getExtras().getString("filterValue")));
-//             }catch (Exception e){
-//               ///  Log.i("txtFilterValue","txtFilterValue: "+ intent.getExtras().getString("filterValue"));
-//
                 }
             }
         }
@@ -383,16 +379,17 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
    rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
 
         ButterKnife.bind(this, rootView);
-
-      //  gpsTracker = new GPSTracker(getContext());
-//        myLoc = (ImageView) rootView.findViewById(R.id.myLoc);
+/*
+        gpsTracker = new GPSTracker(getContext());
+        myLoc = (ImageView) rootView.findViewById(R.id.myLoc);*/
         hideOnSearch = (FrameLayout) rootView.findViewById(R.id.hideOnSearch);
         seekbar_linearlayout = (LinearLayout) rootView.findViewById(R.id.seekbar_linearlayout);
-//        hPicker = (RelativeLayout) rootView.findViewById(R.id.hPicker);
-       // View locationButton = suppormanagerObj.getView().findViewById(2);
+/*        hPicker = (RelativeLayout) rootView.findViewById(R.id.hPicker);
+        View locationButton = suppormanagerObj.getView().findViewById(2);*/
         if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
             General.setSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI, String.valueOf(System.currentTimeMillis()));
             Log.i("TIMESTAMP", "millis " + System.currentTimeMillis());
@@ -423,24 +420,27 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             SharedPrefs.save(getContext(), SharedPrefs.PERMISSION, "false");
         }
 
+//  Variable initialization
 
         droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl, getActivity());
-//        mDrooms = (TextView) rootView.findViewById(R.id.linearlayout_drooms);
         mVisits = (TextView) rootView.findViewById(R.id.newVisits);
         mQrCode = (ImageView) rootView.findViewById(R.id.qrCode);
         mMarkerPanel = (LinearLayout) rootView.findViewById(R.id.ll_marker);
-
         mMarkerminmax = (RelativeLayout) rootView.findViewById(R.id.markerpanelminmax);
         ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
         recordWorkout = (LinearLayout) rootView.findViewById(R.id.recordWorkout);
         ic_search=(ImageView) rootView.findViewById(R.id.ic_search);
+        Mmarker = (ImageView) rootView.findViewById(R.id.Mmarker);
+
+
+        // Walkthrough and beacons
 
         if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
             beacon = "true";
             SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
         } else {
             beacon = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON);
-           // SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
+
             Log.i("ischecked", "walkthrough3dashboard" + beacon);
         }
 
@@ -452,7 +452,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             Log.i("ischecked", "walkthrough3dashboard" + Walkthrough);
         }
 
-        Mmarker = (ImageView) rootView.findViewById(R.id.Mmarker);
+
 
 
 //        icon1=(Drawable) getContext().getResources().getDrawable(R.drawable.buildingiconbeforeclick);
@@ -515,7 +515,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         tvFetchingrates = (TextView) rootView.findViewById(R.id.tvFetchingRates);
         tv_building = (TextView) rootView.findViewById(R.id.tv_building);
 
-        //search_building_icon.setVisibility(View.INVISIBLE);
         buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
         onPositionSelected(0, 2);
 
@@ -558,9 +557,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
         autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
         autoCompView.setOnItemClickListener(this);
-//        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.hideSoftInputFromWindow(autoCompView.getWindowToken(), 0);
-        //autoCompView.setOnItemClickListener(this);
         autoCompView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -598,22 +594,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
 
-
-
-
-
-
-
-
-        /*mDrooms.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //open deals listing
-                Intent openDealsListing = new Intent(getActivity(), ClientDealsListActivity.class);
-                startActivity(openDealsListing);
-            }
-        });*/
-
         mVisits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -639,18 +619,10 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     }
 
 
-//                openOyeScreen();
-//                CancelAnimation();
-
-
             }
         });
 
-//        mMarkerPanel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//            }
-//        });
+
 
 
         mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
@@ -665,22 +637,16 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             customMapFragment.getMap().getUiSettings().setZoomControlsEnabled(true);
             map = customMapFragment.getMap();
 
-//            resetMyPositionButton();
-            // geoFence = new GeoFence();
-            //if (isNetworkAvailable()) {
+
 
 
             if (map != null) {
-                //if ((int) Build.VERSION.SDK_INT <= 23) {
-
 
                 customMapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {
 
                         map = googleMap;
-
-                        // map = googleMap;
 
                             if(!isNetworkAvailable()) {
                                 map = googleMap;
@@ -703,15 +669,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
             }
 
-            // }
 
-
-            //}
 
             map.getUiSettings().setZoomGesturesEnabled(true);
 
 
-            //}
+
 
             map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                 @Override
@@ -725,20 +688,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 }
             });
 
-//            myLoc.setOnTouchListener(new View.OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View v, MotionEvent event) {
-//                    Log.i(TAG,"my Loc clicked "+event);
-//                    // enableMyLocation();
-//                     getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
-////                    if (isNetworkAvailable()) {
-////                        new LocationUpdater().execute();
-//                    buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier);
-////                    }
-//
-//                    return false;
-//                }
-//            });
+
+
+
+
+
+
 
 
             map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -764,11 +719,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
             });
+
+
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
 
-                    //intent =new Intent(getContext(), ClientMainActivity.class);
                     int i;
 
                     for (i = 0; i < 5; i++) {
@@ -798,13 +754,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 String text = "<font color=#ffffff >" + marker.getTitle().toString() + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
                                 tvFetchingrates.setText(Html.fromHtml(text));
                                 tvFetchingrates.setTypeface(null, Typeface.BOLD);
-
-                                //intent.putExtra("client_heading", "Live Building Rates");
-
                                 lng = marker.getPosition().longitude;
                                 lat = marker.getPosition().latitude;
                                 Log.i("marker lat", "==============marker position :" + marker.getPosition() + " " + lat + " " + lng);
-
                                 SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                                 SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
                                 General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
@@ -963,6 +915,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 lat = Double.parseDouble(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
                                 lng = Double.parseDouble(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
                                 map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lat, lng)));
+                                lastTouched = SystemClock.uptimeMillis();
+
                                 Log.i("MotionEvent.ACTION_UP", "=========================11");
                                 //map.getUiSettings().setScrollGesturesEnabled(true);
                             }
@@ -976,7 +930,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 map.getUiSettings().setScrollGesturesEnabled(true);
                                 Log.i("MotionEvent.ACTION_UP", "=========================" + clicked);
                             }
-//
+
                             if (now - lastTouched > SCROLL_TIME && !(motionEvent.getPointerCount() > 1) && isNetworkAvailable()) {
                                 //map.getUiSettings().setScrollGesturesEnabled(true);
 
@@ -996,9 +950,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 tv_building.setVisibility(View.VISIBLE);
                                 //  tv_building.setText("Average Rate @ this Locality");
                                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-//                                tv_building.setText("Average Rate @ This Locality");
-//                                tv_building.setTypeface(null, Typeface.ITALIC);
-                                LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
+
+                                LatLng currentLocation1;
                                 Log.i("map", "============ map:" + " " + map);
                                 currentLocation1 = map.getProjection().fromScreenLocation(point);
                                 lat = currentLocation1.latitude;
@@ -1310,68 +1263,68 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private void openOyeScreen() {
 
 
-
-//        if(android.os.Build.VERSION.SDK_INT >18) {
-//            Log.i("FLipanimator paused", "fipanimator paused");
-//            mFlipAnimator.end();
-//        }
+/*
+        if(android.os.Build.VERSION.SDK_INT >18) {
+            Log.i("FLipanimator paused", "fipanimator paused");
+            mFlipAnimator.end();
+        }*/
 
         Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
         intent.putExtra("tv_dealinfo","Home ");
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
 
+        /*mFlipAnimator.end();
+        mFlipAnimator.removeAllUpdateListeners();
+        //FlipListener f = new FlipListener(txtFilterValue);
+        mFlipAnimator = ValueAnimator.ofFloat(0f);
+        mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue));
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isFlipped()) {
+                                Log.i("mFlipAnimator","is flipped");
+                                mFlipAnimator.reverse();
+                            } else {
+                                Log.i("mFlipAnimator","is flipped not");
+                                mFlipAnimator.start();
+                            }
+                        }
+                    });
+                }
+            }
+        }, 2000, 2000);
+
+
+        mFlipAnimator.end();
+        mFlipAnimator.start();
+        mFlipAnimator = ValueAnimator.ofFloat(0f);
+
+        mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue, txtFilterValue));
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isFlipped()) {
+                                mFlipAnimator.reverse();
+                            } else {
+                                mFlipAnimator.start();
+                            }
+                        }
+                    });
+                }
+            }
+        }, 2000, 2000);
         //mFlipAnimator.end();
-//        mFlipAnimator.removeAllUpdateListeners();
-//        //FlipListener f = new FlipListener(txtFilterValue);
-//        mFlipAnimator = ValueAnimator.ofFloat(0f);
-//        mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue));
-//        Timer timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                if (getActivity() != null) {
-//                    getActivity().runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if (isFlipped()) {
-//                                Log.i("mFlipAnimator","is flipped");
-//                                mFlipAnimator.reverse();
-//                            } else {
-//                                Log.i("mFlipAnimator","is flipped not");
-//                                mFlipAnimator.start();
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        }, 2000, 2000);
-
-
-//        mFlipAnimator.end();
-//        mFlipAnimator.start();
-//        mFlipAnimator = ValueAnimator.ofFloat(0f);
-//
-//        mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue, txtFilterValue));
-//        Timer timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                if (getActivity() != null) {
-//                    getActivity().runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if (isFlipped()) {
-//                                mFlipAnimator.reverse();
-//                            } else {
-//                                mFlipAnimator.start();
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        }, 2000, 2000);
-//        //mFlipAnimator.end();
-//        mFlipAnimator.removeAllUpdateListeners();
+        mFlipAnimator.removeAllUpdateListeners();*/
 
         Bundle args = new Bundle();
         args.putString("brokerType", brokerType);
@@ -1472,6 +1425,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
         //getRegion();
 
+
         if(General.isNetworkAvailable(getContext())) {
             General.slowInternet(getContext());
 
@@ -1480,6 +1434,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         txtFilterValue.setEnabled(false);
         CancelAnimation();
         User user = new User();
+
 
 
 //        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE)

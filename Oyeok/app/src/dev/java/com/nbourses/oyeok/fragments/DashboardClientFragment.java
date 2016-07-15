@@ -229,7 +229,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private FrameLayout hideOnSearch;
     private Boolean autoc = false;
     private Boolean autocomplete = false;
-  public  static  View  rootView;
+  private  static  View  rootView;
 
 //    Intent intent ;
 
@@ -265,6 +265,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     Log.i(TAG, "hohohoh 2");
                     hideOnSearch.setVisibility(View.GONE);
                     seekbar_linearlayout.setVisibility(View.VISIBLE);
+                    seekbar_linearlayout.setAlpha(1f);
+                    mPhasedSeekBar.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {}
         }
@@ -675,8 +677,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         map = googleMap;
 
                         // map = googleMap;
+                        final LocationManager Loc_manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-                            if(!isNetworkAvailable()) {
+                            if(!isNetworkAvailable() || !(Loc_manager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
                                 map = googleMap;
                                 double lat11 = 19.1269299;
                                 double lng11 = 72.8376545999999;
@@ -935,7 +938,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         }
 
         try {
-            if (isNetworkAvailable() && map != null) {
+            if (  map != null) {
                 // customMapFragment = ((CustomMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
                 customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
                     @Override
@@ -964,65 +967,74 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                             // horizontalPicker.keepScrolling();
                             // horizontalPicker.stopScrolling();
                             //mMarkerPanel.setVisibility(View.VISIBLE);
-                            Log.i("MotionEvent.ACTION_UP", "=========================");
-                            final long now = SystemClock.uptimeMillis();
-                            if (clicked == true) {
-                                map.getUiSettings().setScrollGesturesEnabled(true);
-                                Log.i("MotionEvent.ACTION_UP", "=========================" + clicked);
-                            }
+                            if(isNetworkAvailable()) {
+                                Log.i("MotionEvent.ACTION_UP", "=========================");
+                                final long now = SystemClock.uptimeMillis();
+                                if (clicked == true) {
+                                    map.getUiSettings().setScrollGesturesEnabled(true);
+                                    Log.i("MotionEvent.ACTION_UP", "=========================" + clicked);
+                                }
 //
-                            if (now - lastTouched > SCROLL_TIME && !(motionEvent.getPointerCount() > 1) && isNetworkAvailable()) {
-                                //map.getUiSettings().setScrollGesturesEnabled(true);
+                                if (now - lastTouched > SCROLL_TIME && !(motionEvent.getPointerCount() > 1) && isNetworkAvailable()) {
+                                    //map.getUiSettings().setScrollGesturesEnabled(true);
 
-                                // horizontalPicker.keepScrolling();
-                                Log.i("MotionEvent.ACTION_UP", "=========================22");
-                                Log.i("setScroll", "=======================setScrollGesturesEnabled==");
+                                    // horizontalPicker.keepScrolling();
+                                    Log.i("MotionEvent.ACTION_UP", "=========================22");
+                                    Log.i("setScroll", "=======================setScrollGesturesEnabled==");
 
-                                // tv_building.setText("Average Rate @ this Locality");
-                                tvFetchingrates.setVisibility(View.VISIBLE);
-                                // if (!MarkerClicked) {
-                                mMarkerminmax.setVisibility(View.VISIBLE);
-                                // Mmarker.setVisibility(View.VISIBLE);
-                                //horizontalPicker.stopScrolling();
-                                tvRate.setVisibility(View.VISIBLE);
-                                rupeesymbol.setVisibility(View.VISIBLE);
-                                tvFetchingrates.setVisibility(View.VISIBLE);
-                                tv_building.setVisibility(View.VISIBLE);
-                                //  tv_building.setText("Average Rate @ this Locality");
-                                recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                                    // tv_building.setText("Average Rate @ this Locality");
+                                    tvFetchingrates.setVisibility(View.VISIBLE);
+                                    mMarkerminmax.setVisibility(View.VISIBLE);
+                                    // Mmarker.setVisibility(View.VISIBLE);
+                                    //horizontalPicker.stopScrolling();
+                                    tvRate.setVisibility(View.VISIBLE);
+                                    rupeesymbol.setVisibility(View.VISIBLE);
+                                    tvFetchingrates.setVisibility(View.VISIBLE);
+                                    tv_building.setVisibility(View.VISIBLE);
+                                    //  tv_building.setText("Average Rate @ this Locality");
+                                    recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 //                                tv_building.setText("Average Rate @ This Locality");
 //                                tv_building.setTypeface(null, Typeface.ITALIC);
-                                LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
-                                Log.i("map", "============ map:" + " " + map);
-                                currentLocation1 = map.getProjection().fromScreenLocation(point);
-                                lat = currentLocation1.latitude;
-                                Log.i("t1", "lat" + " " + lat);
-                                lng = currentLocation1.longitude;
-                                Log.i("t1", "lng" + " " + lng);
-                                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
-                                //map.addMarker(new MarkerOptions().title("hey").position(currentLocation1));
-                                Log.i("MARKER-- ", "====================================");
-                                SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                                SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                                General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
-                                General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
-                                Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-                                Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+                                    LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
+                                    Log.i("map", "============ map:" + " " + map);
+                                    currentLocation1 = map.getProjection().fromScreenLocation(point);
+                                    lat = currentLocation1.latitude;
+                                    Log.i("t1", "lat" + " " + lat);
+                                    lng = currentLocation1.longitude;
+                                    Log.i("t1", "lng" + " " + lng);
+                                    buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                                    //map.addMarker(new MarkerOptions().title("hey").position(currentLocation1));
+                                    Log.i("MARKER-- ", "====================================");
+                                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+                                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                                    General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
+                                    General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
+                                    Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+                                    Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
 
-                                getRegion();
-                                ///horizontalPicker.stopScrolling();
-                                search_building_icon.setVisibility(View.GONE);
-                                horizontalPicker.stopScrolling();
+                                    getRegion();
+                                    ///horizontalPicker.stopScrolling();
+                                    search_building_icon.setVisibility(View.GONE);
+                                    horizontalPicker.stopScrolling();
 
-                                getPrice();
-                                // getPrice();
-                                // mflag = false;
+                                    getPrice();
+                                    // getPrice();
+                                    // mflag = false;
 
-                                if (isNetworkAvailable()) {
-                                    new LocationUpdater().execute();
+
+                                        new LocationUpdater().execute();
+
+
+
                                 }
 
-
+                            }else{
+                                tvFetchingrates.setVisibility(View.VISIBLE);
+                                tvRate.setVisibility(View.GONE);
+                                rupeesymbol.setVisibility(View.GONE);
+                                horizontalPicker.setVisibility(View.VISIBLE);
+                                tv_building.setVisibility(View.GONE);
+                                tvFetchingrates.setText("No Internet Connection..");
                             }
 
                         } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {

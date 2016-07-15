@@ -221,7 +221,7 @@ private void alertbuilder()
 
 {
     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setMessage("Dou you want to publish this oye?")
+    builder.setMessage("Do you want to publish this oye?")
             .setCancelable(true)
             .setPositiveButton("Publish", new DialogInterface.OnClickListener() {
                 public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
@@ -820,23 +820,22 @@ private void alertbuilder()
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         if(AppConstants.SIGNUP_FLAG){
-//            if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")){
-//            Intent back = new Intent(this, BrokerMainActivity.class);
-//            startActivity(back);
-//            }
-//            else{
-//                Intent back = new Intent(this, ClientMainActivity.class);
-//                startActivity(back);
-//            }
-//            finish();
+/*            if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")){
+            Intent back = new Intent(this, BrokerMainActivity.class);
+            startActivity(back);
+            }
+            else{
+                Intent back = new Intent(this, ClientMainActivity.class);
+                startActivity(back);
+            }
+            finish();*/
 
             getSupportFragmentManager().popBackStack();
-//            super.onBackPressed();
-//            Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
             AppConstants.SIGNUP_FLAG=false;
+            backpress = 0;
             Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff");
-//            getFragmentManager().popBackStack();
+
         }
 
 
@@ -845,39 +844,41 @@ private void alertbuilder()
             Log.i("BACK PRESSED","  autocomplete"+autocomplete);
 //
             Intent intentt = new Intent(AppConstants.AUTOCOMPLETEFLAG1);
-            intent.putExtra("autocomplete",true);
+            intentt.putExtra("autocomplete",true);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intentt);
+            autocomplete=false;
+            backpress = 0;
 
         }
 
        else if(setting==true){
             Log.i("BACK PRESSED"," =================== setting"+setting);
-//            getFragmentManager().popBackStack();
             if(SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") || SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")){
                 super.onBackPressed();
                 finish();
-//                try {
-//                    DashboardClientFragment dash=new DashboardClientFragment();
-//                    dash.Wlak_Beacon();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
+               /* try {
+                    DashboardClientFragment dash=new DashboardClientFragment();
+                    dash.Wlak_Beacon();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
                 Intent inten = new Intent(this, ClientMainActivity.class);
                 inten.addFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                 Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                 Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(inten);
-                startActivity(new Intent(this, ClientMainActivity.class));
                 finish();
                 Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
+                backpress = 0;
 
 
             }else {
                 super.onBackPressed();
                 Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
+                backpress = 0;
             }
 
         }
@@ -886,36 +887,24 @@ private void alertbuilder()
             if (webView.canGoBack()) {
                 webView.goBack();
             }else {
-//                super.onBackPressed();
-                finish();
+
                 Log.i("SIGNUP_FLAG", " webView =================== 3");
-//                getFragmentManager().popBackStack();
-                Intent back = new Intent(this, ClientMainActivity.class);
-                startActivity(back);
+                Intent inten = new Intent(this, ClientMainActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(inten);
+                finish();
+                backpress = 0;
             }
-//            finish();
         } else if (slidingLayout != null && (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
             closeOyeScreen();
-            Log.i("SIGNUP_FLAG"," closing app =================== 1");
-//           getFragmentManager().popBackStack();
-            Log.i("SIGNUP_FLAG"," closing app =================== 2");
-//            Intent inten = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-//            LocalBroadcastManager.getInstance(this).sendBroadcast(inten);
-        }
+            backpress = 0;
 
-        else{
+        } else{
+
             Log.i("SIGNUP_FLAG"," closing app =================== 3"+getFragmentManager().getBackStackEntryCount());
-
-//            new AlertDialog.Builder(this)
-//                    .setTitle("Really Exit?")
-//                    .setMessage("Are you sure you want to exit?")
-//                    .setNegativeButton(android.R.string.no, null)
-//                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-//
-//                        public void onClick(DialogInterface arg0, int arg1) {
-//                            ClientMainActivity.super.onBackPressed();
-//                        }
-//                    }).create().show();
             if(backpress <1) {
                 backpress = (backpress + 1);
                 Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
@@ -923,9 +912,6 @@ private void alertbuilder()
                 backpress = 0;
                 this.finish();
             }
-//            if(backpress==0);
-//           this.finish();
-//            super.onBackPressed();
 
         }
 
