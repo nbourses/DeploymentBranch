@@ -606,10 +606,10 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
                 getSupportFragmentManager().popBackStackImmediate();
             }
             Intent inten = new Intent(this, BrokerMainActivity.class);
-            inten.addFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                            Intent.FLAG_ACTIVITY_NEW_TASK);
+//            inten.addFlags(
+//                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+//                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+//                            Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(inten);
             finish();
             AppConstants.SIGNUP_FLAG=false;
