@@ -63,6 +63,8 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
 
     @Bind(R.id.openmaps)
     Button openmaps;
+    @Bind(R.id.DONE)
+    Button doneButton;
 
 //    @Bind(R.id.preok_layout)
 //    Toolbar preok_layout;
@@ -412,6 +414,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
                 BrokerMap brokerMap=new BrokerMap();
 //                brokerMap.setChangeLoction(this);
                 loadFragment(brokerMap,null,R.id.container_map,"");
+                doneButton.setVisibility(View.VISIBLE);
                 gmap=true;
 
                 tv_change_region.setVisibility(View.VISIBLE);
@@ -430,9 +433,21 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         });
 //
 
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent mainscreen  = new Intent(this,BrokerMainActivity.class);
+                startActivity(mainscreen);
+                finish();
+                gmap =false;
+                backpress = 0;
 
 
 
+            }
+        });
+        
     }
 
     private void enableMyLocation() {
