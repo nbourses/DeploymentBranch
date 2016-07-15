@@ -833,6 +833,7 @@ private void alertbuilder()
             getSupportFragmentManager().popBackStack();
 
             AppConstants.SIGNUP_FLAG=false;
+            backpress = 0;
             Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff");
 
         }
@@ -845,6 +846,8 @@ private void alertbuilder()
             Intent intentt = new Intent(AppConstants.AUTOCOMPLETEFLAG1);
             intentt.putExtra("autocomplete",true);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intentt);
+            autocomplete=false;
+            backpress = 0;
 
         }
 
@@ -868,12 +871,14 @@ private void alertbuilder()
                 finish();
                 Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
+                backpress = 0;
 
 
             }else {
                 super.onBackPressed();
                 Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
+                backpress = 0;
             }
 
         }
@@ -891,13 +896,14 @@ private void alertbuilder()
                                 Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(inten);
                 finish();
+                backpress = 0;
             }
         } else if (slidingLayout != null && (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
             closeOyeScreen();
+            backpress = 0;
 
-        }
+        } else{
 
-        else{
             Log.i("SIGNUP_FLAG"," closing app =================== 3"+getFragmentManager().getBackStackEntryCount());
             if(backpress <1) {
                 backpress = (backpress + 1);

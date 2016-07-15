@@ -1353,7 +1353,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                 }
 
                             }
-
+                            myRealm.commitTransaction();
 //
 
                             Log.i("TRACE==", "list broker deals" + listBrokerDeals_new);
@@ -1451,7 +1451,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     } catch (Exception e) {
 
                     } finally {
-                        myRealm.commitTransaction();
+
                     }
                 }
 

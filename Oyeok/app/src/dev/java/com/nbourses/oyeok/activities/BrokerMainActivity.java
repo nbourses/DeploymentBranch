@@ -639,10 +639,10 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         else if(gmap ==true){
             Log.i("ONBACKPRESSED","broker main activity gmap"+getSupportFragmentManager().getBackStackEntryCount());
 
-            int count = getFragmentManager().getBackStackEntryCount();
-            for(int i = 0; i < count; ++i) {
-                getFragmentManager().popBackStack();
-            }
+//            int count = getFragmentManager().getBackStackEntryCount();
+//            for(int i = 0; i < count; ++i) {
+//            getSupportFragmentManager().popBackStackImmediate();
+//            }
             Log.i("ONBACKPRESSED","broker main activity gmap"+getSupportFragmentManager().getBackStackEntryCount());
             Intent inten = new Intent(this, BrokerMainActivity.class);
 
