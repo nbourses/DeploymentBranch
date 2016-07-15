@@ -593,7 +593,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
     public void onBackPressed() {
         Log.i("ONBACKPRESSED","signupSuccessflag 432 "+signupSuccessflag);
         Log.i("ONBACKPRESSED","buildingSliderflag "+buildingSliderflag);
-
+  
         Log.i("ONBACKPRESSED","broker main activity "+setting);
 
 

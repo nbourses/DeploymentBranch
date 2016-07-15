@@ -225,6 +225,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
     private void init() {
+        Log.i(TAG, "role of user def yoman " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
         listings = new HashMap<String, Float>();
 //        try {
 //
@@ -282,7 +283,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         }
 
 
-        displayMessage();
+
 
         // Bundle bundle  = getIntent().getExtras();
         //channel_name = bundle.getString(AppConstants.OK_ID); //my_channel if came from root item
@@ -551,6 +552,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         listAdapter = new ChatListAdapter(chatMessages,isDefaultDeal, this);
         chatListView.setAdapter(listAdapter);
 
+      //  displayMessage();
+
 //        Bundle bundle  = getIntent().getExtras();
 //        channel_name = bundle.getString(AppConstants.OK_ID);
 
@@ -658,6 +661,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      */
 
     private void setupPubnub(String channel_name) {
+
         chatMessages.clear();
         listAdapter.notifyDataSetChanged();
         Log.i("WHERENOW", "3 ");
@@ -670,7 +674,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             Log.i(TAG, "before loadHistoryFromPubnub");
             if(!channel_name.equals("my_channel")) {
-               // displayMessage();
+
+                displayMessage();
                 loadHistoryFromPubnub(channel_name);
             }
 
@@ -777,13 +782,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      * @param jsonMsg
      */
     private void displayMessage(JSONObject jsonMsg) {
+
         Log.i("WHERENOW", "5 ");
         Log.i("CONVER", "jsonMsg" + jsonMsg);
         Log.i(TAG, "inside displayMessage" + jsonMsg);
-        //Read cachedmsgs from shared
 
-
-        Log.i("CACHE", "cachedmsgs after add" + cachedmsgs);
 
 
         String body = null;
@@ -928,16 +931,35 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         ChatMessage message;
         String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
 
+
+        /*message = new ChatMessage();
+        message.setUserName(roleOfUser);
+        message.setMessageStatus(ChatMessageStatus.SENT);
+        message.setMessageText("testo");
+        message.setUserType(ChatMessageUserType.OTHER);
+        message.setMessageTime(Long.valueOf("14685047443226704")/10000);
+        chatMessages.add(message);
+       // listAdapter.notifyDataSetChanged();
+
+
+        message = new ChatMessage();
+        message.setUserName(roleOfUser);
+        message.setMessageStatus(ChatMessageStatus.SENT);
+        message.setMessageText("testero");
+        message.setUserType(ChatMessageUserType.OTHER);
+        message.setMessageTime(Long.valueOf("14685047443226704")/10000);
+        chatMessages.add(message);
+        listAdapter.notifyDataSetChanged();*/
+
+
         try {
 
-            //           Realm myRealm = General.realmconfig(this);
+
+
             myRealm.beginTransaction();
             RealmResults<Message> results1 =
                     myRealm.where(Message.class).equalTo(AppConstants.OK_ID, channel_name).findAll();
 
-//            Message myPuppy = myRealm.where(Message.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findFirst();
-//
-//            Log.i(TAG, "my name is " + myPuppy.getName());
 
             for (Message c : results1) {
                 Log.i(TAG, "until insideroui2 ");
@@ -966,38 +988,20 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 message.setUserType(userType);
                 message.setMessageTime(Long.valueOf(c.getTimestamp())/10000);
                 chatMessages.add(message);
-                listAdapter = new ChatListAdapter(chatMessages,isDefaultDeal, this);
-                chatListView.setAdapter(listAdapter);
+
 
                 Log.i(TAG, "cache yo  message after adding to chatMessages" + chatMessages);
 
-                //  listAdapter.notifyDataSetChanged();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.i(TAG, "cache yo message runOnUiThread" + listAdapter);
 
-
-                        if (chatMessages != null) {
-                            Log.i(TAG, "cache yo message runOnUiThread  not null");
-                           listAdapter.notifyDataSetChanged();
-
-                        }
-                        Log.i(TAG, "cache yo message runOnUiThread edtTypeMsg1");
-                        edtTypeMsg.setText("");
-                        Log.i(TAG, "cache yo message runOnUiThread edtTypeMsg2");
-                    }
-                });
             }
+            listAdapter.notifyDataSetChanged();
         }catch(Exception e){
             Log.i(TAG,"Caught in the exception reading cache from realm "+e);
         }
         finally {
-            chatMessages.clear();
             myRealm.commitTransaction();
             Log.i(TAG,"until fitra 4 "+myRealm.isInTransaction());
         }
-
 
 
     }
@@ -1189,6 +1193,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     int jsonArrayHistoryLength = jsonArrayHistory.length();
                     // cacheMessages(jsonArrayHistory);
                     if (jsonArrayHistory.length() > 0) {
+                        chatMessages.clear();// to remove cached messages
+                        clearCache();
                         Log.i(TAG, "loadhistory not empty");
                         for (int i = 0; i < jsonArrayHistoryLength; i++) {
                             JSONObject jsonMsg = jsonArrayHistory.getJSONObject(i);
@@ -1276,7 +1282,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             }
         };
         // pubnub.history(channel_name, 10, false, callback);
-        pubnub.history(channel_name,true, 10,callback);
+        pubnub.history(channel_name,true, 50,callback);
     }
 
 
@@ -1728,7 +1734,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             }
         };
         // pubnub.history(channel_name, 10, false, callback);
-        pubnub.history(channel_name,true, 10,callback);
+        pubnub.history(channel_name,true, 50,callback);
         Log.i(TAG, "inside loadHistoryFromPubnub channel name is2 yo jsonArrayHistory 1 "+jsonArrayHistory);
 
 
@@ -1742,7 +1748,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         storeDealTime();
 
-       // clearCache();
+       //
         loadFinalHistory();
 
 //        try {

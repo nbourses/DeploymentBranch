@@ -11,7 +11,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -25,7 +24,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -127,34 +125,17 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
-    @Bind(R.id.filter)
-    Button filter;
 
-
-    @Bind(R.id.filtergone)
-    Button filtergone;
-
-    @Bind(R.id.search)
+   /* @Bind(R.id.search)
     Button search;
     @Bind(R.id.searchgone)
-    Button searchgone;
+    Button searchgone;*/
 
     //    @Bind(R.id.searchView)
 //    SearchView searchView;
-    @Bind(R.id.filterContainer)
-    RelativeLayout filterContainer;
 
-    @Bind(R.id.txtHome)
-    ImageView txtHome;
 
-    @Bind(R.id.txtShop)
-    ImageView txtShop;
 
-    @Bind(R.id.txtIndustrial)
-    ImageView txtIndustrial;
-
-    @Bind(R.id.txtOffice)
-    ImageView txtOffice;
 
 //    @Bind(R.id.searchView)
 //    SearchView searchView;
@@ -617,6 +598,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     private void init() {
 
         searchView = (SearchView) findViewById(R.id.searchView);
+        searchView.setIconified(false);
+        searchView.clearFocus();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -660,13 +643,12 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
         });
 
-        search.setVisibility(View.VISIBLE);
+        /*search.setVisibility(View.VISIBLE);*/
         //searchView.setVisibility(View.VISIBLE);
         //supportChat.setVisibility(View.GONE);
 
-        filter.setVisibility(View.VISIBLE);
-        txtPreviouslySelectedPropertyType = txtHome;
-        txtHome.setBackgroundResource(R.drawable.buy_option_circle);
+
+
         bounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
         slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
         slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
@@ -1354,7 +1336,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                             }
                             myRealm.commitTransaction();
-//
 
                             Log.i("TRACE==", "list broker deals" + listBrokerDeals_new);
 
@@ -1602,61 +1583,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     }*/
 
 
-    @OnClick(R.id.filter)
-    public void onClickzFilter(View v) {
-        filter.setVisibility(View.GONE);
-        filtergone.setVisibility(View.VISIBLE);
-        searchgone.setVisibility(View.GONE);
-        search.setVisibility(View.VISIBLE);
-        filterContainer.setVisibility(View.VISIBLE);
-        filterContainer.startAnimation(bounce);
-        supportChat.clearAnimation();
-        supportChat.setVisibility(View.GONE);
 
-        searchView.clearAnimation();
-        searchView.setVisibility(View.GONE);
-        filterPtype = "home";
-        General.filterSetSnackbar(this,filterPtype);
 
-        if(listBrokerDeals_new != null)
-            listBrokerDeals_new.clear();
-        if(default_deals != null)
-            default_deals.clear();
-        loadDefaultDeals();
-        loadBrokerDeals();
-
-    }
-
-    @OnClick(R.id.filtergone)
-    public void onClickzFiltergone(View v) {
-        filtergone.setVisibility(View.GONE);
-        filter.setVisibility(View.VISIBLE);
-        searchgone.setVisibility(View.GONE);
-        search.setVisibility(View.VISIBLE);
-        filterContainer.clearAnimation();
-        filterContainer.setVisibility(View.GONE);
-        searchView.clearAnimation();
-        searchView.setVisibility(View.GONE);
-
-        supportChat.setVisibility(View.VISIBLE);
-        supportChat.startAnimation(bounce);
-        filterPtype = null;
-        SnackbarManager.show(
-                Snackbar.with(this)
-                        .position(Snackbar.SnackbarPosition.TOP)
-                        .text("All filters removed.")
-                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-
-        if(listBrokerDeals_new != null)
-            listBrokerDeals_new.clear();
-        if(default_deals != null)
-            default_deals.clear();
-        loadDefaultDeals();
-        loadBrokerDeals();
-
-    }
-
-    @OnClick(R.id.search)
+   /* @OnClick(R.id.search)
     public void onClickzSearch(View v) {
         showbgtext = false;
 
@@ -1665,8 +1594,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         search.setVisibility(View.GONE);
         supportChat.clearAnimation();
         supportChat.setVisibility(View.GONE);
-        filtergone.setVisibility(View.GONE);
-        filter.setVisibility(View.VISIBLE);
 
         if(listBrokerDeals_new != null)
             listBrokerDeals_new.clear();
@@ -1674,8 +1601,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             default_deals.clear();
         loadDefaultDeals();
         loadBrokerDeals();
-        filterContainer.clearAnimation();
-        filterContainer.setVisibility(View.GONE);
+
         supportChat.setVisibility(View.GONE);
 
         searchView.setVisibility(View.VISIBLE);
@@ -1700,8 +1626,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         supportChat.clearAnimation();
         supportChat.setVisibility(View.VISIBLE);
         supportChat.startAnimation(bounce);
-        filtergone.setVisibility(View.GONE);
-        filter.setVisibility(View.VISIBLE);
+
 
         if(listBrokerDeals_new != null)
             listBrokerDeals_new.clear();
@@ -1709,61 +1634,14 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             default_deals.clear();
         loadDefaultDeals();
         loadBrokerDeals();
-        filterContainer.clearAnimation();
-        filterContainer.setVisibility(View.GONE);
 
 
 
 
 
-    }
 
-    @Nullable
-    @OnClick({R.id.txtHome, R.id.txtShop, R.id.txtIndustrial, R.id.txtOffice})
-    public void onPropertyTypeClick(View v) {
+    }*/
 
-        if(txtPreviouslySelectedPropertyType != null)
-            txtPreviouslySelectedPropertyType.setBackgroundColor(Color.parseColor(propertyTypeDefaultColor));
-
-        txtPreviouslySelectedPropertyType = (ImageView) v;
-
-        if (txtHome.getId() == v.getId()) {
-            txtHome.setBackgroundResource(R.drawable.buy_option_circle);
-            filterPtype = "home";
-            // AppConstants.letsOye.setPropertyType("home");
-            //  loadHomeOptionView("home");
-            //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"home");
-
-        }
-        else if(txtShop.getId() == v.getId()) {
-            txtShop.setBackgroundResource(R.drawable.buy_option_circle);
-            filterPtype = "shop";
-            // AppConstants.letsOye.setPropertyType("shop");
-            // loadHomeOptionView("shop");
-            // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"shop");
-        }
-        else if(txtIndustrial.getId() == v.getId()) {
-            txtIndustrial.setBackgroundResource(R.drawable.buy_option_circle);
-            filterPtype = "industrial";
-            // AppConstants.letsOye.setPropertyType("industrial");
-            // loadHomeOptionView("industrial");
-            // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"industrial");
-        }
-        else if(txtOffice.getId() == v.getId()) {
-            txtOffice.setBackgroundResource(R.drawable.buy_option_circle);
-            filterPtype = "office";
-            //AppConstants.letsOye.setPropertyType("office");
-            // loadHomeOptionView("office");
-            //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"office");
-        }
-        General.filterSetSnackbar(this,filterPtype);
-        if(default_deals != null)
-            default_deals.clear();
-        if(listBrokerDeals_new != null)
-            listBrokerDeals_new.clear();
-        loadDefaultDeals();
-        loadBrokerDeals();
-    }
 
 
 
