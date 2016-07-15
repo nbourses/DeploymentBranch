@@ -696,6 +696,7 @@ while(slowInternetFlag) {
                         //openDealsListing.putExtra("default_deal_flag", true);
 
                         openDealsListing.putExtra("userRole", "client");
+                        openDealsListing.putExtra("Oyed", "yes");
                         openDealsListing.putExtra(AppConstants.SPEC_CODE, speccode);
                         openDealsListing.putExtra(AppConstants.OK_ID, General.getSharedPreferences(context, "OK_ID"));
                         openDealsListing.putExtra("isDefaultDeal",true);

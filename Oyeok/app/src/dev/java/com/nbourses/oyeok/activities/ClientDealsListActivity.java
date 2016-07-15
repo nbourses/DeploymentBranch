@@ -263,25 +263,25 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
                 // create "More" item
-//                SwipeMenuItem MoreItem = new SwipeMenuItem(
-//                        getApplicationContext());
-//                // set item background
-//                MoreItem.setBackground(new ColorDrawable(getResources().getColor(R.color.grey)));
-//                // set item width
-//                MoreItem.setWidth(listAdapter.dp2px(90));
-//                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(90));
-//                // set item title
-//                MoreItem.setIcon(R.drawable.more);
-//                MoreItem.setTitle("More");
-//                // set item title fontsize
-//                MoreItem.setTitleSize(18);
-//                // set item title font color
-//                MoreItem.setTitleColor(R.color.white);
-//                // add to more
-//                menu.addMenuItem(MoreItem);
+                SwipeMenuItem MoreItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                MoreItem.setBackground(new ColorDrawable(getResources().getColor(R.color.grey)));
+                // set item width
+                MoreItem.setWidth(listAdapter.dp2px(90));
+                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(90));
+                // set item title
+                MoreItem.setIcon(R.drawable.more);
+                MoreItem.setTitle("More");
+                // set item title fontsize
+                MoreItem.setTitleSize(18);
+                // set item title font color
+                MoreItem.setTitleColor(R.color.orange);
+                // add to more
+                menu.addMenuItem(MoreItem);
 
 
-                // create "unmute" item
+        /*        // create "unmute" item
                 SwipeMenuItem MuteItem = new SwipeMenuItem(
                         getApplicationContext());
                 // set item background
@@ -296,7 +296,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 // set item title font color
                 MuteItem.setTitleColor(Color.WHITE);
                 // add to more
-                menu.addMenuItem(MuteItem);
+                menu.addMenuItem(MuteItem);*/
 
 
 
@@ -304,15 +304,15 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 SwipeMenuItem deleteItem = new SwipeMenuItem(
                         getApplicationContext());
                 // set item background
-                deleteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.darkred)));
+                deleteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.red)));
                 // set item width
                 deleteItem.setWidth(listAdapter.dp2px(90));
                 // set a icon
                 deleteItem.setIcon(R.drawable.delete);
-                deleteItem.setTitle("delete");
-                MuteItem.setTitleSize(18);
+                deleteItem.setTitle("Delete");
+                deleteItem.setTitleSize(18);
                 // set item title font color
-                deleteItem.setTitleColor(R.color.white);
+                deleteItem.setTitleColor(R.color.black);
                 // add to more
                 menu.addMenuItem(deleteItem);
 
@@ -330,19 +330,180 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         listViewDeals.setMenuCreator(creator);
 
         // step 2. listener item click event
+
         listViewDeals.setOnMenuItemClickListener(new OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int pos, SwipeMenu menu, int index) {
                 //           ApplicationInfo item =  listAdapter.getItem(position);
                 position = pos;
-                switch (index) {
-                    case 2:
+                // mute or unmute toggle
+                 String muteStatus = "Mute notifications";
+                if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
+                    mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
+                    if(mutedOKIds.contains(total_deals.get(position).getOkId())) {
+                        muteStatus = "Unmute notifications";
 
-                        Log.i("OPEN OPTION", "=================");
-                        //open
-//                        open(item);
-                        break;
+                    }
+                }
+
+                switch (index) {
                     case 0:
+                        final String muteStatus1 = muteStatus;
+                        final CharSequence[] items = { muteStatus1, "Delete deal", "Cancel" };
+                        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ClientDealsListActivity.this);
+                        builder.setTitle("More!");
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int item) {
+                                if (items[item].equals(muteStatus1)) {
+
+                                    if(listBrokerDeals_new.isEmpty()){
+                                        total_deals = new ArrayList<BrokerDeals>();
+                                        total_deals.addAll(default_deals);
+                                    }
+
+                                    Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(ClientDealsListActivity.this));
+                                    if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
+                                        mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
+
+                                        if(mutedOKIds.contains(total_deals.get(position).getOkId())) {
+                                            mutedOKIds.remove(total_deals.get(position).getOkId());
+                                            SnackbarManager.show(
+                                                    Snackbar.with(ClientDealsListActivity.this)
+                                                            .position(Snackbar.SnackbarPosition.TOP)
+                                                            .text(total_deals.get(position).getSpecCode() + " unmuted!")
+                                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                        }
+                                        else {
+                                            mutedOKIds.add(total_deals.get(position).getOkId());
+                                            SnackbarManager.show(
+                                                    Snackbar.with(ClientDealsListActivity.this)
+                                                            .position(Snackbar.SnackbarPosition.TOP)
+                                                            .text(total_deals.get(position).getSpecCode() + " muted!")
+                                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                        }
+
+                                    }
+
+
+                                    General.saveMutedOKIds(ClientDealsListActivity.this,mutedOKIds);
+
+                                    Log.i("MUTE", "muted from shared" + General.getMutedOKIds(ClientDealsListActivity.this));
+
+                                } else if (items[item].equals("Delete deal")) {
+
+                                    if(listBrokerDeals_new.isEmpty()){
+                                        Log.i(TAG,"wadala default deals 1 ");
+                                        total_deals = new ArrayList<BrokerDeals>();
+                                        total_deals.addAll(default_deals);
+                                    }
+
+
+                                    // Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
+
+
+                                    Log.i("deleteDR CALLED", "spec code " + total_deals.get(position).getSpecCode());
+                                    AlertDialog alertDialog = new AlertDialog.Builder(ClientDealsListActivity.this).create();
+                                    //alertDialog.setTitle("DELETE");
+                                    alertDialog.setMessage("Do you really want to delete this deal room.");
+                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Delete",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+
+                                                    if(default_deals != null) {
+                                                        Log.i(TAG,"wadala default deals 2 ");
+                                                        if (default_deals.contains(total_deals.get(position))){
+
+                                                            Log.i("deleteDR CALLED", "Its default deal " + total_deals.get(position).getSpecCode());
+
+
+                                                            String deals;
+                                                            deals = General.getDefaultDeals(ClientDealsListActivity.this);
+                                                            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+                                                            }.getType();
+                                                            HashMap<String, String> deals1 = gson.fromJson(deals, type);
+
+                                                            Log.i("TRACE", "hashmap:" + deals1);
+
+                                                            if (deals1 == null) {
+                                                                deals1 = new HashMap<String, String>();
+
+                                                            }
+
+                                                            Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
+
+                                                            while (iter.hasNext()) {
+                                                                Map.Entry<String,String> entry = iter.next();
+                                                                Log.i("DELETE DEFAULT DROOM","entry.getKey"+entry.getKey());
+                                                                if(total_deals.get(position).getOkId().equalsIgnoreCase(entry.getKey())){
+                                                                    iter.remove();
+                                                                    Log.i("DELETE DEFAULT DROOM", "entry.getKey removed" + entry.getKey());
+                                                                    Log.i("DELETE DEFAULT DROOM", "default droomsremoved" + entry.getKey());
+                                                                    Log.i("DELETE DEFAULT DROOM", "default droomsremoved okid" + total_deals.get(position).getOkId());
+                                                                    Log.i("DELETE DEFAULT DROOM","entry.getKey removed"+entry.getValue());
+                                                                    // RefreshDrooms = true;
+                                                                }
+                                                            }
+                                                            Log.i(TAG,"after deal "+deals1);
+                                                            Log.i("Default deals in shared","I am here2");
+                                                            Gson g = new Gson();
+                                                            String hashMapString = g.toJson(deals1);
+                                                            General.saveDefaultDeals(ClientDealsListActivity.this, hashMapString);
+
+                                                            deleteDealingroom("1",total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
+                                                            default_deals.clear();
+                                                            loadDefaultDeals();
+                                                            loadBrokerDeals();
+
+                                                        }
+                                                    }
+
+
+                                                    if(listBrokerDeals_new != null) {
+                                                        Log.i(TAG,"wadala default deals 2 ");
+                                                        if (listBrokerDeals_new.contains(total_deals.get(position))) {
+
+                                                            Log.i("deleteDR CALLED", "Its HDroom " + total_deals.get(position).getSpecCode());
+
+
+                                                            deleteDealingroom("0",total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
+                                                            //on delete droom delete that room OK id from mutedOKIds
+
+                                                            Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(ClientDealsListActivity.this));
+                                                            if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
+                                                                mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
+
+                                                                if(mutedOKIds.contains(total_deals.get(position).getOkId()))
+                                                                    mutedOKIds.remove(total_deals.get(position).getOkId());
+
+                                                            }
+
+                                                            General.saveMutedOKIds(ClientDealsListActivity.this, mutedOKIds);
+
+                                                            Log.i("MUTE", "muted from shared" + General.getMutedOKIds(ClientDealsListActivity.this));
+
+                                                            if(default_deals != null)
+                                                                default_deals.clear();
+                                                            if(listBrokerDeals_new != null)
+                                                                listBrokerDeals_new.clear();
+                                                            loadDefaultDeals();
+                                                            loadBrokerDeals();
+                                                        }
+                                                    }
+
+                                                }
+                                            });
+                                    alertDialog.show();
+
+                                } else if (items[item].equals("Cancel")) {
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
+                        builder.show();
+                        break;
+                    case 2:
 
                         if(listBrokerDeals_new.isEmpty()){
                             total_deals = new ArrayList<BrokerDeals>();

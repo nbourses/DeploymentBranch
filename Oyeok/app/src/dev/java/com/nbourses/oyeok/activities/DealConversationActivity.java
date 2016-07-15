@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
@@ -26,6 +28,15 @@ import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -55,6 +66,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -136,6 +148,14 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private Message message;
     private JSONArray jsonArrayHistory;
     private HashMap<String, Float> listings;
+    private Boolean oyed = false;
+    private Boolean okyed = false;
+
+   // File fileToUpload = new File("/storage/sdcard0/Pictures/Screenshots/photos.png");
+  private File fileToUpload = null;
+   private File fileToDownload = new File("/storage/sdcard0/Pictures/MY");
+    AmazonS3 s3;
+    TransferUtility transferUtility;
 
 
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
@@ -225,6 +245,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
     private void init() {
+
+        // callback method to call credentialsProvider method.
+        credentialsProvider();
+
+        // callback method to call the setTransferUtility method
+        setTransferUtility();
+
         Log.i(TAG, "role of user def yoman " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
         listings = new HashMap<String, Float>();
 //        try {
@@ -261,7 +288,20 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                     if (bundle.getString("OkAccepted").equalsIgnoreCase("yes")) {
 
+                        okyed = true;
                         General.storeDealTime(bundle.getString(AppConstants.OK_ID), this);
+
+                    }
+
+                }
+
+                else if (bundle.containsKey("Oyed") && bundle.containsKey(AppConstants.OK_ID)) {
+                    channel_name = bundle.getString(AppConstants.OK_ID);
+
+                    if (bundle.getString("Oyed").equalsIgnoreCase("yes")) {
+                        oyed = true;
+                        //chatMessages.clear();
+
 
                     }
 
@@ -675,7 +715,15 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             Log.i(TAG, "before loadHistoryFromPubnub");
             if(!channel_name.equals("my_channel")) {
 
-                displayMessage();
+                if(oyed || okyed){
+                    oyed = false;
+                    okyed = false;
+                    displayDefaultMessage();
+
+                }
+                else {
+                    displayMessage();
+                }
                 loadHistoryFromPubnub(channel_name);
             }
 
@@ -762,13 +810,16 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent, REQUEST_CAMERA);
                 } else if (items[item].equals("Choose from Library")) {
+                    Log.d(TAG, "lolwa imagewa 4 ");
                     Intent intent = new Intent(
                             Intent.ACTION_PICK,
                             android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/*");
+                    Log.d(TAG, "lolwa imagewa 1 ");
                     startActivityForResult(
                             Intent.createChooser(intent, "Select File"),
                             SELECT_FILE);
+                    Log.d(TAG, "lolwa imagewa 2 ");
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -776,12 +827,37 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         });
         builder.show();
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "lolwa imagewa 3 ");
+
+        if (requestCode == SELECT_FILE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            Uri uri = data.getData();
+            Log.d(TAG, "lolwa imagewa uri "+uri);
+            File fileToUpload = new File(String.valueOf(uri));
+            Log.d(TAG, "lolwa imagewa uri fileToUpload "+fileToUpload);
+
+
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                 Log.d(TAG, "lolwa imagewa "+String.valueOf(bitmap));
+
+                /*ImageView imageView = (ImageView) findViewById(R.id.imageView);
+                imageView.setImageBitmap(bitmap);*/
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * display incoming messages through pubnub
      * @param jsonMsg
      */
     private void displayMessage(JSONObject jsonMsg) {
+
 
         Log.i("WHERENOW", "5 ");
         Log.i("CONVER", "jsonMsg" + jsonMsg);
@@ -1179,7 +1255,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      * load pubnub history
      */
     private void loadHistoryFromPubnub(String channel_name) {
-
         Log.i(TAG, "inside loadHistoryFromPubnub");
         Log.i(TAG, "inside loadHistoryFromPubnub channel name is" + channel_name);
 
@@ -1217,9 +1292,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     else {
 
                         Log.i(TAG, "loadhistory empty");
+if(!okyed && !oyed ) {
+    //displayDefaultMessage();  // if client have not okeyed or oyed , its old dealing room but its empty then we need to show him default message
+    //need to be handled
+}
 
 
-                        JSONObject jsonMsg = new JSONObject();
+                        /*JSONObject jsonMsg = new JSONObject();
                         //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
                         jsonMsg.put("from", "DEFAULT");
                         //jsonMsg.put("to", "client");
@@ -1249,6 +1328,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                             //Log.i(TAG,"messageText is"+messageText);
                             //publish message
 
+
+
                         }
                         if(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
 
@@ -1258,13 +1339,29 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                             jsonMsg.put("message", "Client have initiated enquiry for " + General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE).substring(1)
                                     + " property (" + General.getSharedPreferences(getApplicationContext(),AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(),AppConstants.PRICE)) + ".");
 
-                        }
 
-                        pubnub.publish(channel, jsonMsg, true, new Callback() {});
+                        }*/
+                        /*chatMessages.clear();
+                        Message message = new Message();
+                        message.setUserName(roleOfUser);
+                        message.setMessageStatus(ChatMessageStatus.SENT);
+                        message.setMessageText(body);
+                        message.setUserType(userType);
+                        // message.setMessageTime(new Date().getTime());
+                        message.setMessageTime(Long.valueOf(timetoken)/10000);*/
+
+
+
+
+                       /* chatMessages.add(message);*/
+//                        displayMessage(jsonMsg);
+                      /*  pubnub.publish(channel, jsonMsg, true, new Callback() {});*/
+//                        chatMessages.clear();
+
                         //default deal time we are storing at default deal creation
-                        lastMessageTime = String.valueOf(System.currentTimeMillis());
-                        Log.i(TAG, "Default message published");
 
+                        Log.i(TAG, "Default message published");
+                        lastMessageTime = String.valueOf(System.currentTimeMillis());
 
 
 
@@ -1739,6 +1836,164 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
     }
+
+    private void displayDefaultMessage(){
+        Log.i(TAG, "displayDefaultMessage called ");
+        try {
+            JSONObject jsonMsg = new JSONObject();
+
+
+
+
+                //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
+                jsonMsg.put("from", "DEFAULT");
+                //jsonMsg.put("to", "client");
+
+
+                jsonMsg.put("to", "client");
+                Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
+
+
+                if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+//                            String ptype = General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE);
+//                            Log.i(TAG, "role of user def 1 "+ptype);
+                    final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                    // Log.i(TAG, "role of user def 2 "+ptype.substring(0, 1).toUpperCase());
+                    String json = gson.toJson(AppConstants.letsOye);
+                    // Log.i(TAG, "role of user def 3 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(1));
+                    JSONObject jsonResponse = new JSONObject(json);
+                    // Log.i(TAG, "role of user def 4 ");
+
+                    Log.i(TAG, "Client have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
+                    //Log.i(TAG, "AppConstants.letsOye u " + jsonResponse.getString("property_subtype"));
+                    Log.i(TAG, "role of user def 5 ");
+                    jsonMsg.put("message", "Client have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
+                    Log.i(TAG, "role of user def 6 ");
+                    //Log.i("TRACE","messageText is "+messageText);
+                    //Log.i(TAG,"messageText is"+messageText);
+                    //publish message
+
+
+                }
+                if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+
+                    // prepare a default message now get ptype
+                    String ptype = General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE);
+
+                    jsonMsg.put("message", "Client have initiated enquiry for " + General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE).substring(1)
+                            + " property (" + General.getSharedPreferences(getApplicationContext(), AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(), AppConstants.PRICE)) + ".");
+
+
+                }
+
+            displayMessage(jsonMsg);
+            pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+        }
+        catch(Exception e){}
+        finally {
+            chatMessages.clear();   // clears chatmessages to avoid redundant messages after loadhistory called(Clears out cached msgs before loading actual)
+        }
+    }
+
+    // Amazon S3 service///
+
+
+    public void credentialsProvider(){
+
+        // Initialize the Amazon Cognito credentials provider
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                getApplicationContext(),
+                "us-east-1:d166d43a-32b3-4690-9975-aed1c61f2b28", // Identity Pool ID
+                Regions.US_EAST_1 // Region
+        );
+
+        setAmazonS3Client(credentialsProvider);
+    }
+
+    /**
+     *  Create a AmazonS3Client constructor and pass the credentialsProvider.
+     * @param credentialsProvider
+     */
+    public void setAmazonS3Client(CognitoCachingCredentialsProvider credentialsProvider){
+
+        // Create an S3 client
+        s3 = new AmazonS3Client(credentialsProvider);
+
+        // Set the region of your S3 bucket
+        s3.setRegion(Region.getRegion(Regions.US_EAST_1));
+
+    }
+
+    public void setTransferUtility(){
+
+        transferUtility = new TransferUtility(s3, getApplicationContext());
+    }
+
+    /**
+     * This method is used to upload the file to S3 by using TransferUtility class
+     * @param view
+     */
+    public void setFileToUpload(View view){
+
+        TransferObserver transferObserver = transferUtility.upload(
+                "oyeok-chat-images",     /* The bucket to upload to */
+                "photos1123.png",    /* The key for the uploaded object */
+                fileToUpload       /* The file where the data to upload exists */
+        );
+
+        transferObserverListener(transferObserver);
+    }
+
+    /**
+     *  This method is used to Download the file to S3 by using transferUtility class
+     * @param view
+     **/
+    public void setFileToDownload(View view){
+
+        TransferObserver transferObserver = transferUtility.download(
+                "oyeok-chat-images",     /* The bucket to download from */
+                "photos1123",    /* The key for the object to download */
+                fileToDownload        /* The file to download the object to */
+        );
+
+        transferObserverListener(transferObserver);
+
+    }
+
+    /**
+     * This is listener method of the TransferObserver
+     * Within this listener method, we get status of uploading and downloading file,
+     * to display percentage of the part of file to be uploaded or downloaded to S3
+     * It displays an error, when there is a problem in  uploading or downloading file to or from S3.
+     * @param transferObserver
+     */
+
+    public void transferObserverListener(TransferObserver transferObserver){
+
+        transferObserver.setTransferListener(new TransferListener(){
+
+            @Override
+            public void onStateChanged(int id, TransferState state) {
+                Log.e("statechange", state+"");
+            }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                int percentage = (int) (bytesCurrent/bytesTotal * 100);
+                Log.e("percentage",percentage +"");
+            }
+
+            @Override
+            public void onError(int id, Exception ex) {
+                Log.e("error","error");
+            }
+
+        });
+    }
+
+
+
+
 
     @Override
     public void onBackPressed() {
