@@ -1041,6 +1041,7 @@ if(newUser==true) {
                                 Intent intent = new Intent(getContext(), BrokerDealsListActivity.class);
                                 intent.putExtra("userRole", "broker");
                                 //intent.putExtra("default_deal_flag",true);
+                                AppConstants.SIGNUP_FLAG=false;
                                 startActivity(intent);
 
 
@@ -1067,6 +1068,7 @@ if(newUser==true) {
                                 Intent intent = new Intent(getContext(), ClientDealsListActivity.class);
                                 intent.putExtra("default_deal_flag",true);
                                 startActivity(intent);
+                                AppConstants.SIGNUP_FLAG=false;
                                 Log.i("REACHED", "I am here2");
                             }
                         }

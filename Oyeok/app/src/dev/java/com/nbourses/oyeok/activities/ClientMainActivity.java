@@ -221,7 +221,7 @@ private void alertbuilder()
 
 {
     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setMessage("Dou you want to publish this oye?")
+    builder.setMessage("Do you want to publish this oye?")
             .setCancelable(true)
             .setPositiveButton("Publish", new DialogInterface.OnClickListener() {
                 public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {

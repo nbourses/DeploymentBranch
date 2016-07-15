@@ -63,6 +63,8 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
 
     @Bind(R.id.openmaps)
     Button openmaps;
+    @Bind(R.id.DONE)
+    Button doneButton;
 
 //    @Bind(R.id.preok_layout)
 //    Toolbar preok_layout;
@@ -412,6 +414,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
                 BrokerMap brokerMap=new BrokerMap();
 //                brokerMap.setChangeLoction(this);
                 loadFragment(brokerMap,null,R.id.container_map,"");
+                doneButton.setVisibility(View.VISIBLE);
                 gmap=true;
 
                 tv_change_region.setVisibility(View.VISIBLE);
@@ -430,9 +433,21 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         });
 //
 
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent mainscreen  = new Intent(this,BrokerMainActivity.class);
+                startActivity(mainscreen);
+                finish();
+                gmap =false;
+                backpress = 0;
 
 
 
+            }
+        });
+        
     }
 
     private void enableMyLocation() {
@@ -598,22 +613,14 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
         if(AppConstants.SIGNUP_FLAG){
-            Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff"+getSupportFragmentManager().getBackStackEntryCount());
-//            super.onBackPressed();
 
-            int count = getFragmentManager().getBackStackEntryCount();
-            for(int i = 0; i < count; ++i) {
                 getSupportFragmentManager().popBackStackImmediate();
-            }
+
             Intent inten = new Intent(this, BrokerMainActivity.class);
-            inten.addFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                            Intent.FLAG_ACTIVITY_NEW_TASK);
+
             startActivity(inten);
             finish();
             AppConstants.SIGNUP_FLAG=false;
-            Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff"+getSupportFragmentManager().getBackStackEntryCount());
 
             backpress = 0;
         }else

@@ -17,7 +17,16 @@
 
 
 
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:visibility="gone"
+        android:background="@color/greenish_blue"
+        android:id="@+id/DONE"
+        android:text="Done"
+        android:textColor="@color/white"
+        android:layout_gravity="left|center_vertical"
+        android:layout_marginRight="10dp"/>
     <Button
         android:layout_width="28dp"
         android:layout_height="28dp"
