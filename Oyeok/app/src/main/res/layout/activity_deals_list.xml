@@ -46,7 +46,17 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         android:visibility="visible"
         android:clickable="true">
 
-        <RelativeLayout
+        <SearchView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:queryHint="Search deals..."
+            android:iconifiedByDefault="false"
+            android:layout_gravity="right"
+            android:id="@+id/searchView"
+            android:visibility="visible"
+            android:background="@drawable/filter_border" />
+
+        <!--<RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/filterContainer"
@@ -170,7 +180,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                         android:textSize="10dp" />
                 </LinearLayout>
 
-                <!--       <LinearLayout
+                &lt;!&ndash;       <LinearLayout
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:layout_weight="1"
@@ -195,7 +205,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                                android:paddingBottom="5dp"
                                android:scrollHorizontally="true"
                                android:text="OTHERS" />
-                       </LinearLayout>   -->
+                       </LinearLayout>   &ndash;&gt;
 
 
             </LinearLayout>
@@ -212,7 +222,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             </LinearLayout>
 
 
-        </RelativeLayout>
+        </RelativeLayout>-->
 
 
 
@@ -221,18 +231,13 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/supportChat"
+            android:layout_below="@+id/searchView"
             android:visibility="visible">
             <include layout="@layout/deal_item" />
 
         </LinearLayout>
 
-        <SearchView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:id="@+id/searchView"
-            android:visibility="gone"
-            android:background="@drawable/filter_border" />
+
 
 
         <!--<LinearLayout
