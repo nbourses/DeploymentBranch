@@ -593,27 +593,19 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
     public void onBackPressed() {
         Log.i("ONBACKPRESSED","signupSuccessflag 432 "+signupSuccessflag);
         Log.i("ONBACKPRESSED","buildingSliderflag "+buildingSliderflag);
-  
+
         Log.i("ONBACKPRESSED","broker main activity "+setting);
 
 
         if(AppConstants.SIGNUP_FLAG){
-            Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff"+getSupportFragmentManager().getBackStackEntryCount());
-//            super.onBackPressed();
 
-            int count = getFragmentManager().getBackStackEntryCount();
-            for(int i = 0; i < count; ++i) {
                 getSupportFragmentManager().popBackStackImmediate();
-            }
+
             Intent inten = new Intent(this, BrokerMainActivity.class);
-//            inten.addFlags(
-//                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-//                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
-//                            Intent.FLAG_ACTIVITY_NEW_TASK);
+
             startActivity(inten);
             finish();
             AppConstants.SIGNUP_FLAG=false;
-            Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff"+getSupportFragmentManager().getBackStackEntryCount());
 
             backpress = 0;
         }else

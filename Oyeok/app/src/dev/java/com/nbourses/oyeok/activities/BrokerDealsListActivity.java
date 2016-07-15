@@ -1045,12 +1045,31 @@ Log.i("SWIPE","inside swipe menu creator");
 //                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
 //                            Intent.FLAG_ACTIVITY_NEW_TASK);
 //            startActivity(intent);
-        super.onBackPressed();
+//        super.onBackPressed();
 //        }
 //        else {
 ////        startActivity(new Intent(this, BrokerMainActivity.class));
 //            finish();
 //        }
+
+
+
+        if(AppConstants.SIGNUP_FLAG){
+            getSupportFragmentManager().popBackStackImmediate();
+            Intent inten = new Intent(this,BrokerDealsListActivity.class);
+            startActivity(inten);
+            finish();
+            AppConstants.SIGNUP_FLAG=false;
+
+        }else {
+            Intent intent = new Intent(this, BrokerMainActivity.class);
+            intent.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void loadFragment(Fragment fragment, Bundle args, int containerId, String title)
