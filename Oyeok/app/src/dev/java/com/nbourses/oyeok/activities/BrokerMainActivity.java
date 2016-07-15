@@ -437,11 +437,11 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             @Override
             public void onClick(View v) {
 
-                Intent mainscreen  = new Intent(this,BrokerMainActivity.class);
-                startActivity(mainscreen);
-                finish();
-                gmap =false;
-                backpress = 0;
+//                Intent mainscreen  = new Intent(this,BrokerMainActivity.class);
+//                startActivity(mainscreen);
+//                finish();
+//                gmap =false;
+//                backpress = 0;
 
 
 
