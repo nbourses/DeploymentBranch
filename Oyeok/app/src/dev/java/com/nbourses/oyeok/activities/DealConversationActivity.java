@@ -866,16 +866,16 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     }
 
     private void selectImage() {
-        final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
+        final CharSequence[] items = {/* "Take Photo",*/ "Choose from Library", "Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(DealConversationActivity.this);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                if (items[item].equals("Take Photo")) {
+                /*if (items[item].equals("Take Photo")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent, REQUEST_CAMERA);
-                } else if (items[item].equals("Choose from Library")) {
+                } else*/ if (items[item].equals("Choose from Library")) {
                     verifyStoragePermissions(DealConversationActivity.this);
                     Log.d(TAG, "lolwa imagewa 4 ");
                     Intent intent = new Intent(

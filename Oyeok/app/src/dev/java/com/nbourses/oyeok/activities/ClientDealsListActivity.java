@@ -1259,6 +1259,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                         }
 
                         if(searchQuery == null)
+                            if(default_deals!=null)
                             default_deals.add(dealsa); // add all
 
                     }

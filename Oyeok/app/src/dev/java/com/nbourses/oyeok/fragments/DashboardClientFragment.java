@@ -571,7 +571,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     // new LocationUpdater().execute();
                      hideOnSearch.setVisibility(View.VISIBLE);
                     //seekbar_linearlayout.setVisibility(View.GONE);
-                    mPhasedSeekBar.setVisibility(View.GONE);
+                    mPhasedSeekBar.setVisibility(View.VISIBLE);
+                    mPhasedSeekBar.setClickable(false);
+                    seekbar_linearlayout.setVisibility(View.INVISIBLE);
                     seekbar_linearlayout.setBackgroundColor(Color.TRANSPARENT);
 
                     //seekbar_linearlayout.setBackgroundColor(getResources().getColor(R.color.gray));
