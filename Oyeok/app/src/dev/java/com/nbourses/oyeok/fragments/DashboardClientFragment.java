@@ -2843,7 +2843,7 @@ public void oyebuttonBackgrountColorOrange(){
                             lng = currentLocation1.longitude;
                             Log.i("t1", "lng" + " " + lng);
                             buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
-                            map.addMarker(new MarkerOptions().title("hey").position(currentLocation1));
+//                            map.addMarker(new MarkerOptions().title("hey").position(currentLocation1));
                             Log.i("MARKER-- ", "====================================");
                             SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                             SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
