@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
     android:background="@color/custom_color_darkblue">
     <!--android:background="@android:color/primary_text_light"-->
     <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->

@@ -829,11 +829,11 @@ private void alertbuilder()
                 startActivity(back);
             }
             finish();*/
-
+            if(AppConstants.REGISTERING_FLAG){}else{
             getSupportFragmentManager().popBackStack();
 
             AppConstants.SIGNUP_FLAG=false;
-            backpress = 0;
+            backpress = 0;}
             Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff");
 
         }
@@ -854,8 +854,7 @@ private void alertbuilder()
        else if(setting==true){
             Log.i("BACK PRESSED"," =================== setting"+setting);
             if(SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") || SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")){
-                super.onBackPressed();
-                finish();
+
                /* try {
                     DashboardClientFragment dash=new DashboardClientFragment();
                     dash.Wlak_Beacon();
@@ -868,6 +867,8 @@ private void alertbuilder()
                                 Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                 Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(inten);
+                finish();
+                super.onBackPressed();
                 finish();
                 Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;

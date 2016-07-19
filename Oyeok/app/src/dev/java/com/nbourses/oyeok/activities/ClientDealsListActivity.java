@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -917,21 +918,25 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                InputMethodManager imm = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+               onBackPressed();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+
     }
 
     @Override
     public void onBackPressed() {
         if(AppConstants.SIGNUP_FLAG){
+            if(AppConstants.REGISTERING_FLAG){}else{
             getSupportFragmentManager().popBackStackImmediate();
             Intent inten = new Intent(this, ClientDealsListActivity.class);
             startActivity(inten);
             finish();
-            AppConstants.SIGNUP_FLAG=false;
+            AppConstants.SIGNUP_FLAG=false;}
 
         }else {
             Intent intent = new Intent(this, ClientMainActivity.class);
@@ -1098,6 +1103,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                         }
 
                         if(searchQuery == null)
+                            if(default_deals!=null)
                             default_deals.add(dealsa); // add all
 
                     }

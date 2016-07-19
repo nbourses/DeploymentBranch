@@ -405,11 +405,13 @@ public class OyeScreenFragment extends Fragment {
 
         if (bundle != null) {
 
-            requestType.setText(bundle.getString("brokerType").toUpperCase());
+         //   requestType.setText(bundle.getString("brokerType").toUpperCase());
+//            Log.i("value"," data"+bundle.getString("brokerType").toUpperCase());
             DecimalFormat formatter = new DecimalFormat();
 
 
             if (bundle.getString("brokerType").equalsIgnoreCase("rent")) {
+                requestType.setText("Rental");
                 budgetSeekBar.setMin(AppConstants.minRent);
                 budgetSeekBar.setMax(AppConstants.maxRent);
                 budgetSeekBar.setProgress(AppConstants.minRent);
@@ -423,6 +425,7 @@ public class OyeScreenFragment extends Fragment {
                 AppConstants.letsOye.setTt("LL");
             }
             else {
+                requestType.setText("Buy/Sell");
                 budgetSeekBar.setMin(AppConstants.minSale);
                 budgetSeekBar.setMax(AppConstants.maxSale);
                 budgetSeekBar.setProgress(AppConstants.minRent);

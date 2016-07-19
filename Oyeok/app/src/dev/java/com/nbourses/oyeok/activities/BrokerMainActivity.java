@@ -413,6 +413,8 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             public void onClick(View v) {
                 BrokerMap brokerMap=new BrokerMap();
 //                brokerMap.setChangeLoction(this);
+                getSupportActionBar().setDisplayShowHomeEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 loadFragment(brokerMap,null,R.id.container_map,"");
                 doneButton.setVisibility(View.VISIBLE);
                 gmap=true;
@@ -437,11 +439,16 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             @Override
             public void onClick(View v) {
 
-                Intent mainscreen  = new Intent(this,BrokerMainActivity.class);
-                startActivity(mainscreen);
+//                Intent mainscreen  = ;
+                startActivity(new Intent(getApplicationContext(),BrokerMainActivity.class));
+                Log.i("donebutton","done button clicked   ");
+                getFragmentManager().popBackStack();
                 finish();
                 gmap =false;
                 backpress = 0;
+//                getSupportActionBar().setDisplayShowHomeEnabled(true);
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                doneButton.setVisibility(View.GONE);
 
 
 
@@ -613,7 +620,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
         if(AppConstants.SIGNUP_FLAG){
-
+           if(AppConstants.REGISTERING_FLAG){}else{
                 getSupportFragmentManager().popBackStackImmediate();
 
             Intent inten = new Intent(this, BrokerMainActivity.class);
@@ -622,7 +629,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             finish();
             AppConstants.SIGNUP_FLAG=false;
 
-            backpress = 0;
+            backpress = 0;}
         }else
         if(webView != null){
             if (webView.canGoBack()) {
