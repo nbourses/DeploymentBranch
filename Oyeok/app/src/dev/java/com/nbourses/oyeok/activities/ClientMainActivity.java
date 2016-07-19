@@ -505,6 +505,8 @@ private void alertbuilder()
         dbHelper = new DBHelper(getBaseContext());
         mHandler = new Handler();
 
+        dbHelper.save(DatabaseConstants.userRole,"Client");
+
         //setup navigation drawer
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
@@ -516,10 +518,13 @@ private void alertbuilder()
 //
 //
 //        }
+
         if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-            if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+            //if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+            if (!General.getSharedPreferences(this,AppConstants.EMAIL).equalsIgnoreCase("null")) {
                 emailTxt.setVisibility(View.VISIBLE);
-                emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
+                emailTxt.setText(General.getSharedPreferences(this,AppConstants.EMAIL));
+                Log.i(TAG,"emailsa "+General.getSharedPreferences(this,AppConstants.EMAIL));
 
             }
         }else{
@@ -655,6 +660,17 @@ private void alertbuilder()
             AppSetting appSetting=new AppSetting();
             loadFragment(appSetting,null,R.id.container_Signup,"");
             setting=true;
+
+
+        }
+        else if (itemTitle.equals(getString(R.string.RegisterSignIn))) {
+            SignUpFragment signUpFragment = new SignUpFragment();
+            // signUpFragment.getView().bringToFront();
+            Bundle bundle = new Bundle();
+            bundle.putStringArray("Chat", null);
+            bundle.putString("lastFragment", "drawer");
+            loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
+
 
 
         }

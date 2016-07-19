@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -51,7 +52,6 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
-import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.adapters.BrokerDealsListAdapter;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -326,6 +326,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         };
         // set creator
         listViewDeals.setMenuCreator(creator);
+        listViewDeals.setCloseInterpolator(new BounceInterpolator());
+        listViewDeals.setOpenInterpolator(new BounceInterpolator());
 
         // step 2. listener item click event
 
@@ -1674,36 +1676,36 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
         Log.i("USER_ID", " " + General.getSharedPreferences(this, AppConstants.USER_ID).isEmpty());
 
-        if(!General.getSharedPreferences(this ,AppConstants.USER_ID).isEmpty())  {
+       // if(!General.getSharedPreferences(this ,AppConstants.USER_ID).isEmpty())  {
 
             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
             intent.putExtra("userRole", "client");
 //        intent.putExtra("channel_name","my_channel");
             intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
             startActivity(intent);
-        }
-        else
-        {
-            supportChat.setVisibility(View.GONE);
-            view.setVisibility(View.GONE);
-            listViewDeals.setVisibility(View.GONE);
-            fragment_container1.setVisibility(View.VISIBLE);
-            Bundle bundle = new Bundle();
-            bundle.putStringArray("Chat", null);
-            bundle.putString("lastFragment", "Chat");
+//        }
+//        else
+//        {
+//            supportChat.setVisibility(View.GONE);
+//            view.setVisibility(View.GONE);
+//            listViewDeals.setVisibility(View.GONE);
+//            fragment_container1.setVisibility(View.VISIBLE);
+//            Bundle bundle = new Bundle();
+//            bundle.putStringArray("Chat", null);
+//            bundle.putString("lastFragment", "Chat");
+//
+////            FrameLayout frame = new FrameLayout(this);
+////            frame.setId(SIGNUP_VIEW_ID);
+////            setContentView(frame, new LayoutParams(
+////                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+//
+//
+//            SignUpFragment signUpFragment = new SignUpFragment();
+////            signUpFragment.getView().bringToFront();
+//            loadFragment(signUpFragment, bundle, R.id.fragment_container1, "");
+//            Log.i("Signup called =", "Sign up");
 
-//            FrameLayout frame = new FrameLayout(this);
-//            frame.setId(SIGNUP_VIEW_ID);
-//            setContentView(frame, new LayoutParams(
-//                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-
-
-            SignUpFragment signUpFragment = new SignUpFragment();
-//            signUpFragment.getView().bringToFront();
-            loadFragment(signUpFragment, bundle, R.id.fragment_container1, "");
-            Log.i("Signup called =", "Sign up");
-
-        }
+//        }
     }
 
     /*private void init() {

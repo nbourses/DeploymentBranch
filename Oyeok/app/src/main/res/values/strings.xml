@@ -12,6 +12,7 @@
     <string name="QrCode">QrCode</string>
     <string name="brokerOk">Self Register as Broker</string>
     <string name="useAsClient">See Property Rates</string>
+    <string name="RegisterSignIn">Register/SignIn</string>
     <string name="signup">Signup</string>
     <string name="PayTM">PayTM</string>
     <string name="shareApp">Share App</string>
@@ -60,6 +61,7 @@
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels_no_signup">
         <!--<item>@string/signup</item>-->
+        <item>@string/RegisterSignIn</item>
         <item>@string/useAsClient</item>
         <item>@string/notifications</item>
         <item>@string/shareApp</item>

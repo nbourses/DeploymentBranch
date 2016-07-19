@@ -905,10 +905,10 @@ if(count<=220) {
 
         BrokerBuildings brokerBuildings = new BrokerBuildings();
         brokerBuildings.setDeviceId("Hardware");
-        brokerBuildings.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+        brokerBuildings.setGcmId(SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
         brokerBuildings.setPage(buildingsPage.toString());
-        brokerBuildings.setLng(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-        brokerBuildings.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+        brokerBuildings.setLng(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
+        brokerBuildings.setLat(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
 
         brokerBuildings.setPropertyType("home");
 
@@ -1050,7 +1050,7 @@ if(count<=220) {
 
             General.slowInternet(getContext());
 
-            Log.i("TRACE", "GCM id is" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+            Log.i("TRACE", "GCM id is" + SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
             //preok params
             Oyeok preok = new Oyeok();
 //        int permissionCheck = ContextCompat.checkSelfPermission(getContext(),
@@ -1070,9 +1070,9 @@ if(count<=220) {
 //        }
 
             preok.setUserRole("broker");
-            preok.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
-            preok.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-            preok.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+            preok.setGcmId(SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
+            preok.setLong(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
+            preok.setLat(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
             preok.setPlatform("android");
             Log.i("PREOK", "user_id1 " + General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER));
             if (General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
@@ -1861,7 +1861,7 @@ if(ptype.equalsIgnoreCase("home"))
 
 
                 SnackbarManager.show(
-                        com.nispok.snackbar.Snackbar.with(getActivity())
+                        com.nispok.snackbar.Snackbar.with(getContext())
                                 .position(Snackbar.SnackbarPosition.BOTTOM)
                                 .text("Please select a Lead and then press OK.")
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
@@ -2777,9 +2777,9 @@ public void walkthroughBroker(final View v) {
 
 
                 SnackbarManager.show(
-                        Snackbar.with(getActivity())
+                        Snackbar.with(getContext())
                                 .text("Select the Role")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
             }
 
             public void onFinish() {
@@ -2790,9 +2790,9 @@ public void walkthroughBroker(final View v) {
                         rippleBackground1.stopRippleAnimation();
                         rippleBackground2.startRippleAnimation();
                         SnackbarManager.show(
-                                Snackbar.with(getActivity())
+                                Snackbar.with(getContext())
                                         .text("Select the Lead")
-                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
                     }
 
@@ -2804,9 +2804,9 @@ public void walkthroughBroker(final View v) {
                                 rippleBackground2.stopRippleAnimation();
                                 rippleBackground3.startRippleAnimation();
                                 SnackbarManager.show(
-                                        Snackbar.with(getActivity())
+                                        Snackbar.with(getContext())
                                                 .text("Press 'OK' to select three Property for Visit")
-                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
                             }
 

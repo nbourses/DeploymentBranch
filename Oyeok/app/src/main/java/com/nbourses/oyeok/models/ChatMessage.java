@@ -13,6 +13,8 @@ public class ChatMessage {
     private ChatMessageStatus messageStatus;
     private String userName;
     private Long messageTime;
+    private String imagePath;
+    private String imageUrl;
 
     public Long getMessageTime() {
         return messageTime;
@@ -54,5 +56,21 @@ public class ChatMessage {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

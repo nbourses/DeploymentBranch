@@ -2,6 +2,8 @@ package com.nbourses.oyeok.adapters;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.ChatMessage;
 
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -39,7 +42,6 @@ public class ChatListAdapter extends BaseAdapter {
 
         Log.i("TRACE DEALS FLAG 1","FLAG "+isDefaultDeal);
     }
-
 
     @Override
     public int getCount() {
@@ -68,6 +70,8 @@ public class ChatListAdapter extends BaseAdapter {
         ViewHolder2 holder2;
         ViewHolder3 holder3;
         ViewHolder4 holder4;
+        ViewHolder5 holder5;
+        Log.i("uri","boyka "+message.getUserType());
 
         if (message.getUserType() == ChatMessageUserType.LISTING) {
             if (convertView == null) {
@@ -114,6 +118,51 @@ public class ChatListAdapter extends BaseAdapter {
             //holder3.chatReplyAuthor.setText("Welcome "+name);
             //holder3.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
             holder4.txtFirstChar.setText("L");
+
+        }
+
+        else if (message.getUserType() == ChatMessageUserType.IMG) {
+            if (convertView == null) {
+                v = LayoutInflater.from(context).inflate(R.layout.image, null, false);
+                holder5 = new ViewHolder5();
+                holder5.imageView = (ImageView) v.findViewById(R.id.imageView);
+                //holder4.messageTextView = (TextView) v.findViewById(R.id.message_text);
+                //holder4.timeTextView = (TextView) v.findViewById(R.id.time_text);
+                // holder4.chatReplyAuthor = (TextView) v.findViewById(R.id.chat_reply_author);
+
+                v.setTag(holder5);
+            }
+            else {
+                v = convertView;
+                holder5 = (ViewHolder5) v.getTag();
+            }
+try {
+    URL url = new URL(message.getImageUrl());
+    Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+    holder5.imageView.setImageBitmap(bmp);
+}
+catch(Exception e){
+
+    // Image deleted default image
+}
+
+
+           /* Log.i("asakasa","asakasa "+General.getSharedPreferences(context,AppConstants.UPLOADED_IMAGE_PATH));
+            File imageFile = new  File(General.getSharedPreferences(context,AppConstants.UPLOADED_IMAGE_PATH));
+            if(imageFile.exists()){
+
+                holder5.imageView.setImageBitmap(BitmapFactory.decodeFile(imageFile.getAbsolutePath()));
+            }*/
+
+            /*Bitmap bmp = BitmapFactory.decodeFile(General.getSharedPreferences(context,AppConstants.UPLOADED_IMAGE_PATH));
+
+            holder5.imageView.setImageBitmap(bmp);
+*/
+            //String userName = message.getUserName(); // broker
+//            String userName = General.getSharedPreferences(context, AppConstants.NAME);
+//            String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
+            Log.i("CONVER", "Chat message is Listing1" + message.getMessageText());
+
 
         }
         else if (message.getUserType() == ChatMessageUserType.DEFAULT) {
@@ -223,7 +272,7 @@ public class ChatListAdapter extends BaseAdapter {
 
     @Override
     public int getViewTypeCount() {
-        return 4;
+        return 5;
     }
 
     @Override
@@ -272,6 +321,12 @@ public class ChatListAdapter extends BaseAdapter {
         public Button laterListing;
 
     }
+    private class ViewHolder5 {
+
+        public ImageView imageView;
+    }
+
+
 
 
 }

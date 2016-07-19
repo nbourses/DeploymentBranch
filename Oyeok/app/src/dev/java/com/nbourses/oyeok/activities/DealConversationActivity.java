@@ -1,16 +1,22 @@
 package com.nbourses.oyeok.activities;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -151,11 +157,18 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private Boolean oyed = false;
     private Boolean okyed = false;
 
-   // File fileToUpload = new File("/storage/sdcard0/Pictures/Screenshots/photos.png");
-  private File fileToUpload = null;
-   private File fileToDownload = new File("/storage/sdcard0/Pictures/MY");
-    AmazonS3 s3;
-    TransferUtility transferUtility;
+    // File fileToUpload = new File("/storage/sdcard0/Pictures/Screenshots/photos.png");
+    private File fileToUpload = new File("/storage/emulated/0/DCIM/Facebook/FB_IMG_1467990952511.jpg");
+    private File fileToDownload = new File("/storage/sdcard0/Pictures/OYEOK");
+   public AmazonS3 s3;
+    public TransferUtility transferUtility;
+    private String imageName = null;
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
 
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
@@ -207,7 +220,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 //        IntentFilter filter = new IntentFilter("shine");
 //        LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
-        UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
+       // UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
+        UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
         i("WHERENOW", "UUID " + UUID);
 
         pubnub = new Pubnub(AppConstants.PUBNUB_PUBLISH_KEY, AppConstants.PUBNUB_SUBSCRIBE_KEY);
@@ -246,6 +260,58 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private void init() {
 
+        Log.i(TAG,"pathas "+Environment.getExternalStorageDirectory().toString() + "/oyeok");
+
+        Log.i(TAG,"pathas 1 "+Environment.getDataDirectory() + "/oyeok");
+
+        //if there is no SD card, create new directory objects to make directory on device
+        if (Environment.getExternalStorageState() == null) {
+            //create new file directory object
+            File directory = new File(Environment.getDataDirectory()
+                    + "/oyeok/");
+            /*File photoDirectory = new File(Environment.getDataDirectory()
+                    + "/oyeok/");*/
+            /*
+             * this checks to see if there are any previous test photo files
+             * if there are any photos, they are deleted for the sake of
+             * memory
+             */
+            /*if (photoDirectory.exists()) {
+                File[] dirFiles = photoDirectory.listFiles();
+                if (dirFiles.length != 0) {
+                    for (int ii = 0; ii <= dirFiles.length; ii++) {
+                        dirFiles[ii].delete();
+                    }
+                }
+            }*/
+            // if no directory exists, create new directory
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+
+            // if phone DOES have sd card
+        } else if (Environment.getExternalStorageState() != null) {
+            // search for directory on SD card
+            File directory = new File(Environment.getExternalStorageDirectory()
+                    + "/oyeok/");
+            /*File photoDirectory = new File(
+                    Environment.getExternalStorageDirectory()
+                            + "/oyeok/");*/
+            /*if (photoDirectory.exists()) {
+                File[] dirFiles = photoDirectory.listFiles();
+                if (dirFiles.length > 0) {
+                    for (int ii = 0; ii < dirFiles.length; ii++) {
+                        dirFiles[ii].delete();
+                    }
+                    dirFiles = null;
+                }
+            }*/
+            // if no directory exists, create new directory to store test
+            // results
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+        }// end of SD card checking
         // callback method to call credentialsProvider method.
         credentialsProvider();
 
@@ -592,7 +658,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         listAdapter = new ChatListAdapter(chatMessages,isDefaultDeal, this);
         chatListView.setAdapter(listAdapter);
 
-      //  displayMessage();
+        //  displayMessage();
 
 //        Bundle bundle  = getIntent().getExtras();
 //        channel_name = bundle.getString(AppConstants.OK_ID);
@@ -810,6 +876,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent, REQUEST_CAMERA);
                 } else if (items[item].equals("Choose from Library")) {
+                    verifyStoragePermissions(DealConversationActivity.this);
                     Log.d(TAG, "lolwa imagewa 4 ");
                     Intent intent = new Intent(
                             Intent.ACTION_PICK,
@@ -836,13 +903,19 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             Uri uri = data.getData();
             Log.d(TAG, "lolwa imagewa uri "+uri);
-            File fileToUpload = new File(String.valueOf(uri));
-            Log.d(TAG, "lolwa imagewa uri fileToUpload "+fileToUpload);
+
+              fileToUpload = new File(getRealPathFromURI(this,uri));
+                Log.i(TAG, "lolwa imagewa uri fileToUpload "+fileToUpload);
+                setFileToUpload(fileToUpload);
+
 
 
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                 Log.d(TAG, "lolwa imagewa "+String.valueOf(bitmap));
+                Log.i(TAG, "lolwa imagewa "+String.valueOf(bitmap));
+
+
+
 
                 /*ImageView imageView = (ImageView) findViewById(R.id.imageView);
                 imageView.setImageBitmap(bitmap);*/
@@ -851,6 +924,23 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             }
         }
     }
+
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+
 
     /**
      * display incoming messages through pubnub
@@ -868,6 +958,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         String body = null;
         String timetoken = null;
         ChatMessageUserType userType = null;
+        String imageUrl = null;
         final ChatMessage message = new ChatMessage();
         String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
 
@@ -887,14 +978,28 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         Log.i("CONVER", "DEFAULT set");
                         userType = ChatMessageUserType.DEFAULT;
                     }
+                    else if (j.getString("from").equalsIgnoreCase("IMG")){
+                        Log.i("CONVER", "grrrr IMG set");
+                        userType = ChatMessageUserType.IMG;
+                        if(j.has("imageUrl")){
+                            Log.i("CONVER", "grrrr 1 IMG set");
+                            imageUrl = j.getString("imageUrl");
+                        }
+
+                    }
                     else if (j.getString("from").equalsIgnoreCase("LISTING")){
                         Log.i("CONVER", "LISTING set");
                         userType = ChatMessageUserType.LISTING;
+                    }
+                    else if(!j.getString("to").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI)))
+                    {
+                        userType = ChatMessageUserType.OTHER;     // for support
                     }
                     else if (!j.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID)))
                     {
                         userType = ChatMessageUserType.SELF;
                     }
+
                     else {
                         userType = ChatMessageUserType.OTHER;
                     }
@@ -906,6 +1011,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     message.setMessageStatus(ChatMessageStatus.SENT);
                     message.setMessageText(body);
                     message.setUserType(userType);
+                    message.setImageUrl(imageUrl);
                     // message.setMessageTime(new Date().getTime());
                     message.setMessageTime(Long.valueOf(timetoken)/10000);
 
@@ -1098,7 +1204,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             return;
 
         // Rt find to?
-        String To = null;
+        String To = "support";
         String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
         if(role.equals("broker"))
             To = "client";
@@ -1136,8 +1242,10 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             Log.i("TEST","published to channel_name" +channel_name);
             if (channel_name.equals("my_channel")){
-                channel_name = General.getSharedPreferences(this, AppConstants.USER_ID);
-                pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
+                //channel_name = General.getSharedPreferences(this, AppConstants.USER_ID);
+               // pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
+                channel_name = General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI);
+                pubnubWhereNow(General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI));
                 Log.i("Pubnub push","channel_name_userid case is "+channel_name);
                 Log.i("Pubnub push","GCM id is "+General.getSharedPreferences(this,AppConstants.GCM_ID));
                 // subscribe a channel for Pubnub push notifications start
@@ -1292,10 +1400,10 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     else {
 
                         Log.i(TAG, "loadhistory empty");
-if(!okyed && !oyed ) {
-    //displayDefaultMessage();  // if client have not okeyed or oyed , its old dealing room but its empty then we need to show him default message
-    //need to be handled
-}
+                        if(!okyed && !oyed ) {
+                            //displayDefaultMessage();  // if client have not okeyed or oyed , its old dealing room but its empty then we need to show him default message
+                            //need to be handled
+                        }
 
 
                         /*JSONObject jsonMsg = new JSONObject();
@@ -1845,54 +1953,100 @@ if(!okyed && !oyed ) {
 
 
 
-                //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
-                jsonMsg.put("from", "DEFAULT");
-                //jsonMsg.put("to", "client");
+            //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
+            jsonMsg.put("from", "DEFAULT");
+            //jsonMsg.put("to", "client");
 
 
-                jsonMsg.put("to", "client");
-                Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
+            jsonMsg.put("to", "client");
+            Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
 
 
-                if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
 //                            String ptype = General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE);
 //                            Log.i(TAG, "role of user def 1 "+ptype);
-                    final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-                    // Log.i(TAG, "role of user def 2 "+ptype.substring(0, 1).toUpperCase());
-                    String json = gson.toJson(AppConstants.letsOye);
-                    // Log.i(TAG, "role of user def 3 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(1));
-                    JSONObject jsonResponse = new JSONObject(json);
-                    // Log.i(TAG, "role of user def 4 ");
+                final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                // Log.i(TAG, "role of user def 2 "+ptype.substring(0, 1).toUpperCase());
+                String json = gson.toJson(AppConstants.letsOye);
+                // Log.i(TAG, "role of user def 3 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(1));
+                JSONObject jsonResponse = new JSONObject(json);
+                // Log.i(TAG, "role of user def 4 ");
 
-                    Log.i(TAG, "Client have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
-                    //Log.i(TAG, "AppConstants.letsOye u " + jsonResponse.getString("property_subtype"));
-                    Log.i(TAG, "role of user def 5 ");
-                    jsonMsg.put("message", "Client have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
-                    Log.i(TAG, "role of user def 6 ");
-                    //Log.i("TRACE","messageText is "+messageText);
-                    //Log.i(TAG,"messageText is"+messageText);
-                    //publish message
-
-
-                }
-                if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-
-                    // prepare a default message now get ptype
-                    String ptype = General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE);
-
-                    jsonMsg.put("message", "Client have initiated enquiry for " + General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE).substring(1)
-                            + " property (" + General.getSharedPreferences(getApplicationContext(), AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(), AppConstants.PRICE)) + ".");
+                Log.i(TAG, "Client have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
+                //Log.i(TAG, "AppConstants.letsOye u " + jsonResponse.getString("property_subtype"));
+                Log.i(TAG, "role of user def 5 ");
+                jsonMsg.put("message", "Client have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
+                Log.i(TAG, "role of user def 6 ");
+                //Log.i("TRACE","messageText is "+messageText);
+                //Log.i(TAG,"messageText is"+messageText);
+                //publish message
 
 
-                }
+            }
+            if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+
+                // prepare a default message now get ptype
+                String ptype = General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE);
+
+                jsonMsg.put("message", "Client have initiated enquiry for " + General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE).substring(1)
+                        + " property (" + General.getSharedPreferences(getApplicationContext(), AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(), AppConstants.PRICE)) + ".");
+
+
+            }
 
             displayMessage(jsonMsg);
             pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
         }
         catch(Exception e){}
         finally {
-            chatMessages.clear();   // clears chatmessages to avoid redundant messages after loadhistory called(Clears out cached msgs before loading actual)
+            //chatMessages.clear();   // clears chatmessages to avoid redundant messages after loadhistory called(Clears out cached msgs before loading actual)
         }
+    }
+
+    private void displayImgMessage(String bucketName, String imgName){
+        Log.i(TAG, "displayImgMessage called ");
+        try {
+            JSONObject jsonMsg = new JSONObject();
+
+
+            jsonMsg.put("timestamp",String.valueOf(System.currentTimeMillis()));
+
+            //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
+            jsonMsg.put("from", "IMG");
+            //jsonMsg.put("to", "client");
+            jsonMsg.put("imageUrl", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);
+
+
+
+            Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
+
+
+            if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+//                            String ptype = General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE);
+//                            Log.i(TAG, "role of user def 1 "+ptype);
+                jsonMsg.put("to", "broker");
+
+
+                        Log.i(TAG, "role of user def 6 ");
+
+            }
+            if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                jsonMsg.put("to", "client");
+                // prepare a default message now get ptype
+
+
+            }
+            jsonMsg.put("message", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);
+            Log.i("yoyoyo","urlo "+jsonMsg);
+
+
+
+            displayMessage(jsonMsg);
+            pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+        }
+        catch(Exception e){}
+
+
     }
 
     // Amazon S3 service///
@@ -1920,7 +2074,7 @@ if(!okyed && !oyed ) {
         s3 = new AmazonS3Client(credentialsProvider);
 
         // Set the region of your S3 bucket
-        s3.setRegion(Region.getRegion(Regions.US_EAST_1));
+        s3.setRegion(Region.getRegion(Regions.AP_SOUTH_1));
 
     }
 
@@ -1931,28 +2085,35 @@ if(!okyed && !oyed ) {
 
     /**
      * This method is used to upload the file to S3 by using TransferUtility class
-     * @param view
+     * @param fileToU
      */
-    public void setFileToUpload(View view){
+    public void setFileToUpload(File fileToU){
+        fileToUpload = fileToU;
+        imageName = "droid"+String.valueOf(System.currentTimeMillis());
+
 
         TransferObserver transferObserver = transferUtility.upload(
                 "oyeok-chat-images",     /* The bucket to upload to */
-                "photos1123.png",    /* The key for the uploaded object */
+                imageName,    /* The key for the uploaded object */
                 fileToUpload       /* The file where the data to upload exists */
         );
 
         transferObserverListener(transferObserver);
+        //
+
+
+
     }
 
     /**
      *  This method is used to Download the file to S3 by using transferUtility class
-     * @param view
+     * @param
      **/
-    public void setFileToDownload(View view){
+    public void setFileToDownload(){
 
         TransferObserver transferObserver = transferUtility.download(
                 "oyeok-chat-images",     /* The bucket to download from */
-                "photos1123",    /* The key for the object to download */
+                "photos11234097.png",    /* The key for the object to download */
                 fileToDownload        /* The file to download the object to */
         );
 
@@ -1974,18 +2135,25 @@ if(!okyed && !oyed ) {
 
             @Override
             public void onStateChanged(int id, TransferState state) {
-                Log.e("statechange", state+"");
+                Log.i("imageu statechange", state+"");
+                if(state.toString().equalsIgnoreCase("COMPLETED")){
+                    /*General.setSharedPreferences(DealConversationActivity.this,AppConstants.UPLOADED_IMAGE_PATH,fileToUpload.toString());
+                    Log.i("asakasa","asakasa123 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.UPLOADED_IMAGE_PATH));*/
+                    sendMessage("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName);
+                    //displayImgMessage("oyeok-chat-images","photos11234097.png");
+
+                }
             }
 
             @Override
             public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
                 int percentage = (int) (bytesCurrent/bytesTotal * 100);
-                Log.e("percentage",percentage +"");
+                Log.i("imageu percentage",percentage +"");
             }
 
             @Override
             public void onError(int id, Exception ex) {
-                Log.e("error","error");
+                Log.i("imageu error","error"+ex);
             }
 
         });
@@ -1993,7 +2161,19 @@ if(!okyed && !oyed ) {
 
 
 
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
 
     @Override
     public void onBackPressed() {
@@ -2003,7 +2183,7 @@ if(!okyed && !oyed ) {
 
         storeDealTime();
 
-       //
+        //
         loadFinalHistory();
 
 //        try {

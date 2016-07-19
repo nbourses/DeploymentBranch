@@ -36,6 +36,7 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.GoogleCloudMessaging.MyGcmListenerService;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.BrokerMap;
 import com.nbourses.oyeok.fragments.BrokerPreokFragment;
@@ -385,6 +386,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         dbHelper = new DBHelper(getBaseContext());
+        dbHelper.save(DatabaseConstants.userRole,"Broker");
 
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
@@ -395,9 +397,10 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
         if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-            if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+            //if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+            if (!General.getSharedPreferences(this,AppConstants.EMAIL).equalsIgnoreCase("null")) {
                 emailTxt.setVisibility(View.VISIBLE);
-                emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
+                emailTxt.setText(General.getSharedPreferences(this,AppConstants.EMAIL));
 
             }
         }else{
@@ -539,6 +542,17 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             AppSetting appSetting=new AppSetting();
             setting=true;
             loadFragment(appSetting,null,R.id.container_sign,"");
+
+
+        }
+        else if (itemTitle.equals(getString(R.string.RegisterSignIn))) {
+            SignUpFragment signUpFragment = new SignUpFragment();
+            // signUpFragment.getView().bringToFront();
+            Bundle bundle = new Bundle();
+            bundle.putStringArray("Chat", null);
+            bundle.putString("lastFragment", "drawer");
+            loadFragment(signUpFragment, bundle, R.id.container_sign, "");
+
 
 
         }
