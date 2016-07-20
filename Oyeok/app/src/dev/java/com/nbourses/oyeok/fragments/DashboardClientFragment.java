@@ -1297,6 +1297,37 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         }
     }
 
+    @OnClick({R.id.ll_marker})
+    public void onButtonsClick(View v) {
+        if (ll_marker.getId() == v.getId()) {
+
+            Log.i(TAG,"poligon ");
+
+           // txtFilterValue.performClick();
+
+            openOyeScreen();
+            Log.i("txtFilterValue","txtFilterValue =========================== "+SystemClock.currentThreadTimeMillis());
+            CancelAnimation();
+            if(clicked==true){
+                oyebuttonBackgrountColorOrange();
+                customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
+                clicked=false;
+            }else {
+                oyebuttonBackgrountColorGreenishblue();
+                customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+                clicked = true;
+            }
+            if(RatePanel==true) {
+                UpdateRatePanel();
+                RatePanel = false;
+            }
+            else {
+                RatePanel = true;
+                // tvFetchingrates.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
     @OnClick(R.id.txtFilterValue)
     public void onTxtFilterValueClick(View v) {
 
@@ -1917,11 +1948,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         seekbar_linearlayout.setAlpha(1);
         InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(autoCompView.getWindowToken(), 0);
-
-
-
-
-
 
 
         // hideOnSearch.setAlpha(1f);

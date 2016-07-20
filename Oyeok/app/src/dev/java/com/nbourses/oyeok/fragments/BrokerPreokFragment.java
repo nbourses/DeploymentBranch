@@ -255,6 +255,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private int buyerCount1;
     private int sellerCount1;
 private String Walkthrough,beacon;
+    private int prompt = 2;
 
     Animation bounce;
     Animation zoomin;
@@ -1149,6 +1150,7 @@ if(count<=220) {
         }else{
 
             General.internetConnectivityMsg(getContext());
+            texPtype.setText("Go online to get Leads.");
         }
     }
 
@@ -1549,13 +1551,23 @@ catch (Exception e){
 
             if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
                 Log.i("PREOK CALLED11","values set"+jsonArrayReqLl.toString());
-                circularSeekbar.setValues(jsonArrayReqLl.toString());
+                prompt = circularSeekbar.setValues(jsonArrayReqLl.toString());
             }
             else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 Log.i("PREOK CALLED12", "values set" + jsonArrayAvlLl.toString());
-                circularSeekbar.setValues(jsonArrayAvlLl.toString());
+               prompt = circularSeekbar.setValues(jsonArrayAvlLl.toString());
 
             }
+            if(prompt == 1 ){
+                texPtype.setText("No leads available in this area for now.");
+                leadPrompt.setText("No leads available in this area for now.");
+            }
+            else{
+                texPtype.setText("Please select a Lead and press OK.");
+                leadPrompt.setText("Please select a Lead and press OK.");
+            }
+
+
 
             //added
 
@@ -1669,11 +1681,11 @@ catch (Exception e){
 
             if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
                 Log.i("PREOK CALLED17", "values set" + jsonArrayReqOr.toString());
-                circularSeekbar.setValues(jsonArrayReqOr.toString());
+                prompt = circularSeekbar.setValues(jsonArrayReqOr.toString());
             }
             else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
                 Log.i("PREOK CALLED18", "values set" + jsonArrayAvlOr.toString());
-                circularSeekbar.setValues(jsonArrayAvlOr.toString());
+                prompt = circularSeekbar.setValues(jsonArrayAvlOr.toString());
             }
 
             // Added
@@ -1700,6 +1712,14 @@ catch (Exception e){
 
             }
 
+            if(prompt == 1 ){
+                texPtype.setText("No leads available in this area for now.");
+                leadPrompt.setText("No leads available in this area for now.");
+            }
+            else{
+                texPtype.setText("Please select a Lead and press OK.");
+                leadPrompt.setText("Please select a Lead and press OK.");
+            }
 
         }
 
@@ -1724,8 +1744,9 @@ catch (Exception e){
         deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.orange));
         try {
             leadPrompt.setVisibility(View.VISIBLE);
-            leadPrompt.setText("Please select a Lead and press OK");
+            leadPrompt.setText("Please select a Lead and press OK.");
             jsonObjectArray = m;
+
             selectedItemPosition = position;
             String ptype = null;
             String pstype;

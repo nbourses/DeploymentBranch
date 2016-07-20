@@ -513,9 +513,10 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         } */
 
         else if (itemTitle.equals(getString(R.string.notifications))) {
-            Intent openDealsListing = new Intent(this, BrokerDealsListActivity.class);
-            openDealsListing.putExtra("default_deal_flag",false);
-            startActivity(openDealsListing);
+            Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+            intent.putExtra("userRole", "client");
+            intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
+            startActivity(intent);
         }
         else if (itemTitle.equals(getString(R.string.likeOnFb))) {
            // setContentView(R.layout.browser);

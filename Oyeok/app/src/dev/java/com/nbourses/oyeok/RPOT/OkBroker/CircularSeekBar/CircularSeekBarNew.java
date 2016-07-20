@@ -450,7 +450,7 @@ public class CircularSeekBarNew extends View {
     Here minimum and maximum are found out taking the size of values into account so that they get spreaded uniformly
      */
 
-    public void setValues(String m)
+    public int setValues(String m)
     {
 
         Log.i("TRACE", "m" + m);
@@ -600,11 +600,14 @@ public class CircularSeekBarNew extends View {
             SnackbarManager.show(
                     Snackbar.with(mContext)
                             .position(Snackbar.SnackbarPosition.TOP)
-                            .text("You are too late ,all the leads are taken care of. Please try again.")
+                            .text("You are too late ,all the leads are taken care of.")
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
             minValue=0;
             maxvalue=0;
+
+            return 1;
         }
+        return  2;
 
 
 /*   Adjusting price values to plot on circular seekbar so they wont overlap
