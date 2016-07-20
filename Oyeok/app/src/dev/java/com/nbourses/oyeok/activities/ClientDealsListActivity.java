@@ -1751,7 +1751,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             .text("Buy/Sell Deal Type set")
                             .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
-            getSupportActionBar().setTitle("DEALING ROOMs (Resale)");
+            getSupportActionBar().setTitle("DEALING ROOMs (Buy/Sell)");
         }
 
 
