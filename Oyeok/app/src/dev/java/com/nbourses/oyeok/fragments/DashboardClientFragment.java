@@ -147,7 +147,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
-
+    View mHelperView;
     private static final int INITIAL_REQUEST = 133;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
     private static final int MAP_ZOOM = 12;
@@ -174,7 +174,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     boolean spanning = false;
     private long lastTouched = 0, start = 0;
-    private static final long SCROLL_TIME = 100L;
+    private static final long SCROLL_TIME = 200L;
 
 
     private GeoFence geoFence;
@@ -611,9 +611,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     oyebuttonBackgrountColorOrange();
                     clicked = false;
                     customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
+                    mHelperView.setEnabled(false);
                 } else {
                     oyebuttonBackgrountColorGreenishblue();
                     customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+                    mHelperView.setEnabled(true);
                     clicked = true;
 
                 }
@@ -660,48 +662,56 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 //            resetMyPositionButton();
             // geoFence = new GeoFence();
             //if (isNetworkAvailable()) {
-            View mHelperView = rootView.findViewById(R.id.helperView);
-            mHelperView.setOnTouchListener(new View.OnTouchListener() {
-                private float scaleFactor = 1f;
+            mHelperView = rootView.findViewById(R.id.helperView);
 
-                @Override
-                public boolean onTouch(final View view, final MotionEvent motionEvent) {
-                    if (simpleGestureDetector.onTouchEvent(motionEvent)) { // Double tap
-                        map.animateCamera(CameraUpdateFactory.zoomIn()); // Fixed zoom in
-                    } else if (motionEvent.getPointerCount() == 1) { // Single tap
-                       // horizontalPicker.keepScrolling();
-                        onMapDrag(motionEvent);
-                        mMapView.dispatchTouchEvent(motionEvent); // Propagate the event to the map (Pan)
-//                        onMapDrag();
-                    } else if (scaleGestureDetector.onTouchEvent(motionEvent)) { // Pinch zoom
-                        spanning=true;
-                        map.moveCamera(CameraUpdateFactory.zoomBy( // Zoom the map without panning it
-                                (map.getCameraPosition().zoom * scaleFactor
-                                        - map.getCameraPosition().zoom) / 5));
-                    }
 
-                    return true; // Consume all the gestures
-                }
+                mHelperView.setOnTouchListener(new View.OnTouchListener() {
+                    private float scaleFactor = 1f;
 
-                // Gesture detector to manage double tap gestures
-                private GestureDetector simpleGestureDetector = new GestureDetector(
-                        getContext(), new GestureDetector.SimpleOnGestureListener() {
                     @Override
-                    public boolean onDoubleTap(MotionEvent e) {
-                        return true;
+                    public boolean onTouch(final View view, final MotionEvent motionEvent) {
+
+                        if (simpleGestureDetector.onTouchEvent(motionEvent)) { // Double tap
+                            map.animateCamera(CameraUpdateFactory.zoomIn()); // Fixed zoom in
+                        } else if (motionEvent.getPointerCount() == 1) { // Single tap
+                            // horizontalPicker.keepScrolling();
+                            onMapDrag(motionEvent);
+                            mMapView.dispatchTouchEvent(motionEvent); // Propagate the event to the map (Pan)
+//                        onMapDrag(motionEvent);
+                        } else if (scaleGestureDetector.onTouchEvent(motionEvent)) { // Pinch zoom
+                            spanning = true;
+                            map.moveCamera(CameraUpdateFactory.zoomBy( // Zoom the map without panning it
+                                    (map.getCameraPosition().zoom * scaleFactor
+                                            - map.getCameraPosition().zoom) / 5));
+                        }
+
+                        return true; // Consume all the gestures
                     }
+
+                    // Gesture detector to manage double tap gestures
+                    private GestureDetector simpleGestureDetector = new GestureDetector(
+                            getContext(), new GestureDetector.SimpleOnGestureListener() {
+                        @Override
+                        public boolean onDoubleTap(MotionEvent e) {
+                            return true;
+                        }
+                    });
+
+                    // Gesture detector to manage scale gestures
+                    private ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(
+                            getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                        @Override
+                        public boolean onScale(ScaleGestureDetector detector) {
+                            scaleFactor = detector.getScaleFactor();
+                            return true;
+                        }
+                    });
+
+
+
                 });
 
-                // Gesture detector to manage scale gestures
-                private ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(
-                        getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
-                    @Override
-                    public boolean onScale(ScaleGestureDetector detector) {
-                        scaleFactor = detector.getScaleFactor();
-                        return true;
-                    }
-                });
-            });
+
 
             if (map != null) {
                 //if ((int) Build.VERSION.SDK_INT <= 23) {
@@ -1268,6 +1278,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             if(clicked==false){
                 oyebuttonBackgrountColorGreenishblue();
                 customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+                mHelperView.setEnabled(true);
                 clicked=true;
             }
 
@@ -1356,10 +1367,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         if(clicked==true){
             oyebuttonBackgrountColorOrange();
             customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
+            mHelperView.setEnabled(false);
             clicked=false;
         }else {
             oyebuttonBackgrountColorGreenishblue();
             customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+            mHelperView.setEnabled(true);
             clicked = true;
         }
         if(RatePanel==true) {
@@ -2876,7 +2889,7 @@ public void oyebuttonBackgrountColorOrange(){
                         }
                     }
 
-                            }
+                    }
                             spanning=false;
 
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
