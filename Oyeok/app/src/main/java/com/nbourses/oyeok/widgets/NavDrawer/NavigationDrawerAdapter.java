@@ -60,6 +60,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         holder.title.setText(current.getTitle());
         try {
             holder.imgViewIcon.setImageResource(current.getIcon());
+
         }catch(Exception e){}
 
 

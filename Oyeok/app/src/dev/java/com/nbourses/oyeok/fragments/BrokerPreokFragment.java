@@ -255,6 +255,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private int buyerCount1;
     private int sellerCount1;
 private String Walkthrough,beacon;
+    private int prompt = 2;
 
     Animation bounce;
     Animation zoomin;
@@ -905,10 +906,10 @@ if(count<=220) {
 
         BrokerBuildings brokerBuildings = new BrokerBuildings();
         brokerBuildings.setDeviceId("Hardware");
-        brokerBuildings.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+        brokerBuildings.setGcmId(SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
         brokerBuildings.setPage(buildingsPage.toString());
-        brokerBuildings.setLng(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-        brokerBuildings.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+        brokerBuildings.setLng(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
+        brokerBuildings.setLat(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
 
         brokerBuildings.setPropertyType("home");
 
@@ -1050,7 +1051,7 @@ if(count<=220) {
 
             General.slowInternet(getContext());
 
-            Log.i("TRACE", "GCM id is" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+            Log.i("TRACE", "GCM id is" + SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
             //preok params
             Oyeok preok = new Oyeok();
 //        int permissionCheck = ContextCompat.checkSelfPermission(getContext(),
@@ -1070,9 +1071,9 @@ if(count<=220) {
 //        }
 
             preok.setUserRole("broker");
-            preok.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
-            preok.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-            preok.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+            preok.setGcmId(SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
+            preok.setLong(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
+            preok.setLat(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
             preok.setPlatform("android");
             Log.i("PREOK", "user_id1 " + General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER));
             if (General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
@@ -1149,6 +1150,7 @@ if(count<=220) {
         }else{
 
             General.internetConnectivityMsg(getContext());
+            texPtype.setText("Go online to get Leads.");
         }
     }
 
@@ -1549,13 +1551,23 @@ catch (Exception e){
 
             if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
                 Log.i("PREOK CALLED11","values set"+jsonArrayReqLl.toString());
-                circularSeekbar.setValues(jsonArrayReqLl.toString());
+                prompt = circularSeekbar.setValues(jsonArrayReqLl.toString());
             }
             else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 Log.i("PREOK CALLED12", "values set" + jsonArrayAvlLl.toString());
-                circularSeekbar.setValues(jsonArrayAvlLl.toString());
+               prompt = circularSeekbar.setValues(jsonArrayAvlLl.toString());
 
             }
+            if(prompt == 1 ){
+                texPtype.setText("No leads available in this area for now.");
+                leadPrompt.setText("No leads available in this area for now.");
+            }
+            else{
+                texPtype.setText("Please select a Lead and press OK.");
+                leadPrompt.setText("Please select a Lead and press OK.");
+            }
+
+
 
             //added
 
@@ -1669,11 +1681,11 @@ catch (Exception e){
 
             if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
                 Log.i("PREOK CALLED17", "values set" + jsonArrayReqOr.toString());
-                circularSeekbar.setValues(jsonArrayReqOr.toString());
+                prompt = circularSeekbar.setValues(jsonArrayReqOr.toString());
             }
             else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
                 Log.i("PREOK CALLED18", "values set" + jsonArrayAvlOr.toString());
-                circularSeekbar.setValues(jsonArrayAvlOr.toString());
+                prompt = circularSeekbar.setValues(jsonArrayAvlOr.toString());
             }
 
             // Added
@@ -1700,6 +1712,14 @@ catch (Exception e){
 
             }
 
+            if(prompt == 1 ){
+                texPtype.setText("No leads available in this area for now.");
+                leadPrompt.setText("No leads available in this area for now.");
+            }
+            else{
+                texPtype.setText("Please select a Lead and press OK.");
+                leadPrompt.setText("Please select a Lead and press OK.");
+            }
 
         }
 
@@ -1724,8 +1744,9 @@ catch (Exception e){
         deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.orange));
         try {
             leadPrompt.setVisibility(View.VISIBLE);
-            leadPrompt.setText("Please select a Lead and press OK");
+            leadPrompt.setText("Please select a Lead and press OK.");
             jsonObjectArray = m;
+
             selectedItemPosition = position;
             String ptype = null;
             String pstype;
@@ -1861,7 +1882,7 @@ if(ptype.equalsIgnoreCase("home"))
 
 
                 SnackbarManager.show(
-                        com.nispok.snackbar.Snackbar.with(getActivity())
+                        com.nispok.snackbar.Snackbar.with(getContext())
                                 .position(Snackbar.SnackbarPosition.BOTTOM)
                                 .text("Please select a Lead and then press OK.")
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
@@ -2777,10 +2798,12 @@ public void walkthroughBroker(final View v) {
 
 
                 SnackbarManager.show(
-                        Snackbar.with(getActivity())
+                        Snackbar.with(getContext())
                                 .text("Select the Role")
+
                                 .position(Snackbar.SnackbarPosition.TOP)
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
             }
 
             public void onFinish() {
@@ -2791,8 +2814,9 @@ public void walkthroughBroker(final View v) {
                         rippleBackground1.stopRippleAnimation();
                         rippleBackground2.startRippleAnimation();
                         SnackbarManager.show(
-                                Snackbar.with(getActivity())
+                                Snackbar.with(getContext())
                                         .text("Select the Lead")
+
                                         .position(Snackbar.SnackbarPosition.TOP)
                                         .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
 
@@ -2806,10 +2830,12 @@ public void walkthroughBroker(final View v) {
                                 rippleBackground2.stopRippleAnimation();
                                 rippleBackground3.startRippleAnimation();
                                 SnackbarManager.show(
-                                        Snackbar.with(getActivity())
+                                        Snackbar.with(getContext())
                                                 .text("Press 'OK' to select three Property for Visit")
+
                                                 .position(Snackbar.SnackbarPosition.TOP)
                                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
 
                             }
 

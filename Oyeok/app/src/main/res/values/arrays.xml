@@ -339,6 +339,7 @@
 
     <integer-array name="nav_drawer_labels_no_signup_icon">
         <!--<item>@string/signup</item>-->
+        <item>@drawable/profile</item>
         <item>@drawable/client</item>
         <item>@drawable/notifications</item>
         <item>@drawable/shareapp</item>
