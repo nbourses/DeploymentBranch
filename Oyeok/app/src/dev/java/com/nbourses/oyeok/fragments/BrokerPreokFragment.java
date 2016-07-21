@@ -2800,7 +2800,10 @@ public void walkthroughBroker(final View v) {
                 SnackbarManager.show(
                         Snackbar.with(getContext())
                                 .text("Select the Role")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
             }
 
             public void onFinish() {
@@ -2813,7 +2816,9 @@ public void walkthroughBroker(final View v) {
                         SnackbarManager.show(
                                 Snackbar.with(getContext())
                                         .text("Select the Lead")
-                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
 
                     }
 
@@ -2827,7 +2832,10 @@ public void walkthroughBroker(final View v) {
                                 SnackbarManager.show(
                                         Snackbar.with(getContext())
                                                 .text("Press 'OK' to select three Property for Visit")
-                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
 
                             }
 

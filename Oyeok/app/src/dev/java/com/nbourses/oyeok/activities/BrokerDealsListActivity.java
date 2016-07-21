@@ -1179,11 +1179,12 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
         if(AppConstants.SIGNUP_FLAG){
+            if(AppConstants.REGISTERING_FLAG){}else{
             getSupportFragmentManager().popBackStackImmediate();
             Intent inten = new Intent(this,BrokerDealsListActivity.class);
             startActivity(inten);
             finish();
-            AppConstants.SIGNUP_FLAG=false;
+            AppConstants.SIGNUP_FLAG=false;}
 
         }else {
             Intent intent = new Intent(this, BrokerMainActivity.class);

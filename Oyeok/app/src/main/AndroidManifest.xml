@@ -230,8 +230,10 @@
             android:name=".activities.ClientMainActivity"
             android:screenOrientation="portrait" >
         </activity>
+
         <activity
             android:name=".activities.ClientDealsListActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:screenOrientation="portrait" >
         </activity>
 
@@ -249,6 +251,7 @@
         </activity>
         <activity
             android:name=".activities.BrokerDealsListActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:screenOrientation="portrait" >
         </activity>
         <activity

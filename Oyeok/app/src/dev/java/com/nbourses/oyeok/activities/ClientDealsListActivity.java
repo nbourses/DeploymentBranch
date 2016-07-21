@@ -23,7 +23,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.view.animation.BounceInterpolator;
+
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -338,18 +340,25 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 position = pos;
                 // mute or unmute toggle
                  String muteStatus = "Mute notifications";
-                if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
-                    mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
-                    if(mutedOKIds.contains(total_deals.get(position).getOkId())) {
-                        muteStatus = "Unmute notifications";
+               Log.i(TAG,"listbrokerdealsnew "+listBrokerDeals_new);
+                Log.i(TAG,"listbrokerdealsnew  def "+default_deals);
+                Log.i(TAG,"listbrokerdealsnew "+listBrokerDeals_new);
+                try {
+                    if (!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
+                        mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
+                        if (mutedOKIds.contains(total_deals.get(position).getOkId())) {
+                            muteStatus = "Unmute notifications";
 
+                        }
                     }
+                }catch(Exception e){
+                    // handle this problem when no network and remove this try catch
                 }
 
                 switch (index) {
                     case 0:
                         final String muteStatus1 = muteStatus;
-                        final CharSequence[] items = { muteStatus1, "Delete deal", "Cancel" };
+                        final CharSequence[] items = { muteStatus1, /*"Delete deal",*/ "Cancel" };
                         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ClientDealsListActivity.this);
                         builder.setTitle("More!");
                         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -357,9 +366,15 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             public void onClick(DialogInterface dialog, int item) {
                                 if (items[item].equals(muteStatus1)) {
 
-                                    if(listBrokerDeals_new.isEmpty()){
+                                    if(listBrokerDeals_new == null){
+                                        Log.i(TAG,"wadala default deals 1 ");
                                         total_deals = new ArrayList<BrokerDeals>();
-                                        total_deals.addAll(default_deals);
+                                        if(default_deals != null) {
+                                            total_deals.addAll(default_deals);
+                                        }
+                                        if(cachedDeals != null) {
+                                            total_deals.addAll(cachedDeals);
+                                        }
                                     }
 
                                     Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(ClientDealsListActivity.this));
@@ -550,10 +565,15 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                         Log.i(TAG,"wadala total_deals "+total_deals);
                         Log.i(TAG,"wadala default deals "+default_deals);
 
-                        if(listBrokerDeals_new.isEmpty()){
+                        if(listBrokerDeals_new == null){
                             Log.i(TAG,"wadala default deals 1 ");
                             total_deals = new ArrayList<BrokerDeals>();
-                            total_deals.addAll(default_deals);
+                            if(default_deals != null) {
+                                total_deals.addAll(default_deals);
+                            }
+                            if(cachedDeals != null) {
+                                total_deals.addAll(cachedDeals);
+                            }
                         }
 
 
@@ -649,6 +669,17 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                                 loadBrokerDeals();
                                             }
                                         }
+
+                                            else{
+                                                SnackbarManager.show(
+                                                        Snackbar.with(ClientDealsListActivity.this)
+                                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                                .text("Deals can not be deleted offline.")
+
+                                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                            }
+
+
 
                                     }
                                 });
@@ -1078,21 +1109,25 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                InputMethodManager imm = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+               onBackPressed();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+
     }
 
     @Override
     public void onBackPressed() {
         if(AppConstants.SIGNUP_FLAG){
+            if(AppConstants.REGISTERING_FLAG){}else{
             getSupportFragmentManager().popBackStackImmediate();
             Intent inten = new Intent(this, ClientDealsListActivity.class);
             startActivity(inten);
             finish();
-            AppConstants.SIGNUP_FLAG=false;
+            AppConstants.SIGNUP_FLAG=false;}
 
         }else {
             Intent intent = new Intent(this, ClientMainActivity.class);
@@ -1907,7 +1942,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             .text("Buy/Sell Deal Type set")
                             .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
-            getSupportActionBar().setTitle("DEALING ROOMs (Resale)");
+            getSupportActionBar().setTitle("DEALING ROOMs (Buy/Sell)");
         }
 
 

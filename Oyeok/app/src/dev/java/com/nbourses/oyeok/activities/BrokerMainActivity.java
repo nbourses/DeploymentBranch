@@ -416,6 +416,8 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             public void onClick(View v) {
                 BrokerMap brokerMap=new BrokerMap();
 //                brokerMap.setChangeLoction(this);
+                getSupportActionBar().setDisplayShowHomeEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 loadFragment(brokerMap,null,R.id.container_map,"");
                 doneButton.setVisibility(View.VISIBLE);
                 gmap=true;
@@ -440,11 +442,18 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             @Override
             public void onClick(View v) {
 
-//                Intent mainscreen  = new Intent(this,BrokerMainActivity.class);
-//                startActivity(mainscreen);
-//                finish();
-//                gmap =false;
-//                backpress = 0;
+
+//                Intent mainscreen  = ;
+                startActivity(new Intent(getApplicationContext(),BrokerMainActivity.class));
+                Log.i("donebutton","done button clicked   ");
+                getFragmentManager().popBackStack();
+                finish();
+                gmap =false;
+                backpress = 0;
+//                getSupportActionBar().setDisplayShowHomeEnabled(true);
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                doneButton.setVisibility(View.GONE);
+
 
 
 
@@ -590,7 +599,11 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         String user_id = dbHelper.getValue(DatabaseConstants.userId);
 
         Branch branch = Branch.getInstance(getApplicationContext());
-        branch.setIdentity(user_id);
+
+        String mob_no = General.getSharedPreferences(this,AppConstants.MOBILE_NUMBER);
+        Log.i("mob_no","mob_no "+mob_no);
+
+        branch.setIdentity(mob_no);
 
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
                 // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
@@ -602,6 +615,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
                 .addControlParameter("user_name", user_id)
                 .addControlParameter("$android_url", AppConstants.GOOGLE_PLAY_STORE_APP_URL)
                 .addControlParameter("$always_deeplink", "true");
+
 
         branchUniversalObject.generateShortUrl(getApplicationContext(), linkProperties, new Branch.BranchLinkCreateListener() {
             @Override
@@ -628,7 +642,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
         if(AppConstants.SIGNUP_FLAG){
-
+           if(AppConstants.REGISTERING_FLAG){}else{
                 getSupportFragmentManager().popBackStackImmediate();
 
             Intent inten = new Intent(this, BrokerMainActivity.class);
@@ -637,7 +651,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             finish();
             AppConstants.SIGNUP_FLAG=false;
 
-            backpress = 0;
+            backpress = 0;}
         }else
         if(webView != null){
             if (webView.canGoBack()) {

@@ -79,6 +79,7 @@
 
     <string-array name="nav_drawer_labels_signup_client">
         <item>@string/profile</item>
+        <item>@string/useAsClient</item>
         <!--  <item>@string/supportChat</item> -->
         <item>@string/notifications</item>
         <!--<item>@string/brokerOk</item>-->

@@ -691,7 +691,7 @@ if(newUser==true) {
         submit.setBackgroundColor(ContextCompat.getColor(context, R.color.grey));
         submit.setText("Registering...");
 
-
+      AppConstants.REGISTERING_FLAG=true;
            signup_success();
 
 
@@ -892,11 +892,14 @@ if(newUser==true) {
                                         public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                                             dialog.cancel();
                                             Intent intent = new Intent(getContext(), ClientMainActivity.class);
+
                                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                                     Intent.FLAG_ACTIVITY_NEW_TASK);
 
+
                                             startActivity(intent);
+                                            AppConstants.REGISTERING_FLAG=false;
                                         }
                                     });
                             final AlertDialog alert = builder.create();
@@ -1001,7 +1004,9 @@ if(newUser==true) {
                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                     Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
+
                                 AppConstants.SIGNUP_FLAG =false;
+
 
                         }
                             else if(redirectClient){
@@ -1012,7 +1017,9 @@ if(newUser==true) {
                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                     Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
+
                                 AppConstants.SIGNUP_FLAG =false;
+
 
                                 //intent.putExtra("default_deal_flag",true);
                                 startActivity(intent);
@@ -1047,6 +1054,7 @@ if(newUser==true) {
                                 intent.putExtra("userRole", "broker");
                                 //intent.putExtra("default_deal_flag",true);
                                 AppConstants.SIGNUP_FLAG=false;
+                                AppConstants.REGISTERING_FLAG=false;
                                 startActivity(intent);
 
 
@@ -1074,6 +1082,7 @@ if(newUser==true) {
                                 intent.putExtra("default_deal_flag",true);
                                 startActivity(intent);
                                 AppConstants.SIGNUP_FLAG=false;
+                                AppConstants.REGISTERING_FLAG=false;
                                 Log.i("REACHED", "I am here2");
                             }
                         }

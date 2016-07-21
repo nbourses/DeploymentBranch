@@ -1,14 +1,11 @@
 package com.nbourses.oyeok.fragments;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -158,35 +155,8 @@ public class BrokerMap extends DashboardClientFragment {
                 gmap = googleMap;
 //               double lat = 19.1269299;
 //              double  lng = 72.8376545999999;
+                    enableMyLocation();
 
-//                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                    // TODO: Consider calling
-//
-                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                gmap.setMyLocationEnabled(true);
-//
-//
-
-//
-////                    enableMyLocation();
-//               // Marker m = gmap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("").icon(icon1));
-//
-//                SharedPrefs.save(getContext(), SharedPrefs.MY_LAT, lat + "");
-//                    SharedPrefs.save(getContext(), SharedPrefs.MY_LNG, lng + "");
-//
-//                new LocationUpdater().execute();
-//
-//
-//
 //                    LatLng center = new LatLng(lat, lng);
 //
 //                    gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 12));
@@ -198,38 +168,6 @@ public class BrokerMap extends DashboardClientFragment {
 
 
 
-        /*try {
-            SharedPreferences prefs =
-                    PreferenceManager.getDefaultSharedPreferences(getContext());
-            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-
-                    if (key.equals(SharedPrefs.MY_REGION)) {
-                        Log.i("loc","OnSharedPreferenceChangeListener 1");
-                        Log.i("loc","OnSharedPreferenceChangeListener 1 rent "+SharedPrefs.getString(getContext(), SharedPrefs.MY_REGION));
-                        if (SharedPrefs.getString(getContext(), SharedPrefs.MY_REGION) ==null ) {
-                            Log.i("loc","OnSharedPreferenceChangeListener 2");
-                            tv_change_region.setVisibility(View.GONE);
-                        }
-                        else {
-                            Log.i("loc","OnSharedPreferenceChangeListener 3");
-                            tv_change_region.setVisibility(View.VISIBLE);
-                            tv_change_region.setText(String.valueOf(SharedPrefs.getString(getContext(), SharedPrefs.MY_REGION)));
-                        }
-                    }
-
-
-                }
-
-
-            };
-            prefs.registerOnSharedPreferenceChangeListener(listener);
-
-        }
-        catch (Exception e){
-            Log.e("loc", e.getMessage());
-        }
-*/
 
 
         mcallback = new GetCurrentLocation.CurrentLocationCallback() {
@@ -269,7 +207,7 @@ public class BrokerMap extends DashboardClientFragment {
                     //broker_map.addMarker(new MarkerOptions().position(currentLocation).title("current Location"));
                     // broker_map.animateCamera(CameraUpdateFactory.newLatLng(currentLocation));
                     gmap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-                    gmap.animateCamera(CameraUpdateFactory.zoomTo(12));
+                    gmap.moveCamera(CameraUpdateFactory.zoomTo(12));
 
                     //make retrofit call to get Min Max price
 
@@ -279,6 +217,7 @@ public class BrokerMap extends DashboardClientFragment {
 
 
         try {
+            if (isNetworkAvailable()) {
             customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
                 @Override
                 public void onDrag(MotionEvent motionEvent) {
@@ -305,38 +244,20 @@ public class BrokerMap extends DashboardClientFragment {
                         getRegion();
                         Log.i("t1", "latlong" + " " + currentLocation1);
                        // gmap.addMarker(new MarkerOptions().position(currentLocation1));
-                        if (isNetworkAvailable()) {
+
                             new LocationUpdater().execute();
-                        }
-
-                       // tv_change_region.setText(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
-
-                       // tv_change_region.addTextChangedListener(TextWatcher watcher);
-
-                        //tv_change_region.setText("");
-                        // Log.i("t1", "Sharedpref_lng_above" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-                        // // tv_change_region.setText(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-                        // Log.i("t1", "Sharedpref_lng_below" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
 
 
-                        // Intent intent = new Intent(AppConstants.Broker_Locality_Change);
-                        // intent.putExtra("broker_locality_change", SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-                        // Log.i("sendbroadcast", "====================");
-                        // Log.i("sendbroadcast", "====================" + LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent));
 
-
-                        // tv_change_region.addTextChangedListener(TextWatcher watcher);
-
-                        //locationName.changeLocation(tv_change_region.getText().toString());
                     } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
 
-                        //
+
                     }
                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
                 }
             });
-
+            }
         } catch (Exception e) {
         }
 
@@ -494,12 +415,12 @@ public class BrokerMap extends DashboardClientFragment {
         }
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
+//    private boolean isNetworkAvailable() {
+//        ConnectivityManager connectivityManager
+//                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+//        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+//    }
 
 
     public void getLocationFromAddress(String strAddress) {
@@ -572,19 +493,13 @@ public class BrokerMap extends DashboardClientFragment {
                                 //enableMyLocation();
 
                                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                    // TODO: Consider calling
-                                    //    ActivityCompat#requestPermissions
-                                    // here to request the missing permissions, and then overriding
-                                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                    //                                          int[] grantResults)
-                                    // to handle the case where the user grants the permission. See the documentation
-                                    // for ActivityCompat#requestPermissions for more details.
+
                                     return;
                                 }
                                 gmap.setMyLocationEnabled(true);
-                                //setCameraListener();
+
                                 Log.i("t1", "broker_map" + gmap);
-                                //  geoFence.drawPloygon(map);
+
                             }
                         });
                         getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
@@ -597,7 +512,7 @@ public class BrokerMap extends DashboardClientFragment {
                 // other 'case' lines to check for other
                 // permissions this app might request
             }
-            if (canAccessLocation()) {
+       /*     if (canAccessLocation()) {
                 new GetCurrentLocation(getActivity(), new GetCurrentLocation.CurrentLocationCallback() {
                     @Override
                     public void onComplete(Location location) {
@@ -623,7 +538,7 @@ public class BrokerMap extends DashboardClientFragment {
                 // startActivity(intent);
                // Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
                 //((DashboardActivity) getActivity()).showToastMessage("Offline Mode");
-            }
+            }*/
 
         }catch (Exception e){}
 

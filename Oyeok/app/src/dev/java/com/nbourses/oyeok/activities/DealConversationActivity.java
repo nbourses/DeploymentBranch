@@ -160,7 +160,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     // File fileToUpload = new File("/storage/sdcard0/Pictures/Screenshots/photos.png");
     private File fileToUpload = new File("/storage/emulated/0/DCIM/Facebook/FB_IMG_1467990952511.jpg");
     private File fileToDownload = new File("/storage/sdcard0/Pictures/OYEOK");
-   public AmazonS3 s3;
+    public AmazonS3 s3;
     public TransferUtility transferUtility;
     private String imageName = null;
 
@@ -220,7 +220,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 //        IntentFilter filter = new IntentFilter("shine");
 //        LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
-       // UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
+        // UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
         UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
         i("WHERENOW", "UUID " + UUID);
 
@@ -904,9 +904,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             Uri uri = data.getData();
             Log.d(TAG, "lolwa imagewa uri "+uri);
 
-              fileToUpload = new File(getRealPathFromURI(this,uri));
-                Log.i(TAG, "lolwa imagewa uri fileToUpload "+fileToUpload);
-                setFileToUpload(fileToUpload);
+            fileToUpload = new File(getRealPathFromURI(this,uri));
+            Log.i(TAG, "lolwa imagewa uri fileToUpload "+fileToUpload);
+            setFileToUpload(fileToUpload);
 
 
 
@@ -1243,7 +1243,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             Log.i("TEST","published to channel_name" +channel_name);
             if (channel_name.equals("my_channel")){
                 //channel_name = General.getSharedPreferences(this, AppConstants.USER_ID);
-               // pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
+                // pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
                 channel_name = General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI);
                 pubnubWhereNow(General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI));
                 Log.i("Pubnub push","channel_name_userid case is "+channel_name);
@@ -2027,7 +2027,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 jsonMsg.put("to", "broker");
 
 
-                        Log.i(TAG, "role of user def 6 ");
+                Log.i(TAG, "role of user def 6 ");
 
             }
             if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {

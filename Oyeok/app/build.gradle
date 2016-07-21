@@ -81,6 +81,10 @@ repositories {
 repositories {
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+
+
+        maven { url 'http://hypertrack-android-sdk.s3-website-us-west-2.amazonaws.com/' }
+
 }
 
 dependencies {
@@ -103,6 +107,9 @@ repositories {
 //}
 dependencies {
     compile 'com.firebase:firebase-client-android:2.3.1'
+    compile('io.hypertrack:transmitter:0.5.+:release@aar') {
+        transitive = true;
+    }
 }
 //dependencies {
 //    compile 'com.google.android.gms:play-services-gcm:9.0.1'

@@ -688,11 +688,18 @@ private void alertbuilder()
         String user_id = dbHelper.getValue(DatabaseConstants.userId);
 
         Branch branch = Branch.getInstance(getApplicationContext());
-        branch.setIdentity(user_id);
+
+        String mob_no = General.getSharedPreferences(this,AppConstants.MOBILE_NUMBER);
+        Log.i("mob_no","mob_no "+mob_no +user_id );
+
+        branch.setIdentity(mob_no);
 
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
                 // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
                 .setCanonicalIdentifier(user_id);
+
+
+        branchUniversalObject.registerView();
 
         LinkProperties linkProperties = new LinkProperties()
                 .setChannel("sms")
@@ -704,6 +711,7 @@ private void alertbuilder()
         branchUniversalObject.generateShortUrl(getApplicationContext(), linkProperties, new Branch.BranchLinkCreateListener() {
             @Override
             public void onLinkCreate(String url, BranchError error) {
+                Log.i("mob_no url","mob_no url " +url );
                 if (error == null) {
                     Log.i("MyApp", "got my Branch link to share: " + url);
                     Intent intent = new Intent(Intent.ACTION_SEND);
@@ -849,11 +857,11 @@ private void alertbuilder()
                 startActivity(back);
             }
             finish();*/
-
+            if(AppConstants.REGISTERING_FLAG){}else{
             getSupportFragmentManager().popBackStack();
 
             AppConstants.SIGNUP_FLAG=false;
-            backpress = 0;
+            backpress = 0;}
             Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff");
 
         }
@@ -874,8 +882,7 @@ private void alertbuilder()
        else if(setting==true){
             Log.i("BACK PRESSED"," =================== setting"+setting);
             if(SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") || SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")){
-                super.onBackPressed();
-                finish();
+
                /* try {
                     DashboardClientFragment dash=new DashboardClientFragment();
                     dash.Wlak_Beacon();
@@ -888,6 +895,8 @@ private void alertbuilder()
                                 Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                 Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(inten);
+                finish();
+                super.onBackPressed();
                 finish();
                 Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;

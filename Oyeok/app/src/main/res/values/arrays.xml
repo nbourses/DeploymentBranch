@@ -321,6 +321,7 @@
 
     <integer-array name="nav_drawer_labels_signup_client_icon">
         <item>@drawable/profile</item>
+        <item>@drawable/client</item>
         <!--<item>@string/brokerOk</item>-->
         <item>@drawable/notifications</item>
         <item>@drawable/shareapp</item>

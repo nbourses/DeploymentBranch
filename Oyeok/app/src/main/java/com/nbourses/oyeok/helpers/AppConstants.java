@@ -103,8 +103,15 @@ public class AppConstants {
     public static final String PSTYPE = "pstype";
     public static final String PRICE = "price";
     public static Boolean SIGNUP_FLAG = false;
+
     public static Boolean CLIENT_DEAL_FLAG = false;
     public static Boolean BROKER_DEAL_FLAG = false;
+
+
+    public static Boolean REGISTERING_FLAG = false;
+
+
     public static final String UPLOADED_IMAGE_PATH = "uploadedImagePath";
+
 
 }

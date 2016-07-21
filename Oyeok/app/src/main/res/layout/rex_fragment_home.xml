@@ -47,6 +47,12 @@
             <!--class="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MySupportMapFragment">-->
             <!--</fragment>-->
 
+            <!-- Helper view to manage touches -->
+            <View
+                android:id="@+id/helperView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -393,7 +399,10 @@
 
             <!--</com.github.clans.fab.FloatingActionMenu>-->
 
-            <RelativeLayout
+
+            <!--//sushil-->
+
+            <!--<RelativeLayout
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:visibility="gone"
@@ -411,7 +420,7 @@
                     android:layout_centerVertical="true"
                     android:gravity="center_horizontal"/>
 
-            </RelativeLayout>
+            </RelativeLayout>-->
 
             <Button
                 android:layout_width="80dp"
@@ -423,6 +432,14 @@
                 android:layout_marginTop="10dp" />
 
         </FrameLayout>
+
+
+
+
+
+
+
+
 
         <FrameLayout
             android:id="@+id/hideOnSearch"
@@ -504,12 +521,12 @@
                     android:textColorHint="@color/white"
                      android:clickable="true"
                      android:textColor="@color/white"
-                     android:textCursorDrawable="@color/white"
+                     android:textCursorDrawable="@drawable/cursor"
                      android:layout_marginRight="50dp"
                     android:cursorVisible="false"
                     android:singleLine="false"
                     android:minLines="2"
-                    android:lines="2"
+                    android:maxLines="2"
                     android:scrollbars="none"
                     android:textAlignment="textStart"
                     android:textSize="15dp"
