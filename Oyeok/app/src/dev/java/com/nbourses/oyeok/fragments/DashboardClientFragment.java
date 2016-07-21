@@ -22,6 +22,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -31,6 +32,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -44,6 +46,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -144,7 +147,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
-
+    private static final int REQUEST_CALL_PHONE = 1;
     private static final int INITIAL_REQUEST = 133;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
     private static final int MAP_ZOOM = 12;
@@ -512,6 +515,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         tvRate = (TextView) rootView.findViewById(R.id.tvRate);
         tvFetchingrates = (TextView) rootView.findViewById(R.id.tvFetchingRates);
         tv_building = (TextView) rootView.findViewById(R.id.tv_building);
+        Button CallButton=(Button) rootView.findViewById(R.id.CallButton);
 
         //search_building_icon.setVisibility(View.INVISIBLE);
         buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
@@ -534,6 +538,31 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 horizontalPicker.addValues(index);
             }
         });
+
+
+        // Call Button
+        CallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:2233836068"));
+                callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE);
+
+                String callPermission = Manifest.permission.CALL_PHONE;
+                int hasPermission = ContextCompat.checkSelfPermission(getActivity(), callPermission);
+                String[] permissions = new String[] { callPermission };
+                if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(permissions, REQUEST_CALL_PHONE);
+//                    startActivity(callIntent);
+                } else {
+                    startActivity(callIntent);
+                }
+
+
+            }
+        });
+
 
 
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
@@ -2192,8 +2221,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
                 getRegion();
-                 getPrice();
-                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+//                 getPrice();
+//                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
             }catch(Exception e){}
 
         }
@@ -2774,7 +2803,10 @@ public void oyebuttonBackgrountColorOrange(){
 
     }
 
-
+    private boolean isTelephonyEnabled(){
+        TelephonyManager tm = (TelephonyManager)getContext().getSystemService(Context.TELEPHONY_SERVICE);
+        return tm != null && tm.getSimState()== TelephonyManager.SIM_STATE_READY;
+    }
 
 
 }
