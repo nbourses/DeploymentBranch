@@ -552,18 +552,19 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:2233836068"));
                 callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE);
+//                int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE);
 
                 String callPermission = Manifest.permission.CALL_PHONE;
                 int hasPermission = ContextCompat.checkSelfPermission(getActivity(), callPermission);
                 String[] permissions = new String[] { callPermission };
-                if (hasPermission != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(permissions, REQUEST_CALL_PHONE);
+                if(isTelephonyEnabled()) {
+                    if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(permissions, REQUEST_CALL_PHONE);
 //                    startActivity(callIntent);
-                } else {
-                    startActivity(callIntent);
+                    } else {
+                        startActivity(callIntent);
+                    }
                 }
-
 
             }
         });
