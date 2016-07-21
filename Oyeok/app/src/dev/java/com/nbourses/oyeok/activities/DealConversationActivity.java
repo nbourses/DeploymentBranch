@@ -2182,6 +2182,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //        General.setSharedPreferences(this,channel_name+AppConstants.CACHE,cachedmsgs.toString());
 //       Log.i("CACHE","cache got from shared  "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
 //
+
+        /*Log.i("ll","user role:  "+General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"));
+
         if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
             Intent back = new Intent(this, ClientDealsListActivity.class); // to refresh adapter to display newly saved last message time
             startActivity(back);
@@ -2191,7 +2194,19 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             startActivity(back);
 
             // super.onBackPressed();
+        }*/
+
+
+        if(AppConstants.CLIENT_DEAL_FLAG == true){
+            Intent back = new Intent(this, ClientDealsListActivity.class); // to refresh adapter to display newly saved last message time
+            startActivity(back);
+            AppConstants.CLIENT_DEAL_FLAG = false;
+        }else if(AppConstants.BROKER_DEAL_FLAG == true){
+            Intent back = new Intent(this, BrokerDealsListActivity.class); // to refresh adapter to display newly saved last message time
+            startActivity(back);
+            AppConstants.BROKER_DEAL_FLAG = false;
         }
+
 
 
     }

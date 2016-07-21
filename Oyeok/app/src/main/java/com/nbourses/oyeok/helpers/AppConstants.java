@@ -59,6 +59,7 @@ public class AppConstants {
 
     public static final String ROLE_OF_USER = "role_of_user";
 
+
     public static final String CLIENT_OK_ID = "client_ok_id";
 
     public static final String DEFAULT_SNACKBAR_COLOR = "#ff9f1c";
@@ -105,6 +106,8 @@ public class AppConstants {
     public static Boolean SIGNUP_FLAG = false;
 
     public static Boolean REGISTERING_FLAG = false;
+    public static Boolean CLIENT_DEAL_FLAG = false;
+    public static Boolean BROKER_DEAL_FLAG = false;
 
     public static final String UPLOADED_IMAGE_PATH = "uploadedImagePath";
 

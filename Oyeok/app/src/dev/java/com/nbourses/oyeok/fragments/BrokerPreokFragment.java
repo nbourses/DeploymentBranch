@@ -935,12 +935,12 @@ if(count<=220) {
                     JsonObject k = jsonElement.getAsJsonObject();
                     try {
 
-                        Log.i("BROKER BUILDINGS CALLED","success response "+response);
-
-                        Log.i("BROKER BUILDINGS","LAT1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
-                        Log.i("BROKER BUILDINGS","LNG1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
-                        Log.i("BROKER BUILDINGS","LAT "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
-                        Log.i("BROKER BUILDINGS","LNG "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
+//                        Log.i("BROKER BUILDINGS CALLED","success response "+response);
+//
+//                        Log.i("BROKER BUILDINGS","LAT1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
+//                        Log.i("BROKER BUILDINGS","LNG1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
+//                        Log.i("BROKER BUILDINGS","LAT "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
+//                        Log.i("BROKER BUILDINGS","LNG "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
 
                         JSONObject ne = new JSONObject(k.toString());
                         Log.i("BROKER BUILDINGS CALLED","success ne "+ne);
@@ -1741,7 +1741,7 @@ catch (Exception e){
     @Override
     public void onclick(int position, JSONArray m, String show, int x_c, int y_c) {
         deal.setEnabled(true);
-        deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.orange));
+        deal.setBackgroundColor(Color.parseColor("#ff9f1c"));//ContextCompat.getColor(getContext(), R.color.orange)
         try {
             leadPrompt.setVisibility(View.VISIBLE);
             leadPrompt.setText("Please select a Lead and press OK.");

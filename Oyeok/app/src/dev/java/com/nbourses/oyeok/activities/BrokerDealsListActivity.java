@@ -176,6 +176,7 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
         bgtxt.setText("'OK' More Leads,\nTo Create Dealing\nRooms with new Client");
         bgtxtlayout.setVisibility(View.VISIBLE);
         ButterKnife.bind(this);
+        AppConstants.BROKER_DEAL_FLAG = true;
 
         init();
     }

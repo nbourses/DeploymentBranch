@@ -28,7 +28,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.nbourses.oyeok.Database.DBHelper;
@@ -504,8 +503,14 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         String title = getString(R.string.app_name);
 
         if (itemTitle.equals(getString(R.string.useAsClient))) {
-            Intent openDashboardActivity =  new Intent(this, ClientMainActivity.class);
+            Intent openDashboardActivity = new Intent(this, ClientMainActivity.class);
+            openDashboardActivity.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(openDashboardActivity);
+            finish();
+
         }
         else if (itemTitle.equals(getString(R.string.profile))) {
             Intent openProfileActivity =  new Intent(this, ProfileActivity.class);
@@ -732,14 +737,14 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         }
         else{
 
-            if(backpress <1) {
-                backpress = (backpress + 1);
-
-                Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
-            }else if (backpress>=1) {
+//            if(backpress <1) {
+//                backpress = (backpress + 1);
+//
+//                Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+//            }else if (backpress>=1) {
                 backpress = 0;
                 this.finish();
-            }
+//            }
 
         }
 

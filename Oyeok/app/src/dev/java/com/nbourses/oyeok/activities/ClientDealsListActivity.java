@@ -223,7 +223,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         IntentFilter filter = new IntentFilter("okeyed");
         LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
         setContentView(R.layout.activity_deals_list);
-
+       AppConstants.CLIENT_DEAL_FLAG = true;
 
         // listViewDeals	=	(ListView) findViewById(R.id.listViewDeals);
         // listdata		=	new ArrayList<dumpclass>();

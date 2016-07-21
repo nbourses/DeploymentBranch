@@ -1004,7 +1004,8 @@ if(newUser==true) {
                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                     Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
-                                AppConstants.REGISTERING_FLAG=false;
+//                                AppConstants.REGISTERING_FLAG=false;
+                                AppConstants.SIGNUP_FLAG=false;
 
                         }
                             else if(redirectClient){
@@ -1015,8 +1016,8 @@ if(newUser==true) {
                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                     Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
-                                AppConstants.REGISTERING_FLAG=false;
-
+//                                AppConstants.REGISTERING_FLAG=false;
+                                AppConstants.SIGNUP_FLAG=false;
                                 //intent.putExtra("default_deal_flag",true);
                                 startActivity(intent);
                             }
