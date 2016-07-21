@@ -340,18 +340,25 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 position = pos;
                 // mute or unmute toggle
                  String muteStatus = "Mute notifications";
-                if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
-                    mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
-                    if(mutedOKIds.contains(total_deals.get(position).getOkId())) {
-                        muteStatus = "Unmute notifications";
+               Log.i(TAG,"listbrokerdealsnew "+listBrokerDeals_new);
+                Log.i(TAG,"listbrokerdealsnew  def "+default_deals);
+                Log.i(TAG,"listbrokerdealsnew "+listBrokerDeals_new);
+                try {
+                    if (!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
+                        mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
+                        if (mutedOKIds.contains(total_deals.get(position).getOkId())) {
+                            muteStatus = "Unmute notifications";
 
+                        }
                     }
+                }catch(Exception e){
+                    // handle this problem when no network and remove this try catch
                 }
 
                 switch (index) {
                     case 0:
                         final String muteStatus1 = muteStatus;
-                        final CharSequence[] items = { muteStatus1, "Delete deal", "Cancel" };
+                        final CharSequence[] items = { muteStatus1, /*"Delete deal",*/ "Cancel" };
                         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ClientDealsListActivity.this);
                         builder.setTitle("More!");
                         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -359,9 +366,15 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             public void onClick(DialogInterface dialog, int item) {
                                 if (items[item].equals(muteStatus1)) {
 
-                                    if(listBrokerDeals_new.isEmpty()){
+                                    if(listBrokerDeals_new == null){
+                                        Log.i(TAG,"wadala default deals 1 ");
                                         total_deals = new ArrayList<BrokerDeals>();
-                                        total_deals.addAll(default_deals);
+                                        if(default_deals != null) {
+                                            total_deals.addAll(default_deals);
+                                        }
+                                        if(cachedDeals != null) {
+                                            total_deals.addAll(cachedDeals);
+                                        }
                                     }
 
                                     Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(ClientDealsListActivity.this));
@@ -552,10 +565,15 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                         Log.i(TAG,"wadala total_deals "+total_deals);
                         Log.i(TAG,"wadala default deals "+default_deals);
 
-                        if(listBrokerDeals_new.isEmpty()){
+                        if(listBrokerDeals_new == null){
                             Log.i(TAG,"wadala default deals 1 ");
                             total_deals = new ArrayList<BrokerDeals>();
-                            total_deals.addAll(default_deals);
+                            if(default_deals != null) {
+                                total_deals.addAll(default_deals);
+                            }
+                            if(cachedDeals != null) {
+                                total_deals.addAll(cachedDeals);
+                            }
                         }
 
 
@@ -651,6 +669,17 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                                 loadBrokerDeals();
                                             }
                                         }
+
+                                            else{
+                                                SnackbarManager.show(
+                                                        Snackbar.with(ClientDealsListActivity.this)
+                                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                                .text("Deals can not be deleted offline.")
+
+                                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                            }
+
+
 
                                     }
                                 });

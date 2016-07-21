@@ -688,11 +688,18 @@ private void alertbuilder()
         String user_id = dbHelper.getValue(DatabaseConstants.userId);
 
         Branch branch = Branch.getInstance(getApplicationContext());
-        branch.setIdentity(user_id);
+
+        String mob_no = General.getSharedPreferences(this,AppConstants.MOBILE_NUMBER);
+        Log.i("mob_no","mob_no "+mob_no +user_id );
+
+        branch.setIdentity(mob_no);
 
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
                 // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
                 .setCanonicalIdentifier(user_id);
+
+
+        branchUniversalObject.registerView();
 
         LinkProperties linkProperties = new LinkProperties()
                 .setChannel("sms")
@@ -704,6 +711,7 @@ private void alertbuilder()
         branchUniversalObject.generateShortUrl(getApplicationContext(), linkProperties, new Branch.BranchLinkCreateListener() {
             @Override
             public void onLinkCreate(String url, BranchError error) {
+                Log.i("mob_no url","mob_no url " +url );
                 if (error == null) {
                     Log.i("MyApp", "got my Branch link to share: " + url);
                     Intent intent = new Intent(Intent.ACTION_SEND);

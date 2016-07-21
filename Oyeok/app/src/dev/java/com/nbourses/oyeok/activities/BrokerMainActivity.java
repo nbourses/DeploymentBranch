@@ -599,7 +599,11 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         String user_id = dbHelper.getValue(DatabaseConstants.userId);
 
         Branch branch = Branch.getInstance(getApplicationContext());
-        branch.setIdentity(user_id);
+
+        String mob_no = General.getSharedPreferences(this,AppConstants.MOBILE_NUMBER);
+        Log.i("mob_no","mob_no "+mob_no);
+
+        branch.setIdentity(mob_no);
 
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
                 // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
@@ -611,6 +615,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
                 .addControlParameter("user_name", user_id)
                 .addControlParameter("$android_url", AppConstants.GOOGLE_PLAY_STORE_APP_URL)
                 .addControlParameter("$always_deeplink", "true");
+
 
         branchUniversalObject.generateShortUrl(getApplicationContext(), linkProperties, new Branch.BranchLinkCreateListener() {
             @Override
