@@ -31,6 +31,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MapWrapperLayout;
+import com.nbourses.oyeok.helpers.General;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -99,7 +100,15 @@ public class BrokerMap extends DashboardClientFragment {
         //  ButterKnife.bind(this, rootView1);
         //tv_change_region=(TextView) rootView1.findViewById(R.id.tv_change_region);
         // icon1 = BitmapDescriptorFactory.fromResource(R.drawable.iv_markerpin);
+try {
+    if (!General.isNetworkAvailable(getContext())) {
+        General.internetConnectivityMsg(getContext());
+    }
+}catch(Exception e){}
+
         iv_markerpin = (ImageView) rootView.findViewById(R.id.iv_markerpin);
+
+
 
 //        tv_change_region = (TextView) rootView1.findViewById(R.id.tv_change_region);
 

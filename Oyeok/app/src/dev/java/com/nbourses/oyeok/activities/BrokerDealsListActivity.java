@@ -1310,52 +1310,57 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
     private void setCachedDeals(){
-        if(cachedDeals == null){
-            cachedDeals = new ArrayList<BrokerDeals>();
+        try { // one first run when cached deals( ,LL,OR ) are empty it may crash
+            if (cachedDeals == null) {
+                cachedDeals = new ArrayList<BrokerDeals>();
+            } else {
+                cachedDeals.clear();
+            }
+
+            if (TT.equalsIgnoreCase("LL"))
+                cachedDeals.addAll(cachedDealsLL);
+            else
+
+                cachedDeals.addAll(cachedDealsOR);
+
+            if (cachedDeals.size() < 3 && showbgtext == true) {
+                bgtxtlayout.setVisibility(View.VISIBLE);
+                bgtxt.setText("'OK' More Leads,\nTo Create Dealing\nRooms with new Client");
+            } else {
+                bgtxtlayout.setVisibility(View.GONE);
+            }
+
+
+            if (cachedDeals != null) {
+                listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
+                listViewDeals.setAdapter(listAdapter);
+
+                Log.i("inside adapter ", "object cached" + listAdapter);
+                listAdapter.notifyDataSetChanged();
+
+                listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                        Log.i("TRACE", "cached deals adapter clicked" + position);
+
+
+                        BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
+
+                        Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+                        intent.putExtra("userRole", "client");
+                        intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                        intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
+                        Log.i("TRACE", "ment" + AppConstants.OK_ID);
+
+                        startActivity(intent);
+                    }
+                });
+
+
+            }
         }
-        else{
-            cachedDeals.clear();
-        }
-
-        if(TT.equalsIgnoreCase("LL"))
-            cachedDeals.addAll(cachedDealsLL);
-        else
-            cachedDeals.addAll(cachedDealsOR);
-
-        if(cachedDeals.size() <3 && showbgtext == true){
-            bgtxtlayout.setVisibility(View.VISIBLE);
-            bgtxt.setText("'OK' More Leads,\nTo Create Dealing\nRooms with new Client");
-        }else{bgtxtlayout.setVisibility(View.GONE);}
-
-
-        if (cachedDeals != null) {
-            listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
-            listViewDeals.setAdapter(listAdapter);
-
-            Log.i("inside adapter ", "object cached" + listAdapter);
-            listAdapter.notifyDataSetChanged();
-
-            listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-                    Log.i("TRACE", "cached deals adapter clicked" + position);
-
-
-                    BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-
-                    Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
-                    intent.putExtra("userRole", "client");
-                    intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
-                    intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
-                    Log.i("TRACE", "ment" + AppConstants.OK_ID);
-
-                    startActivity(intent);
-                }
-            });
-
-
-        }
+        catch(Exception e){}
     }
 
     private void deleteDroomDb(String okId){

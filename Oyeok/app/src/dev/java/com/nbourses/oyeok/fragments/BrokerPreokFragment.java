@@ -652,6 +652,7 @@ Log.i("PHASE","before adapter set");
         chart.setDescription("Select three Buildings.");
 
 
+
         //chart.animateY(1500);
 
 
@@ -1163,77 +1164,74 @@ if(count<=220) {
     @OnClick(R.id.okBtn)
     public void onOptionClickok(View v) {
 
-        try {
-            Log.i("CHART", "y value " + chart.getEntriesAtIndex(0).get(0).getVal());
-            listings = new HashMap<String, Float>();
-            listings.put(buildingNames.get(buildingsSelected.get(0)), chart.getEntriesAtIndex(0).get(0).getVal());
-            listings.put(buildingNames.get(buildingsSelected.get(1)), chart.getEntriesAtIndex(1).get(0).getVal());
-            listings.put(buildingNames.get(buildingsSelected.get(2)), chart.getEntriesAtIndex(2).get(0).getVal());
-        }
-        catch (Exception e) {
+        if(okBtn.getText().equals("OK")) {
 
-        }
+            try {
+                Log.i("CHART", "y value " + chart.getEntriesAtIndex(0).get(0).getVal());
+                listings = new HashMap<String, Float>();
+                listings.put(buildingNames.get(buildingsSelected.get(0)), chart.getEntriesAtIndex(0).get(0).getVal());
+                listings.put(buildingNames.get(buildingsSelected.get(1)), chart.getEntriesAtIndex(1).get(0).getVal());
+                listings.put(buildingNames.get(buildingsSelected.get(2)), chart.getEntriesAtIndex(2).get(0).getVal());
+            } catch (Exception e) {
 
-
-        if (!General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-
-            dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
-            //show sign up screen if broker is not registered
-            Bundle bundle = new Bundle();
-            bundle.putString("lastFragment", "BrokerPreokFragment");
-            bundle.putString("JsonArray", jsonObjectArray.toString());
-            bundle.putInt("Position", selectedItemPosition);
-            Log.i("listings","building1 "+buildingNames.get(buildingsSelected.get(0)));
-            Log.i("listings","building2 "+buildingNames.get(buildingsSelected.get(1)));
-            Log.i("listings","building3 "+buildingNames.get(buildingsSelected.get(2)));
-
-            Log.i("listings","price1 "+chart.getEntriesAtIndex(0).get(0).getVal());
-            Log.i("listings","price2 "+chart.getEntriesAtIndex(1).get(0).getVal());
-            Log.i("listings","price3 "+chart.getEntriesAtIndex(2).get(0).getVal());
-
-            String[] bNames = new String[]{buildingNames.get(buildingsSelected.get(0)),buildingNames.get(buildingsSelected.get(1)),buildingNames.get(buildingsSelected.get(2))};
-            int[] bPrice = new int[]{Math.round(chart.getEntriesAtIndex(0).get(0).getVal()),Math.round(chart.getEntriesAtIndex(1).get(0).getVal()),Math.round(chart.getEntriesAtIndex(2).get(0).getVal())};
+            }
 
 
-            bundle.putIntArray("bPrice",bPrice);
-            bundle.putStringArray("bNames",bNames);
+            if (!General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+
+                dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
+                //show sign up screen if broker is not registered
+                Bundle bundle = new Bundle();
+                bundle.putString("lastFragment", "BrokerPreokFragment");
+                bundle.putString("JsonArray", jsonObjectArray.toString());
+                bundle.putInt("Position", selectedItemPosition);
+                Log.i("listings", "building1 " + buildingNames.get(buildingsSelected.get(0)));
+                Log.i("listings", "building2 " + buildingNames.get(buildingsSelected.get(1)));
+                Log.i("listings", "building3 " + buildingNames.get(buildingsSelected.get(2)));
+
+                Log.i("listings", "price1 " + chart.getEntriesAtIndex(0).get(0).getVal());
+                Log.i("listings", "price2 " + chart.getEntriesAtIndex(1).get(0).getVal());
+                Log.i("listings", "price3 " + chart.getEntriesAtIndex(2).get(0).getVal());
+
+                String[] bNames = new String[]{buildingNames.get(buildingsSelected.get(0)), buildingNames.get(buildingsSelected.get(1)), buildingNames.get(buildingsSelected.get(2))};
+                int[] bPrice = new int[]{Math.round(chart.getEntriesAtIndex(0).get(0).getVal()), Math.round(chart.getEntriesAtIndex(1).get(0).getVal()), Math.round(chart.getEntriesAtIndex(2).get(0).getVal())};
 
 
-            bundle.putSerializable("listings", listings);
-            Fragment fragment = null;
-            fragment = new SignUpFragment();
-            fragment.setArguments(bundle);
-
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_sign, fragment);
-           // fragmentTransaction.replace(R.id.container_map, fragment);
-            fragmentTransaction.commit();
-        } else {
-            //here broker is registered
+                bundle.putIntArray("bPrice", bPrice);
+                bundle.putStringArray("bNames", bNames);
 
 
+                bundle.putSerializable("listings", listings);
+                Fragment fragment = null;
+                fragment = new SignUpFragment();
+                fragment.setArguments(bundle);
+
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.container_sign, fragment);
+                // fragmentTransaction.replace(R.id.container_map, fragment);
+                fragmentTransaction.commit();
+            } else {
+                //here broker is registered
 
 
-            AcceptOkCall a = new AcceptOkCall();
-            a.setmCallBack(BrokerPreokFragment.this);
-            a.acceptOk(listings, jsonObjectArray, selectedItemPosition, dbHelper, getActivity());
+                AcceptOkCall a = new AcceptOkCall();
+                a.setmCallBack(BrokerPreokFragment.this);
+                a.acceptOk(listings, jsonObjectArray, selectedItemPosition, dbHelper, getActivity());
 
-            General.setBadgeCount(getContext(),AppConstants.RENTAL_COUNT,0);
-            General.setBadgeCount(getContext(),AppConstants.RESALE_COUNT,0);
-            General.setBadgeCount(getContext(),AppConstants.TENANTS_COUNT,0);
-            General.setBadgeCount(getContext(),AppConstants.OWNERS_COUNT,0);
-            General.setBadgeCount(getContext(),AppConstants.BUYER_COUNT,0);
-            General.setBadgeCount(getContext(),AppConstants.SELLER_COUNT,0);
+                General.setBadgeCount(getContext(), AppConstants.RENTAL_COUNT, 0);
+                General.setBadgeCount(getContext(), AppConstants.RESALE_COUNT, 0);
+                General.setBadgeCount(getContext(), AppConstants.TENANTS_COUNT, 0);
+                General.setBadgeCount(getContext(), AppConstants.OWNERS_COUNT, 0);
+                General.setBadgeCount(getContext(), AppConstants.BUYER_COUNT, 0);
+                General.setBadgeCount(getContext(), AppConstants.SELLER_COUNT, 0);
 
 
-        }
-
+            }
 
 
 //        buildingSlider.startAnimation(slide_down);
 //        buildingSlider.setVisibility(View.GONE);
-
 
 
 //        if (buildingSlider.getVisibility() == View.VISIBLE) {
@@ -1243,7 +1241,21 @@ if(count<=220) {
 //            buildingSlider.startAnimation(animate);
 //            buildingSlider.setVisibility(View.GONE);
 //        }
-
+        }
+        else{
+            try {
+                SnackbarManager.show(
+                        Snackbar.with(getContext())
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text("Please change listing rates.")
+                                //.animation(true)
+                                .duration(Snackbar.SnackbarDuration.LENGTH_LONG)
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+            }
+            catch(Exception e){
+                Log.i(TAG,"Caught in exception click ok btn "+e);
+            }
+        }
     }
 
 
@@ -1255,9 +1267,10 @@ if(count<=220) {
 
         txtPreviouslySelectedOptionB = (TextView) v;
         if (v.getId() == selectB.getId()) {
-            okBtn.setEnabled(false);
+            /////okBtn.setEnabled(false);
             //okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
             okBtn.setText("Choose 3 Buildings");
+
             selectB.setBackgroundResource(R.color.greenish_blue);
             chart.setDescription("Select three buildings.");
             // chart.clear();
@@ -1316,7 +1329,7 @@ if(count<=220) {
                 setB.setBackgroundResource(R.color.greenish_blue);
                 selectB.setBackgroundResource(R.color.colorPrimaryDark);
 
-                okBtn.setEnabled(true);
+                /////okBtn.setEnabled(true);
                 okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.greenish_blue));
                 okBtn.setText("OK");
 //                if(entries.size() !=0)
@@ -1936,7 +1949,7 @@ if(ptype.equalsIgnoreCase("home"))
                 Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
                 intent.putExtra("buildingSliderFlag",buildingSliderflag);
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                okBtn.setEnabled(false);
+                /////okBtn.setEnabled(false);
                 //okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
                 okBtn.setText("Choose 3 Buildings");
 
