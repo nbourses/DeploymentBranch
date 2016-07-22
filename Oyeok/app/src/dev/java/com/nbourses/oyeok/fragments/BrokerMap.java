@@ -65,6 +65,7 @@ public class BrokerMap extends DashboardClientFragment {
     private GetCurrentLocation getLocationActivity;
     GoogleMap gmap;
     View mHelperView;
+    ImageView location_button;
     CustomMapFragment customMapFragment;
     AutoCompleteTextView autoCompView;
     private BitmapDescriptor icon1;
@@ -103,6 +104,7 @@ public class BrokerMap extends DashboardClientFragment {
 
         iv_markerpin = (ImageView) rootView.findViewById(R.id.iv_markerpin);
         mHelperView=(View) rootView.findViewById(R.id.br_helperView);
+        location_button=(ImageView) rootView.findViewById(R.id.location_button);
 
 
       /*  rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -261,7 +263,7 @@ public class BrokerMap extends DashboardClientFragment {
                     Log.i("slsl", "location====================: ");
                     getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
                     // map.setPadding(left, top, right, bottom);
-                    gmap.setPadding(0, -10, 0, 0);
+                    gmap.setPadding(0, 100, 0, 0);
 
 
                 }
@@ -269,7 +271,12 @@ public class BrokerMap extends DashboardClientFragment {
 
         }
 
-
+        location_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+            }
+        });
 
 
 

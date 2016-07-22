@@ -91,12 +91,14 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_margin="@dimen/eight_dp"
+            android:clickable="false"
             android:gravity="center_vertical|center_horizontal"
             android:orientation="vertical" >
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/location_button"
                 android:src="@drawable/ic_gps_fixed_24dp" />
         </LinearLayout>
     </LinearLayout>
