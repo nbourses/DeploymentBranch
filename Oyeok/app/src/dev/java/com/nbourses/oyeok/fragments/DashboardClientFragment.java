@@ -157,7 +157,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     private static final int INITIAL_REQUEST = 133;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
-    private static final int MAP_ZOOM = 12;
+    private static final int MAP_ZOOM = 14;
     private Point point;
     DBHelper dbHelper;
     //    private TextView mDrooms;
@@ -771,7 +771,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                             double lng11 = 72.8376545999999;
                             Log.i("slsl", "location====================:1 ");
                             LatLng currLatLong = new LatLng(lat11, lng11);
-                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 12));
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 14));
                         }
 
                         enableMyLocation();
