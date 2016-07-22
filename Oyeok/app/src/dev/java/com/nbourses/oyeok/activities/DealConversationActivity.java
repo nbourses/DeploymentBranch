@@ -2243,13 +2243,27 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             // super.onBackPressed();
         }*/
         if(AppConstants.CLIENT_DEAL_FLAG == true){
+
+
+
             Intent back = new Intent(this, ClientDealsListActivity.class); // to refresh adapter to display newly saved last message time
+            back.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(back);
+            finish();
             AppConstants.CLIENT_DEAL_FLAG = false;
         }else if(AppConstants.BROKER_DEAL_FLAG == true){
-            Intent back = new Intent(this, BrokerDealsListActivity.class); // to refresh adapter to display newly saved last message time
-            startActivity(back);
             AppConstants.BROKER_DEAL_FLAG = false;
+            Intent back = new Intent(this, BrokerDealsListActivity.class); // to refresh adapter to display newly saved last message time
+            back.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(back);
+            finish();
+
         }
 
     }

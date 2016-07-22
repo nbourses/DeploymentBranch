@@ -2391,7 +2391,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 // print("noToWord Default")
                 break;
         }
-        Log.i("TRACE","budget string"+str);
+//        Log.i("TRACE","budget string"+str);
         return val;
     }
 
@@ -2676,9 +2676,11 @@ public void oyebuttonBackgrountColorOrange(){
                     rupeesymbol.setVisibility(View.INVISIBLE);
 
                     horizontalPicker.keepScrolling();
+                    horizontalPicker.stopScrolling();
                     Log.i("MotionEvent.ACTION_MOVE", "=========================");
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    horizontalPicker.stopScrolling();
+//                    horizontalPicker.stopScrolling();
+//                    marquee(500,100);
                             if(!spanning) {
                     if (isNetworkAvailable()) {
                         Log.i("MotionEvent.ACTION_UP", "=========================");
@@ -2745,14 +2747,15 @@ public void oyebuttonBackgrountColorOrange(){
                         horizontalPicker.setVisibility(View.GONE);
                         tv_building.setVisibility(View.GONE);
                         tvFetchingrates.setText("No Internet Connection..");
-                        try {
-                            SnackbarManager.show(
-                                    Snackbar.with(getContext())
-                                            .text("Seems like you dont have Internet Connection,Check your internet connection and try again.. ")
-                                            .position(Snackbar.SnackbarPosition.TOP)
-                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                        } catch (Exception e) {
-                        }
+                        General.internetConnectivityMsg(getContext());
+//                        try {
+//                            SnackbarManager.show(
+//                                    Snackbar.with(getContext())
+//                                            .text("Seems like you dont have Internet Connection,Check your internet connection and try again.. ")
+//                                            .position(Snackbar.SnackbarPosition.TOP)
+//                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+//                        } catch (Exception e) {
+//                        }
                     }
 
                     }

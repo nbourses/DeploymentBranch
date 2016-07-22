@@ -1059,6 +1059,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                             BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
                             Log.i(TAG, "default deals are17" + brokerDeals.getSpecCode());
+                            AppConstants.CLIENT_DEAL_FLAG = true;
                             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                             intent.putExtra("userRole", "client");
                             intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
@@ -1374,7 +1375,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
                     BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-
+                    AppConstants.CLIENT_DEAL_FLAG = true;
                     Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                     intent.putExtra("userRole", "client");
                     intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
@@ -1602,6 +1603,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                                             BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
                                             Log.i("getSpecCode","getSpecCode yo 2 "+brokerDeals.getSpecCode());
+                                            AppConstants.CLIENT_DEAL_FLAG = true;
                                             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                                             intent.putExtra("userRole", "client");
                                             intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
@@ -1713,7 +1715,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         Log.i("USER_ID", " " + General.getSharedPreferences(this, AppConstants.USER_ID).isEmpty());
 
        // if(!General.getSharedPreferences(this ,AppConstants.USER_ID).isEmpty())  {
-
+        AppConstants.CLIENT_DEAL_FLAG = true;
             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
             intent.putExtra("userRole", "client");
 //        intent.putExtra("channel_name","my_channel");
@@ -2057,7 +2059,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
                     BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-
+                    AppConstants.CLIENT_DEAL_FLAG = true;
                     Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                     intent.putExtra("userRole", "client");
                     intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());

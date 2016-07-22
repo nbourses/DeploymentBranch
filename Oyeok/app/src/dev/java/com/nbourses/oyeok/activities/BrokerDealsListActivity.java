@@ -985,7 +985,7 @@ Log.i("SWIPE","inside swipe menu creator");
                                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                                     BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-
+                                    AppConstants.BROKER_DEAL_FLAG = true;
                                     Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                                     intent.putExtra("userRole", "broker");
                                     Bundle bundle = new Bundle();
@@ -1044,7 +1044,7 @@ Log.i("SWIPE","inside swipe menu creator");
         Log.i("USER_ID", " " + General.getSharedPreferences(this, AppConstants.USER_ID).isEmpty());
 
 //        if(!General.getSharedPreferences(this ,AppConstants.USER_ID).isEmpty())  {
-
+        AppConstants.BROKER_DEAL_FLAG = true;
             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
             intent.putExtra("userRole", "broker");
             intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
@@ -1342,7 +1342,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
                     BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-
+                    AppConstants.BROKER_DEAL_FLAG = true;
                     Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                     intent.putExtra("userRole", "client");
                     intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
