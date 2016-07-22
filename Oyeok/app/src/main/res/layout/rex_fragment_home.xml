@@ -422,6 +422,15 @@
 
             </RelativeLayout>-->
 
+            <Button
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:id="@+id/CallButton"
+                android:layout_gravity="left|bottom"
+                android:background="@drawable/asset_callbutton_v1"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp" />
+
         </FrameLayout>
 
 
