@@ -1149,8 +1149,14 @@ if(count<=220) {
 
         }else{
 
-            General.internetConnectivityMsg(getContext());
-            texPtype.setText("Go online to get Leads.");
+            try {
+                if (!General.isNetworkAvailable(getContext())) {
+                    texPtype.setText("Go online to get Leads.");
+                }
+            }
+            catch(Exception e){
+
+            }
         }
     }
 
@@ -1340,6 +1346,7 @@ if(count<=220) {
         jsonObjectArray = null;
         notClicked.setVisibility(View.VISIBLE);
 
+
         //okButton.setAnimation(zoomin);
         //okButton.setAnimation(zoomout);
         circularSeekbar.onTabclick();
@@ -1448,6 +1455,9 @@ if(count<=220) {
         }
 
         onPositionSelected(currentSeekbarPosition, currentCount);
+        if(!General.isNetworkAvailable(getContext())){
+            texPtype.setText("Go online to get Leads.");
+        }
     }
 
     @Override
@@ -1458,6 +1468,8 @@ if(count<=220) {
         circularSeekbar.onTabclick();
         currentSeekbarPosition = position;
         Log.i("PREOK CALLED","currentSeekbarPosition"+currentSeekbarPosition);
+
+
 
         if (position == 0) {
             atFor = "at";
@@ -1483,7 +1495,10 @@ catch(Exception e){}
 
             rentText.setVisibility(View.GONE);
            // texPtype.setVisibility(View.GONE);
-            texPtype.setText("Please select a Lead and press OK.");
+
+
+                texPtype.setText("Please select a Lead and press OK.");
+
             texPstype.setVisibility(View.GONE);
 
             resaleCount.setVisibility(View.GONE);
@@ -1611,7 +1626,9 @@ catch (Exception e){
 
             rentText.setVisibility(View.GONE);
            // texPtype.setVisibility(View.GONE);
-            texPtype.setText("Please select a Lead and press OK.");
+
+                texPtype.setText("Please select a Lead and press OK.");
+
             texPstype.setVisibility(View.GONE);
 
             rentalCount.setVisibility(View.GONE);
@@ -1735,6 +1752,14 @@ catch (Exception e){
                     circularSeekbar.invalidate();
                 }
             });
+        }
+        try {
+            if (!General.isNetworkAvailable(getContext())) {
+                texPtype.setText("Go online to get Leads.");
+            }
+        }
+        catch(Exception e){
+
         }
     }
 

@@ -216,6 +216,10 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         texrating = (TextView) findViewById(R.id.texRating);
         ratingBar.setOnRatingBarChangeListener(this);
 
+        if(!General.isNetworkAvailable(this)){
+            General.internetConnectivityMsg(this);
+        }
+
         dbHelper = new DBHelper(getBaseContext());
 
 //        IntentFilter filter = new IntentFilter("shine");
@@ -758,6 +762,26 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             } else {
                 //send message
                 sendMessage(edtTypeMsg.getText().toString());
+                final ChatMessage message = new ChatMessage();
+                message.setUserName("self");
+                message.setMessageStatus(ChatMessageStatus.SENT);
+                message.setMessageText(edtTypeMsg.getText().toString());
+                message.setUserType(ChatMessageUserType.OTHER);
+                message.setMessageTime(System.currentTimeMillis()/10000);
+                chatMessages.add(message);
+                listAdapter.notifyDataSetChanged();
+
+                edtTypeMsg.setText("");
+                chatListView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Select the last row so it will scroll into view...
+                        chatListView.setSelection(listAdapter.getCount());
+                    }
+
+                });
+                chatMessages.remove(chatMessages.size()-1);
+
             }
         }
     }
@@ -991,10 +1015,10 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         Log.i("CONVER", "LISTING set");
                         userType = ChatMessageUserType.LISTING;
                     }
-                    else if(!j.getString("to").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI)))
+                    /*else if(!j.getString("to").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI)))
                     {
                         userType = ChatMessageUserType.OTHER;     // for support
-                    }
+                    }*/
                     else if (!j.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID)))
                     {
                         userType = ChatMessageUserType.SELF;
@@ -1102,6 +1126,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             e.printStackTrace();
             Log.i(TAG, "caught in display message" + e);
         }
+
+        chatListView.post(new Runnable() {
+            @Override
+            public void run() {
+                chatListView.setSelection(listAdapter.getCount());
+            }
+        });
     }
 
 
@@ -1184,7 +1215,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             myRealm.commitTransaction();
             Log.i(TAG,"until fitra 4 "+myRealm.isInTransaction());
         }
-
+        chatListView.post(new Runnable() {
+            @Override
+            public void run() {
+                chatListView.setSelection(listAdapter.getCount());
+            }
+        });
 
     }
 

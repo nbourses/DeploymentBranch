@@ -337,6 +337,7 @@ Log.i("SWIPE","inside swipe menu creator");
         listViewDeals.setCloseInterpolator(new BounceInterpolator());
         listViewDeals.setOpenInterpolator(new BounceInterpolator());
 
+
         // step 2. listener item click event
         listViewDeals.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override

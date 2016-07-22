@@ -522,19 +522,24 @@ public class OyeScreenFragment extends Fragment {
 
     @OnClick(R.id.btnOnOyeClick)
     public void submitOyeOk(View v) {
-        Log.i("TAG","property subtype selected" +General.retriveBoolean(getContext(), "propertySubtypeFlag"));
-        if(General.retriveBoolean(getContext(), "propertySubtypeFlag")) {
-            isclicked = "true";
-            Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
-            intent.putExtra("isclicked", isclicked);
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-            Log.i("isclicked", "isclicked===============================");
+
+        if(General.isNetworkAvailable(getContext())) {
+            Log.i("TAG", "property subtype selected" + General.retriveBoolean(getContext(), "propertySubtypeFlag"));
+            if (General.retriveBoolean(getContext(), "propertySubtypeFlag")) {
+                isclicked = "true";
+                Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
+                intent.putExtra("isclicked", isclicked);
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                Log.i("isclicked", "isclicked===============================");
+            } else {
+                SnackbarManager.show(
+                        Snackbar.with(getContext())
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text("Please select property subtype.")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+            }
         }else{
-            SnackbarManager.show(
-                    Snackbar.with(getContext())
-                            .position(Snackbar.SnackbarPosition.TOP)
-                            .text("Please select property subtype.")
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+            General.internetConnectivityMsg(getContext());
         }
     }
 
