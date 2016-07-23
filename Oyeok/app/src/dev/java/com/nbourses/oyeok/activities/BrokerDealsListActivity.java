@@ -337,6 +337,7 @@ Log.i("SWIPE","inside swipe menu creator");
         listViewDeals.setCloseInterpolator(new BounceInterpolator());
         listViewDeals.setOpenInterpolator(new BounceInterpolator());
 
+
         // step 2. listener item click event
         listViewDeals.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
@@ -1178,7 +1179,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
 
-        if(AppConstants.SIGNUP_FLAG){
+        /*if(AppConstants.SIGNUP_FLAG){
             if(AppConstants.REGISTERING_FLAG){}else{
             getSupportFragmentManager().popBackStackImmediate();
             Intent inten = new Intent(this,BrokerDealsListActivity.class);
@@ -1186,7 +1187,7 @@ Log.i("SWIPE","inside swipe menu creator");
             finish();
             AppConstants.SIGNUP_FLAG=false;}
 
-        }else {
+        }else {*/
             Intent intent = new Intent(this, BrokerMainActivity.class);
             intent.addFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -1194,7 +1195,7 @@ Log.i("SWIPE","inside swipe menu creator");
                             Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
-        }
+    /*    }*/
     }
 
     private void loadFragment(Fragment fragment, Bundle args, int containerId, String title)
@@ -1309,36 +1310,40 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
     private void setCachedDeals(){
-        if(cachedDeals == null){
-            cachedDeals = new ArrayList<BrokerDeals>();
-        }
-        else{
-            cachedDeals.clear();
-        }
+        try { // one first run when cached deals( ,LL,OR ) are empty it may crash
+            if (cachedDeals == null) {
+                cachedDeals = new ArrayList<BrokerDeals>();
+            } else {
+                cachedDeals.clear();
+            }
 
-        if(TT.equalsIgnoreCase("LL"))
-            cachedDeals.addAll(cachedDealsLL);
-        else
-            cachedDeals.addAll(cachedDealsOR);
+            if (TT.equalsIgnoreCase("LL"))
+                cachedDeals.addAll(cachedDealsLL);
+            else
 
-        if(cachedDeals.size() <3 && showbgtext == true){
-            bgtxtlayout.setVisibility(View.VISIBLE);
-            bgtxt.setText("'OK' More Leads,\nTo Create Dealing\nRooms with new Client");
-        }else{bgtxtlayout.setVisibility(View.GONE);}
+                cachedDeals.addAll(cachedDealsOR);
+
+            if (cachedDeals.size() < 3 && showbgtext == true  && !General.isNetworkAvailable(this)) {
+                bgtxtlayout.setVisibility(View.VISIBLE);
+                bgtxt.setText("'OK' More Leads,\nTo Create Dealing\nRooms with new Client");
+            } else {
+                bgtxtlayout.setVisibility(View.GONE);
+            }
 
 
-        if (cachedDeals != null) {
-            listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
-            listViewDeals.setAdapter(listAdapter);
+            if (cachedDeals != null) {
+                listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
+                listViewDeals.setAdapter(listAdapter);
 
-            Log.i("inside adapter ", "object cached" + listAdapter);
-            listAdapter.notifyDataSetChanged();
+                Log.i("inside adapter ", "object cached" + listAdapter);
+                listAdapter.notifyDataSetChanged();
 
-            listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-                    Log.i("TRACE", "cached deals adapter clicked" + position);
+                        Log.i("TRACE", "cached deals adapter clicked" + position);
+
 
 
                     BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
@@ -1349,12 +1354,15 @@ Log.i("SWIPE","inside swipe menu creator");
                     intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
                     Log.i("TRACE", "ment" + AppConstants.OK_ID);
 
-                    startActivity(intent);
-                }
-            });
+
+                        startActivity(intent);
+                    }
+                });
 
 
+            }
         }
+        catch(Exception e){}
     }
 
     private void deleteDroomDb(String okId){

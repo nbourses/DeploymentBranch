@@ -34,7 +34,11 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
+
+import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MapWrapperLayout;
+
 import com.nbourses.oyeok.helpers.AppConstants;
+
 import com.nbourses.oyeok.helpers.General;
 
 import org.apache.http.HttpEntity;
@@ -102,9 +106,18 @@ public class BrokerMap extends DashboardClientFragment {
 
         final View rootView = inflater.inflate(R.layout.broker_map, container, false);
 
+       
+try {
+    if (!General.isNetworkAvailable(getContext())) {
+        General.internetConnectivityMsg(getContext());
+    }
+}catch(Exception e){}
+
+
         iv_markerpin = (ImageView) rootView.findViewById(R.id.iv_markerpin);
         mHelperView=(View) rootView.findViewById(R.id.br_helperView);
         location_button=(ImageView) rootView.findViewById(R.id.location_button);
+
 
 
       /*  rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

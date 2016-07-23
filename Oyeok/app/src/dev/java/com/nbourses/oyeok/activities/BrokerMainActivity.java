@@ -521,6 +521,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         } */
 
         else if (itemTitle.equals(getString(R.string.notifications))) {
+            AppConstants.BROKER_DEAL_FLAG = true;
             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
             intent.putExtra("userRole", "client");
             intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);

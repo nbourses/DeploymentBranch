@@ -692,6 +692,7 @@ while(slowInternetFlag) {
 
                         Log.i("TRACE", "open intent deal listing");
                         //open deals listing
+                        AppConstants.CLIENT_DEAL_FLAG = true;
                         Intent openDealsListing = new Intent(context, DealConversationActivity.class);
                         //openDealsListing.putExtra("default_deal_flag", true);
 
