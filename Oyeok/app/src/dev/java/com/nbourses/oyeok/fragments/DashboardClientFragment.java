@@ -157,7 +157,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     private static final int INITIAL_REQUEST = 133;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
-    private static final int MAP_ZOOM = 12;
+    private static final int MAP_ZOOM = 14;
     private Point point;
     DBHelper dbHelper;
     //    private TextView mDrooms;
@@ -771,7 +771,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                             double lng11 = 72.8376545999999;
                             Log.i("slsl", "location====================:1 ");
                             LatLng currLatLong = new LatLng(lat11, lng11);
-                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 12));
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 14));
                         }
 
                         enableMyLocation();
@@ -831,6 +831,30 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     Log.i("MA999999 ", "MAP CLICK=========");
 
                     spanning = false;
+                    mVisits.setEnabled(true);
+                    txtFilterValue.setEnabled(true);
+                    for(int i=0;i<5;i++){
+                        if(flag[i]==true){
+                            mCustomerMarker[i].setIcon(icon1);
+                            search_building_icon.setVisibility(View.GONE);
+                            flag[i] = false;
+                            horizontalPicker.setVisibility(View.VISIBLE);
+                            tvFetchingrates.setVisibility(View.GONE);
+                            recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                            tvRate.setVisibility(View.VISIBLE);
+                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                            rupeesymbol.setVisibility(View.VISIBLE);
+
+                            Intent in = new Intent(AppConstants.MARKERSELECTED);
+                            in.putExtra("markerClicked", "false");
+                            ll_marker.setEnabled(true);
+                            tv_building.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+
+
+
 //            UpdateRatePanel();
 //            if(clicked==true){
 //                oyebuttonBackgrountColorOrange();
@@ -869,6 +893,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                                 mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
                                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle1));
+                                ll_marker.setEnabled(false);
                                 mVisits.setEnabled(false);
                                 txtFilterValue.setEnabled(false);
                                 CancelAnimation();
@@ -900,13 +925,14 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 search_building_icon.setVisibility(View.GONE);
                                 flag[i] = false;
                                 horizontalPicker.setVisibility(View.VISIBLE);
-                                tvFetchingrates.setVisibility(View.INVISIBLE);
+                                tvFetchingrates.setVisibility(View.GONE);
                                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 
                                 mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
                                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
                                 mVisits.setEnabled(true);
                                 txtFilterValue.setEnabled(true);
+                                ll_marker.setEnabled(true);
 //                                StartAnimation();
                                 //intent.putExtra("client_heading", "Live Region Rates");
                                 Intent in = new Intent(AppConstants.MARKERSELECTED);
@@ -2391,7 +2417,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 // print("noToWord Default")
                 break;
         }
-        Log.i("TRACE","budget string"+str);
+//        Log.i("TRACE","budget string"+str);
         return val;
     }
 
@@ -2676,9 +2702,11 @@ public void oyebuttonBackgrountColorOrange(){
                     rupeesymbol.setVisibility(View.INVISIBLE);
 
                     horizontalPicker.keepScrolling();
+                    horizontalPicker.stopScrolling();
                     Log.i("MotionEvent.ACTION_MOVE", "=========================");
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    horizontalPicker.stopScrolling();
+//                    horizontalPicker.stopScrolling();
+//                    marquee(500,100);
                             if(!spanning) {
                     if (isNetworkAvailable()) {
                         Log.i("MotionEvent.ACTION_UP", "=========================");
@@ -2745,14 +2773,15 @@ public void oyebuttonBackgrountColorOrange(){
                         horizontalPicker.setVisibility(View.GONE);
                         tv_building.setVisibility(View.GONE);
                         tvFetchingrates.setText("No Internet Connection..");
-                        try {
-                            SnackbarManager.show(
-                                    Snackbar.with(getContext())
-                                            .text("Seems like you dont have Internet Connection,Check your internet connection and try again.. ")
-                                            .position(Snackbar.SnackbarPosition.TOP)
-                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                        } catch (Exception e) {
-                        }
+                        General.internetConnectivityMsg(getContext());
+//                        try {
+//                            SnackbarManager.show(
+//                                    Snackbar.with(getContext())
+//                                            .text("Seems like you dont have Internet Connection,Check your internet connection and try again.. ")
+//                                            .position(Snackbar.SnackbarPosition.TOP)
+//                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+//                        } catch (Exception e) {
+//                        }
                     }
 
                     }

@@ -1779,7 +1779,8 @@ catch (Exception e){
     @Override
     public void onclick(int position, JSONArray m, String show, int x_c, int y_c) {
         deal.setEnabled(true);
-        deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.orange));
+        deal.setBackgroundColor(Color.parseColor("#ff9f1c"));
+        //deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.orange));
         try {
             leadPrompt.setVisibility(View.VISIBLE);
             leadPrompt.setText("Please select a Lead and press OK.");

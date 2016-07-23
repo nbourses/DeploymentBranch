@@ -986,7 +986,7 @@ Log.i("SWIPE","inside swipe menu creator");
                                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                                     BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-
+                                    AppConstants.BROKER_DEAL_FLAG = true;
                                     Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                                     intent.putExtra("userRole", "broker");
                                     Bundle bundle = new Bundle();
@@ -1045,7 +1045,7 @@ Log.i("SWIPE","inside swipe menu creator");
         Log.i("USER_ID", " " + General.getSharedPreferences(this, AppConstants.USER_ID).isEmpty());
 
 //        if(!General.getSharedPreferences(this ,AppConstants.USER_ID).isEmpty())  {
-
+        AppConstants.BROKER_DEAL_FLAG = true;
             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
             intent.putExtra("userRole", "broker");
             intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
@@ -1179,7 +1179,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
 
-        if(AppConstants.SIGNUP_FLAG){
+        /*if(AppConstants.SIGNUP_FLAG){
             if(AppConstants.REGISTERING_FLAG){}else{
             getSupportFragmentManager().popBackStackImmediate();
             Intent inten = new Intent(this,BrokerDealsListActivity.class);
@@ -1187,7 +1187,7 @@ Log.i("SWIPE","inside swipe menu creator");
             finish();
             AppConstants.SIGNUP_FLAG=false;}
 
-        }else {
+        }else {*/
             Intent intent = new Intent(this, BrokerMainActivity.class);
             intent.addFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -1195,7 +1195,7 @@ Log.i("SWIPE","inside swipe menu creator");
                             Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
-        }
+    /*    }*/
     }
 
     private void loadFragment(Fragment fragment, Bundle args, int containerId, String title)
@@ -1323,7 +1323,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
                 cachedDeals.addAll(cachedDealsOR);
 
-            if (cachedDeals.size() < 3 && showbgtext == true) {
+            if (cachedDeals.size() < 3 && showbgtext == true  && !General.isNetworkAvailable(this)) {
                 bgtxtlayout.setVisibility(View.VISIBLE);
                 bgtxt.setText("'OK' More Leads,\nTo Create Dealing\nRooms with new Client");
             } else {
@@ -1345,13 +1345,15 @@ Log.i("SWIPE","inside swipe menu creator");
                         Log.i("TRACE", "cached deals adapter clicked" + position);
 
 
-                        BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
 
-                        Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
-                        intent.putExtra("userRole", "client");
-                        intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
-                        intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
-                        Log.i("TRACE", "ment" + AppConstants.OK_ID);
+                    BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
+                    AppConstants.BROKER_DEAL_FLAG = true;
+                    Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+                    intent.putExtra("userRole", "client");
+                    intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                    intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
+                    Log.i("TRACE", "ment" + AppConstants.OK_ID);
+
 
                         startActivity(intent);
                     }

@@ -323,9 +323,9 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             android:foregroundGravity="center_horizontal|bottom">
             <TextView
                 android:layout_width="306dp"
-                android:layout_height="106dp"
+                android:layout_height="126dp"
                 android:id="@+id/bgtxt"
-                android:text="'OK' More Leads,\nTo Create Dealing\nRooms with new Client"
+                android:text=""
 
                 android:foregroundGravity="center_horizontal"
 

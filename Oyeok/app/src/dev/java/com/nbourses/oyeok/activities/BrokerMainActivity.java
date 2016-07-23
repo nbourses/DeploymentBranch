@@ -28,7 +28,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.nbourses.oyeok.Database.DBHelper;
@@ -522,6 +521,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         } */
 
         else if (itemTitle.equals(getString(R.string.notifications))) {
+            AppConstants.BROKER_DEAL_FLAG = true;
             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
             intent.putExtra("userRole", "client");
             intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
@@ -737,14 +737,14 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         }
         else{
 
-            if(backpress <1) {
-                backpress = (backpress + 1);
-
-                Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
-            }else if (backpress>=1) {
-                backpress = 0;
+//            if(backpress <1) {
+//                backpress = (backpress + 1);
+//
+//                Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+//            }else if (backpress>=1) {
+//                backpress = 0;
                 this.finish();
-            }
+//            }
 
         }
 

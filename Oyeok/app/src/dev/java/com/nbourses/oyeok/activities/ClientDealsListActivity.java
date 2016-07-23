@@ -238,7 +238,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         bgtxt=(TextView) findViewById(R.id.bgtxt) ;
         bgtxtlayout = (LinearLayout) findViewById(R.id.bgtxtlayout);
         bgtxtlayout.setVisibility(View.VISIBLE);
-        bgtxt.setText("'OYE' More Leads,\nTo Create Dealing\nRooms with new Client");
+        bgtxt.setText("Go Back &,\nBroadcast yours needs\nto create New DEALs\nwith more Brokers");
         listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
         supportChat.setVisibility(View.VISIBLE);
         listViewDeals.setVisibility(View.VISIBLE);
@@ -1040,7 +1040,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 Log.i("inside adapter ", "object " + listAdapter);
                 if(default_deals.size() <3 && showbgtext == true){
                     bgtxtlayout.setVisibility(View.VISIBLE);
-                    bgtxt.setText("'OYE' More Leads,\nTo Create Dealing\nRooms with new Client");
+                    bgtxt.setText("Go Back &,\nBroadcast yours needs\nto create New DEALs\nwith more Brokers");
                 }else{bgtxtlayout.setVisibility(View.GONE);}
                 listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -1059,6 +1059,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                             BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
                             Log.i(TAG, "default deals are17" + brokerDeals.getSpecCode());
+                            AppConstants.CLIENT_DEAL_FLAG = true;
                             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                             intent.putExtra("userRole", "client");
                             intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
@@ -1121,15 +1122,16 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
     @Override
     public void onBackPressed() {
-        if(AppConstants.SIGNUP_FLAG){
-            if(AppConstants.REGISTERING_FLAG){}else{
-            getSupportFragmentManager().popBackStackImmediate();
-            Intent inten = new Intent(this, ClientDealsListActivity.class);
-            startActivity(inten);
-            finish();
-            AppConstants.SIGNUP_FLAG=false;}
-
-        }else {
+//        if(AppConstants.SIGNUP_FLAG){
+//            if(AppConstants.REGISTERING_FLAG){}else{
+//            getSupportFragmentManager().popBackStackImmediate();
+//            Intent inten = new Intent(this, ClientDealsListActivity.class);
+//            startActivity(inten);
+//            finish();
+//            AppConstants.SIGNUP_FLAG=false;}
+//
+//        }else {
+        Log.i(TAG,"onback client deal");
             Intent intent = new Intent(this, ClientMainActivity.class);
             intent.addFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -1137,7 +1139,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
-        }
+//        }
     }
 
 
@@ -1374,7 +1376,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
                     BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-
+                    AppConstants.CLIENT_DEAL_FLAG = true;
                     Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                     intent.putExtra("userRole", "client");
                     intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
@@ -1564,7 +1566,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                 BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
                                 if(total_deals.size() <3 && showbgtext == true){
                                     bgtxtlayout.setVisibility(View.VISIBLE);
-                                    bgtxt.setText("'OYE' More Leads,\nTo Create Dealing\nRooms with new Client");
+                                    bgtxt.setText("Go Back &,\nBroadcast yours needs\nto create New DEALs\nwith more Brokers");
                                 }else{bgtxtlayout.setVisibility(View.GONE);}
                                 //after rental resale deals
                                 listViewDeals.setAdapter(listAdapter);
@@ -1602,6 +1604,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                                             BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
                                             Log.i("getSpecCode","getSpecCode yo 2 "+brokerDeals.getSpecCode());
+                                            AppConstants.CLIENT_DEAL_FLAG = true;
                                             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                                             intent.putExtra("userRole", "client");
                                             intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
@@ -1713,7 +1716,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         Log.i("USER_ID", " " + General.getSharedPreferences(this, AppConstants.USER_ID).isEmpty());
 
        // if(!General.getSharedPreferences(this ,AppConstants.USER_ID).isEmpty())  {
-
+        AppConstants.CLIENT_DEAL_FLAG = true;
             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
             intent.putExtra("userRole", "client");
 //        intent.putExtra("channel_name","my_channel");
@@ -2024,52 +2027,55 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
     private void setCachedDeals(){
-        if(cachedDeals == null){
-            cachedDeals = new ArrayList<BrokerDeals>();
+        try {
+            if (cachedDeals == null) {
+                cachedDeals = new ArrayList<BrokerDeals>();
+            } else {
+                cachedDeals.clear();
+            }
+
+            if (TT.equalsIgnoreCase("LL"))
+                cachedDeals.addAll(cachedDealsLL);
+            else
+                cachedDeals.addAll(cachedDealsOR);
+
+            if (cachedDeals.size() < 3 && showbgtext == true && !General.isNetworkAvailable(this)) {
+                bgtxtlayout.setVisibility(View.VISIBLE);
+                bgtxt.setText("Go Back &,\nBroadcast yours needs\nto create New DEALs\nwith more Brokers");
+            } else {
+                bgtxtlayout.setVisibility(View.GONE);
+            }
+
+            if (cachedDeals != null) {
+                listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
+                listViewDeals.setAdapter(listAdapter);
+
+                Log.i("inside adapter ", "object cached" + listAdapter);
+                listAdapter.notifyDataSetChanged();
+
+                listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                        Log.i("TRACE", "cached deals adapter clicked" + position);
+
+
+                        BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
+                        AppConstants.CLIENT_DEAL_FLAG = true;
+                        Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+                        intent.putExtra("userRole", "client");
+                        intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                        intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
+                        Log.i("TRACE", "ment" + AppConstants.OK_ID);
+
+                        startActivity(intent);
+                    }
+                });
+
+
+            }
         }
-        else{
-            cachedDeals.clear();
-        }
-
-        if(TT.equalsIgnoreCase("LL"))
-            cachedDeals.addAll(cachedDealsLL);
-        else
-            cachedDeals.addAll(cachedDealsOR);
-
-        if(cachedDeals.size() <3 && showbgtext == true){
-            bgtxtlayout.setVisibility(View.VISIBLE);
-            bgtxt.setText("'OK' More Leads,\nTo Create Dealing\nRooms with new Client");
-        }else{bgtxtlayout.setVisibility(View.GONE);}
-
-
-        if (cachedDeals != null) {
-            listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
-            listViewDeals.setAdapter(listAdapter);
-
-            Log.i("inside adapter ", "object cached" + listAdapter);
-            listAdapter.notifyDataSetChanged();
-
-            listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-                    Log.i("TRACE", "cached deals adapter clicked" + position);
-
-
-                    BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-
-                    Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
-                    intent.putExtra("userRole", "client");
-                    intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
-                    intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
-                    Log.i("TRACE", "ment" + AppConstants.OK_ID);
-
-                    startActivity(intent);
-                }
-            });
-
-
-        }
+        catch(Exception e){}
     }
 
     private void deleteDroomDb(String okId){
