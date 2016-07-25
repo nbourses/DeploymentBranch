@@ -35,6 +35,7 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.GoogleCloudMessaging.MyGcmListenerService;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.BrokerMap;
 import com.nbourses.oyeok.fragments.BrokerPreokFragment;
@@ -62,6 +63,8 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
 
     @Bind(R.id.openmaps)
     Button openmaps;
+    @Bind(R.id.DONE)
+    Button doneButton;
 
 //    @Bind(R.id.preok_layout)
 //    Toolbar preok_layout;
@@ -70,7 +73,7 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
 //    RelativeLayout buildingSlider;
 boolean setting=false;
 
-
+   int backpress;
 
     TextView tv_change_region;
  private boolean gmap=false;
@@ -382,6 +385,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         dbHelper = new DBHelper(getBaseContext());
+        dbHelper.save(DatabaseConstants.userRole,"Broker");
 
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
@@ -392,9 +396,10 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
         if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-            if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+            //if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+            if (!General.getSharedPreferences(this,AppConstants.EMAIL).equalsIgnoreCase("null")) {
                 emailTxt.setVisibility(View.VISIBLE);
-                emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
+                emailTxt.setText(General.getSharedPreferences(this,AppConstants.EMAIL));
 
             }
         }else{
@@ -410,7 +415,10 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             public void onClick(View v) {
                 BrokerMap brokerMap=new BrokerMap();
 //                brokerMap.setChangeLoction(this);
+                getSupportActionBar().setDisplayShowHomeEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 loadFragment(brokerMap,null,R.id.container_map,"");
+                doneButton.setVisibility(View.VISIBLE);
                 gmap=true;
 
                 tv_change_region.setVisibility(View.VISIBLE);
@@ -429,9 +437,28 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         });
 //
 
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+//                Intent mainscreen  = ;
+                startActivity(new Intent(getApplicationContext(),BrokerMainActivity.class));
+                Log.i("donebutton","done button clicked   ");
+                getFragmentManager().popBackStack();
+                finish();
+                gmap =false;
+                backpress = 0;
+//                getSupportActionBar().setDisplayShowHomeEnabled(true);
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                doneButton.setVisibility(View.GONE);
 
 
 
+
+            }
+        });
+        
     }
 
     private void enableMyLocation() {
@@ -462,8 +489,11 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.addToBackStack(title);
+
         fragmentTransaction.replace(containerId, fragment);
+
+        fragmentTransaction.show(fragment);
+        fragmentTransaction.addToBackStack(title);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -491,9 +521,11 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         } */
 
         else if (itemTitle.equals(getString(R.string.notifications))) {
-            Intent openDealsListing = new Intent(this, BrokerDealsListActivity.class);
-            openDealsListing.putExtra("default_deal_flag",false);
-            startActivity(openDealsListing);
+            AppConstants.BROKER_DEAL_FLAG = true;
+            Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+            intent.putExtra("userRole", "client");
+            intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
+            startActivity(intent);
         }
         else if (itemTitle.equals(getString(R.string.likeOnFb))) {
            // setContentView(R.layout.browser);
@@ -520,6 +552,17 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             AppSetting appSetting=new AppSetting();
             setting=true;
             loadFragment(appSetting,null,R.id.container_sign,"");
+
+
+        }
+        else if (itemTitle.equals(getString(R.string.RegisterSignIn))) {
+            SignUpFragment signUpFragment = new SignUpFragment();
+            // signUpFragment.getView().bringToFront();
+            Bundle bundle = new Bundle();
+            bundle.putStringArray("Chat", null);
+            bundle.putString("lastFragment", "drawer");
+            loadFragment(signUpFragment, bundle, R.id.container_sign, "");
+
 
 
         }
@@ -556,7 +599,11 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         String user_id = dbHelper.getValue(DatabaseConstants.userId);
 
         Branch branch = Branch.getInstance(getApplicationContext());
-        branch.setIdentity(user_id);
+
+        String mob_no = General.getSharedPreferences(this,AppConstants.MOBILE_NUMBER);
+        Log.i("mob_no","mob_no "+mob_no);
+
+        branch.setIdentity(mob_no);
 
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
                 // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
@@ -568,6 +615,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
                 .addControlParameter("user_name", user_id)
                 .addControlParameter("$android_url", AppConstants.GOOGLE_PLAY_STORE_APP_URL)
                 .addControlParameter("$always_deeplink", "true");
+
 
         branchUniversalObject.generateShortUrl(getApplicationContext(), linkProperties, new Branch.BranchLinkCreateListener() {
             @Override
@@ -592,27 +640,57 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
         Log.i("ONBACKPRESSED","broker main activity "+setting);
 
+
+        if(AppConstants.SIGNUP_FLAG){
+           if(AppConstants.REGISTERING_FLAG){}else{
+                getSupportFragmentManager().popBackStackImmediate();
+
+            Intent inten = new Intent(this, BrokerMainActivity.class);
+
+            startActivity(inten);
+            finish();
+            AppConstants.SIGNUP_FLAG=false;
+
+            backpress = 0;}
+        }else
         if(webView != null){
             if (webView.canGoBack()) {
              webView.goBack();
             }
             else {
             webView = null;
-            Intent back = new Intent(this, BrokerMainActivity.class);
-            startActivity(back);
-            finish();
+
+                Intent inten = new Intent(this, BrokerMainActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(inten);
+                finish();
+
+//            finish();
+                backpress = 0;
                  }
         }
         else if(gmap ==true){
-            Log.i("ONBACKPRESSED","broker main activity gmap");
+            Log.i("ONBACKPRESSED","broker main activity gmap"+getSupportFragmentManager().getBackStackEntryCount());
 
-            Intent back = new Intent(this, BrokerMainActivity.class);
-            General.clearChart = true;
-            startActivity(back);
-            gmap =false;
+//            int count = getFragmentManager().getBackStackEntryCount();
+//            for(int i = 0; i < count; ++i) {
+//            getSupportFragmentManager().popBackStackImmediate();
+//            }
+            Log.i("ONBACKPRESSED","broker main activity gmap"+getSupportFragmentManager().getBackStackEntryCount());
+            Intent inten = new Intent(this, BrokerMainActivity.class);
+
+            startActivity(inten);
             finish();
+//            }
 
 
+            gmap =false;
+//            finish();
+
+            backpress = 0;
         }
         else if(buildingSliderflag == true){
             Log.i("ONBACKPRESSED","buildingSliderflag "+buildingSliderflag);
@@ -620,35 +698,53 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             Intent intent = new Intent(AppConstants.SLIDEDOWNBUILDINGS);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             buildingSliderflag = false;
+            backpress = 0;
         }else if(setting==true){
-            Log.i("setting222","setting getFragmentManager().popBackStack(); "+SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH));
+            Log.i("BACK PRESSED"," =================== setting"+setting);
+//            getFragmentManager().popBackStack();
             if(SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") || SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")){
-                //getFragmentManager().popBackStack();
-                Log.i("setting222","setting getFragmentManager().popBackStack(); "+setting+" "+SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON));
-                Intent back = new Intent(this, BrokerMainActivity.class);
-                startActivity(back);
-                getFragmentManager().popBackStack();
-                setting=false;
+//                super.onBackPressed();
+//                getSupportFragmentManager().popBackStack();
+
+                int count = getFragmentManager().getBackStackEntryCount();
+                for(int i = 0; i < count; ++i) {
+                    getFragmentManager().popBackStackImmediate();
+                }
+
+                Intent inten = new Intent(this, BrokerMainActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(inten);
+                finish();
+                Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
+                setting = false;
+
+                backpress = 0;
+
 
             }else {
+                Log.i("BACK","FRAGMENT COUNT "+getSupportFragmentManager().getBackStackEntryCount());
+                getSupportFragmentManager().popBackStackImmediate();
+                //super.onBackPressed();
+                //finish();
+                Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
-              //  getFragmentManager().popBackStack();
+                backpress = 0;
             }
 
         }
         else{
 
-//            backpress = (backpress + 1);
-//            Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+//            if(backpress <1) {
+//                backpress = (backpress + 1);
 //
-//            if (backpress>1) {
-//                backpress = 1;
-//                this.finish();
-//            }
-            super.onBackPressed();
+//                Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+//            }else if (backpress>=1) {
+//                backpress = 0;
                 this.finish();
-//               super.onBackPressed();
-            //NavUtils.navigateUpFromSameTask(this);
+//            }
 
         }
 

@@ -550,7 +550,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             @Override
             public void onClick(View v) {
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:2233836068"));
+                callIntent.setData(Uri.parse("tel:+912233836068"));
                 callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE);
 
@@ -1556,7 +1556,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                     if (mCustomerMarker[i] != null)
                                         mCustomerMarker[i].remove();
                                 }
-
+                                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                                recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 
                                 //if(mflag=false) {
 
@@ -2725,6 +2726,8 @@ public void oyebuttonBackgrountColorOrange(){
                             tvRate.setVisibility(View.VISIBLE);
                             rupeesymbol.setVisibility(View.VISIBLE);
                             tvFetchingrates.setVisibility(View.VISIBLE);
+                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+
                             tv_building.setVisibility(View.VISIBLE);
                             recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 
@@ -2749,7 +2752,6 @@ public void oyebuttonBackgrountColorOrange(){
                             Log.i("t1", "lat" + " " + lat);
                             lng = currentLocation1.longitude;
                             Log.i("t1", "lng" + " " + lng);
-                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
 //                            map.addMarker(new MarkerOptions().title("hey").position(currentLocation1));
                             Log.i("MARKER-- ", "====================================");
                             SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");

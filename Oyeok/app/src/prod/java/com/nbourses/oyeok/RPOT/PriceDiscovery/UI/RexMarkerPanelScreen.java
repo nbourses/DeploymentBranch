@@ -39,7 +39,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -91,7 +90,6 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 
 import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
@@ -186,8 +184,8 @@ public class RexMarkerPanelScreen extends Fragment implements CustomPhasedListen
         ll_map = (FrameLayout) rootView.findViewById(R.id.ll_map);
         permissionCheckForLocation = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
-        errorView = (RelativeLayout) rootView.findViewById(R.id.alertLayout);
-        errorText = (TextView) rootView.findViewById(R.id.errorText);
+//        errorView = (RelativeLayout) rootView.findViewById(R.id.alertLayout);
+//        errorText = (TextView) rootView.findViewById(R.id.errorText);
 
         rupeesymbol = (TextView) rootView.findViewById(R.id.rupeesymbol);
 

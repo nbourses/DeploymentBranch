@@ -510,11 +510,6 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         }
 
 
-
-
-
-
-
        // number= (EditText) view.findViewById(R.id.etnumber);
        // vcode= (EditText) view.findViewById(R.id.etvcode);
         llsignup = (LinearLayout)view.findViewById(R.id.llsignup);
@@ -540,13 +535,6 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 sendOtp();
             }
         });   */
-
-
-
-
-
-
-
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -703,47 +691,10 @@ if(newUser==true) {
         submit.setBackgroundColor(ContextCompat.getColor(context, R.color.grey));
         submit.setText("Registering...");
 
-
-
-
-
-
-
-
-
-            /*Log.i("error", "Sending post request");
-
-            if (!Str_Lat.isEmpty() && !Str_Lng.isEmpty())
-                sendPostRequest(subphone, "+91", Semail, Sname, user_role, regid, Str_Lng, Str_Lat, picturePath);
-            else
-
-                Toast.makeText(
-                        getApplicationContext(),
-                        "Please enable location services",
-                        Toast.LENGTH_LONG).show();*/
-
+      AppConstants.REGISTERING_FLAG=true;
            signup_success();
 
-    /*   ////     if(dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")) {
-                if (otpReceived[0].equals(Svcode)) {
-                    signup_success();
-                    Log.i("", "Validation success");
-                } else {
-                /*Toast.makeText(
-                        getContext(),
-                        "Please Enter Otp as mentioned in the SMS"+Svcode,
-                        Toast.LENGTH_LONG).show();
-                }
-      ////      }
-            else{
-                //Toast.makeText(getContext(), "otp validation in offline mode done", Toast.LENGTH_LONG).show();
-//                ((ClientMainActivity)getActivity()).showToastMessage("otp validation in offline mode done");
-                SnackbarManager.show(
-                        Snackbar.with(getActivity())
-                                .position(Snackbar.SnackbarPosition.TOP)
-                                .text("Otp validation in offline mode done")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
-            } */
+
         }
 
 
@@ -942,7 +893,13 @@ if(newUser==true) {
                                             dialog.cancel();
                                             Intent intent = new Intent(getContext(), ClientMainActivity.class);
 
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                                    Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
                                             startActivity(intent);
+                                            AppConstants.REGISTERING_FLAG=false;
                                         }
                                     });
                             final AlertDialog alert = builder.create();
@@ -1048,6 +1005,9 @@ if(newUser==true) {
                                     Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
 
+                                AppConstants.SIGNUP_FLAG =false;
+
+
                         }
                             else if(redirectClient){
 
@@ -1057,6 +1017,9 @@ if(newUser==true) {
                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                     Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
+
+                                AppConstants.SIGNUP_FLAG =false;
+
 
                                 //intent.putExtra("default_deal_flag",true);
                                 startActivity(intent);
@@ -1090,6 +1053,8 @@ if(newUser==true) {
                                 Intent intent = new Intent(getContext(), BrokerDealsListActivity.class);
                                 intent.putExtra("userRole", "broker");
                                 //intent.putExtra("default_deal_flag",true);
+                                AppConstants.SIGNUP_FLAG=false;
+                                AppConstants.REGISTERING_FLAG=false;
                                 startActivity(intent);
 
 
@@ -1116,6 +1081,8 @@ if(newUser==true) {
                                 Intent intent = new Intent(getContext(), ClientDealsListActivity.class);
                                 intent.putExtra("default_deal_flag",true);
                                 startActivity(intent);
+                                AppConstants.SIGNUP_FLAG=false;
+                                AppConstants.REGISTERING_FLAG=false;
                                 Log.i("REACHED", "I am here2");
                             }
                         }

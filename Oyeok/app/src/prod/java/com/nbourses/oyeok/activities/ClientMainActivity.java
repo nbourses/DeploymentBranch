@@ -100,6 +100,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
 
 
+
     @Bind(R.id.hdroomsCount)
     TextView hdroomsCount;
 
@@ -181,6 +182,8 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
                         alertbuilder();
 
 
+
+
                     }
                 }
 
@@ -219,7 +222,7 @@ private void alertbuilder()
 
 {
     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setMessage("Dou you want to publish this oye?")
+    builder.setMessage("Do you want to publish this oye?")
             .setCancelable(true)
             .setPositiveButton("Publish", new DialogInterface.OnClickListener() {
                 public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
@@ -503,6 +506,8 @@ private void alertbuilder()
         dbHelper = new DBHelper(getBaseContext());
         mHandler = new Handler();
 
+        dbHelper.save(DatabaseConstants.userRole,"Client");
+
         //setup navigation drawer
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
@@ -514,10 +519,13 @@ private void alertbuilder()
 //
 //
 //        }
+
         if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-            if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+            //if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+            if (!General.getSharedPreferences(this,AppConstants.EMAIL).equalsIgnoreCase("null")) {
                 emailTxt.setVisibility(View.VISIBLE);
-                emailTxt.setText(dbHelper.getValue(DatabaseConstants.email));
+                emailTxt.setText(General.getSharedPreferences(this,AppConstants.EMAIL));
+                Log.i(TAG,"emailsa "+General.getSharedPreferences(this,AppConstants.EMAIL));
 
             }
         }else{
@@ -550,20 +558,12 @@ private void alertbuilder()
         fragment.setArguments(args);
 
         //load fragment
-        final FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.addToBackStack(title);
         Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  loadFragment client "+getFragmentManager().getBackStackEntryCount());
-        fragmentTransaction.add(containerId, fragment);
+        fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
-        fragmentManager.executePendingTransactions();
-
-        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                Log.d("test", "backStackEntryCount: " + fragmentManager.getBackStackEntryCount());
-            }
-        });
 
         //set title
 //        getSupportActionBar().setTitle(title);
@@ -622,9 +622,11 @@ private void alertbuilder()
         } */
 
         else if (itemTitle.equals(getString(R.string.notifications))) {
-            Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
-            openDealsListing.putExtra("default_deal_flag",false);
-            startActivity(openDealsListing);
+            AppConstants.CLIENT_DEAL_FLAG = true;
+            Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+            intent.putExtra("userRole", "client");
+            intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
+            startActivity(intent);
         }
        else if (itemTitle.equals(getString(R.string.likeOnFb))) {
             // setContentView(R.layout.browser);
@@ -664,6 +666,17 @@ private void alertbuilder()
 
 
         }
+        else if (itemTitle.equals(getString(R.string.RegisterSignIn))) {
+            SignUpFragment signUpFragment = new SignUpFragment();
+            // signUpFragment.getView().bringToFront();
+            Bundle bundle = new Bundle();
+            bundle.putStringArray("Chat", null);
+            bundle.putString("lastFragment", "drawer");
+            loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
+
+
+
+        }
 
 
 //        if (fragment != null) {
@@ -676,11 +689,18 @@ private void alertbuilder()
         String user_id = dbHelper.getValue(DatabaseConstants.userId);
 
         Branch branch = Branch.getInstance(getApplicationContext());
-        branch.setIdentity(user_id);
+
+        String mob_no = General.getSharedPreferences(this,AppConstants.MOBILE_NUMBER);
+        Log.i("mob_no","mob_no "+mob_no +user_id );
+
+        branch.setIdentity(mob_no);
 
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
                 // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
                 .setCanonicalIdentifier(user_id);
+
+
+        branchUniversalObject.registerView();
 
         LinkProperties linkProperties = new LinkProperties()
                 .setChannel("sms")
@@ -692,6 +712,7 @@ private void alertbuilder()
         branchUniversalObject.generateShortUrl(getApplicationContext(), linkProperties, new Branch.BranchLinkCreateListener() {
             @Override
             public void onLinkCreate(String url, BranchError error) {
+                Log.i("mob_no url","mob_no url " +url );
                 if (error == null) {
                     Log.i("MyApp", "got my Branch link to share: " + url);
                     Intent intent = new Intent(Intent.ACTION_SEND);
@@ -759,6 +780,8 @@ private void alertbuilder()
         toastLayout.setAnimation(m);
     }
 
+
+
     /*@OnClick(R.id.btnOnOyeClick)
     public void submitOyeOk(View v) {
         Log.i("TRACE", "oyebutton");
@@ -825,34 +848,30 @@ private void alertbuilder()
     public void onBackPressed() {
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        Log.i("BACK","FRAGMENT COUNT "+getSupportFragmentManager().getBackStackEntryCount()+" "+getSupportFragmentManager().getBackStackEntryAt(0).getId());
-
-        //            if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")){
-//            Intent back = new Intent(this, BrokerMainActivity.class);
-//            startActivity(back);
-//            }
-//            else{
-//                Intent back = new Intent(this, ClientMainActivity.class);
-//                startActivity(back);
-//            }
-//            finish();
-
-//            Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         if(AppConstants.SIGNUP_FLAG){
+/*            if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")){
+            Intent back = new Intent(this, BrokerMainActivity.class);
+            startActivity(back);
+            }
+            else{
+                Intent back = new Intent(this, ClientMainActivity.class);
+                startActivity(back);
+            }
+            finish();*/
+            if(AppConstants.REGISTERING_FLAG){}else{
+            getSupportFragmentManager().popBackStack();
 
-
-            Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff"+getSupportFragmentManager().getBackStackEntryCount());
-//super.onBackPressed();
-            getSupportFragmentManager().popBackStackImmediate();
             AppConstants.SIGNUP_FLAG=false;
-            Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff"+getSupportFragmentManager().getBackStackEntryCount());
+            backpress = 0;}
+            Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff");
 
-            backpress = 0;
         }
 
 
        else if(autocomplete){
+
+            Log.i("BACK PRESSED","  autocomplete"+autocomplete);
+//
             Intent intentt = new Intent(AppConstants.AUTOCOMPLETEFLAG1);
             intentt.putExtra("autocomplete",true);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intentt);
@@ -863,16 +882,14 @@ private void alertbuilder()
 
        else if(setting==true){
             Log.i("BACK PRESSED"," =================== setting"+setting);
-//            getFragmentManager().popBackStack();
             if(SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") || SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")){
-//                super.onBackPressed();
-//                getSupportFragmentManager().popBackStack();
 
-                int count = getFragmentManager().getBackStackEntryCount();
-                for(int i = 0; i < count; ++i) {
-                    getFragmentManager().popBackStackImmediate();
-                }
-
+               /* try {
+                    DashboardClientFragment dash=new DashboardClientFragment();
+                    dash.Wlak_Beacon();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
                 Intent inten = new Intent(this, ClientMainActivity.class);
                 inten.addFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -880,16 +897,15 @@ private void alertbuilder()
                                 Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(inten);
                 finish();
+                super.onBackPressed();
+                finish();
                 Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
                 backpress = 0;
 
 
             }else {
-                Log.i("BACK","FRAGMENT COUNT "+getSupportFragmentManager().getBackStackEntryCount());
-               getSupportFragmentManager().popBackStackImmediate();
-                //super.onBackPressed();
-                //finish();
+                super.onBackPressed();
                 Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
                 backpress = 0;
@@ -901,45 +917,31 @@ private void alertbuilder()
             if (webView.canGoBack()) {
                 webView.goBack();
             }else {
-//                super.onBackPressed();
-//                finish();
+
                 Log.i("SIGNUP_FLAG", " webView =================== 3");
-//                getSupportFragmentManager().popBackStack();
-                Intent back = new Intent(this, ClientMainActivity.class);
-                back.addFlags(
+                Intent inten = new Intent(this, ClientMainActivity.class);
+                inten.addFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                 Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                 Intent.FLAG_ACTIVITY_NEW_TASK);
-
-
-                startActivity(back);
+                startActivity(inten);
                 finish();
                 backpress = 0;
             }
-//            finish();
         } else if (slidingLayout != null && (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
             closeOyeScreen();
-            Log.i("SIGNUP_FLAG"," closing app =================== 1");
-            getSupportFragmentManager().popBackStack();
-            Log.i("SIGNUP_FLAG"," closing app =================== 2");
-//            Intent inten = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-//            LocalBroadcastManager.getInstance(this).sendBroadcast(inten);
-          //  getFragmentManager().popBackStack();
             backpress = 0;
-        }
 
-        else{
-            Log.i("SIGNUP_FLAG"," closing app =================== 3 "+backpress);
+        } else{
 
+            Log.i("SIGNUP_FLAG"," closing app =================== 3"+getFragmentManager().getBackStackEntryCount());
             if(backpress <1) {
                 backpress = (backpress + 1);
-
                 Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
             }else if (backpress>=1) {
                 backpress = 0;
                 this.finish();
             }
-
 
         }
 

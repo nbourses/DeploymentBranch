@@ -34,11 +34,7 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
-
-import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MapWrapperLayout;
-
 import com.nbourses.oyeok.helpers.AppConstants;
-
 import com.nbourses.oyeok.helpers.General;
 
 import org.apache.http.HttpEntity;
@@ -693,6 +689,7 @@ try {
                         SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
                         General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
                         General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
+                        getRegion();
 //
                         new LocationUpdater().execute();
 //                }

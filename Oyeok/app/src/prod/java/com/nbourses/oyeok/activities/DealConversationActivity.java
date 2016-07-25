@@ -1,14 +1,24 @@
 package com.nbourses.oyeok.activities;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -26,6 +36,15 @@ import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -55,6 +74,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -136,6 +156,21 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private Message message;
     private JSONArray jsonArrayHistory;
     private HashMap<String, Float> listings;
+    private Boolean oyed = false;
+    private Boolean okyed = false;
+
+    // File fileToUpload = new File("/storage/sdcard0/Pictures/Screenshots/photos.png");
+    private File fileToUpload = new File("/storage/emulated/0/DCIM/Facebook/FB_IMG_1467990952511.jpg");
+    private File fileToDownload = new File("/storage/sdcard0/Pictures/OYEOK");
+    public AmazonS3 s3;
+    public TransferUtility transferUtility;
+    private String imageName = null;
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
 
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
@@ -183,11 +218,16 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         texrating = (TextView) findViewById(R.id.texRating);
         ratingBar.setOnRatingBarChangeListener(this);
 
+        if(!General.isNetworkAvailable(this)){
+            General.internetConnectivityMsg(this);
+        }
+
         dbHelper = new DBHelper(getBaseContext());
 
 //        IntentFilter filter = new IntentFilter("shine");
 //        LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
-        UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
+        // UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
+        UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
         i("WHERENOW", "UUID " + UUID);
 
         pubnub = new Pubnub(AppConstants.PUBNUB_PUBLISH_KEY, AppConstants.PUBNUB_SUBSCRIBE_KEY);
@@ -225,24 +265,43 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
     private void init() {
+
+        Log.i(TAG,"pathas "+Environment.getExternalStorageDirectory().toString() + "/oyeok");
+
+        Log.i(TAG,"pathas 1 "+Environment.getDataDirectory() + "/oyeok");
+
+        //if there is no SD card, create new directory objects to make directory on device
+        if (Environment.getExternalStorageState() == null) {
+            //create new file directory object
+            File directory = new File(Environment.getDataDirectory()
+                    + "/oyeok/");
+
+            // if no directory exists, create new directory
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+
+            // if phone DOES have sd card
+        } else if (Environment.getExternalStorageState() != null) {
+            // search for directory on SD card
+            File directory = new File(Environment.getExternalStorageDirectory()
+                    + "/oyeok/");
+
+            // if no directory exists, create new directory to store test
+            // results
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+        }// end of SD card checking
+        // callback method to call credentialsProvider method.
+        credentialsProvider();
+
+        // callback method to call the setTransferUtility method
+        setTransferUtility();
+
+        Log.i(TAG, "role of user def yoman " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
         listings = new HashMap<String, Float>();
-//        try {
-//
-//            Realm myRealm = General.realmconfig(this);
-//            RealmResults<UserInfo> results1 =
-//                    myRealm.where(UserInfo.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findAll();
-//
-//            UserInfo myPuppy = myRealm.where(UserInfo.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findFirst();
-//
-//            Log.i(TAG, "my name is " + myPuppy.getName());
-//
-//            for (UserInfo c : results1) {
-//                Log.i(TAG, "insidero2 ");
-//                Log.i(TAG, "insidero3 " + c.getName());
-//                Log.i(TAG, "insidero4 " + c.getEmailId());
-//                Log.i(TAG, "insidero4 " + c.getUserId());
-//            }
-//        }catch(Exception e){}
+
 
         edtTypeMsg.addTextChangedListener(edtTypeMsgListener);
 
@@ -260,7 +319,20 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                     if (bundle.getString("OkAccepted").equalsIgnoreCase("yes")) {
 
+                        okyed = true;
                         General.storeDealTime(bundle.getString(AppConstants.OK_ID), this);
+
+                    }
+
+                }
+
+                else if (bundle.containsKey("Oyed") && bundle.containsKey(AppConstants.OK_ID)) {
+                    channel_name = bundle.getString(AppConstants.OK_ID);
+
+                    if (bundle.getString("Oyed").equalsIgnoreCase("yes")) {
+                        oyed = true;
+                        //chatMessages.clear();
+
 
                     }
 
@@ -284,7 +356,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
 
-       // Bundle bundle  = getIntent().getExtras();
+        // Bundle bundle  = getIntent().getExtras();
         //channel_name = bundle.getString(AppConstants.OK_ID); //my_channel if came from root item
 
         Log.i("Deals Conv Act","channel name is the "+channel_name);
@@ -293,93 +365,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         Log.i("TRACE DEALS FLAG 3", "FLAG " + isDefaultDeal);
 
-        //display messages from cache
-//        String s = General.getSharedPreferences(this,channel_name+AppConstants.CACHE);
-//        //List<JSONObject> itemList = Arrays.asList(s);
-//        Log.i("CACHE","string is from cache type"+General.getSharedPreferences(this,channel_name+AppConstants.CACHE).getClass().getName());
-//
-//        JSONArray jsonArray = null;
-//        try {
-//            jsonArray = new JSONArray(s);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
-
-        //  bNames = b.getStringArray("bNames");
-        //  bPrice = b.getIntArray("bPrice");
-
-        //Cardview
-
-//            String[] bNames = new String[]{"Building1","Building2","Building3"};
-//            int[] bPrice = new int[]{35000,50000,65000};
-//            Log.i("Listing card data","card data "+bNames+" "+bPrice+"channel_name "+channel_name);
-//        try{
-//            JSONObject jsonMsg = new JSONObject();
-//            //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
-//            jsonMsg.put("from", "LISTING");
-//            //jsonMsg.put("to", "client");
-//
-//            jsonMsg.put("to", "client");
-//
-//
-//            jsonMsg.put("message",String.valueOf(bNames[0]+"--"+bPrice[0]+"--"+bNames[1]+"--"+bPrice[1]+"--"+bNames[2]+"--"+bPrice[2]));
-//
-//            //Log.i("TRACE","messageText is "+messageText);
-//            //Log.i(TAG,"messageText is"+messageText);
-//            //publish message
-//            pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
-//            Log.i(TAG, "Listing message published");
-//        }
-//        catch(Exception e){
-//            Log.i(TAG, "caught in listing msg exception "+e);
-//
-//        }
-
-
-
-
-
-        // Log.i("CHAT","cache cache from shared yo mana string "+jsonArray +"    type is "+jsonArray.getClass().getName());
-//
-
-
-
-//        try {
-//            String s = General.getSharedPreferences(this,channel_name+AppConstants.CACHE);
-//
-//            Log.i("CHAT","cache cache from shared yo mana "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
-//           // Log.i("CACHE", "cache from shared yo mana " + General.getSharedPreferences(this, channel_name + AppConstants.CACHE));
-//
-//            Log.i("CHAT","cache cache from shared yo mana string "+s);
-//           //JSONObject jsonObj = new JSONObject(s);
-//            //JSONObject j = new JSONObject(General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
-//
-//            //Log.i("CACHE", "cache from shared yo mana jsonObj " + jsonObj);
-//           // displayMessage(jsonObj);
-//            JSONArray jsonArray = new JSONArray(s);
-//            Log.i("CHAT","cache cache from shared yo mana string "+jsonArray +"    type is "+jsonArray.getClass().getName());
-//
-//
-//            int jsonArrayLength = jsonArray.length();
-//            if (jsonArray.length() > 0) {
-//                for (int i = 0; i < jsonArrayLength; i++) {
-//                    JSONObject jsonMsg = jsonArray.getJSONObject(i);
-//
-//
-//                    Log.i(TAG, "jsonMsg catched success " + jsonMsg);
-//                    displayMessage(jsonMsg);
-//
-//                }
-//            }
-//
-//
-//
-//        }
-//        catch(Exception e){
-//            Log.i("CACHE", "cache from shared yo mana caught in exception " + e);
-//
-//        }
 
 
 
@@ -551,6 +536,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         listAdapter = new ChatListAdapter(chatMessages,isDefaultDeal, this);
         chatListView.setAdapter(listAdapter);
 
+        //  displayMessage();
+
 //        Bundle bundle  = getIntent().getExtras();
 //        channel_name = bundle.getString(AppConstants.OK_ID);
 
@@ -649,6 +636,35 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             } else {
                 //send message
                 sendMessage(edtTypeMsg.getText().toString());
+                final ChatMessage message = new ChatMessage();
+                message.setUserName("self");
+                message.setMessageStatus(ChatMessageStatus.SENT);
+                message.setMessageText(edtTypeMsg.getText().toString());
+                message.setUserType(ChatMessageUserType.OTHER);
+                message.setMessageTime(System.currentTimeMillis()/10000);
+                chatMessages.add(message);
+                listAdapter.notifyDataSetChanged();
+                Log.i(TAG,"aawaj 1");
+                try {
+                    Log.i(TAG,"aawaj 2");
+                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                    r.play();
+                } catch (Exception e) {
+                    Log.i(TAG,"aawaj 3");
+                    e.printStackTrace();
+                }
+                edtTypeMsg.setText("");
+                chatListView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Select the last row so it will scroll into view...
+                        chatListView.setSelection(listAdapter.getCount());
+                    }
+
+                });
+                chatMessages.remove(chatMessages.size()-1);
+
             }
         }
     }
@@ -658,6 +674,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      */
 
     private void setupPubnub(String channel_name) {
+
         chatMessages.clear();
         listAdapter.notifyDataSetChanged();
         Log.i("WHERENOW", "3 ");
@@ -670,7 +687,18 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             Log.i(TAG, "before loadHistoryFromPubnub");
             if(!channel_name.equals("my_channel")) {
-              loadHistoryFromPubnub(channel_name);
+
+                if(oyed || okyed){
+                    oyed = false;
+                    okyed = false;
+                    displayDefaultMessage();
+                    chatMessages.clear();
+
+                }
+                else {
+                    displayMessage();
+                }
+                loadHistoryFromPubnub(channel_name);
             }
 
             pubnub.subscribe(channel_name, new Callback() {
@@ -705,7 +733,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     }
             );
 
-            String channel = channel_name + "-pndebug";
+           /* String channel = channel_name + "-pndebug";
             Log.i("channel name for debug","====== "+channel);
             pubnub.subscribe(channel, new Callback() {
                         @Override
@@ -737,7 +765,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         public void errorCallback(String channel, PubnubError error) {
                         }
                     }
-            );
+            );*/
         }
         catch (PubnubException e) {
             e.getMessage();
@@ -746,23 +774,27 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     }
 
     private void selectImage() {
-        final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
+        final CharSequence[] items = {/* "Take Photo",*/ "Choose from Library", "Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(DealConversationActivity.this);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                if (items[item].equals("Take Photo")) {
+                /*if (items[item].equals("Take Photo")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                      startActivityForResult(intent, REQUEST_CAMERA);
-                } else if (items[item].equals("Choose from Library")) {
+                    startActivityForResult(intent, REQUEST_CAMERA);
+                } else*/ if (items[item].equals("Choose from Library")) {
+                    verifyStoragePermissions(DealConversationActivity.this);
+                    Log.d(TAG, "lolwa imagewa 4 ");
                     Intent intent = new Intent(
                             Intent.ACTION_PICK,
                             android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/*");
+                    Log.d(TAG, "lolwa imagewa 1 ");
                     startActivityForResult(
                             Intent.createChooser(intent, "Select File"),
                             SELECT_FILE);
+                    Log.d(TAG, "lolwa imagewa 2 ");
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -770,32 +802,161 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         });
         builder.show();
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "lolwa imagewa 3 ");
+
+        if (requestCode == SELECT_FILE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            Uri uri = data.getData();
+            Log.d(TAG, "lolwa imagewa uri "+uri);
+
+            fileToUpload = new File(getRealPathFromURI(this,uri));
+            Log.i(TAG, "lolwa imagewa uri fileToUpload "+fileToUpload);
+            setFileToUpload(fileToUpload);
+
+
+
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                Log.i(TAG, "lolwa imagewa "+String.valueOf(bitmap));
+
+
+
+
+                /*ImageView imageView = (ImageView) findViewById(R.id.imageView);
+                imageView.setImageBitmap(bitmap);*/
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+
 
     /**
      * display incoming messages through pubnub
      * @param jsonMsg
      */
     private void displayMessage(JSONObject jsonMsg) {
+
+
         Log.i("WHERENOW", "5 ");
         Log.i("CONVER", "jsonMsg" + jsonMsg);
         Log.i(TAG, "inside displayMessage" + jsonMsg);
-        //Read cachedmsgs from shared
-        if(cachedmsgs.size() < 10) {
-            cachedmsgs.add(jsonMsg);
-        }
-        else{
-            cachedmsgs.remove(0);
-            cachedmsgs.add(jsonMsg);
-        }
 
-        Log.i("CACHE", "cachedmsgs after add" + cachedmsgs);
 
 
         String body = null;
         String timetoken = null;
         ChatMessageUserType userType = null;
+        String imageUrl = null;
         final ChatMessage message = new ChatMessage();
         String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
+
+
+
+        try {
+//            if (jsonMsg.has("message")) {
+//                JSONObject j = jsonMsg.getJSONObject("message");
+//                timetoken = jsonMsg.getString("timetoken");
+//                Log.i("CHAT","samosa1 "+jsonMsg.getString("message"));
+            Log.i(TAG, "floki" + jsonMsg);
+
+            if (jsonMsg.has("message") && jsonMsg.has("from") && jsonMsg.has("to")) {
+                Log.i("CHAT","here");
+                body = jsonMsg.getString("message");
+                Log.i("CHAT","here is "+body);
+
+                if (jsonMsg.getString("from").equalsIgnoreCase("DEFAULT")){
+                    Log.i("CONVER", "DEFAULT set");
+                    userType = ChatMessageUserType.DEFAULT;
+                }
+                else if (jsonMsg.getString("from").equalsIgnoreCase("IMG")){
+                    Log.i("CONVER", "grrrr IMG set");
+                    userType = ChatMessageUserType.IMG;
+                    if(jsonMsg.has("imageUrl")){
+                        Log.i("CONVER", "grrrr 1 IMG set");
+                        imageUrl = jsonMsg.getString("imageUrl");
+                    }
+
+                }
+                else if (jsonMsg.getString("from").equalsIgnoreCase("LISTING")){
+                    Log.i("CONVER", "LISTING set");
+                    userType = ChatMessageUserType.LISTING;
+                }
+                else if(jsonMsg.getString("to").equalsIgnoreCase("support"))
+                {
+                    userType = ChatMessageUserType.OTHER;     // for support
+                }
+                else if (!jsonMsg.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID)))
+                {
+                    userType = ChatMessageUserType.SELF;
+                }
+                else {
+                    userType = ChatMessageUserType.OTHER;
+                }
+                Log.i(TAG, "ragnar" + jsonMsg);
+                Log.i(TAG, "ragnar lagartha" + userType);
+
+                //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
+                //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
+                message.setUserName(roleOfUser);
+                message.setMessageStatus(ChatMessageStatus.SENT);
+                message.setMessageText(body);
+                message.setUserType(userType);
+                message.setImageUrl(imageUrl);
+                message.setMessageTime(new Date().getTime());
+
+
+
+
+                chatMessages.add(message);
+
+
+                Log.i(TAG, "message after adding to chatMessages" + chatMessages);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.i(TAG, "message runOnUiThread" + listAdapter);
+                        if (listAdapter != null) {
+                            Log.i(TAG, "message runOnUiThread  not null");
+                            listAdapter.notifyDataSetChanged();
+                        }
+                        Log.i(TAG, "message runOnUiThread edtTypeMsg1");
+                        edtTypeMsg.setText("");
+                        Log.i(TAG, "message runOnUiThread edtTypeMsg2");
+                    }
+                });
+                // }
+
+
+
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG, "caught in display message1 debug" + e);
+        }
+
 
 
         try {
@@ -813,9 +974,22 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         Log.i("CONVER", "DEFAULT set");
                         userType = ChatMessageUserType.DEFAULT;
                     }
+                    else if (j.getString("from").equalsIgnoreCase("IMG")){
+                        Log.i("CONVER", "grrrr IMG set");
+                        userType = ChatMessageUserType.IMG;
+                        if(j.has("imageUrl")){
+                            Log.i("CONVER", "grrrr 1 IMG set");
+                            imageUrl = j.getString("imageUrl");
+                        }
+
+                    }
                     else if (j.getString("from").equalsIgnoreCase("LISTING")){
                         Log.i("CONVER", "LISTING set");
                         userType = ChatMessageUserType.LISTING;
+                    }
+                    else if(j.getString("to").equalsIgnoreCase("support"))
+                    {
+                        userType = ChatMessageUserType.OTHER;     // for support
                     }
                     else if (!j.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID)))
                     {
@@ -824,7 +998,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     else {
                         userType = ChatMessageUserType.OTHER;
                     }
-
+                    Log.i(TAG, "ragnar" + jsonMsg);
+                    Log.i(TAG, "ragnar lagartha" + userType);
 
                     //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
                     //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
@@ -832,6 +1007,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     message.setMessageStatus(ChatMessageStatus.SENT);
                     message.setMessageText(body);
                     message.setUserType(userType);
+                    message.setImageUrl(imageUrl);
                     // message.setMessageTime(new Date().getTime());
                     message.setMessageTime(Long.valueOf(timetoken)/10000);
 
@@ -863,65 +1039,181 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             }
 
 
+
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i(TAG, "caught in display message1" + e);
+            Log.i(TAG, "caught in display message1 debug" + e);
         }
 
+
+
+
+
+
+
+
+
+
+
+
+//        try {
+//            if (jsonMsg.has("message") && jsonMsg.has("from") && jsonMsg.has("to")) {
+//                Log.i("CHAT","samosa");
+//                body = jsonMsg.getString("message");
+//                Log.i("CHAT","papdi "+body);
+//
+//                if (jsonMsg.getString("from").equalsIgnoreCase("DEFAULT")){
+//                    Log.i("CONVER", "DEFAULT set");
+//                    userType = ChatMessageUserType.DEFAULT;
+//                }
+//                else if (!jsonMsg.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID)))
+//                {
+//                    userType = ChatMessageUserType.SELF;
+//                }
+//                else {
+//                    userType = ChatMessageUserType.OTHER;
+//                }
+//
+//
+//                //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
+//                //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
+//
+//
+//                message.setUserName(roleOfUser);
+//                message.setMessageStatus(ChatMessageStatus.SENT);
+//                message.setMessageText(body);
+//                message.setUserType(userType);
+//                message.setMessageTime(new Date().getTime());
+//                Log.i(TAG, "message before adding to chatMessages" + message);
+//                chatMessages.add(message);
+//                Log.i(TAG, "message after adding to chatMessages" + chatMessages);
+//
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Log.i(TAG, "message runOnUiThread" + listAdapter);
+//                        if (listAdapter != null) {
+//                            Log.i(TAG, "message runOnUiThread  not null");
+//                            listAdapter.notifyDataSetChanged();
+//                        }
+//                        Log.i(TAG, "message runOnUiThread edtTypeMsg1");
+//                        edtTypeMsg.setText("");
+//                        Log.i(TAG, "message runOnUiThread edtTypeMsg2");
+//                    }
+//                });
+//            }
+//
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            Log.i(TAG, "caught in display message" + e);
+//        }
+
+        chatListView.post(new Runnable() {
+            @Override
+            public void run() {
+                chatListView.setSelection(listAdapter.getCount());
+            }
+        });
+    }
+
+
+    private void displayMessage(){
+        myRealm = General.realmconfig(this);
+        String body = null;
+        String timetoken = null;
+        ChatMessageUserType userType = null;
+        ChatMessage message;
+        String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
+
+        String channelName;  // local
+        if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME))
+            channelName = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
+        else
+            channelName = channel_name;
+
+        /*message = new ChatMessage();
+        message.setUserName(roleOfUser);
+        message.setMessageStatus(ChatMessageStatus.SENT);
+        message.setMessageText("testo");
+        message.setUserType(ChatMessageUserType.OTHER);
+        message.setMessageTime(Long.valueOf("14685047443226704")/10000);
+        chatMessages.add(message);
+       // listAdapter.notifyDataSetChanged();
+
+
+        message = new ChatMessage();
+        message.setUserName(roleOfUser);
+        message.setMessageStatus(ChatMessageStatus.SENT);
+        message.setMessageText("testero");
+        message.setUserType(ChatMessageUserType.OTHER);
+        message.setMessageTime(Long.valueOf("14685047443226704")/10000);
+        chatMessages.add(message);
+        listAdapter.notifyDataSetChanged();*/
 
 
         try {
-            if (jsonMsg.has("message") && jsonMsg.has("from") && jsonMsg.has("to")) {
-                Log.i("CHAT","samosa");
-                body = jsonMsg.getString("message");
-                Log.i("CHAT","papdi "+body);
 
-                if (jsonMsg.getString("from").equalsIgnoreCase("DEFAULT")){
+
+
+            myRealm.beginTransaction();
+            RealmResults<Message> results1 =
+                    myRealm.where(Message.class).equalTo(AppConstants.OK_ID, channelName).findAll();
+
+
+            for (Message c : results1) {
+                Log.i(TAG, "until insideroui2 ");
+                Log.i(TAG, "until insideroui3 " + c.getOk_id());
+                Log.i(TAG, "until insideroui4 " + c.getTimestamp());
+                Log.i(TAG, "until insideroui4 " + c.getMessage());
+                Log.i(TAG, "until insideroui4 " + c.getFrom());
+                Log.i(TAG, "until insideroui4 " + c.getTo());
+
+                if (c.getFrom().equalsIgnoreCase("DEFAULT")) {
                     Log.i("CONVER", "DEFAULT set");
                     userType = ChatMessageUserType.DEFAULT;
+                } else if (c.getFrom().equalsIgnoreCase("LISTING")) {
+                    Log.i("CONVER", "LISTING set");
+                    userType = ChatMessageUserType.LISTING;
                 }
-                else if (!jsonMsg.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID)))
+                else if(c.getTo().equalsIgnoreCase("support"))
                 {
-                    userType = ChatMessageUserType.SELF;
+                    userType = ChatMessageUserType.OTHER;     // for support
                 }
-                else {
+                else if (!c.getFrom().equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID))) {
+                    userType = ChatMessageUserType.SELF;
+                } else {
                     userType = ChatMessageUserType.OTHER;
                 }
 
-
-                //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
-                //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
-
-
+                message = new ChatMessage();
                 message.setUserName(roleOfUser);
                 message.setMessageStatus(ChatMessageStatus.SENT);
-                message.setMessageText(body);
+                message.setMessageText(c.getMessage());
                 message.setUserType(userType);
-                message.setMessageTime(new Date().getTime());
-                Log.i(TAG, "message before adding to chatMessages" + message);
+                message.setMessageTime(Long.valueOf(c.getTimestamp())/10000);
                 chatMessages.add(message);
-                Log.i(TAG, "message after adding to chatMessages" + chatMessages);
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.i(TAG, "message runOnUiThread" + listAdapter);
-                        if (listAdapter != null) {
-                            Log.i(TAG, "message runOnUiThread  not null");
-                            listAdapter.notifyDataSetChanged();
-                        }
-                        Log.i(TAG, "message runOnUiThread edtTypeMsg1");
-                        edtTypeMsg.setText("");
-                        Log.i(TAG, "message runOnUiThread edtTypeMsg2");
-                    }
-                });
+
+                Log.i(TAG, "cache yo  message after adding to chatMessages" + chatMessages);
+
+
             }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.i(TAG, "caught in display message" + e);
+            listAdapter.notifyDataSetChanged();
+        }catch(Exception e){
+            Log.i(TAG,"Caught in the exception reading cache from realm "+e);
         }
+        finally {
+            myRealm.commitTransaction();
+            Log.i(TAG,"until fitra 4 "+myRealm.isInTransaction());
+        }
+        chatListView.post(new Runnable() {
+            @Override
+            public void run() {
+                chatListView.setSelection(listAdapter.getCount());
+            }
+        });
+
     }
 
     /**
@@ -940,7 +1232,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             return;
 
         // Rt find to?
-        String To = null;
+        String To = "support";
         String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
         if(role.equals("broker"))
             To = "client";
@@ -978,8 +1270,10 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             Log.i("TEST","published to channel_name" +channel_name);
             if (channel_name.equals("my_channel")){
-                channel_name = General.getSharedPreferences(this, AppConstants.USER_ID);
-                pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
+                //channel_name = General.getSharedPreferences(this, AppConstants.USER_ID);
+                // pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
+                channel_name = General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI);
+                pubnubWhereNow(General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI));
                 Log.i("Pubnub push","channel_name_userid case is "+channel_name);
                 Log.i("Pubnub push","GCM id is "+General.getSharedPreferences(this,AppConstants.GCM_ID));
                 // subscribe a channel for Pubnub push notifications start
@@ -1097,7 +1391,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      * load pubnub history
      */
     private void loadHistoryFromPubnub(String channel_name) {
-
         Log.i(TAG, "inside loadHistoryFromPubnub");
         Log.i(TAG, "inside loadHistoryFromPubnub channel name is" + channel_name);
 
@@ -1111,6 +1404,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     int jsonArrayHistoryLength = jsonArrayHistory.length();
                     // cacheMessages(jsonArrayHistory);
                     if (jsonArrayHistory.length() > 0) {
+                        chatMessages.clear();// to remove cached messages
+                        clearCache();
                         Log.i(TAG, "loadhistory not empty");
                         for (int i = 0; i < jsonArrayHistoryLength; i++) {
                             JSONObject jsonMsg = jsonArrayHistory.getJSONObject(i);
@@ -1133,9 +1428,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     else {
 
                         Log.i(TAG, "loadhistory empty");
+                        if(!okyed && !oyed ) {
+                            //displayDefaultMessage();  // if client have not okeyed or oyed , its old dealing room but its empty then we need to show him default message
+                            //need to be handled
+                        }
 
 
-                        JSONObject jsonMsg = new JSONObject();
+                        /*JSONObject jsonMsg = new JSONObject();
                         //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
                         jsonMsg.put("from", "DEFAULT");
                         //jsonMsg.put("to", "client");
@@ -1150,11 +1449,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //                            String ptype = General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE);
 //                            Log.i(TAG, "role of user def 1 "+ptype);
                             final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-                           // Log.i(TAG, "role of user def 2 "+ptype.substring(0, 1).toUpperCase());
+                            // Log.i(TAG, "role of user def 2 "+ptype.substring(0, 1).toUpperCase());
                             String json = gson.toJson(AppConstants.letsOye);
-                           // Log.i(TAG, "role of user def 3 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(1));
+                            // Log.i(TAG, "role of user def 3 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(1));
                             JSONObject jsonResponse = new JSONObject(json);
-                           // Log.i(TAG, "role of user def 4 ");
+                            // Log.i(TAG, "role of user def 4 ");
 
                             Log.i(TAG,"Client have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price"))+".");
                             //Log.i(TAG, "AppConstants.letsOye u " + jsonResponse.getString("property_subtype"));
@@ -1165,6 +1464,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                             //Log.i(TAG,"messageText is"+messageText);
                             //publish message
 
+
+
                         }
                         if(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
 
@@ -1172,15 +1473,31 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                             String ptype = General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE);
 
                             jsonMsg.put("message", "Client have initiated enquiry for " + General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE).substring(1)
-                            + " property (" + General.getSharedPreferences(getApplicationContext(),AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(),AppConstants.PRICE)) + ".");
+                                    + " property (" + General.getSharedPreferences(getApplicationContext(),AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(),AppConstants.PRICE)) + ".");
 
-                        }
 
-                        pubnub.publish(channel, jsonMsg, true, new Callback() {});
+                        }*/
+                        /*chatMessages.clear();
+                        Message message = new Message();
+                        message.setUserName(roleOfUser);
+                        message.setMessageStatus(ChatMessageStatus.SENT);
+                        message.setMessageText(body);
+                        message.setUserType(userType);
+                        // message.setMessageTime(new Date().getTime());
+                        message.setMessageTime(Long.valueOf(timetoken)/10000);*/
+
+
+
+
+                       /* chatMessages.add(message);*/
+//                        displayMessage(jsonMsg);
+                      /*  pubnub.publish(channel, jsonMsg, true, new Callback() {});*/
+//                        chatMessages.clear();
+
                         //default deal time we are storing at default deal creation
-                        lastMessageTime = String.valueOf(System.currentTimeMillis());
-                        Log.i(TAG, "Default message published");
 
+                        Log.i(TAG, "Default message published");
+                        lastMessageTime = String.valueOf(System.currentTimeMillis());
 
 
 
@@ -1198,7 +1515,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             }
         };
         // pubnub.history(channel_name, 10, false, callback);
-        pubnub.history(channel_name,true, 10,callback);
+        pubnub.history(channel_name,true, 50,callback);
     }
 
 
@@ -1400,80 +1717,85 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     }
 
     private void cacheMessages(JSONArray jsonArrayHistory){
+        Log.i(TAG, "until cacheMessages called  ");
         //JSONArray jsonArrayHistory = loadFinalHistory();
+        myRealm = General.realmconfig(this);
+
+
+//        try {
+//
+//            //clear cache
+//            Log.i(TAG,"until 3 ");
+//            myRealm.beginTransaction();
+//            Log.i(TAG,"until 4 ");
+//            RealmResults<Message> result = myRealm.where(Message.class).equalTo(AppConstants.OK_ID,channel_name).findAll();
+//            Log.i(TAG,"until result to del is 6 "+result);
+//            result.clear();
+//
+//        }catch(Exception e){
+//            Log.i(TAG,"Caught in the exception clearing cache "+e );
+//        }
+//        finally{
+//            myRealm.commitTransaction();
+//        }
+
 
         try {
+
             int jsonArrayHistoryLength = jsonArrayHistory.length();
-            Log.i(TAG, "here is the 1 jsonArrayHistory "+jsonArrayHistory);
-            Log.i(TAG, "here is the 1 jsonArrayHistoryLength "+jsonArrayHistoryLength);
+            Log.i(TAG, "until here is the 1 jsonArrayHistory "+jsonArrayHistory);
+            Log.i(TAG, "until here is the 1 jsonArrayHistoryLength "+jsonArrayHistoryLength);
 //            myRealm = General.realmconfig(this);
-//            myRealm.beginTransaction();
+            myRealm = General.realmconfig(this);
+            myRealm.beginTransaction();
             for (int i = 0; i < jsonArrayHistoryLength; i++) {
                 JSONObject jsonMsg = jsonArrayHistory.getJSONObject(i);
 
 
 
-                Log.i(TAG, "here is the 1 jsonMsg "+jsonMsg);
+                Log.i(TAG, "until here is the 1 jsonMsg "+jsonMsg);
 
                 if (jsonMsg.has("message")) {
                     JSONObject j = jsonMsg.getJSONObject("message");
                     String timetoken = jsonMsg.getString("timetoken");
-                    Log.i(TAG, "here is the 1  " + jsonMsg.getString("message"));
+                    Log.i(TAG, "until here is the 1  " + jsonMsg.getString("message"));
                     String from = j.getString("from");
                     String to = j.getString("to");
                     String body = j.getString("message");
-                    Log.i(TAG,"here is the 1 2 "+from+" "+to+" "+body);
+                    Log.i(TAG,"until here is the 1 2 "+from+" "+to+" "+body);
 
-                    myRealm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            Log.i(TAG,"here is the 1 2 andar");
-                            Message message = realm.createObject(Message.class);
-                            message.setOk_id(channel_name);
-                            message.setMessage("body");
-                            message.setTimestamp("timetoken");
-                            message.setFrom("from");
-                            message.setTo("to");
-                            Log.i(TAG,"here is the 1 2 khali");
-                        }
-                    });
+                    message = new Message();
+                    Log.i(TAG,"until here is the 1 2 ithe "+myRealm.isInTransaction());
+//
+                    message = myRealm.createObject(Message.class); //new Message();
+                    Log.i(TAG,"until here is the 1 2 Tithe");
+                    message.setOk_id(channel_name);
+                    message.setMessage(body);
+                    message.setTimestamp(timetoken);
+                    message.setFrom(from);
+                    message.setTo(to);
 
-                    // tester(from,to,body,timetoken);
-                    Log.i(TAG,"here is the 1 3 I am back "+body);
-//                    if (j.has("message") && j.has("from") && j.has("to")) {
-//                        Log.i(TAG, "here is the");
-////                        String from = j.getString("from");
-////                        String to = j.getString("to");
-////                        String body = j.getString("message");
-//                        //test(timetoken,from,to,body);
-//
-//
-//                        try {
-//
-//                            myRealm = General.realmconfig(this);
-//                            myRealm.beginTransaction();
-//                            message = myRealm.createObject(Message.class); //new Message();
+                    Log.i(TAG,"until here is the 246 "+body);
+                    myRealm.copyToRealm(message);
+                    Log.i(TAG,"until here is the 634 "+body);
+
+//                    myRealm.executeTransaction(new Realm.Transaction() {
+//                        @Override
+//                        public void execute(Realm realm) {
+//                            Log.i(TAG,"here is the 1 2 andar");
+//                            Message message = realm.createObject(Message.class);
 //                            message.setOk_id(channel_name);
-//                            message.setMessage(body);
-//                            message.setTimestamp(timetoken);
-//                            message.setFrom(from);
-//                            message.setTo(to);
-//
-//
-//                            myRealm.copyToRealm(message);
-//                        }catch(Exception e){
-//                            Log.i(TAG,"here is the "+"message is "+j+" "+e);
+//                            message.setMessage("body");
+//                            message.setTimestamp("timetoken");
+//                            message.setFrom("from");
+//                            message.setTo("to");
+//                            Log.i(TAG,"here is the 1 2 khali");
 //                        }
-//                        finally{
-//                            Log.i(TAG,"In finally cache "+"message is"+message.getMessage());
-//
-//                          myRealm.commitTransaction();
-//
-//                        }
-//                        Log.i(TAG, "here is the 1 jsonMsg 2 "+jsonMsg);
-//
-//
-//                    }
+//                    });
+
+
+                    Log.i(TAG,"until here is the 1 3 I am back "+body);
+
                 }
             }
 
@@ -1484,6 +1806,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         catch(Exception e){
             Log.i(TAG,"Caught in exception in caching messages in Realm "+e);
 
+        }
+        finally{
+
+
+            myRealm.commitTransaction();
+            Log.i(TAG,"until fitra 3 "+myRealm.isInTransaction());
         }
 
 
@@ -1499,84 +1827,29 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //        General.setSharedPreferences(this,channel_name+AppConstants.CACHE,msgs.toString());
 //        Log.i("CHAT","cache "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
 
-    }
-    private void tester(String from, String to, String body, String timetoken){
-        Log.i(TAG,"here is the 1 3 "+body);
+        try {
 
-        Realm myRealm = General.realmconfig(this);
-        Log.i(TAG,"here is the 11 "+body);
-        try{
-            Log.i(TAG,"here is the 12 "+body);
+//            Realm myRealm = General.realmconfig(this);
+            RealmResults<Message> results1 =
+                    myRealm.where(Message.class).equalTo(AppConstants.OK_ID, channel_name).findAll();
 
-
-            myRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    Message message = realm.createObject(Message.class);
-                    message.setOk_id(channel_name);
-                    message.setMessage("body");
-                    message.setTimestamp("timetoken");
-                    message.setFrom("from");
-                    message.setTo("to");
-                }
-            });
-
-
-
-            //
-//            Message message = new Message();
+//            Message myPuppy = myRealm.where(Message.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findFirst();
 //
-//                // message = myRealm.createObject(Message.class); //new Message();
-//                    message.setOk_id(channel_name);
-//                    message.setMessage(body);
-//                    message.setTimestamp(timetoken);
-//                    message.setFrom(from);
-//                    message.setTo(to);
-//
-//            Realma.beginTransaction();
-//                   Realma.copyToRealmOrUpdate(message);
+//            Log.i(TAG, "my name is " + myPuppy.getName());
+
+            for (Message c : results1) {
+                Log.i(TAG, "until insiderou2 ");
+                Log.i(TAG, "until insiderou3 " + c.getOk_id());
+                Log.i(TAG, "until insiderou4 " + c.getTimestamp());
+                Log.i(TAG, "until insiderou4 " + c.getMessage());
+            }
         }catch(Exception e){
-            Log.i(TAG,"here is the locha  "+e);
+            Log.i(TAG,"Caught in the exception reading cache from realm "+e);
         }
-        finally{
-            Log.i(TAG,"In finally cache "+"message is"+message.getMessage());
-
-            // Realma.commitTransaction();
-
-        }
-
-
-
 
 
     }
 
-    private void test(String timetoken, String from, String to, String body){
-        Log.i(TAG,"here is the called with "+body);
-//        try {
-        myRealm = General.realmconfig(this);
-        message = myRealm.createObject(Message.class); //new Message();
-
-        message.setOk_id(channel_name);
-        message.setMessage(body);
-        message.setTimestamp(timetoken);
-        message.setFrom(from);
-        message.setTo(to);
-
-        //myRealm.beginTransaction();
-        myRealm.copyToRealm(message);
-        //myRealm.commitTransaction();
-//        }catch(Exception e){
-//            Log.i(TAG,"here is the message is "+e);
-//        }
-//        finally{
-//            Log.i(TAG,"In finally cache "+"message is"+message.getMessage());
-//
-//
-//
-//        }
-
-    }
 
 
     private void storeDealTime(){
@@ -1648,6 +1921,27 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     }
 
+    private void clearCache(){
+        myRealm = General.realmconfig(this);
+        try {
+            //clear cache
+            Log.i(TAG,"until 31 ");
+
+            myRealm.beginTransaction();
+            Log.i(TAG,"until 41 ");
+            RealmResults<Message> result = myRealm.where(Message.class).equalTo(AppConstants.OK_ID,channel_name).findAll();
+            Log.i(TAG,"until end result to del is 5 "+result);
+            result.clear();
+
+        }catch(Exception e){
+            Log.i(TAG,"Caught in the exception clearing cache "+e );
+        }
+        finally{
+            myRealm.commitTransaction();
+            Log.i(TAG,"until fitra 1 "+myRealm.isInTransaction());
+        }
+    }
+
     private void loadFinalHistory(){
         Callback callback = new Callback() {
             JSONArray jsonArrayHistory;
@@ -1658,6 +1952,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Log.i(TAG, "inside loadHistoryFromPubnub channel name is2 yo jsonArrayResponse "+jsonArrayResponse);
                     jsonArrayHistory = jsonArrayResponse.getJSONArray(0);
                     Log.i(TAG, "inside loadHistoryFromPubnub channel name is2 yo jsonArrayHistory "+jsonArrayHistory);
+                    clearCache();
                     cacheMessages(jsonArrayHistory);
                 }
                 catch (Exception e) {
@@ -1670,22 +1965,254 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             }
         };
         // pubnub.history(channel_name, 10, false, callback);
-        pubnub.history(channel_name,true, 10,callback);
+        pubnub.history(channel_name,true, 50,callback);
         Log.i(TAG, "inside loadHistoryFromPubnub channel name is2 yo jsonArrayHistory 1 "+jsonArrayHistory);
 
 
     }
 
+    private void displayDefaultMessage(){
+        Log.i(TAG, "displayDefaultMessage called ");
+        try {
+            JSONObject jsonMsg = new JSONObject();
+
+
+
+
+            //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
+            jsonMsg.put("from", "DEFAULT");
+            //jsonMsg.put("to", "client");
+
+
+            jsonMsg.put("to", "client");
+            Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
+
+
+            if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+//                            String ptype = General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE);
+//                            Log.i(TAG, "role of user def 1 "+ptype);
+                final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                // Log.i(TAG, "role of user def 2 "+ptype.substring(0, 1).toUpperCase());
+                String json = gson.toJson(AppConstants.letsOye);
+                // Log.i(TAG, "role of user def 3 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(1));
+                JSONObject jsonResponse = new JSONObject(json);
+                // Log.i(TAG, "role of user def 4 ");
+
+                Log.i(TAG, "Client have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
+                //Log.i(TAG, "AppConstants.letsOye u " + jsonResponse.getString("property_subtype"));
+                Log.i(TAG, "role of user def 5 ");
+                jsonMsg.put("message", "Client have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
+                Log.i(TAG, "role of user def 6 ");
+                //Log.i("TRACE","messageText is "+messageText);
+                //Log.i(TAG,"messageText is"+messageText);
+                //publish message
+
+
+            }
+            if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+
+                // prepare a default message now get ptype
+                String ptype = General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE);
+
+                jsonMsg.put("message", "Client have initiated enquiry for " + General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE).substring(1)
+                        + " property (" + General.getSharedPreferences(getApplicationContext(), AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(), AppConstants.PRICE)) + ".");
+
+
+            }
+
+            displayMessage(jsonMsg);
+            pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+        }
+        catch(Exception e){}
+        finally {
+            //chatMessages.clear();   // clears chatmessages to avoid redundant messages after loadhistory called(Clears out cached msgs before loading actual)
+        }
+    }
+
+    private void displayImgMessage(String bucketName, String imgName){
+        Log.i(TAG, "displayImgMessage called ");
+        try {
+            JSONObject jsonMsg = new JSONObject();
+
+
+            jsonMsg.put("timestamp",String.valueOf(System.currentTimeMillis()));
+
+            //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
+            jsonMsg.put("from", "IMG");
+            //jsonMsg.put("to", "client");
+            jsonMsg.put("imageUrl", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);
+
+
+
+            Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
+
+
+            if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+//                            String ptype = General.getSharedPreferences(getApplicationContext(),AppConstants.PTYPE);
+//                            Log.i(TAG, "role of user def 1 "+ptype);
+                jsonMsg.put("to", "broker");
+
+
+                Log.i(TAG, "role of user def 6 ");
+
+            }
+            if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                jsonMsg.put("to", "client");
+                // prepare a default message now get ptype
+
+
+            }
+            jsonMsg.put("message", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);
+            Log.i("yoyoyo","urlo "+jsonMsg);
+
+
+
+            displayMessage(jsonMsg);
+            pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+        }
+        catch(Exception e){}
+
+
+    }
+
+    // Amazon S3 service///
+
+
+    public void credentialsProvider(){
+
+        // Initialize the Amazon Cognito credentials provider
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                getApplicationContext(),
+                "us-east-1:d166d43a-32b3-4690-9975-aed1c61f2b28", // Identity Pool ID
+                Regions.US_EAST_1 // Region
+        );
+
+        setAmazonS3Client(credentialsProvider);
+    }
+
+    /**
+     *  Create a AmazonS3Client constructor and pass the credentialsProvider.
+     * @param credentialsProvider
+     */
+    public void setAmazonS3Client(CognitoCachingCredentialsProvider credentialsProvider){
+
+        // Create an S3 client
+        s3 = new AmazonS3Client(credentialsProvider);
+
+        // Set the region of your S3 bucket
+        s3.setRegion(Region.getRegion(Regions.AP_SOUTH_1));
+
+    }
+
+    public void setTransferUtility(){
+
+        transferUtility = new TransferUtility(s3, getApplicationContext());
+    }
+
+    /**
+     * This method is used to upload the file to S3 by using TransferUtility class
+     * @param fileToU
+     */
+    public void setFileToUpload(File fileToU){
+        fileToUpload = fileToU;
+        imageName = "droid"+String.valueOf(System.currentTimeMillis());
+
+
+        TransferObserver transferObserver = transferUtility.upload(
+                "oyeok-chat-images",     /* The bucket to upload to */
+                imageName,    /* The key for the uploaded object */
+                fileToUpload       /* The file where the data to upload exists */
+        );
+
+        transferObserverListener(transferObserver);
+        //
+
+
+
+    }
+
+    /**
+     *  This method is used to Download the file to S3 by using transferUtility class
+     * @param
+     **/
+    public void setFileToDownload(){
+
+        TransferObserver transferObserver = transferUtility.download(
+                "oyeok-chat-images",     /* The bucket to download from */
+                "photos11234097.png",    /* The key for the object to download */
+                fileToDownload        /* The file to download the object to */
+        );
+
+        transferObserverListener(transferObserver);
+
+    }
+
+    /**
+     * This is listener method of the TransferObserver
+     * Within this listener method, we get status of uploading and downloading file,
+     * to display percentage of the part of file to be uploaded or downloaded to S3
+     * It displays an error, when there is a problem in  uploading or downloading file to or from S3.
+     * @param transferObserver
+     */
+
+    public void transferObserverListener(TransferObserver transferObserver){
+
+        transferObserver.setTransferListener(new TransferListener(){
+
+            @Override
+            public void onStateChanged(int id, TransferState state) {
+                Log.i("imageu statechange", state+"");
+                if(state.toString().equalsIgnoreCase("COMPLETED")){
+                    /*General.setSharedPreferences(DealConversationActivity.this,AppConstants.UPLOADED_IMAGE_PATH,fileToUpload.toString());
+                    Log.i("asakasa","asakasa123 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.UPLOADED_IMAGE_PATH));*/
+                    sendMessage("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName);
+                    //displayImgMessage("oyeok-chat-images","photos11234097.png");
+
+                }
+            }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                int percentage = (int) (bytesCurrent/bytesTotal * 100);
+                Log.i("imageu percentage",percentage +"");
+            }
+
+            @Override
+            public void onError(int id, Exception ex) {
+                Log.i("imageu error","error"+ex);
+            }
+
+        });
+    }
+
+
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
+
     @Override
     public void onBackPressed() {
 
-        General.setSharedPreferences(this, channel_name + AppConstants.CACHE, cachedmsgs.toString());
-        Log.i("CHAT", "cache " + General.getSharedPreferences(this, channel_name + AppConstants.CACHE));
+
+        if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME))
+            channel_name = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
+
 
         storeDealTime();
 
-        super.onBackPressed();
-        // loadFinalHistory();
+
+        loadFinalHistory();
 
 //        try {
 //            RealmResults<Message> results1 =
@@ -1733,28 +2260,35 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //        General.setSharedPreferences(this,channel_name+AppConstants.CACHE,cachedmsgs.toString());
 //       Log.i("CACHE","cache got from shared  "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
 //
-        if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
-            // to refresh adapter to display newly saved last message time
-            Intent back = new Intent(this, ClientDealsListActivity.class);
-            back.addFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                            Intent.FLAG_ACTIVITY_NEW_TASK);
-//            Intent back = new Intent(this, ClientDealsListActivity.class);
+       /* if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            Intent back = new Intent(this, ClientDealsListActivity.class); // to refresh adapter to display newly saved last message time
             startActivity(back);
-            finish();
         } else {
-            Intent intent = new Intent(this, BrokerDealsListActivity.class);
-            intent.addFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                            Intent.FLAG_ACTIVITY_NEW_TASK);
-//            Intent back = new Intent(this, BrokerDealsListActivity.class); // to refresh adapter to display newly saved last message time
-            startActivity(intent);
+
+            Intent back = new Intent(this, BrokerDealsListActivity.class); // to refresh adapter to display newly saved last message time
+            startActivity(back);
 
             // super.onBackPressed();
-        }
+        }*/
+        if(AppConstants.CLIENT_DEAL_FLAG == true){
 
+
+
+            Intent back = new Intent(this, ClientDealsListActivity.class); // to refresh adapter to display newly saved last message time
+            back.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(back);
+            finish();
+            AppConstants.CLIENT_DEAL_FLAG = false;
+        }else if(AppConstants.BROKER_DEAL_FLAG == true){
+            AppConstants.BROKER_DEAL_FLAG = false;
+            Intent back = new Intent(this, BrokerDealsListActivity.class); // to refresh adapter to display newly saved last message time
+            back.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(back);
+            finish();
+
+        }
 
     }
 

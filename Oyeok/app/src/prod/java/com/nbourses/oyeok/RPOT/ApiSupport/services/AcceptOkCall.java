@@ -176,7 +176,7 @@ public class AcceptOkCall {
 
 
 
-
+                                AppConstants.BROKER_DEAL_FLAG = true;
                                 Intent openDealsListing = new Intent(activity, DealConversationActivity.class);
                                 Bundle extra = new Bundle();
                                 extra.putSerializable("listings",listings);
