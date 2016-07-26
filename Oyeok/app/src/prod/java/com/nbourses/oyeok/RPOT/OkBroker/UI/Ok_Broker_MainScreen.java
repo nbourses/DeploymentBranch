@@ -64,7 +64,6 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MapWrapperLayout;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
-import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 

@@ -631,9 +631,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         String currentImg = (String) v.getTag();
         if (currentImg != null) {
             if (currentImg.equals("attachment")) {
+                Log.i(TAG,"imageshare 1");
                 //open file chooser options
                 selectImage();
             } else {
+                Log.i(TAG,"imageshare 2");
                 //send message
                 sendMessage(edtTypeMsg.getText().toString());
                 final ChatMessage message = new ChatMessage();
@@ -1042,7 +1044,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i(TAG, "caught in display message1 debug" + e);
+            Log.i(TAG, "caught in display message1 debug yo" + e);
         }
 
 
@@ -2165,8 +2167,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 if(state.toString().equalsIgnoreCase("COMPLETED")){
                     /*General.setSharedPreferences(DealConversationActivity.this,AppConstants.UPLOADED_IMAGE_PATH,fileToUpload.toString());
                     Log.i("asakasa","asakasa123 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.UPLOADED_IMAGE_PATH));*/
-                    sendMessage("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName);
-                    //displayImgMessage("oyeok-chat-images","photos11234097.png");
+                   // sendMessage("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName);
+                    displayImgMessage("oyeok-chat-images",imageName);
 
                 }
             }

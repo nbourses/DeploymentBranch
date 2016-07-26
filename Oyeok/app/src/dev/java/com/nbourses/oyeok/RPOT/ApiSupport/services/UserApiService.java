@@ -1,7 +1,6 @@
 package com.nbourses.oyeok.RPOT.ApiSupport.services;
 
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.MobileVerify;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateProfile;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
@@ -118,8 +117,8 @@ import retrofit.http.POST;
         void userGps(@Body User user, Callback<User> callback);
 
 
-        @POST("/1/verify/mobile")
-        void verifyMobile(@Body User user, Callback<MobileVerify> callback);
+        /*@POST("/1/verify/mobile")
+        void verifyMobile(@Body User user, Callback<MobileVerify> callback);*/
 
 
     }

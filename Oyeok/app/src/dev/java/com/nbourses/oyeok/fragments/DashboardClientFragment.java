@@ -80,7 +80,6 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GeoFence;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
@@ -184,7 +183,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private static final long SCROLL_TIME = 200L;
 
 
-    private GeoFence geoFence;
+    /*private GeoFence geoFence;*/
     private int permissionCheckForCamera, permissionCheckForLocation;
     private final int MY_PERMISSION_FOR_CAMERA = 11;
     private CustomPhasedSeekBar mPhasedSeekBar;

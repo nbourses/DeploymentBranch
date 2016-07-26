@@ -80,7 +80,6 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GeoFence;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;

@@ -39,7 +39,6 @@ import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.fragments.OyeScreenFragment;

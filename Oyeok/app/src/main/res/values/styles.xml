@@ -15,11 +15,7 @@
     <style name="Widget.AppCompat.Spinner.Underlined." parent="Widget.AppCompat.Spinner.Underlined.">
     </style>
 
-    <style name="CustomRatingBar" parent="@android:style/Widget.RatingBar">
-        <item name="android:progressDrawable">@drawable/ratingbar</item>
-        <item name="android:minHeight">24dp</item>
-        <item name="android:maxHeight">24dp</item>
-    </style>
+
     <style name="MyMaterialTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="MyMaterialTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 

@@ -27,7 +27,6 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OnAcceptOkSuccess;
 import com.nbourses.oyeok.RPOT.OkBroker.CircularSeekBar.CircularSeekBarNew;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.AutoOkIntentSpecs;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;

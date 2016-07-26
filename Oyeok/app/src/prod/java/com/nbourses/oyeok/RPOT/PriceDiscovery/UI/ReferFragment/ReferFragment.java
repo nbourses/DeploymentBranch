@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 
 import static com.nbourses.oyeok.R.layout.refer_fragment;
 import static com.nbourses.oyeok.R.layout.view_expandable;

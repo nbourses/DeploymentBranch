@@ -12,7 +12,6 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 
 /**
  * Created by ritesh on 13/05/16.
