@@ -910,8 +910,9 @@ if(newUser==true) {
                             submit.setText("DONE");
 
 
-                            /*if (redirectToOyeIntentSpecs) {
-                                Fragment fragment = null;
+                            if (redirectToOyeIntentSpecs) {
+                                /*Fragment fragment = null;
+
                                 Bundle bundle = new Bundle();
                                 bundle.putString("cameFrom", "SignUp");
                                 bundle.putStringArray("propertySpecification", propertySpecification);
@@ -921,9 +922,9 @@ if(newUser==true) {
                                 FragmentManager fragmentManager = getFragmentManager();
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                 fragmentTransaction.replace(R.id.container_map, fragment);
-                                fragmentTransaction.commit();
+                                fragmentTransaction.commit();*/
                             }
-*/
+
                             return;
                         }else{
                             Log.i("TAG","suspecto "+role_of_user);
@@ -1129,8 +1130,10 @@ if(newUser==true) {
                         Log.i("TRACE", "Inside signup Failure" + error);
 
                         Log.i("TAG", "Inside signup Failure" + error.getMessage());
-                        /*if (redirectToOyeIntentSpecs) {
-                            Fragment fragment = null;
+
+                        if (redirectToOyeIntentSpecs) {
+                           /* Fragment fragment = null;
+
                             Bundle bundle = new Bundle();
                             bundle.putString("cameFrom", "SignUp");
                             bundle.putStringArray("propertySpecification", propertySpecification);
@@ -1140,8 +1143,10 @@ if(newUser==true) {
                             FragmentManager fragmentManager = getFragmentManager();
                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                             fragmentTransaction.replace(R.id.container_map, fragment);
-                            fragmentTransaction.commit();
-                        }*/
+
+                            fragmentTransaction.commit();*/
+                        }
+
                     }
                 });
             }catch (Exception e){
@@ -1459,7 +1464,7 @@ if(newUser==true) {
     @Override
     public void replaceFragment(Bundle args) {
 
-        Log.i("TRACE","in ReplaceFrag");
+       /* Log.i("TRACE","in ReplaceFrag");
 
    /*     Fragment fragment = new Droom_Chat_New();
         fragment.setArguments(args);

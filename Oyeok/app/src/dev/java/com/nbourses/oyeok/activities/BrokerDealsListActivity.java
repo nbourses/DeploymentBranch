@@ -1170,7 +1170,7 @@ Log.i("SWIPE","inside swipe menu creator");
 //                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
 //                            Intent.FLAG_ACTIVITY_NEW_TASK);
 //            startActivity(intent);
-//        super.onBackPressed();
+        super.onBackPressed();
 //        }
 //        else {
 ////        startActivity(new Intent(this, BrokerMainActivity.class));
@@ -1188,13 +1188,13 @@ Log.i("SWIPE","inside swipe menu creator");
             AppConstants.SIGNUP_FLAG=false;}
 
         }else {*/
-            Intent intent = new Intent(this, BrokerMainActivity.class);
+           /* Intent intent = new Intent(this, BrokerMainActivity.class);
             intent.addFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
                             Intent.FLAG_ACTIVITY_CLEAR_TASK |
                             Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            finish();
+            finish();*/
     /*    }*/
     }
 

@@ -7,18 +7,18 @@ import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -28,12 +28,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.VisibleRegion;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MapWrapperLayout;
+import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -62,6 +64,8 @@ public class BrokerMap extends DashboardClientFragment {
     ImageView iv_markerpin;
     private GetCurrentLocation getLocationActivity;
     GoogleMap gmap;
+    View mHelperView;
+    ImageView location_button;
     CustomMapFragment customMapFragment;
     AutoCompleteTextView autoCompView;
     private BitmapDescriptor icon1;
@@ -97,16 +101,22 @@ public class BrokerMap extends DashboardClientFragment {
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.broker_map, container, false);
-        //  final View rootView1 = inflater.inflate(R.layout.toolbar, container, false);
-        // ButterKnife.bind(this, rootView);
-        //  ButterKnife.bind(this, rootView1);
-        //tv_change_region=(TextView) rootView1.findViewById(R.id.tv_change_region);
-        // icon1 = BitmapDescriptorFactory.fromResource(R.drawable.iv_markerpin);
+
+       
+try {
+    if (!General.isNetworkAvailable(getContext())) {
+        General.internetConnectivityMsg(getContext());
+    }
+}catch(Exception e){}
+
+
         iv_markerpin = (ImageView) rootView.findViewById(R.id.iv_markerpin);
+        mHelperView=(View) rootView.findViewById(R.id.br_helperView);
+        location_button=(ImageView) rootView.findViewById(R.id.location_button);
 
-//        tv_change_region = (TextView) rootView1.findViewById(R.id.tv_change_region);
 
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+      /*  rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 iv_markerpin.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 
@@ -129,7 +139,7 @@ public class BrokerMap extends DashboardClientFragment {
 
                 Log.i("t1", "co-ordinate" + x + " " + y);
             }
-        });
+        });*/
 
 
         autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
@@ -147,7 +157,7 @@ public class BrokerMap extends DashboardClientFragment {
 
             }
         });
-        if (customMapFragment == null) {
+        /*if (customMapFragment == null) {
             customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.g_map));
             customMapFragment.getMap();
         }
@@ -158,78 +168,126 @@ public class BrokerMap extends DashboardClientFragment {
                 gmap = googleMap;
 //               double lat = 19.1269299;
 //              double  lng = 72.8376545999999;
+                    enableMyLocation();
 
-//                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                    // TODO: Consider calling
-//
-                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                gmap.setMyLocationEnabled(true);
-//
-//
-
-//
-////                    enableMyLocation();
-//               // Marker m = gmap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("").icon(icon1));
-//
-//                SharedPrefs.save(getContext(), SharedPrefs.MY_LAT, lat + "");
-//                    SharedPrefs.save(getContext(), SharedPrefs.MY_LNG, lng + "");
-//
-//                new LocationUpdater().execute();
-//
-//
-//
 //                    LatLng center = new LatLng(lat, lng);
 //
 //                    gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 12));
 
                 getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
             }
+        });*/
+
+
+//        if (customMapFragment == null) {
+            customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.g_map));
+            customMapFragment.getMap();
+//        }
+//            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+        final View mMapView = getChildFragmentManager().findFragmentById(R.id.g_map).getView();
+        // mapView =(MapView) rootView.findViewById(R.id.map);
+        gmap = customMapFragment.getMap();
+        gmap.getUiSettings().setRotateGesturesEnabled(false);
+        gmap.getUiSettings().setMyLocationButtonEnabled(true);
+        gmap.getUiSettings().setScrollGesturesEnabled(true);
+        gmap.getUiSettings().setZoomControlsEnabled(true);
+
+//            resetMyPositionButton();
+        // geoFence = new GeoFence();
+        //if (isNetworkAvailable()) {
+//        mHelperView = rootView.findViewById(R.id.helperView);
+
+
+        mHelperView.setOnTouchListener(new View.OnTouchListener() {
+            private float scaleFactor = 1f;
+
+            @Override
+            public boolean onTouch(final View view, final MotionEvent motionEvent) {
+
+                if (simpleGestureDetector.onTouchEvent(motionEvent)) { // Double tap
+                    gmap.animateCamera(CameraUpdateFactory.zoomIn()); // Fixed zoom in
+                } else if (motionEvent.getPointerCount() == 1) { // Single tap
+                    // horizontalPicker.keepScrolling();
+                    onMapDrag(motionEvent);
+                    mMapView.dispatchTouchEvent(motionEvent); // Propagate the event to the map (Pan)
+//                        onMapDrag(motionEvent);
+                } else if (scaleGestureDetector.onTouchEvent(motionEvent)) { // Pinch zoom
+
+                    gmap.moveCamera(CameraUpdateFactory.zoomBy( // Zoom the map without panning it
+                            (gmap.getCameraPosition().zoom * scaleFactor
+                                    - gmap.getCameraPosition().zoom) / 5));
+                }
+
+                return true; // Consume all the gestures
+            }
+
+            // Gesture detector to manage double tap gestures
+            private GestureDetector simpleGestureDetector = new GestureDetector(
+                    getContext(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onDoubleTap(MotionEvent e) {
+                    return true;
+                }
+            });
+
+            // Gesture detector to manage scale gestures
+            private ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(
+                    getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                @Override
+                public boolean onScale(ScaleGestureDetector detector) {
+                    scaleFactor = detector.getScaleFactor();
+                    return true;
+                }
+            });
+
+
+
         });
 
 
 
+        if (gmap != null) {
+            //if ((int) Build.VERSION.SDK_INT <= 23) {
 
-        /*try {
-            SharedPreferences prefs =
-                    PreferenceManager.getDefaultSharedPreferences(getContext());
-            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 
-                    if (key.equals(SharedPrefs.MY_REGION)) {
-                        Log.i("loc","OnSharedPreferenceChangeListener 1");
-                        Log.i("loc","OnSharedPreferenceChangeListener 1 rent "+SharedPrefs.getString(getContext(), SharedPrefs.MY_REGION));
-                        if (SharedPrefs.getString(getContext(), SharedPrefs.MY_REGION) ==null ) {
-                            Log.i("loc","OnSharedPreferenceChangeListener 2");
-                            tv_change_region.setVisibility(View.GONE);
-                        }
-                        else {
-                            Log.i("loc","OnSharedPreferenceChangeListener 3");
-                            tv_change_region.setVisibility(View.VISIBLE);
-                            tv_change_region.setText(String.valueOf(SharedPrefs.getString(getContext(), SharedPrefs.MY_REGION)));
-                        }
+            customMapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+
+                    gmap = googleMap;
+
+                    // map = googleMap;
+                    final LocationManager Loc_manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+                    if (!isNetworkAvailable() || !(Loc_manager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
+                        gmap = googleMap;
+                        double lat11 = 19.1269299;
+                        double lng11 = 72.8376545999999;
+                        Log.i("slsl", "location====================:1 ");
+                        LatLng currLatLong = new LatLng(lat11, lng11);
+                        gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 15));
                     }
+
+                    enableMyLocation();
+                    Log.i("slsl", "location====================: ");
+                    getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+                    // map.setPadding(left, top, right, bottom);
+                    gmap.setPadding(0, 100, 0, 0);
 
 
                 }
-
-
-            };
-            prefs.registerOnSharedPreferenceChangeListener(listener);
+            });
 
         }
-        catch (Exception e){
-            Log.e("loc", e.getMessage());
-        }
-*/
+
+        location_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+            }
+        });
+
+
 
 
         mcallback = new GetCurrentLocation.CurrentLocationCallback() {
@@ -269,16 +327,17 @@ public class BrokerMap extends DashboardClientFragment {
                     //broker_map.addMarker(new MarkerOptions().position(currentLocation).title("current Location"));
                     // broker_map.animateCamera(CameraUpdateFactory.newLatLng(currentLocation));
                     gmap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-                    gmap.animateCamera(CameraUpdateFactory.zoomTo(12));
+                    gmap.moveCamera(CameraUpdateFactory.zoomTo(15));
 
-                    //make retrofit call to get Min Max price
+
 
                 }
             }
         };
 
 
-        try {
+        /*try {
+            if (isNetworkAvailable()) {
             customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
                 @Override
                 public void onDrag(MotionEvent motionEvent) {
@@ -305,58 +364,29 @@ public class BrokerMap extends DashboardClientFragment {
                         getRegion();
                         Log.i("t1", "latlong" + " " + currentLocation1);
                        // gmap.addMarker(new MarkerOptions().position(currentLocation1));
-                        if (isNetworkAvailable()) {
+
                             new LocationUpdater().execute();
-                        }
-
-                       // tv_change_region.setText(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
-
-                       // tv_change_region.addTextChangedListener(TextWatcher watcher);
-
-                        //tv_change_region.setText("");
-                        // Log.i("t1", "Sharedpref_lng_above" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-                        // // tv_change_region.setText(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-                        // Log.i("t1", "Sharedpref_lng_below" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
 
 
-                        // Intent intent = new Intent(AppConstants.Broker_Locality_Change);
-                        // intent.putExtra("broker_locality_change", SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-                        // Log.i("sendbroadcast", "====================");
-                        // Log.i("sendbroadcast", "====================" + LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent));
 
-
-                        // tv_change_region.addTextChangedListener(TextWatcher watcher);
-
-                        //locationName.changeLocation(tv_change_region.getText().toString());
                     } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
 
-                        //
+
                     }
                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
                 }
             });
-
+            }
         } catch (Exception e) {
-        }
+        }*/
 
 
         return rootView;
 
     }
 
-//    public void setChangeLoction(ChangeLocation loc)
-//    {
-//        this.locationName = loc;
-//    }
-//
-//    public interface ChangeLocation
-//    {
-//        public void changeLocation(String location);
-//    }
 
-
-    //
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -494,12 +524,12 @@ public class BrokerMap extends DashboardClientFragment {
         }
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
+//    private boolean isNetworkAvailable() {
+//        ConnectivityManager connectivityManager
+//                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+//        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+//    }
 
 
     public void getLocationFromAddress(String strAddress) {
@@ -572,19 +602,13 @@ public class BrokerMap extends DashboardClientFragment {
                                 //enableMyLocation();
 
                                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                    // TODO: Consider calling
-                                    //    ActivityCompat#requestPermissions
-                                    // here to request the missing permissions, and then overriding
-                                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                    //                                          int[] grantResults)
-                                    // to handle the case where the user grants the permission. See the documentation
-                                    // for ActivityCompat#requestPermissions for more details.
+
                                     return;
                                 }
                                 gmap.setMyLocationEnabled(true);
-                                //setCameraListener();
+
                                 Log.i("t1", "broker_map" + gmap);
-                                //  geoFence.drawPloygon(map);
+
                             }
                         });
                         getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
@@ -597,7 +621,7 @@ public class BrokerMap extends DashboardClientFragment {
                 // other 'case' lines to check for other
                 // permissions this app might request
             }
-            if (canAccessLocation()) {
+       /*     if (canAccessLocation()) {
                 new GetCurrentLocation(getActivity(), new GetCurrentLocation.CurrentLocationCallback() {
                     @Override
                     public void onComplete(Location location) {
@@ -623,7 +647,7 @@ public class BrokerMap extends DashboardClientFragment {
                 // startActivity(intent);
                // Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
                 //((DashboardActivity) getActivity()).showToastMessage("Offline Mode");
-            }
+            }*/
 
         }catch (Exception e){}
 
@@ -631,6 +655,63 @@ public class BrokerMap extends DashboardClientFragment {
     }
 
 
+    private void onMapDrag(final MotionEvent motionEvent) {
+
+        if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+//
+                if (isNetworkAvailable()) {
+
+
+                        LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
+                        Log.i("map", "============ map:" + " " + gmap);
+//                            currentLocation1 = map.getProjection().fromScreenLocation(point);
+
+                        VisibleRegion visibleRegion = gmap.getProjection()
+                                .getVisibleRegion();
+
+                        Point x1 = gmap.getProjection().toScreenLocation(visibleRegion.farRight);
+
+                        Point y1 = gmap.getProjection().toScreenLocation(visibleRegion.nearLeft);
+
+
+                        Point centerPoint = new Point(x1.x / 2, y1.y / 2);
+
+                        LatLng centerFromPoint = gmap.getProjection().fromScreenLocation(
+                                centerPoint);
+                        currentLocation1=centerFromPoint;
+                        lat = currentLocation1.latitude;
+                        Log.i("t1", "lat" + " " + lat);
+                        lng = currentLocation1.longitude;
+//                    gmap.addMarker(new MarkerOptions().title("hey").position(currentLocation1));
+                        SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+                        SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                        General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
+                        General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
+                        getRegion();
+//
+                        new LocationUpdater().execute();
+//                }
+
+                } else {
+//
+                    General.internetConnectivityMsg(getContext());
+//
+                }
+
+//            }
+//            spanning=false;
+
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+//            lastTouched = SystemClock.uptimeMillis();
+//            map.getUiSettings().setScrollGesturesEnabled(true);
+            //LatLng currentLocation11;
+            Log.i("MotionEvent.ACTION_DOWN", "=========================");
+
+
+        }
+    }
 
 
 

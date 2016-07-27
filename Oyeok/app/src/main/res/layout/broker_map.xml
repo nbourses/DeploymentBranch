@@ -67,7 +67,7 @@
                 android:inputType="textMultiLine|textPostalAddress"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
-                android:hint="Search .."
+                android:hint="Set your Region..."
                 android:background="@color/greenish_blue"
                 android:textColorHint="@color/white"
                 android:textColor="@color/white"

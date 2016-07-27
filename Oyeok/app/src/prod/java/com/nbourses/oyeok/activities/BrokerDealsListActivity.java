@@ -2,17 +2,18 @@ package com.nbourses.oyeok.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,11 +23,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -40,7 +39,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.deleteHDroom;
@@ -48,13 +46,13 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
-import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.adapters.BrokerDealsListAdapter;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.BrokerDeals;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.PublishLetsOye;
+import com.nbourses.oyeok.realmModels.HalfDeals;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
@@ -69,6 +67,8 @@ import java.util.Set;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -99,33 +99,20 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     @Bind(R.id.phaseSeekbar)
     LinearLayout phaseSeekBar;
 
-    @Bind(R.id.filter)
-    Button filter;
-    @Bind(R.id.filtergone)
-    Button filtergone;
-    @Bind(R.id.filterContainer)
-    RelativeLayout filterContainer;
 
-    @Bind(R.id.txtHome)
-    ImageView txtHome;
 
-    @Bind(R.id.txtShop)
-    ImageView txtShop;
 
-    @Bind(R.id.txtIndustrial)
-    ImageView txtIndustrial;
 
-    @Bind(R.id.txtOffice)
-    ImageView txtOffice;
 
-    @Bind(R.id.search)
+    /*@Bind(R.id.search)
     Button search;
 
     @Bind(R.id.searchgone)
-    Button searchgone;
+    Button searchgone;*/
     private TextView bgtxt;
     private LinearLayout bgtxtlayout;
     private String searchQuery = null;
+    private HalfDeals halfDeals;
 
     /*@Bind(R.id.txtNoActiveDeal)
     TextView txtNoActiveDeal;
@@ -148,7 +135,12 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     private SearchView searchView;
     Animation bounce;
     private Boolean showbgtext = true;
-  //  private Boolean signupSuccessflag = false;
+    private ArrayList<BrokerDeals> cachedDeals;
+    private ArrayList<BrokerDeals> cachedDealsLL;
+    private ArrayList<BrokerDeals> cachedDealsOR;
+    private Realm myRealm;
+    private int position;
+    //  private Boolean signupSuccessflag = false;
 
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
         @Override
@@ -209,7 +201,13 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     }
 
     private void init() {
+
+        loadCachedDeals();    //Load cached hd rooms from realm
         searchView = (SearchView) findViewById(R.id.searchView);
+       searchView.setIconified(false);
+        //searchView.setIconifiedByDefault(false);
+        searchView.clearFocus();
+        //searchView.setQueryHint("Search deals...");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -252,11 +250,10 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
 
         });
 
-        search.setVisibility(View.VISIBLE);
+        /*search.setVisibility(View.VISIBLE);*/
 
-        filter.setVisibility(View.VISIBLE);
-        txtPreviouslySelectedPropertyType = txtHome;
-        txtHome.setBackgroundResource(R.drawable.buy_option_circle);
+
+
         bounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
 //        final SwipeMenu[] menu1 = new SwipeMenu[1];
@@ -267,28 +264,28 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
 
 Log.i("SWIPE","inside swipe menu creator");
 
-//                menu1[0] = menu;
-                // create "More" item
-//                SwipeMenuItem MoreItem = new SwipeMenuItem(
-//                        getApplicationContext());
-//                // set item background
-//                MoreItem.setBackground(new ColorDrawable(getResources().getColor(R.color.grey)));
-//                // set item width
-//                MoreItem.setWidth(listAdapter.dp2px(90));
-//                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(90));
-//                // set item title
-//                MoreItem.setIcon(R.drawable.more);
-//                MoreItem.setTitle("More");
-//                // set item title fontsize
-//                MoreItem.setTitleSize(18);
-//                // set item title font color
-//                MoreItem.setTitleColor(R.color.black);
-//                // add to more
-//
-//                menu.addMenuItem(MoreItem);
+ /*               menu1[0] = menu;
+                 create "More" item*/
+                SwipeMenuItem MoreItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                MoreItem.setBackground(new ColorDrawable(getResources().getColor(R.color.grey)));
+                // set item width
+                MoreItem.setWidth(listAdapter.dp2px(90));
+                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(90));
+                // set item title
+                MoreItem.setIcon(R.drawable.more);
+                MoreItem.setTitle("More");
+                // set item title fontsize
+                MoreItem.setTitleSize(18);
+                // set item title font color
+                MoreItem.setTitleColor(R.color.black);
+                // add to more
+
+                menu.addMenuItem(MoreItem);
 
 
-                // create "unmute" item
+               /* // create "unmute" item
                 MuteItem = new SwipeMenuItem(
                         getApplicationContext());
                 // set item background
@@ -303,7 +300,7 @@ Log.i("SWIPE","inside swipe menu creator");
                 // set item title font color
                 MuteItem.setTitleColor(Color.WHITE);
                 // add to more
-                menu.addMenuItem(MuteItem);
+                menu.addMenuItem(MuteItem);*/
 
 
 
@@ -317,27 +314,13 @@ Log.i("SWIPE","inside swipe menu creator");
                 // set a icon
                 deleteItem.setIcon(R.drawable.delete);
                 deleteItem.setTitle("Delete");
-                MuteItem.setTitleSize(18);
+                deleteItem.setTitleSize(18);
                 // set item title font color
                 deleteItem.setTitleColor(R.color.white);
                 // add to more
                 menu.addMenuItem(deleteItem);
 
-//                unMuteItem = new SwipeMenuItem(
-//                        getApplicationContext());
-//                // set item background
-//                unMuteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.timestamp)));
-//                // set item width
-//                unMuteItem.setWidth(listAdapter.dp2px(90));
-//                // set item title
-//                unMuteItem.setIcon(R.drawable.mute2);
-//                unMuteItem.setTitle("unmute");
-//                // set item title fontsize
-//                unMuteItem.setTitleSize(18);
-//                // set item title font color
-//                unMuteItem.setTitleColor(Color.WHITE);
-//                // add to more
-//                menu.addMenuItem(unMuteItem);
+
 
 
 
@@ -354,30 +337,155 @@ Log.i("SWIPE","inside swipe menu creator");
         listViewDeals.setCloseInterpolator(new BounceInterpolator());
         listViewDeals.setOpenInterpolator(new BounceInterpolator());
 
+
         // step 2. listener item click event
         listViewDeals.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+            public boolean onMenuItemClick(int pos, SwipeMenu menu, int index) {
                 //           ApplicationInfo item =  listAdapter.getItem(position);
+                 position = pos;
+                String muteStatus = "Mute notifications";
+                if(!(General.getMutedOKIds(BrokerDealsListActivity.this) == null)) {
+                    mutedOKIds.addAll(General.getMutedOKIds(BrokerDealsListActivity.this));
+                    if(mutedOKIds.contains(listBrokerDeals_new.get(position).getOkId())) {
+                        muteStatus = "Unmute notifications";
+
+                    }
+                }
                 switch (index) {
-                    case 2:
-
-                        Log.i("OPEN OPTION", "=================");
-                        //open
-//                        open(item);
-                        break;
                     case 0:
+                        final String muteStatus1 = muteStatus;
+                        final CharSequence[] items = { muteStatus1, "Delete deal", "Cancel" };
+                        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(BrokerDealsListActivity.this);
+                        builder.setTitle("More!");
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int item) {
+                                if (items[item].equals(muteStatus1)) {
 
-                        Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(BrokerDealsListActivity.this));
-                        if(!(General.getMutedOKIds(BrokerDealsListActivity.this) == null)) {
-                            mutedOKIds.addAll(General.getMutedOKIds(BrokerDealsListActivity.this));
 
-                            if(mutedOKIds.contains(listBrokerDeals_new.get(position).getOkId())) {
-                                mutedOKIds.remove(listBrokerDeals_new.get(position).getOkId());
-                               // Log.i("SWIPE", "MuteItem " + MuteItem + " " + MuteItem.getIcon());
-                               // MuteItem=menu.getMenuItem(position);
-                               // Log.i("SWIPE", "MuteItem " + MuteItem + " " + MuteItem.getIcon());
-                                //MuteItem=menu.getMenuItem(position);
+
+                                    if(listBrokerDeals_new != null) {
+                                        Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(BrokerDealsListActivity.this));
+                                        if (!(General.getMutedOKIds(BrokerDealsListActivity.this) == null)) {
+                                            mutedOKIds.addAll(General.getMutedOKIds(BrokerDealsListActivity.this));
+
+                                            if (mutedOKIds.contains(listBrokerDeals_new.get(position).getOkId())) {
+                                                mutedOKIds.remove(listBrokerDeals_new.get(position).getOkId());
+
+                                                SnackbarManager.show(
+                                                        Snackbar.with(BrokerDealsListActivity.this)
+                                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                                .text(listBrokerDeals_new.get(position).getSpecCode() + " unmuted!")
+                                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+
+                                            } else {
+                                                mutedOKIds.add(listBrokerDeals_new.get(position).getOkId());
+
+
+
+
+                                                SnackbarManager.show(
+                                                        Snackbar.with(BrokerDealsListActivity.this)
+                                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                                .text(listBrokerDeals_new.get(position).getSpecCode() + " muted!")
+                                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+                                            }
+
+                                        }
+
+
+                                        General.saveMutedOKIds(BrokerDealsListActivity.this, mutedOKIds);
+
+                                        Log.i("MUTE", "muted from shared" + General.getMutedOKIds(BrokerDealsListActivity.this));
+                                    }
+                                    else {
+                                        SnackbarManager.show(
+                                                Snackbar.with(BrokerDealsListActivity.this)
+                                                        .position(Snackbar.SnackbarPosition.TOP)
+                                                        .text("Deals can not be Muted offline.")
+                                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                    }
+
+
+                                } else if (items[item].equals("Delete deal")) {
+
+
+
+                                    AlertDialog alertDialog = new AlertDialog.Builder(BrokerDealsListActivity.this).create();
+                                    //alertDialog.setTitle("DELETE");
+                                    alertDialog.setMessage("Do you really want to delete this deal room.");
+                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Delete",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+
+
+                                                    if(listBrokerDeals_new != null) {
+                                                        if (listBrokerDeals_new.contains(listBrokerDeals_new.get(position))) {
+
+                                                            Log.i("deleteDR CALLED", "Its HDroom " + listBrokerDeals_new.get(position).getSpecCode());
+
+
+                                                            deleteDealingroom(listBrokerDeals_new.get(position).getOkId(),listBrokerDeals_new.get(position).getSpecCode());
+
+                                                            //on delete droom delete that room OK id from mutedOKIds
+
+                                                            Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(BrokerDealsListActivity.this));
+                                                            if(!(General.getMutedOKIds(BrokerDealsListActivity.this) == null)) {
+                                                                mutedOKIds.addAll(General.getMutedOKIds(BrokerDealsListActivity.this));
+
+                                                                if(mutedOKIds.contains(listBrokerDeals_new.get(position).getOkId()))
+                                                                    mutedOKIds.remove(listBrokerDeals_new.get(position).getOkId());
+
+                                                            }
+
+                                                            General.saveMutedOKIds(BrokerDealsListActivity.this, mutedOKIds);
+
+                                                            Log.i("MUTE", "muted from shared" + General.getMutedOKIds(BrokerDealsListActivity.this));
+
+                                                        }
+                                                    }
+                                                    else {
+                                                        SnackbarManager.show(
+                                                                Snackbar.with(BrokerDealsListActivity.this)
+                                                                        .position(Snackbar.SnackbarPosition.TOP)
+                                                                        .text("Deals can not be deleted offline.")
+                                                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                                    }
+
+                                                    // delete
+//					delete(item);
+//                        listAdapter.remove(position);
+//                        listAdapter.notifyDataSetChanged();
+
+                                                }
+                                            });
+                                    alertDialog.show();
+
+
+                                } else if (items[item].equals("Cancel")) {
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
+                        builder.show();
+
+                        break;
+                    case 2:
+                        if(listBrokerDeals_new != null) {
+                            Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(BrokerDealsListActivity.this));
+                            if (!(General.getMutedOKIds(BrokerDealsListActivity.this) == null)) {
+                                mutedOKIds.addAll(General.getMutedOKIds(BrokerDealsListActivity.this));
+
+                                if (mutedOKIds.contains(listBrokerDeals_new.get(position).getOkId())) {
+                                    mutedOKIds.remove(listBrokerDeals_new.get(position).getOkId());
+                                    // Log.i("SWIPE", "MuteItem " + MuteItem + " " + MuteItem.getIcon());
+                                    // MuteItem=menu.getMenuItem(position);
+                                    // Log.i("SWIPE", "MuteItem " + MuteItem + " " + MuteItem.getIcon());
+                                    //MuteItem=menu.getMenuItem(position);
 
 //                                menu.removeMenuItem(MuteItem);
 //
@@ -407,48 +515,50 @@ Log.i("SWIPE","inside swipe menu creator");
 //                                loadBrokerDeals();
 
 
-
 //                                MuteItem.setIcon(R.drawable.unmute);
 //                                menu.addMenuItem(MuteItem);
-                                SnackbarManager.show(
-                                        Snackbar.with(BrokerDealsListActivity.this)
-                                                .position(Snackbar.SnackbarPosition.TOP)
-                                                .text(listBrokerDeals_new.get(position).getSpecCode() + " unmuted!")
-                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                    SnackbarManager.show(
+                                            Snackbar.with(BrokerDealsListActivity.this)
+                                                    .position(Snackbar.SnackbarPosition.TOP)
+                                                    .text(listBrokerDeals_new.get(position).getSpecCode() + " unmuted!")
+                                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
 
-
-                            }
-                            else {
-                                mutedOKIds.add(listBrokerDeals_new.get(position).getOkId());
+                                } else {
+                                    mutedOKIds.add(listBrokerDeals_new.get(position).getOkId());
 
 
+                                    //   Log.i("SWIPE", "MuteItem " + MuteItem + " " + MuteItem.getIcon());
+                                    //  MuteItem=menu.getMenuItem(position);
+                                    //   Log.i("SWIPE", "MuteItem " + MuteItem + " " + MuteItem.getIcon());
+                                    //menu.removeMenuItem(MuteItem);
 
-                              //   Log.i("SWIPE", "MuteItem " + MuteItem + " " + MuteItem.getIcon());
-                               //  MuteItem=menu.getMenuItem(position);
-                              //   Log.i("SWIPE", "MuteItem " + MuteItem + " " + MuteItem.getIcon());
-                                //menu.removeMenuItem(MuteItem);
-
-                               // MuteItem.setIcon(R.drawable.mute2);
-                               // menu.addMenuItem(MuteItem);
-
+                                    // MuteItem.setIcon(R.drawable.mute2);
+                                    // menu.addMenuItem(MuteItem);
 
 
+                                    SnackbarManager.show(
+                                            Snackbar.with(BrokerDealsListActivity.this)
+                                                    .position(Snackbar.SnackbarPosition.TOP)
+                                                    .text(listBrokerDeals_new.get(position).getSpecCode() + " muted!")
+                                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
-                                SnackbarManager.show(
-                                        Snackbar.with(BrokerDealsListActivity.this)
-                                                .position(Snackbar.SnackbarPosition.TOP)
-                                                .text(listBrokerDeals_new.get(position).getSpecCode() + " muted!")
-                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                }
 
                             }
 
+
+                            General.saveMutedOKIds(BrokerDealsListActivity.this, mutedOKIds);
+
+                            Log.i("MUTE", "muted from shared" + General.getMutedOKIds(BrokerDealsListActivity.this));
                         }
-
-
-                        General.saveMutedOKIds(BrokerDealsListActivity.this,mutedOKIds);
-
-                        Log.i("MUTE", "muted from shared" + General.getMutedOKIds(BrokerDealsListActivity.this));
+                        else {
+                            SnackbarManager.show(
+                                    Snackbar.with(BrokerDealsListActivity.this)
+                                            .position(Snackbar.SnackbarPosition.TOP)
+                                            .text("Deals can not be Muted offline.")
+                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                        }
 //                        Log.i("MUTE CALLED", "ok_id " + total_deals.get(position).getOkId());
 //                        General.setSharedPreferences(getApplicationContext(), AppConstants.MUTED_OKIDS, total_deals.get(position).getOkId());
 //                        General.getSharedPreferences(getApplicationContext(),AppConstants.MUTED_OKIDS)
@@ -462,9 +572,15 @@ Log.i("SWIPE","inside swipe menu creator");
                         Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
 
 
-                        Log.i("deleteDR CALLED", "spec code " + listBrokerDeals_new.get(position).getSpecCode());
+                     //   Log.i("deleteDR CALLED", "spec code " + listBrokerDeals_new.get(position).getSpecCode());
 
-
+                        AlertDialog alertDialog = new AlertDialog.Builder(BrokerDealsListActivity.this).create();
+                        //alertDialog.setTitle("DELETE");
+                        alertDialog.setMessage("Do you really want to delete this deal room.");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Delete",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
 
 
                         if(listBrokerDeals_new != null) {
@@ -474,6 +590,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
                                 deleteDealingroom(listBrokerDeals_new.get(position).getOkId(),listBrokerDeals_new.get(position).getSpecCode());
+
                                 //on delete droom delete that room OK id from mutedOKIds
 
                                 Log.i("MUTE", "muted from shared1" + General.getMutedOKIds(BrokerDealsListActivity.this));
@@ -491,11 +608,22 @@ Log.i("SWIPE","inside swipe menu creator");
 
                             }
                         }
+                        else {
+                            SnackbarManager.show(
+                                    Snackbar.with(BrokerDealsListActivity.this)
+                                            .position(Snackbar.SnackbarPosition.TOP)
+                                            .text("Deals can not be deleted offline.")
+                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                        }
 
                         // delete
 //					delete(item);
 //                        listAdapter.remove(position);
 //                        listAdapter.notifyDataSetChanged();
+
+                                    }
+                                });
+                        alertDialog.show();
                         break;
                 }
                 return false;
@@ -538,13 +666,12 @@ Log.i("SWIPE","inside swipe menu creator");
             phaseSeekBar.setVisibility(View.VISIBLE);
 
         }
-        else{
+        /*else{
             search.setVisibility(View.GONE);
             searchgone.setVisibility(View.GONE);
-            filter.setVisibility(View.GONE);
-            filtergone.setVisibility(View.GONE);
-        }
 
+        }
+*/
         General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
 
         // mPhasedSeekBar = (CustomPhasedSeekBar) findViewById(R.id.phasedSeekBar);
@@ -627,8 +754,7 @@ Log.i("SWIPE","inside swipe menu creator");
     }
 
 
-    private void deleteDealingroom(String deleteOKId, final String specCode){
-
+    private void deleteDealingroom(final String deleteOKId, final String specCode){
 
         if(General.isNetworkAvailable(this)) {
             General.slowInternet(this);
@@ -656,6 +782,7 @@ Log.i("SWIPE","inside swipe menu creator");
                     General.t.interrupt();
 
                     Log.i("deleteDR CALLED","success");
+                  deleteDroomDb(deleteOKId);
                     loadBrokerDeals();
 
                     SnackbarManager.show(
@@ -708,6 +835,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
     private void loadBrokerDeals() {
+
         if(General.isNetworkAvailable(this)) {
             General.slowInternet(this);
         Log.i("TRACEOK","inside loadbroker deals ");
@@ -749,6 +877,8 @@ Log.i("SWIPE","inside swipe menu creator");
 
             @Override
             public void success(PublishLetsOye letsOye, Response response) {
+
+
                 General.slowInternetFlag = false;
                 General.t.interrupt();
                 Log.i("TRACEOK", "inside hdrooms api call success ");
@@ -769,11 +899,16 @@ Log.i("SWIPE","inside swipe menu creator");
                                             new TypeToken<ArrayList<BrokerDeals>>() {
                                             }.getType());
                         Log.i("TRACEOK", "listbrokerdeals size is "+listBrokerDeals.size());
+
                         if (listBrokerDeals.size() > 0) {
+                            myRealm = General.realmconfig(BrokerDealsListActivity.this);
+                            Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 3 "+myRealm.isInTransaction());
 
 
+                            myRealm.beginTransaction();
 
                             Iterator<BrokerDeals> it = listBrokerDeals.iterator();
+
 
                             listBrokerDeals_new = new ArrayList<BrokerDeals>();
                             while (it.hasNext())
@@ -784,6 +919,22 @@ Log.i("SWIPE","inside swipe menu creator");
                                 if(!(deals.getOkId() == null))
                                 {
 
+                                    Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 3");
+                                    halfDeals = new HalfDeals();
+                                    Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 4 "+deals.getOkId());
+
+
+                                    Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 9");
+                                halfDeals.setOk_id(deals.getOkId());
+                                    Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 5");
+                                halfDeals.setName(deals.getName());
+                                halfDeals.setLocality(deals.getLocality());
+                                halfDeals.setSpec_code(deals.getSpecCode());
+                                    Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 1");
+                                myRealm.copyToRealmOrUpdate(halfDeals);
+
+
+                                    Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 2");
                                     if(deals.getSpecCode().contains(TT+"-")) {
                                         if((filterPtype != null)&&deals.getSpecCode().contains(filterPtype)) {
                                             Log.i("DEALREFRESHPHASESEEKBA", "deal spec code " + deals.getSpecCode() + " for " + TT);
@@ -805,6 +956,12 @@ Log.i("SWIPE","inside swipe menu creator");
                                 }
 
                             }
+                            myRealm.commitTransaction();
+
+
+                            /*listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
+                            listViewDeals.setAdapter(listAdapter);*/
+
 
                             Log.i("TRACE==","list broker deals" +listBrokerDeals_new);
 
@@ -817,6 +974,7 @@ Log.i("SWIPE","inside swipe menu creator");
 //                            displayListView();
 
                             //list all broker deals
+
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(listBrokerDeals_new, getApplicationContext());
                             listViewDeals.setAdapter(listAdapter);
                             if(listBrokerDeals_new.size() <3 && showbgtext == true){
@@ -828,7 +986,7 @@ Log.i("SWIPE","inside swipe menu creator");
                                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                                     BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-
+                                    AppConstants.BROKER_DEAL_FLAG = true;
                                     Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                                     intent.putExtra("userRole", "broker");
                                     Bundle bundle = new Bundle();
@@ -847,18 +1005,18 @@ Log.i("SWIPE","inside swipe menu creator");
                             });
                         }
                         else {
-//                            displayTextMessage(null);
+
                         }
                     }
                     else {
-//                        displayTextMessage(null);
+
                     }
                 }
                 catch (Exception e) {
-//                    displayTextMessage(getString(R.string.no_internet_connection));
+
                 }
                 finally {
-//                    dismissProgressBar();
+
                 }
             }
 
@@ -875,6 +1033,7 @@ Log.i("SWIPE","inside swipe menu creator");
     }else{
 
         General.internetConnectivityMsg(this);
+
     }
     }
 
@@ -885,90 +1044,46 @@ Log.i("SWIPE","inside swipe menu creator");
 
         Log.i("USER_ID", " " + General.getSharedPreferences(this, AppConstants.USER_ID).isEmpty());
 
-        if(!General.getSharedPreferences(this ,AppConstants.USER_ID).isEmpty())  {
-
+//        if(!General.getSharedPreferences(this ,AppConstants.USER_ID).isEmpty())  {
+        AppConstants.BROKER_DEAL_FLAG = true;
             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
             intent.putExtra("userRole", "broker");
             intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
             startActivity(intent);
-        }
-        else
-        {
+//        }
+//        else
+//        {
 //            supportChat.setVisibility(View.GONE);
 //            view.setVisibility(View.GONE);
 //            listViewDeals.setVisibility(View.GONE);
-            fragment_container1.setVisibility(View.VISIBLE);
-            Bundle bundle = new Bundle();
-            bundle.putStringArray("Chat", null);
-            bundle.putString("lastFragment", "ChatBroker");
-            dbHelper.save(DatabaseConstants.userRole, "Broker");
+//            fragment_container1.setVisibility(View.VISIBLE);
+//            Bundle bundle = new Bundle();
+//            bundle.putStringArray("Chat", null);
+//            bundle.putString("lastFragment", "ChatBroker");
+//            dbHelper.save(DatabaseConstants.userRole, "Broker");
+//
+//
+////            FrameLayout frame = new FrameLayout(this);
+////            frame.setId(SIGNUP_VIEW_ID);
+////            setContentView(frame, new LayoutParams(
+////                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+//
+//
+//            SignUpFragment signUpFragment = new SignUpFragment();
+////            signUpFragment.getView().bringToFront();
+//            loadFragment(signUpFragment, bundle, R.id.fragment_container1, "");
+//            Log.i("Signup called =", "Sign up");
+//
+//        }
 
 
-//            FrameLayout frame = new FrameLayout(this);
-//            frame.setId(SIGNUP_VIEW_ID);
-//            setContentView(frame, new LayoutParams(
-//                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-
-
-            SignUpFragment signUpFragment = new SignUpFragment();
-//            signUpFragment.getView().bringToFront();
-            loadFragment(signUpFragment, bundle, R.id.fragment_container1, "");
-            Log.i("Signup called =", "Sign up");
-
-        }
-
-
-
-    }
-
-    @OnClick(R.id.filter)
-    public void onClickzFilter(View v) {
-        filter.setVisibility(View.GONE);
-        filtergone.setVisibility(View.VISIBLE);
-        searchgone.setVisibility(View.GONE);
-        search.setVisibility(View.VISIBLE);
-        filterContainer.setVisibility(View.VISIBLE);
-        filterContainer.startAnimation(bounce);
-        supportChat.clearAnimation();
-        supportChat.setVisibility(View.GONE);
-
-        searchView.clearAnimation();
-        searchView.setVisibility(View.GONE);
-        filterPtype = "home";
-        General.filterSetSnackbar(this,filterPtype);
-
-        if(listBrokerDeals_new != null)
-            listBrokerDeals_new.clear();
-
-        loadBrokerDeals();
 
     }
 
-    @OnClick(R.id.filtergone)
-    public void onClickzFiltergone(View v) {
-        filtergone.setVisibility(View.GONE);
-        filter.setVisibility(View.VISIBLE);
-        searchgone.setVisibility(View.GONE);
-        search.setVisibility(View.VISIBLE);
-        filterContainer.clearAnimation();
-        filterContainer.setVisibility(View.GONE);
-        searchView.clearAnimation();
-        searchView.setVisibility(View.GONE);
 
-        supportChat.setVisibility(View.VISIBLE);
-        supportChat.startAnimation(bounce);
-        filterPtype = null;
-        SnackbarManager.show(
-                Snackbar.with(this)
-                        .position(Snackbar.SnackbarPosition.TOP)
-                        .text("All filters removed.")
-                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
-        if(listBrokerDeals_new != null)
-            listBrokerDeals_new.clear();
-        loadBrokerDeals();
+/*
 
-    }
 
     @OnClick(R.id.search)
     public void onClickzSearch(View v) {
@@ -979,14 +1094,13 @@ Log.i("SWIPE","inside swipe menu creator");
         search.setVisibility(View.GONE);
         supportChat.clearAnimation();
         supportChat.setVisibility(View.GONE);
-        filtergone.setVisibility(View.GONE);
-        filter.setVisibility(View.VISIBLE);
+
+
 
         if(listBrokerDeals_new != null)
             listBrokerDeals_new.clear();
         loadBrokerDeals();
-        filterContainer.clearAnimation();
-        filterContainer.setVisibility(View.GONE);
+
         supportChat.setVisibility(View.GONE);
 
         searchView.setVisibility(View.VISIBLE);
@@ -1011,64 +1125,24 @@ Log.i("SWIPE","inside swipe menu creator");
         supportChat.clearAnimation();
         supportChat.setVisibility(View.VISIBLE);
         supportChat.startAnimation(bounce);
-        filtergone.setVisibility(View.GONE);
-        filter.setVisibility(View.VISIBLE);
+
 
         if(listBrokerDeals_new != null)
             listBrokerDeals_new.clear();
         loadBrokerDeals();
-        filterContainer.clearAnimation();
-        filterContainer.setVisibility(View.GONE);
+
+
+
 
 
 
 
 
     }
+*/
 
-    @Nullable
-    @OnClick({R.id.txtHome, R.id.txtShop, R.id.txtIndustrial, R.id.txtOffice})
-    public void onPropertyTypeClick(View v) {
 
-        if(txtPreviouslySelectedPropertyType != null)
-            txtPreviouslySelectedPropertyType.setBackgroundColor(Color.parseColor(propertyTypeDefaultColor));
 
-        txtPreviouslySelectedPropertyType = (ImageView) v;
-
-        if (txtHome.getId() == v.getId()) {
-            txtHome.setBackgroundResource(R.drawable.buy_option_circle);
-            filterPtype = "home";
-            // AppConstants.letsOye.setPropertyType("home");
-            //  loadHomeOptionView("home");
-            //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"home");
-
-        }
-        else if(txtShop.getId() == v.getId()) {
-            txtShop.setBackgroundResource(R.drawable.buy_option_circle);
-            filterPtype = "shop";
-            // AppConstants.letsOye.setPropertyType("shop");
-            // loadHomeOptionView("shop");
-            // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"shop");
-        }
-        else if(txtIndustrial.getId() == v.getId()) {
-            txtIndustrial.setBackgroundResource(R.drawable.buy_option_circle);
-            filterPtype = "industrial";
-            // AppConstants.letsOye.setPropertyType("industrial");
-            // loadHomeOptionView("industrial");
-            // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"industrial");
-        }
-        else if(txtOffice.getId() == v.getId()) {
-            txtOffice.setBackgroundResource(R.drawable.buy_option_circle);
-            filterPtype = "office";
-            //AppConstants.letsOye.setPropertyType("office");
-            // loadHomeOptionView("office");
-            //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"office");
-        }
-        if(listBrokerDeals_new != null)
-            listBrokerDeals_new.clear();
-
-        loadBrokerDeals();
-    }
 
     /*private void displayTextMessage(String message) {
         if (message == null)
@@ -1086,23 +1160,42 @@ Log.i("SWIPE","inside swipe menu creator");
 
     @Override
     public void onBackPressed() {
-        if(AppConstants.SIGNUP_FLAG){
+//        Log.i("signupSuccessflag back","signupSuccessflag "+signupSuccessflag);
+//        signupSuccessflag = true;
+//        Log.i("signupSuccessflag back1","signupSuccessflag "+signupSuccessflag);
+//        if(signupSuccessflag){
+//            Intent intent = new Intent(this, BrokerMainActivity.class);
+//            intent.addFlags(
+//                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+//                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+//                            Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent);
+        super.onBackPressed();
+//        }
+//        else {
+////        startActivity(new Intent(this, BrokerMainActivity.class));
+//            finish();
+//        }
 
-            getSupportFragmentManager().popBackStack();
 
-            AppConstants.SIGNUP_FLAG=false;
 
-        }
-        else {
+        /*if(AppConstants.SIGNUP_FLAG){
+            if(AppConstants.REGISTERING_FLAG){}else{
+            getSupportFragmentManager().popBackStackImmediate();
+            Intent inten = new Intent(this,BrokerDealsListActivity.class);
+            startActivity(inten);
+            finish();
+            AppConstants.SIGNUP_FLAG=false;}
 
-            Intent intent = new Intent(this, BrokerMainActivity.class);
+        }else {*/
+           /* Intent intent = new Intent(this, BrokerMainActivity.class);
             intent.addFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
                             Intent.FLAG_ACTIVITY_CLEAR_TASK |
                             Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            finish();
-        }
+            finish();*/
+    /*    }*/
     }
 
     private void loadFragment(Fragment fragment, Bundle args, int containerId, String title)
@@ -1113,9 +1206,7 @@ Log.i("SWIPE","inside swipe menu creator");
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
         fragmentTransaction.replace(containerId, fragment);
-        fragmentTransaction.addToBackStack(title);
         fragmentTransaction.show(fragment);
         fragmentTransaction.commitAllowingStateLoss();
 
@@ -1129,6 +1220,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
             TT = "LL";
+            setCachedDeals();
             loadBrokerDeals();
             SnackbarManager.show(
                     Snackbar.with(this)
@@ -1140,6 +1232,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RESALE);
             TT = "OR";
+            setCachedDeals();
             loadBrokerDeals();
             SnackbarManager.show(
                     Snackbar.with(this)
@@ -1162,6 +1255,137 @@ Log.i("SWIPE","inside swipe menu creator");
                         .position(Snackbar.SnackbarPosition.TOP)
                         .text("INTERNET CONNECTIVITY NOT AVAILABLE")
                         .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+    }
+
+    private  void loadCachedDeals(){
+
+
+        Realm myRealm = General.realmconfig(this);
+
+       try {
+
+
+
+           // listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
+        Log.i(TAG, "until loadCachedDeals called 2");
+           // listViewDeals.setAdapter(listAdapter);
+        Log.i(TAG, "until loadCachedDeals called 3");
+            RealmResults<HalfDeals> results1 =
+                    myRealm.where(HalfDeals.class).findAll();
+
+        Log.i(TAG, "until loadCachedDeals called 4 "+results1);
+
+            for (HalfDeals c : results1) {
+                Log.i(TAG, "until loadCachedDeals ");
+                Log.i(TAG, "until loadCachedDeals " + c.getOk_id());
+                Log.i(TAG, "until loadCachedDeals " + c.getName());
+                Log.i(TAG, "until loadCachedDeals " + c.getLocality());
+                BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), true);
+
+                if(cachedDealsLL == null){
+                    cachedDealsLL = new ArrayList<BrokerDeals>();
+                }
+                if(cachedDealsOR == null){
+                    cachedDealsOR = new ArrayList<BrokerDeals>();
+                }
+                if(c.getSpec_code().contains("LL-")){
+                    cachedDealsLL.add(dealsa);
+                }
+                else if(c.getSpec_code().contains("OR-")){
+                    cachedDealsOR.add(dealsa);
+                }
+
+            }
+
+           setCachedDeals();
+
+        }catch(Exception e){
+            Log.i(TAG,"Caught in the exception reading cache from realm "+e);
+        }
+        finally {
+
+            Log.i(TAG,"finally loadCachedDeals ");
+        }
+    }
+
+
+    private void setCachedDeals(){
+        try { // one first run when cached deals( ,LL,OR ) are empty it may crash
+            if (cachedDeals == null) {
+                cachedDeals = new ArrayList<BrokerDeals>();
+            } else {
+                cachedDeals.clear();
+            }
+
+            if (TT.equalsIgnoreCase("LL"))
+                cachedDeals.addAll(cachedDealsLL);
+            else
+
+                cachedDeals.addAll(cachedDealsOR);
+
+            if (cachedDeals.size() < 3 && showbgtext == true  && !General.isNetworkAvailable(this)) {
+                bgtxtlayout.setVisibility(View.VISIBLE);
+                bgtxt.setText("'OK' More Leads,\nTo Create Dealing\nRooms with new Client");
+            } else {
+                bgtxtlayout.setVisibility(View.GONE);
+            }
+
+
+            if (cachedDeals != null) {
+                listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
+                listViewDeals.setAdapter(listAdapter);
+
+                Log.i("inside adapter ", "object cached" + listAdapter);
+                listAdapter.notifyDataSetChanged();
+
+                listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                        Log.i("TRACE", "cached deals adapter clicked" + position);
+
+
+
+                    BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
+                    AppConstants.BROKER_DEAL_FLAG = true;
+                    Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+                    intent.putExtra("userRole", "client");
+                    intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                    intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
+                    Log.i("TRACE", "ment" + AppConstants.OK_ID);
+
+
+                        startActivity(intent);
+                    }
+                });
+
+
+            }
+        }
+        catch(Exception e){}
+    }
+
+    private void deleteDroomDb(String okId){
+
+                try {
+                    Realm myRealm = General.realmconfig(this);
+
+            //clear cache
+            Log.i(TAG,"until 3 ");
+            myRealm.beginTransaction();
+            Log.i(TAG,"until 4 ");
+            RealmResults<HalfDeals> result = myRealm.where(HalfDeals.class).equalTo(AppConstants.OK_ID,okId).findAll();
+            Log.i(TAG,"until result to del is 6 "+result);
+            result.clear();
+
+        }catch(Exception e){
+            Log.i(TAG,"Caught in the exception clearing cache "+e );
+        }
+        finally{
+            myRealm.commitTransaction();
+        }
+
+
     }
 
 }

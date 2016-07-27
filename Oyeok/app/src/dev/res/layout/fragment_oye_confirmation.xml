@@ -55,6 +55,7 @@
 <Button
     android:layout_width="120dp"
     android:layout_height="35dp"
+    android:id="@+id/editDetails"
     android:background="@drawable/gradient_grey"
     android:layout_marginLeft="-5dp"
     android:textStyle="bold|italic"

@@ -7,13 +7,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.interfaces.OnOyeClick;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,8 +33,8 @@ public class OyeConfirmation extends Fragment {
     private TextView display_date;
     LinearLayout available_sizes;
 LinearLayout confirm_layout_with_edit_button;
-
-
+Button editDetails;
+    private OnOyeClick onOyeClick;
 
 
     private OnFragmentInteractionListener mListener;
@@ -91,7 +95,7 @@ LinearLayout confirm_layout_with_edit_button;
         available_sizes=(LinearLayout) view.findViewById(R.id.available_sizes);
         confirm_layout_with_edit_button=(LinearLayout) view.findViewById(R.id.confirm_layout_with_edit_button);
         proceed_to_oye=(ImageView) view.findViewById(R.id.proceed_to_oye);
-
+        editDetails=(Button) view.findViewById(R.id.editDetails);
 
 
         init();
@@ -108,18 +112,15 @@ LinearLayout confirm_layout_with_edit_button;
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            // TODO Auto-generated method stub
-            /*myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);*/
 
-            try {
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+
                 updateLabel();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+
         }
-//          DatePickerDialog date=new
 
     };
 
@@ -133,21 +134,18 @@ LinearLayout confirm_layout_with_edit_button;
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                new DatePickerDialog(getContext(), date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                displayDatePicker();
                 calendar.setVisibility(View.GONE);
                 display_date.setVisibility(View.VISIBLE);
+
             }
         });
         display_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                new DatePickerDialog(getContext(), date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                displayDatePicker();
+                calendar.setVisibility(View.GONE);
+                display_date.setVisibility(View.VISIBLE);
             }
         });
 
@@ -159,23 +157,62 @@ LinearLayout confirm_layout_with_edit_button;
             }
         });
 
+        editDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putString("brokerType", AppConstants.CURRENT_DEAL_TYPE);
+                args.putString("Address", SharedPrefs.getString(getActivity(), SharedPrefs.MY_REGION));
+                onOyeClick.onClickButton(args);
+            }
+        });
+
     }
 
 
-    private void updateLabel() throws ParseException {
-        DatePickerDialog dpd = new DatePickerDialog(getContext(), date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+    private void updateLabel(){
+        String myFormat = "dd/MMM/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        display_date.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    private void displayDatePicker(){
+
+        DatePickerDialog dpd = new DatePickerDialog(getContext(), date, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH));
 
         String myFormat = "dd/MM/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-        Date d = sdf.parse("26/7/2016");
-        dpd.getDatePicker().setMinDate(d.getTime());
-//        dpd.show();
+        Date d = null;
+        try {
+             Calendar now= Calendar.getInstance();
+            d  = sdf.parse(sdf.format(now.getTime()));
+            now.add(Calendar.MONTH,6);
 
+            Date dd = sdf.parse(  now.get(Calendar.DATE)
+                    + "/"+ (now.get(Calendar.MONTH) + 1)
+                    + "/"
 
+                    + now.get(Calendar.YEAR));
 
-        display_date.setText(sdf.format(myCalendar.getTime()));
+//                    Date dd = sdf.parse("26/1/2017");
+            dpd.getDatePicker().setMinDate(d.getTime());
+            dpd.getDatePicker().setMaxDate(dd.getTime());
+            dpd.show();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
+
+
+
+
+
+
+
+
 //    @Override
 //    public void onAttach(Context context) {
 //        super.onAttach(context);

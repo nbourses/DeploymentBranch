@@ -43,7 +43,7 @@ public class GcmIntentService extends IntentService {
 
         Log.i("Pubnub push","inside GSMIntentService sendNotification");
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+       /* PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), 0);
 
         NotificationCompat.Builder mBuilder =
@@ -55,10 +55,9 @@ public class GcmIntentService extends IntentService {
                         .setContentText(msg);
 
         mBuilder.setContentIntent(contentIntent);
+
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }*/
-
-//rem
 
 
 

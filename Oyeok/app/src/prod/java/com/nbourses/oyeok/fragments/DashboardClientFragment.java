@@ -22,6 +22,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -31,18 +32,23 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,6 +58,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -59,6 +66,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nbourses.oyeok.Database.DBHelper;
@@ -73,7 +81,6 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MapWrapperLayout;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
@@ -143,9 +150,13 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     };
 
 
+    private static final int REQUEST_CALL_PHONE = 1;
+
+    View mHelperView;
+
     private static final int INITIAL_REQUEST = 133;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
-    private static final int MAP_ZOOM = 12;
+    private static final int MAP_ZOOM = 14;
     private Point point;
     DBHelper dbHelper;
     //    private TextView mDrooms;
@@ -167,7 +178,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     private boolean flag[] = new boolean[5], RatePanel = false;
 
-    boolean mflag = false;
+
     private long lastTouched = 0, start = 0;
     private static final long SCROLL_TIME = 200L;
 
@@ -186,7 +197,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     Double lat, lng;
     ClientMainActivity dashboardActivity;
     DroomChatFirebase droomChatFirebase;
-
+    private   MapView mapView;
     private GetCurrentLocation getLocationActivity;
     //View rootView;
     HashMap<String, HashMap<String, String>> chatListData;
@@ -228,7 +239,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private FrameLayout hideOnSearch;
     private Boolean autoc = false;
     private Boolean autocomplete = false;
-  public  static  View  rootView;
+  private  static  View  rootView;
+    private Boolean spanning = false;
 
 //    Intent intent ;
 
@@ -256,16 +268,16 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private BroadcastReceiver autoComplete = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "hohohoh 34");
+
 
             try {
                 if (intent.getExtras().getBoolean("autocomplete") == true) {
                     // autocomplete = true;
                     Log.i(TAG, "hohohoh 2");
                     hideOnSearch.setVisibility(View.GONE);
-                    mPhasedSeekBar.setVisibility(View.VISIBLE);
                     seekbar_linearlayout.setVisibility(View.VISIBLE);
                     seekbar_linearlayout.setAlpha(1f);
+                    mPhasedSeekBar.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {}
         }
@@ -273,20 +285,20 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     };
 
 
-/*    private BroadcastReceiver oncheckWalkthrough=new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.i("walkthrough","walkthrough1"+intent.getExtras().getString("checkWalkthrough"));
-            if(intent.getExtras().getBoolean("checkWalkthrough")==true){
-                Log.i("walkthrough","walkthrough2"+intent.getExtras().getBoolean("checkWalkthrough"));
-               // Walkthrough=intent.getExtras().getString("checkWalkthrough");
-
-                Log.i("walkthrough","walkthrough3"+Walkthrough);
-
-            }
-
-        }
-    };*/
+//    private BroadcastReceiver oncheckWalkthrough=new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            Log.i("walkthrough","walkthrough1"+intent.getExtras().getString("checkWalkthrough"));
+//            if(intent.getExtras().getBoolean("checkWalkthrough")==true){
+//                Log.i("walkthrough","walkthrough2"+intent.getExtras().getBoolean("checkWalkthrough"));
+//               // Walkthrough=intent.getExtras().getString("checkWalkthrough");
+//
+//                Log.i("walkthrough","walkthrough3"+Walkthrough);
+//
+//            }
+//
+//        }
+//    };
 
     private BroadcastReceiver onFilterValueUpdate = new BroadcastReceiver() {
         @Override
@@ -360,6 +372,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
                     }
 
+///// check if required
+//                 try{
+//                // txtFilterValue.setText(Html.fromHtml(intent.getExtras().getString("filterValue")));
+//             }catch (Exception e){
+//               ///  Log.i("txtFilterValue","txtFilterValue: "+ intent.getExtras().getString("filterValue"));
+//
                 }
             }
         }
@@ -378,17 +396,16 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-   rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
+        rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
 
         ButterKnife.bind(this, rootView);
-/*
-        gpsTracker = new GPSTracker(getContext());
-        myLoc = (ImageView) rootView.findViewById(R.id.myLoc);*/
+
+        //  gpsTracker = new GPSTracker(getContext());
+//        myLoc = (ImageView) rootView.findViewById(R.id.myLoc);
         hideOnSearch = (FrameLayout) rootView.findViewById(R.id.hideOnSearch);
         seekbar_linearlayout = (LinearLayout) rootView.findViewById(R.id.seekbar_linearlayout);
-/*        hPicker = (RelativeLayout) rootView.findViewById(R.id.hPicker);
-        View locationButton = suppormanagerObj.getView().findViewById(2);*/
+//        hPicker = (RelativeLayout) rootView.findViewById(R.id.hPicker);
+        // View locationButton = suppormanagerObj.getView().findViewById(2);
         if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
             General.setSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI, String.valueOf(System.currentTimeMillis()));
             Log.i("TIMESTAMP", "millis " + System.currentTimeMillis());
@@ -419,27 +436,24 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             SharedPrefs.save(getContext(), SharedPrefs.PERMISSION, "false");
         }
 
-//  Variable initialization
 
         droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl, getActivity());
+//        mDrooms = (TextView) rootView.findViewById(R.id.linearlayout_drooms);
         mVisits = (TextView) rootView.findViewById(R.id.newVisits);
         mQrCode = (ImageView) rootView.findViewById(R.id.qrCode);
         mMarkerPanel = (LinearLayout) rootView.findViewById(R.id.ll_marker);
+
         mMarkerminmax = (RelativeLayout) rootView.findViewById(R.id.markerpanelminmax);
         ll_marker = (LinearLayout) rootView.findViewById(R.id.ll_marker);
         recordWorkout = (LinearLayout) rootView.findViewById(R.id.recordWorkout);
-        ic_search=(ImageView) rootView.findViewById(R.id.ic_search);
-        Mmarker = (ImageView) rootView.findViewById(R.id.Mmarker);
-
-
-        // Walkthrough and beacons
+        ic_search = (ImageView) rootView.findViewById(R.id.ic_search);
 
         if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
             beacon = "true";
             SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
         } else {
             beacon = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON);
-
+            // SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
             Log.i("ischecked", "walkthrough3dashboard" + beacon);
         }
 
@@ -451,18 +465,10 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             Log.i("ischecked", "walkthrough3dashboard" + Walkthrough);
         }
 
+        Mmarker = (ImageView) rootView.findViewById(R.id.Mmarker);
 
-
-
-//        icon1=(Drawable) getContext().getResources().getDrawable(R.drawable.buildingiconbeforeclick);
-//
-//        icon1=(Drawable) getContext().getResources().getDrawable(R.drawable.buildingiconbeforeclick);
-//
 
         try {
-//            icon1 = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("buildingiconbeforeclick",40,75));//BitmapDescriptorFactory.fromResource(R.drawable.buildingiconbeforeclick);
-//
-//            icon2 = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("click_building_icon",77,78));
 
             icon1 = BitmapDescriptorFactory.fromResource(R.drawable.buildingiconbeforeclick);
             icon2 = BitmapDescriptorFactory.fromResource(R.drawable.buildingicononclick);
@@ -480,8 +486,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                 int[] locations = new int[2];
                 Mmarker.getLocationOnScreen(locations);
-                x = locations[0] + 21;
-                y = locations[1] - 90;
+                x = locations[0] + 37;
+                y = locations[1] -170;
 //                x = left - (right - left) / 2;
 //                y = bottom;
 //                bottom = Mmarker.getBottom();
@@ -505,15 +511,17 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
         permissionCheckForLocation = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
-        errorView = (RelativeLayout) rootView.findViewById(R.id.alertLayout);
-        errorText = (TextView) rootView.findViewById(R.id.errorText);
+//        errorView = (RelativeLayout) rootView.findViewById(R.id.alertLayout);
+//        errorText = (TextView) rootView.findViewById(R.id.errorText);
 
         rupeesymbol = (TextView) rootView.findViewById(R.id.rupeesymbol);
         // tvCommingsoon = (TextView) rootView.findViewById(R.id.tvCommingsoon);
         tvRate = (TextView) rootView.findViewById(R.id.tvRate);
         tvFetchingrates = (TextView) rootView.findViewById(R.id.tvFetchingRates);
         tv_building = (TextView) rootView.findViewById(R.id.tv_building);
+        Button CallButton=(Button) rootView.findViewById(R.id.CallButton);
 
+        //search_building_icon.setVisibility(View.INVISIBLE);
         buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
         onPositionSelected(0, 2);
 
@@ -536,6 +544,32 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         });
 
 
+        // Call Button
+        CallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:+912233836068"));
+                callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE);
+
+                String callPermission = Manifest.permission.CALL_PHONE;
+                int hasPermission = ContextCompat.checkSelfPermission(getActivity(), callPermission);
+                String[] permissions = new String[] { callPermission };
+                if(isTelephonyEnabled()) {
+                    if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(permissions, REQUEST_CALL_PHONE);
+//                    startActivity(callIntent);
+                    } else {
+                        startActivity(callIntent);
+                    }
+                }
+
+            }
+        });
+
+
+
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
         if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), getContext().getResources().getString(R.string.Resale)}));
@@ -552,10 +586,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         });
 
 
-
         autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
         autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
         autoCompView.setOnItemClickListener(this);
+//        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(autoCompView.getWindowToken(), 0);
+        //autoCompView.setOnItemClickListener(this);
         autoCompView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -566,9 +602,13 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     autoCompView.setText("");
                     autoCompView.showDropDown();
                     // new LocationUpdater().execute();
-                     hideOnSearch.setVisibility(View.VISIBLE);
+                    hideOnSearch.setVisibility(View.VISIBLE);
                     //seekbar_linearlayout.setVisibility(View.GONE);
-                    mPhasedSeekBar.setVisibility(View.GONE);
+                    mPhasedSeekBar.setVisibility(View.VISIBLE);
+                    mPhasedSeekBar.setClickable(false);
+                    seekbar_linearlayout.setVisibility(View.INVISIBLE);
+                    seekbar_linearlayout.setBackgroundColor(Color.TRANSPARENT);
+
                     //seekbar_linearlayout.setBackgroundColor(getResources().getColor(R.color.gray));
                     seekbar_linearlayout.setAlpha(0.8f);
                     Intent intent = new Intent(AppConstants.AUTOCOMPLETEFLAG);
@@ -590,8 +630,14 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
 
-
-
+        /*mDrooms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //open deals listing
+                Intent openDealsListing = new Intent(getActivity(), ClientDealsListActivity.class);
+                startActivity(openDealsListing);
+            }
+        });*/
 
         mVisits.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -603,25 +649,35 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     oyebuttonBackgrountColorOrange();
                     clicked = false;
                     customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
+                    mHelperView.setEnabled(false);
                 } else {
                     oyebuttonBackgrountColorGreenishblue();
                     customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+                    mHelperView.setEnabled(true);
                     clicked = true;
 
                 }
-                    if (RatePanel == true) {
-                        UpdateRatePanel();
-                        RatePanel = false;
-                    } else {
-                        RatePanel = true;
-                        // tvFetchingrates.setVisibility(View.VISIBLE);
-                    }
+                if (RatePanel == true) {
+                    UpdateRatePanel();
+                    RatePanel = false;
+                } else {
+                    RatePanel = true;
+                    // tvFetchingrates.setVisibility(View.VISIBLE);
+                }
+
+
+//                openOyeScreen();
+//                CancelAnimation();
 
 
             }
         });
 
-
+//        mMarkerPanel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//            }
+//        });
 
 
         mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
@@ -633,13 +689,71 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
             customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
 //            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
-            customMapFragment.getMap().getUiSettings().setZoomControlsEnabled(true);
+            final View mMapView = getChildFragmentManager().findFragmentById(R.id.map).getView();
+            // mapView =(MapView) rootView.findViewById(R.id.map);
             map = customMapFragment.getMap();
+            map.getUiSettings().setRotateGesturesEnabled(false);
+            map.getUiSettings().setMyLocationButtonEnabled(true);
+            map.getUiSettings().setScrollGesturesEnabled(true);
+            map.getUiSettings().setZoomControlsEnabled(true);
 
+//            resetMyPositionButton();
+            // geoFence = new GeoFence();
+            //if (isNetworkAvailable()) {
+            mHelperView = rootView.findViewById(R.id.helperView);
+
+
+                mHelperView.setOnTouchListener(new View.OnTouchListener() {
+                    private float scaleFactor = 1f;
+
+                    @Override
+                    public boolean onTouch(final View view, final MotionEvent motionEvent) {
+
+                        if (simpleGestureDetector.onTouchEvent(motionEvent)) { // Double tap
+                            map.animateCamera(CameraUpdateFactory.zoomIn()); // Fixed zoom in
+                        } else if (motionEvent.getPointerCount() == 1) { // Single tap
+                            // horizontalPicker.keepScrolling();
+                            onMapDrag(motionEvent);
+                            mMapView.dispatchTouchEvent(motionEvent); // Propagate the event to the map (Pan)
+//                        onMapDrag(motionEvent);
+                        } else if (scaleGestureDetector.onTouchEvent(motionEvent)) { // Pinch zoom
+                            spanning = true;
+                            map.moveCamera(CameraUpdateFactory.zoomBy( // Zoom the map without panning it
+                                    (map.getCameraPosition().zoom * scaleFactor
+                                            - map.getCameraPosition().zoom) / 5));
+                        }
+
+                        return true; // Consume all the gestures
+                    }
+
+                    // Gesture detector to manage double tap gestures
+                    private GestureDetector simpleGestureDetector = new GestureDetector(
+                            getContext(), new GestureDetector.SimpleOnGestureListener() {
+                        @Override
+                        public boolean onDoubleTap(MotionEvent e) {
+                            return true;
+                        }
+                    });
+
+                    // Gesture detector to manage scale gestures
+                    private ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(
+                            getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                        @Override
+                        public boolean onScale(ScaleGestureDetector detector) {
+                            scaleFactor = detector.getScaleFactor();
+                            return true;
+                        }
+                    });
+
+
+
+                });
 
 
 
             if (map != null) {
+                //if ((int) Build.VERSION.SDK_INT <= 23) {
+
 
                 customMapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
@@ -647,20 +761,23 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                         map = googleMap;
 
-                            if(!isNetworkAvailable()) {
-                                map = googleMap;
-                                double lat11 = 19.1269299;
-                                double lng11 = 72.8376545999999;
-                                Log.i("slsl", "location====================: ");
-                                LatLng currLatLong = new LatLng(lat11, lng11);
-                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 12));
-                            }
+                        // map = googleMap;
+                        final LocationManager Loc_manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+                        if (!isNetworkAvailable() || !(Loc_manager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
+                            map = googleMap;
+                            double lat11 = 19.1269299;
+                            double lng11 = 72.8376545999999;
+                            Log.i("slsl", "location====================:1 ");
+                            LatLng currLatLong = new LatLng(lat11, lng11);
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 14));
+                        }
 
                         enableMyLocation();
                         Log.i("slsl", "location====================: ");
                         getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
-                       // map.setPadding(left, top, right, bottom);
-                       map.setPadding(0, -10, 0, 0);
+                        // map.setPadding(left, top, right, bottom);
+                        map.setPadding(0, -10, 0, 0);
 
 
                     }
@@ -668,12 +785,15 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
             }
 
+            // }
 
+
+            //}
 
             map.getUiSettings().setZoomGesturesEnabled(true);
 
 
-
+            //}
 
             map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                 @Override
@@ -687,12 +807,20 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 }
             });
 
-
-
-
-
-
-
+//            myLoc.setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    Log.i(TAG,"my Loc clicked "+event);
+//                    // enableMyLocation();
+//                     getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
+////                    if (isNetworkAvailable()) {
+////                        new LocationUpdater().execute();
+//                    buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier);
+////                    }
+//
+//                    return false;
+//                }
+//            });
 
 
             map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -700,6 +828,30 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 public void onMapClick(LatLng latLng) {
 
                     Log.i("MA999999 ", "MAP CLICK=========");
+
+                    spanning = false;
+                    mVisits.setEnabled(true);
+                    txtFilterValue.setEnabled(true);
+                    for(int i=0;i<5;i++){
+                        if(flag[i]==true){
+                            mCustomerMarker[i].setIcon(icon1);
+                            search_building_icon.setVisibility(View.GONE);
+                            flag[i] = false;
+                            horizontalPicker.setVisibility(View.VISIBLE);
+                            tvFetchingrates.setVisibility(View.GONE);
+                            recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                            tvRate.setVisibility(View.VISIBLE);
+                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                            rupeesymbol.setVisibility(View.VISIBLE);
+
+                            Intent in = new Intent(AppConstants.MARKERSELECTED);
+                            in.putExtra("markerClicked", "false");
+                            ll_marker.setEnabled(true);
+                            tv_building.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+
 
 
 //            UpdateRatePanel();
@@ -718,12 +870,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
             });
-
-
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
 
+                    //intent =new Intent(getContext(), ClientMainActivity.class);
                     int i;
 
                     for (i = 0; i < 5; i++) {
@@ -741,6 +892,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                                 mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
                                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle1));
+                                ll_marker.setEnabled(false);
                                 mVisits.setEnabled(false);
                                 txtFilterValue.setEnabled(false);
                                 CancelAnimation();
@@ -753,9 +905,13 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 String text = "<font color=#ffffff >" + marker.getTitle().toString() + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
                                 tvFetchingrates.setText(Html.fromHtml(text));
                                 tvFetchingrates.setTypeface(null, Typeface.BOLD);
+
+                                //intent.putExtra("client_heading", "Live Building Rates");
+
                                 lng = marker.getPosition().longitude;
                                 lat = marker.getPosition().latitude;
                                 Log.i("marker lat", "==============marker position :" + marker.getPosition() + " " + lat + " " + lng);
+
                                 SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                                 SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
                                 General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
@@ -768,24 +924,26 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 search_building_icon.setVisibility(View.GONE);
                                 flag[i] = false;
                                 horizontalPicker.setVisibility(View.VISIBLE);
-                                tvFetchingrates.setVisibility(View.INVISIBLE);
+                                tvFetchingrates.setVisibility(View.GONE);
                                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 
                                 mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
                                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
                                 mVisits.setEnabled(true);
                                 txtFilterValue.setEnabled(true);
-                                StartAnimation();
+                                ll_marker.setEnabled(true);
+//                                StartAnimation();
                                 //intent.putExtra("client_heading", "Live Region Rates");
                                 Intent in = new Intent(AppConstants.MARKERSELECTED);
                                 in.putExtra("markerClicked", "false");
+                                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
                                 Log.i("coming soon", "coming soon :" + marker.getTitle().toString() + recordWorkout);
 
                                 tvRate.setVisibility(View.VISIBLE);
                                 rupeesymbol.setVisibility(View.VISIBLE);
                                 tv_building.setVisibility(View.VISIBLE);
-                                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+//                                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
 
                                 //tv_building.setText("Average Rate @ this Locality");
 
@@ -810,195 +968,15 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 public void onCameraChange(CameraPosition cameraPosition) {
 
 
-                    // map.getUiSettings().setScrollGesturesEnabled(false);
-
-        /*   lat= Double.parseDouble(   SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-           lng= Double.parseDouble( SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-            map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lat,lng)));*/
-
-
-            /*if (map.getUiSettings().isScrollGesturesEnabled()) {
-
-
-
-                VisibleRegion visibleRegion = map.getProjection()
-                        .getVisibleRegion();
-
-                Point x1 = map.getProjection().toScreenLocation(visibleRegion.farRight);
-
-                Point y1 = map.getProjection().toScreenLocation(visibleRegion.nearLeft);
-
-                Point centerPoint = new Point(x1.x / 2, y1.y / 2);
-
-                LatLng centerFromPoint = map.getProjection().fromScreenLocation(
-                        centerPoint);
-
-<
-
-                Log.i("Camera", "====Camera====" + x1 + " " + y1 + " " + point + " " + centerPoint + x + " " + y + " " + centerFromPoint + " " + cameraPosition);
-
-
-              //  map.addMarker(new MarkerOptions().position(centerFromPoint));
-                tvFetchingrates.setVisibility(View.VISIBLE);
-                mMarkerminmax.setVisibility(View.VISIBLE);
-                tvRate.setVisibility(View.VISIBLE);
-                rupeesymbol.setVisibility(View.VISIBLE);
-                tvFetchingrates.setVisibility(View.VISIBLE);
-                tv_building.setVisibility(View.VISIBLE);
-                recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-                LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
-                Log.i("map", "============ map:" + " " + map);
-
-                // currentLocation1 = map.getProjection().fromScreenLocation(point);
-                lat = centerFromPoint.latitude;
-                Log.i("t1", "lat" + " " + lat);
-                lng = centerFromPoint.longitude;
-
-                Log.i("t1", "lng" + " " + lng);
-                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
-                // map.addMarker(new MarkerOptions().title("hey").position(currentLocation1));
-
-                Log.i("MARKER-- ", "====================================");
-                SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
-                General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
-                Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-                Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-                getRegion();
-                search_building_icon.setVisibility(View.INVISIBLE);
-//            horizontalPicker.stopScrolling();
-                // map.getUiSettings().setScrollGesturesEnabled(false);
-                //customMapFragment.getMap().getUiSettings().setScrollGesturesEnabled(false);
-                Intent in = new Intent(AppConstants.MARKERSELECTED);
-                in.putExtra("markerClicked", "false");
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
-                if (isNetworkAvailable()) {
-                    new LocationUpdater().execute();
-                }
-                getPrice();
-                // Log.i("t1", "latlong" + " " + currentLocation1);
-                if (isNetworkAvailable()) {
-                    new LocationUpdater().execute();
-                }
-
-
-            }*/
 
                 }
             });
 
-        } catch (Exception e) {
-        }
-
-        try {
-            if (isNetworkAvailable() && map != null) {
-                // customMapFragment = ((CustomMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
-                customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
-                    @Override
-                    public void onDrag(MotionEvent motionEvent) {
-                        //Log.d("t1", String.format("ME: %s", motionEvent));
-
-                        if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                            tvRate.setVisibility(View.INVISIBLE);
-                            rupeesymbol.setVisibility(View.INVISIBLE);
+        } catch (Exception e) {}
 
 
-                            //tvFetchingrates.setVisibility(View.INVISIBLE);
-
-                            //horizontalPicker.keepScrolling();
-                            Log.i("MotionEvent.ACTION_MOVE", "=========================");
-                            if (motionEvent.getPointerCount() > 1) {
-                                map.getUiSettings().setScrollGesturesEnabled(false);
-
-                                lat = Double.parseDouble(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-                                lng = Double.parseDouble(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-                                map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lat, lng)));
-                                lastTouched = SystemClock.uptimeMillis();
-
-                                Log.i("MotionEvent.ACTION_UP", "=========================11");
-                                //map.getUiSettings().setScrollGesturesEnabled(true);
-                            }
-                        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                            // horizontalPicker.keepScrolling();
-                            // horizontalPicker.stopScrolling();
-                            //mMarkerPanel.setVisibility(View.VISIBLE);
-                            Log.i("MotionEvent.ACTION_UP", "=========================");
-                            final long now = SystemClock.uptimeMillis();
-                            if (clicked == true) {
-                                map.getUiSettings().setScrollGesturesEnabled(true);
-                                Log.i("MotionEvent.ACTION_UP", "=========================" + clicked);
-                            }
-
-                            if (now - lastTouched > SCROLL_TIME && !(motionEvent.getPointerCount() > 1) && isNetworkAvailable()) {
-                                //map.getUiSettings().setScrollGesturesEnabled(true);
-
-                                // horizontalPicker.keepScrolling();
-                                Log.i("MotionEvent.ACTION_UP", "=========================22");
-                                Log.i("setScroll", "=======================setScrollGesturesEnabled==");
-
-                                // tv_building.setText("Average Rate @ this Locality");
-                                tvFetchingrates.setVisibility(View.VISIBLE);
-                                // if (!MarkerClicked) {
-                                mMarkerminmax.setVisibility(View.VISIBLE);
-                                // Mmarker.setVisibility(View.VISIBLE);
-                                //horizontalPicker.stopScrolling();
-                                tvRate.setVisibility(View.VISIBLE);
-                                rupeesymbol.setVisibility(View.VISIBLE);
-                                tvFetchingrates.setVisibility(View.VISIBLE);
-                                tv_building.setVisibility(View.VISIBLE);
-                                //  tv_building.setText("Average Rate @ this Locality");
-                                recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-
-                                LatLng currentLocation1;
-                                Log.i("map", "============ map:" + " " + map);
-                                currentLocation1 = map.getProjection().fromScreenLocation(point);
-                                lat = currentLocation1.latitude;
-                                Log.i("t1", "lat" + " " + lat);
-                                lng = currentLocation1.longitude;
-                                Log.i("t1", "lng" + " " + lng);
-                                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
-                                //map.addMarker(new MarkerOptions().title("hey").position(currentLocation1));
-                                Log.i("MARKER-- ", "====================================");
-                                SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                                SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                                General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
-                                General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
-                                Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-                                Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-
-                                getRegion();
-                                ///horizontalPicker.stopScrolling();
-                                search_building_icon.setVisibility(View.GONE);
-                                horizontalPicker.stopScrolling();
-
-                                getPrice();
-                                // getPrice();
-                                // mflag = false;
-
-                                if (isNetworkAvailable()) {
-                                    new LocationUpdater().execute();
-                                }
 
 
-                            }
-
-                        } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                            lastTouched = SystemClock.uptimeMillis();
-
-                            //LatLng currentLocation11;
-                            Log.i("MotionEvent.ACTION_DOWN", "=========================");
-
-
-                        }
-
-                    }
-                });
-            }
-
-
-        } catch (Exception e) {
-        }
 
 
         mcallback = new GetCurrentLocation.CurrentLocationCallback() {
@@ -1063,9 +1041,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
          * animate views
          */
         mFlipAnimator = ValueAnimator.ofFloat(0f, 1f);
-        mFlipAnimator.addUpdateListener(new FlipListener(mVisits, txtFilterValue));
+        mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue,mVisits));
 
-        StartAnimation();
+//        StartAnimation();
 //        Timer timer = new Timer();
 //        timer.schedule(new TimerTask() {
 //            @Override
@@ -1151,10 +1129,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             UpdateRatePanel();
 
             ll_map.setAlpha(1f);
-            StartAnimation();
+//            StartAnimation();
             if(clicked==false){
                 oyebuttonBackgrountColorGreenishblue();
                 customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+                mHelperView.setEnabled(true);
                 clicked=true;
             }
 
@@ -1234,6 +1213,37 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         }
     }
 
+    @OnClick({R.id.ll_marker})
+    public void onButtonsClick(View v) {
+        if (ll_marker.getId() == v.getId()) {
+
+            Log.i(TAG,"poligon ");
+
+           // txtFilterValue.performClick();
+
+            openOyeScreen();
+            Log.i("txtFilterValue","txtFilterValue =========================== "+SystemClock.currentThreadTimeMillis());
+            CancelAnimation();
+            if(clicked==true){
+                oyebuttonBackgrountColorOrange();
+                customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
+                clicked=false;
+            }else {
+                oyebuttonBackgrountColorGreenishblue();
+                customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+                clicked = true;
+            }
+            if(RatePanel==true) {
+                UpdateRatePanel();
+                RatePanel = false;
+            }
+            else {
+                RatePanel = true;
+                // tvFetchingrates.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
     @OnClick(R.id.txtFilterValue)
     public void onTxtFilterValueClick(View v) {
 
@@ -1243,10 +1253,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         if(clicked==true){
             oyebuttonBackgrountColorOrange();
             customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
+            mHelperView.setEnabled(false);
             clicked=false;
         }else {
             oyebuttonBackgrountColorGreenishblue();
             customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+            mHelperView.setEnabled(true);
             clicked = true;
         }
         if(RatePanel==true) {
@@ -1262,68 +1274,68 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private void openOyeScreen() {
 
 
-/*
-        if(android.os.Build.VERSION.SDK_INT >18) {
-            Log.i("FLipanimator paused", "fipanimator paused");
-            mFlipAnimator.end();
-        }*/
+
+//        if(android.os.Build.VERSION.SDK_INT >18) {
+//            Log.i("FLipanimator paused", "fipanimator paused");
+//            mFlipAnimator.end();
+//        }
 
         Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
         intent.putExtra("tv_dealinfo","Home ");
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
 
-        /*mFlipAnimator.end();
-        mFlipAnimator.removeAllUpdateListeners();
-        //FlipListener f = new FlipListener(txtFilterValue);
-        mFlipAnimator = ValueAnimator.ofFloat(0f);
-        mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue));
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (isFlipped()) {
-                                Log.i("mFlipAnimator","is flipped");
-                                mFlipAnimator.reverse();
-                            } else {
-                                Log.i("mFlipAnimator","is flipped not");
-                                mFlipAnimator.start();
-                            }
-                        }
-                    });
-                }
-            }
-        }, 2000, 2000);
-
-
-        mFlipAnimator.end();
-        mFlipAnimator.start();
-        mFlipAnimator = ValueAnimator.ofFloat(0f);
-
-        mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue, txtFilterValue));
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (isFlipped()) {
-                                mFlipAnimator.reverse();
-                            } else {
-                                mFlipAnimator.start();
-                            }
-                        }
-                    });
-                }
-            }
-        }, 2000, 2000);
         //mFlipAnimator.end();
-        mFlipAnimator.removeAllUpdateListeners();*/
+//        mFlipAnimator.removeAllUpdateListeners();
+//        //FlipListener f = new FlipListener(txtFilterValue);
+//        mFlipAnimator = ValueAnimator.ofFloat(0f);
+//        mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue));
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if (getActivity() != null) {
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if (isFlipped()) {
+//                                Log.i("mFlipAnimator","is flipped");
+//                                mFlipAnimator.reverse();
+//                            } else {
+//                                Log.i("mFlipAnimator","is flipped not");
+//                                mFlipAnimator.start();
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        }, 2000, 2000);
+
+
+//        mFlipAnimator.end();
+//        mFlipAnimator.start();
+//        mFlipAnimator = ValueAnimator.ofFloat(0f);
+//
+//        mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue, txtFilterValue));
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if (getActivity() != null) {
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if (isFlipped()) {
+//                                mFlipAnimator.reverse();
+//                            } else {
+//                                mFlipAnimator.start();
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        }, 2000, 2000);
+//        //mFlipAnimator.end();
+//        mFlipAnimator.removeAllUpdateListeners();
 
         Bundle args = new Bundle();
         args.putString("brokerType", brokerType);
@@ -1424,7 +1436,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
         //getRegion();
 
-
         if(General.isNetworkAvailable(getContext())) {
             General.slowInternet(getContext());
 
@@ -1433,7 +1444,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         txtFilterValue.setEnabled(false);
         CancelAnimation();
         User user = new User();
-
 
 
 //        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE)
@@ -1538,14 +1548,15 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 BroadCastMinMaxValue(llMin, llMax, orMin, orMax);
 
                                 updateHorizontalPicker();
-                                marquee(200, 100);
+                                marquee(500, 100);
 
                                 for (int i = 0; i < 5; i++) {
 
                                     if (mCustomerMarker[i] != null)
                                         mCustomerMarker[i].remove();
                                 }
-
+                                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                                recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 
                                 //if(mflag=false) {
 
@@ -1567,7 +1578,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                     Log.i("TRACE", "RESPONSEDATAr" + loc);
                                     Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
 
-                                    mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc).title(name).snippet("Rent:" + ll_pm[i] + " " + "Sale" + or_psf[i]).icon(icon1));
+                                    mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc).title(name).snippet("Rent:" + ll_pm[i] + " " + "Sale" + or_psf[i]).icon(icon1).flat(true));
 
                                     Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
                                     flag[i] = false;
@@ -1579,7 +1590,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                                 mVisits.setEnabled(true);
                                 txtFilterValue.setEnabled(true);
-                                StartAnimation();
+//                                StartAnimation();
                                 horizontalPicker.setVisibility(View.VISIBLE);
                                 tv_building.setVisibility(View.VISIBLE);
 
@@ -1785,13 +1796,13 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     public void onPositionSelected(int position, int count) {
         if (count == 2) {
             if (position == 0) {
-                marquee(200, 100);
+                marquee(500, 100);
 
                 SnackbarManager.show(
-                        Snackbar.with(getActivity())
+                        Snackbar.with(getContext())
                                 .text("Rental Property Type set")
                                 .position(Snackbar.SnackbarPosition.TOP)
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
                 tvRate.setText("/ month");
                 brokerType = "rent";
@@ -1813,15 +1824,15 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
 
-                marquee(200, 100);
+                marquee(500, 100);
 
 
 
                 SnackbarManager.show(
-                        Snackbar.with(getActivity())
+                        Snackbar.with(getContext())
                                 .text("Buy/Sell Property Type set")
                                 .position(Snackbar.SnackbarPosition.TOP)
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
                 updateHorizontalPicker();
                 tvRate.setText("/ sq.ft");
@@ -1852,7 +1863,14 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
        // ll_map.setAlpha(1f);
         hideOnSearch.setVisibility(View.GONE);
         seekbar_linearlayout.setVisibility(View.VISIBLE);
-       // hideOnSearch.setAlpha(1f);
+
+        seekbar_linearlayout.setBackgroundColor(Color.WHITE);
+        seekbar_linearlayout.setAlpha(1);
+        InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(autoCompView.getWindowToken(), 0);
+
+
+
         mPhasedSeekBar.setVisibility(View.VISIBLE);
         map.animateCamera(CameraUpdateFactory.zoomTo(12));
         autoCompView.clearListSelection();
@@ -2086,7 +2104,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             autoCompView.setText(s);
             Log.i("", "");
             autoCompView.dismissDropDown();
-            autoCompView.setCursorVisible(false);
+
             // new LocationUpdater().execute();
             Log.i(TAG,"locality automata ");
             try {
@@ -2094,14 +2112,14 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
                 getRegion();
-                // getPrice();
-                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+//                 getPrice();
+//                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
             }catch(Exception e){}
 
         }
     }
 
-    private boolean isNetworkAvailable() {
+   public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
@@ -2399,7 +2417,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 // print("noToWord Default")
                 break;
         }
-        Log.i("TRACE","budget string"+str);
+//        Log.i("TRACE","budget string"+str);
         return val;
     }
 
@@ -2455,7 +2473,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     public void beaconAlert( final View rootView) throws InterruptedException {
 
-        final RippleBackground rippleBackground1 = (RippleBackground) rootView.findViewById(R.id.client_content);
+        final RippleBackground rippleBackground1 =
+                (RippleBackground) rootView.findViewById(R.id.client_content);
         final RippleBackground rippleBackground2 = (RippleBackground) rootView.findViewById(R.id.client_content2);
         final RippleBackground rippleBackground3 = (RippleBackground) rootView.findViewById(R.id.client_content3);
         start = System.currentTimeMillis();
@@ -2473,6 +2492,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     SnackbarManager.show(
                             Snackbar.with(getContext())
                                     .text("Set Location")
+                                    .position(Snackbar.SnackbarPosition.TOP)
                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
                 }catch(Exception e){}
                 }
@@ -2484,12 +2504,13 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         public void onTick(long millisUntilFinished) {
                             rippleBackground2.stopRippleAnimation();
                             rippleBackground3.startRippleAnimation();
-try {
-    SnackbarManager.show(
-            Snackbar.with(getContext())
-                    .text("Set your Budget")
-                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-}catch(Exception e){}
+               try {
+                   SnackbarManager.show(
+                      Snackbar.with(getContext())
+                          .text("Set your Budget")
+                          .position(Snackbar.SnackbarPosition.TOP)
+                          .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                   }catch(Exception e){}
                         }
 
                         public void onFinish() {
@@ -2504,6 +2525,7 @@ try {
                                     SnackbarManager.show(
                                             Snackbar.with(getContext())
                                                     .text("Press oye button to send your requirement")
+                                                    .position(Snackbar.SnackbarPosition.TOP)
                                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
                                     }catch(Exception e){}
                                 }
@@ -2670,13 +2692,117 @@ public void oyebuttonBackgrountColorOrange(){
 
 
 
-
-
-
-
     }
 
 
+    private void onMapDrag(final MotionEvent motionEvent) {
+
+                if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                    tvRate.setVisibility(View.INVISIBLE);
+                    rupeesymbol.setVisibility(View.INVISIBLE);
+
+                    horizontalPicker.keepScrolling();
+                    horizontalPicker.stopScrolling();
+                    Log.i("MotionEvent.ACTION_MOVE", "=========================");
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+//                    horizontalPicker.stopScrolling();
+//                    marquee(500,100);
+                            if(!spanning) {
+                    if (isNetworkAvailable()) {
+                        Log.i("MotionEvent.ACTION_UP", "=========================");
+                        final long now = SystemClock.uptimeMillis();
+                        if (clicked == true) {
+                            map.getUiSettings().setScrollGesturesEnabled(true);
+                            Log.i("MotionEvent.ACTION_UP", "=========================" + clicked);
+                        }
+//
+                        if (now - lastTouched > SCROLL_TIME && !(motionEvent.getPointerCount() > 1) && isNetworkAvailable()) {
+                            Log.i("MotionEvent.ACTION_UP", "=========================22");
+                            Log.i("setScroll", "=======================setScrollGesturesEnabled==");
+
+                            tvFetchingrates.setVisibility(View.VISIBLE);
+                            mMarkerminmax.setVisibility(View.VISIBLE);
+                            tvRate.setVisibility(View.VISIBLE);
+                            rupeesymbol.setVisibility(View.VISIBLE);
+                            tvFetchingrates.setVisibility(View.VISIBLE);
+                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+
+                            tv_building.setVisibility(View.VISIBLE);
+                            recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+
+                            LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
+                            Log.i("map", "============ map:" + " " + map);
+//                            currentLocation1 = map.getProjection().fromScreenLocation(point);
+
+                            VisibleRegion visibleRegion = map.getProjection()
+                                    .getVisibleRegion();
+
+                            Point x1 = map.getProjection().toScreenLocation(visibleRegion.farRight);
+
+                            Point y1 = map.getProjection().toScreenLocation(visibleRegion.nearLeft);
+
+
+                            Point centerPoint = new Point(x1.x / 2, y1.y / 2);
+
+                            LatLng centerFromPoint = map.getProjection().fromScreenLocation(
+                                    centerPoint);
+                            currentLocation1=centerFromPoint;
+                            lat = currentLocation1.latitude;
+                            Log.i("t1", "lat" + " " + lat);
+                            lng = currentLocation1.longitude;
+                            Log.i("t1", "lng" + " " + lng);
+//                            map.addMarker(new MarkerOptions().title("hey").position(currentLocation1));
+                            Log.i("MARKER-- ", "====================================");
+                            SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+                            SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                            General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
+                            General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
+                            Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+                            Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+                            getRegion();
+                            search_building_icon.setVisibility(View.GONE);
+                            horizontalPicker.stopScrolling();
+
+                            getPrice();
+                            new LocationUpdater().execute();
+                        }
+
+                    } else {
+                        tvFetchingrates.setVisibility(View.VISIBLE);
+                        tvRate.setVisibility(View.GONE);
+                        rupeesymbol.setVisibility(View.GONE);
+                        horizontalPicker.setVisibility(View.GONE);
+                        tv_building.setVisibility(View.GONE);
+                        tvFetchingrates.setText("No Internet Connection..");
+                        General.internetConnectivityMsg(getContext());
+//                        try {
+//                            SnackbarManager.show(
+//                                    Snackbar.with(getContext())
+//                                            .text("Seems like you dont have Internet Connection,Check your internet connection and try again.. ")
+//                                            .position(Snackbar.SnackbarPosition.TOP)
+//                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+//                        } catch (Exception e) {
+//                        }
+                    }
+
+                    }
+                            spanning=false;
+
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    lastTouched = SystemClock.uptimeMillis();
+                    map.getUiSettings().setScrollGesturesEnabled(true);
+                    //LatLng currentLocation11;
+                    Log.i("MotionEvent.ACTION_DOWN", "=========================");
+
+
+                }
+        }
+
+
+    private boolean isTelephonyEnabled(){
+        TelephonyManager tm = (TelephonyManager)getContext().getSystemService(Context.TELEPHONY_SERVICE);
+        return tm != null && tm.getSimState()== TelephonyManager.SIM_STATE_READY;
+    }
 
 
 }

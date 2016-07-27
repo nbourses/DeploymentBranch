@@ -117,8 +117,10 @@ import retrofit.http.POST;
         void userGps(@Body User user, Callback<User> callback);
 
 
+
 //        @POST("/1/verify/mobile")
 //        void verifyMobile(@Body User user, Callback<MobileVerify> callback);
+
 
 
     }

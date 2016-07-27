@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -61,7 +62,6 @@ import com.nbourses.oyeok.RPOT.OkBroker.CircularSeekBar.CircularSeekBarNew;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
-import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -255,6 +255,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private int buyerCount1;
     private int sellerCount1;
 private String Walkthrough,beacon;
+    private int prompt = 2;
+    private static final long THRESHOLD_MILLIS = 2000L;
+    private long lastClickMillis = 0;
 
     Animation bounce;
     Animation zoomin;
@@ -651,6 +654,7 @@ Log.i("PHASE","before adapter set");
         chart.setDescription("Select three Buildings.");
 
 
+
         //chart.animateY(1500);
 
 
@@ -826,8 +830,8 @@ Log.i("PHASE","before adapter set");
 
                 dataset = new BarDataSet(entries, Integer.toString(buildingPrice.size()));
                 Log.i("GRAPH","buildingPrice "+buildingPrice+" entries "+entries+" labels "+labels+" dataset "+dataset);
-
-                    dataset.setColors(new int[]{R.color.greenish_blue, R.color.google_yellow, R.color.red_light}, getContext());
+                dataset.setColors(new int[] { R.color.greenish_blue, R.color.google_yellow, R.color.red_light}, getContext());
+                    //dataset.setColors(new int[]{Color.parseColor("#2dc4b6"), Color.parseColor("#eeb110"), Color.parseColor("#e74c3c")}, getActivity());
                     //  dataset.setColors(new int[] { R.color.red, R.color.green, R.color.blue, R.color.orange }, 50);
 
             }
@@ -905,10 +909,10 @@ if(count<=220) {
 
         BrokerBuildings brokerBuildings = new BrokerBuildings();
         brokerBuildings.setDeviceId("Hardware");
-        brokerBuildings.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+        brokerBuildings.setGcmId(SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
         brokerBuildings.setPage(buildingsPage.toString());
-        brokerBuildings.setLng(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-        brokerBuildings.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+        brokerBuildings.setLng(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
+        brokerBuildings.setLat(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
 
         brokerBuildings.setPropertyType("home");
 
@@ -936,10 +940,6 @@ if(count<=220) {
 
                         Log.i("BROKER BUILDINGS CALLED","success response "+response);
 
-                        Log.i("BROKER BUILDINGS","LAT1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
-                        Log.i("BROKER BUILDINGS","LNG1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
-                        Log.i("BROKER BUILDINGS","LAT "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
-                        Log.i("BROKER BUILDINGS","LNG "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
 
                         JSONObject ne = new JSONObject(k.toString());
                         Log.i("BROKER BUILDINGS CALLED","success ne "+ne);
@@ -1050,7 +1050,7 @@ if(count<=220) {
 
             General.slowInternet(getContext());
 
-            Log.i("TRACE", "GCM id is" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
+            Log.i("TRACE", "GCM id is" + SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
             //preok params
             Oyeok preok = new Oyeok();
 //        int permissionCheck = ContextCompat.checkSelfPermission(getContext(),
@@ -1070,9 +1070,9 @@ if(count<=220) {
 //        }
 
             preok.setUserRole("broker");
-            preok.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
-            preok.setLong(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-            preok.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+            preok.setGcmId(SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
+            preok.setLong(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
+            preok.setLat(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
             preok.setPlatform("android");
             Log.i("PREOK", "user_id1 " + General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER));
             if (General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
@@ -1148,84 +1148,94 @@ if(count<=220) {
 
         }else{
 
-            General.internetConnectivityMsg(getContext());
+            try {
+                if (!General.isNetworkAvailable(getContext())) {
+                    texPtype.setText("Go online to get Leads.");
+                }
+            }
+            catch(Exception e){
+
+            }
         }
     }
 
     @OnClick(R.id.okBtn)
     public void onOptionClickok(View v) {
-
-        try {
-            Log.i("CHART", "y value " + chart.getEntriesAtIndex(0).get(0).getVal());
-            listings = new HashMap<String, Float>();
-            listings.put(buildingNames.get(buildingsSelected.get(0)), chart.getEntriesAtIndex(0).get(0).getVal());
-            listings.put(buildingNames.get(buildingsSelected.get(1)), chart.getEntriesAtIndex(1).get(0).getVal());
-            listings.put(buildingNames.get(buildingsSelected.get(2)), chart.getEntriesAtIndex(2).get(0).getVal());
-        }
-        catch (Exception e) {
-
-        }
+        long now = SystemClock.elapsedRealtime();
+        if (now - lastClickMillis > THRESHOLD_MILLIS) {
+            Log.i("CHART", "clickeda ");
+        if(okBtn.getText().equals("OK")) {
 
 
-        if (!General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+//            okBtn.setEnabled(false);
+//            okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
 
-            dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
-            //show sign up screen if broker is not registered
-            Bundle bundle = new Bundle();
-            bundle.putString("lastFragment", "BrokerPreokFragment");
-            bundle.putString("JsonArray", jsonObjectArray.toString());
-            bundle.putInt("Position", selectedItemPosition);
-            Log.i("listings","building1 "+buildingNames.get(buildingsSelected.get(0)));
-            Log.i("listings","building2 "+buildingNames.get(buildingsSelected.get(1)));
-            Log.i("listings","building3 "+buildingNames.get(buildingsSelected.get(2)));
+                try {
+                    Log.i("CHART", "y value " + chart.getEntriesAtIndex(0).get(0).getVal());
+                    listings = new HashMap<String, Float>();
+                    listings.put(buildingNames.get(buildingsSelected.get(0)), chart.getEntriesAtIndex(0).get(0).getVal());
+                    listings.put(buildingNames.get(buildingsSelected.get(1)), chart.getEntriesAtIndex(1).get(0).getVal());
+                    listings.put(buildingNames.get(buildingsSelected.get(2)), chart.getEntriesAtIndex(2).get(0).getVal());
+                } catch (Exception e) {
 
-            Log.i("listings","price1 "+chart.getEntriesAtIndex(0).get(0).getVal());
-            Log.i("listings","price2 "+chart.getEntriesAtIndex(1).get(0).getVal());
-            Log.i("listings","price3 "+chart.getEntriesAtIndex(2).get(0).getVal());
-
-            String[] bNames = new String[]{buildingNames.get(buildingsSelected.get(0)),buildingNames.get(buildingsSelected.get(1)),buildingNames.get(buildingsSelected.get(2))};
-            int[] bPrice = new int[]{Math.round(chart.getEntriesAtIndex(0).get(0).getVal()),Math.round(chart.getEntriesAtIndex(1).get(0).getVal()),Math.round(chart.getEntriesAtIndex(2).get(0).getVal())};
+                }
 
 
-            bundle.putIntArray("bPrice",bPrice);
-            bundle.putStringArray("bNames",bNames);
+                if (!General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+
+                    dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
+                    //show sign up screen if broker is not registered
+                    Bundle bundle = new Bundle();
+                    bundle.putString("lastFragment", "BrokerPreokFragment");
+                    bundle.putString("JsonArray", jsonObjectArray.toString());
+                    bundle.putInt("Position", selectedItemPosition);
+                    Log.i("listings", "building1 " + buildingNames.get(buildingsSelected.get(0)));
+                    Log.i("listings", "building2 " + buildingNames.get(buildingsSelected.get(1)));
+                    Log.i("listings", "building3 " + buildingNames.get(buildingsSelected.get(2)));
+
+                    Log.i("listings", "price1 " + chart.getEntriesAtIndex(0).get(0).getVal());
+                    Log.i("listings", "price2 " + chart.getEntriesAtIndex(1).get(0).getVal());
+                    Log.i("listings", "price3 " + chart.getEntriesAtIndex(2).get(0).getVal());
+
+                    String[] bNames = new String[]{buildingNames.get(buildingsSelected.get(0)), buildingNames.get(buildingsSelected.get(1)), buildingNames.get(buildingsSelected.get(2))};
+                    int[] bPrice = new int[]{Math.round(chart.getEntriesAtIndex(0).get(0).getVal()), Math.round(chart.getEntriesAtIndex(1).get(0).getVal()), Math.round(chart.getEntriesAtIndex(2).get(0).getVal())};
 
 
-            bundle.putSerializable("listings", listings);
-            Fragment fragment = null;
-            fragment = new SignUpFragment();
-            fragment.setArguments(bundle);
-
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_sign, fragment);
-           // fragmentTransaction.replace(R.id.container_map, fragment);
-            fragmentTransaction.commit();
-        } else {
-            //here broker is registered
+                    bundle.putIntArray("bPrice", bPrice);
+                    bundle.putStringArray("bNames", bNames);
 
 
+                    bundle.putSerializable("listings", listings);
+                    Fragment fragment = null;
+                    fragment = new SignUpFragment();
+                    fragment.setArguments(bundle);
+
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.container_sign, fragment);
+                    // fragmentTransaction.replace(R.id.container_map, fragment);
+                    fragmentTransaction.commit();
+                } else {
+                    //here broker is registered
 
 
-            AcceptOkCall a = new AcceptOkCall();
-            a.setmCallBack(BrokerPreokFragment.this);
-            a.acceptOk(listings, jsonObjectArray, selectedItemPosition, dbHelper, getActivity());
+                    AcceptOkCall a = new AcceptOkCall();
+                    a.setmCallBack(BrokerPreokFragment.this);
+                    a.acceptOk(listings, jsonObjectArray, selectedItemPosition, dbHelper, getActivity());
 
-            General.setBadgeCount(getContext(),AppConstants.RENTAL_COUNT,0);
-            General.setBadgeCount(getContext(),AppConstants.RESALE_COUNT,0);
-            General.setBadgeCount(getContext(),AppConstants.TENANTS_COUNT,0);
-            General.setBadgeCount(getContext(),AppConstants.OWNERS_COUNT,0);
-            General.setBadgeCount(getContext(),AppConstants.BUYER_COUNT,0);
-            General.setBadgeCount(getContext(),AppConstants.SELLER_COUNT,0);
+                    General.setBadgeCount(getContext(), AppConstants.RENTAL_COUNT, 0);
+                    General.setBadgeCount(getContext(), AppConstants.RESALE_COUNT, 0);
+                    General.setBadgeCount(getContext(), AppConstants.TENANTS_COUNT, 0);
+                    General.setBadgeCount(getContext(), AppConstants.OWNERS_COUNT, 0);
+                    General.setBadgeCount(getContext(), AppConstants.BUYER_COUNT, 0);
+                    General.setBadgeCount(getContext(), AppConstants.SELLER_COUNT, 0);
 
 
-        }
-
+                }
 
 
 //        buildingSlider.startAnimation(slide_down);
 //        buildingSlider.setVisibility(View.GONE);
-
 
 
 //        if (buildingSlider.getVisibility() == View.VISIBLE) {
@@ -1236,6 +1246,23 @@ if(count<=220) {
 //            buildingSlider.setVisibility(View.GONE);
 //        }
 
+        }
+        else{
+            try {
+                SnackbarManager.show(
+                        Snackbar.with(getContext())
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text("Please change listing rates.")
+                                //.animation(true)
+                                .duration(Snackbar.SnackbarDuration.LENGTH_LONG)
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+            }
+            catch(Exception e){
+                Log.i(TAG,"Caught in exception click ok btn "+e);
+            }
+        }
+            lastClickMillis = now;
+        }
     }
 
 
@@ -1247,9 +1274,10 @@ if(count<=220) {
 
         txtPreviouslySelectedOptionB = (TextView) v;
         if (v.getId() == selectB.getId()) {
-            okBtn.setEnabled(false);
+            /////okBtn.setEnabled(false);
             //okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
             okBtn.setText("Choose 3 Buildings");
+
             selectB.setBackgroundResource(R.color.greenish_blue);
             chart.setDescription("Select three buildings.");
             // chart.clear();
@@ -1308,7 +1336,7 @@ if(count<=220) {
                 setB.setBackgroundResource(R.color.greenish_blue);
                 selectB.setBackgroundResource(R.color.colorPrimaryDark);
 
-                okBtn.setEnabled(true);
+                /////okBtn.setEnabled(true);
                 okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.greenish_blue));
                 okBtn.setText("OK");
 //                if(entries.size() !=0)
@@ -1337,6 +1365,7 @@ if(count<=220) {
     public void onOptionClick(View v) {
         jsonObjectArray = null;
         notClicked.setVisibility(View.VISIBLE);
+
 
         //okButton.setAnimation(zoomin);
         //okButton.setAnimation(zoomout);
@@ -1446,6 +1475,9 @@ if(count<=220) {
         }
 
         onPositionSelected(currentSeekbarPosition, currentCount);
+        if(!General.isNetworkAvailable(getContext())){
+            texPtype.setText("Go online to get Leads.");
+        }
     }
 
     @Override
@@ -1456,6 +1488,8 @@ if(count<=220) {
         circularSeekbar.onTabclick();
         currentSeekbarPosition = position;
         Log.i("PREOK CALLED","currentSeekbarPosition"+currentSeekbarPosition);
+
+
 
         if (position == 0) {
             atFor = "at";
@@ -1481,7 +1515,10 @@ catch(Exception e){}
 
             rentText.setVisibility(View.GONE);
            // texPtype.setVisibility(View.GONE);
-            texPtype.setText("Please select a Lead and press OK.");
+
+
+                texPtype.setText("Please select a Lead and press OK.");
+
             texPstype.setVisibility(View.GONE);
 
             resaleCount.setVisibility(View.GONE);
@@ -1549,13 +1586,23 @@ catch (Exception e){
 
             if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
                 Log.i("PREOK CALLED11","values set"+jsonArrayReqLl.toString());
-                circularSeekbar.setValues(jsonArrayReqLl.toString());
+                prompt = circularSeekbar.setValues(jsonArrayReqLl.toString());
             }
             else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 Log.i("PREOK CALLED12", "values set" + jsonArrayAvlLl.toString());
-                circularSeekbar.setValues(jsonArrayAvlLl.toString());
+               prompt = circularSeekbar.setValues(jsonArrayAvlLl.toString());
 
             }
+            if(prompt == 1 ){
+                texPtype.setText("No leads available in this area for now.");
+                leadPrompt.setText("No leads available in this area for now.");
+            }
+            else{
+                texPtype.setText("Please select a Lead and press OK.");
+                leadPrompt.setText("Please select a Lead and press OK.");
+            }
+
+
 
             //added
 
@@ -1599,7 +1646,9 @@ catch (Exception e){
 
             rentText.setVisibility(View.GONE);
            // texPtype.setVisibility(View.GONE);
-            texPtype.setText("Please select a Lead and press OK.");
+
+                texPtype.setText("Please select a Lead and press OK.");
+
             texPstype.setVisibility(View.GONE);
 
             rentalCount.setVisibility(View.GONE);
@@ -1669,11 +1718,11 @@ catch (Exception e){
 
             if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
                 Log.i("PREOK CALLED17", "values set" + jsonArrayReqOr.toString());
-                circularSeekbar.setValues(jsonArrayReqOr.toString());
+                prompt = circularSeekbar.setValues(jsonArrayReqOr.toString());
             }
             else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
                 Log.i("PREOK CALLED18", "values set" + jsonArrayAvlOr.toString());
-                circularSeekbar.setValues(jsonArrayAvlOr.toString());
+                prompt = circularSeekbar.setValues(jsonArrayAvlOr.toString());
             }
 
             // Added
@@ -1700,6 +1749,14 @@ catch (Exception e){
 
             }
 
+            if(prompt == 1 ){
+                texPtype.setText("No leads available in this area for now.");
+                leadPrompt.setText("No leads available in this area for now.");
+            }
+            else{
+                texPtype.setText("Please select a Lead and press OK.");
+                leadPrompt.setText("Please select a Lead and press OK.");
+            }
 
         }
 
@@ -1716,16 +1773,26 @@ catch (Exception e){
                 }
             });
         }
+        try {
+            if (!General.isNetworkAvailable(getContext())) {
+                texPtype.setText("Go online to get Leads.");
+            }
+        }
+        catch(Exception e){
+
+        }
     }
 
     @Override
     public void onclick(int position, JSONArray m, String show, int x_c, int y_c) {
         deal.setEnabled(true);
-        deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.orange));
+        deal.setBackgroundColor(Color.parseColor("#ff9f1c"));
+        //deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.orange));
         try {
             leadPrompt.setVisibility(View.VISIBLE);
-            leadPrompt.setText("Please select a Lead and press OK");
+            leadPrompt.setText("Please select a Lead and press OK.");
             jsonObjectArray = m;
+
             selectedItemPosition = position;
             String ptype = null;
             String pstype;
@@ -1861,7 +1928,7 @@ if(ptype.equalsIgnoreCase("home"))
 
 
                 SnackbarManager.show(
-                        com.nispok.snackbar.Snackbar.with(getActivity())
+                        com.nispok.snackbar.Snackbar.with(getContext())
                                 .position(Snackbar.SnackbarPosition.BOTTOM)
                                 .text("Please select a Lead and then press OK.")
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
@@ -1890,7 +1957,7 @@ if(ptype.equalsIgnoreCase("home"))
                 Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
                 intent.putExtra("buildingSliderFlag",buildingSliderflag);
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                okBtn.setEnabled(false);
+                /////okBtn.setEnabled(false);
                 //okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
                 okBtn.setText("Choose 3 Buildings");
 
@@ -2777,9 +2844,12 @@ public void walkthroughBroker(final View v) {
 
 
                 SnackbarManager.show(
-                        Snackbar.with(getActivity())
+                        Snackbar.with(getContext())
                                 .text("Select the Role")
+
+                                .position(Snackbar.SnackbarPosition.TOP)
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
             }
 
             public void onFinish() {
@@ -2790,8 +2860,10 @@ public void walkthroughBroker(final View v) {
                         rippleBackground1.stopRippleAnimation();
                         rippleBackground2.startRippleAnimation();
                         SnackbarManager.show(
-                                Snackbar.with(getActivity())
+                                Snackbar.with(getContext())
                                         .text("Select the Lead")
+
+                                        .position(Snackbar.SnackbarPosition.TOP)
                                         .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
 
                     }
@@ -2804,9 +2876,12 @@ public void walkthroughBroker(final View v) {
                                 rippleBackground2.stopRippleAnimation();
                                 rippleBackground3.startRippleAnimation();
                                 SnackbarManager.show(
-                                        Snackbar.with(getActivity())
+                                        Snackbar.with(getContext())
                                                 .text("Press 'OK' to select three Property for Visit")
+
+                                                .position(Snackbar.SnackbarPosition.TOP)
                                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
 
                             }
 

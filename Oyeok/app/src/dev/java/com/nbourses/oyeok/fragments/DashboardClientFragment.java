@@ -183,7 +183,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private static final long SCROLL_TIME = 200L;
 
 
-//    private GeoFence geoFence;
+
     private int permissionCheckForCamera, permissionCheckForLocation;
     private final int MY_PERMISSION_FOR_CAMERA = 11;
     private CustomPhasedSeekBar mPhasedSeekBar;
@@ -1559,9 +1559,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 }
                                 buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+
                                 mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
                                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
                                 search_building_icon.setVisibility(View.GONE);
+
 
                                 //if(mflag=false) {
 
@@ -1811,6 +1813,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                 tvRate.setText("/ month");
                 brokerType = "rent";
+                AppConstants.CURRENT_DEAL_TYPE="rent";
                 dbHelper.save(DatabaseConstants.brokerType, "LL");
                 dbHelper.save("brokerType", "On Rent");
                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
@@ -1842,6 +1845,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 updateHorizontalPicker();
                 tvRate.setText("/ sq.ft");
                 brokerType = "resale";
+                AppConstants.CURRENT_DEAL_TYPE="resale";
                 dbHelper.save(DatabaseConstants.brokerType, "OR");
                 dbHelper.save("brokerType", "For Sale");
 
@@ -2732,6 +2736,8 @@ public void oyebuttonBackgrountColorOrange(){
                             tvRate.setVisibility(View.VISIBLE);
                             rupeesymbol.setVisibility(View.VISIBLE);
                             tvFetchingrates.setVisibility(View.VISIBLE);
+                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+
                             tv_building.setVisibility(View.VISIBLE);
                             recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 
@@ -2756,7 +2762,6 @@ public void oyebuttonBackgrountColorOrange(){
                             Log.i("t1", "lat" + " " + lat);
                             lng = currentLocation1.longitude;
                             Log.i("t1", "lng" + " " + lng);
-                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
 //                            map.addMarker(new MarkerOptions().title("hey").position(currentLocation1));
                             Log.i("MARKER-- ", "====================================");
                             SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");

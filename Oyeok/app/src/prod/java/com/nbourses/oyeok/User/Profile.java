@@ -48,9 +48,20 @@ public class Profile extends Fragment {
     DBHelper dbhelper;
     String filePath="";
 
+     String name;
+
+    String email ;
+    String namePattern = "[a-zA-Z]+[a-zA-Z0-9]+";
+    String emailPattern = "[a-z]+[a-zA-Z0-9._-]+@[a-z]+\\.+(in|com|org|net)";
+    String emailPattern1 ="[a-z]+[a-zA-Z0-9._-]+@[a-z]+\\.+[ac]+\\.+[in]";
+
     private Realm myRealm;
 
     public Profile() {
+//        namePattern = "[a-zA-Z0-9]+";
+//
+//        emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+
     }
 
     @Override
@@ -113,7 +124,10 @@ public class Profile extends Fragment {
         updateProfile= (Button) layout.findViewById(R.id.update_profile);
         updateProfile.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                updateProfile();
+                name  = username_txt.getText().toString().trim();
+                email = emailTxt.getText().toString().trim();
+                validationCheck();
+                //updateProfile();
             }
         });
 
@@ -131,6 +145,9 @@ public class Profile extends Fragment {
         username_txt.setSelection(username_txt.getText().length());
 
 //        ((MainActivity)getActivity()).changeDrawerToggle(false,"Profile");
+
+
+//        validationCheck();
 
         return layout;
     }
@@ -234,6 +251,53 @@ public class Profile extends Fragment {
         General.internetConnectivityMsg(getContext());
     }
     }
+
+
+
+    private void validationCheck() {
+         name  = username_txt.getText().toString().trim();
+         email = emailTxt.getText().toString().trim();
+        Log.i("TRACE","inside validCheck : "+name+" email: "+email);
+       // && name.length() > 0
+
+        if (name.equalsIgnoreCase("") ) {
+            username_txt.setError("Please enter name");
+            Log.i("TRACE", "Plz enter name");
+            return;
+
+        }else if (email.equalsIgnoreCase("")) {
+            emailTxt.setError("Please enter email-id");
+            Log.i("TRACE", "Plz enter email");
+            return;
+        }
+
+         if (name.matches(namePattern) && (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) )
+        {
+            updateProfile();
+
+        }
+
+        else if (!(email.matches(emailPattern) || email.matches(emailPattern1)) )
+        {
+            emailTxt.setError("Please enter valid email-id");
+            Log.i("TRACE", "Plz enter email");
+            return;
+
+
+        }
+        else
+        {
+            username_txt.setError("Please  enter valid name");
+            Log.i("TRACE", "Plz enter name");
+            return;
+        }
+
+
+//email.matches(emailPattern) || email.matches(emailPattern1)
+
+
+    }
+
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

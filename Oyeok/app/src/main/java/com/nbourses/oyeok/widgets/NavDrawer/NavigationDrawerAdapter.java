@@ -12,8 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.helpers.AppConstants;
-import com.nbourses.oyeok.helpers.General;
 
 import java.util.Collections;
 import java.util.List;
@@ -70,19 +68,19 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 //        holder.title.setText(current.getTitle());
 
 
-        if(position == 2) {
-            Log.i("Positions","Position3================= :"+position+"selected_item :"+selected_item);
-            if(General.getBadgeCount(context,AppConstants.HDROOMS_COUNT)<=0)
-                holder.supportCount.setVisibility(View.GONE);
-            else {
-                Log.i("Positions","Position4================= :"+position+"selected_item :"+selected_item);
-                holder.supportCount.setVisibility(View.VISIBLE);
-                holder.supportCount.setText(String.valueOf(General.getBadgeCount(context, AppConstants.HDROOMS_COUNT)));
-
-            }
-
-              }
-        else
+//        if(position == 2) {
+//            Log.i("Positions","Position3================= :"+position+"selected_item :"+selected_item);
+//            if(General.getBadgeCount(context,AppConstants.HDROOMS_COUNT)<=0)
+//                holder.supportCount.setVisibility(View.GONE);
+//            else {
+//                Log.i("Positions","Position4================= :"+position+"selected_item :"+selected_item);
+//                holder.supportCount.setVisibility(View.VISIBLE);
+//                holder.supportCount.setText(String.valueOf(General.getBadgeCount(context, AppConstants.HDROOMS_COUNT)));
+//
+//            }
+//
+//              }
+//        else
             holder.supportCount.setVisibility(View.GONE);
     }
 

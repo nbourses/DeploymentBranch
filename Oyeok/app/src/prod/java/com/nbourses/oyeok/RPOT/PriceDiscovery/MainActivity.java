@@ -36,11 +36,13 @@ import com.firebase.client.Firebase;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.GoogleCloudMessaging.RegistrationIntentService;
-import com.nbourses.oyeok.JPOT.SalaryDiscovery.UI.JexMarkerPanelScreen;
-import com.nbourses.oyeok.LPOT.PriceDiscoveryLoan.UI.LexMarkerPanelScreen;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
+
 import com.nbourses.oyeok.SignUp.SignUpFragment;
+
+import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
+
 import com.nbourses.oyeok.User.Profile;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;

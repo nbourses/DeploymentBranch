@@ -558,7 +558,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         }
         else if (itemTitle.equals(getString(R.string.RegisterSignIn))) {
             SignUpFragment signUpFragment = new SignUpFragment();
-            // signUpFragment.getView().bringToFront();
+            // signUpFragment.getView().bringToFrFont();
             Bundle bundle = new Bundle();
             bundle.putStringArray("Chat", null);
             bundle.putString("lastFragment", "drawer");

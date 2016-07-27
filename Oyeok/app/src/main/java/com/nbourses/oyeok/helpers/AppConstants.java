@@ -110,6 +110,7 @@ public class AppConstants {
 
     public static Boolean REGISTERING_FLAG = false;
     public static  String CURRENT_USER_ROLE = "currentUserRole";
+    public static  String CURRENT_DEAL_TYPE = "currentDealType";
 
     public static final String UPLOADED_IMAGE_PATH = "uploadedImagePath";
 

@@ -29,7 +29,6 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
-import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 

@@ -55,7 +55,6 @@ public class OyeScreenFragment extends Fragment {
     /*@Bind(R.id.txtOthers)
     TextView txtOthers;*/
 
-
     @Bind(R.id.txtOptionSee)
     TextView txtOptionSee;
 
@@ -88,10 +87,10 @@ public class OyeScreenFragment extends Fragment {
     String oyedata="" ;
 
 //    DiscreteSeekBar discreteSeekBar;
-@Bind(R.id.tv_dealinfo)
-    TextView tv_dealinfo;
-    @Bind(R.id.txtfixedString)
-    TextView txtfixedString;
+//@Bind(R.id.tv_dealinfo)
+//    TextView tv_dealinfo;
+//    @Bind(R.id.txtfixedString)
+//    TextView txtfixedString;
    String isclicked;
 
 
@@ -140,7 +139,7 @@ public class OyeScreenFragment extends Fragment {
         satView.setVisibility(View.VISIBLE);
         bundle = getArguments();
       tv_fd_bank=(TextView)rootView.findViewById(R.id.tv_fd_bank);
-        tv_dealinfo=(TextView)rootView.findViewById(R.id.tv_dealinfo);
+//        tv_dealinfo=(TextView)rootView.findViewById(R.id.tv_dealinfo);
 
 
 
@@ -182,7 +181,7 @@ public class OyeScreenFragment extends Fragment {
                 // intent.getExtras().getString("tv_dealinfo")+
 //            if(txtPreviouslySelectedOption.getText().toString().equalsIgnoreCase(txtOptionSee.getText().toString())){
                  oyedata = SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY);
-                tv_dealinfo.setText(oyedata);
+//                tv_dealinfo.setText(oyedata);
                 Log.i("oyedata","oyedata==============="+oyedata);
 
 
@@ -289,13 +288,13 @@ public class OyeScreenFragment extends Fragment {
             tv_fd_bank.setText("I like to pay my \n SECURITY DEPOSIT");
             satView.setText("Apply for finance \n SECURITY DEPOSIT");
                 budgetText.setText("My Rent Budget");
-                txtfixedString.setText("CONNECT NOW | FIND @ ");
+//                txtfixedString.setText("CONNECT NOW | FIND @ ");
             }
             else{
                 tv_fd_bank.setText("I don't \n want loan");
                 satView.setText("I want LOAN \n to buy");
                 budgetText.setText("My Budget");
-                txtfixedString.setText("CONNECT NOW | FIND @ ");
+//                txtfixedString.setText("CONNECT NOW | FIND @ ");
 
             }
             AppConstants.letsOye.setReqAvl("req");
@@ -307,13 +306,13 @@ public class OyeScreenFragment extends Fragment {
             tv_fd_bank.setText("I like Monthly RENT CHEQUE(s)");
             satView.setText("Apply for finance FULL ADVANCE RENT");
                 budgetText.setText("My Asking Rent");
-                txtfixedString.setText("CONNECT NOW | LIST @ ");
+//                txtfixedString.setText("CONNECT NOW | LIST @ ");
             }
             else{
                 tv_fd_bank.setText("No Loan On \n Property");
                 satView.setText("I have Loan On \n Propery");
                 budgetText.setText("Sale Price");
-                txtfixedString.setText("CONNECT NOW | LIST @ ");
+//                txtfixedString.setText("CONNECT NOW | LIST @ ");
 
             }
             AppConstants.letsOye.setReqAvl("avl");
@@ -406,11 +405,13 @@ public class OyeScreenFragment extends Fragment {
 
         if (bundle != null) {
 
-            requestType.setText(bundle.getString("brokerType").toUpperCase());
+         //   requestType.setText(bundle.getString("brokerType").toUpperCase());
+//            Log.i("value"," data"+bundle.getString("brokerType").toUpperCase());
             DecimalFormat formatter = new DecimalFormat();
 
 
             if (bundle.getString("brokerType").equalsIgnoreCase("rent")) {
+                requestType.setText("Rental");
                 budgetSeekBar.setMin(AppConstants.minRent);
                 budgetSeekBar.setMax(AppConstants.maxRent);
                 budgetSeekBar.setProgress(AppConstants.minRent);
@@ -424,6 +425,7 @@ public class OyeScreenFragment extends Fragment {
                 AppConstants.letsOye.setTt("LL");
             }
             else {
+                requestType.setText("Buy/Sell");
                 budgetSeekBar.setMin(AppConstants.minSale);
                 budgetSeekBar.setMax(AppConstants.maxSale);
                 budgetSeekBar.setProgress(AppConstants.minRent);
@@ -456,7 +458,7 @@ public class OyeScreenFragment extends Fragment {
 
 
         }
-        txtfixedString.setText("CONNECT NOW | FIND @ ");
+//        txtfixedString.setText("CONNECT NOW | FIND @ ");
 
     }
 
@@ -520,19 +522,24 @@ public class OyeScreenFragment extends Fragment {
 
     @OnClick(R.id.btnOnOyeClick)
     public void submitOyeOk(View v) {
-        Log.i("TAG","property subtype selected" +General.retriveBoolean(getContext(), "propertySubtypeFlag"));
-        if(General.retriveBoolean(getContext(), "propertySubtypeFlag")) {
-            isclicked = "true";
-            Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
-            intent.putExtra("isclicked", isclicked);
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-            Log.i("isclicked", "isclicked===============================");
+
+        if(General.isNetworkAvailable(getContext())) {
+            Log.i("TAG", "property subtype selected" + General.retriveBoolean(getContext(), "propertySubtypeFlag"));
+            if (General.retriveBoolean(getContext(), "propertySubtypeFlag")) {
+                isclicked = "true";
+                Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
+                intent.putExtra("isclicked", isclicked);
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                Log.i("isclicked", "isclicked===============================");
+            } else {
+                SnackbarManager.show(
+                        Snackbar.with(getContext())
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text("Please select property subtype.")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+            }
         }else{
-            SnackbarManager.show(
-                    Snackbar.with(getContext())
-                            .position(Snackbar.SnackbarPosition.TOP)
-                            .text("Please select property subtype.")
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+            General.internetConnectivityMsg(getContext());
         }
     }
 

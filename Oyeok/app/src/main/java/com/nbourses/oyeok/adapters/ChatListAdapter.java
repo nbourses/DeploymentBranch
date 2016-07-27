@@ -4,6 +4,7 @@ package com.nbourses.oyeok.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,7 @@ import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.ChatMessage;
 
-import java.net.URL;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -122,6 +123,7 @@ public class ChatListAdapter extends BaseAdapter {
         }
 
         else if (message.getUserType() == ChatMessageUserType.IMG) {
+            Log.i("image adapter","image adapter");
             if (convertView == null) {
                 v = LayoutInflater.from(context).inflate(R.layout.image, null, false);
                 holder5 = new ViewHolder5();
@@ -136,13 +138,21 @@ public class ChatListAdapter extends BaseAdapter {
                 v = convertView;
                 holder5 = (ViewHolder5) v.getTag();
             }
+            Log.i("IMGURL","image url is "+message.getImageUrl());
+
+
 try {
-    URL url = new URL(message.getImageUrl());
-    Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-    holder5.imageView.setImageBitmap(bmp);
+    /*ImageFromUrl a = new ImageFromUrl();
+     a.execute(message.getImageUrl());*/
+    new DownloadImageTask(holder5.imageView).execute(message.getImageUrl());
+
+    //holder5.imageView.setBackgroundResource(R.drawable.asset_oye_symbol_icon);
+//    URL url = new URL(message.getImageUrl());
+//    Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+//    holder5.imageView.setImageBitmap(bmp);
 }
 catch(Exception e){
-
+    Log.i("IMGURL","image url is e "+e);
     // Image deleted default image
 }
 
@@ -327,6 +337,36 @@ catch(Exception e){
     }
 
 
+
+
+
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            Log.i("flok","flokai 1");
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            Log.i("flok","flokai 2");
+            bmImage.setImageBitmap(result);
+        }
+    }
 
 
 }

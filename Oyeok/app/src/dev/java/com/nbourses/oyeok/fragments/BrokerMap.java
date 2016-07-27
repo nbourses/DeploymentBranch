@@ -689,6 +689,7 @@ try {
                         SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
                         General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
                         General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
+                        getRegion();
 //
                     getRegion();
                         new LocationUpdater().execute();
