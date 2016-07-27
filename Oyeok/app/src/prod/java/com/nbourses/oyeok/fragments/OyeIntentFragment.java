@@ -24,7 +24,6 @@ import com.appyvet.rangebar.RangeBar;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
-import com.nbourses.oyeok.MyFragment;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;

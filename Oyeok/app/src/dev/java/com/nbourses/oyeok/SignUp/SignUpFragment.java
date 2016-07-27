@@ -17,8 +17,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -51,8 +49,6 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OnAcceptOkSuccess;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
-import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
-import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.User.UserProfileViewModel;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
 import com.nbourses.oyeok.activities.BrokerMainActivity;
@@ -78,6 +74,9 @@ import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+
+//import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
+//import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 
 //digits
 //digits end
@@ -392,7 +391,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         tvcontent= (TextView) view.findViewById(R.id.tvcontent);
          editProfile_pic = (ImageView) view.findViewById(R.id.editProfile_pic);
 
-        if(okBroker==false) {
+        if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
             tvheading.setText(R.string.client_sign_up_heading);
             tvcontent.setText(R.string.client_sign_up_content);
         }
@@ -439,7 +438,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
 
         submit.setText("LOGIN");
-        if(okBroker==false) {
+        if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
             tvheading.setText(R.string.client_log_in_heading);
             tvcontent.setText(R.string.client_sign_up_content);
         }
@@ -462,7 +461,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
      new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
      submit.setText("REGISTER");
 
-     if(okBroker==false) {
+     if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
          tvheading.setText(R.string.client_sign_up_heading);
          tvcontent.setText(R.string.client_sign_up_content);
      }
@@ -911,7 +910,7 @@ if(newUser==true) {
                             submit.setText("DONE");
 
 
-                            if (redirectToOyeIntentSpecs) {
+                            /*if (redirectToOyeIntentSpecs) {
                                 Fragment fragment = null;
                                 Bundle bundle = new Bundle();
                                 bundle.putString("cameFrom", "SignUp");
@@ -924,7 +923,7 @@ if(newUser==true) {
                                 fragmentTransaction.replace(R.id.container_map, fragment);
                                 fragmentTransaction.commit();
                             }
-
+*/
                             return;
                         }else{
                             Log.i("TAG","suspecto "+role_of_user);
@@ -1130,7 +1129,7 @@ if(newUser==true) {
                         Log.i("TRACE", "Inside signup Failure" + error);
 
                         Log.i("TAG", "Inside signup Failure" + error.getMessage());
-                        if (redirectToOyeIntentSpecs) {
+                        /*if (redirectToOyeIntentSpecs) {
                             Fragment fragment = null;
                             Bundle bundle = new Bundle();
                             bundle.putString("cameFrom", "SignUp");
@@ -1142,7 +1141,7 @@ if(newUser==true) {
                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                             fragmentTransaction.replace(R.id.container_map, fragment);
                             fragmentTransaction.commit();
-                        }
+                        }*/
                     }
                 });
             }catch (Exception e){
@@ -1462,12 +1461,12 @@ if(newUser==true) {
 
         Log.i("TRACE","in ReplaceFrag");
 
-        Fragment fragment = new Droom_Chat_New();
+   /*     Fragment fragment = new Droom_Chat_New();
         fragment.setArguments(args);
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container_map, fragment);
-        fragmentTransaction.commitAllowingStateLoss();
+        fragmentTransaction.commitAllowingStateLoss();*/
 
     }
 

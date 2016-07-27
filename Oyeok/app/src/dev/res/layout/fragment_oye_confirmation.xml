@@ -1,0 +1,157 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="bottom"
+    android:background="@color/transparent"
+    tools:context="com.nbourses.oyeok.fragments.OyeConfirmation"
+    >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/grey"
+        android:id="@+id/available_sizes"
+        android:visibility="gone"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:text="Available Sizes:"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_margin="1dp"
+            android:gravity="center_vertical|center_horizontal" />
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:id="@+id/btn_2bhks"
+            android:background="@drawable/gradient_button_border"
+            android:text="2BHK"
+
+            android:gravity="center_vertical|center_horizontal" />
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:id="@+id/btn_3bhks"
+            android:background="@color/transparent"
+            android:text="3BHK"
+            android:gravity="center_vertical|center_horizontal" />
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:id="@+id/btn_3.5bhks"
+            android:background="@color/transparent"
+            android:text="3.5BHK"
+            android:gravity="center_vertical|center_horizontal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/confirm_layout_with_edit_button"
+        android:orientation="vertical">
+<Button
+    android:layout_width="120dp"
+    android:layout_height="35dp"
+    android:background="@drawable/gradient_grey"
+    android:layout_marginLeft="-5dp"
+    android:textStyle="bold|italic"
+    android:layout_marginBottom="-5dp"
+    android:visibility="visible"
+    android:text="edit Post"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="My Expectation = 50K | 2K (negotiable)"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity="center_horizontal|center_vertical"
+        android:background="@color/lightgrey"/>
+    </LinearLayout>
+
+
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="2 BHK-Semi Furnished"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:background="@color/white"/>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/calendar"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:src="@drawable/calendar48" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:id="@+id/display_date"
+        android:textStyle="bold"
+        android:text="30th July 2016"
+        android:visibility="gone"
+        android:gravity="center_horizontal|center_vertical"
+        android:textSize="15sp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:textColor="@color/greenish_blue" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="(Possession Date)"
+        android:textColor="@color/black"
+        android:layout_marginLeft="2dp"
+        android:background="@color/white"
+        android:textSize="12sp" />
+
+
+
+
+</LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:background="@color/lightgrey"
+        android:layout_height="1dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Invite Members Marketing with you"
+        android:textColor="@color/black"
+        android:gravity="center_horizontal|center_vertical"
+        android:background="@color/white"/>
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+    <ImageView
+        android:layout_width="310dp"
+        android:layout_height="match_parent"
+        android:id="@+id/addContact"
+        android:background="@drawable/addcontact"
+         />
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:id="@+id/proceed_to_oye"
+            android:background="@drawable/arrow_confirm"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>

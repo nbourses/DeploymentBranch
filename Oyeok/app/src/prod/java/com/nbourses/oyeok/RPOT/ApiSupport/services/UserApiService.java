@@ -1,7 +1,6 @@
 package com.nbourses.oyeok.RPOT.ApiSupport.services;
 
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.MobileVerify;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateProfile;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;

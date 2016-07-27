@@ -164,6 +164,7 @@ GoogleMap map;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agent_main);
+        AppConstants.CURRENT_USER_ROLE ="broker";
 
 
 

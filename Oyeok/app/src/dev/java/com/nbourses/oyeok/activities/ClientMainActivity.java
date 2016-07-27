@@ -42,6 +42,7 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
+import com.nbourses.oyeok.fragments.OyeConfirmation;
 import com.nbourses.oyeok.fragments.OyeScreenFragment;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -113,7 +114,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
 
     private WebView webView;
-    private  Boolean autocomplete = false;
+    private  Boolean autocomplete = false,oyeconfirm_flag=false;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
 
     public interface openMapsClicked{
@@ -161,14 +162,19 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
                             closeOyeScreen();
 
                         }
+                        OyeConfirmation  oyeConfirmation=new OyeConfirmation();
+                        loadFragment(oyeConfirmation, null, R.id.container_OyeConfirmation, "");
+                        oyeconfirm_flag=true;
 
-                        SignUpFragment signUpFragment = new SignUpFragment();
-                        loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
+//                        SignUpFragment signUpFragment = new SignUpFragment();
+//                        loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
                         Log.i("Signup called =", "Sign up");
                         // btnOnOyeClick.setVisibility(View.GONE);
                     }
                 } else {
                     Log.i("already", "Signed up");
+//                    OyeConfirmation  oyeConfirmation=new OyeConfirmation();
+//                    loadFragment(oyeConfirmation, null, R.id.container_OyeConfirmation, "");
                     if (s.equals(false)) {
                         SnackbarManager.show(
                                 Snackbar.with(getBaseContext())
@@ -178,8 +184,16 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
                     } else {
                         //create new deal
+                        OyeConfirmation  oyeConfirmation1=new OyeConfirmation();
+                        loadFragment(oyeConfirmation1, null, R.id.container_OyeConfirmation, "");
+                        oyeconfirm_flag=true;
+                        if (slidingLayout != null &&
+                                (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
+                                        slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
+                            closeOyeScreen();
 
-                        alertbuilder();
+                        }
+//                        alertbuilder();
 
 
 
@@ -258,7 +272,7 @@ private void alertbuilder()
 
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
-
+        AppConstants.CURRENT_USER_ROLE ="client";
         ShortcutBadger.removeCount(this);
 
 //        lintent=getIntent();
@@ -848,6 +862,11 @@ private void alertbuilder()
     public void onBackPressed() {
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        if(oyeconfirm_flag=true){
+//                super.onBackPressed();
+            getSupportFragmentManager().popBackStack();
+            oyeconfirm_flag=false;
+        }else
         if(AppConstants.SIGNUP_FLAG){
 /*            if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")){
             Intent back = new Intent(this, BrokerMainActivity.class);
@@ -881,6 +900,10 @@ private void alertbuilder()
         }
 
        else if(setting==true){
+
+
+
+
             Log.i("BACK PRESSED"," =================== setting"+setting);
             if(SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") || SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")){
 

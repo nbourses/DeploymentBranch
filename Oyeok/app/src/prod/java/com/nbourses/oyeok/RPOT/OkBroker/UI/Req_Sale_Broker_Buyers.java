@@ -18,9 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.OkBroker.LineSeekBar.LineSeekBar;
 import com.nbourses.oyeok.RPOT.OyeOkBroker.AutoOkIntentSpecs;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
 
 import java.util.ArrayList;
 

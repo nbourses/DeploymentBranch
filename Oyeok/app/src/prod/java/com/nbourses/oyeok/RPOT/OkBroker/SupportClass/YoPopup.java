@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker_MainScreen;
 
 /**
  * Created by TP on 01/08/15.

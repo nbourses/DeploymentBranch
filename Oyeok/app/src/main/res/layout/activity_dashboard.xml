@@ -111,6 +111,7 @@
         android:layout_height="fill_parent"
         android:id="@+id/container_Signup">
     </FrameLayout>
+
    <!-- <GridLayout
         android:id="@+id/btnOnOyeClick"
         android:layout_width="match_parent"
@@ -200,7 +201,13 @@
         android:layout_height="fill_parent"
         android:visibility="invisible" />
 
-
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:foregroundGravity="bottom"
+        android:id="@+id/container_OyeConfirmation"
+        android:layout_alignBottom="@+id/sliding_layout">
+    </FrameLayout>
 
 
 </RelativeLayout>

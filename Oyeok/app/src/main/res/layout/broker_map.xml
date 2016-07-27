@@ -71,7 +71,7 @@
                 android:background="@color/greenish_blue"
                 android:textColorHint="@color/white"
                 android:textColor="@color/white"
-                android:textCursorDrawable="@color/white"
+                android:textCursorDrawable="@drawable/cursor"
                 android:drawableRight="@drawable/ic_search_24dp"
                 android:singleLine="false"
                 android:minLines="2"

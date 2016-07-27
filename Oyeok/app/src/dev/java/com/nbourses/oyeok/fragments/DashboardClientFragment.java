@@ -80,7 +80,6 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GeoFence;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
@@ -184,7 +183,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private static final long SCROLL_TIME = 200L;
 
 
-    private GeoFence geoFence;
+//    private GeoFence geoFence;
     private int permissionCheckForCamera, permissionCheckForLocation;
     private final int MY_PERMISSION_FOR_CAMERA = 11;
     private CustomPhasedSeekBar mPhasedSeekBar;
@@ -550,7 +549,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             @Override
             public void onClick(View v) {
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:2233836068"));
+                callIntent.setData(Uri.parse("tel:+912233836068"));
                 callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE);
 
@@ -833,6 +832,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     spanning = false;
                     mVisits.setEnabled(true);
                     txtFilterValue.setEnabled(true);
+                    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
+                    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
                     for(int i=0;i<5;i++){
                         if(flag[i]==true){
                             mCustomerMarker[i].setIcon(icon1);
@@ -1556,7 +1557,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                     if (mCustomerMarker[i] != null)
                                         mCustomerMarker[i].remove();
                                 }
-
+                                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                                recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
+                                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+                                search_building_icon.setVisibility(View.GONE);
 
                                 //if(mflag=false) {
 
@@ -1597,7 +1602,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 tvRate.setVisibility(View.VISIBLE);
                                 rupeesymbol.setVisibility(View.VISIBLE);
                                 //  tvCommingsoon.setVisibility(View.INVISIBLE);
-                                tvFetchingrates.setVisibility(View.INVISIBLE);
+                                tvFetchingrates.setVisibility(View.GONE);
 
 
                                 missingArea.setVisibility(View.INVISIBLE);
@@ -2594,14 +2599,16 @@ public void oyebuttonBackgrountColorOrange(){
 
                 public void onTick(long millisUntilFinished) {
                     horizontalPicker.keepScrolling();
-                    //rupeesymbol.setVisibility(View.GONE);
+//                    if(horizontalPicker.getVisibility()==View.VISIBLE)
+                    rupeesymbol.setVisibility(View.GONE);
                 }
 
                 public void onFinish() {
 
                     horizontalPicker.stopScrolling();
                     updateHorizontalPicker();
-                    // rupeesymbol.setVisibility(View.VISIBLE);
+                    if(horizontalPicker.getVisibility()==View.VISIBLE)
+                    rupeesymbol.setVisibility(View.VISIBLE);
 
                 }
             }.start();

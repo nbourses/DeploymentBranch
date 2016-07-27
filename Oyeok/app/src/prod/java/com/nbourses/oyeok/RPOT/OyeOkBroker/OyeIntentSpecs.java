@@ -24,14 +24,11 @@ import com.appyvet.rangebar.RangeBar;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
-import com.nbourses.oyeok.MyFragment;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_chats_list;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.MainActivity;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.RexMarkerPanelScreen;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.helpers.AppConstants;
 
