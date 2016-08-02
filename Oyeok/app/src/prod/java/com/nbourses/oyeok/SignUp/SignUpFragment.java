@@ -17,8 +17,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -51,8 +49,6 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OnAcceptOkSuccess;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
-import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
-import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 import com.nbourses.oyeok.User.UserProfileViewModel;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
 import com.nbourses.oyeok.activities.BrokerMainActivity;
@@ -912,7 +908,7 @@ if(newUser==true) {
 
 
                             if (redirectToOyeIntentSpecs) {
-                                Fragment fragment = null;
+                                /*Fragment fragment = null;
                                 Bundle bundle = new Bundle();
                                 bundle.putString("cameFrom", "SignUp");
                                 bundle.putStringArray("propertySpecification", propertySpecification);
@@ -922,7 +918,7 @@ if(newUser==true) {
                                 FragmentManager fragmentManager = getFragmentManager();
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                 fragmentTransaction.replace(R.id.container_map, fragment);
-                                fragmentTransaction.commit();
+                                fragmentTransaction.commit();*/
                             }
 
                             return;
@@ -1131,7 +1127,7 @@ if(newUser==true) {
 
                         Log.i("TAG", "Inside signup Failure" + error.getMessage());
                         if (redirectToOyeIntentSpecs) {
-                            Fragment fragment = null;
+                           /* Fragment fragment = null;
                             Bundle bundle = new Bundle();
                             bundle.putString("cameFrom", "SignUp");
                             bundle.putStringArray("propertySpecification", propertySpecification);
@@ -1141,7 +1137,7 @@ if(newUser==true) {
                             FragmentManager fragmentManager = getFragmentManager();
                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                             fragmentTransaction.replace(R.id.container_map, fragment);
-                            fragmentTransaction.commit();
+                            fragmentTransaction.commit();*/
                         }
                     }
                 });
@@ -1460,14 +1456,14 @@ if(newUser==true) {
     @Override
     public void replaceFragment(Bundle args) {
 
-        Log.i("TRACE","in ReplaceFrag");
+       /* Log.i("TRACE","in ReplaceFrag");
 
         Fragment fragment = new Droom_Chat_New();
         fragment.setArguments(args);
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container_map, fragment);
-        fragmentTransaction.commitAllowingStateLoss();
+        fragmentTransaction.commitAllowingStateLoss();*/
 
     }
 

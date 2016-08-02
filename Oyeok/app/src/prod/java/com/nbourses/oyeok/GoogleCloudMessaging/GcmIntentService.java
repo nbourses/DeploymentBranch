@@ -2,16 +2,11 @@ package com.nbourses.oyeok.GoogleCloudMessaging;
 
 import android.app.ActivityManager;
 import android.app.IntentService;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.nbourses.oyeok.R;
 
 /**
  * Created by ritesh on 13/05/16.
@@ -39,13 +34,13 @@ public class GcmIntentService extends IntentService {
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
-    private void sendNotification(String msg) {
+   /*  private void sendNotification(String msg) {
         NotificationManager mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Log.i("Pubnub push","inside GSMIntentService sendNotification");
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+       PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), 0);
 
         NotificationCompat.Builder mBuilder =
@@ -59,6 +54,7 @@ public class GcmIntentService extends IntentService {
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
+    */
 
 
     public boolean check(){

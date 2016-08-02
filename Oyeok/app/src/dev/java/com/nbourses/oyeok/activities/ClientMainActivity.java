@@ -43,6 +43,7 @@ import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.fragments.OyeScreenFragment;
+import com.nbourses.oyeok.fragments.ShareOwnersNo;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.helpers.NetworkInterface;
@@ -103,7 +104,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
     @Bind(R.id.hdroomsCount)
     TextView hdroomsCount;
-
+Boolean Owner_detail=false;
 
     /*@Bind(R.id.tv_dealinfo)
     TextView tv_dealinfo;*/
@@ -591,7 +592,7 @@ private void alertbuilder()
         }
     }
 
-    private void closeOyeScreen() {
+    public void closeOyeScreen() {
         isShowing = false;
         slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
        // btnOnOyeClick.setVisibility(View.GONE);
@@ -602,6 +603,7 @@ private void alertbuilder()
         Fragment fragment = null;
         Fragment frag = null;
         String title = getString(R.string.app_name);
+        Log.i(TAG,"itemTitle "+itemTitle  + R.string.shareNo);
 
         if (itemTitle.equals(getString(R.string.useAsClient))) {
             //don't do anything
@@ -615,6 +617,15 @@ private void alertbuilder()
             startActivity(openDashboardActivity);
         }
         else if (itemTitle.equals(getString(R.string.shareApp))) {
+            if(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")){
+                SignUpFragment signUpFragment = new SignUpFragment();
+                // signUpFragment.getView().bringToFront();
+                Bundle bundle = new Bundle();
+                bundle.putStringArray("Chat", null);
+                bundle.putString("lastFragment", "drawer");
+                loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
+            }
+            else
             shareReferralLink();
         }
    /*     else if (itemTitle.equals(getString(R.string.supportChat))) {
@@ -677,6 +688,13 @@ private void alertbuilder()
 
 
         }
+        else if(itemTitle.equals(getString(R.string.shareNo))){
+            Log.i(TAG,"itemTitle 1 "+itemTitle + R.string.shareNo);
+            ShareOwnersNo shareOwnersNo = new ShareOwnersNo();
+            loadFragment(shareOwnersNo, null, R.id.container_Signup, "");
+            Owner_detail=true;
+
+        }
 
 
 //        if (fragment != null) {
@@ -697,29 +715,33 @@ private void alertbuilder()
 
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
                 // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
-                .setCanonicalIdentifier(user_id);
+                .setTitle("OYEOK")
+                .setContentDescription("Get property at right price. ")
+                .setCanonicalIdentifier(mob_no);
 
 
-        branchUniversalObject.registerView();
+
 
         LinkProperties linkProperties = new LinkProperties()
-                .setChannel("sms")
-                .setFeature("sharing")
+                .setChannel("android")
+                .setFeature("share")
                 .addControlParameter("user_name", user_id)
-                .addControlParameter("$android_url", AppConstants.GOOGLE_PLAY_STORE_APP_URL)
+                .addControlParameter("mob_no", mob_no)
+                //.addControlParameter("$android_url", AppConstants.GOOGLE_PLAY_STORE_APP_URL)
                 .addControlParameter("$always_deeplink", "true");
 
         branchUniversalObject.generateShortUrl(getApplicationContext(), linkProperties, new Branch.BranchLinkCreateListener() {
             @Override
             public void onLinkCreate(String url, BranchError error) {
-                Log.i("mob_no url","mob_no url " +url );
+
                 if (error == null) {
                     Log.i("MyApp", "got my Branch link to share: " + url);
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_TEXT, url);
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "Hey check this out!");
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "OYEOK! Get property at right price.");
+                    Log.i("mob_no url","before share ");
                     startActivity(Intent.createChooser(intent, "Share link via"));
                 }
             }
@@ -932,6 +954,10 @@ private void alertbuilder()
             closeOyeScreen();
             backpress = 0;
 
+        }else if(Owner_detail==true){
+            super.onBackPressed();
+            Owner_detail=false;
+            backpress = 0;
         } else{
 
             Log.i("SIGNUP_FLAG"," closing app =================== 3"+getFragmentManager().getBackStackEntryCount());

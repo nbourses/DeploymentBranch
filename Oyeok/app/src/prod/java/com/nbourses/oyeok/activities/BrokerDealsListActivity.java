@@ -678,7 +678,7 @@ Log.i("SWIPE","inside swipe menu creator");
         mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(this.getResources(),
                 new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
                 new String[]{"30", "15"},
-                new String[]{"Rental", "Resale"
+                new String[]{getBaseContext().getResources().getString(R.string.Rental), getBaseContext().getResources().getString(R.string.Resale)
                 }));
         mCustomPhasedSeekbar.setListener((this));
 
@@ -719,7 +719,12 @@ Log.i("SWIPE","inside swipe menu creator");
         Log.i("TRACEOK", "after loadbroker deals ");
 
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("My Deals");
+        if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIgnoreCase("")) {
+
+            getSupportActionBar().setTitle("DEALING ROOMs (Rental)");
+        }else
+            getSupportActionBar().setTitle("DEALING ROOMs");
+//        getSupportActionBar().setTitle("My Deals");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -975,6 +980,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
                             //list all broker deals
 
+
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(listBrokerDeals_new, getApplicationContext());
                             listViewDeals.setAdapter(listAdapter);
                             if(listBrokerDeals_new.size() <3 && showbgtext == true){
@@ -1170,7 +1176,7 @@ Log.i("SWIPE","inside swipe menu creator");
 //                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
 //                            Intent.FLAG_ACTIVITY_NEW_TASK);
 //            startActivity(intent);
-        super.onBackPressed();
+
 //        }
 //        else {
 ////        startActivity(new Intent(this, BrokerMainActivity.class));
@@ -1179,15 +1185,18 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
 
-        /*if(AppConstants.SIGNUP_FLAG){
-            if(AppConstants.REGISTERING_FLAG){}else{
+        if(AppConstants.SIGNUP_FLAG){
+
             getSupportFragmentManager().popBackStackImmediate();
-            Intent inten = new Intent(this,BrokerDealsListActivity.class);
+            Intent inten = new Intent(this,BrokerMainActivity.class);
             startActivity(inten);
             finish();
-            AppConstants.SIGNUP_FLAG=false;}
+            AppConstants.SIGNUP_FLAG=false;
 
-        }else {*/
+        }else {
+            super.onBackPressed();
+
+        }
            /* Intent intent = new Intent(this, BrokerMainActivity.class);
             intent.addFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -1222,6 +1231,7 @@ Log.i("SWIPE","inside swipe menu creator");
             TT = "LL";
             setCachedDeals();
             loadBrokerDeals();
+            getSupportActionBar().setTitle("DEALING ROOMs (Rental)");
             SnackbarManager.show(
                     Snackbar.with(this)
                             .text("Rental Deal Type set")
@@ -1234,6 +1244,7 @@ Log.i("SWIPE","inside swipe menu creator");
             TT = "OR";
             setCachedDeals();
             loadBrokerDeals();
+            getSupportActionBar().setTitle("DEALING ROOMs (Buy/Sell)");
             SnackbarManager.show(
                     Snackbar.with(this)
                             .text("Buy/Sell Deal Type set")

@@ -264,7 +264,8 @@
                         android:id="@+id/txtRsSymbol"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/Rs"
+                        android:text=""
+                        android:visibility="gone"
                         android:textColor="@color/greenish_blue"
                         android:textStyle="bold" />
 

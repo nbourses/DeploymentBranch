@@ -240,7 +240,7 @@ public class OyeScreenFragment extends Fragment {
                value=value/1000;
                 value=value*1000;
                // }
-                txtSelected.setText(formatter.format(value));
+                txtSelected.setText(General.currencyFormat(String.valueOf(value)));
 
                 AppConstants.letsOye.setPrice("" + value);
             }
@@ -416,7 +416,7 @@ public class OyeScreenFragment extends Fragment {
                 budgetSeekBar.setMax(AppConstants.maxRent);
                 budgetSeekBar.setProgress(AppConstants.minRent);
                // budgetSeekBar.setProgress(500);
-                txtSelected.setText(formatter.format(AppConstants.minRent));
+                txtSelected.setText(General.currencyFormat(String.valueOf(AppConstants.minRent)));
 
                 txtOptionSee.setText(getString(R.string.oye_rental_req));
                 txtOptionShow.setText(getString(R.string.oye_rental_avail));
@@ -431,7 +431,7 @@ public class OyeScreenFragment extends Fragment {
                 budgetSeekBar.setProgress(AppConstants.minRent);
                // budgetSeekBar.setProgress(10);
                // budgetSeekBar.incrementProgressBy(10);
-                txtSelected.setText(formatter.format(AppConstants.minSale));
+                txtSelected.setText(General.currencyFormat(String.valueOf(AppConstants.minSale)));
 
                 txtOptionSee.setText(getString(R.string.oye_sale_req));
                 txtOptionShow.setText(getString(R.string.oye_sale_avail));

@@ -13,6 +13,8 @@ public class Message extends RealmObject {
     private String timestamp;
     private String to;
     private String from;
+    private String imageUrl;
+    private String user_id;
     public Message() { }
 
     public String getOk_id() {
@@ -56,4 +58,19 @@ public class Message extends RealmObject {
         this.from = from;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
 }
