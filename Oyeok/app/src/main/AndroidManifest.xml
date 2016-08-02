@@ -115,11 +115,6 @@
         <!-- stop pubnub register our Broadcast Receiver and Service -->
 
 
-
-
-
-
-
         <receiver
             android:name=".GoogleCloudMessaging.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
@@ -265,16 +260,26 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <data
-                    android:host="open"
-                    android:scheme="oyeok" />
 
+            <!-- AppLink example -->
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="8rj5.app.link" />
+                <data android:scheme="http" android:host="bnc.lt" android:pathPrefix="/12Eh" />
             </intent-filter>
+
+            <!--<intent-filter>-->
+                <!--<data-->
+                    <!--android:host="open"-->
+                    <!--android:scheme="oyeok://" />-->
+
+                <!--<action android:name="android.intent.action.VIEW" />-->
+
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+            <!--</intent-filter>-->
         </activity>
         <!--
         <activity

@@ -192,7 +192,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     Animation slideUp;
     Animation slideDown;
 
-
     //private ListView listViewDeals;
 
 
@@ -225,10 +224,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         setContentView(R.layout.activity_deals_list);
 
 
-        // listViewDeals	=	(ListView) findViewById(R.id.listViewDeals);
-        // listdata		=	new ArrayList<dumpclass>();
-        //InitializeValues();
-
 
         listViewDeals = (SwipeMenuListView) findViewById(R.id.listViewDeals);
         supportChat = (LinearLayout) findViewById(R.id.supportChat);
@@ -242,11 +237,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
         supportChat.setVisibility(View.VISIBLE);
         listViewDeals.setVisibility(View.VISIBLE);
-//        fragment_container1.setVisibility(View.GONE);
-
-        //  Intent myIntent = getIntent();
-        //   default_deal_flag = myIntent.getExtras().getBoolean("default_deal_flag");
-
 
         ButterKnife.bind(this);
 
@@ -259,7 +249,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
             @Override
             public void create(SwipeMenu menu) {
-
 
 
                 // create "More" item
@@ -450,9 +439,13 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                                                             while (iter.hasNext()) {
                                                                 Map.Entry<String,String> entry = iter.next();
+
                                                                 Log.i("DELETE DEFAULT DROOM","entry.getKey"+entry.getKey());
+
                                                                 if(total_deals.get(position).getOkId().equalsIgnoreCase(entry.getKey())){
+
                                                                     iter.remove();
+
                                                                     Log.i("DELETE DEFAULT DROOM", "entry.getKey removed" + entry.getKey());
                                                                     Log.i("DELETE DEFAULT DROOM", "default droomsremoved" + entry.getKey());
                                                                     Log.i("DELETE DEFAULT DROOM", "default droomsremoved okid" + total_deals.get(position).getOkId());
@@ -462,6 +455,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                                             }
                                                             Log.i(TAG,"after deal "+deals1);
                                                             Log.i("Default deals in shared","I am here2");
+
                                                             Gson g = new Gson();
                                                             String hashMapString = g.toJson(deals1);
                                                             General.saveDefaultDeals(ClientDealsListActivity.this, hashMapString);
@@ -509,6 +503,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                                                 }
                                             });
+
                                     alertDialog.show();
 
                                 } else if (items[item].equals("Cancel")) {
@@ -1249,16 +1244,15 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             else
                 defaultOkIds = new ArrayList<String>();
 
-
             Iterator<Map.Entry<String, String>> iter = deals1.entrySet().iterator();
 
             while (iter.hasNext()) {
                 Map.Entry<String, String> entry = iter.next();
-                Log.i(TAG, "entry.getKey" + entry.getKey());
-                Log.i(TAG, "entry.getKeystring" + entry.getKey().toString());
-                Log.i(TAG, "entry.getvalue" + entry.getValue());
+//                Log.i(TAG, "entry.getKey" + entry.getKey());
+//                Log.i(TAG, "entry.getKeystring" + entry.getKey().toString());
+//                Log.i(TAG, "entry.getvalue" + entry.getValue());
 
-                Log.d("CHATTRACE", "default drooms" + entry);
+//                Log.d("CHATTRACE", "default drooms" + entry);
                 String ok_id = entry.getKey();
                 String specs = entry.getValue();
                 defaultOkIds.add(ok_id);
@@ -1304,49 +1298,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
             }
         }
-
-
-
-
-      /*        Before adding OK id as chanel name in default dealing rooms
-                Collection d = deals1.values();
-                Log.i("TRACE", "values after jugad collection" + d);
-                Iterator it = d.iterator();
-                while (it.hasNext()) {
-                    // Log.i("TRACE", "values from hashmap " +it.next());
-                    String s = it.next().toString();
-                    Log.i("TRACE", "element of set Set from shared == " + s);
-                    BrokerDeals dealsa = new BrokerDeals(s,ok_id);
-                    Log.i("TRACE", "*************");
-                    Log.i("TRACE", "ele" + default_deals);
-                    Log.i("TRACE", "element of set Set from shared" + dealsa);
-                    // Log.i("TRACE", "default_deals type" + dealswa.getClass().getName());
-                    // Log.i("TRACE", "default_deals type" + default_deals.getClass().getName());
-                    if (default_deals == null) {
-                        default_deals = new ArrayList<BrokerDeals>();
-                    }//default_deals.addAll(dealsa);
-                    default_deals.add(dealsa);
-                }  */
-
-
-
-
-
-
-   /*         default_deals = new ArrayList<BrokerDeals>();
-           Iterator it = General.getDefaultDeals(this).iterator();
-            while (it.hasNext()) {
-                //System.out.println(it.next());
-                String s= it.next().toString();
-                Log.i("TRACE", "element of set Set from shared == " + s);
-               deals = new BrokerDeals(s);
-//                Log.i("TRACE", "element of set Set from shared" + deals);
-                default_deals.add(deals);
-               // Log.i("TRACE", "element of set Set from shared tostring" + it.next().toString());
-            } */
-        //Log.i("TRACE", "ele"+default_deals);
-        //deals = new BrokerDeals(General.getSharedPreferences(this, "MY_SPEC_CODE"));
-        // Log.i("TRACE", "ment");
 
 
         loadCachedDeals();
@@ -1473,6 +1424,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             listBrokerDeals_new = new ArrayList<BrokerDeals>();
                             myRealm = General.realmconfig(ClientDealsListActivity.this);
                             myRealm.beginTransaction();
+
                             while (it.hasNext()) {
                                 BrokerDeals deals = it.next();
 
@@ -1980,7 +1932,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         Realm myRealm = General.realmconfig(this);
 
         try {
-
 
 
             // listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());

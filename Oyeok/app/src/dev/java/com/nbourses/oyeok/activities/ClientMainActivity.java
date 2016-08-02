@@ -319,78 +319,6 @@ private void alertbuilder()
     private void init() {
 
 
-//        RealmConfiguration config = new RealmConfiguration
-//                .Builder(this)
-//                .deleteRealmIfMigrationNeeded()
-//                .build();
-//        Realm myRealm = Realm.getInstance(config);
-
-
-
-//        myRealm.beginTransaction();
-//
-//        // Create an object
-//        Country country1 = myRealm.createObject(Country.class);
-//
-//        // Set its fields
-//        country1.setName("Norway");
-//        country1.setPopulation(5165800);
-//
-//        myRealm.commitTransaction();
-//
-//
-//        Country country2 = new Country();
-//        country2.setName("Russia");
-//        country2.setPopulation(146430430);
-//
-//
-//        myRealm.beginTransaction();
-//        Country copyOfCountry2 = myRealm.copyToRealm(country2);
-//        myRealm.commitTransaction();
-
-
-
-//        RealmResults<Country> results1 =
-//                myRealm.where(Country.class).findAll();
-//
-//        for(Country c:results1) {
-//            Log.d("results2", c.getName());
-//        }
-
-
-//        myRealm.beginTransaction();
-//        UserInfo user = myRealm.createObject(UserInfo.class);
-//       // UserInfo user = new UserInfo();
-//        user.setName("Rapp");
-//        user.setMobileNumber("146430430");
-//
-//
-//
-//        UserInfo copyOfCountry = myRealm.copyToRealmOrUpdate(user);
-//        myRealm.commitTransaction();
-
-
-
-//        UserInfo usera = new UserInfo();
-//        usera.setName("Rapter");
-//        usera.setMobileNumber("1464304308");
-//
-//
-//        myRealm.beginTransaction();
-//        UserInfo copyOfCountry2 = myRealm.copyToRealmOrUpdate(usera);
-//        myRealm.commitTransaction();
-//
-//        RealmResults<UserInfo> results4 =
-//                myRealm.where(UserInfo.class).findAll();
-//        Log.i(TAG,"insider1 ");
-//        for(UserInfo c:results4) {
-////            Log.i(TAG,"insider2 ");
-////            Log.i(TAG,"insider3 "+c.getName());
-////            Log.i(TAG,"insider4 "+c.getEmailId());
-//        }
-
-
-
         if(General.getBadgeCount(this,AppConstants.HDROOMS_COUNT)<=0)
             hdroomsCount.setVisibility(View.GONE);
         else {
@@ -477,28 +405,6 @@ private void alertbuilder()
   //      mToolbar.setNavigationIcon(R.drawable.home);
       getSupportActionBar().setTitle("Live Region Rates");
 
-    //    getSupportActionBar().setIcon(R.drawable.ic_launcher); // or setLogo()
-    //    getSupportActionBar().setLogo(R.drawable.industry);
-
-//        ActionBar actionbar = getSupportActionBar ();
-//        actionbar.setDisplayHomeAsUpEnabled(true);
-//        actionbar.setHomeAsUpIndicator(R.drawable.home);
-
-
-//        mToolbar.setNavigationIcon(R.drawable.home);
-//        mToolbar.setTitle("Title");
-//        mToolbar.setSubtitle("Sub");
-//        mToolbar.setLogo(R.drawable.ic_launcher);
-
-
-   //  getSupportActionBar().setHomeAsUpIndicator(R.drawable.shop);
-//        if (Build.VERSION.SDK_INT >= 18) {
-//            getSupportActionBar().setHomeAsUpIndicator(
-//                    getResources().getDrawable(R.drawable.home));
-//        }
-
-
-
 
 
 
@@ -531,13 +437,6 @@ private void alertbuilder()
         }else{
             emailTxt.setVisibility(View.INVISIBLE);
         }
-
-
-
-
-
-
-
 
 
         //by default load broker_map view
@@ -637,11 +536,6 @@ private void alertbuilder()
             webView.loadUrl("http://www.facebook.com/hioyeok");
 
 
-
-
-
-
-
         }
         else if (itemTitle.equals(getString(R.string.aboutUs))) {
             //setContentView(R.layout.browser);
@@ -706,7 +600,7 @@ private void alertbuilder()
                 .setChannel("sms")
                 .setFeature("sharing")
                 .addControlParameter("user_name", user_id)
-                .addControlParameter("$android_url", AppConstants.GOOGLE_PLAY_STORE_APP_URL)
+//                .addControlParameter("$android_url", AppConstants.GOOGLE_PLAY_STORE_APP_URL)
                 .addControlParameter("$always_deeplink", "true");
 
         branchUniversalObject.generateShortUrl(getApplicationContext(), linkProperties, new Branch.BranchLinkCreateListener() {

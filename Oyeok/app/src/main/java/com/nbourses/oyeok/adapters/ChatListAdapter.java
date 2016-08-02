@@ -244,7 +244,8 @@ catch(Exception e){
             holder1.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
             Log.i("CONVER","message time self "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
         }
-        else if (message.getUserType() == ChatMessageUserType.OTHER) {
+        else if (message.getUserType() == ChatMessageUserType.OTHER)
+        {
 
             if (convertView == null) {
                 v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);

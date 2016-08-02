@@ -33,6 +33,7 @@ public class MyApplication extends MultiDexApplication {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -57,7 +58,6 @@ public class MyApplication extends MultiDexApplication {
                 exception.printStackTrace();
             }
         };
-
 
 
         Branch.getAutoInstance(this);
