@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -826,16 +827,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             fileToUpload = new File(getRealPathFromURI(this,uri));
             Log.i(TAG, "lolwa imagewa uri fileToUpload "+fileToUpload);
-            setFileToUpload(fileToUpload);
-
-
+            setFileToUpload(saveBitmapToFile(fileToUpload));
 
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 Log.i(TAG, "lolwa imagewa "+String.valueOf(bitmap));
-
-
-
 
                 /*ImageView imageView = (ImageView) findViewById(R.id.imageView);
                 imageView.setImageBitmap(bitmap);*/
@@ -860,6 +856,48 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         }
     }
 
+    private File saveBitmapToFile(File file){
+        try {
+
+            // BitmapFactory options to downsize the image
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            o.inSampleSize = 6;
+            // factor of downsizing the image
+
+            FileInputStream inputStream = new FileInputStream(file);
+            //Bitmap selectedBitmap = null;
+            BitmapFactory.decodeStream(inputStream, null, o);
+            inputStream.close();
+
+            // The new size we want to scale to
+            final int REQUIRED_SIZE=75;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            inputStream = new FileInputStream(file);
+
+            Bitmap selectedBitmap = BitmapFactory.decodeStream(inputStream, null, o2);
+            inputStream.close();
+
+            // here i override the original image file
+            file.createNewFile();
+            FileOutputStream outputStream = new FileOutputStream(file);
+
+            selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100 , outputStream);
+
+            return file;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 
     /**
@@ -868,7 +906,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      */
     private void displayMessage(JSONObject jsonMsg) {
 
-
+        Log.i(TAG, "calipso inside displaymessage " + jsonMsg);
         Log.i("WHERENOW", "5 ");
         Log.i("CONVER", "jsonMsg" + jsonMsg);
         Log.i(TAG, "inside displayMessage" + jsonMsg);
@@ -888,14 +926,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
         try {
-//            if (jsonMsg.has("message")) {
-//                JSONObject j = jsonMsg.getJSONObject("message");
-//                timetoken = jsonMsg.getString("timetoken");
-//                Log.i("CHAT","samosa1 "+jsonMsg.getString("message"));
+
             Log.i(TAG, "floki" + jsonMsg);
             Log.i(TAG, "flokie" + jsonMsg);
+            Log.i(TAG, "calipso " + jsonMsg);
 
             if (jsonMsg.has("message") && jsonMsg.has("from") && jsonMsg.has("to")) {
+                Log.i(TAG, "calipso yo" + jsonMsg);
                 Log.i("CHAT","here");
                 body = jsonMsg.getString("message");
                 Log.i("CHAT","here is "+body);
@@ -905,6 +942,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     userType = ChatMessageUserType.DEFAULT;
                 }
                 else if (jsonMsg.getString("from").equalsIgnoreCase("IMG")){
+                    Log.i(TAG, "calipso" + jsonMsg.getString("from"));
 
                     Log.i("CONVER", "grrrr IMG set"+jsonMsg);
 
@@ -933,16 +971,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         Log.i("CONVER", "patel bhai "+userSubtype);
                     }
                     else userSubtype = ChatMessageUserSubtype.OTHER;
-                    /*if(jsonMsg.getString("to").equalsIgnoreCase("support"))
-                        userSubtype = ChatMessageUserSubtype.SUPPORT;
-                    else if (!jsonMsg.getString("from").equalsIgnoreCase()))
-                    {
-                        userSubtype = ChatMessageUserSubtype.SELF;
-                    }
-                    else {
-                        userSubtype = ChatMessageUserSubtype.OTHER;
-                    }*/
 
+                    Log.i(TAG, "calipso" + userSubtype);
                 }
                 else if (jsonMsg.getString("from").equalsIgnoreCase("LISTING")){
                     Log.i("CONVER", "LISTING set");
@@ -963,9 +993,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 Log.i(TAG, "ragnar lagartha" + userType);
                 Log.i(TAG, "ragnar floki" + userSubtype);
 
+                Log.i(TAG, "calipso yo" + userSubtype);
+                Log.i(TAG, "calipso yo" + userType);
 
-                //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
-                //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
                 message.setUserName(roleOfUser);
                 message.setMessageStatus(ChatMessageStatus.SENT);
                 message.setMessageText(body);
@@ -973,13 +1003,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 message.setUserSubtype(userSubtype);
                 message.setImageUrl(imageUrl);
                 message.setUser_id(user_id);
-                Log.i(TAG, "flokie 4 "+imageName);
-                Log.i("CONVER", " oye oye lucky "+imageName);
                 message.setImageName(imageName);
                 message.setMessageTime(new Date().getTime());
-                Log.i("CONVER", " oye oye lucky oye "+message.getImageName());
 
-                Log.i(TAG, "flokie 5 "+message.getImageName());
+
+                Log.i(TAG, "calipso yo" + message);
 
 
                 chatMessages.add(message);
@@ -993,6 +1021,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         Log.i(TAG, "message runOnUiThread" + listAdapter);
                         if (listAdapter != null) {
                             Log.i(TAG, "message runOnUiThread  not null");
+                            Log.i(TAG, "calipso yo notify" );
                            listAdapter.notifyDataSetChanged();
                         }
                         Log.i(TAG, "message runOnUiThread edtTypeMsg1");
@@ -1000,7 +1029,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         Log.i(TAG, "message runOnUiThread edtTypeMsg2");
                     }
                 });
-                // }
+
 
 
 
@@ -1009,7 +1038,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i(TAG, "caught in display message1 debug" + e);
+            Log.i(TAG, "calipso caught in display message1 debug" + e);
         }
 
 
@@ -1037,8 +1066,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                             Log.i("CONVER", "grrrr 1 IMG set");
                             imageUrl = j.getString("imageUrl");
                         }
-                        /*if(jsonMsg.getString("to").equalsIgnoreCase("support"))
-                            userSubtype = ChatMessageUserSubtype.SUPPORT;*/
+
                         if(j.has("user_id")) {
                             Log.i("CHAT","lure "+j.getString("user_id"));
 
@@ -1116,69 +1144,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             Log.i(TAG, "caught in display message1 debug yo" + e);
         }
 
-
-
-
-
-
-
-
-
-
-
-
-//        try {
-//            if (jsonMsg.has("message") && jsonMsg.has("from") && jsonMsg.has("to")) {
-//                Log.i("CHAT","samosa");
-//                body = jsonMsg.getString("message");
-//                Log.i("CHAT","papdi "+body);
-//
-//                if (jsonMsg.getString("from").equalsIgnoreCase("DEFAULT")){
-//                    Log.i("CONVER", "DEFAULT set");
-//                    userType = ChatMessageUserType.DEFAULT;
-//                }
-//                else if (!jsonMsg.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID)))
-//                {
-//                    userType = ChatMessageUserType.SELF;
-//                }
-//                else {
-//                    userType = ChatMessageUserType.OTHER;
-//                }
-//
-//
-//                //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
-//                //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
-//
-//
-//                message.setUserName(roleOfUser);
-//                message.setMessageStatus(ChatMessageStatus.SENT);
-//                message.setMessageText(body);
-//                message.setUserType(userType);
-//                message.setMessageTime(new Date().getTime());
-//                Log.i(TAG, "message before adding to chatMessages" + message);
-//                chatMessages.add(message);
-//                Log.i(TAG, "message after adding to chatMessages" + chatMessages);
-//
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Log.i(TAG, "message runOnUiThread" + listAdapter);
-//                        if (listAdapter != null) {
-//                            Log.i(TAG, "message runOnUiThread  not null");
-//                            listAdapter.notifyDataSetChanged();
-//                        }
-//                        Log.i(TAG, "message runOnUiThread edtTypeMsg1");
-//                        edtTypeMsg.setText("");
-//                        Log.i(TAG, "message runOnUiThread edtTypeMsg2");
-//                    }
-//                });
-//            }
-//
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Log.i(TAG, "caught in display message" + e);
-//        }
 
         chatListView.post(new Runnable() {
             @Override
@@ -2150,6 +2115,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     }
 
     private void displayImgMessage(String bucketName, String imgName){
+        Log.i(TAG, "calipso inside displayimage msg"+bucketName +" "+imgName );
         Log.i(TAG, "displayImgMessage called ");
         String user_id = General.getSharedPreferences(this,AppConstants.USER_ID);
         try {
@@ -2186,11 +2152,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             }
             jsonMsg.put("message", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);
             Log.i("yoyoyo","urlo "+jsonMsg);
-
-
-
+            Log.i(TAG, "calipso inside calling displayMsg "+jsonMsg );
             displayMessage(jsonMsg);
             pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+
+
+
+
         }
         catch(Exception e){}
 
@@ -2341,6 +2309,8 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
             public void onStateChanged(int id, TransferState state) {
                 Log.i("imageu statechange", state+"");
                 if(state.toString().equalsIgnoreCase("COMPLETED")){
+
+
                     /*General.setSharedPreferences(DealConversationActivity.this,AppConstants.UPLOADED_IMAGE_PATH,fileToUpload.toString());
                     Log.i("asakasa","asakasa123 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.UPLOADED_IMAGE_PATH));*/
                    // sendMessage("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName);
