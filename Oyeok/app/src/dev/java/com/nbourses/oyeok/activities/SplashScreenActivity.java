@@ -19,6 +19,7 @@ import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
 
+
 public class SplashScreenActivity extends AppCompatActivity {
 
     Context context;
@@ -80,6 +81,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                         i.putExtra("picture_id", branchUniversalObject.getMetadata().get("item_id"));
                         startActivity(i);
                     }
+
                 }
             }
         }, this.getIntent().getData(), this);

@@ -5,6 +5,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.AcceptOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.BrokerBuildings;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.ShareOwnersNoM;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.deleteHDroom;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.PublishLetsOye;
@@ -43,6 +44,9 @@ public interface OyeokApiService {
 
     @POST("/broker/buildings")
     void brokerBuildings(@Body BrokerBuildings brokerBuildings, Callback<JsonElement> callback);
+
+    @POST("/generate/coupon")
+    void generateCoupon(@Body ShareOwnersNoM shareOwnersNoM, Callback<JsonElement> callback);
 
     @POST("/delete/hdroom")
     void deleteHDroom(@Body deleteHDroom deleteHDroom, Callback<JsonElement> callback);

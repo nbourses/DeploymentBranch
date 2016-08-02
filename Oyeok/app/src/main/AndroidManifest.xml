@@ -266,8 +266,14 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>-->
+            <!-- AppLink example -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="8rj5.app.link" />
-                <data android:scheme="http" android:host="bnc.lt" android:pathPrefix="/12Eh" />
+                <data android:scheme="http" android:host="bnc.lt"/>
             </intent-filter>
 
             <!--<intent-filter>-->

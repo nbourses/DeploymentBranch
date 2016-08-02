@@ -565,6 +565,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             total_deals = new ArrayList<BrokerDeals>();
                             if(default_deals != null) {
                                 total_deals.addAll(default_deals);
+
                             }
                             if(cachedDeals != null) {
                                 total_deals.addAll(cachedDeals);
@@ -1085,8 +1086,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             loadBrokerDeals();
 
             setSupportActionBar(mToolbar);
+if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIgnoreCase("")) {
 
-            getSupportActionBar().setTitle("DEALING ROOMs");
+    getSupportActionBar().setTitle("DEALING ROOMs (Rental)");
+}else
+    getSupportActionBar().setTitle("DEALING ROOMs");
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

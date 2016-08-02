@@ -173,6 +173,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private BitmapDescriptor icon2;
     long then;
     long now;
+    private Thread r;
 //    private Drawable icon1;
 //      private Drawable icon2;
 
@@ -240,7 +241,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private Boolean autoc = false;
     private Boolean autocomplete = false;
   private  static  View  rootView;
-    private Boolean spanning = false;
+    private Boolean spanning = false,autoIsClicked=false;;
 
 //    Intent intent ;
 
@@ -327,7 +328,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 //                        BroadCastMinMaxValue(llMin*filterValueMultiplier,llMax*filterValueMultiplier,orMin,orMax);
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
 
                     } else if (bhk.equalsIgnoreCase("2bhk") || bhk.equalsIgnoreCase("<950")) {
 
@@ -337,7 +338,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("3bhk") || bhk.equalsIgnoreCase("<1600")) {
                         filterValueMultiplier = 1600;
                         updateHorizontalPicker();
@@ -345,7 +346,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("4bhk") || bhk.equalsIgnoreCase("<2100")) {
                         filterValueMultiplier = 2100;
                         updateHorizontalPicker();
@@ -353,7 +354,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("4+bhk") || bhk.equalsIgnoreCase("<3000")) {
                         filterValueMultiplier = 3000;
                         updateHorizontalPicker();
@@ -361,7 +362,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("<300")) {
                         filterValueMultiplier = 300;
                         updateHorizontalPicker();
@@ -369,7 +370,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/psf");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     }
 
 ///// check if required
@@ -600,6 +601,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     autoCompView.setCursorVisible(true);
                     autoCompView.clearListSelection();
                     autoCompView.setText("");
+                    autoIsClicked=true;
                     autoCompView.showDropDown();
                     // new LocationUpdater().execute();
                     hideOnSearch.setVisibility(View.VISIBLE);
@@ -799,9 +801,47 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 @Override
                 public boolean onMyLocationButtonClick() {
                     Log.i(TAG, "my Loc clicked ");
-                    getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
-                    Intent intent11 = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent11);
+//                    ( (ClientMainActivity)getActivity()).closeOyeScreen();
+//                    buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+//                    recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+//                    customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+//                    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
+//                    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+//                    UpdateRatePanel();
+//                    search_building_icon.setVisibility(View.GONE);
+
+                    new CountDownTimer(200, 50) {
+
+                        public void onTick(long millisUntilFinished) {
+                            ( (ClientMainActivity)getActivity()).closeOyeScreen();
+                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                            recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+                            mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
+                            txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+                            UpdateRatePanel();
+                            search_building_icon.setVisibility(View.GONE);
+                        }
+
+                        public void onFinish() {
+
+                            getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+
+
+                        }
+                    }.start();
+
+//                    r = new Thread(new Runnable() {
+//                        public void run() {
+//
+//                            getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+//                                    r.interrupt();
+//
+//                        }
+//                    });
+//                    r.start();
+
+
                     //  buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier);
                     return false;
                 }
@@ -902,8 +942,13 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 Log.i("coming soon", "coming soon :" + marker.getTitle().toString());
                                 tv_building.setVisibility(View.VISIBLE);
                                 tv_building.setText("Average Rate in last 1 WEEK");
-                                String text = "<font color=#ffffff >" + marker.getTitle().toString() + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
-                                tvFetchingrates.setText(Html.fromHtml(text));
+                                if(brokerType.equalsIgnoreCase("rent")) {
+                                    String text = "<font color=#ffffff >" + marker.getTitle().toString() + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
+                                    tvFetchingrates.setText(Html.fromHtml(text));
+                                }else {
+                                    String text = "<font color=#ffffff >" + marker.getTitle().toString() + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font></br>";
+                                    tvFetchingrates.setText(Html.fromHtml(text));
+                                }
                                 tvFetchingrates.setTypeface(null, Typeface.BOLD);
 
                                 //intent.putExtra("client_heading", "Live Building Rates");
@@ -1512,7 +1557,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
                         String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
-                        Log.e(TAG, "RETROFIT SUCCESS " + getPrice.getResponseData().getPrice().getLlMin().toString());
+//                        Log.e(TAG, "RETROFIT SUCCESS " + getPrice.getResponseData().getPrice().getLlMin().toString());
                         JSONObject jsonResponse = new JSONObject(strResponse);
                         JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
                         // horizontalPicker.stopScrolling();
@@ -1558,6 +1603,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 
+                                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
+                                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+                                search_building_icon.setVisibility(View.GONE);
                                 //if(mflag=false) {
 
 
@@ -2112,6 +2160,14 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
                 getRegion();
+                if(autoIsClicked==true) {
+                    Log.i(TAG, "locality automata " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+                    getPrice();
+                    autoIsClicked=false;
+                    buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                }
+
+
 //                 getPrice();
 //                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
             }catch(Exception e){}

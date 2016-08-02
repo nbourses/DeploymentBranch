@@ -78,7 +78,34 @@
                     android:paddingLeft="20dp"
                     android:autoLink="web"
                     android:maxWidth="280dp"
-                    android:text="John Harry is a good boy but he does not know what he wants. John Harry is a good boy but he does not know what he wants." />
+                    android:text="John Harry is a good boy but he does not know what he wants. John Harry is a good boy but he does not know what he wants."
+                    android:visibility="visible" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:id="@+id/shareImage"
+                        android:src="@drawable/loading_image"
+                        android:visibility="gone"
+                        android:adjustViewBounds="true"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/gradient_grey"/>
+
+                    <ProgressBar
+                        android:id="@+id/spinnerProgress"
+                        android:progressDrawable="@drawable/circular_progress_view"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:visibility="gone"
+                        android:layout_gravity="center" />
+                </FrameLayout>
+
 
             </LinearLayout>
 

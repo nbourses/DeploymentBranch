@@ -273,8 +273,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@+id/combined_layout">
-
+            >
+           // android:layout_below="@+id/combined_layout"
 
             <LinearLayout
                 android:orientation="horizontal"

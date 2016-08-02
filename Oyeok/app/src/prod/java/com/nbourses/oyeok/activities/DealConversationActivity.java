@@ -54,6 +54,7 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.adapters.ChatListAdapter;
 import com.nbourses.oyeok.enums.ChatMessageStatus;
+import com.nbourses.oyeok.enums.ChatMessageUserSubtype;
 import com.nbourses.oyeok.enums.ChatMessageUserType;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -75,6 +76,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -536,6 +542,10 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         listAdapter = new ChatListAdapter(chatMessages,isDefaultDeal, this);
         chatListView.setAdapter(listAdapter);
 
+
+
+
+
         //  displayMessage();
 
 //        Bundle bundle  = getIntent().getExtras();
@@ -631,9 +641,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         String currentImg = (String) v.getTag();
         if (currentImg != null) {
             if (currentImg.equals("attachment")) {
+                Log.i(TAG,"imageshare 1");
                 //open file chooser options
                 selectImage();
             } else {
+                Log.i(TAG,"imageshare 2");
                 //send message
                 sendMessage(edtTypeMsg.getText().toString());
                 final ChatMessage message = new ChatMessage();
@@ -774,7 +786,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     }
 
     private void selectImage() {
-        final CharSequence[] items = {/* "Take Photo",*/ "Choose from Library", "Cancel" };
+        final CharSequence[] items = {/* "Take Photo", "Choose from Library",*/ "Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(DealConversationActivity.this);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -866,7 +878,10 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         String body = null;
         String timetoken = null;
         ChatMessageUserType userType = null;
+        ChatMessageUserSubtype userSubtype = null;
         String imageUrl = null;
+        String imageName = null;
+        String user_id = null;
         final ChatMessage message = new ChatMessage();
         String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
 
@@ -878,6 +893,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //                timetoken = jsonMsg.getString("timetoken");
 //                Log.i("CHAT","samosa1 "+jsonMsg.getString("message"));
             Log.i(TAG, "floki" + jsonMsg);
+            Log.i(TAG, "flokie" + jsonMsg);
 
             if (jsonMsg.has("message") && jsonMsg.has("from") && jsonMsg.has("to")) {
                 Log.i("CHAT","here");
@@ -889,12 +905,35 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     userType = ChatMessageUserType.DEFAULT;
                 }
                 else if (jsonMsg.getString("from").equalsIgnoreCase("IMG")){
-                    Log.i("CONVER", "grrrr IMG set");
+
+                    Log.i("CONVER", "grrrr IMG set"+jsonMsg);
+
                     userType = ChatMessageUserType.IMG;
                     if(jsonMsg.has("imageUrl")){
-                        Log.i("CONVER", "grrrr 1 IMG set");
+                        Log.i(TAG, "flokie 2 "+imageUrl);
                         imageUrl = jsonMsg.getString("imageUrl");
+
+
                     }
+                    if(jsonMsg.has("imageName")) {
+                        imageName = jsonMsg.getString("imageName");
+                        Log.i(TAG, "flokie 3 "+imageName);
+                        Log.i("CONVER", "grrrr 1 IMG set oye oye "+imageName);
+                    }
+                    if(jsonMsg.has("user_id")) {
+                        user_id = jsonMsg.getString("user_id");
+                        Log.i(TAG, "flokie 3 "+user_id);
+                        Log.i("CONVER", "grrrr 1 IMG set oye oye "+user_id);
+                    }
+                    /*if(jsonMsg.getString("to").equalsIgnoreCase("support"))
+                        userSubtype = ChatMessageUserSubtype.SUPPORT;
+                    else if (!jsonMsg.getString("from").equalsIgnoreCase()))
+                    {
+                        userSubtype = ChatMessageUserSubtype.SELF;
+                    }
+                    else {
+                        userSubtype = ChatMessageUserSubtype.OTHER;
+                    }*/
 
                 }
                 else if (jsonMsg.getString("from").equalsIgnoreCase("LISTING")){
@@ -915,6 +954,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 Log.i(TAG, "ragnar" + jsonMsg);
                 Log.i(TAG, "ragnar lagartha" + userType);
 
+
                 //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
                 //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
                 message.setUserName(roleOfUser);
@@ -922,9 +962,14 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 message.setMessageText(body);
                 message.setUserType(userType);
                 message.setImageUrl(imageUrl);
+                message.setUser_id(user_id);
+                Log.i(TAG, "flokie 4 "+imageName);
+                Log.i("CONVER", " oye oye lucky "+imageName);
+                message.setImageName(imageName);
                 message.setMessageTime(new Date().getTime());
+                Log.i("CONVER", " oye oye lucky oye "+message.getImageName());
 
-
+                Log.i(TAG, "flokie 5 "+message.getImageName());
 
 
                 chatMessages.add(message);
@@ -938,7 +983,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         Log.i(TAG, "message runOnUiThread" + listAdapter);
                         if (listAdapter != null) {
                             Log.i(TAG, "message runOnUiThread  not null");
-                            listAdapter.notifyDataSetChanged();
+                           listAdapter.notifyDataSetChanged();
                         }
                         Log.i(TAG, "message runOnUiThread edtTypeMsg1");
                         edtTypeMsg.setText("");
@@ -960,6 +1005,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
         try {
+            Log.i("CHAT","lure "+jsonMsg);
             if (jsonMsg.has("message")) {
                 JSONObject j = jsonMsg.getJSONObject("message");
                 timetoken = jsonMsg.getString("timetoken");
@@ -981,6 +1027,20 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                             Log.i("CONVER", "grrrr 1 IMG set");
                             imageUrl = j.getString("imageUrl");
                         }
+                        /*if(jsonMsg.getString("to").equalsIgnoreCase("support"))
+                            userSubtype = ChatMessageUserSubtype.SUPPORT;*/
+                        if(j.has("user_id")) {
+                            Log.i("CHAT","lure "+j.getString("user_id"));
+
+
+                           // else
+                            if (!j.getString("user_id").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID))) {
+                                userSubtype = ChatMessageUserSubtype.SELF;
+                            } else {
+                                userSubtype = ChatMessageUserSubtype.OTHER;
+                            }
+                        }
+                        else userSubtype = ChatMessageUserSubtype.OTHER;
 
                     }
                     else if (j.getString("from").equalsIgnoreCase("LISTING")){
@@ -1000,7 +1060,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     }
                     Log.i(TAG, "ragnar" + jsonMsg);
                     Log.i(TAG, "ragnar lagartha" + userType);
-
+                    Log.i("CHAT","lure "+userSubtype);
                     //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
                     //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
                     message.setUserName(roleOfUser);
@@ -1008,6 +1068,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     message.setMessageText(body);
                     message.setUserType(userType);
                     message.setImageUrl(imageUrl);
+                    message.setUserSubtype(userSubtype);
                     // message.setMessageTime(new Date().getTime());
                     message.setMessageTime(Long.valueOf(timetoken)/10000);
 
@@ -1042,7 +1103,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i(TAG, "caught in display message1 debug" + e);
+            Log.i(TAG, "caught in display message1 debug yo" + e);
         }
 
 
@@ -1122,6 +1183,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         myRealm = General.realmconfig(this);
         String body = null;
         String timetoken = null;
+        String imageUrl = null;
         ChatMessageUserType userType = null;
         ChatMessage message;
         String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
@@ -1168,11 +1230,21 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 Log.i(TAG, "until insideroui4 " + c.getMessage());
                 Log.i(TAG, "until insideroui4 " + c.getFrom());
                 Log.i(TAG, "until insideroui4 " + c.getTo());
+                Log.i(TAG, "until insideroui4 " + c.getImageUrl());
 
                 if (c.getFrom().equalsIgnoreCase("DEFAULT")) {
                     Log.i("CONVER", "DEFAULT set");
                     userType = ChatMessageUserType.DEFAULT;
-                } else if (c.getFrom().equalsIgnoreCase("LISTING")) {
+                }
+                else if (c.getFrom().equalsIgnoreCase("IMG")){
+
+                    userType = ChatMessageUserType.IMG;
+
+                        imageUrl = c.getImageUrl();
+                    Log.i("CONVER", "catched imagewala "+imageUrl);
+
+                }
+                else if (c.getFrom().equalsIgnoreCase("LISTING")) {
                     Log.i("CONVER", "LISTING set");
                     userType = ChatMessageUserType.LISTING;
                 }
@@ -1191,6 +1263,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 message.setMessageStatus(ChatMessageStatus.SENT);
                 message.setMessageText(c.getMessage());
                 message.setUserType(userType);
+                message.setImageUrl(imageUrl);
                 message.setMessageTime(Long.valueOf(c.getTimestamp())/10000);
                 chatMessages.add(message);
 
@@ -1758,10 +1831,16 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 if (jsonMsg.has("message")) {
                     JSONObject j = jsonMsg.getJSONObject("message");
                     String timetoken = jsonMsg.getString("timetoken");
+                    String imageUrl = null;
                     Log.i(TAG, "until here is the 1  " + jsonMsg.getString("message"));
                     String from = j.getString("from");
                     String to = j.getString("to");
                     String body = j.getString("message");
+                    if(j.has("imageUrl"))
+                        imageUrl = j.getString("imageUrl");
+                    else
+                        imageUrl = null;
+
                     Log.i(TAG,"until here is the 1 2 "+from+" "+to+" "+body);
 
                     message = new Message();
@@ -1771,6 +1850,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Log.i(TAG,"until here is the 1 2 Tithe");
                     message.setOk_id(channel_name);
                     message.setMessage(body);
+                    message.setImageUrl(imageUrl);
                     message.setTimestamp(timetoken);
                     message.setFrom(from);
                     message.setTo(to);
@@ -2031,6 +2111,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private void displayImgMessage(String bucketName, String imgName){
         Log.i(TAG, "displayImgMessage called ");
+        String user_id = General.getSharedPreferences(this,AppConstants.USER_ID);
         try {
             JSONObject jsonMsg = new JSONObject();
 
@@ -2042,7 +2123,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             //jsonMsg.put("to", "client");
             jsonMsg.put("imageUrl", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);
 
-
+            jsonMsg.put("imageName", imgName);
+            jsonMsg.put("user_id", user_id);
 
             Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
 
@@ -2115,21 +2197,75 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      */
     public void setFileToUpload(File fileToU){
         fileToUpload = fileToU;
-        imageName = "droid"+String.valueOf(System.currentTimeMillis());
+        imageName = "droid"+String.valueOf(System.currentTimeMillis())+".png";
+try {
+    if (Environment.getExternalStorageState() == null) {
+        //create new file directory object
+        File directory = new File(Environment.getDataDirectory()
+                + "/oyeok/");
+
+        // if no directory exists, create new directory
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+
+        copyFileUsingStream(fileToUpload, directory);
+        Log.i(TAG,"file after save ");
+
+        // if phone DOES have sd card
+    } else if (Environment.getExternalStorageState() != null) {
+        // search for directory on SD card
+        File directory = new File(Environment.getExternalStorageDirectory()
+                + "/oyeok/");
+
+        // if no directory exists, create new directory to store test
+        // results
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        File destdir = new File(Environment.getExternalStorageDirectory()
+                + "/oyeok/"+imageName);
+        Log.i(TAG,"dest diro "+destdir);
+        copyFileUsingStream(fileToUpload, destdir);
+        Log.i(TAG,"file after save ");
+    }
+}catch(Exception e){
+    Log.i(TAG, "Caught in exception saving image /oyeok "+e);
+}
 
 
+        displayImgMessage("oyeok-chat-images",imageName);
         TransferObserver transferObserver = transferUtility.upload(
                 "oyeok-chat-images",     /* The bucket to upload to */
                 imageName,    /* The key for the uploaded object */
                 fileToUpload       /* The file where the data to upload exists */
         );
-
         transferObserverListener(transferObserver);
         //
 
-
-
     }
+
+    private static void copyFileUsingStream(File source, File dest) throws IOException {
+        Log.i(TAG,"fila source "+source);
+        Log.i(TAG,"fila dest "+dest);
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new FileInputStream(source);
+            os = new FileOutputStream(dest);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+        } finally {
+            is.close();
+            os.close();
+        }
+    }
+
+
 
     /**
      *  This method is used to Download the file to S3 by using transferUtility class
@@ -2165,8 +2301,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 if(state.toString().equalsIgnoreCase("COMPLETED")){
                     /*General.setSharedPreferences(DealConversationActivity.this,AppConstants.UPLOADED_IMAGE_PATH,fileToUpload.toString());
                     Log.i("asakasa","asakasa123 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.UPLOADED_IMAGE_PATH));*/
-                    sendMessage("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName);
-                    //displayImgMessage("oyeok-chat-images","photos11234097.png");
+                   // sendMessage("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName);
+                    //displayImgMessage("oyeok-chat-images",imageName);
+
 
                 }
             }
@@ -2204,7 +2341,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     @Override
     public void onBackPressed() {
 
-
+Log.i(TAG,"back clicked");
         if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME))
             channel_name = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
 
