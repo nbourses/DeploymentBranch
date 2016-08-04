@@ -1524,23 +1524,29 @@ catch(Exception e){}
             texPstype.setVisibility(View.GONE);
 
             resaleCount.setVisibility(View.GONE);
+            Log.i(TAG, "itha count " + AppConstants.TENANTS_COUNT);
 
 try {
     Log.i("CONTEXT", "object " + getContext());
     if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) <= 0) {
+        Log.i(TAG, "itha count 1 " + AppConstants.TENANTS_COUNT);
         rentalCount.setVisibility(View.GONE);
         option1Count.setVisibility(View.GONE);
         option2Count.setVisibility(View.GONE);
     } else {
+        Log.i(TAG, "itha count 2 " + AppConstants.TENANTS_COUNT);
         rentalCount.setVisibility(View.VISIBLE);
         rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
 
         if (General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT) <= 0) {
+            Log.i(TAG, "itha count 3 " + AppConstants.TENANTS_COUNT);
             //option1Count.setVisibility(View.GONE);
             Log.i(TAG, "itha " + AppConstants.TENANTS_COUNT);
             option1Count.setVisibility(View.GONE);
         } else {
+            Log.i(TAG, "itha count 4 " + AppConstants.TENANTS_COUNT);
             //option1Count.setVisibility(View.VISIBLE);
+
             option1Count.setVisibility(View.VISIBLE);
             option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
         }

@@ -273,9 +273,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private void init() {
 
-        Log.i(TAG,"pathas "+Environment.getExternalStorageDirectory().toString() + "/oyeok");
-
-        Log.i(TAG,"pathas 1 "+Environment.getDataDirectory() + "/oyeok");
 
         //if there is no SD card, create new directory objects to make directory on device
         if (Environment.getExternalStorageState() == null) {
@@ -377,37 +374,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
 
-        //test pubnub gcm
 
-        pubnub.enablePushNotificationsOnChannel("t9i9e2x6se110871a_", General.getSharedPreferences(this,AppConstants.GCM_ID), new Callback() {
-            @Override
-            public void successCallback(String channel, Object message) {
-                super.successCallback(channel, message);
-
-                Log.i("PUBNUB PUSH","SUCCESSFUL======");
-            }
-
-            @Override
-            public void errorCallback(String channel, PubnubError error) {
-                super.errorCallback(channel, error);
-
-                Log.i("PUBNUB PUSH","Error======");
-            }
-        });
-// subscribe a channel for Pubnub push notifications end
-
-        pubnub.enablePushNotificationsOnChannel(
-                "t9i9e2x6se110871a_",
-                General.getSharedPreferences(this,AppConstants.GCM_ID));
-
-
-        try {
-            sendNotification("ci1qnk9074361a_");
-        }
-        catch (Exception e)
-        {
-            Log.i("ERROR ON NOTIFICATION"," "+e.getMessage());
-        }
 
 
 
@@ -423,115 +390,25 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         General.setSharedPreferences(this,AppConstants.GCM_ID,SharedPrefs.getString(getApplicationContext(),SharedPrefs.MY_GCM_ID));
         if (!channel_name.equals("")) {
-            Log.i(TAG, "chanel name was not null" + channel_name);
+            Log.i("PUBNUB PUSH","pubnubgcm SUCCESSFUL yo====== "+channel_name);
+            pubnub.enablePushNotificationsOnChannel(channel_name, General.getSharedPreferences(this,AppConstants.GCM_ID), new Callback() {
+                @Override
+                public void successCallback(String channel, Object message) {
+                    super.successCallback(channel, message);
 
-            // subscribe a channel for Pubnub push notifications start
+                    Log.i("PUBNUB PUSH","pubnubgcm SUCCESSFUL yo====== "+channel+" "+message);
+                }
 
-            Log.i("Pubnub push","channel_name is "+channel_name);
-            Log.i("Pubnub push","GCM id is "+General.getSharedPreferences(this,AppConstants.GCM_ID));
+                @Override
+                public void errorCallback(String channel, PubnubError error) {
+                    super.errorCallback(channel, error);
 
-            pubnub.enablePushNotificationsOnChannel(
-                    channel_name,
-                    "dOtsO1_3XFs:APA91bHuog28jPdP3_A5mGbd12K20c2S7aHIL5OI6rlfyChGG7GH7QJWNWmTpS4ivtc_g-eysnuPLn5DHFCNoWawh_sSeONxByb1YzAHPR8TV6VifmjcPCx_ugPjJ_TgJeB4pr0Obr5C");
-
-            // subscribe a channel for Pubnub push notifications end
-
-
+                    Log.i("PUBNUB PUSH","pubnubgcm Error yo====== "+channel +" "+error);
+                }
+            });
         }
 
 
-
-
-//        try {
-//            pubnub = new Pubnub(AppConstants.PUBNUB_PUBLISH_KEY, AppConstants.PUBNUB_SUBSCRIBE_KEY);
-//
-//            if(channel_name.equals("my_channel"))
-//            {
-//                Log.i("WHERENOW", "2 ");
-//
-//                pubnub.subscribe(UUID, new Callback() {
-//                            @Override
-//                            public void connectCallback(String channel, Object message) {
-//                                Log.i("WHERENOW", "61 ");
-//                            }
-//
-//                            @Override
-//                            public void disconnectCallback(String channel, Object message) {
-//                                Log.i("WHERENOW", "62 ");
-//                            }
-//
-//                            public void reconnectCallback(String channel, Object message) {
-//                                Log.i("WHERENOW", "63 ");
-//                            }
-//
-//                            @Override
-//                            public void successCallback(String channel, final Object message) {
-//                                try {
-//                                    Log.i("WHERENOW", "6 ");
-//                                    JSONObject jsonMsg = (JSONObject) message;
-//                                    i(TAG, "pubnub setup success" + jsonMsg);
-//
-//                                    // displayMessage(jsonMsg);
-//                                } catch (Exception e) {
-//                                    Log.i("WHERENOW", "64 "+e);
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void errorCallback(String channel, PubnubError error) {
-//                                Log.i("WHERENOW", "error subscribing " + error);
-//                            }
-//                        }
-//                );
-//            }
-//
-//            Log.i("WHERENOW", "UUID " + pubnub.getUUID());
-//
-//            Callback callback = new Callback() {
-//                public void successCallback(String channel, Object response) {
-//                    System.out.println(response.toString());
-//                    Log.i("WHERENOW", "success " + response.toString());
-//                    JSONObject obj = null;
-//                    try {
-//                        obj = new JSONObject(response.toString());
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                    try {
-//                        String a = obj.getString("channels");
-//                        Log.i("WHERENOW", "successaa" +a);
-//
-//
-//                        JSONObject obje = new JSONObject(response.toString());
-//                        JSONArray arr = obje.getJSONArray("channels");
-//                        for (int i = 0; i < arr.length(); i++)
-//                            // System.out.println(arr.getString(i));
-//                            Log.i("WHERENOW", "successaab" + arr.getString(i));
-//
-//
-//
-//
-//
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//
-//                }
-//
-//                public void errorCallback(String channel, PubnubError error) {
-//                    System.out.println(error.toString());
-//                    i("WHERENOW", "failure " + error.toString());
-//
-//                }
-//            };
-//            pubnub.whereNow(UUID, callback);
-//
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
 
 
 
@@ -648,7 +525,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             } else {
                 Log.i(TAG,"imageshare 2");
                 //send message
-                sendMessage(edtTypeMsg.getText().toString());
                 final ChatMessage message = new ChatMessage();
                 message.setUserName("self");
                 message.setMessageStatus(ChatMessageStatus.SENT);
@@ -667,6 +543,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Log.i(TAG,"aawaj 3");
                     e.printStackTrace();
                 }
+                sendMessage(edtTypeMsg.getText().toString());
                 edtTypeMsg.setText("");
                 chatListView.post(new Runnable() {
                     @Override
@@ -1362,9 +1239,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     channel_name,
                     General.getSharedPreferences(this,AppConstants.GCM_ID));
 
-            sendNotification(channel_name);
+
             pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+            sendNotification(channel_name,jsonMsg);
             lastMessageTime = String.valueOf(System.currentTimeMillis());
+
 // if channel name is ok id dont call pubnubwhere now (moved above)
             //        pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
 
@@ -1418,7 +1297,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     {
                         Log.i("TEST", "jsonMsgtoWhereNow in wherenow " + jsonMsgtoWhereNow);
                         firstMessage = true;
-                        sendNotification("my_channel");
+                       sendNotification("my_channel",jsonMsgtoWhereNow);
                         Log.i("Pubnub push","inside pubnub where now its first msg ");
                         pubnub.publish("my_channel", jsonMsgtoWhereNow, true, new Callback() {
                         });
@@ -1596,77 +1475,31 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      *  pubnub push notification
      */
 
-    public void sendNotification(String channel_name) throws JSONException {
+    public void sendNotification(String channel_name, JSONObject jsonMsg) throws JSONException {
 
-        Log.i("INSIDE PUSH NOTIFY","============");
+        Log.i("INSIDE PUSH NOTIFY","pubnubgcm ============" +jsonMsg);
         PnGcmMessage gcmMessage = new PnGcmMessage();
 
-        JSONObject json = new JSONObject();
+      // JSONObject json = new JSONObject();
+        jsonMsg.put("_from", jsonMsg.remove("from"));
 
-        try {
-            json.put("a","android===");
+        /*try {
+
+            json.put("to","Ritesh");
+            json.put("_from","Warke");
+            json.put("message","Warke w");
+            json.put("name","Warke jhkjhkjkjlkk");
+
         }
         catch (JSONException e)
         {
+            Log.i("INSIDE PUSH NOTIFY","pubnubgcm error ============ "+e);
+        }*/
+        gcmMessage.setData(jsonMsg);
 
-        }
 
-        gcmMessage.setData(json);
-
-
-        Log.i("INSIDE PUSH NOTIFY","============");
+        Log.i("INSIDE PUSH NOTIFY","pubnubgcm ============");
 // Create APNS message
-
-        PnApnsMessage apnsMessage = new PnApnsMessage();
-        apnsMessage.setApsSound("melody");
-        apnsMessage.setApsAlert("Hi from android !!!");
-        apnsMessage.setApsBadge(4);
-        apnsMessage.put("C ","3");
-
-        PnMessage message = new PnMessage(pubnub, "", new Callback() {
-            @Override
-            public void successCallback(String channel, Object message) {
-                Log.i("TRACE NOTIFICATION","Successfull "+message);
-            }
-
-            @Override
-            public void errorCallback(String channel,PubnubError error)
-            {
-                Log.i("TRACE NOTIFICATION","Error "+error);
-            }
-        },gcmMessage);
-
-        message.put("b","20");
-
-        try {
-
-            message.publish();
-        }
-        catch (PubnubException e){
-            Log.i("INSIDE PUSH NOTIFY","ERROR============ "+e.getMessage());
-        }
-
-    }
-
-
-    public void sendNotification111(String channel_name) throws JSONException {
-
-        PnGcmMessage gcmMessage = new PnGcmMessage();
-
-        JSONObject json = new JSONObject();
-
-        try {
-            json.put("a","1");
-        }
-        catch (JSONException e)
-        {
-
-        }
-
-        gcmMessage.setData(json);
-
-
-        // Create APNS message
 
         PnApnsMessage apnsMessage = new PnApnsMessage();
         apnsMessage.setApsSound("melody");
@@ -1677,55 +1510,26 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         PnMessage message = new PnMessage(pubnub, channel_name, new Callback() {
             @Override
             public void successCallback(String channel, Object message) {
-                Log.i("TRACE NOTIFICATION","Successfull "+message);
+                Log.i("TRACE NOTIFICATION","pubnubgcm Successfullaaaa "+message);
             }
 
             @Override
             public void errorCallback(String channel,PubnubError error)
             {
-                Log.i("TRACE NOTIFICATION","Error "+error);
+                Log.i("TRACE NOTIFICATION","pubnubgcm yo Error "+error);
             }
         },apnsMessage,gcmMessage);
 
-        message.put("b","20");
+        //message.put("b","20");
 
         try {
+
             message.publish();
         }
-        catch (PubnubException e){}
-    }
-
-
-    public void sendNotification1(String channel_name) {
-
-        Log.i("Pubnub push","channel_name is "+channel_name);
-        Log.i("Pubnub push","GCM id is "+General.getSharedPreferences(this,AppConstants.GCM_ID));
-
-        pubnub.enablePushNotificationsOnChannel(
-                channel_name,
-                General.getSharedPreferences(this,AppConstants.GCM_ID));
-
-        Log.i("Pubnub push","inside send notif with chanel name "+channel_name);
-        PnGcmMessage gcmMessage = new PnGcmMessage();
-        JSONObject jso = new JSONObject();
-        try {
-            jso.put("GCMSays", "hi");
-        } catch (JSONException e) { }
-        Log.i("Pubnub push","inside send notif with msg "+jso);
-        gcmMessage.setData(jso);
-
-        PnMessage message = new PnMessage(
-                pubnub,
-                channel_name,
-                callback,
-                gcmMessage);
-        try {
-            message.publish();
-            Log.i("Pubnub push","inside send notif with msg published "+jso);
-        } catch (PubnubException e) {
-            Log.i("Pubnub push","inside send notif failed "+e);
-            e.printStackTrace();
+        catch (PubnubException e){
+            Log.i("INSIDE PUSH NOTIFY","pubnubgcm ERROR============ "+e.getMessage());
         }
+
     }
 
     public static Callback callback = new Callback() {
@@ -1829,7 +1633,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 Log.i(TAG, "until here is the 1 jsonMsg "+jsonMsg);
 
-                if (jsonMsg.has("message")) {
+                if (jsonMsg.has("message") && jsonMsg.has("from")) {
                     JSONObject j = jsonMsg.getJSONObject("message");
                     String timetoken = jsonMsg.getString("timetoken");
                     String imageUrl = null;
