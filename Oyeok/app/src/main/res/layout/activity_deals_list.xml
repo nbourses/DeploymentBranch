@@ -349,7 +349,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
+            android:layout_height="80dp"
             android:id="@+id/phaseSeekbar"
             android:layout_gravity="bottom"
             android:paddingTop="10dp"

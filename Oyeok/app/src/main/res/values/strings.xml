@@ -45,8 +45,9 @@
     <string name="Resale">Buy/Sell</string>
     <string name="Rental">Rental</string>
 
-
-
+    <string name="UnFurnished">Un-Furnished</string>
+    <string name="SemiFurnished">Semi-Furnished</string>
+    <string name="FullFurnished">Fully-Furnished</string>
 
 
 
@@ -75,7 +76,12 @@
 
     </string-array>
 
+    <string-array name="Property_Furnishing_Condition">
+        <item>@string/SemiFurnished</item>
+        <item>@string/UnFurnished</item>
 
+        <item>@string/FullFurnished</item>
+    </string-array>
 
     <string-array name="nav_drawer_labels_signup_client">
         <item>@string/profile</item>

@@ -251,14 +251,16 @@
 
                         <TextView
                             android:id="@+id/newVisits"
-                            android:layout_width="61dp"
-                            android:layout_height="61dp"
+                            android:layout_width="49dp"
+                            android:layout_height="49dp"
 
-
+                            android:layout_marginTop="2dp"
+                            android:layout_marginRight="4dp"
                             android:textStyle="bold"
-                            android:gravity="center"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
+                            android:layout_marginBottom="2dp"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:paddingLeft="1dp"
+                            android:paddingRight="1dp"
 
                             android:textColor="@color/white"
                             android:textSize="20sp"
@@ -294,17 +296,19 @@
 
                         <TextView
                             android:id="@+id/txtFilterValue"
-                            android:layout_width="61dp"
-                            android:layout_height="61dp"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
 
                             android:text="Home"
                             android:textStyle="bold|italic"
-                            android:gravity="center"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
-
+                            android:gravity="center_horizontal|center_vertical"
+                            android:paddingLeft="1dp"
+                            android:paddingRight="1dp"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginRight="7dp"
                             android:textColor="@color/white"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
+                            android:visibility="visible"
                             android:layout_alignParentRight="true" />
 
                              <!--android:background="@drawable/deal_circle"-->
@@ -315,6 +319,7 @@
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
                             android:layout_marginTop="-10dp"
                             android:layout_marginRight="-10dp"
                             android:orientation="vertical">
@@ -336,7 +341,7 @@
                                 android:layout_height="15dp"
                                 android:id="@+id/beacons3"
                                 android:layout_alignParentTop="true"
-
+                                android:layout_marginLeft="300dp"
                                 android:layout_marginStart="300dp" />
 
                         </com.skyfishjy.library.RippleBackground>
@@ -429,8 +434,8 @@
                 android:layout_gravity="left|bottom"
                 android:background="@drawable/gradient_call_button_border"
                 android:layout_marginLeft="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp" />
+                android:layout_marginBottom="50dp"
+                android:layout_marginTop="1dp" />
 
         </FrameLayout>
 
@@ -451,6 +456,7 @@
             android:alpha="0.8"
             android:visibility="gone"
             android:layout_alignBottom="@+id/seekbar_linearlayout"
+            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true">
         </FrameLayout>
 
@@ -530,6 +536,7 @@
                     android:maxLines="2"
                     android:scrollbars="none"
                     android:textAlignment="textStart"
+                     android:layout_gravity="start"
                     android:textSize="15dp"
                     android:nestedScrollingEnabled="false"
                     android:foregroundGravity="center"
@@ -636,27 +643,62 @@
                 android:text="We don't cater here yet"/>
         </RelativeLayout>
 
+
+
         <LinearLayout
             android:id="@+id/seekbar_linearlayout"
-            android:paddingTop="@dimen/eight_dp"
+            android:paddingTop="6dp"
             android:paddingLeft="@dimen/eight_dp"
             android:paddingRight="@dimen/eight_dp"
+
             android:background="@color/dark_white"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
+            android:layout_height="75dp"
             android:orientation="vertical"
             android:gravity="bottom"
             android:baselineAligned="false"
             android:foregroundGravity="bottom"
             android:layout_alignParentBottom="true"
             android:visibility="visible">
-
+            <!--android:paddingTop="@dimen/eight_dp"-->
+            <!--android:paddingBottom="@dimen/eight_dp"-->
+<!--<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+            &lt;!&ndash;<TextView&ndash;&gt;
+                &lt;!&ndash;android:layout_width="100dp"&ndash;&gt;
+                &lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;
+                &lt;!&ndash;android:id="@+id/rental"&ndash;&gt;
+                &lt;!&ndash;android:textColor="@color/greenish_blue"&ndash;&gt;
+                &lt;!&ndash;android:textStyle="bold"&ndash;&gt;
+                &lt;!&ndash;android:visibility="visible"&ndash;&gt;
+                &lt;!&ndash;android:gravity="center_horizontal|center_vertical"&ndash;&gt;
+                &lt;!&ndash;android:text="home"/>&ndash;&gt;
+            &lt;!&ndash;<TextView&ndash;&gt;
+                &lt;!&ndash;android:layout_width="100dp"&ndash;&gt;
+                &lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;
+                &lt;!&ndash;android:id="@+id/sale"&ndash;&gt;
+                &lt;!&ndash;android:textColor="@color/greenish_blue"&ndash;&gt;
+                &lt;!&ndash;android:layout_marginLeft="130dp"&ndash;&gt;
+                &lt;!&ndash;android:textStyle="bold"&ndash;&gt;
+                &lt;!&ndash;android:visibility="visible"&ndash;&gt;
+                &lt;!&ndash;android:gravity="center_horizontal|center_vertical"&ndash;&gt;
+                &lt;!&ndash;android:text="home"/>&ndash;&gt;
+</RelativeLayout>-->
             <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
                 android:id="@+id/phasedSeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
+
         </LinearLayout>
+        <!--<RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-14dp"
+            android:layout_above="@+id/seekbar_linearlayout">-->
+
+        <!--</RelativeLayout>-->
 
   <!--      <LinearLayout
             android:orientation="horizontal"
@@ -669,6 +711,144 @@
             android:layout_below="@+id/recordWorkout"
             android:alpha="0.8"></LinearLayout> -->
 
+
+
+
     </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:id="@+id/property_type_layout"
+        android:layout_marginBottom="55dp"
+        android:layout_marginLeft="40dp"
+        android:layout_alignParentBottom="true"
+        >
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/rental"
+            android:textColor="@color/greenish_blue"
+            android:textStyle="bold"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="home"/>
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/sale"
+            android:textColor="@color/greenish_blue"
+            android:layout_marginLeft="80dp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="Home"/>
+    </LinearLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/property_type"
+        android:gravity="bottom"
+        android:layout_marginBottom="75dp"
+        android:foregroundGravity="bottom"
+
+        android:layout_alignParentBottom="true"
+        android:layout_height="50dp">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:gravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Home"
+                android:textColor="@color/greenish_blue"
+                android:background="@drawable/gradient_button_bg_with_border"
+                android:id="@+id/home"
+
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="1dp"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Shop"
+                android:textColor="@color/greenish_blue"
+                android:background="@drawable/gradient_button_bg_with_border"
+                android:id="@+id/shop"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="1dp"
+          />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Industrial"
+                android:textColor="@color/greenish_blue"
+                android:background="@drawable/gradient_button_bg_with_border"
+                android:id="@+id/industrial"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="1dp"
+               />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Office"
+                android:textColor="@color/greenish_blue"
+                android:background="@drawable/gradient_button_bg_with_border"
+                android:id="@+id/office"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="1dp"
+                />
+
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+
+  <!--  <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:id="@+id/property_type_layout"
+        android:layout_marginBottom="55dp"
+        android:layout_marginLeft="40dp"
+        android:layout_alignParentBottom="true"
+        >
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/rental"
+            android:textColor="@color/greenish_blue"
+            android:textStyle="bold"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="home"/>
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/sale"
+            android:textColor="@color/greenish_blue"
+            android:layout_marginLeft="80dp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="Home"/>
+    </LinearLayout>-->
 
 </RelativeLayout>

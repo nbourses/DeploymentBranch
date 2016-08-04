@@ -46,6 +46,7 @@ public class FragmentDrawer extends Fragment {
     public MDrawerListener mDrawerListener;
     List<NavDrawerItem> navDrawerItems;
     private Boolean signupSuccessflag = false;
+    TextView txtemail;
     private static TypedArray icons;//={R.drawable.menu_option_icon,R.drawable.menu_option_icon,R.drawable.shareapp,R.drawable.notifications,R.drawable.facebook,R.drawable.aboutusicon,R.drawable.setting1};
 
 
@@ -130,12 +131,13 @@ public class FragmentDrawer extends Fragment {
         // Inflating view layout
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
 
+//        txtemail=(TextView) layout.findViewById(R.id.txtEmail);
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL));
-
+//        txtemail.setText(AppConstants.EMAIL);
         navDrawerItems = getData();
         adapter = new NavigationDrawerAdapter(getActivity(), navDrawerItems);
        recyclerView.setAdapter(adapter);

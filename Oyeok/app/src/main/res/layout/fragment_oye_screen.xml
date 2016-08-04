@@ -74,7 +74,7 @@
         </LinearLayout>
 
 
-
+<!--//rem-->
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/oye_select"
@@ -84,6 +84,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:clickable="true"
+            android:visibility="gone"
             android:orientation="horizontal"
             android:paddingTop="2dp">
 
@@ -192,7 +193,7 @@
                     android:textSize="10dp" />
             </LinearLayout>
 
-     <!--       <LinearLayout
+           <!-- <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -217,10 +218,84 @@
                     android:paddingBottom="5dp"
                     android:scrollHorizontally="true"
                     android:text="OTHERS" />
-            </LinearLayout>   -->
+            </LinearLayout> -->
 
 
         </LinearLayout>
+
+
+        <!--//rem-->
+
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:text="Furnishing status"
+            android:gravity="center_horizontal|center_vertical"
+android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp"
+            android:textStyle=""/>
+        <TextView
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:text="Possession Date"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp"
+            android:gravity="center_horizontal|center_vertical"
+            android:textStyle=""/>
+
+        </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:layout_width="170dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="5dp"
+            android:id="@+id/spinner2"
+            style="@style/spinner_style"
+
+
+            />
+
+        <TextView
+            android:layout_width="170dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:id="@+id/txtcalendar"
+            android:paddingRight="10dp"
+            android:textSize="16dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:background="@drawable/calendar_bg"
+            android:text="28-7-2016"
+            android:textColor="@color/Black"
+            android:textStyle="bold"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>
+
+
+
+
+
 
 
         <LinearLayout
@@ -362,9 +437,7 @@
                 android:text="Others"
                 android:textSize="18sp"
                 android:textColor="@color/colorPrimaryDark"/>-->
-     <!--   </LinearLayout>
-
-    -->
+     <!--   </LinearLayout>-->
 
 
 
@@ -377,7 +450,11 @@
             android:orientation="horizontal"
             android:id="@+id/lt"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true">
+
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+
+            >
 
 
             <TextView
@@ -390,24 +467,27 @@
                 android:textColor="@color/abc_secondary_text_material_light"
                 android:layout_alignBottom="@+id/checkBox"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
                 android:textSize="13dp"
                 android:textStyle="bold|italic"
                 android:layout_weight="0.5"
                 android:foregroundGravity="center_horizontal"
                 android:paddingLeft="20dp"
-                android:textAlignment="textEnd" />
+                 />
 
 
             <CheckBox
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="viewStart"
+                android:layout_gravity="start"
                 android:layout_marginTop="3dp"
 
                 android:text="Apply for finance\nSECURITY DEPOSIT"
                 android:id="@+id/checkBox"
                 android:layout_below="@+id/rootWrapper"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:textColor="@color/greenish_blue"
                 android:textSize="13dp"
                 android:textStyle="bold|italic"
@@ -430,6 +510,7 @@
             android:visibility="visible"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp">
             <!--android:layout_marginBottom="3dp"-->
 
@@ -449,7 +530,7 @@
 
                     android:text="SUBMIT"
 
-
+                    android:layout_marginBottom="1dp"
                     android:textIsSelectable="false"
                     android:textStyle="bold" />
 

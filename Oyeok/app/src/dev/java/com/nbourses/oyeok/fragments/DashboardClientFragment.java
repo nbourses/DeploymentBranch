@@ -24,6 +24,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -149,11 +150,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
-
+    static  int count1 =0;
     private static final int REQUEST_CALL_PHONE = 1;
 
     View mHelperView;
-
+Button home,shop,industrial,office;
+    String Property_type="",oyetext="";
     private static final int INITIAL_REQUEST = 133;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
     private static final int MAP_ZOOM = 14;
@@ -171,6 +173,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private ImageView search_building_icon;
     private BitmapDescriptor icon1;
     private BitmapDescriptor icon2;
+    Boolean autoIsClicked=false ;
     long then;
     long now;
 //    private Drawable icon1;
@@ -226,7 +229,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private String filterValue;
     private String bhk;
     private int filterValueMultiplier = 950;
-
+TextView rental,resale;
+    RelativeLayout property_type_layout;
     private int countertut;
     private int[] or_psf = new int[5], ll_pm = new int[5];
     private LatLng loc;
@@ -468,7 +472,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         Mmarker = (ImageView) rootView.findViewById(R.id.Mmarker);
 
 
-        try {
+        try {//buildingiconbeforeclick
 
             icon1 = BitmapDescriptorFactory.fromResource(R.drawable.buildingiconbeforeclick);
             icon2 = BitmapDescriptorFactory.fromResource(R.drawable.buildingicononclick);
@@ -597,6 +601,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             public void onClick(View view) {
 
                 try {
+                    autoIsClicked=true;
                     autoCompView.setCursorVisible(true);
                     autoCompView.clearListSelection();
                     autoCompView.setText("");
@@ -799,11 +804,29 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 @Override
                 public boolean onMyLocationButtonClick() {
                     Log.i(TAG, "my Loc clicked ");
-                    getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
-                    Intent intent11 = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent11);
-                    //  buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier);
-                    return false;
+//                    Intent intent11 = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+//                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent11);
+//                    if(clicked==true){
+                    ( (ClientMainActivity)getActivity()).closeOyeScreen();
+                        buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                        recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                        customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+                        mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
+                        txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+                        UpdateRatePanel();
+                        search_building_icon.setVisibility(View.GONE);
+
+
+                        final Runnable r = new Runnable() {
+                            public void run() {
+
+                                getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+//                                if (!r) return;
+                            }
+                        };
+
+
+                        return false;
                 }
             });
 
@@ -832,8 +855,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     spanning = false;
                     mVisits.setEnabled(true);
                     txtFilterValue.setEnabled(true);
-                    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
-                    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+
                     for(int i=0;i<5;i++){
                         if(flag[i]==true){
                             mCustomerMarker[i].setIcon(icon1);
@@ -845,7 +867,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                             tvRate.setVisibility(View.VISIBLE);
                             buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                             rupeesymbol.setVisibility(View.VISIBLE);
-
+                            mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
+                            txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
                             Intent in = new Intent(AppConstants.MARKERSELECTED);
                             in.putExtra("markerClicked", "false");
                             ll_marker.setEnabled(true);
@@ -875,7 +898,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-
+                    Marker m;
                     //intent =new Intent(getContext(), ClientMainActivity.class);
                     int i;
 
@@ -884,7 +907,10 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                             INDEX = i;
                             if (flag[i] == false) {
                                 Log.i("flag[i] == false ", "===========================");
-                                mCustomerMarker[i].setIcon(icon2);
+//                                mCustomerMarker[i].setIcon(icon2);
+                                m=mCustomerMarker[i];
+                                mCustomerMarker[i].remove();
+                                mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).icon(icon2));
                                 search_building_icon.setVisibility(View.VISIBLE);
                                 horizontalPicker.setVisibility(View.GONE);
                                 tvFetchingrates.setVisibility(View.VISIBLE);
@@ -901,11 +927,17 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 Intent in = new Intent(AppConstants.MARKERSELECTED);
                                 in.putExtra("markerClicked", "true");
                                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
-                                Log.i("coming soon", "coming soon :" + marker.getTitle().toString());
+//                                Log.i("coming soon", "coming soon :" + marker.getTitle().toString());
                                 tv_building.setVisibility(View.VISIBLE);
                                 tv_building.setText("Average Rate in last 1 WEEK");
-                                String text = "<font color=#ffffff >" + marker.getTitle().toString() + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
-                                tvFetchingrates.setText(Html.fromHtml(text));
+
+                                if(brokerType.equalsIgnoreCase("rent")) {
+                                    String text = "<font color=#ffffff >" + marker.getTitle().toString() + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
+                                    tvFetchingrates.setText(Html.fromHtml(text));
+                                }else {
+                                    String text = "<font color=#ffffff >" + marker.getTitle().toString() + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font></br>";
+                                    tvFetchingrates.setText(Html.fromHtml(text));
+                                }
                                 tvFetchingrates.setTypeface(null, Typeface.BOLD);
 
                                 //intent.putExtra("client_heading", "Live Building Rates");
@@ -922,7 +954,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 flag[i] = true;
 
                             } else {
-                                mCustomerMarker[i].setIcon(icon1);
+                                m=mCustomerMarker[i];
+                                mCustomerMarker[i].remove();
+                                mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).icon(icon1));
+                                Log.i("mm_mithai","marker draw");
+//                                mCustomerMarker[i].setIcon(icon1);
                                 search_building_icon.setVisibility(View.GONE);
                                 flag[i] = false;
                                 horizontalPicker.setVisibility(View.VISIBLE);
@@ -940,7 +976,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 in.putExtra("markerClicked", "false");
                                 buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
-                                Log.i("coming soon", "coming soon :" + marker.getTitle().toString() + recordWorkout);
+//                                Log.i("coming soon", "coming soon :" + marker.getTitle().toString() + recordWorkout);
 
                                 tvRate.setVisibility(View.VISIBLE);
                                 rupeesymbol.setVisibility(View.VISIBLE);
@@ -1118,12 +1154,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
 
-
-
-
-
-
-
     private BroadcastReceiver closeOyeScreenSlide = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1235,7 +1265,10 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
                 clicked = true;
             }
+            Log.i("rate","rate penal1111  : "+RatePanel);
             if(RatePanel==true) {
+                Log.i("rate","rate penal  : "+RatePanel);
+
                 UpdateRatePanel();
                 RatePanel = false;
             }
@@ -1514,7 +1547,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
                         String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
-                        Log.e(TAG, "RETROFIT SUCCESS " + getPrice.getResponseData().getPrice().getLlMin().toString());
+//                        Log.e(TAG, "RETROFIT SUCCESS " + getPrice.getResponseData().getPrice().getLlMin().toString());
                         JSONObject jsonResponse = new JSONObject(strResponse);
                         JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
                         // horizontalPicker.stopScrolling();
@@ -1607,7 +1640,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                 tvFetchingrates.setVisibility(View.GONE);
 
 
-                                missingArea.setVisibility(View.INVISIBLE);
+                                missingArea.setVisibility(View.GONE);
                             } else {
                                 Log.i("tt", "I am here" + 3);
                     /*SnackbarManager.show(
@@ -1640,7 +1673,24 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                             Snackbar.with(getActivity())
                                     .text("We don't cater here yet")
                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity()); */
+                            for (int i = 0; i < 5; i++) {
 
+                                if (mCustomerMarker[i] != null)
+                                    mCustomerMarker[i].remove();
+                            }
+                            tv_building.setVisibility(View.INVISIBLE);
+                            horizontalPicker.setVisibility(View.GONE);
+                            tvRate.setVisibility(View.INVISIBLE);
+                            rupeesymbol.setVisibility(View.INVISIBLE);
+                            // tvCommingsoon.setVisibility(View.GONE);
+                            tvFetchingrates.setVisibility(View.VISIBLE);
+                            tvFetchingrates.setText("Coming Soon...");
+                            // tvCommingsoon.setTypeface(null, Typeface.BOLD);
+                            // tvCommingsoon.setTextSize(18);
+                            missingArea.setVisibility(View.VISIBLE);
+                            mVisits.setEnabled(false);
+                            txtFilterValue.setEnabled(false);
+                            CancelAnimation();
 
                             Log.i("GETPRICE", "Else mode ====== ");
 
@@ -1661,6 +1711,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 @Override
                 public void failure(RetrofitError error) {
                     General.slowInternetFlag = false;
+
                     General.t.interrupt();
                     Log.i("getPrice", "error: " + error.getMessage());
 
@@ -1818,6 +1869,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 dbHelper.save("brokerType", "On Rent");
                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 
+
+
                 if(flag[INDEX]==true) {
 
                     tv_building.setVisibility(View.VISIBLE);
@@ -1831,9 +1884,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             } else if (position == 1) {
 
 
-
                 marquee(500, 100);
-
 
 
                 SnackbarManager.show(
@@ -1845,14 +1896,15 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 updateHorizontalPicker();
                 tvRate.setText("/ sq.ft");
                 brokerType = "resale";
-                AppConstants.CURRENT_DEAL_TYPE="resale";
+                AppConstants.CURRENT_DEAL_TYPE = "resale";
                 dbHelper.save(DatabaseConstants.brokerType, "OR");
                 dbHelper.save("brokerType", "For Sale");
+
 
                 if(flag[INDEX]==true) {
                     tv_building.setVisibility(View.VISIBLE);
                     tv_building.setText("Average Rate in last 1 WEEK");
-                    String text = "<font color=#ffffff>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9"+General.currencyFormat(String.valueOf(or_psf[INDEX])).substring(2,General.currencyFormat(String.valueOf(or_psf[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/psf</sub></font>";
+                    String text = "<font color=#ffffff>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9"+General.currencyFormat(String.valueOf(or_psf[INDEX])).substring(2,General.currencyFormat(String.valueOf(or_psf[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font>";
                     tvFetchingrates.setText(Html.fromHtml(text));
                 }
                 // onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),950,orMin,orMax);
@@ -2039,14 +2091,20 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
         @Override
         protected String doInBackground(Double[] objects) {
+
             try {
                 String lat1 = SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT);
                 String lng1 = SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG);
                 JSONObject jsonObj = getJSONfromURL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat1 + ","
                         + lng1 + "&sensor=true");
+                Log.i("chai","Response_chai1");
+//                JSONObject jsonObj = getJSONfromURL("https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input=Arun%20Ka&scope=APP&key=AIzaSyC7aqVbRyNsF1JNgtYbpPDsJAf981dPp5Q");
                 String Status = jsonObj.getString("status");
+
+//                Log.i("chai","Response_chai11"+jsonObj);
                 if (Status.equalsIgnoreCase("OK")) {
                     JSONArray Results = jsonObj.getJSONArray("results");
+//                    Log.i("chai","Response1_chai11"+Results);
                     JSONObject zero = Results.getJSONObject(0);
                     JSONArray address_components = zero.getJSONArray("address_components");
 
@@ -2117,12 +2175,16 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             // new LocationUpdater().execute();
             Log.i(TAG,"locality automata ");
             try {
-                Log.i(TAG, "locality automata " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+
 
 
                 getRegion();
-//                 getPrice();
-//                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                if(autoIsClicked==true) {
+                    Log.i(TAG, "locality automata " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+                 getPrice();
+                    autoIsClicked=false;
+                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                }
             }catch(Exception e){}
 
         }
@@ -2285,6 +2347,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     public void UpdateRatePanel(){
         try {
+            Log.i("Update","UpdateRatePanel:   ");
             horizontalPicker.setVisibility(View.VISIBLE);
 //       tv_building.setText("Average Rate @ This Locality");
             buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
@@ -2449,7 +2512,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 //    sequence.addSequenceItem(rootView.findViewById(R.id.picker),"",
 //            "Touch 'Outside' the\n'Rate Panel'\nDrag/Move the map,\nSet the Pointer\n\nYou can find\nAverage Rate @ Locality\nfor 2BHK[can be changed]", "GOT IT! (Go to next screen)");
         sequence.addSequenceItem(rootView.findViewById(R.id.tvFetchingRates),
-                "            Select Your Budget Price", "       GOT IT! (Click me to FINISH)");
+                "            Check Your Budget Price", "       GOT IT! (Click to FINISH)");
         sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
             @Override
             public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
@@ -2623,28 +2686,7 @@ public void oyebuttonBackgrountColorOrange(){
 
 
 
-    private void resetMyPositionButton()
-    {
-        //deep paths for map controls
-        ViewGroup v1 = (ViewGroup)this.getView();
-        ViewGroup v2 = (ViewGroup)v1.getChildAt(0);
-        ViewGroup v3 = (ViewGroup)v2.getChildAt(0);
-        ViewGroup v4 = (ViewGroup)v3.getChildAt(1);
 
-        //my position button
-        View position =  (View)v4.getChildAt(0);
-
-        int positionWidth = position.getLayoutParams().width;
-        int positionHeight = position.getLayoutParams().height;
-
-        //lay out position button
-        RelativeLayout.LayoutParams positionParams = new RelativeLayout.LayoutParams(positionWidth,positionHeight);
-        int margin = positionWidth/5;
-        positionParams.setMargins(0, 0, 0, margin);
-        positionParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-        positionParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        position.setLayoutParams(positionParams);
-    }
 
 
 
@@ -2773,7 +2815,7 @@ public void oyebuttonBackgrountColorOrange(){
                             getRegion();
                             search_building_icon.setVisibility(View.GONE);
                             horizontalPicker.stopScrolling();
-
+                            missingArea.setVisibility(View.GONE);
                             getPrice();
                             new LocationUpdater().execute();
                         }
@@ -2814,6 +2856,12 @@ public void oyebuttonBackgrountColorOrange(){
         TelephonyManager tm = (TelephonyManager)getContext().getSystemService(Context.TELEPHONY_SERVICE);
         return tm != null && tm.getSimState()== TelephonyManager.SIM_STATE_READY;
     }
+
+
+
+
+
+
 
 
 }

@@ -24,6 +24,8 @@ public class SharedPrefs {
     public static String MY_SPEC_CODE = "mySpecCode";
     public static final String CHECK_BEACON = "check_beacon";
     public static final String CHECK_WALKTHROUGH = "check_walkthrough";
+    public static String EMAIL_PROFILE = "emailprofile";
+
     public static final String PERMISSION = "permission";
     //public static String MY_PROPERTY_SUBTYPE = "myPropertySubtype";
     //public static String MY_TT = "myTT";
