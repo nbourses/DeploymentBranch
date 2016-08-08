@@ -45,6 +45,7 @@ import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -570,7 +571,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             // signUpFragment.getView().bringToFrFont();
             Bundle bundle = new Bundle();
             bundle.putStringArray("Chat", null);
-            bundle.putString("lastFragment", "drawer");
+            bundle.putString("lastFragment", "brokerDrawer");
             loadFragment(signUpFragment, bundle, R.id.container_sign, "");
 
 
@@ -758,6 +759,21 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             getSupportFragmentManager().popBackStackImmediate();
             Owner_detail=false;
             backpress = 0;
+        }
+
+        else if(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equals("")) {
+
+
+            Log.i("SIGNUP_FLAG", " closing app =================== 3" + getFragmentManager().getBackStackEntryCount());
+            if (backpress < 1) {
+                backpress = (backpress + 1);
+                TastyToast.makeText(this, "Press Back again to Exit!", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                //Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+            } else if (backpress >= 1) {
+                backpress = 0;
+                this.finish();
+
+            }
         }
         else{
 

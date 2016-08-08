@@ -1,11 +1,13 @@
 package com.nbourses.oyeok.activities;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +20,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,11 +31,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.ConnectionResult;
@@ -39,8 +47,12 @@ import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
+import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AppSetting;
+import com.nbourses.oyeok.fragments.BrokerMap;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.fragments.OyeScreenFragment;
 import com.nbourses.oyeok.fragments.ShareOwnersNo;
@@ -53,6 +65,7 @@ import com.nbourses.oyeok.services.DeviceRegisterService;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.sdsmdg.tastytoast.TastyToast;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import butterknife.Bind;
@@ -64,7 +77,7 @@ import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
-public class ClientMainActivity extends AppCompatActivity implements NetworkInterface, FragmentDrawer.FragmentDrawerListener, OnOyeClick {
+public class ClientMainActivity extends AppCompatActivity implements NetworkInterface, FragmentDrawer.FragmentDrawerListener, OnOyeClick, CustomPhasedListener {
 
     boolean isShowing = false;
     private static final String TAG = "DashboardActivity";
@@ -117,6 +130,11 @@ Boolean Owner_detail=false;
     private  Boolean autocomplete = false;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
 
+    @Override
+    public void onPositionSelected(int position, int count) {
+        Log.i(TAG,"card position "+position);
+    }
+
     public interface openMapsClicked{
         public void clicked();
     }
@@ -147,7 +165,8 @@ Boolean Owner_detail=false;
                     //show ƒlo up screen
                     Bundle bundle = new Bundle();
                     bundle.putStringArray("propertySpecification", null);
-                    bundle.putString("lastFragment", "OyeIntentSpecs");
+                    //bundle.putString("lastFragment", "OyeIntentSpecs");
+                    bundle.putString("lastFragment", "oyed");
 
                     if (s.equals(false)) {
                         SnackbarManager.show(
@@ -197,6 +216,18 @@ Boolean Owner_detail=false;
         }
     };
 
+    private BroadcastReceiver doSignUp = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            SignUpFragment signUpFragment = new SignUpFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("lastFragment", "clientDrawer");  //consider as direct signup so keep last fragment as clientDrawer
+            loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
+
+
+        }
+    };
 
     private BroadcastReceiver autoComplete = new BroadcastReceiver() {
         @Override
@@ -245,6 +276,7 @@ private void alertbuilder()
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         // Check status of Google Play Services
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 
@@ -261,7 +293,17 @@ private void alertbuilder()
         ButterKnife.bind(this);
 
         ShortcutBadger.removeCount(this);
+        Log.i(TAG,"popup window shown 1 ");
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG,"popup window shown delay ");
+                showOptions(ClientMainActivity.this);
+            }
+        }, 2000);
 
+        Log.i(TAG,"popup window shown 5 ");
 //        lintent=getIntent();
 //        String txt=lintent.getStringExtra("client_heading");
       //  getSupportActionBar().setTitle(txt);
@@ -298,6 +340,7 @@ private void alertbuilder()
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(markerstatus, new IntentFilter(AppConstants.MARKERSELECTED));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(autoComplete, new IntentFilter(AppConstants.AUTOCOMPLETEFLAG));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(doSignUp, new IntentFilter(AppConstants.DOSIGNUP));
 
     }
 
@@ -310,6 +353,7 @@ private void alertbuilder()
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(markerstatus);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(autoComplete);
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(doSignUp);
 
     }
 
@@ -545,6 +589,8 @@ private void alertbuilder()
         DashboardClientFragment dashboardClientFragment = new DashboardClientFragment();
         dashboardClientFragment.setOyeButtonClickListener(this);
         loadFragment(dashboardClientFragment, null, R.id.container_map, "Client Dashboard");
+
+
     }
 
     /**
@@ -681,8 +727,7 @@ private void alertbuilder()
             SignUpFragment signUpFragment = new SignUpFragment();
             // signUpFragment.getView().bringToFront();
             Bundle bundle = new Bundle();
-            bundle.putStringArray("Chat", null);
-            bundle.putString("lastFragment", "drawer");
+            bundle.putString("lastFragment", "clientDrawer");
             loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
 
 
@@ -963,7 +1008,8 @@ private void alertbuilder()
             Log.i("SIGNUP_FLAG"," closing app =================== 3"+getFragmentManager().getBackStackEntryCount());
             if(backpress <1) {
                 backpress = (backpress + 1);
-                Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+                TastyToast.makeText(this, "Press Back again to Exit!", TastyToast.LENGTH_LONG, TastyToast.INFO);
+                //Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
             }else if (backpress>=1) {
                 backpress = 0;
                 this.finish();
@@ -1025,6 +1071,140 @@ private void alertbuilder()
 
 
 
+    private PopupWindow showOptions(final Context mcon){
+        Log.i(TAG,"popup window shown 2 ");
+        try{
+            DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+
+            int width = metrics.widthPixels;
+            int height = metrics.heightPixels;
+
+            Log.i(TAG,"popup window shown 20 "+width+" "+height);
+            LayoutInflater inflater = (LayoutInflater) mcon.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            final View layout = inflater.inflate(R.layout.card1,null);
+
+            CustomPhasedSeekBar mPhasedSeekBar = (CustomPhasedSeekBar) layout.findViewById(R.id.phasedSeekBar1);
+            Button button =(Button) layout.findViewById(R.id.button);
+            Button signUp =(Button) layout.findViewById(R.id.signUp);
+            Button later =(Button) layout.findViewById(R.id.later);
+            ImageButton cardMaps = (ImageButton) layout.findViewById(R.id.cardMaps);
+             final FrameLayout cardFrame = (FrameLayout) layout.findViewById(R.id.card_frame);
+            final FrameLayout a = (FrameLayout) layout.findViewById(R.id.a);
+
+
+
+            DBHelper dbHelper = new DBHelper(mcon);
+            if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
+                mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(mcon.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{mcon.getResources().getString(R.string.Rental), mcon.getResources().getString(R.string.Resale)}));
+            else
+                mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(mcon.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
+              mPhasedSeekBar.setListener(this);
+            final PopupWindow optionspu1 = greyOut(mcon);
+            //final PopupWindow optionspu = new PopupWindow(layout, 600,1000, true);
+            final PopupWindow optionspu = new PopupWindow(layout);
+            optionspu.setWidth(width-140);
+            optionspu.setHeight(height-140);
+            optionspu.setAnimationStyle(R.style.AnimationPopup);
+
+            /*optionspu.setTouchable(true);
+            optionspu.setOutsideTouchable(false);*/
+
+            optionspu.setFocusable(false);
+            optionspu.setTouchable(true);
+            optionspu.setOutsideTouchable(false);
+            // optionspu.showAtLocation(layout, Gravity.CENTER, 0, 0);
+            optionspu.showAtLocation(layout, Gravity.TOP, 0, 100);
+
+
+            //optionspu.update(0, 0,LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            //optionspu.setAnimationStyle(R.anim.bounce);
+//            BrokerMap brokerMap=new BrokerMap();
+//
+//
+//            loadFragment(brokerMap,null,cardFrame.getId(),"");
+            cardMaps.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                  //  BrokerMap brokerMap=new BrokerMap();
+                    //set arguments
+                    BrokerMap brokerMap=new BrokerMap();
+
+
+                    loadFragment(brokerMap,null,R.id.container_Signup,"");
+                    //load fragment
+                   /* FragmentManager fragmentManager = getSupportFragmentManager();
+                    *//*FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                    fragmentTransaction.replace(cardFrame.getId(), brokerMap);
+                    fragmentTransaction.commitAllowingStateLoss();*//*
+                   // loadFragment(brokerMap,null,R.id.a,"");
+
+
+                    fragmentManager.beginTransaction()
+                            .replace(a.getId(), brokerMap)
+                            .addToBackStack(null)
+                            .commit();*/
+                }
+            });
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG,"popup window shown 13 ");
+                    optionspu1.dismiss();
+                    optionspu.dismiss();
+                }
+            });
+            signUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG,"popup window shown 13 ");
+                    optionspu1.dismiss();
+                    optionspu.dismiss();
+                    Intent intent = new Intent(AppConstants.DOSIGNUP);
+                    LocalBroadcastManager.getInstance(mcon).sendBroadcast(intent);
+
+                }
+            });
+            later.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG,"popup window shown 13 ");
+                    optionspu1.dismiss();
+                    optionspu.dismiss();
+                    TastyToast.makeText(mcon, "We have connected you with 3 brokers in your area.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                    TastyToast.makeText(mcon, "Sign up to connect with 7 more brokers waiting for you.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+
+                }
+            });
+
+            return optionspu;
+        }
+        catch (Exception e){e.printStackTrace();
+            Log.i(TAG,"popup window shown 4 "+e);
+            return null;}
+
+
+    }
+
+    private PopupWindow greyOut(final Context mcon){
+        Log.i(TAG,"popup window shown 2 ");
+        try{
+            LayoutInflater inflater = (LayoutInflater) mcon.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.grey_out_popup,null);
+            final PopupWindow optionspu1 = new PopupWindow(layout, FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT, true);
+            optionspu1.setFocusable(false);
+            optionspu1.setTouchable(true);
+            optionspu1.setOutsideTouchable(false);
+            optionspu1.showAtLocation(layout, Gravity.CENTER, 0, 0);
+            return optionspu1;
+        }
+        catch (Exception e){e.printStackTrace();
+            Log.i(TAG,"popup window shown 4 "+e);
+            return null;}
+
+
+    }
+
 //    public void Wlak_Beacon() throws InterruptedException {
 //        DashboardClientFragment DashboardClient = new DashboardClientFragment();
 //
@@ -1042,6 +1222,8 @@ private void alertbuilder()
 //
 //
 //    }
+
+
 
 
 

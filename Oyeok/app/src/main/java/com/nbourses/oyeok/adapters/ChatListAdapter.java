@@ -36,6 +36,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by rohit on 17/02/16.
@@ -136,6 +138,19 @@ private WebView i;
                 holder4.spinnerProgress.setVisibility(View.VISIBLE);
                 holder4.txtFirstChar.setVisibility(View.INVISIBLE);
             }
+            List<String> list = Arrays.asList(message.getMessageText().split("--"));
+
+
+            holder4.building1.setText(list.get(0));
+            holder4.building2.setText(list.get(2));
+            holder4.building3.setText(list.get(4));
+
+            holder4.price1.setText(" @₹"+list.get(1));
+            holder4.price2.setText(" @₹"+list.get(3));
+            holder4.price3.setText(" @₹"+list.get(5));
+            /*holder4.price1.setText(" @"+General.currencyFormat(list.get(1).substring(0,list.get(1).length()-2)));
+            holder4.price2.setText(" @"+General.currencyFormat(list.get(3).substring(0,list.get(3).length()-2)));
+            holder4.price3.setText(" @"+General.currencyFormat(list.get(5).substring(0,list.get(5).length()-2)));*/
            // holder3.messageTextView.setText(message.getMessageText());
 //            holder4.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
             //holder3.chatReplyAuthor.setText("Welcome "+name);

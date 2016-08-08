@@ -1143,6 +1143,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                             Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
+
 //        }
     }
 

@@ -11,6 +11,7 @@ import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsSession;
 import com.instabug.library.IBGInvocationEvent;
 import com.instabug.library.Instabug;
+import com.onesignal.OneSignal;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 
@@ -36,7 +37,7 @@ public class MyApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        OneSignal.startInit(this).init();
         new Instabug.Builder(this, "cc39b2bf5c9fffb413e7fd81ce5e9f2e") .setInvocationEvent(IBGInvocationEvent.IBGInvocationEventShake) .build();
 
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
