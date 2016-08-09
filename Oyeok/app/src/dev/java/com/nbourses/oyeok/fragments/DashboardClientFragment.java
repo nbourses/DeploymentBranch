@@ -24,7 +24,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -173,9 +172,10 @@ Button home,shop,industrial,office;
     private ImageView search_building_icon;
     private BitmapDescriptor icon1;
     private BitmapDescriptor icon2;
-    Boolean autoIsClicked=false ;
+
     long then;
     long now;
+    private Thread r;
 //    private Drawable icon1;
 //      private Drawable icon2;
 
@@ -244,7 +244,7 @@ TextView rental,resale;
     private Boolean autoc = false;
     private Boolean autocomplete = false;
   private  static  View  rootView;
-    private Boolean spanning = false;
+    private Boolean spanning = false,autoIsClicked=false;;
 
 //    Intent intent ;
 
@@ -331,7 +331,7 @@ TextView rental,resale;
 
 //                        BroadCastMinMaxValue(llMin*filterValueMultiplier,llMax*filterValueMultiplier,orMin,orMax);
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
 
                     } else if (bhk.equalsIgnoreCase("2bhk") || bhk.equalsIgnoreCase("<950")) {
 
@@ -341,7 +341,7 @@ TextView rental,resale;
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("3bhk") || bhk.equalsIgnoreCase("<1600")) {
                         filterValueMultiplier = 1600;
                         updateHorizontalPicker();
@@ -349,7 +349,7 @@ TextView rental,resale;
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("4bhk") || bhk.equalsIgnoreCase("<2100")) {
                         filterValueMultiplier = 2100;
                         updateHorizontalPicker();
@@ -357,7 +357,7 @@ TextView rental,resale;
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("4+bhk") || bhk.equalsIgnoreCase("<3000")) {
                         filterValueMultiplier = 3000;
                         updateHorizontalPicker();
@@ -365,7 +365,7 @@ TextView rental,resale;
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("<300")) {
                         filterValueMultiplier = 300;
                         updateHorizontalPicker();
@@ -373,7 +373,7 @@ TextView rental,resale;
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/psf");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     }
 
 ///// check if required
@@ -605,6 +605,7 @@ TextView rental,resale;
                     autoCompView.setCursorVisible(true);
                     autoCompView.clearListSelection();
                     autoCompView.setText("");
+                    autoIsClicked=true;
                     autoCompView.showDropDown();
                     // new LocationUpdater().execute();
                     hideOnSearch.setVisibility(View.VISIBLE);
@@ -804,29 +805,51 @@ TextView rental,resale;
                 @Override
                 public boolean onMyLocationButtonClick() {
                     Log.i(TAG, "my Loc clicked ");
-//                    Intent intent11 = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-//                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent11);
-//                    if(clicked==true){
-                    ( (ClientMainActivity)getActivity()).closeOyeScreen();
-                        buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
-                        recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-                        customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
-                        mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
-                        txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
-                        UpdateRatePanel();
-                        search_building_icon.setVisibility(View.GONE);
+
+//                    ( (ClientMainActivity)getActivity()).closeOyeScreen();
+//                    buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+//                    recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+//                    customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+//                    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
+//                    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+//                    UpdateRatePanel();
+//                    search_building_icon.setVisibility(View.GONE);
+
+                    new CountDownTimer(200, 50) {
+
+                        public void onTick(long millisUntilFinished) {
+                            ( (ClientMainActivity)getActivity()).closeOyeScreen();
+                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                            recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+                            mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
+                            txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+                            UpdateRatePanel();
+                            search_building_icon.setVisibility(View.GONE);
+                        }
+
+                        public void onFinish() {
+
+                            getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
 
 
-                        final Runnable r = new Runnable() {
-                            public void run() {
+                        }
+                    }.start();
 
-                                getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
-//                                if (!r) return;
-                            }
-                        };
+//                    r = new Thread(new Runnable() {
+//                        public void run() {
+//
+//                            getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+//                                    r.interrupt();
+//
+//                        }
+//                    });
+//                    r.start();
 
 
-                        return false;
+                    //  buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier);
+                    return false;
+
                 }
             });
 
@@ -1597,7 +1620,6 @@ TextView rental,resale;
                                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
                                 search_building_icon.setVisibility(View.GONE);
 
-
                                 //if(mflag=false) {
 
 
@@ -2181,10 +2203,14 @@ TextView rental,resale;
                 getRegion();
                 if(autoIsClicked==true) {
                     Log.i(TAG, "locality automata " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-                 getPrice();
+
+                    getPrice();
                     autoIsClicked=false;
-                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                    buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                 }
+
+
+
             }catch(Exception e){}
 
         }

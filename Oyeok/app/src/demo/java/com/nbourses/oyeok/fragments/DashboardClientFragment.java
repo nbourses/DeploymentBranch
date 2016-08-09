@@ -366,14 +366,14 @@ Animation zoomout_right,slide_up,zoomout_left,ani,zoomin_zoomout;
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
                         else
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
-                    } else if (bhk.equalsIgnoreCase("<300")) {
+                    } else if (bhk.equalsIgnoreCase("<300") ||bhk.equalsIgnoreCase("default")) {
                         filterValueMultiplier = 300;
                         updateHorizontalPicker();
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/psf");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/q");
                     }
 
 ///// check if required
@@ -913,10 +913,10 @@ init();
                                 tvRate.setVisibility(View.GONE);
                                 rupeesymbol.setVisibility(View.GONE);
                                 recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
-
-                                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle1));
-                                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle1));
                                 mVisits.clearAnimation();
+                                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
+                                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
+
                                 ll_marker.setEnabled(false);
                                 mVisits.setEnabled(false);
                                 txtFilterValue.setEnabled(false);
@@ -2743,9 +2743,10 @@ private  void init(){
 
 
 public void oyebuttonBackgrountColorOrange(){
-    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle1));
-    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle1));
     mVisits.clearAnimation();
+    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
+    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
+
     recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
 }
 

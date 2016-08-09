@@ -103,7 +103,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
     @Bind(R.id.hdroomsCount)
     TextView hdroomsCount;
-
+    String PossessionDate,Furnishing,my_expectation,Property_Config;
 
     /*@Bind(R.id.tv_dealinfo)
     TextView tv_dealinfo;*/
@@ -183,7 +183,14 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
                     } else {
                         //create new deal
-                        OyeConfirmation  oyeConfirmation1=new OyeConfirmation();
+                        OyeConfirmation  oyeConfirmation1=new OyeConfirmation( );
+                      /*  Bundle args = new Bundle();
+                        args.putString("myexpectation", my_expectation);
+                        args.putString("PropertyConfig", Property_Config);
+                        args.putString("possessionDate", PossessionDate);
+                        args.putString("furnishing", Furnishing);
+                        oyeConfirmation1.setArguments(args);
+*/
                         loadFragment(oyeConfirmation1, null, R.id.container_OyeConfirmation, "");
                         oyeconfirm_flag=true;
                         if (slidingLayout != null &&
@@ -322,6 +329,7 @@ private void alertbuilder()
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(markerstatus, new IntentFilter(AppConstants.MARKERSELECTED));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(autoComplete, new IntentFilter(AppConstants.AUTOCOMPLETEFLAG));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(profileEmailUpdate, new IntentFilter(AppConstants.EMAIL_PROFILE));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(SetPropertyDetails,new IntentFilter((AppConstants.BROADCAST_PROPERTY_DETAILS)));
 
 
     }
@@ -336,6 +344,7 @@ private void alertbuilder()
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(markerstatus);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(autoComplete);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(profileEmailUpdate);
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(SetPropertyDetails);
 
     }
 
@@ -1074,7 +1083,42 @@ private void alertbuilder()
 //
 //
 //    }
+private BroadcastReceiver SetPropertyDetails = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        my_expectation= intent.getExtras().getString("myExpectation").toString();
+        Log.i("confirmation","myexpectation"+my_expectation+"  "+intent.getExtras().getString("myExpectation").toString());
+        Property_Config= intent.getExtras().getString("propertyConfig");
+        Log.i("confirmation","PropertyConfig : "+Property_Config);
+        PossessionDate= intent.getExtras().getString("possessionDate");
+        Log.i("confirmation","PossessionDate : "+PossessionDate);
+        Furnishing=intent.getExtras().getString("furnishing");
+        Log.i("confirmation","Furnishing"+Furnishing);
 
+
+        Intent intent1 = new Intent(AppConstants.RECEIVE_PROPERTY_DETAILS);
+        intent1.putExtra("propertyConfig1", intent.getExtras().getString("myExpectation").toString());
+        intent1.putExtra("furnishing1", intent.getExtras().getString("propertyConfig"));
+        intent1.putExtra("possessionDate1", intent.getExtras().getString("possessionDate"));
+        intent1.putExtra("myExpectation1", intent.getExtras().getString("furnishing"));
+
+        Log.i("confirmation","Furnishing       ;"+Furnishing);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent1);
+
+
+
+//        OyeConfirmation  oyeConfirmation1=new OyeConfirmation( );
+//        Bundle args = new Bundle();
+//        args.putString("my", "sushil");
+//        args.putString("PropertyConfig", Property_Config);
+//        args.putString("possessionDate", PossessionDate);
+//        args.putString("furnishing", Furnishing);
+//        oyeConfirmation1.setArguments(args);
+
+
+
+    }
+};
 
 
 

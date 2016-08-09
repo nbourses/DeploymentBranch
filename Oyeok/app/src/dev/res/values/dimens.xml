@@ -1,0 +1,54 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_drawer_width">260dp</dimen>
+
+
+    <dimen name="one_dp">1dp</dimen>
+    <dimen name="four_dp">4dp</dimen>
+    <dimen name="eight_dp">8dp</dimen>
+    <dimen name="twelve_dp">12dp</dimen>
+    <dimen name="sixteen_dp">16dp</dimen>
+    <dimen name="thirtysix_dp">36dp</dimen>
+
+    <dimen name="fourty_dp">40dp</dimen>
+
+    <dimen name="fiftytwo_dp">52dp</dimen>
+
+    <dimen name="sixtyfour_dp">64dp</dimen>
+
+    <dimen name="seventytwo_dp">72dp</dimen>
+
+    <dimen name="dp_56">56dp</dimen>
+
+    <dimen name="eighty">80dp</dimen>
+
+    <dimen name="eightyeight">88dp</dimen>
+
+    <dimen name="hunderedfour_dp">104dp</dimen>
+
+    <dimen name="onehunderedeight">108dp</dimen>
+
+    <dimen name="twelve_sp">12sp</dimen>
+
+    <dimen name="fourteen_sp">14sp</dimen>
+
+    <dimen name="sixteen_sp">16sp</dimen>
+
+    <dimen name="twenty_four">24sp</dimen>
+
+    <dimen name="fourty_sp">64px</dimen>
+
+
+    <!--this is for new phase seek bar-->
+
+    <dimen name="test_left_padding">10dp</dimen>
+    <dimen name="test_right_padding">10dp</dimen>
+    <dimen name="test_top_padding">30dp</dimen>
+    <dimen name="test_bottom_padding">30dp</dimen>
+    <dimen name="test_item_size">80dp</dimen>
+    <dimen name="test_anchor_size">40dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+</resources>

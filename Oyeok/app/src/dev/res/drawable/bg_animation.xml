@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/greenish_blue"/>
+            <stroke android:width="5dp" android:color="@color/greenish_blue"/>
+            <!--<padding android:bottom="@dimen/dp_56" android:left="@dimen/dp_56" android:right="@dimen/dp_56" android:top="@dimen/dp_56"></padding>-->
+        </shape>
+    </item>
+    <!--<item-->
+        <!--android:drawable="@drawable/deal_circle"-->
+     <!---->
+        <!--/>-->
+</layer-list>

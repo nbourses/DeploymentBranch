@@ -115,6 +115,16 @@ public class AppConstants {
     public static  String CURRENT_DEAL_TYPE = "currentDealType";
     public static final String EMAIL_PROFILE = "emailProfile";
     public static final String UPLOADED_IMAGE_PATH = "uploadedImagePath";
-    public static final String PROPERTY_TYPE_BROADCAST = "propertyTypeBroadcast";
+    public static final String RECEIVE_PROPERTY_DETAILS = "ReceivePropertyDetails";
+    public static final String BROADCAST_PROPERTY_DETAILS = "BroadcastPropertyDetails";
+
+    public static  String FURNISHING = "furnishing";
+    public static  String MY_EXPECTATION = "myExpectation";
+    public static  String PROPERTY_CONFIG = "propertyConfig";
+    public static  String POSSESSION_DATE = "posseessionDate";
+
+
+
+
 
 }

@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -54,6 +55,7 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.adapters.ChatListAdapter;
 import com.nbourses.oyeok.enums.ChatMessageStatus;
+import com.nbourses.oyeok.enums.ChatMessageUserSubtype;
 import com.nbourses.oyeok.enums.ChatMessageUserType;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -75,6 +77,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -266,9 +273,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private void init() {
 
-        Log.i(TAG,"pathas "+Environment.getExternalStorageDirectory().toString() + "/oyeok");
-
-        Log.i(TAG,"pathas 1 "+Environment.getDataDirectory() + "/oyeok");
 
         //if there is no SD card, create new directory objects to make directory on device
         if (Environment.getExternalStorageState() == null) {
@@ -370,37 +374,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
 
-        //test pubnub gcm
 
-        pubnub.enablePushNotificationsOnChannel("t9i9e2x6se110871a_", General.getSharedPreferences(this,AppConstants.GCM_ID), new Callback() {
-            @Override
-            public void successCallback(String channel, Object message) {
-                super.successCallback(channel, message);
-
-                Log.i("PUBNUB PUSH","SUCCESSFUL======");
-            }
-
-            @Override
-            public void errorCallback(String channel, PubnubError error) {
-                super.errorCallback(channel, error);
-
-                Log.i("PUBNUB PUSH","Error======");
-            }
-        });
-// subscribe a channel for Pubnub push notifications end
-
-        pubnub.enablePushNotificationsOnChannel(
-                "t9i9e2x6se110871a_",
-                General.getSharedPreferences(this,AppConstants.GCM_ID));
-
-
-        try {
-            sendNotification("ci1qnk9074361a_");
-        }
-        catch (Exception e)
-        {
-            Log.i("ERROR ON NOTIFICATION"," "+e.getMessage());
-        }
 
 
 
@@ -416,115 +390,25 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         General.setSharedPreferences(this,AppConstants.GCM_ID,SharedPrefs.getString(getApplicationContext(),SharedPrefs.MY_GCM_ID));
         if (!channel_name.equals("")) {
-            Log.i(TAG, "chanel name was not null" + channel_name);
+            Log.i("PUBNUB PUSH","pubnubgcm SUCCESSFUL yo====== "+channel_name);
+            pubnub.enablePushNotificationsOnChannel(channel_name, General.getSharedPreferences(this,AppConstants.GCM_ID), new Callback() {
+                @Override
+                public void successCallback(String channel, Object message) {
+                    super.successCallback(channel, message);
 
-            // subscribe a channel for Pubnub push notifications start
+                    Log.i("PUBNUB PUSH","pubnubgcm SUCCESSFUL yo====== "+channel+" "+message);
+                }
 
-            Log.i("Pubnub push","channel_name is "+channel_name);
-            Log.i("Pubnub push","GCM id is "+General.getSharedPreferences(this,AppConstants.GCM_ID));
+                @Override
+                public void errorCallback(String channel, PubnubError error) {
+                    super.errorCallback(channel, error);
 
-            pubnub.enablePushNotificationsOnChannel(
-                    channel_name,
-                    "dOtsO1_3XFs:APA91bHuog28jPdP3_A5mGbd12K20c2S7aHIL5OI6rlfyChGG7GH7QJWNWmTpS4ivtc_g-eysnuPLn5DHFCNoWawh_sSeONxByb1YzAHPR8TV6VifmjcPCx_ugPjJ_TgJeB4pr0Obr5C");
-
-            // subscribe a channel for Pubnub push notifications end
-
-
+                    Log.i("PUBNUB PUSH","pubnubgcm Error yo====== "+channel +" "+error);
+                }
+            });
         }
 
 
-
-
-//        try {
-//            pubnub = new Pubnub(AppConstants.PUBNUB_PUBLISH_KEY, AppConstants.PUBNUB_SUBSCRIBE_KEY);
-//
-//            if(channel_name.equals("my_channel"))
-//            {
-//                Log.i("WHERENOW", "2 ");
-//
-//                pubnub.subscribe(UUID, new Callback() {
-//                            @Override
-//                            public void connectCallback(String channel, Object message) {
-//                                Log.i("WHERENOW", "61 ");
-//                            }
-//
-//                            @Override
-//                            public void disconnectCallback(String channel, Object message) {
-//                                Log.i("WHERENOW", "62 ");
-//                            }
-//
-//                            public void reconnectCallback(String channel, Object message) {
-//                                Log.i("WHERENOW", "63 ");
-//                            }
-//
-//                            @Override
-//                            public void successCallback(String channel, final Object message) {
-//                                try {
-//                                    Log.i("WHERENOW", "6 ");
-//                                    JSONObject jsonMsg = (JSONObject) message;
-//                                    i(TAG, "pubnub setup success" + jsonMsg);
-//
-//                                    // displayMessage(jsonMsg);
-//                                } catch (Exception e) {
-//                                    Log.i("WHERENOW", "64 "+e);
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void errorCallback(String channel, PubnubError error) {
-//                                Log.i("WHERENOW", "error subscribing " + error);
-//                            }
-//                        }
-//                );
-//            }
-//
-//            Log.i("WHERENOW", "UUID " + pubnub.getUUID());
-//
-//            Callback callback = new Callback() {
-//                public void successCallback(String channel, Object response) {
-//                    System.out.println(response.toString());
-//                    Log.i("WHERENOW", "success " + response.toString());
-//                    JSONObject obj = null;
-//                    try {
-//                        obj = new JSONObject(response.toString());
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                    try {
-//                        String a = obj.getString("channels");
-//                        Log.i("WHERENOW", "successaa" +a);
-//
-//
-//                        JSONObject obje = new JSONObject(response.toString());
-//                        JSONArray arr = obje.getJSONArray("channels");
-//                        for (int i = 0; i < arr.length(); i++)
-//                            // System.out.println(arr.getString(i));
-//                            Log.i("WHERENOW", "successaab" + arr.getString(i));
-//
-//
-//
-//
-//
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//
-//                }
-//
-//                public void errorCallback(String channel, PubnubError error) {
-//                    System.out.println(error.toString());
-//                    i("WHERENOW", "failure " + error.toString());
-//
-//                }
-//            };
-//            pubnub.whereNow(UUID, callback);
-//
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
 
 
 
@@ -535,6 +419,10 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         listAdapter = new ChatListAdapter(chatMessages,isDefaultDeal, this);
         chatListView.setAdapter(listAdapter);
+
+
+
+
 
         //  displayMessage();
 
@@ -637,7 +525,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             } else {
                 Log.i(TAG,"imageshare 2");
                 //send message
-                sendMessage(edtTypeMsg.getText().toString());
                 final ChatMessage message = new ChatMessage();
                 message.setUserName("self");
                 message.setMessageStatus(ChatMessageStatus.SENT);
@@ -656,6 +543,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Log.i(TAG,"aawaj 3");
                     e.printStackTrace();
                 }
+                sendMessage(edtTypeMsg.getText().toString());
                 edtTypeMsg.setText("");
                 chatListView.post(new Runnable() {
                     @Override
@@ -816,16 +704,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             fileToUpload = new File(getRealPathFromURI(this,uri));
             Log.i(TAG, "lolwa imagewa uri fileToUpload "+fileToUpload);
-            setFileToUpload(fileToUpload);
-
-
+            setFileToUpload(saveBitmapToFile(fileToUpload));
 
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 Log.i(TAG, "lolwa imagewa "+String.valueOf(bitmap));
-
-
-
 
                 /*ImageView imageView = (ImageView) findViewById(R.id.imageView);
                 imageView.setImageBitmap(bitmap);*/
@@ -850,6 +733,48 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         }
     }
 
+    private File saveBitmapToFile(File file){
+        try {
+
+            // BitmapFactory options to downsize the image
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            o.inSampleSize = 6;
+            // factor of downsizing the image
+
+            FileInputStream inputStream = new FileInputStream(file);
+            //Bitmap selectedBitmap = null;
+            BitmapFactory.decodeStream(inputStream, null, o);
+            inputStream.close();
+
+            // The new size we want to scale to
+            final int REQUIRED_SIZE=75;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            inputStream = new FileInputStream(file);
+
+            Bitmap selectedBitmap = BitmapFactory.decodeStream(inputStream, null, o2);
+            inputStream.close();
+
+            // here i override the original image file
+            file.createNewFile();
+            FileOutputStream outputStream = new FileOutputStream(file);
+
+            selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100 , outputStream);
+
+            return file;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 
     /**
@@ -858,7 +783,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      */
     private void displayMessage(JSONObject jsonMsg) {
 
-
+        Log.i(TAG, "calipso inside displaymessage " + jsonMsg);
         Log.i("WHERENOW", "5 ");
         Log.i("CONVER", "jsonMsg" + jsonMsg);
         Log.i(TAG, "inside displayMessage" + jsonMsg);
@@ -868,20 +793,23 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         String body = null;
         String timetoken = null;
         ChatMessageUserType userType = null;
+        ChatMessageUserSubtype userSubtype = null;
         String imageUrl = null;
+        String imageName = null;
+        String user_id = null;
         final ChatMessage message = new ChatMessage();
         String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
 
 
 
         try {
-//            if (jsonMsg.has("message")) {
-//                JSONObject j = jsonMsg.getJSONObject("message");
-//                timetoken = jsonMsg.getString("timetoken");
-//                Log.i("CHAT","samosa1 "+jsonMsg.getString("message"));
+
             Log.i(TAG, "floki" + jsonMsg);
+            Log.i(TAG, "flokie" + jsonMsg);
+            Log.i(TAG, "calipso " + jsonMsg);
 
             if (jsonMsg.has("message") && jsonMsg.has("from") && jsonMsg.has("to")) {
+                Log.i(TAG, "calipso yo" + jsonMsg);
                 Log.i("CHAT","here");
                 body = jsonMsg.getString("message");
                 Log.i("CHAT","here is "+body);
@@ -891,13 +819,37 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     userType = ChatMessageUserType.DEFAULT;
                 }
                 else if (jsonMsg.getString("from").equalsIgnoreCase("IMG")){
-                    Log.i("CONVER", "grrrr IMG set");
+                    Log.i(TAG, "calipso" + jsonMsg.getString("from"));
+
+                    Log.i("CONVER", "grrrr IMG set"+jsonMsg);
+
                     userType = ChatMessageUserType.IMG;
                     if(jsonMsg.has("imageUrl")){
-                        Log.i("CONVER", "grrrr 1 IMG set");
+                        Log.i(TAG, "flokie 2 "+imageUrl);
                         imageUrl = jsonMsg.getString("imageUrl");
-                    }
 
+
+                    }
+                    if(jsonMsg.has("imageName")) {
+                        imageName = jsonMsg.getString("imageName");
+                        Log.i(TAG, "flokie 3 "+imageName);
+                        Log.i("CONVER", "grrrr 1 IMG set oye oye "+imageName);
+                    }
+                    if(jsonMsg.has("user_id")) {
+                        user_id = jsonMsg.getString("user_id");
+                        Log.i(TAG, "flokie 3 "+user_id);
+                        Log.i("CONVER", "grrrr 1 IMG set oye oye "+user_id);
+
+                        if (user_id.equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID))) {
+                            userSubtype = ChatMessageUserSubtype.OTHER;
+                        } else {
+                            userSubtype = ChatMessageUserSubtype.SELF;
+                        }
+                        Log.i("CONVER", "patel bhai "+userSubtype);
+                    }
+                    else userSubtype = ChatMessageUserSubtype.OTHER;
+
+                    Log.i(TAG, "calipso" + userSubtype);
                 }
                 else if (jsonMsg.getString("from").equalsIgnoreCase("LISTING")){
                     Log.i("CONVER", "LISTING set");
@@ -916,17 +868,23 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 }
                 Log.i(TAG, "ragnar" + jsonMsg);
                 Log.i(TAG, "ragnar lagartha" + userType);
+                Log.i(TAG, "ragnar floki" + userSubtype);
 
-                //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
-                //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
+                Log.i(TAG, "calipso yo" + userSubtype);
+                Log.i(TAG, "calipso yo" + userType);
+
                 message.setUserName(roleOfUser);
                 message.setMessageStatus(ChatMessageStatus.SENT);
                 message.setMessageText(body);
                 message.setUserType(userType);
+                message.setUserSubtype(userSubtype);
                 message.setImageUrl(imageUrl);
+                message.setUser_id(user_id);
+                message.setImageName(imageName);
                 message.setMessageTime(new Date().getTime());
 
 
+                Log.i(TAG, "calipso yo" + message);
 
 
                 chatMessages.add(message);
@@ -940,14 +898,15 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         Log.i(TAG, "message runOnUiThread" + listAdapter);
                         if (listAdapter != null) {
                             Log.i(TAG, "message runOnUiThread  not null");
-                            listAdapter.notifyDataSetChanged();
+                            Log.i(TAG, "calipso yo notify" );
+                           listAdapter.notifyDataSetChanged();
                         }
                         Log.i(TAG, "message runOnUiThread edtTypeMsg1");
                         edtTypeMsg.setText("");
                         Log.i(TAG, "message runOnUiThread edtTypeMsg2");
                     }
                 });
-                // }
+
 
 
 
@@ -956,12 +915,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i(TAG, "caught in display message1 debug" + e);
+            Log.i(TAG, "calipso caught in display message1 debug" + e);
         }
 
 
 
         try {
+            Log.i("CHAT","lure "+jsonMsg);
             if (jsonMsg.has("message")) {
                 JSONObject j = jsonMsg.getJSONObject("message");
                 timetoken = jsonMsg.getString("timetoken");
@@ -984,6 +944,19 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                             imageUrl = j.getString("imageUrl");
                         }
 
+                        if(j.has("user_id")) {
+                            Log.i("CHAT","lure "+j.getString("user_id"));
+
+
+                           // else
+                            if (j.getString("user_id").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID))) {
+                                userSubtype = ChatMessageUserSubtype.OTHER;
+                            } else {
+                                userSubtype = ChatMessageUserSubtype.SELF;
+                            }
+                        }
+                        else userSubtype = ChatMessageUserSubtype.OTHER;
+
                     }
                     else if (j.getString("from").equalsIgnoreCase("LISTING")){
                         Log.i("CONVER", "LISTING set");
@@ -1002,7 +975,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     }
                     Log.i(TAG, "ragnar" + jsonMsg);
                     Log.i(TAG, "ragnar lagartha" + userType);
-
+                    Log.i("CHAT","lure "+userSubtype);
                     //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
                     //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
                     message.setUserName(roleOfUser);
@@ -1010,6 +983,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     message.setMessageText(body);
                     message.setUserType(userType);
                     message.setImageUrl(imageUrl);
+                    message.setUserSubtype(userSubtype);
                     // message.setMessageTime(new Date().getTime());
                     message.setMessageTime(Long.valueOf(timetoken)/10000);
 
@@ -1048,69 +1022,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         }
 
 
-
-
-
-
-
-
-
-
-
-
-//        try {
-//            if (jsonMsg.has("message") && jsonMsg.has("from") && jsonMsg.has("to")) {
-//                Log.i("CHAT","samosa");
-//                body = jsonMsg.getString("message");
-//                Log.i("CHAT","papdi "+body);
-//
-//                if (jsonMsg.getString("from").equalsIgnoreCase("DEFAULT")){
-//                    Log.i("CONVER", "DEFAULT set");
-//                    userType = ChatMessageUserType.DEFAULT;
-//                }
-//                else if (!jsonMsg.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID)))
-//                {
-//                    userType = ChatMessageUserType.SELF;
-//                }
-//                else {
-//                    userType = ChatMessageUserType.OTHER;
-//                }
-//
-//
-//                //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
-//                //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
-//
-//
-//                message.setUserName(roleOfUser);
-//                message.setMessageStatus(ChatMessageStatus.SENT);
-//                message.setMessageText(body);
-//                message.setUserType(userType);
-//                message.setMessageTime(new Date().getTime());
-//                Log.i(TAG, "message before adding to chatMessages" + message);
-//                chatMessages.add(message);
-//                Log.i(TAG, "message after adding to chatMessages" + chatMessages);
-//
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Log.i(TAG, "message runOnUiThread" + listAdapter);
-//                        if (listAdapter != null) {
-//                            Log.i(TAG, "message runOnUiThread  not null");
-//                            listAdapter.notifyDataSetChanged();
-//                        }
-//                        Log.i(TAG, "message runOnUiThread edtTypeMsg1");
-//                        edtTypeMsg.setText("");
-//                        Log.i(TAG, "message runOnUiThread edtTypeMsg2");
-//                    }
-//                });
-//            }
-//
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Log.i(TAG, "caught in display message" + e);
-//        }
-
         chatListView.post(new Runnable() {
             @Override
             public void run() {
@@ -1124,6 +1035,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         myRealm = General.realmconfig(this);
         String body = null;
         String timetoken = null;
+        String imageUrl = null;
+        String user_id = null;
+        ChatMessageUserSubtype userSubtype = null;
         ChatMessageUserType userType = null;
         ChatMessage message;
         String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
@@ -1170,11 +1084,42 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 Log.i(TAG, "until insideroui4 " + c.getMessage());
                 Log.i(TAG, "until insideroui4 " + c.getFrom());
                 Log.i(TAG, "until insideroui4 " + c.getTo());
+                Log.i(TAG, "until insideroui4 " + c.getImageUrl());
 
                 if (c.getFrom().equalsIgnoreCase("DEFAULT")) {
                     Log.i("CONVER", "DEFAULT set");
                     userType = ChatMessageUserType.DEFAULT;
-                } else if (c.getFrom().equalsIgnoreCase("LISTING")) {
+                }
+                else if (c.getFrom().equalsIgnoreCase("IMG")){
+
+
+                    userType = ChatMessageUserType.IMG;
+
+                        imageUrl = c.getImageUrl();
+
+
+
+                        user_id = c.getUser_id();
+
+
+                    if (!user_id.equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID))) {
+                        userSubtype = ChatMessageUserSubtype.SELF;
+                    } else {
+                        userSubtype = ChatMessageUserSubtype.OTHER;
+                    }
+
+                    /*if(jsonMsg.getString("to").equalsIgnoreCase("support"))
+                        userSubtype = ChatMessageUserSubtype.SUPPORT;
+                    else if (!jsonMsg.getString("from").equalsIgnoreCase()))
+                    {
+                        userSubtype = ChatMessageUserSubtype.SELF;
+                    }
+                    else {
+                        userSubtype = ChatMessageUserSubtype.OTHER;
+                    }*/
+
+                }
+                else if (c.getFrom().equalsIgnoreCase("LISTING")) {
                     Log.i("CONVER", "LISTING set");
                     userType = ChatMessageUserType.LISTING;
                 }
@@ -1193,6 +1138,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 message.setMessageStatus(ChatMessageStatus.SENT);
                 message.setMessageText(c.getMessage());
                 message.setUserType(userType);
+                message.setImageUrl(imageUrl);
+                message.setUser_id(user_id);
+                message.setUserSubtype(userSubtype);
                 message.setMessageTime(Long.valueOf(c.getTimestamp())/10000);
                 chatMessages.add(message);
 
@@ -1291,9 +1239,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     channel_name,
                     General.getSharedPreferences(this,AppConstants.GCM_ID));
 
-            sendNotification(channel_name);
+
             pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+            sendNotification(channel_name,jsonMsg);
             lastMessageTime = String.valueOf(System.currentTimeMillis());
+
 // if channel name is ok id dont call pubnubwhere now (moved above)
             //        pubnubWhereNow(General.getSharedPreferences(this, AppConstants.USER_ID));
 
@@ -1347,7 +1297,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     {
                         Log.i("TEST", "jsonMsgtoWhereNow in wherenow " + jsonMsgtoWhereNow);
                         firstMessage = true;
-                        sendNotification("my_channel");
+                       sendNotification("my_channel",jsonMsgtoWhereNow);
                         Log.i("Pubnub push","inside pubnub where now its first msg ");
                         pubnub.publish("my_channel", jsonMsgtoWhereNow, true, new Callback() {
                         });
@@ -1517,7 +1467,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             }
         };
         // pubnub.history(channel_name, 10, false, callback);
-        pubnub.history(channel_name,true, 50,callback);
+        pubnub.history(channel_name,true, 5,callback);
     }
 
 
@@ -1525,77 +1475,31 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      *  pubnub push notification
      */
 
-    public void sendNotification(String channel_name) throws JSONException {
+    public void sendNotification(String channel_name, JSONObject jsonMsg) throws JSONException {
 
-        Log.i("INSIDE PUSH NOTIFY","============");
+        Log.i("INSIDE PUSH NOTIFY","pubnubgcm ============" +jsonMsg);
         PnGcmMessage gcmMessage = new PnGcmMessage();
 
-        JSONObject json = new JSONObject();
+      // JSONObject json = new JSONObject();
+        jsonMsg.put("_from", jsonMsg.remove("from"));
 
-        try {
-            json.put("a","android===");
+        /*try {
+
+            json.put("to","Ritesh");
+            json.put("_from","Warke");
+            json.put("message","Warke w");
+            json.put("name","Warke jhkjhkjkjlkk");
+
         }
         catch (JSONException e)
         {
+            Log.i("INSIDE PUSH NOTIFY","pubnubgcm error ============ "+e);
+        }*/
+        gcmMessage.setData(jsonMsg);
 
-        }
 
-        gcmMessage.setData(json);
-
-
-        Log.i("INSIDE PUSH NOTIFY","============");
+        Log.i("INSIDE PUSH NOTIFY","pubnubgcm ============");
 // Create APNS message
-
-        PnApnsMessage apnsMessage = new PnApnsMessage();
-        apnsMessage.setApsSound("melody");
-        apnsMessage.setApsAlert("Hi from android !!!");
-        apnsMessage.setApsBadge(4);
-        apnsMessage.put("C ","3");
-
-        PnMessage message = new PnMessage(pubnub, "", new Callback() {
-            @Override
-            public void successCallback(String channel, Object message) {
-                Log.i("TRACE NOTIFICATION","Successfull "+message);
-            }
-
-            @Override
-            public void errorCallback(String channel,PubnubError error)
-            {
-                Log.i("TRACE NOTIFICATION","Error "+error);
-            }
-        },gcmMessage);
-
-        message.put("b","20");
-
-        try {
-
-            message.publish();
-        }
-        catch (PubnubException e){
-            Log.i("INSIDE PUSH NOTIFY","ERROR============ "+e.getMessage());
-        }
-
-    }
-
-
-    public void sendNotification111(String channel_name) throws JSONException {
-
-        PnGcmMessage gcmMessage = new PnGcmMessage();
-
-        JSONObject json = new JSONObject();
-
-        try {
-            json.put("a","1");
-        }
-        catch (JSONException e)
-        {
-
-        }
-
-        gcmMessage.setData(json);
-
-
-        // Create APNS message
 
         PnApnsMessage apnsMessage = new PnApnsMessage();
         apnsMessage.setApsSound("melody");
@@ -1606,55 +1510,26 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         PnMessage message = new PnMessage(pubnub, channel_name, new Callback() {
             @Override
             public void successCallback(String channel, Object message) {
-                Log.i("TRACE NOTIFICATION","Successfull "+message);
+                Log.i("TRACE NOTIFICATION","pubnubgcm Successfullaaaa "+message);
             }
 
             @Override
             public void errorCallback(String channel,PubnubError error)
             {
-                Log.i("TRACE NOTIFICATION","Error "+error);
+                Log.i("TRACE NOTIFICATION","pubnubgcm yo Error "+error);
             }
         },apnsMessage,gcmMessage);
 
-        message.put("b","20");
+        //message.put("b","20");
 
         try {
+
             message.publish();
         }
-        catch (PubnubException e){}
-    }
-
-
-    public void sendNotification1(String channel_name) {
-
-        Log.i("Pubnub push","channel_name is "+channel_name);
-        Log.i("Pubnub push","GCM id is "+General.getSharedPreferences(this,AppConstants.GCM_ID));
-
-        pubnub.enablePushNotificationsOnChannel(
-                channel_name,
-                General.getSharedPreferences(this,AppConstants.GCM_ID));
-
-        Log.i("Pubnub push","inside send notif with chanel name "+channel_name);
-        PnGcmMessage gcmMessage = new PnGcmMessage();
-        JSONObject jso = new JSONObject();
-        try {
-            jso.put("GCMSays", "hi");
-        } catch (JSONException e) { }
-        Log.i("Pubnub push","inside send notif with msg "+jso);
-        gcmMessage.setData(jso);
-
-        PnMessage message = new PnMessage(
-                pubnub,
-                channel_name,
-                callback,
-                gcmMessage);
-        try {
-            message.publish();
-            Log.i("Pubnub push","inside send notif with msg published "+jso);
-        } catch (PubnubException e) {
-            Log.i("Pubnub push","inside send notif failed "+e);
-            e.printStackTrace();
+        catch (PubnubException e){
+            Log.i("INSIDE PUSH NOTIFY","pubnubgcm ERROR============ "+e.getMessage());
         }
+
     }
 
     public static Callback callback = new Callback() {
@@ -1719,6 +1594,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     }
 
     private void cacheMessages(JSONArray jsonArrayHistory){
+        String user_id = null;
         Log.i(TAG, "until cacheMessages called  ");
         //JSONArray jsonArrayHistory = loadFinalHistory();
         myRealm = General.realmconfig(this);
@@ -1757,13 +1633,22 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 Log.i(TAG, "until here is the 1 jsonMsg "+jsonMsg);
 
-                if (jsonMsg.has("message")) {
+                if (jsonMsg.has("message") && jsonMsg.has("from")) {
                     JSONObject j = jsonMsg.getJSONObject("message");
                     String timetoken = jsonMsg.getString("timetoken");
+                    String imageUrl = null;
                     Log.i(TAG, "until here is the 1  " + jsonMsg.getString("message"));
                     String from = j.getString("from");
                     String to = j.getString("to");
                     String body = j.getString("message");
+                    if(j.has("imageUrl"))
+                        imageUrl = j.getString("imageUrl");
+                    else
+                        imageUrl = null;
+
+                    if(j.has("user_id"))
+                        user_id = j.getString("user_id");
+
                     Log.i(TAG,"until here is the 1 2 "+from+" "+to+" "+body);
 
                     message = new Message();
@@ -1773,8 +1658,10 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Log.i(TAG,"until here is the 1 2 Tithe");
                     message.setOk_id(channel_name);
                     message.setMessage(body);
+                    message.setImageUrl(imageUrl);
                     message.setTimestamp(timetoken);
                     message.setFrom(from);
+                    message.setUser_id(user_id);
                     message.setTo(to);
 
                     Log.i(TAG,"until here is the 246 "+body);
@@ -1967,7 +1854,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             }
         };
         // pubnub.history(channel_name, 10, false, callback);
-        pubnub.history(channel_name,true, 50,callback);
+        pubnub.history(channel_name,true, 5,callback);
         Log.i(TAG, "inside loadHistoryFromPubnub channel name is2 yo jsonArrayHistory 1 "+jsonArrayHistory);
 
 
@@ -2032,7 +1919,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     }
 
     private void displayImgMessage(String bucketName, String imgName){
+        Log.i(TAG, "calipso inside displayimage msg"+bucketName +" "+imgName );
         Log.i(TAG, "displayImgMessage called ");
+        String user_id = General.getSharedPreferences(this,AppConstants.USER_ID);
         try {
             JSONObject jsonMsg = new JSONObject();
 
@@ -2044,7 +1933,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             //jsonMsg.put("to", "client");
             jsonMsg.put("imageUrl", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);
 
-
+            jsonMsg.put("imageName", imgName);
+            jsonMsg.put("user_id", user_id);
 
             Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
 
@@ -2066,11 +1956,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             }
             jsonMsg.put("message", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);
             Log.i("yoyoyo","urlo "+jsonMsg);
-
-
-
+            Log.i(TAG, "calipso inside calling displayMsg "+jsonMsg );
             displayMessage(jsonMsg);
             pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+
+
+
+
         }
         catch(Exception e){}
 
@@ -2117,31 +2009,87 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      */
     public void setFileToUpload(File fileToU){
         fileToUpload = fileToU;
-        imageName = "droid"+String.valueOf(System.currentTimeMillis());
+        imageName = "droid"+String.valueOf(System.currentTimeMillis())+".png";
+try {
+    if (Environment.getExternalStorageState() == null) {
+        //create new file directory object
+        File directory = new File(Environment.getDataDirectory()
+                + "/oyeok/");
+
+        // if no directory exists, create new directory
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        File destdir = new File(Environment.getExternalStorageDirectory()
+                + "/oyeok/"+imageName);
+        Log.i(TAG,"dest diro "+destdir);
+        copyFileUsingStream(fileToUpload, destdir);
+        Log.i(TAG,"file after save ");
+
+        // if phone DOES have sd card
+    } else if (Environment.getExternalStorageState() != null) {
+        // search for directory on SD card
+        File directory = new File(Environment.getExternalStorageDirectory()
+                + "/oyeok/");
+
+        // if no directory exists, create new directory to store test
+        // results
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        File destdir = new File(Environment.getExternalStorageDirectory()
+                + "/oyeok/"+imageName);
+        Log.i(TAG,"dest diro "+destdir);
+        copyFileUsingStream(fileToUpload, destdir);
+        Log.i(TAG,"file after save ");
+    }
+}catch(Exception e){
+    Log.i(TAG, "Caught in exception saving image /oyeok "+e);
+}
 
 
+        displayImgMessage("oyeok-chat-images",imageName);
         TransferObserver transferObserver = transferUtility.upload(
                 "oyeok-chat-images",     /* The bucket to upload to */
                 imageName,    /* The key for the uploaded object */
                 fileToUpload       /* The file where the data to upload exists */
         );
-
         transferObserverListener(transferObserver);
         //
 
-
-
     }
+
+    public static void copyFileUsingStream(File source, File dest) throws IOException {
+        Log.i(TAG,"fila source "+source);
+        Log.i(TAG,"fila dest "+dest);
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new FileInputStream(source);
+            os = new FileOutputStream(dest);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+        } finally {
+            is.close();
+            os.close();
+        }
+    }
+
+
 
     /**
      *  This method is used to Download the file to S3 by using transferUtility class
      * @param
      **/
-    public void setFileToDownload(){
-
+    public void setFileToDownload(String fileToD,File fileToDownload){
+Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
         TransferObserver transferObserver = transferUtility.download(
                 "oyeok-chat-images",     /* The bucket to download from */
-                "photos11234097.png",    /* The key for the object to download */
+                fileToD,    /* The key for the object to download */
                 fileToDownload        /* The file to download the object to */
         );
 
@@ -2165,10 +2113,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             public void onStateChanged(int id, TransferState state) {
                 Log.i("imageu statechange", state+"");
                 if(state.toString().equalsIgnoreCase("COMPLETED")){
+
+
                     /*General.setSharedPreferences(DealConversationActivity.this,AppConstants.UPLOADED_IMAGE_PATH,fileToUpload.toString());
                     Log.i("asakasa","asakasa123 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.UPLOADED_IMAGE_PATH));*/
                    // sendMessage("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName);
-                    displayImgMessage("oyeok-chat-images",imageName);
+                    //displayImgMessage("oyeok-chat-images",imageName);
+
 
                 }
             }
@@ -2206,7 +2157,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     @Override
     public void onBackPressed() {
 
-
+Log.i(TAG,"back clicked");
         if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME))
             channel_name = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
 

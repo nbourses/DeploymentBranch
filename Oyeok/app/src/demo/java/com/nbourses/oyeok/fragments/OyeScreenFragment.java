@@ -48,7 +48,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class OyeScreenFragment extends Fragment {
 
     @Bind(R.id.txtHome)
     ImageView txtHome;
@@ -96,7 +96,7 @@ public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSel
     TextView budgetText;
     String oyedata="" ;
     TextView txtcalendar;
-    String property,pro;
+    String property,pro,PossessionDate,Furnishing,my_expectation,Property_Config="2BHK";
 
 //    DiscreteSeekBar discreteSeekBar;
 //@Bind(R.id.tv_dealinfo)
@@ -154,7 +154,7 @@ public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSel
         txtcalendar=(TextView)rootView.findViewById(R.id.txtcalendar);
 //        tv_dealinfo=(TextView)rootView.findViewById(R.id.tv_dealinfo);
 
-
+        updateLabel();
         txtcalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,7 +181,7 @@ public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSel
             }
         });
 
-        updateLabel();
+
 
         Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner2);
 // Create an ArrayAdapter using the string array and a default spinner layout
@@ -193,7 +193,25 @@ public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSel
         spinner.setAdapter(adapter);
 
 
-        spinner.setOnItemSelectedListener(this);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // An item was selected. You can retrieve the selected item using
+                // parent.getItemAtPosition(pos)
+                Log.i("confirmaton", "Furnishing================" + Furnishing);
+                Furnishing = parent.getItemAtPosition(position).toString();
+                Log.i("confirmaton", "Furnishing+++++++++++++++++++" + Furnishing);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+// Another interface callback
+
+            }
+        });
+
+
+
 
             return rootView;
 
@@ -202,22 +220,14 @@ public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSel
 
     }
 
-    public void onItemSelected(AdapterView<?> parent, View view,
-                               int pos, long id) {
-        // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
-    }
 
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
-    }
 
     private BroadcastReceiver oyebuttondata = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-                 oyedata = SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY);
-                Log.i("oyedata","oyedata==============="+oyedata);
+            oyedata = SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
+            Log.i("oyedata", "oyedata===============" + oyedata);
 
         }
     };
@@ -319,6 +329,7 @@ public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSel
                 value=value*1000;
                // }
                 String val=String.valueOf(value);
+                my_expectation=val;
                 txtSelected.setText(General.currencyFormat(val));
 
                 AppConstants.letsOye.setPrice("" + value);
@@ -506,7 +517,7 @@ public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSel
                 budgetSeekBar.setProgress(AppConstants.minRent);
                // budgetSeekBar.setProgress(500);
                 txtSelected.setText(General.currencyFormat(String.valueOf(AppConstants.minRent)));
-
+                my_expectation=String.valueOf(AppConstants.minRent);
                 txtOptionSee.setText(getString(R.string.oye_rental_req));
                 txtOptionShow.setText(getString(R.string.oye_rental_avail));
 
@@ -521,7 +532,7 @@ public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSel
                // budgetSeekBar.setProgress(10);
                // budgetSeekBar.incrementProgressBy(10);
                 txtSelected.setText(General.currencyFormat(String.valueOf(AppConstants.minSale)));
-
+                my_expectation=String.valueOf(AppConstants.minSale);
                 txtOptionSee.setText(getString(R.string.oye_sale_req));
                 txtOptionShow.setText(getString(R.string.oye_sale_avail));
 
@@ -572,7 +583,7 @@ public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSel
     public void onPause() {
         super.onPause();
        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(BroadCastMinMaxValue);
-//        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(ProType);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oyebuttondata);
 
     }
 
@@ -614,15 +625,18 @@ public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSel
 
     @OnClick(R.id.btnOnOyeClick)
     public void submitOyeOk(View v) {
-
+//        my_expectation=txtSelected.getText().toString();
+        SendDataToOyeConfirmationScreen();
         if(General.isNetworkAvailable(getContext())) {
             Log.i("TAG", "property subtype selected" + General.retriveBoolean(getContext(), "propertySubtypeFlag"));
             if (General.retriveBoolean(getContext(), "propertySubtypeFlag")) {
                 isclicked = "true";
+
                 Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
                 intent.putExtra("isclicked", isclicked);
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                 Log.i("isclicked", "isclicked===============================");
+
             } else {
                 SnackbarManager.show(
                         Snackbar.with(getContext())
@@ -660,6 +674,7 @@ public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSel
         String myFormat = "dd-MMM-yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         txtcalendar.setText(sdf.format(myCalendar.getTime()));
+        PossessionDate=txtcalendar.getText().toString();
     }
 
     private void displayDatePicker(){
@@ -668,7 +683,7 @@ public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSel
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH));
 
-        String myFormat = "dd-MM-yy"; //In which you need put here
+        String myFormat = "dd/MM/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         Date d = null;
@@ -691,6 +706,29 @@ public class OyeScreenFragment extends Fragment implements AdapterView.OnItemSel
             e.printStackTrace();
         }
     }
+
+
+
+
+    public  void SendDataToOyeConfirmationScreen(){
+Log.i("confirmation","I am In SendDataToOyeConfirmationScreen function : ");
+        Intent intent = new Intent(AppConstants.BROADCAST_PROPERTY_DETAILS);
+        intent.putExtra("propertyConfig", Property_Config);
+        intent.putExtra("furnishing", Furnishing);
+        intent.putExtra("possessionDate", PossessionDate);
+        intent.putExtra("myExpectation", my_expectation);
+        //intent.putExtra("tv_dealinfo",oyeButtonData);
+        Log.i("confirmaton","Furnishing       ;"+Furnishing);
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
+//        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,Property_Config);
+        General.setSharedPreferences(getContext(),AppConstants.FURNISHING,Furnishing);
+        General.setSharedPreferences(getContext(),AppConstants.POSSESSION_DATE,PossessionDate);
+        General.setSharedPreferences(getContext(),AppConstants.MY_EXPECTATION,my_expectation);
+
+
+    }
+
 
 
 

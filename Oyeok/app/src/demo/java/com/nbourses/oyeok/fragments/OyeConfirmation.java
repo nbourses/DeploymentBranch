@@ -1,9 +1,15 @@
 package com.nbourses.oyeok.fragments;
 
 import android.app.DatePickerDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +21,7 @@ import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.activities.ClientMainActivity;
+import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 
 import java.text.ParseException;
@@ -23,6 +30,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import static java.lang.Math.log10;
+
 
 public class OyeConfirmation extends Fragment {
 
@@ -30,9 +39,11 @@ public class OyeConfirmation extends Fragment {
    private ImageView calendar,proceed_to_oye;
     private TextView display_date;
     LinearLayout available_sizes;
-LinearLayout confirm_layout_with_edit_button;
-Button editDetails;
-
+    LinearLayout confirm_layout_with_edit_button;
+    Button editDetails;
+    String PossessionDate,Furnishing,my_expectation,Property_Config;
+    TextView MyExpectation;
+    TextView Property_conf_furnishing;
 
 
     private OnFragmentInteractionListener mListener;
@@ -88,15 +99,19 @@ Button editDetails;
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View  view = inflater.inflate(R.layout.fragment_oye_confirmation, container, false);
-        calendar=(ImageView) view.findViewById(R.id.calendar);
+//        calendar=(ImageView) view.findViewById(R.id.calendar);
         display_date=(TextView) view.findViewById(R.id.display_date);
         available_sizes=(LinearLayout) view.findViewById(R.id.available_sizes);
         confirm_layout_with_edit_button=(LinearLayout) view.findViewById(R.id.confirm_layout_with_edit_button);
         proceed_to_oye=(ImageView) view.findViewById(R.id.proceed_to_oye);
         editDetails=(Button) view.findViewById(R.id.editDetails);
+        MyExpectation=(TextView) view.findViewById(R.id.rate);
+        Property_conf_furnishing=(TextView) view.findViewById(R.id.property_config);
 
+        updateLabel();
 
         init();
+        SetPropertyDetail();
         return view;
     }
 
@@ -128,25 +143,25 @@ Button editDetails;
 
 
 
-        calendar.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                displayDatePicker();
-                calendar.setVisibility(View.GONE);
-                display_date.setVisibility(View.VISIBLE);
-
-            }
-        });
-        display_date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                displayDatePicker();
-                calendar.setVisibility(View.GONE);
-                display_date.setVisibility(View.VISIBLE);
-            }
-        });
-
+//        calendar.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                displayDatePicker();
+//                calendar.setVisibility(View.GONE);
+//                display_date.setVisibility(View.VISIBLE);
+//
+//            }
+//        });
+//        display_date.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                displayDatePicker();
+//                calendar.setVisibility(View.GONE);
+//                display_date.setVisibility(View.VISIBLE);
+//            }
+//        });
+//
 
         proceed_to_oye.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,12 +221,177 @@ Button editDetails;
 
 
 
+    private BroadcastReceiver SetPropertyDetails1 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+           my_expectation= intent.getExtras().getString("myExpectation1").toString();
+            Log.i("confirmation1","myExpectation1 :="+my_expectation+"  "+intent.getExtras().getString("myExpectation").toString());
+           Property_Config= intent.getExtras().getString("propertyConfig1");
+            Log.i("confirmation1","PropertyConfig1 := "+Property_Config);
+           PossessionDate= intent.getExtras().getString("possessionDate1");
+            Log.i("confirmation1","PossessionDate1 := "+PossessionDate);
+           Furnishing=intent.getExtras().getString("furnishing1");
+            Log.i("confirmaton1","Furnishing1 :="+Furnishing);
 
 
 
 
 
-//    @Override
+        }
+    };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(SetPropertyDetails1,new IntentFilter((AppConstants.RECEIVE_PROPERTY_DETAILS)));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(SetPropertyDetails1);
+    }
+
+
+    public void SetPropertyDetail(/*String price,String Config,String Date,String furnishing*/){
+        /*Bundle bundle = this.getArguments();
+        Log.i("confirmation1", "myexpectation" + bundle);
+        if(bundle.getString("my")!=null) {
+            my_expectation = bundle.getString("myexpectation");
+            Log.i("confirmation1", "myexpectation" + my_expectation);
+        }*/
+
+
+       Log.i("shared data","MY_EXPECTATION : "+General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
+        my_expectation=General.getSharedPreferences(getContext(),AppConstants.MY_EXPECTATION);
+        Property_Config=General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG);
+        PossessionDate=General.getSharedPreferences(getContext(),AppConstants.POSSESSION_DATE);
+        Furnishing=General.getSharedPreferences(getContext(),AppConstants.FURNISHING);
+       int price= Integer.parseInt(my_expectation);
+        display_date.setText(PossessionDate);
+        MyExpectation.setText("My Expectation = "+numToVal(price)+" | Deposit "+numToVal(price*4)+ " (negotiable)");
+        Property_conf_furnishing.setText(Property_Config+" "+Furnishing);
+
+    }
+
+
+    String numToVal(int no){
+        String str = "",v = "";
+
+        int twoWord = 0,val = 1;
+
+        int c = (no == 0 ? 1 : (int)(log10(no)+1));
+
+        if (c > 8) {
+
+            c = 8;
+        }
+        if (c%2 == 1){
+
+            c--;
+        }
+
+        c--;
+        //   int q = Int(pow(Double(10),Double(c)))
+        switch(c)
+        {
+            case 7:
+//            if(propertyType)
+                val = no/10000000;
+//            else
+//                val = no/100000;
+                no = no%10000000;
+                String formatted = String.format("%07d", no);
+                formatted = formatted.substring(0,1);
+
+                v = val+"."+formatted;
+                str = v+" cr";
+
+
+                twoWord++;
+                break;
+
+            case 5:
+
+                val = no/100000;
+
+                v = val+"";
+                no = no%100000;
+                String s2 = String.format("%05d", no);
+                s2 = s2.substring(0,1);
+
+                if (no>0){
+                    str = str+v+"."+s2+"L";
+                    twoWord++;
+                }else{
+                    str = str+v+" L";
+                    twoWord++;
+                }
+
+                break;
+
+            case 3:
+                val = no/1000;
+                v = val+"";
+                no = no%1000;
+                String.format("%05d", no);
+                String s3 = String.format("%03d", no);
+                s3 = s3.substring(0,1);
+                if (no > 0) {
+                    str = str+v+"."+s3+" k";
+                }else
+                {
+                    str = str+v+" k";
+                }
+                break;
+            default :
+                // print("noToWord Default")
+                break;
+        }
+        return str;
+    }
+
+    public void num(int value){
+        int price;
+        String budget;
+   /*     if (value<=99999) {
+            if ((price=value%1000)>0) {
+                price=value/1000.0f;
+                budget= [NSString stringWithFormat:@"%.02fK",price];
+            }
+            else{
+                value=value/1000;
+                budget= [NSString stringWithFormat:@"%ldk",(long)value];
+            }
+        }
+        else
+        if (value<=9999999) {
+            if ((price=value%100000)>0) {
+                price=value/100000.0f;
+                budget= [NSString stringWithFormat:@"%.02fL",price];
+            }
+            else{
+                value=value/100000;
+                budget= [NSString stringWithFormat:@"%ldL",(long)value];
+            }
+        }
+        if(value>9999999)
+        {
+            if ((price=value%10000000)>0) {
+                price=value/10000000.0f;
+                budget= [NSString stringWithFormat:@"%.02fCR",price];
+            }
+            else{
+                value=value/10000000;
+                budget= [NSString stringWithFormat:@"%ldCR",(long)value];
+            }
+        }*/
+
+    }
+
+
+
+    //    @Override
 //    public void onAttach(Context context) {
 //        super.onAttach(context);
 //        if (context instanceof OnFragmentInteractionListener) {

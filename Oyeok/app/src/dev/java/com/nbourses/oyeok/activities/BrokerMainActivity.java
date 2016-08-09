@@ -39,6 +39,7 @@ import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.BrokerMap;
 import com.nbourses.oyeok.fragments.BrokerPreokFragment;
+import com.nbourses.oyeok.fragments.ShareOwnersNo;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
@@ -71,7 +72,7 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
 
 //    @Bind(R.id.buildingSlider)
 //    RelativeLayout buildingSlider;
-boolean setting=false;
+boolean setting=false,Owner_detail=false;
 
    int backpress;
 
@@ -528,7 +529,16 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             //don't do anything
         }
         else if (itemTitle.equals(getString(R.string.shareApp))) {
-            shareReferralLink();
+            if(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")){
+                SignUpFragment signUpFragment = new SignUpFragment();
+                // signUpFragment.getView().bringToFront();
+                Bundle bundle = new Bundle();
+                bundle.putStringArray("Chat", null);
+                bundle.putString("lastFragment", "drawer");
+                loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
+            }
+            else
+                shareReferralLink();
         }
      /*   else if (itemTitle.equals(getString(R.string.supportChat))) {
             //TODO: integration is pending
@@ -580,6 +590,12 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
         }
+        else if(itemTitle.equals(getString(R.string.shareNo))){
+            ShareOwnersNo shareOwnersNo = new ShareOwnersNo();
+
+            loadFragment(shareOwnersNo, null, R.id.container_sign, "");
+            Owner_detail=true;
+        }
 
 
 
@@ -621,11 +637,14 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
                 // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
-                .setCanonicalIdentifier(user_id);
+                .setTitle("OYEOK")
+                .setContentDescription("Get property at right price. ")
+                .setCanonicalIdentifier(mob_no);
+
 
         LinkProperties linkProperties = new LinkProperties()
-                .setChannel("sms")
-                .setFeature("sharing")
+                .setChannel("android")
+                .setFeature("share")
                 .addControlParameter("user_name", user_id)
                 .addControlParameter("$android_url", AppConstants.GOOGLE_PLAY_STORE_APP_URL)
                 .addControlParameter("$always_deeplink", "true");
@@ -748,6 +767,11 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
                 backpress = 0;
             }
 
+        }
+        else if(Owner_detail==true){
+            getSupportFragmentManager().popBackStackImmediate();
+            Owner_detail=false;
+            backpress = 0;
         }
         else{
 

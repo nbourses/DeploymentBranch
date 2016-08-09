@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+
+        android:id="@+id/linearLayout6"
+        android:weightSum="1">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <View
+                android:layout_width="3dp"
+                android:id="@+id/test"
+                android:layout_height="match_parent"
+                android:background="@color/greenish_blue"
+                android:layout_gravity="center_horizontal"
+                />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+
+
+
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/spinner"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/shape_circle"
+                    android:gravity="center"/>
+
+                <ProgressBar
+                    android:id="@+id/spinnerProgress"
+                    android:progressDrawable="@drawable/circular_progress_view"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="visible"/>
+
+
+
+
+
+
+                <!-- <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/spinner"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/shape_circle"
+                    android:gravity="center"/>
+
+
+               <ProgressBar
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progressBar"
+                    android:progressDrawable="@drawable/circular_progress_view"
+                    android:gravity="center"/> -->
+
+                <TextView
+                    android:id="@+id/txt_first_char"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/shape_circle"
+                    android:gravity="center"
+                    android:text="O"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:visibility="invisible"
+                    android:textSize="20sp" />
+
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="283dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:background="#5bc9c7c7"
+        android:paddingRight="10dp"
+        android:layout_weight="0.27"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Properties available for visit are"
+            android:id="@+id/textView5"
+            android:paddingBottom="5dp"
+            android:textSize="16sp"
+            android:background="@color/common_google_signin_btn_text_light_default"
+            android:textColor="@color/White"
+            android:paddingTop="5dp"
+            android:paddingLeft="5dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Neha Apt"
+                    android:id="@+id/building1"
+                    android:textSize="18sp"
+                    android:textIsSelectable="false" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="DLH Apt"
+                    android:id="@+id/building2"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Tulsi Villa Apt"
+                    android:id="@+id/building3"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="20dp"
+                android:paddingTop="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="₹ 35,000"
+                    android:id="@+id/price1"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="₹ 40,000"
+                    android:id="@+id/price2"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="₹ 60,000"
+                    android:id="@+id/price3"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="Confirm"
+                android:id="@+id/confirmListing"
+                android:layout_weight="1"
+                android:background="@color/yellow"
+                android:layout_marginRight="5dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="Later"
+                android:id="@+id/laterListing"
+                android:layout_weight="1"
+                android:background="@color/greenish_blue"
+                android:layout_marginLeft="5dp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

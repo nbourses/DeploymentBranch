@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.models;
 
 import com.nbourses.oyeok.enums.ChatMessageStatus;
+import com.nbourses.oyeok.enums.ChatMessageUserSubtype;
 import com.nbourses.oyeok.enums.ChatMessageUserType;
 
 /**
@@ -10,11 +11,14 @@ public class ChatMessage {
 
     private String messageText;
     private ChatMessageUserType userType;
+    private ChatMessageUserSubtype userSubtype;
     private ChatMessageStatus messageStatus;
     private String userName;
     private Long messageTime;
     private String imagePath;
     private String imageUrl;
+    private String imageName;
+    private String user_id;
 
     public Long getMessageTime() {
         return messageTime;
@@ -72,5 +76,29 @@ public class ChatMessage {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
+    public ChatMessageUserSubtype getUserSubtype() {
+        return userSubtype;
+    }
+
+    public void setUserSubtype(ChatMessageUserSubtype userSubtype) {
+        this.userSubtype = userSubtype;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 }

@@ -1,6 +1,5 @@
 package com.nbourses.oyeok.fragments;
 
-import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,11 +32,7 @@ import com.nispok.snackbar.SnackbarManager;
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -148,16 +142,16 @@ public class OyeScreenFragment extends Fragment {
         satView.setVisibility(View.VISIBLE);
         bundle = getArguments();
       tv_fd_bank=(TextView)rootView.findViewById(R.id.tv_fd_bank);
-        txtcalendar=(TextView)rootView.findViewById(R.id.txtcalendar);
+//        txtcalendar=(TextView)rootView.findViewById(R.id.txtcalendar);
 //        tv_dealinfo=(TextView)rootView.findViewById(R.id.tv_dealinfo);
 
 
-        txtcalendar.setOnClickListener(new View.OnClickListener() {
+        /*txtcalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 displayDatePicker();
             }
-        });
+        });*/
             init();
 
         satView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -255,8 +249,9 @@ public class OyeScreenFragment extends Fragment {
                value=value/1000;
                 value=value*1000;
                // }
-                String val=String.valueOf(value);
-                txtSelected.setText(General.currencyFormat(val));
+
+                txtSelected.setText(General.currencyFormat(String.valueOf(value)));
+
 
                 AppConstants.letsOye.setPrice("" + value);
             }
@@ -567,7 +562,7 @@ public class OyeScreenFragment extends Fragment {
 
 
 
-    final  DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+    /*final  DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -618,7 +613,7 @@ public class OyeScreenFragment extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 
 

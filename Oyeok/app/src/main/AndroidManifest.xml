@@ -265,15 +265,23 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
+            <!--<intent-filter>
                 <data
                     android:host="open"
-                    android:scheme="oyeok" />
+                    android:scheme="oyeok://" />
 
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>-->
+            <!-- AppLink example -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="8rj5.app.link" />
+                <data android:scheme="http" android:host="bnc.lt"/>
             </intent-filter>
         </activity>
         <!--
