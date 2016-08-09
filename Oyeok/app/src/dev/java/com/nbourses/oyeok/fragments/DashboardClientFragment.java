@@ -563,7 +563,7 @@ TextView rental,resale;
                 if(isTelephonyEnabled()) {
                     if (hasPermission != PackageManager.PERMISSION_GRANTED) {
                         requestPermissions(permissions, REQUEST_CALL_PHONE);
-//                    startActivity(callIntent);
+                        startActivity(callIntent);
                     } else {
                         startActivity(callIntent);
                     }

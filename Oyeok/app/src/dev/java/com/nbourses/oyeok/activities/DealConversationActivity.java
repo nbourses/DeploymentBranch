@@ -162,7 +162,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private Realm myRealm;
     private Message message;
     private JSONArray jsonArrayHistory;
-    private HashMap<String, Float> listings;
+    private HashMap<String, Integer> listings;
     private Boolean oyed = false;
     private Boolean okyed = false;
 
@@ -304,7 +304,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         setTransferUtility();
 
         Log.i(TAG, "role of user def yoman " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
-        listings = new HashMap<String, Float>();
+        //listings = new HashMap<String, Float>();
 
 
         edtTypeMsg.addTextChangedListener(edtTypeMsgListener);
@@ -323,8 +323,15 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                     if (bundle.getString("OkAccepted").equalsIgnoreCase("yes")) {
 
+                        Log.i(TAG,"dealconv okyed");
+
                         okyed = true;
                         General.storeDealTime(bundle.getString(AppConstants.OK_ID), this);
+                        listings = new HashMap<String, Integer>();
+
+                        listings = (HashMap<String, Integer>) bundle.getSerializable("listings");
+
+                        Log.i(TAG,"listings for cardview "+listings);
 
                     }
 
@@ -334,6 +341,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     channel_name = bundle.getString(AppConstants.OK_ID);
 
                     if (bundle.getString("Oyed").equalsIgnoreCase("yes")) {
+                        Log.i(TAG,"dealconv oyed");
                         oyed = true;
                         //chatMessages.clear();
 
@@ -346,11 +354,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     channel_name = bundle.getString(AppConstants.OK_ID); //my_channel if came from root item
                 }
                 Log.i(TAG,"listing ghya listing 1 ");
-                if(bundle.containsKey("listings")){
+                /*if(bundle.containsKey("listings")){
                     Log.i(TAG,"listing ghya listing 2 ");
                     Log.i(TAG,"listing ghya listing "+bundle.getSerializable("listing"));
 
-                }
+                }*/
             }
         }
         catch(Exception e){
@@ -578,12 +586,19 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             Log.i(TAG, "before loadHistoryFromPubnub");
             if(!channel_name.equals("my_channel")) {
 
-                if(oyed || okyed){
-                    oyed = false;
+                if( okyed){
                     okyed = false;
-                    displayDefaultMessage();
+
+                    displayCardView();
+
                     chatMessages.clear();
 
+                }
+                else if(oyed) {
+                    oyed = false;
+                    displayDefaultMessage();
+
+                    chatMessages.clear();
                 }
                 else {
                     displayMessage();
@@ -1860,6 +1875,52 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     }
 
+
+    private void displayCardView(){
+
+        Log.i(TAG, "displayCardView called ");
+        try {
+            JSONObject jsonMsg = new JSONObject();
+
+
+
+
+            //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
+            jsonMsg.put("from", "LISTING");
+            //jsonMsg.put("to", "client");
+
+
+            jsonMsg.put("to", "client");
+            Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
+
+
+
+                // prepare a default message now get ptype
+                String ptype = General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE);
+          //  mainList.addAll(set);
+            ArrayList<String> keys = new ArrayList<String>();
+                   keys.addAll(listings.keySet());
+            //ArrayList<String> keys = (ArrayList<String>) listings.keySet();  //get all keys
+
+            Log.i(TAG,"message for cardview is "+keys.get(0)+"--"+listings.get(keys.get(0))+"--"+keys.get(1)+"--"+listings.get(keys.get(1))+"--"+keys.get(2)+"--"+listings.get(keys.get(2)));
+               jsonMsg.put("message",keys.get(0)+"--"+listings.get(keys.get(0))+"--"+keys.get(1)+"--"+listings.get(keys.get(1))+"--"+keys.get(2)+"--"+listings.get(keys.get(2)));
+
+
+
+            displayMessage(jsonMsg);
+            pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+        }
+        catch(Exception e){
+
+            Log.i(TAG,"Caught in exception displayCardView "+e);
+        }
+        finally {
+            //chatMessages.clear();   // clears chatmessages to avoid redundant messages after loadhistory called(Clears out cached msgs before loading actual)
+        }
+
+    }
+
+
     private void displayDefaultMessage(){
         Log.i(TAG, "displayDefaultMessage called ");
         try {
@@ -2224,6 +2285,7 @@ Log.i(TAG,"back clicked");
             // super.onBackPressed();
         }*/
         if(AppConstants.CLIENT_DEAL_FLAG == true){
+            Log.i(TAG,"dealconv 1");
 
 
 
@@ -2234,6 +2296,8 @@ Log.i(TAG,"back clicked");
             finish();
             AppConstants.CLIENT_DEAL_FLAG = false;
         }else if(AppConstants.BROKER_DEAL_FLAG == true){
+            Log.i(TAG,"dealconv 2");
+
             AppConstants.BROKER_DEAL_FLAG = false;
             Intent back = new Intent(this, BrokerDealsListActivity.class); // to refresh adapter to display newly saved last message time
             back.addFlags(

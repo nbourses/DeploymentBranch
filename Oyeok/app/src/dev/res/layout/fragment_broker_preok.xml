@@ -331,34 +331,34 @@
                 </RelativeLayout>
 
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="-70dp">
+                    <com.skyfishjy.library.RippleBackground
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/broker_content"
+                        app:rb_color="#ff0000"
+                        app:rb_radius="4dp"
+                        app:rb_rippleAmount="4"
+                        app:rb_duration="3000"
+                        app:rb_scale="6">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
 
+                            />
+                    </com.skyfishjy.library.RippleBackground>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginLeft="-70dp">
-                <com.skyfishjy.library.RippleBackground
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/broker_content"
-                    app:rb_color="#ff0000"
-                    app:rb_radius="4dp"
-                    app:rb_rippleAmount="4"
-                    app:rb_duration="3000"
-                    app:rb_scale="6">
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-
-                        />
-                </com.skyfishjy.library.RippleBackground>
+                </LinearLayout>
 
             </LinearLayout>
+
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -443,6 +443,16 @@
 
             </com.skyfishjy.library.RippleBackground>
           </LinearLayout>
+
+            <!--<TextView
+                android:layout_width="wrap_content"
+                android:layout_height="64dp"
+                android:text="35000"
+                android:id="@+id/price"
+                android:layout_gravity="center_horizontal|top"
+                android:textSize="40dp"
+                android:layout_marginTop="50dp"
+                android:visibility="gone" />-->
         </FrameLayout>
 
       <RelativeLayout
@@ -532,7 +542,7 @@
                     android:id="@+id/resaleCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/circle_badge2"
+                    android:background="@drawable/badge_navy1"
                     android:text="3"
 
                     android:layout_alignParentRight="true"
@@ -681,5 +691,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="right|bottom"
         android:visibility="gone"></RelativeLayout>
+
+
 
 </FrameLayout>

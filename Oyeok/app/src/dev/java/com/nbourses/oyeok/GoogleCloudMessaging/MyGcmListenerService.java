@@ -80,7 +80,7 @@ public class MyGcmListenerService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         Log.i(TAG, "bundle data is inside pubnubgcm");
-        Log.i(TAG, "bundle data is pubnubgcm yo " + from);
+
         Log.i(TAG, "bundle data is pubnubgcm yo " + data);
         //Log.i("notifications","bundle data is "+data);
 
@@ -462,15 +462,31 @@ public class MyGcmListenerService extends GcmListenerService {
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+        Notification notification = new NotificationCompat.Builder(this)
                 .setContentTitle(title)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setGroup("ritz")
+                .setGroupSummary(true)
                 .setContentIntent(pendingIntent)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(message));
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message)).build();
+
+
+       /* NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setContentTitle(title)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setGroup("ritz")
+                .setGroupSummary(true)
+                .setContentIntent(pendingIntent)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message));*/
+
 
 
         NotificationManager notificationManager =
@@ -484,7 +500,7 @@ public class MyGcmListenerService extends GcmListenerService {
            // startActivity(i);
 
         }
-        notificationManager.notify(NOTIFICATION_ID++ /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(NOTIFICATION_ID++ /* ID of notification *//*, notificationBuilder.build()*/,notification);
         Log.d(TAG,"Notified");
     }
     private void storeDealTime(String okId){
