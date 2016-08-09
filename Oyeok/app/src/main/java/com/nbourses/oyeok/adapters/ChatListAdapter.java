@@ -149,9 +149,11 @@ private WebView i;
                     v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
                 else
                 v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);
+
                /* else //(message.getUserSubtype() == ChatMessageUserSubtype.OTHER)
                     v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);*/
 //v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
+
                 holder5 = new ViewHolder5();
                 holder5.imageView = (ImageView) v.findViewById(R.id.shareImage);
                 holder5.messageTextView = (TextView) v.findViewById(R.id.message_text);
@@ -162,9 +164,12 @@ private WebView i;
                 v.setTag(holder5);
             }
             else {
+
                 v = convertView;
                 holder5 = (ViewHolder5) v.getTag();
+
             }
+
             holder5.imageView.setVisibility(View.VISIBLE);
             holder5.messageTextView.setVisibility(View.GONE);
             holder5.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));

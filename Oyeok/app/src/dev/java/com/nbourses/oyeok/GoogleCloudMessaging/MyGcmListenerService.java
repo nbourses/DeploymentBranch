@@ -79,6 +79,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
+
         Log.i(TAG,"bundle data is inside");
         Log.i(TAG,"bundle data is "+data);
         Log.i("notifications","bundle data is "+data);
@@ -92,11 +93,13 @@ public class MyGcmListenerService extends GcmListenerService {
         supportCount = General.getBadgeCount(getApplicationContext(),AppConstants.SUPPORT_COUNT);
         hdRoomsCount = General.getBadgeCount(getApplicationContext(),AppConstants.HDROOMS_COUNT);
 
-
-
         //ShortcutBadger.applyCount(this, badgeCount);
 
-        String title = data.getString("title");
+        String title = null;
+
+        if(data.containsKey("title"))
+        data.getString("title");
+
         String message = data.getString("message");
         String okId = null;
         String deals;
@@ -104,6 +107,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
         Log.i(TAG,"Title is "+title);
 
+        if(title != null)
         if(title.equalsIgnoreCase("Oye")){
             badgeCount++;
             General.setBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT,badgeCount);
@@ -132,15 +136,7 @@ public class MyGcmListenerService extends GcmListenerService {
          //  DecimalFormat formatter = new DecimalFormat();
 
             price = General.currencyFormat(price);
-//            int x =Integer.parseInt(price);
-//
-//            Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
-//            price=format1.format(x);
-//            price = price.substring(0,price.length()-3);
-            //price ="₹ "+price;
 
-
-           // }
             Log.i("NOTIF","LL set true intend "+intend);
             Log.i("NOTIF","LL set true ptype "+ptype );
             Log.i("NOTIF","LL set true pstype "+pstype);
@@ -221,10 +217,6 @@ public class MyGcmListenerService extends GcmListenerService {
 
         }
 
-
-
-
-
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         deals = General.getDefaultDeals(this);
 
@@ -243,21 +235,23 @@ public class MyGcmListenerService extends GcmListenerService {
         Log.i(TAG,"msg is "+message+" type of msg is: "+message.getClass().getSimpleName());
 
         try{
-            JSONObject json = new JSONObject(data.getString("message"));
+            if(data.containsKey("ok_id")) {
+                JSONObject json = new JSONObject(data.getString("message"));
 
                 okId = json.getString("ok_id");
-            if(!okId.equals("")){
-                hdRoomsCount++;
-                badgeCount++;
-                Log.i(TAG,"badecount hd rooms badgeCount "+badgeCount);
-                Log.i(TAG,"badecount hd rooms hdRoomsCount "+hdRoomsCount);
 
-                ShortcutBadger.applyCount(this, badgeCount);
-                General.setBadgeCount(getApplicationContext(),AppConstants.HDROOMS_COUNT,hdRoomsCount);
-                General.setBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT,badgeCount);
+                if (!okId.equals("")) {
+                    hdRoomsCount++;
+                    badgeCount++;
+                    Log.i(TAG, "badecount hd rooms badgeCount " + badgeCount);
+                    Log.i(TAG, "badecount hd rooms hdRoomsCount " + hdRoomsCount);
+
+                    ShortcutBadger.applyCount(this, badgeCount);
+                    General.setBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT, hdRoomsCount);
+                    General.setBadgeCount(getApplicationContext(), AppConstants.BADGE_COUNT, badgeCount);
+                }
+
             }
-
-
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -266,90 +260,85 @@ public class MyGcmListenerService extends GcmListenerService {
 
         if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equals("client")) {
             try {
-                Log.d(TAG, "Inside try");
-                JSONObject jsonObjectMsg = new JSONObject(data.getString("message"));
-                Log.d(TAG, "jsonObjectMsg is " + jsonObjectMsg);
-                message = jsonObjectMsg.getString("text");
-                Log.d(TAG, "text is " + message);
-                okId = jsonObjectMsg.getString("ok_id");
-                Log.d(TAG, "okId is: " + okId);
+
+                if(data.containsKey("ok-id")) {
+                    Log.d(TAG, "Inside try");
+                    JSONObject jsonObjectMsg = new JSONObject(data.getString("message"));
+                    Log.d(TAG, "jsonObjectMsg is " + jsonObjectMsg);
+                    message = jsonObjectMsg.getString("text");
+                    Log.d(TAG, "text is " + message);
+                    okId = jsonObjectMsg.getString("ok_id");
+                    Log.d(TAG, "okId is: " + okId);
 
 // store ok time for deals list
-                storeDealTime(okId);
+                    storeDealTime(okId);
 
+                    // Collection d = deals1.values();
+                    Log.i(TAG, "before deal " + deals1);
+                    Iterator<Map.Entry<String, String>> iter = deals1.entrySet().iterator();
 
+                    while (iter.hasNext()) {
+                        Map.Entry<String, String> entry = iter.next();
+                        Log.d(TAG, "entry.getKey" + entry.getKey());
+                        if (okId.equalsIgnoreCase(entry.getKey())) {
+                            iter.remove();
+                            Log.d(TAG, "entry.getKey removed" + entry.getKey());
+                            Log.d("CHATTRACE", "default droomsremoved" + entry.getKey());
+                            Log.d("CHATTRACE", "default droomsremoved okid" + okId);
+                            Log.d(TAG, "entry.getKey removed" + entry.getValue());
+                            RefreshDrooms = true;
+                        }
+                    }
+                    Log.i(TAG, "after deal " + deals1);
+                    Log.i("Default deals in shared", "I am here2");
+                    Gson g = new Gson();
+                    String hashMapString = g.toJson(deals1);
+                    General.saveDefaultDeals(this, hashMapString);
+                    String deals5 = General.getDefaultDeals(this);
+                    Log.i("Default deals in shared", "I am here");
+                    Log.i("Default deals in shared", "are" + deals5);
 
+                    //Delete ddroom from realm
+                    try {
+                        Realm myRealm = General.realmconfig(this);
+                        RealmResults<DefaultDeals> result = myRealm.where(DefaultDeals.class).equalTo(AppConstants.OK_ID, okId).findAll();
 
-
-
-               // Collection d = deals1.values();
-
-                Log.i(TAG,"before deal "+deals1);
-                Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
-
-                while (iter.hasNext()) {
-                    Map.Entry<String,String> entry = iter.next();
-                    Log.d(TAG,"entry.getKey"+entry.getKey());
-                    if(okId.equalsIgnoreCase(entry.getKey())){
-                        iter.remove();
-                        Log.d(TAG, "entry.getKey removed" + entry.getKey());
-                        Log.d("CHATTRACE", "default droomsremoved" + entry.getKey());
-                        Log.d("CHATTRACE", "default droomsremoved okid" + okId);
-                        Log.d(TAG,"entry.getKey removed"+entry.getValue());
+                        myRealm.beginTransaction();
+                        result.clear();
                         RefreshDrooms = true;
+                        myRealm.commitTransaction();
+                    } catch (Exception e) {
+                        Log.i(TAG, "caught in exception deleting default droom");
                     }
-                }
-                Log.i(TAG,"after deal "+deals1);
-                Log.i("Default deals in shared","I am here2");
-                Gson g = new Gson();
-                String hashMapString = g.toJson(deals1);
-                General.saveDefaultDeals(this, hashMapString);
-                String deals5 = General.getDefaultDeals(this);
-                Log.i("Default deals in shared","I am here");
-                Log.i("Default deals in shared","are" +deals5);
 
-                //Delete ddroom from realm
-                try {
-                    Realm myRealm = General.realmconfig(this);
-                    RealmResults<DefaultDeals> result = myRealm.where(DefaultDeals.class).equalTo(AppConstants.OK_ID, okId).findAll();
-
-                    myRealm.beginTransaction();
-                    result.clear();
-                    RefreshDrooms = true;
-                    myRealm.commitTransaction();
-                }
-                catch(Exception e){
-                    Log.i(TAG,"caught in exception deleting default droom");
-                }
-
-                try{
-                    Realm myRealm = General.realmconfig(this);
-                    RealmResults<DefaultDeals> results1 =
-                            myRealm.where(DefaultDeals.class).findAll();
-                    Log.i(TAG, "insiderrer3 " +results1);
-                    for (DefaultDeals c : results1) {
-                        Log.i(TAG, "insiderrer3 " + c.getOk_id());
-                        Log.i(TAG, "insiderrer4 " + c.getSpec_code());
+                    try {
+                        Realm myRealm = General.realmconfig(this);
+                        RealmResults<DefaultDeals> results1 =
+                                myRealm.where(DefaultDeals.class).findAll();
+                        Log.i(TAG, "insiderrer3 " + results1);
+                        for (DefaultDeals c : results1) {
+                            Log.i(TAG, "insiderrer3 " + c.getOk_id());
+                            Log.i(TAG, "insiderrer4 " + c.getSpec_code());
+                        }
+                    } catch (Exception e) {
                     }
-                }
-                catch(Exception e){}
-
 
 
                     General.setSharedPreferences(getApplicationContext(), AppConstants.CLIENT_OK_ID, okId);
-                if(RefreshDrooms){
-                    Log.d(TAG, "Refresh Drooms flag is set");
+                    if (RefreshDrooms) {
+                        Log.d(TAG, "Refresh Drooms flag is set");
 
-                    Intent intent2 = new Intent("okeyed");
-                   intent2.putExtra("RefreshDrooms", true);
-                  LocalBroadcastManager.getInstance(this).sendBroadcast(intent2);
-                    //Intent intent = new Intent(this, ClientDealsListActivity.class);
-                    //startActivity(intent);
+                        Intent intent2 = new Intent("okeyed");
+                        intent2.putExtra("RefreshDrooms", true);
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent2);
+                        //Intent intent = new Intent(this, ClientDealsListActivity.class);
+                        //startActivity(intent);
 
-                }
+                    }
 
 
                     Log.d(TAG, "CLIENT_OK_ID: " + General.getSharedPreferences(getApplicationContext(), AppConstants.CLIENT_OK_ID));
+                }
 
                 }catch(Exception e){
                     Log.i("TAG", "Inside catch");
@@ -367,44 +356,8 @@ public class MyGcmListenerService extends GcmListenerService {
             // normal downstream message.
         }
 
-        // [START_EXCLUDE]
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
 
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
-
-/*
-        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-        HashMap<String, String> deals1 = gson.fromJson(deals, type);
-
-        Log.d("TRACE", "hashmap:" + deals1);
-
-        if(deals1 == null){
-            deals1 = new HashMap<String, String>();
-
-        }
-
-
-        Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry<String,String> entry = iter.next();
-            Log.d("TRACE","Inside iterator "+entry);
-            if(okId.equalsIgnoreCase(entry.getKey())){
-                Log.d("TRACE","Deleted default deal "+entry);
-                iter.remove();
-
-            }
-        }
-
-*/
-
+        if(title != null)
         if(title.equalsIgnoreCase("Oyeok")) {
             badgeCount++;
             General.setBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT,badgeCount);
@@ -417,7 +370,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
 
-       if(!message.equalsIgnoreCase("hello"))
+//       if(!message.equalsIgnoreCase("hello"))
         this.sendNotification(title, message);
         Log.d(TAG, "After sendNotification");
 
@@ -436,7 +389,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
         boolean isScreenOn = pm.isScreenOn();
 
-        Log.e("screen on.......", ""+isScreenOn);
+        Log.i("screen on.......", ""+isScreenOn);
 
         if(isScreenOn==false)
         {
@@ -464,6 +417,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(title)
                 .setPriority(Notification.PRIORITY_HIGH)
@@ -477,6 +431,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
         if (NOTIFICATION_ID > 1073741824) {
             NOTIFICATION_ID = 0;
         }
