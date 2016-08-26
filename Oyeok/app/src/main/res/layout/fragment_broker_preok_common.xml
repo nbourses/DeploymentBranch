@@ -1,0 +1,276 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <LinearLayout
+            android:id="@+id/notClicked"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_height="match_parent">
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.nbourses.oyeok.RPOT.OkBroker.CircularSeekBar.CircularSeekBarNew
+        android:id="@+id/circularSeekbar"
+        android:layout_width="match_parent"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        android:layout_height="match_parent"
+        app:circlenew_color="#81C784"
+        android:layout_marginBottom="60dp"
+        app:circlenew_stroke_width="5dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:id="@+id/dealsWrapper6">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                >
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:visibility="gone" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/greenish_blue"
+                    android:layout_marginLeft="5dp"
+                    android:text="Ok"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/okButton"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="120dp"
+                android:layout_marginTop="2dp">
+                <com.skyfishjy.library.RippleBackground
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/broker_content3"
+                    app:rb_color="#ff0000"
+                    app:rb_radius="4dp"
+                    app:rb_rippleAmount="4"
+                    app:rb_duration="3000"
+                    app:rb_scale="6">
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+
+                        />
+                </com.skyfishjy.library.RippleBackground>
+
+            </LinearLayout>
+            <!--<TextView
+
+                android:id="@+id/beaconOK"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#fff"
+                android:background="@android:drawable/ic_notification_overlay"
+                android:text=""
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="visible"
+                android:layout_alignParentRight="true"  />-->
+
+            <!-- android:layout_above="@+id/btnMyDeals" -->
+
+
+        </RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:id="@+id/dealsWrapper">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/deal"
+            android:textColor="@color/white"
+            android:text="Deals"
+            android:background="@color/yellow"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+            <TextView
+                android:id="@+id/hdroomsCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="10"
+                android:paddingEnd="8dp"
+                android:paddingRight="8dp"
+                android:paddingLeft="8dp"
+                android:gravity="center"
+                android:textColor="#FFF"
+                android:textSize="11sp"
+                android:background="@drawable/circle_badge2"
+                android:visibility="gone" />
+        <!-- android:layout_above="@+id/btnMyDeals" -->
+
+
+    </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+
+
+
+
+    <TextView
+        android:id="@+id/displayOkText"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="center"
+        android:textSize="13dp"
+        android:text="5 oks will be used"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/texPtype"
+            android:visibility="visible"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:text="Please select a Lead and press OK."
+            android:textColor="@color/Black"
+            android:textStyle="bold" />
+
+        <TextView
+        android:id="@+id/texPstype"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:text="Property Subtype: Food Outlet"
+            android:textColor="@color/Black"
+            android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/rentText"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:text="50L Rs"
+        android:textStyle="bold"
+        android:textColor="@color/Black"
+        android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Please select a Lead"
+            android:id="@+id/leadPrompt"
+            android:layout_gravity="center_horizontal|top"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:visibility="gone"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <!--  <Button
+              android:id="@+id/pickContact"
+              android:visibility="visible"
+              android:layout_width="30dp"
+              android:layout_height="30dp"
+              android:layout_gravity="center"
+              android:background="@drawable/ic_pick_contact"
+              android:layout_marginBottom="50dp"
+              android:layout_marginRight="30dp"/>
+
+          <TextView
+              android:id="@+id/contactText"
+              android:visibility="visible"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:layout_gravity="center"
+              android:layout_marginBottom="50dp"
+              android:layout_marginLeft="25dp"
+              android:text="Select\nClient"/> -->
+    </LinearLayout>
+</FrameLayout>

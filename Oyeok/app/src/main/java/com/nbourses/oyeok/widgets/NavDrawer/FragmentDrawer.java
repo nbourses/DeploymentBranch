@@ -144,6 +144,7 @@ public class FragmentDrawer extends Fragment {
 
 //Sections
 
+
         sections.add(new SimpleSectionedRecyclerViewAdapter.Section(2,"general"));
 
 

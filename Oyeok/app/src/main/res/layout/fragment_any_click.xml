@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal">
+    <TextView
+        android:id="@+id/txt300h"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginLeft="@dimen/eight_dp"
+        android:padding="4dp"
+        android:text="&lt;300"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/twelve_sp"/>
+    <TextView
+        android:id="@+id/txt600h"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginLeft="@dimen/eight_dp"
+        android:padding="4dp"
+        android:text="&lt;600"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/twelve_sp"/>
+
+    <TextView
+        android:id="@+id/txt950h"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginLeft="@dimen/eight_dp"
+        android:padding="4dp"
+        android:text="&lt;950"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/twelve_sp"/>
+
+    <TextView
+        android:id="@+id/txt1600h"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginLeft="@dimen/eight_dp"
+        android:padding="4dp"
+        android:text="&lt;1600"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/twelve_sp"/>
+
+    <TextView
+        android:id="@+id/txt2100h"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginLeft="@dimen/eight_dp"
+        android:padding="4dp"
+        android:text="&lt;2100"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/twelve_sp"/>
+
+    <TextView
+        android:id="@+id/txt3000h"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginLeft="@dimen/eight_dp"
+        android:padding="4dp"
+        android:text="&lt;3000"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/twelve_sp"/>
+    <TextView
+        android:id="@+id/txtsqft"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginLeft="12dp"
+        android:padding="4dp"
+        android:text="Sqft"
+        android:background="@drawable/gradient_grey"
+        android:textColor="@color/white"
+        android:textSize="@dimen/twelve_sp"
+        android:textStyle="bold|italic" />
+
+
+</LinearLayout>

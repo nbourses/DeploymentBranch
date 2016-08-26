@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="visible">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <View
+                android:layout_width="3dp"
+                android:id="@+id/test"
+                android:layout_height="match_parent"
+                android:background="@color/greenish_blue"
+                android:layout_gravity="center_horizontal"
+                />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+
+
+
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/spinner"
+                        android:layout_marginTop="0dp"
+                        android:background="@drawable/shape_circle"
+                        android:gravity="center"/>
+
+                 <ProgressBar
+                        android:id="@+id/spinnerProgress"
+                        android:progressDrawable="@drawable/circular_progress_view"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:visibility="visible"/>
+
+
+
+
+
+
+                <!-- <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/spinner"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/shape_circle"
+                    android:gravity="center"/>
+
+
+               <ProgressBar
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progressBar"
+                    android:progressDrawable="@drawable/circular_progress_view"
+                    android:gravity="center"/> -->
+
+                <TextView
+                    android:id="@+id/txt_first_char"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/shape_circle"
+                    android:gravity="center"
+                    android:text="O"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:visibility="invisible"
+                    android:textSize="20sp" />
+
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="4dp"
+            android:orientation="horizontal"
+            android:weightSum="10"
+            android:background="#5bc9c7c7">
+
+            <LinearLayout
+                android:id="@+id/chat_company_reply_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="9">
+
+                <TextView
+                    android:id="@+id/chat_reply_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="5dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/orange"
+                    android:text="Hi User" />
+
+                <TextView
+                    android:id="@+id/message_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    style="@style/chat_text_message_style"
+                    android:paddingLeft="20dp"
+                    android:autoLink="web"
+                    android:maxWidth="280dp"
+                    android:text="Welcome you have initiated requirement for 2 BHK residential property in abcd location" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/time_text"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_alignBottom="@id/chat_company_reply_text"
+                android:layout_marginLeft="10dp"
+                style="@style/chat_timings"
+                android:paddingRight="10dp"
+                android:textColor="@color/gray"
+                android:paddingBottom="5dp"
+                android:layout_toRightOf="@id/chat_company_reply_text"
+                android:layout_gravity="bottom"
+                android:text="17:10" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
