@@ -1,0 +1,89 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:clickable="true"
+
+    tools:context="com.nbourses.oyeok.fragments.AppSetting"
+    android:background="@color/white">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Owner Details"
+        android:background="@color/white"
+        android:textSize="30dp"
+        android:id="@+id/txtmobilenum"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/greenish_blue" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+
+        android:layout_margin="10dp">
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="Owner Name..."
+            android:textColor="@color/Black"
+            android:id="@+id/owner_name"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="Owner Number..."
+            android:textColor="@color/Black"
+            android:id="@+id/mob_no"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:inputType="phone" />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/coupon"
+            android:textSize="20dp"
+            android:textColorHint="@color/grey"
+            android:textColor="@color/black"
+            android:background="@color/white"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical"
+            android:hint="You Will See Your Coupon Code Here"/>
+        <Button
+            android:layout_width="150dp"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|center_vertical"
+            android:background="@drawable/gradient_greenish_blue"
+            android:text="Submit"
+            android:id="@+id/submit"
+
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Earn 100 Rs for every\n Successfull and Genuine \nOwner details after Visit.\n\n OR \n\n Call us @ 022-33836068 "
+        android:background="@color/white"
+        android:layout_marginTop="30dp"
+       android:gravity="center_horizontal|center_vertical"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/greenish_blue" />
+
+</LinearLayout>

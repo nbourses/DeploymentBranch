@@ -363,6 +363,9 @@ while(slowInternetFlag) {
 
     }
 
+
+
+
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

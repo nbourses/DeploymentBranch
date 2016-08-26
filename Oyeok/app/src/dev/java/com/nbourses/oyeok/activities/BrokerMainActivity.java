@@ -139,6 +139,19 @@ GoogleMap map;
         }
     };
 
+    private BroadcastReceiver profileEmailUpdate = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Log.i("pikachu","ppppp1"+intent.getExtras().getString("emailProfile"));
+            if(intent.getExtras().getString("emailProfile") != null){
+                Log.i("pikachu","ppp111111"+intent.getExtras().getString("emailProfile"));
+         String email=intent.getExtras().getString("emailProfile");
+                emailTxt.setText(email);
+            }
+        }
+    };
+
 //    private BroadcastReceiver signupSuccessFlag = new BroadcastReceiver() {
 //        @Override
 //        public void onReceive(Context context, Intent intent) {
@@ -166,6 +179,7 @@ GoogleMap map;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agent_main);
+        AppConstants.CURRENT_USER_ROLE ="broker";
 
 
 
@@ -231,7 +245,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(localityBroadcast, new IntentFilter(AppConstants.LOCALITY_BROADCAST));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(buildingSliderFlag, new IntentFilter(AppConstants.BUILDINGSLIDERFLAG));
-//        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(signupSuccessFlag, new IntentFilter(AppConstants.SIGNUPSUCCESSFLAG));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(profileEmailUpdate, new IntentFilter(AppConstants.EMAIL_PROFILE));
 
     }
 
@@ -242,7 +256,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(localityBroadcast);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(buildingSliderFlag);
-//        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(signupSuccessFlag);
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(profileEmailUpdate);
 
 
     }
@@ -846,7 +860,17 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
     }
 
 
+public void profileEmailUpdate(String email){
+//        emailTxt.setVisibility(View.VISIBLE);
+    //SharedPrefs.getString(this,SharedPrefs.EMAIL_PROFILE);
+    emailTxt.setText(General.getSharedPreferences(this,AppConstants.EMAIL));
+//    emailTxt.setText(email);
+//    Log.i("kaka","kaka   : "+AppConstants.EMAIL.toString()+" :: " +dbHelper.getValue(DatabaseConstants.email));
+//        emailTxt.setText( dbHelper.getValue(DatabaseConstants.email));
 
+
+
+}
 
 
 

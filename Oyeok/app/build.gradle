@@ -64,6 +64,12 @@ android {
                             buildConfigField 'String', 'Flavour', '"dev"'
                             buildConfigField 'String', 'Host', '"https://ssl.hailyo.com/"'
                         }
+                demo
+                        {
+                            applicationId "com.nbourses.oyeok.demo"
+                            buildConfigField 'String', 'Flavour', '"demo"'
+                            buildConfigField 'String', 'Host', '"https://ssl.hailyo.com/"'
+                        }
             }
 
     sourceSets { dev { java.srcDirs = ['src/dev/java', 'src/dev/java/Activities'] } }
@@ -90,7 +96,7 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 
 
-        maven { url 'http://hypertrack-android-sdk.s3-website-us-west-2.amazonaws.com/' }
+    maven { url 'http://hypertrack-android-sdk.s3-website-us-west-2.amazonaws.com/' }
 
 }
 
@@ -157,6 +163,9 @@ dependencies {
 }
 dependencies {
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
+}
+dependencies {
+    compile 'com.android.support:support-v4:23.+'
 }
 dependencies {
     compile 'com.android.support:support-v4:23.+'

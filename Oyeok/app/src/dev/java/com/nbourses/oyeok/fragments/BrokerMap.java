@@ -691,6 +691,7 @@ try {
                         General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
                         getRegion();
 //
+                    getRegion();
                         new LocationUpdater().execute();
 //                }
 
