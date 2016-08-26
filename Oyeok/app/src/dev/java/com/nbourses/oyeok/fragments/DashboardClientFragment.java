@@ -12,7 +12,9 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -26,6 +28,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
@@ -35,6 +38,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -105,6 +109,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -150,6 +156,13 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     };
 
 
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+
     private static final int REQUEST_CALL_PHONE = 1;
 
     View mHelperView;
@@ -174,6 +187,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     long then;
     long now;
     private Thread r;
+    private RelativeLayout wrapper;
+
 //    private Drawable icon1;
 //      private Drawable icon2;
 
@@ -182,6 +197,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     private long lastTouched = 0, start = 0;
     private static final long SCROLL_TIME = 200L;
+
 
 
     /*private GeoFence geoFence;*/
@@ -245,6 +261,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 //    Intent intent ;
 
+    private RelativeLayout topView;
 
     private String Walkthrough, permission, beacon;
     AutoCompleteTextView inputSearch;
@@ -258,6 +275,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     @Bind(R.id.txtFilterValue)
     TextView txtFilterValue;
 
+    @Bind(R.id.dateTime)
+    TextView dateTime;
+
+    @Bind(R.id.copyright)
+    TextView copyright;
+
 //    @Bind(R.id.hPicker)
 //    LinearLayout hPicker;
 
@@ -265,6 +288,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     private Boolean buildingTouched = false;
+
 
     private BroadcastReceiver autoComplete = new BroadcastReceiver() {
         @Override
@@ -401,10 +425,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
         ButterKnife.bind(this, rootView);
 
+
         //  gpsTracker = new GPSTracker(getContext());
 //        myLoc = (ImageView) rootView.findViewById(R.id.myLoc);
         hideOnSearch = (FrameLayout) rootView.findViewById(R.id.hideOnSearch);
         seekbar_linearlayout = (LinearLayout) rootView.findViewById(R.id.seekbar_linearlayout);
+        topView = (RelativeLayout) rootView.findViewById(R.id.top);
 //        hPicker = (RelativeLayout) rootView.findViewById(R.id.hPicker);
         // View locationButton = suppormanagerObj.getView().findViewById(2);
         if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
@@ -506,6 +532,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         });
 
         dashboardActivity = (ClientMainActivity) getActivity();
+
+        wrapper = (RelativeLayout) dashboardActivity.findViewById(R.id.wrapper);
+
         dbHelper = new DBHelper(getContext());
         ll_map = (FrameLayout) rootView.findViewById(R.id.ll_map);
 
@@ -886,6 +915,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                             Intent in = new Intent(AppConstants.MARKERSELECTED);
                             in.putExtra("markerClicked", "false");
+                            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
                             ll_marker.setEnabled(true);
                             tv_building.setVisibility(View.VISIBLE);
                         }
@@ -1070,8 +1100,10 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         Log.i("t2", "mcallback" + mcallback);
 
 
-        if (!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
+       /* if (!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
             droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
+
+            */
 
         dbHelper.save(DatabaseConstants.userRole, "Client");
 
@@ -1159,12 +1191,85 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
 
+    public void screenShot()
+    {
+        dateTime.setText(DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString());
+        dateTime.setVisibility(View.VISIBLE);
+        copyright.setVisibility(View.VISIBLE);
+        Log.i(TAG,"persy 123");
+        GoogleMap.SnapshotReadyCallback callback= new GoogleMap.SnapshotReadyCallback() {
+            @Override
+            public void onSnapshotReady(Bitmap bitmap) {
+                try {
+
+                    int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                    if (permission != PackageManager.PERMISSION_GRANTED) {
+                        Log.i(TAG,"persy 12345");
+                        ActivityCompat.requestPermissions(
+                                getActivity(),
+                                PERMISSIONS_STORAGE,
+                                REQUEST_EXTERNAL_STORAGE
+                        );
+                    }
+
+                    topView.setDrawingCacheEnabled(true);
+                    Bitmap backBitmap = topView.getDrawingCache();
+                    Bitmap bmOverlay = Bitmap.createBitmap(
+                            backBitmap.getWidth(), backBitmap.getHeight(),
+                            backBitmap.getConfig());
+                    Canvas canvas = new Canvas(bmOverlay);
+                    canvas.drawBitmap(bitmap, new Matrix(), null);
+                    canvas.drawBitmap(backBitmap, 0, 0, null);
+
+                    File imageFile = new File(
+                            Environment.getExternalStorageDirectory()
+                                    + "/MapScreenShot"
+                                    + System.currentTimeMillis() + ".png");
+
+                    FileOutputStream out = new FileOutputStream(imageFile);
+
+                   bmOverlay.compress(Bitmap.CompressFormat.PNG, 90, out);
+                    out.flush();
+                    out.close();
+                    openScreenshot(imageFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                finally {
+
+                    dateTime.setVisibility(View.GONE);
+                    copyright.setVisibility(View.GONE);
+                }
+            }
+        };
+
+        map.snapshot(callback);
+    }
 
 
+    private void openScreenshot(File imageFile) {
+        Log.i(TAG,"persy 1234");
+        int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            Log.i(TAG,"persy 12345");
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+        Log.i(TAG,"persy 12346");
 
-
-
+        Uri uri = Uri.fromFile(imageFile);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/jpeg/text/html");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        //intent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml("<p>Hey, please check out these property rates I found out on this super amazing app Oyeok.</p><p><a href=\"https://play.google.com/store/apps/details?id=com.nbourses.oyeok&hl=en/\">Download Oyeok for android</a></p>"));
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, "Hey, please check out these property rates I found out on this super amazing app Oyeok. \n \n  https://play.google.com/store/apps/details?id=com.nbourses.oyeok&hl=en/");
+        startActivity(Intent.createChooser(intent, "Share Image"));
+    }
 
 
     private BroadcastReceiver closeOyeScreenSlide = new BroadcastReceiver() {
@@ -1261,8 +1366,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     @OnClick({R.id.ll_marker})
     public void onButtonsClick(View v) {
         if (ll_marker.getId() == v.getId()) {
-
-            Log.i(TAG,"poligon ");
 
            // txtFilterValue.performClick();
 
@@ -2027,7 +2130,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     public void drawerOpened() {
         horizontalPicker.stopScrolling();
     }
-
 
 
 
@@ -2859,6 +2961,65 @@ public void oyebuttonBackgrountColorOrange(){
         TelephonyManager tm = (TelephonyManager)getContext().getSystemService(Context.TELEPHONY_SERVICE);
         return tm != null && tm.getSimState()== TelephonyManager.SIM_STATE_READY;
     }
+
+    /*private void takeScreenshot() {
+        Date now = new Date();
+        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+        try {
+            int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                // We don't have permission so prompt the user
+                ActivityCompat.requestPermissions(
+                        getActivity(),
+                        PERMISSIONS_STORAGE,
+                        REQUEST_EXTERNAL_STORAGE
+                );
+            }
+            // image naming and path  to include sd card  appending name you choose for file
+            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".png";
+
+            // create bitmap screen capture
+            View v1 = getActivity().getWindow().getDecorView().getRootView();
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            File imageFile = new File(mPath);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+Log.i(TAG,"imageFileimageFile "+imageFile);
+            openScreenshot(imageFile);
+        } catch (Throwable e) {
+            // Several error may come out with file handling or OOM
+            e.printStackTrace();
+            Log.i(TAG,"Caught in exception in take screenshot "+e);
+        }
+    }
+
+    private void openScreenshot(File imageFile) {
+        int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Uri.fromFile(imageFile);
+        intent.setDataAndType(uri, "image*//*");
+        startActivity(intent);
+    }*/
+
 
 
 }

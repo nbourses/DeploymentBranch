@@ -165,9 +165,9 @@ private WebView i;
             Boolean stopDownloadImage = false;
             if (convertView == null) {
                if(message.getUserSubtype() == ChatMessageUserSubtype.SELF)
-                    v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
+                    v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);
                 else
-                v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);
+                v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
                /* else //(message.getUserSubtype() == ChatMessageUserSubtype.OTHER)
                     v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);*/
 //v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
@@ -438,13 +438,15 @@ private WebView i;
 
     @Override
     public int getViewTypeCount() {
-        return 5;
+        return 6;
     }
 
     @Override
     public int getItemViewType(int position) {
-        ChatMessage message = chatMessages.get(position);
-        return message.getUserType().ordinal();
+
+            ChatMessage message = chatMessages.get(position);
+            return message.getUserType().ordinal();
+
     }
 
     private class ViewHolder1 {

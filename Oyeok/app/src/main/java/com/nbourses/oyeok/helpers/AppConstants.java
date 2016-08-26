@@ -1,5 +1,7 @@
 package com.nbourses.oyeok.helpers;
 
+import android.widget.PopupWindow;
+
 import com.nbourses.oyeok.models.PublishLetsOye;
 
 /**
@@ -14,7 +16,8 @@ public class AppConstants {
 
     public static final int slowInternet = 5;
 
-
+    public static PopupWindow optionspu;
+    public static PopupWindow optionspu1;
     public static String MY_LAT = "myLat";
     public static String MY_LNG = "myLong";
     public static String LOCALITY = "locality";
@@ -31,7 +34,8 @@ public class AppConstants {
     public static final String BADGE_COUNT_BROADCAST = "badgeCountBroadcast";
     public static final String CHECK_BEACON = "checkBeacon";
     public static final String CHECK_WALKTHROUGH = "checkWalkthrough";
-
+    public static final String CHAT_OPEN_OK_ID = "chatMessageReceived";
+    public static final String CHAT_MESSAGE_RECIEVED = "chatMessageReceived";
     public static final String LOCALITY_BROADCAST = "localityBroadcast";
 
     public static final String ON_FILTER_VALUE_UPDATE = "onFilterValueUpdate";
@@ -51,9 +55,12 @@ public class AppConstants {
 
     public static PublishLetsOye letsOye = new PublishLetsOye();
 
+    //public static final String SERVER_BASE_URL = "http://52.41.200.154:9000/1";
+    //public static final String SERVER_BASE_URL_101 = "http://52.41.200.154:9000/1.01";
+    //public static final String SERVER_BASE_URL_102 = "http://52.41.200.154:9000/1.02";
     public static final String SERVER_BASE_URL = "https://ssl.hailyo.com/1";
-
     public static final String SERVER_BASE_URL_101 = "https://ssl.hailyo.com/1.01";
+   public static final String SERVER_BASE_URL_102 = "https://ssl.hailyo.com/1.02";
 
 
     public static final String OK_ID = "ok_id";

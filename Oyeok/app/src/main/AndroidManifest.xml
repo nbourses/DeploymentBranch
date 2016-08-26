@@ -257,6 +257,11 @@
             android:name=".activities.ProfileActivity"
             android:screenOrientation="portrait" >
         </activity>
+
+        <activity
+            android:name=".activities.IntroActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <activity
             android:name=".activities.SplashScreenActivity"
             android:screenOrientation="portrait" >

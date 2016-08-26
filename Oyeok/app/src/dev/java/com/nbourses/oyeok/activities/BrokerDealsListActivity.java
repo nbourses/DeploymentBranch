@@ -47,11 +47,13 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.adapters.BrokerDealsListAdapter;
+import com.nbourses.oyeok.enums.DealStatusType;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.BrokerDeals;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.PublishLetsOye;
+import com.nbourses.oyeok.realmModels.DealStatus;
 import com.nbourses.oyeok.realmModels.HalfDeals;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -148,6 +150,13 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
             networkConnectivity();
         }
     };
+    private BroadcastReceiver badgeCountBroadcast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            loadBrokerDeals();
+        }
+    };
+
 //    private BroadcastReceiver signupSuccessFlag = new BroadcastReceiver() {
 //        @Override
 //        public void onReceive(Context context, Intent intent) {
@@ -186,6 +195,7 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
 //        init();
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
      //   LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(signupSuccessFlag, new IntentFilter(AppConstants.SIGNUPSUCCESSFLAG));
+        LocalBroadcastManager.getInstance(this).registerReceiver(badgeCountBroadcast, new IntentFilter(AppConstants.BADGE_COUNT_BROADCAST));
 
     }
 
@@ -196,7 +206,7 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
         // Unregister since the activity is not visible
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
      //   LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(signupSuccessFlag);
-
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(badgeCountBroadcast);
 
     }
 
@@ -345,17 +355,20 @@ Log.i("SWIPE","inside swipe menu creator");
                 //           ApplicationInfo item =  listAdapter.getItem(position);
                  position = pos;
                 String muteStatus = "Mute notifications";
-                if(!(General.getMutedOKIds(BrokerDealsListActivity.this) == null)) {
-                    mutedOKIds.addAll(General.getMutedOKIds(BrokerDealsListActivity.this));
-                    if(mutedOKIds.contains(listBrokerDeals_new.get(position).getOkId())) {
-                        muteStatus = "Unmute notifications";
+                if(listBrokerDeals_new != null) {     // temp fix
+                    if (!(General.getMutedOKIds(BrokerDealsListActivity.this) == null)) {
+                        mutedOKIds.addAll(General.getMutedOKIds(BrokerDealsListActivity.this));
+                        Log.i("TAG", "listBrokerDeals_new is the tha " + listBrokerDeals_new);
+                        if (mutedOKIds.contains(listBrokerDeals_new.get(position).getOkId())) {
+                            muteStatus = "Unmute notifications";
 
+                        }
                     }
                 }
                 switch (index) {
                     case 0:
                         final String muteStatus1 = muteStatus;
-                        final CharSequence[] items = { muteStatus1, "Delete deal", "Cancel" };
+                        final CharSequence[] items = { muteStatus1,/* "Delete deal",*/"Block deal", "Cancel" };
                         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(BrokerDealsListActivity.this);
                         builder.setTitle("More!");
                         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -466,7 +479,46 @@ Log.i("SWIPE","inside swipe menu creator");
                                     alertDialog.show();
 
 
-                                } else if (items[item].equals("Cancel")) {
+                                }else if (items[item].equals("Block deal")) {
+
+
+
+                                    if(listBrokerDeals_new != null) {
+                                        Realm myRealm = General.realmconfig(BrokerDealsListActivity.this);
+                                        DealStatusType dealStatusType = null;
+
+                                        DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, listBrokerDeals_new.get(position).getOkId()).findFirst();
+                                        Log.i(TAG, "Caught in exception notif insiderr cached msgs is the notifcount " + dealStatus);
+                                        if (dealStatus == null) {
+                                            DealStatus dealStatus1 = new DealStatus();
+                                            dealStatus1.setOk_id(listBrokerDeals_new.get(position).getOkId());
+                                            dealStatus1.setStatus(DealStatusType.BLOCKED.toString());
+                                            myRealm.beginTransaction();
+                                            DealStatus dealStatus2 = myRealm.copyToRealmOrUpdate(dealStatus1);
+                                            myRealm.commitTransaction();
+                                        } else {
+                                            myRealm.beginTransaction();
+                                            dealStatus.setStatus(DealStatusType.BLOCKED.toString());
+                                            myRealm.commitTransaction();
+                                        }
+
+
+
+
+                                    }
+                                    else {
+                                        SnackbarManager.show(
+                                                Snackbar.with(BrokerDealsListActivity.this)
+                                                        .position(Snackbar.SnackbarPosition.TOP)
+                                                        .text("Deals can not be Blocked offline.")
+                                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                    }
+
+                                }
+
+
+
+                                else if (items[item].equals("Cancel")) {
                                     dialog.dismiss();
                                 }
                             }
@@ -849,7 +901,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
         RestAdapter restAdapter = new RestAdapter
                 .Builder()
-                .setEndpoint(AppConstants.SERVER_BASE_URL_101)
+                .setEndpoint(AppConstants.SERVER_BASE_URL_102)
                 .setConverter(new GsonConverter(gson))
                 .build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
@@ -862,7 +914,10 @@ Log.i("SWIPE","inside swipe menu creator");
         //params
         HdRooms hdRooms = new HdRooms();
         hdRooms.setUserRole("broker");
-        hdRooms.setUserId(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
+            if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equals(""))
+                hdRooms.setUserId(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
+            else
+                hdRooms.setUserId(General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI));
         hdRooms.setGcmId(SharedPrefs.getString(getApplicationContext(), SharedPrefs.MY_GCM_ID));
         hdRooms.setLat("123456789");
         hdRooms.setLon("123456789");
@@ -886,7 +941,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
                 General.slowInternetFlag = false;
                 General.t.interrupt();
-                Log.i("TRACEOK", "inside hdrooms api call success ");
+                Log.i("TRACEOK", "inside hdrooms api call success "+General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
                 String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                 Log.i("TRACEOK", "strResponse "+strResponse);
                 try {
@@ -1056,32 +1111,6 @@ Log.i("SWIPE","inside swipe menu creator");
             intent.putExtra("userRole", "broker");
             intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
             startActivity(intent);
-//        }
-//        else
-//        {
-//            supportChat.setVisibility(View.GONE);
-//            view.setVisibility(View.GONE);
-//            listViewDeals.setVisibility(View.GONE);
-//            fragment_container1.setVisibility(View.VISIBLE);
-//            Bundle bundle = new Bundle();
-//            bundle.putStringArray("Chat", null);
-//            bundle.putString("lastFragment", "ChatBroker");
-//            dbHelper.save(DatabaseConstants.userRole, "Broker");
-//
-//
-////            FrameLayout frame = new FrameLayout(this);
-////            frame.setId(SIGNUP_VIEW_ID);
-////            setContentView(frame, new LayoutParams(
-////                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-//
-//
-//            SignUpFragment signUpFragment = new SignUpFragment();
-////            signUpFragment.getView().bringToFront();
-//            loadFragment(signUpFragment, bundle, R.id.fragment_container1, "");
-//            Log.i("Signup called =", "Sign up");
-//
-//        }
-
 
 
     }

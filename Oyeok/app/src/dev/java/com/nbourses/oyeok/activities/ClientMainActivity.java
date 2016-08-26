@@ -1,5 +1,6 @@
 package com.nbourses.oyeok.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,11 +8,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Camera;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -25,6 +34,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -37,12 +48,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.GoogleMap;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
@@ -53,6 +67,8 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCusto
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.BrokerMap;
+import com.nbourses.oyeok.fragments.CardFragment;
+import com.nbourses.oyeok.fragments.DFragment;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.fragments.OyeScreenFragment;
 import com.nbourses.oyeok.fragments.ShareOwnersNo;
@@ -68,6 +84,15 @@ import com.nispok.snackbar.SnackbarManager;
 import com.sdsmdg.tastytoast.TastyToast;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Random;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -77,7 +102,7 @@ import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
-public class ClientMainActivity extends AppCompatActivity implements NetworkInterface, FragmentDrawer.FragmentDrawerListener, OnOyeClick, CustomPhasedListener {
+public class ClientMainActivity extends AppCompatActivity implements NetworkInterface, FragmentDrawer.FragmentDrawerListener, OnOyeClick, CustomPhasedListener,  GoogleMap.SnapshotReadyCallback {
 
     boolean isShowing = false;
     private static final String TAG = "DashboardActivity";
@@ -86,6 +111,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     DBHelper dbHelper;
     private Handler mHandler;
     private FragmentDrawer drawerFragment;
+    //private FrameLayout containerSignup;
 
     @Bind(R.id.sliding_layout)
     SlidingUpPanelLayout slidingLayout;
@@ -99,6 +125,10 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
    boolean setting=false;
     TextView tv_client_heading;
 
+    @Bind(R.id.btnMyDeals)
+    Button btnMyDeals;
+
+
     @Bind(R.id.profile_image_main)
     ImageView profileImage;
 
@@ -111,6 +141,14 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
     @Bind(R.id.toast_layout)
     LinearLayout toastLayout;
+
+    @Bind(R.id.container_Signup)
+    FrameLayout containerSignup;
+    @Bind(R.id.card)
+    FrameLayout card;
+
+    @Bind(R.id.wrapper)
+    RelativeLayout wrapper;
 
 
 
@@ -126,13 +164,41 @@ Boolean Owner_detail=false;
 
 
 
+
+
+    // screen shot
+    protected static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
+    private SurfaceView SurView;
+    private SurfaceHolder camHolder;
+    private boolean previewRunning;
+    final Context context = this;
+    public static Camera camera = null;
+    private RelativeLayout CamView;
+    private Bitmap inputBMP = null, bmp, bmp1;
+    private ImageView mImage;
+    private DashboardClientFragment dashboardClientFragment;
+    // screen shot
+
+
+
+private Boolean cardFlag = false;
     private WebView webView;
     private  Boolean autocomplete = false;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
     @Override
     public void onPositionSelected(int position, int count) {
         Log.i(TAG,"card position "+position);
+    }
+
+    @Override
+    public void onSnapshotReady(Bitmap bitmap) {
+
     }
 
     public interface openMapsClicked{
@@ -220,10 +286,23 @@ Boolean Owner_detail=false;
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            SignUpFragment signUpFragment = new SignUpFragment();
+            SignUpFragment d = new SignUpFragment();
+            //loadFragment(d,null,R.id.container_Signup,"");
             Bundle bundle = new Bundle();
             bundle.putString("lastFragment", "clientDrawer");  //consider as direct signup so keep last fragment as clientDrawer
-            loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
+
+            d.setArguments(bundle);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+            fragmentTransaction.addToBackStack("card");
+            fragmentTransaction.replace(R.id.container_Signup, d);
+            fragmentTransaction.commitAllowingStateLoss();
+            /*SignUpFragment signUpFragment = new SignUpFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("lastFragment", "clientDrawer");  //consider as direct signup so keep last fragment as clientDrawer
+            loadFragment(signUpFragment, bundle, R.id.container_Signup, "");*/
 
 
         }
@@ -298,8 +377,39 @@ private void alertbuilder()
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+
                 Log.i(TAG,"popup window shown delay ");
-                showOptions(ClientMainActivity.this);
+                if(General.getSharedPreferences(ClientMainActivity.this,"popcard").equalsIgnoreCase("yes")) {
+                    showOptions(ClientMainActivity.this);
+                    General.setSharedPreferences(ClientMainActivity.this,"popcard","");
+                }
+              //  DFragment d = new DFragment();
+               //loadFragment(d,null,R.id.container_Signup,"");
+              //  d.setArguments(null);
+                /*containerSignup.setBackgroundColor(Color.parseColor("#CC000000"));
+                containerSignup.setClickable(true);*/
+                //containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+                /*fragmentTransaction.addToBackStack("card");
+                fragmentTransaction.replace(R.id.container_Signup, d);
+                fragmentTransaction.commitAllowingStateLoss();*/
+
+              CardFragment c = new CardFragment();
+                //loadFragment(d,null,R.id.container_Signup,"");
+                c.setArguments(null);
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+                /*card.setClickable(true);
+                fragmentTransaction.addToBackStack("card");
+                fragmentTransaction.replace(R.id.card, c);
+                fragmentTransaction.commitAllowingStateLoss();
+                cardFlag = true;*/
+
+
             }
         }, 2000);
 
@@ -362,8 +472,6 @@ private void alertbuilder()
      * init all components
      */
     private void init() {
-
-
 //        RealmConfiguration config = new RealmConfiguration
 //                .Builder(this)
 //                .deleteRealmIfMigrationNeeded()
@@ -371,6 +479,11 @@ private void alertbuilder()
 //        Realm myRealm = Realm.getInstance(config);
 
 
+        /*
+        //splashscreen
+        Intent introActivity = new Intent(this, IntroActivity.class);
+
+        startActivity(introActivity);*/
 
 //        myRealm.beginTransaction();
 //
@@ -586,7 +699,7 @@ private void alertbuilder()
 
 
         //by default load broker_map view
-        DashboardClientFragment dashboardClientFragment = new DashboardClientFragment();
+        dashboardClientFragment = new DashboardClientFragment();
         dashboardClientFragment.setOyeButtonClickListener(this);
         loadFragment(dashboardClientFragment, null, R.id.container_map, "Client Dashboard");
 
@@ -692,12 +805,6 @@ private void alertbuilder()
             webView.getSettings().setJavaScriptEnabled(true);
             webView.setWebViewClient(new WebViewClient());
             webView.loadUrl("http://www.facebook.com/hioyeok");
-
-
-
-
-
-
 
         }
         else if (itemTitle.equals(getString(R.string.aboutUs))) {
@@ -915,7 +1022,19 @@ private void alertbuilder()
     public void onBackPressed() {
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        if(AppConstants.SIGNUP_FLAG){
+        if(cardFlag){
+            Log.i(TAG,"card back ");
+           // getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+         //getSupportFragmentManager().popBackStack();
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+            //getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_up, R.animator.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+            //  getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+            cardFlag = false;
+            containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
+            containerSignup.setClickable(false);
+            card.setClickable(false);
+        }
+        else if(AppConstants.SIGNUP_FLAG){
 /*            if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")){
             Intent back = new Intent(this, BrokerMainActivity.class);
             startActivity(back);
@@ -1031,9 +1150,75 @@ private void alertbuilder()
             General.setBadgeCount(this, AppConstants.HDROOMS_COUNT,0);
             hdroomsCount.setVisibility(View.GONE);
         }
-        Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
-        openDealsListing.putExtra("defaul_deal_flag","false");
-        startActivity(openDealsListing);
+       if(btnMyDeals.getText().toString().equalsIgnoreCase("share"))
+        dashboardClientFragment.screenShot();
+        else {
+           Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
+           openDealsListing.putExtra("defaul_deal_flag", "false");
+           startActivity(openDealsListing);
+       }
+        /*InstaCapture.getInstance(this).capture().setScreenCapturingListener(new ScreenCaptureListener() {
+
+            @Override public void onCaptureStarted() {
+                //TODO..
+                Log.i(TAG,"screenshot started");
+            }
+            @Override public void onCaptureFailed(Throwable e) {
+                //TODO..
+                Log.i(TAG,"screenshot failed");
+            }
+            @Override public void onCaptureComplete(File file) {
+                //TODO..
+                Log.i(TAG,"screenshot completed "+file);
+
+
+                File fileToUpload = file;
+                String imageName = "droid"+String.valueOf(System.currentTimeMillis())+".png";
+
+                try {
+                    if (Environment.getExternalStorageState() == null) {
+                        //create new file directory object
+                        File directory = new File(Environment.getDataDirectory()
+                                + "/oyeok/");
+
+
+                        // if no directory exists, create new directory
+                        if (!directory.exists()) {
+                            directory.mkdir();
+                        }
+
+                        File destdir = new File(Environment.getExternalStorageDirectory()
+                                + "/oyeok/" + imageName);
+                        Log.i(TAG, "dest diro " + destdir);
+                        DealConversationActivity.copyFileUsingStream(fileToUpload, destdir);
+                        Log.i(TAG, "file after save ");
+
+                        // if phone DOES have sd card
+                    } else if (Environment.getExternalStorageState() != null) {
+                        // search for directory on SD card
+                        File directory = new File(Environment.getExternalStorageDirectory()
+                                + "/oyeok/");
+
+                        // if no directory exists, create new directory to store test
+                        // results
+                        if (!directory.exists()) {
+                            directory.mkdir();
+                        }
+                        File destdir = new File(Environment.getExternalStorageDirectory()
+                                + "/oyeok/" + imageName);
+                        Log.i(TAG, "dest diro " + destdir);
+                        DealConversationActivity.copyFileUsingStream(fileToUpload, destdir);
+                        Log.i(TAG, "file after save ");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.i(TAG, "Caught in exception saving image /oyeok " + e);
+                }
+
+            }
+        });*/
+        //takeScreenshot();
     }
 
     ////////////////// Network method implementation //////////
@@ -1062,9 +1247,15 @@ private void alertbuilder()
            if(intent.getExtras().getString("markerClicked").equalsIgnoreCase("true"))
            {
                getSupportActionBar().setTitle("Live Building Rates");
+               btnMyDeals.setBackgroundColor(getResources().getColor(R.color.greenish_blue));
+               btnMyDeals.setText("Share");
+
            }
             else{
                getSupportActionBar().setTitle("Live Region Rates");
+
+               btnMyDeals.setBackgroundResource(R.drawable.asset_dealsbutton_v1);
+               btnMyDeals.setText("");
            }
         }
     };
@@ -1088,7 +1279,7 @@ private void alertbuilder()
             Button signUp =(Button) layout.findViewById(R.id.signUp);
             Button later =(Button) layout.findViewById(R.id.later);
             ImageButton cardMaps = (ImageButton) layout.findViewById(R.id.cardMaps);
-             final FrameLayout cardFrame = (FrameLayout) layout.findViewById(R.id.card_frame);
+             final FrameLayout cardFrame = (FrameLayout) layout.findViewById(R.id.cardMapFrame);
             final FrameLayout a = (FrameLayout) layout.findViewById(R.id.a);
 
 
@@ -1101,20 +1292,20 @@ private void alertbuilder()
               mPhasedSeekBar.setListener(this);
             final PopupWindow optionspu1 = greyOut(mcon);
             //final PopupWindow optionspu = new PopupWindow(layout, 600,1000, true);
-            final PopupWindow optionspu = new PopupWindow(layout);
-            optionspu.setWidth(width-140);
-            optionspu.setHeight(height-140);
-            optionspu.setAnimationStyle(R.style.AnimationPopup);
+            AppConstants.optionspu = new PopupWindow(layout);
+            AppConstants.optionspu.setWidth(width-140);
+            AppConstants.optionspu.setHeight(height-140);
+            AppConstants.optionspu.setAnimationStyle(R.style.AnimationPopup);
 
             /*optionspu.setTouchable(true);
             optionspu.setOutsideTouchable(false);*/
 
-            optionspu.setFocusable(false);
-            optionspu.setTouchable(true);
-            optionspu.setOutsideTouchable(false);
+            AppConstants.optionspu.setFocusable(false);
+            AppConstants.optionspu.setTouchable(true);
+            AppConstants.optionspu.setOutsideTouchable(false);
             // optionspu.showAtLocation(layout, Gravity.CENTER, 0, 0);
-            optionspu.showAtLocation(layout, Gravity.TOP, 0, 100);
-
+            AppConstants.optionspu.showAtLocation(layout, Gravity.TOP, 0, 100);
+            DFragment d = new DFragment();
 
             //optionspu.update(0, 0,LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             //optionspu.setAnimationStyle(R.anim.bounce);
@@ -1129,8 +1320,12 @@ private void alertbuilder()
                     //set arguments
                     BrokerMap brokerMap=new BrokerMap();
 
-
+                    AppConstants.optionspu.dismiss();
+                    AppConstants.optionspu1.dismiss();
                     loadFragment(brokerMap,null,R.id.container_Signup,"");
+
+// Start the animated transition.
+
                     //load fragment
                    /* FragmentManager fragmentManager = getSupportFragmentManager();
                     *//*FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -1150,16 +1345,16 @@ private void alertbuilder()
                 @Override
                 public void onClick(View v) {
                     Log.i(TAG,"popup window shown 13 ");
-                    optionspu1.dismiss();
-                    optionspu.dismiss();
+                    AppConstants.optionspu1.dismiss();
+                    AppConstants.optionspu.dismiss();
                 }
             });
             signUp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.i(TAG,"popup window shown 13 ");
-                    optionspu1.dismiss();
-                    optionspu.dismiss();
+                    AppConstants.optionspu1.dismiss();
+                    AppConstants.optionspu.dismiss();
                     Intent intent = new Intent(AppConstants.DOSIGNUP);
                     LocalBroadcastManager.getInstance(mcon).sendBroadcast(intent);
 
@@ -1169,15 +1364,15 @@ private void alertbuilder()
                 @Override
                 public void onClick(View v) {
                     Log.i(TAG,"popup window shown 13 ");
-                    optionspu1.dismiss();
-                    optionspu.dismiss();
+                    AppConstants.optionspu1.dismiss();
+                    AppConstants.optionspu.dismiss();
                     TastyToast.makeText(mcon, "We have connected you with 3 brokers in your area.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
                     TastyToast.makeText(mcon, "Sign up to connect with 7 more brokers waiting for you.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
 
                 }
             });
 
-            return optionspu;
+            return AppConstants.optionspu;
         }
         catch (Exception e){e.printStackTrace();
             Log.i(TAG,"popup window shown 4 "+e);
@@ -1191,12 +1386,12 @@ private void alertbuilder()
         try{
             LayoutInflater inflater = (LayoutInflater) mcon.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             View layout = inflater.inflate(R.layout.grey_out_popup,null);
-            final PopupWindow optionspu1 = new PopupWindow(layout, FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT, true);
-            optionspu1.setFocusable(false);
-            optionspu1.setTouchable(true);
-            optionspu1.setOutsideTouchable(false);
-            optionspu1.showAtLocation(layout, Gravity.CENTER, 0, 0);
-            return optionspu1;
+            AppConstants.optionspu1 = new PopupWindow(layout, FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT, true);
+            AppConstants.optionspu1.setFocusable(false);
+            AppConstants.optionspu1.setTouchable(true);
+            AppConstants.optionspu1.setOutsideTouchable(false);
+            AppConstants.optionspu1.showAtLocation(layout, Gravity.CENTER, 0, 0);
+            return AppConstants.optionspu1;
         }
         catch (Exception e){e.printStackTrace();
             Log.i(TAG,"popup window shown 4 "+e);
@@ -1225,9 +1420,139 @@ private void alertbuilder()
 
 
 
+    private void takeScreenshot() {
+        Date now = new Date();
+        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+        try {
+            int permission = ActivityCompat.checkSelfPermission(ClientMainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                // We don't have permission so prompt the user
+                ActivityCompat.requestPermissions(
+                        ClientMainActivity.this,
+                        PERMISSIONS_STORAGE,
+                        REQUEST_EXTERNAL_STORAGE
+                );
+            }
+            // image naming and path  to include sd card  appending name you choose for file
+            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".png";
+
+            // create bitmap screen capture
+            View v1 = getWindow().getDecorView().getRootView();
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            File imageFile = new File(mPath);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            openScreenshot(imageFile);
+        } catch (Throwable e) {
+            // Several error may come out with file handling or OOM
+            e.printStackTrace();
+            Log.i(TAG,"Caught in exception in take screenshot "+e);
+        }
+    }
+
+    private void openScreenshot(File imageFile) {
+        int permission = ActivityCompat.checkSelfPermission(ClientMainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    ClientMainActivity.this,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Uri.fromFile(imageFile);
+        intent.setDataAndType(uri, "image/*");
+        startActivity(intent);
+    }
 
 
+    public void TakeScreenshot(){    //THIS METHOD TAKES A SCREENSHOT AND SAVES IT AS .jpg
+        Random num = new Random();
+        int nu=num.nextInt(1000); //PRODUCING A RANDOM NUMBER FOR FILE NAME
+        wrapper.setDrawingCacheEnabled(true); //CamView OR THE NAME OF YOUR LAYOUR
+        wrapper.buildDrawingCache(true);
+        Bitmap bmp = Bitmap.createBitmap(wrapper.getDrawingCache());
+        wrapper.setDrawingCacheEnabled(false); // clear drawing cache
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+        byte[] bitmapdata = bos.toByteArray();
+        ByteArrayInputStream fis = new ByteArrayInputStream(bitmapdata);
 
+        String picId=String.valueOf(nu);
+        String myfile="Ghost"+picId+".jpeg";
+
+        File dir_image = new  File(Environment.getExternalStorageDirectory()+//<---
+                File.separator+"Ultimate Entity Detector");          //<---
+        dir_image.mkdirs();                                                  //<---
+        //^IN THESE 3 LINES YOU SET THE FOLDER PATH/NAME . HERE I CHOOSE TO SAVE
+        //THE FILE IN THE SD CARD IN THE FOLDER "Ultimate Entity Detector"
+
+        try {
+            File tmpFile = new File(dir_image,myfile);
+            FileOutputStream fos = new FileOutputStream(tmpFile);
+
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = fis.read(buf)) > 0) {
+                fos.write(buf, 0, len);
+            }
+            fis.close();
+            fos.close();
+            Toast.makeText(getApplicationContext(),
+                    "The file is saved at :SD/Ultimate Entity Detector",Toast.LENGTH_LONG).show();
+            bmp1 = null;
+                       //RESETING THE PREVIEW
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void captureMapScreen() {
+        Log.i(TAG,"Image is the 1");
+        GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
+
+            @Override
+            public void onSnapshotReady(Bitmap snapshot) {
+                try {
+                    wrapper.setDrawingCacheEnabled(true);
+                    Bitmap backBitmap = wrapper.getDrawingCache();
+                    Bitmap bmOverlay = Bitmap.createBitmap(
+                            backBitmap.getWidth(), backBitmap.getHeight(),
+                            backBitmap.getConfig());
+                    Canvas canvas = new Canvas(bmOverlay);
+                    canvas.drawBitmap(snapshot, new Matrix(), null);
+                    canvas.drawBitmap(backBitmap, 0, 0, null);
+                    FileOutputStream out = new FileOutputStream(
+                            Environment.getExternalStorageDirectory()
+                                    + "/MapScreenShot"
+                                    + System.currentTimeMillis() + ".png");
+Log.i(TAG,"Image is the "+out);
+                    bmOverlay.compress(Bitmap.CompressFormat.PNG, 90, out);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+       // DashboardClientFragment.snapshot(callback);
+
+    }
 
 }
 

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/intro_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ritesh Warke returns"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:layout_gravity="top|center"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginTop="32dp"
+            android:textSize="28sp"/>
+
+        <ImageView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/splashcard" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="The Great Once again"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:layout_gravity="bottom|center"
+            android:maxEms="18"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginBottom="32dp"
+            android:textSize="20sp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/building"
+            android:layout_gravity="right|center_vertical"
+            android:src="@drawable/building_card_view" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/building8"
+            android:layout_gravity="left|center_vertical"
+            android:src="@drawable/building_card_view"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/building9"
+            android:layout_gravity="center"
+            android:src="@drawable/building_card_view" />
+
+    </FrameLayout>
+
+</FrameLayout>

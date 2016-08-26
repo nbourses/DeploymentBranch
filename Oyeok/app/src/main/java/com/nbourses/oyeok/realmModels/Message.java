@@ -15,6 +15,7 @@ public class Message extends RealmObject {
     private String from;
     private String imageUrl;
     private String user_id;
+    private String status;
     public Message() { }
 
     public String getOk_id() {
@@ -72,5 +73,13 @@ public class Message extends RealmObject {
 
     public void setUser_id(String user_id) {
         this.user_id = user_id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
