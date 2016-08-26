@@ -319,6 +319,7 @@ while(slowInternetFlag) {
         editor.commit();
     }
 
+
     public static void saveBoolean(Context context, String prefName, boolean value) {
         Log.i("TRACE", "inside shared pref " + prefName + value);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

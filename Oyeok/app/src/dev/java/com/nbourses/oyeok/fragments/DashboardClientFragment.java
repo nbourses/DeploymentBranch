@@ -806,14 +806,6 @@ TextView rental,resale;
                 public boolean onMyLocationButtonClick() {
                     Log.i(TAG, "my Loc clicked ");
 
-//                    ( (ClientMainActivity)getActivity()).closeOyeScreen();
-//                    buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
-//                    recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-//                    customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
-//                    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
-//                    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
-//                    UpdateRatePanel();
-//                    search_building_icon.setVisibility(View.GONE);
 
                     new CountDownTimer(200, 50) {
 
@@ -836,18 +828,6 @@ TextView rental,resale;
                         }
                     }.start();
 
-//                    r = new Thread(new Runnable() {
-//                        public void run() {
-//
-//                            getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
-//                                    r.interrupt();
-//
-//                        }
-//                    });
-//                    r.start();
-
-
-                    //  buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier);
                     return false;
 
                 }

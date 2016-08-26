@@ -153,7 +153,7 @@ public class OyeScreenFragment extends Fragment {
       tv_fd_bank=(TextView)rootView.findViewById(R.id.tv_fd_bank);
         txtcalendar=(TextView)rootView.findViewById(R.id.txtcalendar);
 //        tv_dealinfo=(TextView)rootView.findViewById(R.id.tv_dealinfo);
-
+        AppConstants.CUSTOMER_TYPE="Tenant";
         updateLabel();
         txtcalendar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -300,7 +300,7 @@ public class OyeScreenFragment extends Fragment {
         //by default Home option is selected
         txtPreviouslySelectedPropertyType = txtHome;
         txtHome.setBackgroundResource(R.drawable.buy_option_circle);
-        if(AppConstants.PROPERTY.equalsIgnoreCase("")){AppConstants.PROPERTY="home";}
+        if(AppConstants.PROPERTY.equalsIgnoreCase("")){AppConstants.PROPERTY="Home";}
         AppConstants.letsOye.setPropertyType(AppConstants.PROPERTY);
         loadHomeOptionView(AppConstants.PROPERTY);
 
@@ -379,6 +379,7 @@ public class OyeScreenFragment extends Fragment {
         txtPreviouslySelectedOption = (TextView) v;
 
         if (txtOptionSee.getId() == v.getId()) {
+            AppConstants.CUSTOMER_TYPE="Tenant";
             txtOptionSee.setBackgroundResource(R.color.greenish_blue);
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")){
             tv_fd_bank.setText("I like to pay my \n SECURITY DEPOSIT");
@@ -398,6 +399,7 @@ public class OyeScreenFragment extends Fragment {
 
         if (txtOptionShow.getId() == v.getId()) {
             txtOptionShow.setBackgroundResource(R.color.greenish_blue);
+            AppConstants.CUSTOMER_TYPE="Owner";
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")){
             tv_fd_bank.setText("I like Monthly RENT CHEQUE(s)");
             satView.setText("Apply for finance FULL ADVANCE RENT");
@@ -712,14 +714,14 @@ public class OyeScreenFragment extends Fragment {
 
     public  void SendDataToOyeConfirmationScreen(){
 Log.i("confirmation","I am In SendDataToOyeConfirmationScreen function : ");
-        Intent intent = new Intent(AppConstants.BROADCAST_PROPERTY_DETAILS);
+  /*      Intent intent = new Intent(AppConstants.BROADCAST_PROPERTY_DETAILS);
         intent.putExtra("propertyConfig", Property_Config);
         intent.putExtra("furnishing", Furnishing);
         intent.putExtra("possessionDate", PossessionDate);
         intent.putExtra("myExpectation", my_expectation);
         //intent.putExtra("tv_dealinfo",oyeButtonData);
         Log.i("confirmaton","Furnishing       ;"+Furnishing);
-        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);*/
 
 //        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,Property_Config);
         General.setSharedPreferences(getContext(),AppConstants.FURNISHING,Furnishing);

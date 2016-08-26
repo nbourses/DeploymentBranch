@@ -5,4 +5,17 @@
         android:duration="500"
         android:fromYDelta="100%"
         android:toYDelta="0%" />
+    <translate
+        android:duration="500"
+        android:startOffset="3500"
+        android:fromYDelta="0"
+        android:toYDelta="100%"
+        />
+    <!--<alpha
+        android:fromAlpha="0"
+        android:toAlpha="1"
+        android:startOffset="4000"
+        android:duration="2000" >
+    </alpha>-->
+
 </set>

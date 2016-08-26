@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -43,8 +46,8 @@ public class OyeConfirmation extends Fragment {
     Button editDetails;
     String PossessionDate,Furnishing,my_expectation,Property_Config;
     TextView MyExpectation;
-    TextView Property_conf_furnishing;
-
+    TextView Property_conf_furnishing,selected_loc_to_oye;
+    GoogleMap googleMap;
 
     private OnFragmentInteractionListener mListener;
 
@@ -107,6 +110,7 @@ public class OyeConfirmation extends Fragment {
         editDetails=(Button) view.findViewById(R.id.editDetails);
         MyExpectation=(TextView) view.findViewById(R.id.rate);
         Property_conf_furnishing=(TextView) view.findViewById(R.id.property_config);
+        selected_loc_to_oye=(TextView) view.findViewById(R.id.selected_loc_to_oye);
 
         updateLabel();
 
@@ -167,16 +171,18 @@ public class OyeConfirmation extends Fragment {
             @Override
             public void onClick(View v) {
                 General.publishOye(getContext());
+
             }
         });
 
         editDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ClientMainActivity)getActivity()).closeOyeConfirmation();
-                ((ClientMainActivity)getActivity()).openOyeSreen();
 
 
+//                ((ClientMainActivity)getActivity()).closeOyeConfirmation();
+
+                ((ClientMainActivity)getActivity()).EditOyeDetails();
             }
         });
 
@@ -261,7 +267,7 @@ public class OyeConfirmation extends Fragment {
             Log.i("confirmation1", "myexpectation" + my_expectation);
         }*/
 
-
+        String text;
        Log.i("shared data","MY_EXPECTATION : "+General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
         my_expectation=General.getSharedPreferences(getContext(),AppConstants.MY_EXPECTATION);
         Property_Config=General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG);
@@ -269,8 +275,15 @@ public class OyeConfirmation extends Fragment {
         Furnishing=General.getSharedPreferences(getContext(),AppConstants.FURNISHING);
        int price= Integer.parseInt(my_expectation);
         display_date.setText(PossessionDate);
-        MyExpectation.setText("My Expectation = "+numToVal(price)+" | Deposit "+numToVal(price*4)+ " (negotiable)");
+        text="<u><b><big>"+AppConstants.PROPERTY+"</big></u><small> Expectation = </small><big>"+numToVal(price)+" </big><small>| Deposit </small><big>"+numToVal(price*4)+ " </big></b>(negotiable)";
+        MyExpectation.setText(Html.fromHtml(text));
         Property_conf_furnishing.setText(Property_Config+" "+Furnishing);
+        if(AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner"))
+          text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Tenants</b>";
+        else
+            text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Properties</b>";
+
+        selected_loc_to_oye.setText(Html.fromHtml(text));
 
     }
 

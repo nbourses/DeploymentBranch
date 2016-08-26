@@ -43,7 +43,6 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -61,6 +60,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -75,6 +75,7 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.Firebase.ChatList;
 import com.nbourses.oyeok.Firebase.DroomChatFirebase;
+import com.nbourses.oyeok.GooglePlacesApiServices.GooglePlacesReadTask;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
@@ -149,12 +150,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
-    static  int count1 =0;
+    static int count1 = 0;
     private static final int REQUEST_CALL_PHONE = 1;
 
     View mHelperView;
-Button home,shop,industrial,office;
-    String Property_type="",oyetext="";
+    Button home, shop, industrial, office;
+    String Property_type = "", oyetext = "";
     private static final int INITIAL_REQUEST = 133;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
     private static final int MAP_ZOOM = 14;
@@ -166,13 +167,13 @@ Button home,shop,industrial,office;
     private LinearLayout mMarkerPanel;
     private Timer timer;
     private RelativeLayout mMarkerminmax;
-    private GoogleMap map;
+    GoogleMap map;
     private LinearLayout ll_marker;
     private ImageView Mmarker;
     private ImageView search_building_icon;
     private BitmapDescriptor icon1;
     private BitmapDescriptor icon2;
-    Boolean autoIsClicked=false ;
+    Boolean autoIsClicked = false,pro_click=false;
     long then;
     long now;
 //    private Drawable icon1;
@@ -183,7 +184,6 @@ Button home,shop,industrial,office;
 
     private long lastTouched = 0, start = 0;
     private static final long SCROLL_TIME = 200L;
-
 
 
     private int permissionCheckForCamera, permissionCheckForLocation;
@@ -199,7 +199,7 @@ Button home,shop,industrial,office;
     Double lat, lng;
     ClientMainActivity dashboardActivity;
     DroomChatFirebase droomChatFirebase;
-    private   MapView mapView;
+    private MapView mapView;
     private GetCurrentLocation getLocationActivity;
     //View rootView;
     HashMap<String, HashMap<String, String>> chatListData;
@@ -216,11 +216,12 @@ Button home,shop,industrial,office;
     //private TextView tvCommingsoon;
     private TextView tv_building;
     private TextView tvFetchingrates;
-    CustomMapFragment customMapFragment;
+    //    CustomMapFragment customMapFragment;
+    SupportMapFragment customMapFragment;
     GPSTracker gpsTracker;
     static int x, y;
     static int top, bottom, left, right, width, height, truncate_first;
-    private int llMin=35, llMax=60, orMin=21000, orMax=27000;
+    private int llMin = 35, llMax = 60, orMin = 21000, orMax = 27000;
     private String name, text;
 
     private static int count = 0;
@@ -228,12 +229,12 @@ Button home,shop,industrial,office;
     private String filterValue;
     private String bhk;
     private int filterValueMultiplier = 950;
-TextView rental,resale;
+    TextView rental, resale;
     RelativeLayout property_type_layout;
     private int countertut;
     private int[] or_psf = new int[5], ll_pm = new int[5];
     private LatLng loc;
-    private ImageView myLoc,ic_search;
+    private ImageView myLoc, ic_search;
     LinearLayout recordWorkout;
     boolean clicked = true;
     private String address;
@@ -242,9 +243,10 @@ TextView rental,resale;
     private FrameLayout hideOnSearch;
     private Boolean autoc = false;
     private Boolean autocomplete = false;
-  private  static  View  rootView;
+    private static View rootView;
     private Boolean spanning = false;
-Animation zoomout_right,slide_up,zoomout_left,ani,zoomin_zoomout;
+    RelativeLayout parenttop,parentbottom;
+    Animation zoomout_right, slide_up, zoomout_left, ani, zoomin_zoomout;
 
 //    Intent intent ;
 
@@ -283,7 +285,8 @@ Animation zoomout_right,slide_up,zoomout_left,ani,zoomin_zoomout;
                     seekbar_linearlayout.setAlpha(1f);
                     mPhasedSeekBar.setVisibility(View.VISIBLE);
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
 
     };
@@ -311,7 +314,7 @@ Animation zoomout_right,slide_up,zoomout_left,ani,zoomin_zoomout;
 
                 if ((intent.getExtras().getString("filterValue") != null)) {
                     // txtFilterValue.setText(Html.fromHtml(intent.getExtras().getString("filterValue")));
-                    Log.i("filtervalue","filtervalue "+intent.getExtras().getString("filterValue"));
+                    Log.i("filtervalue", "filtervalue " + intent.getExtras().getString("filterValue"));
                     txtFilterValue.setText(intent.getExtras().getString("filterValue"));
 
                 }
@@ -327,11 +330,14 @@ Animation zoomout_right,slide_up,zoomout_left,ani,zoomin_zoomout;
 
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            if (bhk.equalsIgnoreCase("1bhk"))
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            else
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
 
 //                        BroadCastMinMaxValue(llMin*filterValueMultiplier,llMax*filterValueMultiplier,orMin,orMax);
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
 
                     } else if (bhk.equalsIgnoreCase("2bhk") || bhk.equalsIgnoreCase("<950")) {
 
@@ -339,41 +345,54 @@ Animation zoomout_right,slide_up,zoomout_left,ani,zoomin_zoomout;
                         updateHorizontalPicker();
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            if (bhk.equalsIgnoreCase("2bhk"))
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            else
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("3bhk") || bhk.equalsIgnoreCase("<1600")) {
                         filterValueMultiplier = 1600;
                         updateHorizontalPicker();
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            if (bhk.equalsIgnoreCase("3bhk"))
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            else
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("4bhk") || bhk.equalsIgnoreCase("<2100")) {
                         filterValueMultiplier = 2100;
                         updateHorizontalPicker();
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            if (bhk.equalsIgnoreCase("4bhk"))
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            else
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("4+bhk") || bhk.equalsIgnoreCase("<3000")) {
                         filterValueMultiplier = 3000;
                         updateHorizontalPicker();
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            if (bhk.equalsIgnoreCase("4+bhk"))
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            else
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
+
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/psf");
-                    } else if (bhk.equalsIgnoreCase("<300") ||bhk.equalsIgnoreCase("default")) {
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
+                    } else if (bhk.equalsIgnoreCase("<300") || bhk.equalsIgnoreCase("default")) {
                         filterValueMultiplier = 300;
                         updateHorizontalPicker();
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
                         else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/q");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     }
 
 ///// check if required
@@ -386,7 +405,6 @@ Animation zoomout_right,slide_up,zoomout_left,ani,zoomin_zoomout;
             }
         }
     };
-
 
 
     public void setOyeButtonClickListener(OnOyeClick onOyeClick) {
@@ -408,6 +426,8 @@ Animation zoomout_right,slide_up,zoomout_left,ani,zoomin_zoomout;
 //        myLoc = (ImageView) rootView.findViewById(R.id.myLoc);
         hideOnSearch = (FrameLayout) rootView.findViewById(R.id.hideOnSearch);
         seekbar_linearlayout = (LinearLayout) rootView.findViewById(R.id.seekbar_linearlayout);
+         parentbottom=(RelativeLayout) rootView.findViewById(R.id.top);
+         parenttop=(RelativeLayout) rootView.findViewById(R.id.parent);
 //        hPicker = (RelativeLayout) rootView.findViewById(R.id.hPicker);
         // View locationButton = suppormanagerObj.getView().findViewById(2);
         if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
@@ -418,7 +438,7 @@ Animation zoomout_right,slide_up,zoomout_left,ani,zoomin_zoomout;
         Log.i("notifications", "sendNotification ==========================" + SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
 
-init();
+        init();
 // Permission Request
 
         if (SharedPrefs.getString(getContext(), SharedPrefs.PERMISSION).equalsIgnoreCase("")) {
@@ -483,7 +503,7 @@ init();
         recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
         //selected_property = BitmapDescriptorFactory.fromResource(R.drawable.search_building_icon);
         search_building_icon = (ImageView) rootView.findViewById(R.id.selected_property);
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        /*rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 Mmarker.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 
@@ -506,7 +526,7 @@ init();
 
                 Log.i("t1", "co-ordinate" + x + " " + y);
             }
-        });
+        });*/
 
         dashboardActivity = (ClientMainActivity) getActivity();
         dbHelper = new DBHelper(getContext());
@@ -523,7 +543,7 @@ init();
         tvRate = (TextView) rootView.findViewById(R.id.tvRate);
         tvFetchingrates = (TextView) rootView.findViewById(R.id.tvFetchingRates);
         tv_building = (TextView) rootView.findViewById(R.id.tv_building);
-        Button CallButton=(Button) rootView.findViewById(R.id.CallButton);
+        Button CallButton = (Button) rootView.findViewById(R.id.CallButton);
 
         //search_building_icon.setVisibility(View.INVISIBLE);
         buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
@@ -559,8 +579,8 @@ init();
 
                 String callPermission = Manifest.permission.CALL_PHONE;
                 int hasPermission = ContextCompat.checkSelfPermission(getActivity(), callPermission);
-                String[] permissions = new String[] { callPermission };
-                if(isTelephonyEnabled()) {
+                String[] permissions = new String[]{callPermission};
+                if (isTelephonyEnabled()) {
                     if (hasPermission != PackageManager.PERMISSION_GRANTED) {
                         requestPermissions(permissions, REQUEST_CALL_PHONE);
 //                    startActivity(callIntent);
@@ -571,7 +591,6 @@ init();
 
             }
         });
-
 
 
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
@@ -593,15 +612,13 @@ init();
         autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
         autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
         autoCompView.setOnItemClickListener(this);
-//        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.hideSoftInputFromWindow(autoCompView.getWindowToken(), 0);
-        //autoCompView.setOnItemClickListener(this);
+
         autoCompView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 try {
-                    autoIsClicked=true;
+                    autoIsClicked = true;
                     autoCompView.setCursorVisible(true);
                     autoCompView.clearListSelection();
                     autoCompView.setText("");
@@ -633,23 +650,13 @@ init();
         });
 
 
-
-
-        /*mDrooms.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //open deals listing
-                Intent openDealsListing = new Intent(getActivity(), ClientDealsListActivity.class);
-                startActivity(openDealsListing);
-            }
-        });*/
-
         mVisits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openOyeScreen();
+                OnOyeClick();
+               /* openOyeScreen();
                 CancelAnimation();
-
+                AppConstants.GOOGLE_MAP = map;
                 if (clicked == true) {
                     oyebuttonBackgrountColorOrange();
                     clicked = false;
@@ -667,8 +674,8 @@ init();
                     RatePanel = false;
                 } else {
                     RatePanel = true;
-                    // tvFetchingrates.setVisibility(View.VISIBLE);
-                }
+
+                }*/
 
 
 //                openOyeScreen();
@@ -710,52 +717,50 @@ init();
             mHelperView = rootView.findViewById(R.id.helperView);
 
 
-                mHelperView.setOnTouchListener(new View.OnTouchListener() {
-                    private float scaleFactor = 1f;
+            mHelperView.setOnTouchListener(new View.OnTouchListener() {
+                private float scaleFactor = 1f;
 
-                    @Override
-                    public boolean onTouch(final View view, final MotionEvent motionEvent) {
+                @Override
+                public boolean onTouch(final View view, final MotionEvent motionEvent) {
 
-                        if (simpleGestureDetector.onTouchEvent(motionEvent)) { // Double tap
-                            map.animateCamera(CameraUpdateFactory.zoomIn()); // Fixed zoom in
-                        } else if (motionEvent.getPointerCount() == 1) { // Single tap
-                            // horizontalPicker.keepScrolling();
-                            onMapDrag(motionEvent);
-                            mMapView.dispatchTouchEvent(motionEvent); // Propagate the event to the map (Pan)
+                    if (simpleGestureDetector.onTouchEvent(motionEvent)) { // Double tap
+                        map.animateCamera(CameraUpdateFactory.zoomIn()); // Fixed zoom in
+                    } else if (motionEvent.getPointerCount() == 1) { // Single tap
+                        // horizontalPicker.keepScrolling();
+                        onMapDrag(motionEvent);
+                        mMapView.dispatchTouchEvent(motionEvent); // Propagate the event to the map (Pan)
 //                        onMapDrag(motionEvent);
-                        } else if (scaleGestureDetector.onTouchEvent(motionEvent)) { // Pinch zoom
-                            spanning = true;
-                            map.moveCamera(CameraUpdateFactory.zoomBy( // Zoom the map without panning it
-                                    (map.getCameraPosition().zoom * scaleFactor
-                                            - map.getCameraPosition().zoom) / 5));
-                        }
-
-                        return true; // Consume all the gestures
+                    } else if (scaleGestureDetector.onTouchEvent(motionEvent)) { // Pinch zoom
+                        spanning = true;
+                        map.moveCamera(CameraUpdateFactory.zoomBy( // Zoom the map without panning it
+                                (map.getCameraPosition().zoom * scaleFactor
+                                        - map.getCameraPosition().zoom) / 5));
                     }
 
-                    // Gesture detector to manage double tap gestures
-                    private GestureDetector simpleGestureDetector = new GestureDetector(
-                            getContext(), new GestureDetector.SimpleOnGestureListener() {
-                        @Override
-                        public boolean onDoubleTap(MotionEvent e) {
-                            return true;
-                        }
-                    });
+                    return true; // Consume all the gestures
+                }
 
-                    // Gesture detector to manage scale gestures
-                    private ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(
-                            getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
-                        @Override
-                        public boolean onScale(ScaleGestureDetector detector) {
-                            scaleFactor = detector.getScaleFactor();
-                            return true;
-                        }
-                    });
-
-
-
+                // Gesture detector to manage double tap gestures
+                private GestureDetector simpleGestureDetector = new GestureDetector(
+                        getContext(), new GestureDetector.SimpleOnGestureListener() {
+                    @Override
+                    public boolean onDoubleTap(MotionEvent e) {
+                        return true;
+                    }
                 });
 
+                // Gesture detector to manage scale gestures
+                private ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(
+                        getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                    @Override
+                    public boolean onScale(ScaleGestureDetector detector) {
+                        scaleFactor = detector.getScaleFactor();
+                        return true;
+                    }
+                });
+
+
+            });
 
 
             if (map != null) {
@@ -806,31 +811,29 @@ init();
                 @Override
                 public boolean onMyLocationButtonClick() {
                     Log.i(TAG, "my Loc clicked ");
-//                    Intent intent11 = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-//                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent11);
-//                    if(clicked==true){
-                    ( (ClientMainActivity)getActivity()).closeOyeScreen();
-                        buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
-                        recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-                        customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
-                        mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
-                        txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
-//                    mVisits.startAnimation(zoomin_zoomout);
-                    StartOyeButtonAnimation();
-                        UpdateRatePanel();
-                        search_building_icon.setVisibility(View.GONE);
+
+                    new CountDownTimer(200, 50) {
+
+                        public void onTick(long millisUntilFinished) {
+                            ( (ClientMainActivity)getActivity()).closeOyeScreen();
+                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                            recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+                            mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
+                            txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+                            UpdateRatePanel();
+                            search_building_icon.setVisibility(View.GONE);
+                        }
+
+                        public void onFinish() {
+
+                            getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
 
 
-                        final Runnable r = new Runnable() {
-                            public void run() {
+                        }
+                    }.start();
 
-                                getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
-//                                if (!r) return;
-                            }
-                        };
-
-
-                        return false;
+                    return false;
                 }
             });
 
@@ -856,13 +859,18 @@ init();
 
                     Log.i("MA999999 ", "MAP CLICK=========");
 
-                    spanning = false;
+
+
+                    onMapclicked();
+
+                   /* spanning = false;
                     mVisits.setEnabled(true);
                     txtFilterValue.setEnabled(true);
 
-                    for(int i=0;i<5;i++){
-                        if(flag[i]==true){
+                    for (int i = 0; i < 5; i++) {
+                        if (flag[i] == true) {
                             mCustomerMarker[i].setIcon(icon1);
+                            ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                             search_building_icon.setVisibility(View.GONE);
                             flag[i] = false;
                             horizontalPicker.setVisibility(View.VISIBLE);
@@ -880,11 +888,7 @@ init();
                             ll_marker.setEnabled(true);
                             tv_building.setVisibility(View.VISIBLE);
                         }
-                    }
-
-
-
-
+                    }*/
 
 
                 }
@@ -904,9 +908,11 @@ init();
                             if (flag[i] == false) {
                                 Log.i("flag[i] == false ", "===========================");
 //                                mCustomerMarker[i].setIcon(icon2);
-                                m=mCustomerMarker[i];
+                                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+                                ((ClientMainActivity)getActivity()).OpenBuildingOyeConfirmation();
+                                m = mCustomerMarker[i];
                                 mCustomerMarker[i].remove();
-                                mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).icon(icon2));
+                                mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).icon(icon2));
                                 search_building_icon.setVisibility(View.VISIBLE);
                                 horizontalPicker.setVisibility(View.GONE);
                                 tvFetchingrates.setVisibility(View.VISIBLE);
@@ -928,10 +934,10 @@ init();
                                 tv_building.setVisibility(View.VISIBLE);
                                 tv_building.setText("Average Rate in last 1 WEEK");
 
-                                if(brokerType.equalsIgnoreCase("rent")) {
+                                if (brokerType.equalsIgnoreCase("rent")) {
                                     String text = "<font color=#ffffff >" + marker.getTitle().toString() + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
                                     tvFetchingrates.setText(Html.fromHtml(text));
-                                }else {
+                                } else {
                                     String text = "<font color=#ffffff >" + marker.getTitle().toString() + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font></br>";
                                     tvFetchingrates.setText(Html.fromHtml(text));
                                 }
@@ -951,10 +957,11 @@ init();
                                 flag[i] = true;
 
                             } else {
-                                m=mCustomerMarker[i];
+                                m = mCustomerMarker[i];
+                                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                                 mCustomerMarker[i].remove();
-                                mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).icon(icon1));
-                                Log.i("mm_mithai","marker draw");
+                                mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).icon(icon1));
+                                Log.i("mm_mithai", "marker draw");
 //                                mCustomerMarker[i].setIcon(icon1);
                                 search_building_icon.setVisibility(View.GONE);
                                 flag[i] = false;
@@ -1005,15 +1012,11 @@ init();
                 public void onCameraChange(CameraPosition cameraPosition) {
 
 
-
                 }
             });
 
-        } catch (Exception e) {}
-
-
-
-
+        } catch (Exception e) {
+        }
 
 
         mcallback = new GetCurrentLocation.CurrentLocationCallback() {
@@ -1028,12 +1031,12 @@ init();
                     lng = location.getLongitude();
                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                    General.setSharedPreferences(getContext(),AppConstants.MY_LAT,lat + "");
-                    General.setSharedPreferences(getContext(),AppConstants.MY_LNG,lng + "");
+                    General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
+                    General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
                     if (isNetworkAvailable()) {
                         try {
                             getRegion();
-                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier);
+                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                             new LocationUpdater().execute();
 
                         } catch (Exception e) {
@@ -1044,17 +1047,18 @@ init();
                     LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
 
-                   // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,MAP_ZOOM));
+                    // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, MAP_ZOOM));
 
 
                     //make retrofit call to get Min Max price
                     if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
                         try {
 
-                            Log.i("Network available","%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+                            Log.i("Network available", "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                             getPrice();
-                        } catch (Exception e) {}
+                        } catch (Exception e) {
+                        }
                     }
                 }
             }
@@ -1062,10 +1066,10 @@ init();
         Log.i("t2", "mcallback" + mcallback);
 
 
-        if (!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
+     /*   if (!dbHelper.getValue(DatabaseConstants.userId).equalsIgnoreCase("null"))
             droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
 
-        dbHelper.save(DatabaseConstants.userRole, "Client");
+        dbHelper.save(DatabaseConstants.userRole, "Client");*/
 
         rupeesymbol.bringToFront();
         tvRate.bringToFront();
@@ -1081,7 +1085,6 @@ init();
        /* mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue));
 
         //rem flip change*/
-
 
 
 //        StartAnimation();
@@ -1107,9 +1110,6 @@ init();
 //        }, 2000, 2000);
 
 
-
-
-
 //for(int i=1;i<10;i++) {
 //    ImageView image1 = (ImageView) rootView.findViewById(R.id.beacons1);
 //    Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.fade);
@@ -1121,16 +1121,14 @@ init();
 
 
         //Tutorial and Beacon code
-        if(Walkthrough.equalsIgnoreCase("true")) {
-            Log.i("ischecked","walkthrough3dashboard1111111"+Walkthrough);
+        if (Walkthrough.equalsIgnoreCase("true")) {
+            Log.i("ischecked", "walkthrough3dashboard1111111" + Walkthrough);
             tutorialAlert(rootView);
 //    beaconAlet(rootView);
-            Walkthrough="false";
-    //SharedPrefs.save(getContext(),SharedPrefs.CHECK_WALKTHROUGH,Walkthrough);
-        }
-
-        else if(beacon.equalsIgnoreCase("true") ) {
-            Log.i("ischecked","walkthrough3dashboard1111111beacon"+beacon);
+            Walkthrough = "false";
+            //SharedPrefs.save(getContext(),SharedPrefs.CHECK_WALKTHROUGH,Walkthrough);
+        } else if (beacon.equalsIgnoreCase("true")) {
+            Log.i("ischecked", "walkthrough3dashboard1111111beacon" + beacon);
             try {
                 beaconAlert(rootView);
             } catch (InterruptedException e) {
@@ -1138,85 +1136,99 @@ init();
             }
 //    beaconAlet(rootView);
 
-            beacon="false";
-           // SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, beacon);
+            beacon = "false";
+            // SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, beacon);
 //    SharedPrefs.save(getContext(),SharedPrefs.CHECK_WALKTHROUGH,Walkthrough);
         }
 
 //&& Walkthrough.equalsIgnoreCase("false")
 
 
-
         return rootView;
     }
 
 
+    //new
+    private void init() {
+        home = (Button) rootView.findViewById(R.id.home);
+        shop = (Button) rootView.findViewById(R.id.shop);
+        industrial = (Button) rootView.findViewById(R.id.industrial);
+        office = (Button) rootView.findViewById(R.id.office);
 
+        rental = (TextView) rootView.findViewById(R.id.rental);
+        resale = (TextView) rootView.findViewById(R.id.sale);
+        property_type_layout = (RelativeLayout) rootView.findViewById(R.id.property_type);
+        zoomout_right = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_slide));
+        zoomout_left = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_slide_left));
+        slide_up = (AnimationUtils.loadAnimation(getContext(), R.anim.slide_up));
+        zoomin_zoomout = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_zoomin));
+        PropertyButtonSlideAnimation();
+        AppConstants.PROPERTY = "Home";
 
-//new
-private  void init(){
-    home=(Button) rootView.findViewById(R.id.home);
-    shop=(Button) rootView.findViewById(R.id.shop);
-    industrial=(Button) rootView.findViewById(R.id.industrial);
-    office=(Button) rootView.findViewById(R.id.office);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pro_click=true;
+                property_type_layout.clearAnimation();
+                Property_type = "Home";
+                oyetext = "2BHK";
+                AppConstants.PROPERTY = "Home";
+                Log.i("home", "you are in home ");
+                parentbottom.removeView(property_type_layout);
+                parenttop.addView(property_type_layout,2);
+                PropertyButtonAnimation();
+                property_type_layout.setVisibility(View.GONE);
 
-    rental=(TextView) rootView.findViewById(R.id.rental);
-    resale=(TextView) rootView.findViewById(R.id.sale);
-    property_type_layout=(RelativeLayout) rootView.findViewById(R.id.property_type);
-    zoomout_right=(AnimationUtils.loadAnimation(getContext(),R.anim.zoomout_slide));
-    zoomout_left=(AnimationUtils.loadAnimation(getContext(),R.anim.zoomout_slide_left));
-    slide_up=(AnimationUtils.loadAnimation(getContext(),R.anim.slide_up));
-    zoomin_zoomout=(AnimationUtils.loadAnimation(getContext(),R.anim.zoomout_zoomin));
-    home.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Property_type="Home";
-            oyetext="2BHK";
-            AppConstants.PROPERTY="home";
-            Log.i("home","you are in home ");
-            PropertyButtonAnimation();
+            }
+        });
+        shop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pro_click=true;
+                property_type_layout.clearAnimation();
+                parentbottom.removeView(property_type_layout);
+                parenttop.addView(property_type_layout,2);
+                Property_type = "Shop";
+                oyetext = "SHOP";
+                AppConstants.PROPERTY = "Shop";
+                Log.i("home", "you are in shop ");
+                PropertyButtonAnimation();
+                property_type_layout.setVisibility(View.GONE);
 
-        }
-    });
-    shop.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Property_type="Shop";
-            oyetext="SHOP";
-            AppConstants.PROPERTY="shop";
-            Log.i("home","you are in shop ");
-            PropertyButtonAnimation();
+            }
+        });
+        industrial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pro_click=true;
+                property_type_layout.clearAnimation();
+                parentbottom.removeView(property_type_layout);
+                parenttop.addView(property_type_layout,2);
+                Property_type = "Industrial";
+                oyetext = "INDUS";
+                AppConstants.PROPERTY = "Industrial";
+                Log.i("home", "you are in industrial ");
+                PropertyButtonAnimation();
+                property_type_layout.setVisibility(View.GONE);
 
-        }
-    });
-    industrial.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Property_type="Industrial";
-            oyetext="INDUS";
-            AppConstants.PROPERTY="Industrial";
-            Log.i("home","you are in industrial ");
-            PropertyButtonAnimation();
-
-        }
-    });
-    office.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.i("home","you are in office ");
-            Property_type="Office";
-            AppConstants.PROPERTY="Office";
-            oyetext="OFFIC";
-            PropertyButtonAnimation();
-        }
-    });
-}
-
-
-
-
-
-
+            }
+        });
+        office.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pro_click=true;
+                property_type_layout.clearAnimation();
+                parentbottom.removeView(property_type_layout);
+                parenttop.addView(property_type_layout,2);
+                Log.i("home", "you are in office ");
+                Property_type = "Office";
+                AppConstants.PROPERTY = "Office";
+                oyetext = "OFFIC";
+                PropertyButtonAnimation();
+                property_type_layout.setVisibility(View.GONE);
+            }
+        });
+    }
 
 
     private BroadcastReceiver closeOyeScreenSlide = new BroadcastReceiver() {
@@ -1227,18 +1239,17 @@ private  void init(){
 
             ll_map.setAlpha(1f);
 //            StartAnimation();
-            if(clicked==false){
+            if (clicked == false) {
                 oyebuttonBackgrountColorGreenishblue();
                 customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
                 mHelperView.setEnabled(true);
-                clicked=true;
+                clicked = true;
             }
 
-            if(RatePanel==true) {
+            if (RatePanel == true) {
                 UpdateRatePanel();
                 RatePanel = false;
-            }
-            else {
+            } else {
                 RatePanel = true;
                 // tvFetchingrates.setVisibility(View.VISIBLE);
             }
@@ -1246,10 +1257,10 @@ private  void init(){
 
         }
     };
-    private void StartAnimation()
-    {
-        Log.i("starting timer"," "+ timer);
-        if(timer == null) {
+
+    private void StartAnimation() {
+        Log.i("starting timer", " " + timer);
+        if (timer == null) {
             timer = new Timer();
 
             timer.schedule(new TimerTask() {
@@ -1274,12 +1285,11 @@ private  void init(){
     }
 
 
-    private void StartOyeButtonAnimation()
-    {
-        Log.i("starting timer"," "+ timer);
-        if(timer == null) {
+    private void StartOyeButtonAnimation() {
+        Log.i("starting timer", " " + timer);
+        if (timer == null) {
             timer = new Timer();
-            Log.i("starting timer2"," "+ timer);
+            Log.i("starting timer2", " " + timer);
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -1287,8 +1297,8 @@ private  void init(){
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Log.i("starting timer1"," "+ timer);
-                               mVisits.startAnimation(zoomin_zoomout);
+                                Log.i("starting timer1", " " + timer);
+                                mVisits.startAnimation(zoomin_zoomout);
                             }
                         });
                     }
@@ -1299,8 +1309,7 @@ private  void init(){
     }
 
 
-    private  void CancelAnimation()
-    {
+    private void CancelAnimation() {
         try {
             if (timer != null) {
                 timer.cancel();
@@ -1311,14 +1320,13 @@ private  void init(){
                 mFlipAnimator.start();
 //        }
             }
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
     }
 
 
-
-
     public void enableMyLocation() {
-        Log.i("slsl","loc+++++++++++++++++++ : ");
+        Log.i("slsl", "loc+++++++++++++++++++ : ");
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
@@ -1340,65 +1348,95 @@ private  void init(){
     public void onButtonsClick(View v) {
         if (ll_marker.getId() == v.getId()) {
 
-            Log.i(TAG,"poligon ");
+            Log.i(TAG, "poligon ");
 
-           // txtFilterValue.performClick();
-
-            openOyeScreen();
-            Log.i("txtFilterValue","txtFilterValue =========================== "+SystemClock.currentThreadTimeMillis());
+            // txtFilterValue.performClick();
+            OnOyeClick();
+            /*openOyeScreen();
+            Log.i("txtFilterValue", "txtFilterValue =========================== " + SystemClock.currentThreadTimeMillis());
             CancelAnimation();
-            if(clicked==true){
+            if (clicked == true) {
                 oyebuttonBackgrountColorOrange();
                 customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
-                clicked=false;
-            }else {
+                clicked = false;
+            } else {
                 oyebuttonBackgrountColorGreenishblue();
                 customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
                 clicked = true;
             }
-            Log.i("rate","rate penal1111  : "+RatePanel);
-            if(RatePanel==true) {
-                Log.i("rate","rate penal  : "+RatePanel);
+            Log.i("rate", "rate penal1111  : " + RatePanel);
+            if (RatePanel == true) {
+                Log.i("rate", "rate penal  : " + RatePanel);
 
                 UpdateRatePanel();
                 RatePanel = false;
-            }
-            else {
+            } else {
                 RatePanel = true;
                 // tvFetchingrates.setVisibility(View.VISIBLE);
-            }
+            }*/
         }
     }
 
+
+
+    public void OnOyeClick(){
+        openOyeScreen();
+        CancelAnimation();
+        AppConstants.GOOGLE_MAP = map;
+        if (clicked == true) {
+            oyebuttonBackgrountColorOrange();
+            clicked = false;
+            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
+            mHelperView.setEnabled(false);
+        } else {
+            oyebuttonBackgrountColorGreenishblue();
+            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+            mHelperView.setEnabled(true);
+            clicked = true;
+
+        }
+        if (RatePanel == true) {
+            UpdateRatePanel();
+            RatePanel = false;
+        } else {
+            RatePanel = true;
+//            tvFetchingrates.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+
+
+
+
+
     @OnClick(R.id.txtFilterValue)
     public void onTxtFilterValueClick(View v) {
-
-        openOyeScreen();
-        Log.i("txtFilterValue","txtFilterValue =========================== "+SystemClock.currentThreadTimeMillis());
+        OnOyeClick();
+        /*openOyeScreen();
+        Log.i("txtFilterValue", "txtFilterValue =========================== " + SystemClock.currentThreadTimeMillis());
         CancelAnimation();
-        if(clicked==true){
+        if (clicked == true) {
             oyebuttonBackgrountColorOrange();
             customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
             mHelperView.setEnabled(false);
-            clicked=false;
-        }else {
+            clicked = false;
+        } else {
             oyebuttonBackgrountColorGreenishblue();
             customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
             mHelperView.setEnabled(true);
             clicked = true;
         }
-        if(RatePanel==true) {
+        if (RatePanel == true) {
             UpdateRatePanel();
             RatePanel = false;
-        }
-        else {
+        } else {
             RatePanel = true;
             // tvFetchingrates.setVisibility(View.VISIBLE);
-        }
+        }*/
     }
 
     private void openOyeScreen() {
-
 
 
 //        if(android.os.Build.VERSION.SDK_INT >18) {
@@ -1407,7 +1445,7 @@ private  void init(){
 //        }
 
         Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
-        intent.putExtra("tv_dealinfo","Home ");
+        intent.putExtra("tv_dealinfo", "Home ");
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
 
         //mFlipAnimator.end();
@@ -1562,14 +1600,14 @@ private  void init(){
 
         //getRegion();
 
-        if(General.isNetworkAvailable(getContext())) {
+        if (General.isNetworkAvailable(getContext())) {
             General.slowInternet(getContext());
 
 
-        mVisits.setEnabled(false);
-        txtFilterValue.setEnabled(false);
-        CancelAnimation();
-        User user = new User();
+            mVisits.setEnabled(false);
+            txtFilterValue.setEnabled(false);
+            CancelAnimation();
+            User user = new User();
 
 
 //        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE)
@@ -1676,11 +1714,13 @@ private  void init(){
                                 updateHorizontalPicker();
                                 marquee(500, 100);
 
-                                for (int i = 0; i < 5; i++) {
+//                                for (int i = 0; i < 5; i++) {
+//
+//                                    if (mCustomerMarker[i] != null)
+//                                        mCustomerMarker[i].remove();
+//                                }
 
-                                    if (mCustomerMarker[i] != null)
-                                        mCustomerMarker[i].remove();
-                                }
+                                map.clear();
                                 buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 
@@ -1735,7 +1775,7 @@ private  void init(){
 
                                 missingArea.setVisibility(View.GONE);
                             } else {
-                                Log.i("tt", "I am here" + 3);
+                                Log.i("getpriceStatus", "I am here" + 3);
                     /*SnackbarManager.show(
                             Snackbar.with(getActivity())
                                     .text("We don't cater here yet")
@@ -1746,6 +1786,8 @@ private  void init(){
                                     if (mCustomerMarker[i] != null)
                                         mCustomerMarker[i].remove();
                                 }
+//                                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+
                                 tv_building.setVisibility(View.INVISIBLE);
                                 horizontalPicker.setVisibility(View.GONE);
                                 tvRate.setVisibility(View.INVISIBLE);
@@ -1771,6 +1813,8 @@ private  void init(){
                                 if (mCustomerMarker[i] != null)
                                     mCustomerMarker[i].remove();
                             }
+                            ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+
                             tv_building.setVisibility(View.INVISIBLE);
                             horizontalPicker.setVisibility(View.GONE);
                             tvRate.setVisibility(View.INVISIBLE);
@@ -1785,7 +1829,7 @@ private  void init(){
                             txtFilterValue.setEnabled(false);
                             CancelAnimation();
 
-                            Log.i("GETPRICE", "Else mode ====== ");
+                            Log.i("getpriceStatus", "Else mode ====== ");
 
 
 
@@ -1795,7 +1839,7 @@ private  void init(){
                     } catch (Exception e) {
                         General.slowInternetFlag = false;
                         General.t.interrupt();
-                        Log.i("Price Error", " " + e.getMessage());
+                        Log.i("getpriceStatus", " " + e.getMessage());
                     }
 
 
@@ -1804,15 +1848,31 @@ private  void init(){
                 @Override
                 public void failure(RetrofitError error) {
                     General.slowInternetFlag = false;
+                    for (int i = 0; i < 5; i++) {
 
+                        if (mCustomerMarker[i] != null)
+                            mCustomerMarker[i].remove();
+                    }
+                    tv_building.setVisibility(View.INVISIBLE);
+                    horizontalPicker.setVisibility(View.GONE);
+                    tvRate.setVisibility(View.INVISIBLE);
+                    rupeesymbol.setVisibility(View.INVISIBLE);
+                    // tvCommingsoon.setVisibility(View.GONE);
+                    tvFetchingrates.setVisibility(View.VISIBLE);
+                    tvFetchingrates.setText("Coming Soon...");
+                    // tvCommingsoon.setTypeface(null, Typeface.BOLD);
+                    // tvCommingsoon.setTextSize(18);
+                    missingArea.setVisibility(View.VISIBLE);
+                    mVisits.setEnabled(false);
+                    txtFilterValue.setEnabled(false);
+                    CancelAnimation();
                     General.t.interrupt();
-                    Log.i("getPrice", "error: " + error.getMessage());
+                    Log.i("getpriceStatus", "error: " + error.getMessage());
 
                 }
             });
 
-        }
-        else{
+        } else {
             General.internetConnectivityMsg(getContext());
 
         }
@@ -1825,34 +1885,28 @@ private  void init(){
     private void updateHorizontalPicker() {
 
 
-    if (horizontalPicker != null) {
-        if (brokerType.equals("rent")) {
-            Log.i(TAG, "updateHorizontalPicker rental andro " + llMin + " " + llMax);
-            //   horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
+        if (horizontalPicker != null) {
+            if (brokerType.equals("rent")) {
+                Log.i(TAG, "updateHorizontalPicker rental andro " + llMin + " " + llMax);
+                //   horizontalPicker.setInterval((llMin*1000), (llMax*1000),10, HorizontalPicker.THOUSANDS);
 
-            Log.i("HORRIZONTALPICKER", "filterValue " + filterValue + " filterValueMultiplier " + filterValueMultiplier + "  LLmin && LLmax" + llMin + " " + llMax);
-            horizontalPicker.setInterval((roundoff1(llMin * filterValueMultiplier)), (roundoff1(llMax * filterValueMultiplier)), 10, HorizontalPicker.THOUSANDS);
-        } else {
-            Log.i(TAG, "updateHorizontalPicker resale andro " + orMin + " " + orMax);
-            horizontalPicker.setInterval(roundoff1(orMin), roundoff1(orMax), 10, HorizontalPicker.THOUSANDS);
+                Log.i("HORRIZONTALPICKER", "filterValue " + filterValue + " filterValueMultiplier " + filterValueMultiplier + "  LLmin && LLmax" + llMin + " " + llMax);
+                horizontalPicker.setInterval((roundoff1(llMin * filterValueMultiplier)), (roundoff1(llMax * filterValueMultiplier)), 10, HorizontalPicker.THOUSANDS);
+            } else {
+                Log.i(TAG, "updateHorizontalPicker resale andro " + orMin + " " + orMax);
+                horizontalPicker.setInterval(roundoff1(orMin), roundoff1(orMax), 10, HorizontalPicker.THOUSANDS);
+            }
         }
     }
-}
-
-
-
-
-
-
 
 
     public boolean canAccessLocation() {
 
-        return(hasPermission(Manifest.permission.ACCESS_FINE_LOCATION));
+        return (hasPermission(Manifest.permission.ACCESS_FINE_LOCATION));
     }
 
     private boolean hasPermission(String perm) {
-        return(PackageManager.PERMISSION_GRANTED== ContextCompat.checkSelfPermission(getContext(),perm));
+        return (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(getContext(), perm));
     }
 
 
@@ -1924,20 +1978,20 @@ private  void init(){
                             map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
 
                         }
-                        getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
+                        getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
                     }
                 });
                 // getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
                 //Log.i("t1","mcallback"+""+mcallback);
-            }
-            else {
+            } else {
                 //Intent intent = new Intent(this, MainActivity.class);
                 // startActivity(intent);
                 Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
                 //((DashboardActivity) getActivity()).showToastMessage("Offline Mode");
             }
 
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
 
 
     }
@@ -1947,8 +2001,26 @@ private  void init(){
     public void onPositionSelected(int position, int count) {
         if (count == 2) {
             if (position == 0) {
+                /*ViewStub stub = (ViewStub) rootView.findViewById(R.id.layout_stub);
+                stub.setLayoutResource(R.layout.property_type_layout1);
+                View inflated = stub.inflate();*/
+
+                int index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
+                Log.i("indexxx", "index of layout : " + index);
+                if(index==2){
+                property_type_layout.clearAnimation();
+                parenttop.removeView(property_type_layout);
+                parentbottom.addView(property_type_layout,5);}
+//                property_type_layout.startAnimation(slide_up);
+                PropertyButtonSlideAnimation();
+//                index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
+//                Log.i("indexxx", "index of layout : " + index);
+//                parentbottom.removeView(property_type_layout);
+//                parenttop.addView(property_type_layout,2);
+
+
                 marquee(500, 100);
-                property_type_layout.startAnimation(slide_up);
+
                 SnackbarManager.show(
                         Snackbar.with(getContext())
                                 .text("Rental Property Type set")
@@ -1957,30 +2029,30 @@ private  void init(){
 
                 tvRate.setText("/ month");
                 brokerType = "rent";
-                AppConstants.CURRENT_DEAL_TYPE="rent";
+                AppConstants.CURRENT_DEAL_TYPE = "rent";
                 dbHelper.save(DatabaseConstants.brokerType, "LL");
                 dbHelper.save("brokerType", "On Rent");
                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 
                 //new
-                if(Property_type.equalsIgnoreCase("")){
+                if (Property_type.equalsIgnoreCase("")) {
                     rental.setText("Home");
                     rental.setVisibility(View.VISIBLE);
                     resale.setVisibility(View.INVISIBLE);
                     property_type_layout.setVisibility(View.VISIBLE);
 
-                }else {
+                } else {
                     rental.setVisibility(View.VISIBLE);
                     resale.setVisibility(View.INVISIBLE);
                     rental.setText(Property_type);
                     property_type_layout.setVisibility(View.VISIBLE);
                 }
 
-                if(flag[INDEX]==true) {
+                if (flag[INDEX] == true) {
 
                     tv_building.setVisibility(View.VISIBLE);
                     tv_building.setText("Average Rate in last 1 WEEK");
-                    String text = "<font color=#ffffff>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c>\u20B9"+General.currencyFormat(String.valueOf(ll_pm[INDEX])).substring(2,General.currencyFormat(String.valueOf(ll_pm[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font>";
+                    String text = "<font color=#ffffff>" + mCustomerMarker[INDEX].getTitle().toString() + "</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat(String.valueOf(ll_pm[INDEX])).substring(2, General.currencyFormat(String.valueOf(ll_pm[INDEX])).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font>";
                     tvFetchingrates.setText(Html.fromHtml(text));
 
                 }
@@ -1990,7 +2062,20 @@ private  void init(){
 
 
                 marquee(500, 100);
-                property_type_layout.startAnimation(slide_up);
+                int index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
+                Log.i("indexxx", "index of layout : " + index);
+                if(index==2){
+                    Log.i("indexx","inside if stmt");
+                    property_type_layout.clearAnimation();
+                    parenttop.removeView(property_type_layout);
+                    parentbottom.addView(property_type_layout,5);}
+//                property_type_layout.startAnimation(slide_up);
+                PropertyButtonSlideAnimation();
+//                index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
+//                Log.i("indexxx", "index of layout : " + index);
+//                parentbottom.removeView(property_type_layout);
+//                parenttop.addView(property_type_layout,2);
+
 
                 SnackbarManager.show(
                         Snackbar.with(getContext())
@@ -2011,18 +2096,18 @@ private  void init(){
                     rental.setVisibility(View.INVISIBLE);
                     property_type_layout.setVisibility(View.VISIBLE);
 
-                } else{
+                } else {
                     resale.setText(Property_type);
-                resale.setVisibility(View.VISIBLE);
-                rental.setVisibility(View.INVISIBLE);
+                    resale.setVisibility(View.VISIBLE);
+                    rental.setVisibility(View.INVISIBLE);
                     property_type_layout.setVisibility(View.VISIBLE);
 
                 }
 
-                if(flag[INDEX]==true) {
+                if (flag[INDEX] == true) {
                     tv_building.setVisibility(View.VISIBLE);
                     tv_building.setText("Average Rate in last 1 WEEK");
-                    String text = "<font color=#ffffff>"+mCustomerMarker[INDEX].getTitle().toString()+"</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9"+General.currencyFormat(String.valueOf(or_psf[INDEX])).substring(2,General.currencyFormat(String.valueOf(or_psf[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font>";
+                    String text = "<font color=#ffffff>" + mCustomerMarker[INDEX].getTitle().toString() + "</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat(String.valueOf(or_psf[INDEX])).substring(2, General.currencyFormat(String.valueOf(or_psf[INDEX])).length()) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font>";
                     tvFetchingrates.setText(Html.fromHtml(text));
                 }
                 // onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),950,orMin,orMax);
@@ -2039,15 +2124,14 @@ private  void init(){
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-       // ll_map.setAlpha(1f);
+        // ll_map.setAlpha(1f);
         hideOnSearch.setVisibility(View.GONE);
         seekbar_linearlayout.setVisibility(View.VISIBLE);
 
         seekbar_linearlayout.setBackgroundColor(Color.WHITE);
         seekbar_linearlayout.setAlpha(1);
-        InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(autoCompView.getWindowToken(), 0);
-
 
 
         mPhasedSeekBar.setVisibility(View.VISIBLE);
@@ -2076,16 +2160,16 @@ private  void init(){
         try {
             region = addresses.get(0).getSubLocality();
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LOCALITY, region);
-            General.setSharedPreferences(getContext(),AppConstants.LOCALITY,region);
-            Log.i("localityBroadcast","localityBroadcast3 "+region);
+            General.setSharedPreferences(getContext(), AppConstants.LOCALITY, region);
+            Log.i("localityBroadcast", "localityBroadcast3 " + region);
 
             Intent intent = new Intent(AppConstants.LOCALITY_BROADCAST);
-            intent.putExtra("locality",region);
+            intent.putExtra("locality", region);
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
 
             pincode = addresses.get(0).getPostalCode();
             address = addresses.get(0).getAddressLine(0);
-            Log.i(TAG,"address "+address);
+            Log.i(TAG, "address " + address);
             // fullAddress = "";
         } catch (Exception e) {
         }
@@ -2147,9 +2231,8 @@ private  void init(){
     public void priceSelected(String val) {
         try {
             map.animateCamera(CameraUpdateFactory.zoomTo(12));
-        }
-        catch(Exception e){
-            Log.i(TAG,"Caught in exception Zoom map to 12 "+e);
+        } catch (Exception e) {
+            Log.i(TAG, "Caught in exception Zoom map to 12 " + e);
         }
 
     }
@@ -2158,9 +2241,6 @@ private  void init(){
     public void drawerOpened() {
         horizontalPicker.stopScrolling();
     }
-
-
-
 
 
     protected class LocationUpdater extends AsyncTask<Double, Double, String> {
@@ -2215,7 +2295,7 @@ private  void init(){
                 String lng1 = SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG);
                 JSONObject jsonObj = getJSONfromURL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat1 + ","
                         + lng1 + "&sensor=true");
-                Log.i("chai","Response_chai1");
+                Log.i("chai", "Response_chai1");
 //                JSONObject jsonObj = getJSONfromURL("https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input=Arun%20Ka&scope=APP&key=AIzaSyC7aqVbRyNsF1JNgtYbpPDsJAf981dPp5Q");
                 String Status = jsonObj.getString("status");
 
@@ -2279,8 +2359,8 @@ private  void init(){
             } catch (Exception e) {
                 e.printStackTrace();
             }
-          return fullAddress;
-          // return address;
+            return fullAddress;
+            // return address;
         }
 
         @Override
@@ -2291,28 +2371,28 @@ private  void init(){
             autoCompView.dismissDropDown();
 
             // new LocationUpdater().execute();
-            Log.i(TAG,"locality automata ");
+            Log.i(TAG, "locality automata ");
             try {
 
 
-
                 getRegion();
-                if(autoIsClicked==true) {
+                if (autoIsClicked == true) {
                     Log.i(TAG, "locality automata " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-                 getPrice();
-                    autoIsClicked=false;
-                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                    getPrice();
+                    autoIsClicked = false;
+                    buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                 }
-            }catch(Exception e){}
+            } catch (Exception e) {
+            }
 
         }
     }
 
-   public boolean isNetworkAvailable() {
+    public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        Log.i("Checking network","====================");
+        Log.i("Checking network", "====================");
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
@@ -2359,8 +2439,8 @@ private  void init(){
             Log.i("t1", "lng" + " " + lng);
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-            General.setSharedPreferences(getContext(),AppConstants.MY_LAT,lat + "");
-            General.setSharedPreferences(getContext(),AppConstants.MY_LNG,lng + "");
+            General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
+            General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
 
 
             //Marker marker = broker_map.addMarker(new MarkerOptions()
@@ -2386,27 +2466,22 @@ private  void init(){
     }
 
 
-
-
-    public Bitmap resizeMapIcons(String iconName,int width, int height){
-        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getContext().getPackageName()));
+    public Bitmap resizeMapIcons(String iconName, int width, int height) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getContext().getPackageName()));
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
         return resizedBitmap;
     }
 
 
+    private void BroadCastMinMaxValue(int llMin, int llMax, int orMin, int orMax) {
 
+        int llmin = numToVals(llMin);
 
-
-    private void BroadCastMinMaxValue(int llMin, int llMax,int orMin,int orMax) {
-
-        int llmin=numToVals(llMin);
-
-        int llmax=numToVals(llMax);
-        llmin=roundoff(llmin);
-        orMin=roundoff(orMin);
-        llmax=roundoff(llmax);
-        orMax=roundoff(orMax);
+        int llmax = numToVals(llMax);
+        llmin = roundoff(llmin);
+        orMin = roundoff(orMin);
+        llmax = roundoff(llmax);
+        orMax = roundoff(orMax);
 
         Intent intent = new Intent(AppConstants.BROADCAST_MIN_MAX_VAL);
         intent.putExtra("llmin", llmin);
@@ -2421,22 +2496,22 @@ private  void init(){
     }
 
 
+    private int roundoff(int val) {
 
-    private int   roundoff(int val){
-
-        val=val/1000;
-        val=val * 1000;
-        return  val;
-    }
-    private int   roundoff1(int val){
-
-        val=val/500;
-        val=val * 500;
-        return  val;
+        val = val / 1000;
+        val = val * 1000;
+        return val;
     }
 
+    private int roundoff1(int val) {
 
-    public void onoyeclickRateChange(String locality,int area,int llmin,int llmax,String psf){
+        val = val / 500;
+        val = val * 500;
+        return val;
+    }
+
+
+    public void onoyeclickRateChange(String locality, int area, int llmin, int llmax, String psf) {
         horizontalPicker.setVisibility(View.GONE);
         tv_building.setVisibility(View.GONE);
         tvRate.setVisibility(View.GONE);
@@ -2445,27 +2520,26 @@ private  void init(){
 
         String llmin1;
         String llmax1;
-        llmin1=numToVal(llmin);
-        llmax1=numToVal(llmax);
+        llmin1 = numToVal(llmin);
+        llmax1 = numToVal(llmax);
 
-        Log.i("TRACE11","llmin"+llmin);
-        Log.i("TRACE11","llmax "+llmax);
-        Log.i("TRACE11","llmin "+llmin1);
-        Log.i("TRACE11","llmax"+llmax1);
+        Log.i("TRACE11", "llmin" + llmin);
+        Log.i("TRACE11", "llmax " + llmax);
+        Log.i("TRACE11", "llmin " + llmin1);
+        Log.i("TRACE11", "llmax" + llmax1);
         tv_building.setVisibility(View.VISIBLE);
-        tv_building.setText("Range @ "+locality+" | AREA = "+area +"sqft");
-        Log.i("TRACE11","tv_building"+tv_building.getText());
-        text = "<font color=#ff9f1c><b>\u20B9</b> "+llmin1+"<sub> "+psf+" </sub></b></b> <b> - </b> <b>\u20B9</b>"+llmax1+"<b><sub>"+psf+"</sub></font>";
+        tv_building.setText("Range @ " + locality + " | AREA = " + area + "sqft");
+        Log.i("TRACE11", "tv_building" + tv_building.getText());
+        text = "<font color=#ff9f1c><b>\u20B9</b> " + llmin1 + "<sub> " + psf + " </sub></b></b> <b> - </b> <b>\u20B9</b>" + llmax1 + "<b><sub>" + psf + "</sub></font>";
         tvFetchingrates.setText(Html.fromHtml(text));
 
 
     }
 
 
-
-    public void UpdateRatePanel(){
+    public void UpdateRatePanel() {
         try {
-            Log.i("Update","UpdateRatePanel:   ");
+            Log.i("Update", "UpdateRatePanel:   ");
             horizontalPicker.setVisibility(View.VISIBLE);
 
             buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
@@ -2473,43 +2547,42 @@ private  void init(){
             tvRate.setVisibility(View.VISIBLE);
             rupeesymbol.setVisibility(View.VISIBLE);
             tvFetchingrates.setVisibility(View.GONE);
+        } catch (Exception e) {
         }
-        catch(Exception e){}
 
     }
 
 
-    String numToVal(int no){
-        String str = "",v = "";
+    String numToVal(int no) {
+        String str = "", v = "";
 
-        int twoWord = 0,val = 1;
+        int twoWord = 0, val = 1;
 
-        int c = (no == 0 ? 1 : (int)(log10(no)+1));
+        int c = (no == 0 ? 1 : (int) (log10(no) + 1));
 
         if (c > 8) {
 
             c = 8;
         }
-        if (c%2 == 1){
+        if (c % 2 == 1) {
 
             c--;
         }
 
         c--;
         //   int q = Int(pow(Double(10),Double(c)))
-        switch(c)
-        {
+        switch (c) {
             case 7:
 //            if(propertyType)
-                val = no/10000000;
+                val = no / 10000000;
 //            else
 //                val = no/100000;
-                no = no%10000000;
+                no = no % 10000000;
                 String formatted = String.format("%07d", no);
-                formatted = formatted.substring(0,1);
+                formatted = formatted.substring(0, 1);
 
-                v = val+"."+formatted;
-                str = v+" cr";
+                v = val + "." + formatted;
+                str = v + " cr";
 
 
                 twoWord++;
@@ -2517,78 +2590,75 @@ private  void init(){
 
             case 5:
 
-                val = no/100000;
+                val = no / 100000;
 
-                v = val+"";
-                no = no%100000;
+                v = val + "";
+                no = no % 100000;
                 String s2 = String.format("%05d", no);
-                s2 = s2.substring(0,1);
+                s2 = s2.substring(0, 1);
 
-                if (val != 0){
-                    str = str+v+"."+s2+" lacs";
+                if (val != 0) {
+                    str = str + v + "." + s2 + " lacs";
                     twoWord++;
                 }
 
                 break;
 
             case 3:
-                val = no/1000;
-                v = val+"";
-                no = no%1000;
+                val = no / 1000;
+                v = val + "";
+                no = no % 1000;
                 String.format("%05d", no);
                 String s3 = String.format("%03d", no);
-                s3 = s3.substring(0,1);
+                s3 = s3.substring(0, 1);
                 if (val != 0) {
-                    str = str+v+"."+s3+" k";
+                    str = str + v + "." + s3 + " k";
                 }
                 break;
-            default :
+            default:
                 // print("noToWord Default")
                 break;
         }
         return str;
     }
 
-    public int numToVals(int no){
+    public int numToVals(int no) {
         int currentapiVersion = Build.VERSION.SDK_INT;
         int truncate_first;
-        if(currentapiVersion>=23)
+        if (currentapiVersion >= 23)
             truncate_first = 2;
         else
             truncate_first = 3;
 
-        Log.i("TRACED","no is"+no);
-        String str = "",v = "";
+        Log.i("TRACED", "no is" + no);
+        String str = "", v = "";
 
-        int twoWord = 0,val = 1;
+        int twoWord = 0, val = 1;
 
-        int c = (no == 0 ? 1 : (int)(log10(no)+1));
+        int c = (no == 0 ? 1 : (int) (log10(no) + 1));
 
         if (c > 8) {
 
             c = 8;
         }
-        if (c%2 == 1){
+        if (c % 2 == 1) {
 
             c--;
         }
 
         c--;
         //   int q = Int(pow(Double(10),Double(c)))
-        switch(c)
-        {
+        switch (c) {
             case 7:
 
-                val=no;
-
+                val = no;
 
 
                 twoWord++;
                 break;
 
             case 5:
-                val=no;
-
+                val = no;
 
 
                 twoWord++;
@@ -2597,13 +2667,13 @@ private  void init(){
 
             case 3:
 
-                val=no;
+                val = no;
 
                 //str = str+v+"."+s3+"K";
 
 
                 break;
-            default :
+            default:
                 // print("noToWord Default")
                 break;
         }
@@ -2612,17 +2682,16 @@ private  void init(){
     }
 
 
-
     public void tutorialAlert(final View rootView) {
         //tutorial and alert beacon
-        String text,text2;
+        String text, text2;
         // final RippleBackground rippleBackground4 = (RippleBackground) rootView.findViewById(R.id.content4);
         countertut = 0;
         MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this.getActivity());
 //text = "<font color=#ff9f1c>Tenant/ <br>Property Owner <br>Choose<br> 'Rental'</font>";
 //    text2="<font color=#ff9f1c>Property <br>Buyer/Seller <br>Choose <br>'Resale'</font>";
         sequence.addSequenceItem(rootView.findViewById(R.id.phasedSeekBar),
-                "     Property                       Property\n Tenant/Owner             Buyer/Seller\n\n    Choose                            Choose\n    'Rental'                             'Resale'" , "      GOT IT! (Go to next screen)");
+                "     Property                       Property\n Tenant/Owner             Buyer/Seller\n\n    Choose                            Choose\n    'Rental'                             'Resale'", "      GOT IT! (Go to next screen)");
 //"     Tenant/                       Property\nProperty Owner             Buyer/Seller\n\n    Choose                            Choose\n    'Rental'                              'Resale'"
         sequence.addSequenceItem(rootView.findViewById(R.id.ic_search),
                 "                   Type Locality\n        1.Close to your Workplace\n  2.Your current/new neighbourhood\n       3.Where you want to Invest\n\n                              OR\n\n                You own a Property ?,\n      you can type name and address\n                of your building.\n", "     GOT IT! (Go to next screen)");
@@ -2639,14 +2708,14 @@ private  void init(){
                     Log.i("ischecked", "beacon_walk==========  :" + beacon);
 
 
-
-
                     try {
                         if (beacon.equalsIgnoreCase("true")) {
                             beaconAlert(rootView);
                             Log.i("ischecked", "beacon_walk1  ==========   :" + beacon);
                         }
-                    } catch (InterruptedException e) {e.printStackTrace();}
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     // rippleBackground4.startRippleAnimation();
                 }
             }
@@ -2654,14 +2723,10 @@ private  void init(){
         sequence.start();
 
 
-
-
-
     }
 
 
-
-    public void beaconAlert( final View rootView) throws InterruptedException {
+    public void beaconAlert(final View rootView) throws InterruptedException {
 
         final RippleBackground rippleBackground1 =
                 (RippleBackground) rootView.findViewById(R.id.client_content);
@@ -2679,12 +2744,13 @@ private  void init(){
                     rippleBackground2.startRippleAnimation();
                     try {
 
-                    SnackbarManager.show(
-                            Snackbar.with(getContext())
-                                    .text("Set Location")
-                                    .position(Snackbar.SnackbarPosition.TOP)
-                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                }catch(Exception e){}
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .text("Set Location")
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    } catch (Exception e) {
+                    }
                 }
 
                 public void onFinish() {
@@ -2694,13 +2760,14 @@ private  void init(){
                         public void onTick(long millisUntilFinished) {
                             rippleBackground2.stopRippleAnimation();
                             rippleBackground3.startRippleAnimation();
-               try {
-                   SnackbarManager.show(
-                      Snackbar.with(getContext())
-                          .text("Set your Budget")
-                          .position(Snackbar.SnackbarPosition.TOP)
-                          .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                   }catch(Exception e){}
+                            try {
+                                SnackbarManager.show(
+                                        Snackbar.with(getContext())
+                                                .text("Set your Budget")
+                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                            } catch (Exception e) {
+                            }
                         }
 
                         public void onFinish() {
@@ -2712,12 +2779,13 @@ private  void init(){
 
                                     rippleBackground1.startRippleAnimation();
                                     try {
-                                    SnackbarManager.show(
-                                            Snackbar.with(getContext())
-                                                    .text("Press oye button to send your requirement")
-                                                    .position(Snackbar.SnackbarPosition.TOP)
-                                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                                    }catch(Exception e){}
+                                        SnackbarManager.show(
+                                                Snackbar.with(getContext())
+                                                        .text("Press oye button to send your requirement")
+                                                        .position(Snackbar.SnackbarPosition.TOP)
+                                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                    } catch (Exception e) {
+                                    }
                                 }
 
                                 public void onFinish() {
@@ -2737,21 +2805,19 @@ private  void init(){
         }
 
 
-
     }
 
 
+    public void oyebuttonBackgrountColorOrange() {
+        mVisits.clearAnimation();
+        mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
+        txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
 
-public void oyebuttonBackgrountColorOrange(){
-    mVisits.clearAnimation();
-    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
-    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
-
-    recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
-}
+        recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
+    }
 
 
-    public void oyebuttonBackgrountColorGreenishblue(){
+    public void oyebuttonBackgrountColorGreenishblue() {
 
         mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
 //        mVisits.startAnimation(zoomin_zoomout);
@@ -2761,16 +2827,12 @@ public void oyebuttonBackgrountColorOrange(){
     }
 
 
-
-
-
-
-    private void  buildingTextChange(String locality,int area){
-        if(isNetworkAvailable()) {
-            Log.i(TAG,"buildingTextChange if called");
+    private void buildingTextChange(String locality, int area) {
+        if (isNetworkAvailable()) {
+            Log.i(TAG, "buildingTextChange if called");
             tv_building.setText("Average Rate @ " + locality + " | Area " + area + "sqft.");
-        }else{
-            Log.i(TAG,"buildingTextChange else called");
+        } else {
+            Log.i(TAG, "buildingTextChange else called");
             tv_building.setText("Average Rate @ Andheri | Area " + area + "sqft.");
 
 //            llMin = 35;
@@ -2782,7 +2844,7 @@ public void oyebuttonBackgrountColorOrange(){
         }
     }
 
-    private void marquee(int timeInMillis, int timeDivider){
+    private void marquee(int timeInMillis, int timeDivider) {
         try {
 
             new CountDownTimer(timeInMillis, timeDivider) {
@@ -2797,20 +2859,16 @@ public void oyebuttonBackgrountColorOrange(){
 
                     horizontalPicker.stopScrolling();
                     updateHorizontalPicker();
-                    if(horizontalPicker.getVisibility()==View.VISIBLE)
-                    rupeesymbol.setVisibility(View.VISIBLE);
+                    if (horizontalPicker.getVisibility() == View.VISIBLE)
+                        rupeesymbol.setVisibility(View.VISIBLE);
 
                 }
             }.start();
 
 
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
-
-
-
-
-
 
 
     public void Wlak_Beacon() throws InterruptedException {
@@ -2845,27 +2903,24 @@ public void oyebuttonBackgrountColorOrange(){
         }
 
 
-
         //Tutorial and Beacon code
-        if(Walkthrough.equalsIgnoreCase("true")) {
-            Log.i("ischecked","walkthrough3dashboard1111111"+Walkthrough);
+        if (Walkthrough.equalsIgnoreCase("true")) {
+            Log.i("ischecked", "walkthrough3dashboard1111111" + Walkthrough);
             tutorialAlert(rootView);
 
-            Walkthrough="false";
+            Walkthrough = "false";
 
-        }
-        else if(beacon.equalsIgnoreCase("true") ) {
-            Log.i("ischecked","walkthrough3dashboard1111111beacon"+beacon);
+        } else if (beacon.equalsIgnoreCase("true")) {
+            Log.i("ischecked", "walkthrough3dashboard1111111beacon" + beacon);
             try {
                 beaconAlert(rootView);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            beacon="false";
+            beacon = "false";
 
         }
-
 
 
     }
@@ -2873,84 +2928,84 @@ public void oyebuttonBackgrountColorOrange(){
 
     private void onMapDrag(final MotionEvent motionEvent) {
 
-                if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                    tvRate.setVisibility(View.INVISIBLE);
-                    rupeesymbol.setVisibility(View.INVISIBLE);
+        if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            tvRate.setVisibility(View.INVISIBLE);
+            rupeesymbol.setVisibility(View.INVISIBLE);
 
-                    horizontalPicker.keepScrolling();
-                    horizontalPicker.stopScrolling();
-                    Log.i("MotionEvent.ACTION_MOVE", "=========================");
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            horizontalPicker.keepScrolling();
+            horizontalPicker.stopScrolling();
+            Log.i("MotionEvent.ACTION_MOVE", "=========================");
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 //                    horizontalPicker.stopScrolling();
 //                    marquee(500,100);
-                            if(!spanning) {
-                    if (isNetworkAvailable()) {
-                        Log.i("MotionEvent.ACTION_UP", "=========================");
-                        final long now = SystemClock.uptimeMillis();
-                        if (clicked == true) {
-                            map.getUiSettings().setScrollGesturesEnabled(true);
-                            Log.i("MotionEvent.ACTION_UP", "=========================" + clicked);
-                        }
+            if (!spanning) {
+                if (isNetworkAvailable()) {
+                    Log.i("MotionEvent.ACTION_UP", "=========================");
+                    final long now = SystemClock.uptimeMillis();
+                    if (clicked == true) {
+                        map.getUiSettings().setScrollGesturesEnabled(true);
+                        Log.i("MotionEvent.ACTION_UP", "=========================" + clicked);
+                    }
 //
-                        if (now - lastTouched > SCROLL_TIME && !(motionEvent.getPointerCount() > 1) && isNetworkAvailable()) {
-                            Log.i("MotionEvent.ACTION_UP", "=========================22");
-                            Log.i("setScroll", "=======================setScrollGesturesEnabled==");
+                    if (now - lastTouched > SCROLL_TIME && !(motionEvent.getPointerCount() > 1) && isNetworkAvailable()) {
+                        Log.i("MotionEvent.ACTION_UP", "=========================22");
+                        Log.i("setScroll", "=======================setScrollGesturesEnabled==");
+                        ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+                        tvFetchingrates.setVisibility(View.VISIBLE);
+                        mMarkerminmax.setVisibility(View.VISIBLE);
+                        tvRate.setVisibility(View.VISIBLE);
+                        rupeesymbol.setVisibility(View.VISIBLE);
+                        tvFetchingrates.setVisibility(View.VISIBLE);
+                        buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
 
-                            tvFetchingrates.setVisibility(View.VISIBLE);
-                            mMarkerminmax.setVisibility(View.VISIBLE);
-                            tvRate.setVisibility(View.VISIBLE);
-                            rupeesymbol.setVisibility(View.VISIBLE);
-                            tvFetchingrates.setVisibility(View.VISIBLE);
-                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                        tv_building.setVisibility(View.VISIBLE);
+                        recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 
-                            tv_building.setVisibility(View.VISIBLE);
-                            recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-
-                            LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
-                            Log.i("map", "============ map:" + " " + map);
+                        LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
+                        Log.i("map", "============ map:" + " " + map);
 //                            currentLocation1 = map.getProjection().fromScreenLocation(point);
 
-                            VisibleRegion visibleRegion = map.getProjection()
-                                    .getVisibleRegion();
+                        VisibleRegion visibleRegion = map.getProjection()
+                                .getVisibleRegion();
 
-                            Point x1 = map.getProjection().toScreenLocation(visibleRegion.farRight);
+                        Point x1 = map.getProjection().toScreenLocation(visibleRegion.farRight);
 
-                            Point y1 = map.getProjection().toScreenLocation(visibleRegion.nearLeft);
+                        Point y1 = map.getProjection().toScreenLocation(visibleRegion.nearLeft);
 
 
-                            Point centerPoint = new Point(x1.x / 2, y1.y / 2);
+                        Point centerPoint = new Point(x1.x / 2, y1.y / 2);
 
-                            LatLng centerFromPoint = map.getProjection().fromScreenLocation(
-                                    centerPoint);
-                            currentLocation1=centerFromPoint;
-                            lat = currentLocation1.latitude;
-                            Log.i("t1", "lat" + " " + lat);
-                            lng = currentLocation1.longitude;
-                            Log.i("t1", "lng" + " " + lng);
+                        LatLng centerFromPoint = map.getProjection().fromScreenLocation(
+                                centerPoint);
+                        currentLocation1 = centerFromPoint;
+                        lat = currentLocation1.latitude;
+                        Log.i("t1", "lat" + " " + lat);
+                        lng = currentLocation1.longitude;
+                        Log.i("t1", "lng" + " " + lng);
 //                            map.addMarker(new MarkerOptions().title("hey").position(currentLocation1));
-                            Log.i("MARKER-- ", "====================================");
-                            SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                            SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                            General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
-                            General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
-                            Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-                            Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-                            getRegion();
-                            search_building_icon.setVisibility(View.GONE);
-                            horizontalPicker.stopScrolling();
-                            missingArea.setVisibility(View.GONE);
-                            getPrice();
-                            new LocationUpdater().execute();
-                        }
+                        Log.i("MARKER-- ", "====================================");
+                        SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+                        SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                        General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
+                        General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
+                        Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
+                        Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+                        getRegion();
+                        search_building_icon.setVisibility(View.GONE);
+                        horizontalPicker.stopScrolling();
+                        missingArea.setVisibility(View.GONE);
+                        getPrice();
+                        new LocationUpdater().execute();
+                    }
 
-                    } else {
-                        tvFetchingrates.setVisibility(View.VISIBLE);
-                        tvRate.setVisibility(View.GONE);
-                        rupeesymbol.setVisibility(View.GONE);
-                        horizontalPicker.setVisibility(View.GONE);
-                        tv_building.setVisibility(View.GONE);
-                        tvFetchingrates.setText("No Internet Connection..");
-                        General.internetConnectivityMsg(getContext());
+                } else {
+                    tvFetchingrates.setVisibility(View.VISIBLE);
+                    tvRate.setVisibility(View.GONE);
+                    rupeesymbol.setVisibility(View.GONE);
+                    horizontalPicker.setVisibility(View.GONE);
+                    tv_building.setVisibility(View.GONE);
+                    tvFetchingrates.setText("No Internet Connection..");
+                    General.internetConnectivityMsg(getContext());
 //                        try {
 //                            SnackbarManager.show(
 //                                    Snackbar.with(getContext())
@@ -2959,25 +3014,25 @@ public void oyebuttonBackgrountColorOrange(){
 //                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 //                        } catch (Exception e) {
 //                        }
-                    }
-
-                    }
-                            spanning=false;
-
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    lastTouched = SystemClock.uptimeMillis();
-                    map.getUiSettings().setScrollGesturesEnabled(true);
-                    //LatLng currentLocation11;
-                    Log.i("MotionEvent.ACTION_DOWN", "=========================");
-
-
                 }
+
+            }
+            spanning = false;
+
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            lastTouched = SystemClock.uptimeMillis();
+            map.getUiSettings().setScrollGesturesEnabled(true);
+            //LatLng currentLocation11;
+            Log.i("MotionEvent.ACTION_DOWN", "=========================");
+
+
         }
+    }
 
 
-    private boolean isTelephonyEnabled(){
-        TelephonyManager tm = (TelephonyManager)getContext().getSystemService(Context.TELEPHONY_SERVICE);
-        return tm != null && tm.getSimState()== TelephonyManager.SIM_STATE_READY;
+    private boolean isTelephonyEnabled() {
+        TelephonyManager tm = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
+        return tm != null && tm.getSimState() == TelephonyManager.SIM_STATE_READY;
     }
 
 
@@ -2992,11 +3047,7 @@ public void oyebuttonBackgrountColorOrange(){
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
     }
 
-
-
-
-
-
+// Slide_Zooming Animation
     protected void PropertyButtonAnimation() {
 
 
@@ -3004,17 +3055,18 @@ public void oyebuttonBackgrountColorOrange(){
         intent.putExtra("protype",Property_type );
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);*/
         if (brokerType.equalsIgnoreCase("rent")) {
-            ani=zoomout_left;
+            ani = zoomout_left;
             property_type_layout.startAnimation(ani);
-        }else{
-            ani=zoomout_right;
+        } else {
+            ani = zoomout_right;
             property_type_layout.startAnimation(ani);
         }
-        ani.setAnimationListener(new Animation.AnimationListener(){
+        ani.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
             }
+
             @Override
             public void onAnimationEnd(Animation animation) {
 
@@ -3030,12 +3082,14 @@ public void oyebuttonBackgrountColorOrange(){
                 } else {
 
                     property_type_layout.clearAnimation();
-                property_type_layout.setVisibility(View.GONE);
+                    property_type_layout.setVisibility(View.GONE);
 //                    if(!Property_type.equalsIgnoreCase("home"))
                     txtFilterValue.setText(oyetext);
-                resale.setText(Property_type);}
+                    resale.setText(Property_type);
+                }
 
             }
+
             @Override
             public void onAnimationRepeat(Animation animation) {
 
@@ -3043,19 +3097,108 @@ public void oyebuttonBackgrountColorOrange(){
 
         });
 
+    }
+
+
+
+    protected void PropertyButtonSlideAnimation() {
+
+
+
+            property_type_layout.startAnimation(slide_up);
+              pro_click=false;
+        slide_up.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                   if(  pro_click==false) {
+                       property_type_layout.clearAnimation();
+                       property_type_layout.setVisibility(View.GONE);
+                   }
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+
+        });
 
     }
 
 
 
+    public void getNearbyLatLong() {
+        map.getUiSettings().setAllGesturesEnabled(false);
 
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesUrl.append("location=" + lat + "," + lng);
+        googlePlacesUrl.append("&radius=1000");
+        googlePlacesUrl.append("&types=" + "ATM");
+        googlePlacesUrl.append("&sensor=true");
+        googlePlacesUrl.append("&key=AIzaSyD9u7py1PGKcnlrO77NuY_40jxgIOhX34I");
+        Log.i("url", "Url for google Place" + googlePlacesUrl);
+        GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
+        Object[] toPass = new Object[2];
+        toPass[0] = map;
+        toPass[1] = googlePlacesUrl.toString();
+        googlePlacesReadTask.execute(toPass);
 
+    }
+
+    /*public void clearGooglemap() {
+        map.clear();
+    }*/
+
+public void broadcastingConfirmationMsg(){
+    String text;
+    tv_building.setText("Inform brokers,get listing & schedule visits");
+    tvFetchingrates.setTextSize(12);
+    text="Brodcasting to <font color=#2dc4b6><big><b>"+AppConstants.NUMBER_OF_BROKER+"</b></big></font> brokers  <font color=#2dc4b6>@ <big><b>"+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+"</b></big></font>";
+    tvFetchingrates.setText(Html.fromHtml(text));
 
 }
 
 
 
+    public void onMapclicked(){
+        spanning = false;
+        mVisits.setEnabled(true);
+        txtFilterValue.setEnabled(true);
 
+        for (int i = 0; i < 5; i++) {
+            if (flag[i] == true) {
+                mCustomerMarker[i].setIcon(icon1);
+                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+                search_building_icon.setVisibility(View.GONE);
+                flag[i] = false;
+                horizontalPicker.setVisibility(View.VISIBLE);
+                tvFetchingrates.setVisibility(View.GONE);
+                recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                tvRate.setVisibility(View.VISIBLE);
+                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                rupeesymbol.setVisibility(View.VISIBLE);
+                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
+//                            mVisits.startAnimation(zoomin_zoomout);
+                StartOyeButtonAnimation();
+                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
+                Intent in = new Intent(AppConstants.MARKERSELECTED);
+                in.putExtra("markerClicked", "false");
+                ll_marker.setEnabled(true);
+                tv_building.setVisibility(View.VISIBLE);
+            }
+        }
+
+    }
+
+
+
+}
 
 
 
