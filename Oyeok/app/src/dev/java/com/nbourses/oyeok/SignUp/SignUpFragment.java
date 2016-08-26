@@ -74,6 +74,9 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 
+//import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
+//import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
+
 //digits
 //digits end
 
@@ -393,7 +396,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         tvcontent= (TextView) view.findViewById(R.id.tvcontent);
          editProfile_pic = (ImageView) view.findViewById(R.id.editProfile_pic);
 
-        if(okBroker==false) {
+        if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
             tvheading.setText(R.string.client_sign_up_heading);
             tvcontent.setText(R.string.client_sign_up_content);
         }
@@ -440,7 +443,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
 
         submit.setText("LOGIN");
-        if(okBroker==false) {
+        if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
             tvheading.setText(R.string.client_log_in_heading);
             tvcontent.setText(R.string.client_sign_up_content);
         }
@@ -463,7 +466,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
      new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
      submit.setText("REGISTER");
 
-     if(okBroker==false) {
+     if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
          tvheading.setText(R.string.client_sign_up_heading);
          tvcontent.setText(R.string.client_sign_up_content);
      }
@@ -908,6 +911,21 @@ if(newUser==true) {
                             return;
 
 
+                           /* if (redirectToOyeIntentSpecs) {
+                                //Fragment fragment = null;
+
+                                *//*Bundle bundle = new Bundle();
+                                bundle.putString("cameFrom", "SignUp");
+                                bundle.putStringArray("propertySpecification", propertySpecification);
+                                fragment = new OyeIntentSpecs();
+                                fragment.setArguments(bundle);
+                                String title = "Oye Specifications";
+                                FragmentManager fragmentManager = getFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.container_map, fragment);
+                                fragmentTransaction.commit();*//*
+                            }
+*/
                         }
 
                         Log.i("TRACE", "Userid" +my_user_id);
@@ -1186,8 +1204,10 @@ Log.i(TAG,"lastfragment "+lastFragment);
                         Log.i("TRACE", "Inside signup Failure" + error);
 
                         Log.i("TAG", "Inside signup Failure" + error.getMessage());
+
                         if (redirectToOyeIntentSpecs) {
                            /* Fragment fragment = null;
+
                             Bundle bundle = new Bundle();
                             bundle.putString("cameFrom", "SignUp");
                             bundle.putStringArray("propertySpecification", propertySpecification);
@@ -1197,8 +1217,10 @@ Log.i(TAG,"lastfragment "+lastFragment);
                             FragmentManager fragmentManager = getFragmentManager();
                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                             fragmentTransaction.replace(R.id.container_map, fragment);
+
                             fragmentTransaction.commit();*/
                         }
+
                     }
                 });
             }catch (Exception e){
@@ -1268,6 +1290,7 @@ Log.i(TAG,"lastfragment "+lastFragment);
             //open deals listing of broker
             Intent openBrokerDealsListing = new Intent(context, BrokerDealsListActivity.class);
             openBrokerDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
             context.startActivity(openBrokerDealsListing);
         }
 
@@ -1518,7 +1541,7 @@ Log.i(TAG,"lastfragment "+lastFragment);
 
        /* Log.i("TRACE","in ReplaceFrag");
 
-        Fragment fragment = new Droom_Chat_New();
+   /*     Fragment fragment = new Droom_Chat_New();
         fragment.setArguments(args);
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

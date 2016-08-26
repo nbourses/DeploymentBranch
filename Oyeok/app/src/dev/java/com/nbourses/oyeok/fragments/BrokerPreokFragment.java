@@ -879,6 +879,14 @@ if(count<=220) {
                     try {
 
                         Log.i("BROKER BUILDINGS CALLED","success response "+response);
+/*
+
+
+                        Log.i("BROKER BUILDINGS","LAT1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
+                        Log.i("BROKER BUILDINGS","LNG1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
+                        Log.i("BROKER BUILDINGS","LAT "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
+                        Log.i("BROKER BUILDINGS","LNG "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
+*/
 
 
                         JSONObject ne = new JSONObject(k.toString());

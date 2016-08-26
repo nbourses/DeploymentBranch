@@ -34,7 +34,9 @@ public class GcmIntentService extends IntentService {
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
-   /*  private void sendNotification(String msg) {
+
+   private void sendNotification(String msg) {
+ /*
         NotificationManager mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -52,9 +54,10 @@ public class GcmIntentService extends IntentService {
                         .setContentText(msg);
 
         mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());*/
     }
-    */
+
 
 
     public boolean check(){

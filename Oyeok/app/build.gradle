@@ -24,9 +24,9 @@ android {
         targetSdkVersion 23
         versionCode 26
         versionName "1.0"
-        manifestPlaceholders = [manifestApplicationId: "${applicationId}",
-                                        onesignal_app_id: "9e2ab2be-54c5-4981-b15f-fb8dc78b81ee",
-                                        onesignal_google_project_number: "463092685367"]
+        manifestPlaceholders = [manifestApplicationId          : "${applicationId}",
+                                onesignal_app_id               : "9e2ab2be-54c5-4981-b15f-fb8dc78b81ee",
+                                onesignal_google_project_number: "463092685367"]
 
     }
     buildTypes {
@@ -61,6 +61,12 @@ android {
                             buildConfigField 'String', 'Flavour', '"dev"'
                             buildConfigField 'String', 'Host', '"https://ssl.hailyo.com/"'
                         }
+                demo
+                        {
+                            applicationId "com.nbourses.oyeok.demo"
+                            buildConfigField 'String', 'Flavour', '"demo"'
+                            buildConfigField 'String', 'Host', '"https://ssl.hailyo.com/"'
+                        }
             }
 
     sourceSets { dev { java.srcDirs = ['src/dev/java', 'src/dev/java/Activities'] } }
@@ -87,7 +93,7 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 
 
-        maven { url 'http://hypertrack-android-sdk.s3-website-us-west-2.amazonaws.com/' }
+    maven { url 'http://hypertrack-android-sdk.s3-website-us-west-2.amazonaws.com/' }
 
 }
 
@@ -154,6 +160,12 @@ dependencies {
 }
 dependencies {
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
+}
+dependencies {
+    compile 'com.android.support:support-v4:23.+'
+}
+dependencies {
+    compile 'com.android.support:support-v4:23.+'
 }
 dependencies {
     compile 'com.android.support:support-v4:23.+'
@@ -277,9 +289,6 @@ dependencies {
     compile "com.google.android.gms:play-services-location:9.0.2"
     compile "com.github.tarek360:instacapture:0.44"
     ///
-
-
-
 
 
     compile project(':MPChartLib')

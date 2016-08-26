@@ -1,6 +1,10 @@
 package com.nbourses.oyeok.helpers;
 
+
 import android.widget.PopupWindow;
+
+
+import com.google.android.gms.maps.GoogleMap;
 
 import com.nbourses.oyeok.models.PublishLetsOye;
 
@@ -47,6 +51,7 @@ public class AppConstants {
     public static final String NAME = "name";
 
     public static final String EMAIL = "email";
+
     public static final String CLIENT_HEADING = "client_heading";
 
     public static final String MARKERSELECTED = "markerSelected";
@@ -117,9 +122,22 @@ public class AppConstants {
 
 
     public static Boolean REGISTERING_FLAG = false;
-
-
+    public static  String CURRENT_USER_ROLE = "currentUserRole";
+    public static  String PROPERTY = "Home";
+    public static  String CURRENT_DEAL_TYPE = "currentDealType";
+    public static final String EMAIL_PROFILE = "emailProfile";
     public static final String UPLOADED_IMAGE_PATH = "uploadedImagePath";
+    public static final String RECEIVE_PROPERTY_DETAILS = "ReceivePropertyDetails";
+    public static final String BROADCAST_PROPERTY_DETAILS = "BroadcastPropertyDetails";
+
+    public static  String FURNISHING = "furnishing";
+    public static  String MY_EXPECTATION = "myExpectation";
+    public static  String PROPERTY_CONFIG = "propertyConfig";
+    public static  String POSSESSION_DATE = "posseessionDate";
+    public  static GoogleMap GOOGLE_MAP;
+
+    public static String NUMBER_OF_BROKER="19";
+    public static String CUSTOMER_TYPE="Tenant";
 
 
 }

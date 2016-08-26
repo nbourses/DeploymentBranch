@@ -1,0 +1,222 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/wrapper"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible">
+
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="125dp"
+        sothree:umanoShadowHeight="4dp"
+        sothree:umanoParallaxOffset="100dp"
+        sothree:umanoDragView="@+id/dragView"
+        sothree:umanoFadeColor = "@android:color/transparent"
+        sothree:umanoOverlay="true"
+        sothree:umanoScrollableView="@+id/sv">
+
+        <!-- MAIN CONTENT -->
+        <android.support.v4.widget.DrawerLayout
+            android:id="@+id/drawer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/container_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include
+                        android:id="@+id/toolbar"
+                        layout="@layout/toolbar_with_deal_btn" />
+                </LinearLayout>
+
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <FrameLayout
+                        android:id="@+id/container_map"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:id="@+id/toast_layout"
+                        android:visibility="gone"
+                        android:layout_height="50dp"
+                        android:background="#ff9f1c">
+                        <TextView
+                            android:id="@+id/toast_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_horizontal"
+                            android:textAlignment="center"
+                            android:text="Test"/>
+                    </LinearLayout>
+
+                </FrameLayout>
+
+
+            </LinearLayout>
+
+
+            <fragment
+                android:id="@+id/fragment_navigation_drawer"
+                android:name="com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer"
+                android:layout_width="@dimen/nav_drawer_width"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                app:layout="@layout/fragment_navigation_drawer"
+                tools:layout="@layout/fragment_navigation_drawer" />
+        </android.support.v4.widget.DrawerLayout >
+
+        <!-- SLIDING LAYOUT -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="false"
+            android:id="@+id/dragView">
+            <ScrollView
+                android:id="@+id/sliding_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/container_oye">
+                </FrameLayout>
+            </ScrollView>
+        </LinearLayout>
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/container_Signup">
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/card"
+        android:layout_margin="40dp">
+    </FrameLayout>
+
+
+
+   <!-- <GridLayout
+        android:id="@+id/btnOnOyeClick"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:clickable="true"
+        android:background="@color/yellow"
+        android:layout_alignParentBottom="true"
+        android:foregroundGravity="center"
+
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:visibility="invisible"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp">
+
+
+       <LinearLayout
+           android:layout_gravity="center"
+           android:layout_marginTop="-2dp">
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|top"
+            android:textColor="@color/White"
+            android:layout_margin="5dp"
+            android:text="CONNECT NOW | Find @"
+
+            android:textIsSelectable="false"
+            android:textStyle="bold|italic" />
+
+
+
+        <TextView
+            android:id="@+id/tv_dealinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|top"
+            android:textColor="@color/foreground_material_light"
+            android:text="Andheri"
+            android:singleLine="false"
+            android:textStyle="bold|italic"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp" />
+       </LinearLayout>
+        <LinearLayout android:layout_gravity="center"
+            android:layout_marginTop="-2dp">
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:textColor="@color/White"
+            android:layout_margin="5dp"
+            android:text="(Brokers,Visits,Listings)"
+            android:textStyle="bold|italic" />
+        </LinearLayout>
+
+    </GridLayout>-->
+
+
+    <!--<Button-->
+        <!--android:id="@+id/btnOnOyeClick"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:text="OYE"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:visibility="gone"-->
+        <!--android:background="@color/yellow"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:textSize="@dimen/twenty_four"-->
+        <!--android:clickable="true"/>-->
+    <!--<EditText-->
+        <!--android:layout_width="126dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/editText"-->
+        <!--android:layout_gravity="left|bottom"-->
+        <!--android:textColor="@color/White"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:text="CONNECT NOW |" />-->
+
+    <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/webView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="invisible" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:foregroundGravity="bottom"
+        android:id="@+id/container_OyeConfirmation"
+        android:layout_alignBottom="@+id/sliding_layout">
+    </FrameLayout>
+
+
+</RelativeLayout>

@@ -142,6 +142,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.toast_layout)
     LinearLayout toastLayout;
 
+
     @Bind(R.id.container_Signup)
     FrameLayout containerSignup;
     @Bind(R.id.card)
@@ -151,6 +152,9 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     RelativeLayout wrapper;
 
 
+
+
+    Bundle bundle_args;
 
 
     @Bind(R.id.hdroomsCount)
@@ -183,7 +187,7 @@ Boolean Owner_detail=false;
 
 private Boolean cardFlag = false;
     private WebView webView;
-    private  Boolean autocomplete = false;
+    private  Boolean autocomplete = false,oyeconfirm_flag=false;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -265,6 +269,13 @@ private Boolean cardFlag = false;
                     } else {
                         //create new deal
 
+                        oyeconfirm_flag=true;
+                        if (slidingLayout != null &&
+                                (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
+                                        slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
+                            closeOyeScreen();
+
+                        }
                         alertbuilder();
 
 
@@ -281,6 +292,7 @@ private Boolean cardFlag = false;
 
         }
     };
+
 
     private BroadcastReceiver doSignUp = new BroadcastReceiver() {
         @Override
@@ -370,7 +382,7 @@ private void alertbuilder()
 
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
-
+        AppConstants.CURRENT_USER_ROLE ="client";
         ShortcutBadger.removeCount(this);
         Log.i(TAG,"popup window shown 1 ");
         final Handler handler = new Handler();
@@ -450,7 +462,9 @@ private void alertbuilder()
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(markerstatus, new IntentFilter(AppConstants.MARKERSELECTED));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(autoComplete, new IntentFilter(AppConstants.AUTOCOMPLETEFLAG));
+
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(doSignUp, new IntentFilter(AppConstants.DOSIGNUP));
+
 
     }
 
@@ -463,6 +477,7 @@ private void alertbuilder()
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(markerstatus);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(autoComplete);
+
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(doSignUp);
 
     }
@@ -732,7 +747,7 @@ private void alertbuilder()
     public void onClickButton(Bundle args) {
         if (!isShowing) {
 
-
+            bundle_args=args;
             isShowing = true;
 //            OyeIntentFragment oye = new OyeIntentFragment();
 
@@ -750,6 +765,33 @@ private void alertbuilder()
             closeOyeScreen();
         }
     }
+
+
+/*    public void openOyeSreen(){
+        if (!isShowing) {
+
+
+            isShowing = true;
+//            OyeIntentFragment oye = new OyeIntentFragment();
+
+            //reset PublishLetsOye object
+            AppConstants.letsOye = new PublishLetsOye();
+
+            OyeScreenFragment oye = new OyeScreenFragment();
+            loadFragment(oye, bundle_args, R.id.container_oye, "");
+            slidingLayout.setAnchorPoint(0.5f);
+            slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+
+            // btnOnOyeClick.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    public  void closeOyeConfirmation(){
+
+        getSupportFragmentManager().popBackStack();
+        oyeconfirm_flag=false;
+    }*/
 
     public void closeOyeScreen() {
         isShowing = false;
@@ -1020,8 +1062,11 @@ private void alertbuilder()
 
     @Override
     public void onBackPressed() {
+
+
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
         if(cardFlag){
             Log.i(TAG,"card back ");
            // getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.card)).commit();
@@ -1034,7 +1079,18 @@ private void alertbuilder()
             containerSignup.setClickable(false);
             card.setClickable(false);
         }
-        else if(AppConstants.SIGNUP_FLAG){
+
+
+
+
+             else if(oyeconfirm_flag==true){
+//                super.onBackPressed();
+            Log.i("SIGNUP_FLAG","Poke Poke Pokemon......: "+getFragmentManager().getBackStackEntryCount());
+            getSupportFragmentManager().popBackStack();
+            oyeconfirm_flag=false;
+            backpress = 0;
+        }else if(AppConstants.SIGNUP_FLAG){
+
 /*            if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")){
             Intent back = new Intent(this, BrokerMainActivity.class);
             startActivity(back);
@@ -1067,15 +1123,10 @@ private void alertbuilder()
         }
 
        else if(setting==true){
+
+
             Log.i("BACK PRESSED"," =================== setting"+setting);
             if(SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") || SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")){
-
-               /* try {
-                    DashboardClientFragment dash=new DashboardClientFragment();
-                    dash.Wlak_Beacon();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*/
                 Intent inten = new Intent(this, ClientMainActivity.class);
                 inten.addFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP |

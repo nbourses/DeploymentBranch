@@ -32,6 +32,7 @@ import com.nispok.snackbar.SnackbarManager;
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import java.text.DecimalFormat;
+import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -85,6 +86,8 @@ public class OyeScreenFragment extends Fragment {
     @Bind(R.id.budgetText)
     TextView budgetText;
     String oyedata="" ;
+    TextView txtcalendar;
+    String property;
 
 //    DiscreteSeekBar discreteSeekBar;
 //@Bind(R.id.tv_dealinfo)
@@ -124,7 +127,7 @@ public class OyeScreenFragment extends Fragment {
     }
 
 
-
+    Calendar myCalendar = Calendar.getInstance();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -139,10 +142,16 @@ public class OyeScreenFragment extends Fragment {
         satView.setVisibility(View.VISIBLE);
         bundle = getArguments();
       tv_fd_bank=(TextView)rootView.findViewById(R.id.tv_fd_bank);
+//        txtcalendar=(TextView)rootView.findViewById(R.id.txtcalendar);
 //        tv_dealinfo=(TextView)rootView.findViewById(R.id.tv_dealinfo);
 
 
-
+        /*txtcalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayDatePicker();
+            }
+        });*/
             init();
 
         satView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -240,7 +249,9 @@ public class OyeScreenFragment extends Fragment {
                value=value/1000;
                 value=value*1000;
                // }
+
                 txtSelected.setText(General.currencyFormat(String.valueOf(value)));
+
 
                 AppConstants.letsOye.setPrice("" + value);
             }
@@ -332,6 +343,7 @@ public class OyeScreenFragment extends Fragment {
             txtHome.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("home");
             loadHomeOptionView("home");
+            property="home";
             //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"home");
 
         }
@@ -339,18 +351,21 @@ public class OyeScreenFragment extends Fragment {
             txtShop.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("shop");
             loadHomeOptionView("shop");
+            property="shop";
            // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"shop");
         }
         else if(txtIndustrial.getId() == v.getId()) {
             txtIndustrial.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("industrial");
             loadHomeOptionView("industrial");
+            property="industrial";
            // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"industrial");
         }
         else if(txtOffice.getId() == v.getId()) {
             txtOffice.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("office");
             loadHomeOptionView("office");
+            property="office";
             //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"office");
         }
     }
@@ -542,6 +557,65 @@ public class OyeScreenFragment extends Fragment {
             General.internetConnectivityMsg(getContext());
         }
     }
+
+
+
+
+
+    /*final  DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+
+            updateLabel();
+
+        }
+
+    };
+
+    private void updateLabel(){
+        String myFormat = "dd/MMM/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        txtcalendar.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    private void displayDatePicker(){
+
+        DatePickerDialog dpd = new DatePickerDialog(getContext(), date, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH));
+
+        String myFormat = "dd/MM/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        Date d = null;
+        try {
+            Calendar now= Calendar.getInstance();
+            d  = sdf.parse(sdf.format(now.getTime()));
+            now.add(Calendar.MONTH,6);
+
+            Date dd = sdf.parse(  now.get(Calendar.DATE)
+                    + "/"+ (now.get(Calendar.MONTH) + 1)
+                    + "/"
+
+                    + now.get(Calendar.YEAR));
+
+//                    Date dd = sdf.parse("26/1/2017");
+            dpd.getDatePicker().setMinDate(d.getTime());
+            dpd.getDatePicker().setMaxDate(dd.getTime());
+            dpd.show();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }*/
+
+
 
 
 

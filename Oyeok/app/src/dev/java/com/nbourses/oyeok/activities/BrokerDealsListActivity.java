@@ -730,7 +730,9 @@ Log.i("SWIPE","inside swipe menu creator");
         mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(this.getResources(),
                 new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
                 new String[]{"30", "15"},
+
                 new String[]{getBaseContext().getResources().getString(R.string.Rental), getBaseContext().getResources().getString(R.string.Resale)
+
                 }));
         mCustomPhasedSeekbar.setListener((this));
 
@@ -1205,6 +1207,7 @@ Log.i("SWIPE","inside swipe menu creator");
 //                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
 //                            Intent.FLAG_ACTIVITY_NEW_TASK);
 //            startActivity(intent);
+
 
 //        }
 //        else {
