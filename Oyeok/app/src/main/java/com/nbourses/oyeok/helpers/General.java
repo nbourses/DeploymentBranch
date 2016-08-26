@@ -24,6 +24,7 @@ import com.nbourses.oyeok.models.PublishLetsOye;
 import com.nbourses.oyeok.realmModels.DefaultDeals;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONObject;
 
@@ -63,6 +64,7 @@ public class General extends BroadcastReceiver {
     private static Context con;
     public static Thread t;
     public static Boolean slowInternetFlag;
+
 
     public static void slowInternet(Context context) {
        try {
@@ -523,8 +525,8 @@ while(slowInternetFlag) {
                                 Log.i("TRACE", "json response data" + jsonResponseData);
                                 Log.i("TRACE", "json response data message" + jsonResponseData.getString("message"));
 
-
-                                Toast.makeText(context, "" + jsonResponseData.getString("message"), Toast.LENGTH_LONG).show();
+                                TastyToast.makeText(context, jsonResponseData.getString("message"), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                                //Toast.makeText(context, "" + jsonResponseData.getString("message"), Toast.LENGTH_LONG).show();
 //                                SnackbarManager.show(
 //                                        Snackbar.with(context)
 //                                                .position(Snackbar.SnackbarPosition.TOP)
@@ -632,6 +634,16 @@ while(slowInternetFlag) {
                         General.slowInternetFlag = false;
                         General.t.interrupt();
                         Log.e(TAG, "error " + error.getMessage());
+                        if(error.getMessage().equalsIgnoreCase("timeout")){
+
+                            SnackbarManager.show(
+                    Snackbar.with(context)
+                            .position(Snackbar.SnackbarPosition.BOTTOM)
+                            .text("Time out, please move to better connectivity area.")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+                        }
+
                         Log.i("TRACE", "RetrofitError");
                     }
                 });
@@ -735,6 +747,115 @@ while(slowInternetFlag) {
 
 
     }
+
+   /* public static PopupWindow showOptions(final Context mcon){
+        Log.i(TAG,"popup window shown 2 ");
+        try{
+            DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+
+            int width = metrics.widthPixels;
+            int height = metrics.heightPixels;
+
+            Log.i(TAG,"popup window shown 20 "+width+" "+height);
+            LayoutInflater inflater = (LayoutInflater) mcon.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.card1,null);
+
+            CustomPhasedSeekBar mPhasedSeekBar = (CustomPhasedSeekBar) layout.findViewById(R.id.phasedSeekBar1);
+            Button button =(Button) layout.findViewById(R.id.button);
+            Button signUp =(Button) layout.findViewById(R.id.signUp);
+            Button later =(Button) layout.findViewById(R.id.later);
+            DBHelper dbHelper = new DBHelper(mcon);
+            if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
+                mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(mcon.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{mcon.getResources().getString(R.string.Rental), mcon.getResources().getString(R.string.Resale)}));
+            else
+                mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(mcon.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
+           // mPhasedSeekBar.setListener(this);
+            final PopupWindow optionspu1 = greyOut(mcon);
+            //final PopupWindow optionspu = new PopupWindow(layout, 600,1000, true);
+            final PopupWindow optionspu = new PopupWindow(layout);
+            optionspu.setWidth(width-140);
+            optionspu.setHeight(height-140);
+            optionspu.setAnimationStyle(R.style.AnimationPopup);
+
+            *//*optionspu.setTouchable(true);
+            optionspu.setOutsideTouchable(false);*//*
+
+            optionspu.setFocusable(false);
+            optionspu.setTouchable(true);
+            optionspu.setOutsideTouchable(false);
+           // optionspu.showAtLocation(layout, Gravity.CENTER, 0, 0);
+           optionspu.showAtLocation(layout, Gravity.TOP, 0, 100);
+
+
+            //optionspu.update(0, 0,LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            //optionspu.setAnimationStyle(R.anim.bounce);
+            Log.i(TAG,"popup window shown 3 ");
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG,"popup window shown 13 ");
+                    optionspu1.dismiss();
+                    optionspu.dismiss();
+                }
+            });
+            signUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG,"popup window shown 13 ");
+                    optionspu1.dismiss();
+                    optionspu.dismiss();
+                    Intent intent = new Intent(AppConstants.DOSIGNUP);
+                    LocalBroadcastManager.getInstance(mcon).sendBroadcast(intent);
+
+                }
+            });
+            later.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG,"popup window shown 13 ");
+                    optionspu1.dismiss();
+                    optionspu.dismiss();
+                    TastyToast.makeText(mcon, "We have connected you with 3 brokers in your area.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                    TastyToast.makeText(mcon, "Sign up to connect with 7 more brokers waiting for you.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+
+                }
+            });
+
+            return optionspu;
+        }
+        catch (Exception e){e.printStackTrace();
+            Log.i(TAG,"popup window shown 4 "+e);
+            return null;}
+
+
+    }
+
+    public static PopupWindow greyOut(final Context mcon){
+        Log.i(TAG,"popup window shown 2 ");
+        try{
+            LayoutInflater inflater = (LayoutInflater) mcon.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.grey_out_popup,null);
+            final PopupWindow optionspu1 = new PopupWindow(layout, FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT, true);
+            optionspu1.setFocusable(false);
+            optionspu1.setTouchable(true);
+            optionspu1.setOutsideTouchable(false);
+            optionspu1.showAtLocation(layout, Gravity.CENTER, 0, 0);
+            return optionspu1;
+        }
+        catch (Exception e){e.printStackTrace();
+            Log.i(TAG,"popup window shown 4 "+e);
+            return null;}
+
+
+    }
+
+    @Override
+    public void onPositionSelected(int position, int count) {
+
+    }*/
+
+
+
 }
 
    // private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;

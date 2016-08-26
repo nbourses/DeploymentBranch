@@ -173,6 +173,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private BitmapDescriptor icon2;
     long then;
     long now;
+
     private Thread r;
 //    private Drawable icon1;
 //      private Drawable icon2;
@@ -301,6 +302,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 //        }
 //    };
 
+
     private BroadcastReceiver onFilterValueUpdate = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -405,6 +407,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 //        myLoc = (ImageView) rootView.findViewById(R.id.myLoc);
         hideOnSearch = (FrameLayout) rootView.findViewById(R.id.hideOnSearch);
         seekbar_linearlayout = (LinearLayout) rootView.findViewById(R.id.seekbar_linearlayout);
+
 //        hPicker = (RelativeLayout) rootView.findViewById(R.id.hPicker);
         // View locationButton = suppormanagerObj.getView().findViewById(2);
         if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
@@ -452,7 +455,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
             beacon = "true";
             SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
-        } else {
+        }
+        else
+        {
             beacon = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON);
             // SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
             Log.i("ischecked", "walkthrough3dashboard" + beacon);
@@ -474,12 +479,16 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             icon1 = BitmapDescriptorFactory.fromResource(R.drawable.buildingiconbeforeclick);
             icon2 = BitmapDescriptorFactory.fromResource(R.drawable.buildingicononclick);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             Log.i("BITMAP", "message " + e.getMessage());
         }
+
         recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
         //selected_property = BitmapDescriptorFactory.fromResource(R.drawable.search_building_icon);
         search_building_icon = (ImageView) rootView.findViewById(R.id.selected_property);
+
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 Mmarker.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -560,7 +569,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 if(isTelephonyEnabled()) {
                     if (hasPermission != PackageManager.PERMISSION_GRANTED) {
                         requestPermissions(permissions, REQUEST_CALL_PHONE);
-//                    startActivity(callIntent);
+                        startActivity(callIntent);
                     } else {
                         startActivity(callIntent);
                     }
@@ -2264,7 +2273,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 
 
-
     private void BroadCastMinMaxValue(int llMin, int llMax,int orMin,int orMax) {
 
         int llmin=numToVals(llMin);
@@ -2283,7 +2291,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         //intent.putExtra("tv_dealinfo",oyeButtonData);
 
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-
 
     }
 

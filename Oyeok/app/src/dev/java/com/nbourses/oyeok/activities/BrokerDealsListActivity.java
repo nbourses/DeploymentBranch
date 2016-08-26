@@ -1186,15 +1186,27 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
         if(AppConstants.SIGNUP_FLAG){
-
-            getSupportFragmentManager().popBackStackImmediate();
-            Intent inten = new Intent(this,BrokerMainActivity.class);
-            startActivity(inten);
+Log.i(TAG,"persy 1 ");
+               // getSupportFragmentManager().popBackStackImmediate();
+               /* Intent inten = new Intent(this, BrokerMainActivity.class);
+                startActivity(inten);
+                finish();
+                AppConstants.SIGNUP_FLAG = false;*/
+            Intent intent = new Intent(this, BrokerMainActivity.class);
+            intent.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
             finish();
-            AppConstants.SIGNUP_FLAG=false;
+            AppConstants.SIGNUP_FLAG = false;
 
         }else {
-            super.onBackPressed();
+            Log.i(TAG,"persy 2 ");
+           super.onBackPressed();
+
+
+
 
         }
            /* Intent intent = new Intent(this, BrokerMainActivity.class);

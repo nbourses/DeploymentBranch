@@ -29,14 +29,14 @@
 
 
 
-            <fragment
+            <fragmentx
                 android:id="@+id/map"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 class="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment"
                 android:orientation="vertical"
                 android:layout_gravity="center_vertical">
-            </fragment>
+            </fragmentx>
 
             <!--<fragment-->
             <!--android:id="@+id/map"-->
@@ -442,13 +442,6 @@
                 android:layout_marginTop="10dp" />-->
 
         </FrameLayout>
-
-
-
-
-
-
-
 
 
         <FrameLayout

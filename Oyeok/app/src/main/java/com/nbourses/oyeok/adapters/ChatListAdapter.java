@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,8 +32,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by rohit on 17/02/16.
@@ -47,6 +52,7 @@ public class ChatListAdapter extends BaseAdapter {
 private WebView i;
     private Boolean isDefaultDeal = false;
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("h:mm a");
+    private Bitmap mIcon12 = null; // null image for test condition in download image
 
     public ChatListAdapter(ArrayList<ChatMessage> chatMessages, Boolean isDefaultDeal, Context context) {
         this.chatMessages = chatMessages;
@@ -79,7 +85,6 @@ private WebView i;
     public View getView(int position, View convertView, final ViewGroup parent) {
 
 
-
         View v = null;
         final ChatMessage message = chatMessages.get(position);
         ViewHolder1 holder1;
@@ -87,7 +92,7 @@ private WebView i;
         ViewHolder3 holder3;
         ViewHolder4 holder4;
 
-        Log.i("uri","message ust "+message.getUserSubtype());
+        Log.i("uri","message ust "+message.getUserType());
 
 
 
@@ -132,6 +137,19 @@ private WebView i;
                 holder4.spinnerProgress.setVisibility(View.VISIBLE);
                 holder4.txtFirstChar.setVisibility(View.INVISIBLE);
             }
+            List<String> list = Arrays.asList(message.getMessageText().split("--"));
+
+
+            holder4.building1.setText(list.get(0));
+            holder4.building2.setText(list.get(2));
+            holder4.building3.setText(list.get(4));
+
+            holder4.price1.setText(" @₹"+list.get(1));
+            holder4.price2.setText(" @₹"+list.get(3));
+            holder4.price3.setText(" @₹"+list.get(5));
+            /*holder4.price1.setText(" @"+General.currencyFormat(list.get(1).substring(0,list.get(1).length()-2)));
+            holder4.price2.setText(" @"+General.currencyFormat(list.get(3).substring(0,list.get(3).length()-2)));
+            holder4.price3.setText(" @"+General.currencyFormat(list.get(5).substring(0,list.get(5).length()-2)));*/
            // holder3.messageTextView.setText(message.getMessageText());
 //            holder4.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
             //holder3.chatReplyAuthor.setText("Welcome "+name);
@@ -269,13 +287,6 @@ private WebView i;
                 Log.i("TAG","stopDownloadImage1 "+stopDownloadImage);
                 try {
                     new DownloadImageTask(holder5.imageView).execute(message.getImageUrl());
-                   /* ((Activity) context).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            saveImageLocally(imgName);
-                        }
-                    });*/
-
 
                 } catch (Exception e) {
                     Log.i("IMGURL", "image url is e " + e);
@@ -400,13 +411,15 @@ private WebView i;
                 v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);
 
                 holder2 = new ViewHolder2();
-
+                holder2.imageFrame = (FrameLayout) v.findViewById(R.id.imageFrame);
                 holder2.messageTextView = (TextView) v.findViewById(R.id.message_text);
                 holder2.timeTextView = (TextView) v.findViewById(R.id.time_text);
                 holder2.messageStatus = (ImageView) v.findViewById(R.id.user_reply_status);
                 v.setTag(holder2);
 
-            } else {
+            }
+            else
+            {
                 v = convertView;
                 holder2 = (ViewHolder2) v.getTag();
 
@@ -415,7 +428,7 @@ private WebView i;
             Log.i("CONVER","Chat message is other4"+message.getMessageText());
             Log.i("CONVER","message time other "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
 
-
+            holder2.imageFrame.setVisibility(View.GONE);
             holder2.messageTextView.setText(message.getMessageText());
             //holder2.messageTextView.setText(message.getMessageText());
             holder2.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
@@ -453,6 +466,7 @@ private WebView i;
         public ImageView messageStatus;
         public TextView messageTextView;
         public TextView timeTextView;
+        public FrameLayout imageFrame;
 
     }
 
@@ -503,35 +517,89 @@ private WebView i;
         }
 
         protected Bitmap doInBackground(String... urls) {
-            Log.i("TAG","stopDownloadImage3 "+urls[0]);
-            Log.i("flok","flokai 1");
-            String urldisplay = urls[0];
+            Log.i("TAG","stopDownloadImage3 yo bro "+urls[0]);
+
+
+            final String urldisplay = urls[0];
             Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
+
+            if(exists(urldisplay)) {
+                Log.i("TAG","exists image url yo bro "+exists(urldisplay));
+                try {
+                    InputStream in = new java.net.URL(urldisplay).openStream();
+                    mIcon11 = BitmapFactory.decodeStream(in);
+                } catch (Exception e) {
+                    Log.e("Error", e.getMessage());
+                    e.printStackTrace();
+                }
+
+                return mIcon11;
             }
-            return mIcon11;
+            else{
+                try {
+
+                    final Thread thread=  new Thread(){
+                        @Override
+                        public void run(){
+                            try {
+                                synchronized(this){
+                                    wait(2000);
+
+                                    Thread.currentThread().interrupt();
+                                    call(urldisplay);
+                                }
+                            }
+                            catch(InterruptedException ex){
+                            }
+
+                            // TODO
+                        }
+                    };
+
+                    thread.start();
+
+
+
+
+
+                }
+                catch(Exception e){
+
+                }
+                return mIcon12;
+            }
+
         }
 
+
+
         protected void onPostExecute(Bitmap result) {
-            Log.i("flok","flokai 2");
-            holder5.spinnerProgress.setVisibility(View.GONE);
-            bmImage.setImageBitmap(result);
+            if(result != null) {
+                Log.i("flok", "flokai 2");
+                bmImage.setImageBitmap(result);
+                holder5.spinnerProgress.setVisibility(View.GONE);
                 saveImageLocally(imgName, result);
+            }
+        }
+    }
 
+    public static boolean exists(String URLName){
+        Log.i("flok","inside exists yo bro ");
+        try {
+            HttpURLConnection.setFollowRedirects(false);
+            // note : you may also need
+            //        HttpURLConnection.setInstanceFollowRedirects(false)
+            HttpURLConnection con =
+                    (HttpURLConnection) new URL(URLName).openConnection();
+            con.setRequestMethod("HEAD");
+            Log.i("flok","inside exists 1 "+con.getResponseCode());
+            return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
 
-
-
-/*try {
-    OutputStream os = new BufferedOutputStream(new FileOutputStream("destdir"));
-    result.compress(Bitmap.CompressFormat.PNG, 100, os);
-    os.close();
-}catch(Exception e){}*/
-
+        }
+        catch (Exception e) {
+            Log.i("flok","Caught in exception inside exists "+e);
+            e.printStackTrace();
+            return false;
         }
     }
     private void saveImageLocally(String imageName,Bitmap result){
@@ -547,12 +615,13 @@ private WebView i;
                 }
 
                 OutputStream stream = new FileOutputStream(Environment.getDataDirectory() + "/oyeok/"+imageName);
-                result.compress(Bitmap.CompressFormat.PNG, 80, stream);
+                result.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 stream.close();
                 Log.i("TAG","result compressed"+result);
 //
                 // if phone DOES have sd card
-            } else if (Environment.getExternalStorageState() != null) {
+            }
+            else if (Environment.getExternalStorageState() != null) {
                 // search for directory on SD card
                 File directory = new File(Environment.getExternalStorageDirectory()
                         + "/oyeok/");
@@ -564,9 +633,10 @@ private WebView i;
                 }
 
                 OutputStream stream = new FileOutputStream(Environment.getExternalStorageDirectory() + "/oyeok/"+imageName);
-                result.compress(Bitmap.CompressFormat.PNG, 80, stream);
+                result.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 stream.close();
                 Log.i("TAG","result compressed"+result);
+
 //                destdir = new File(Environment.getExternalStorageDirectory()
 //                        + "/oyeok2/"+imageName);
                 /*DealConversationActivity d = new DealConversationActivity();
@@ -587,10 +657,15 @@ private WebView i;
         }catch(Exception e){
             Log.i("chatlistadapter", "Caught in exception saving image recievers /oyeok "+e);
         }
+
+
     }
 
 
-
+    private void call(String url){
+        Log.i("TAG","inside call yo bro");
+        new DownloadImageTask(holder5.imageView).execute(url);
+    }
 
 
 

@@ -18,6 +18,7 @@ public class AppConstants {
     public static String MY_LAT = "myLat";
     public static String MY_LNG = "myLong";
     public static String LOCALITY = "locality";
+    public static final String DOSIGNUP = "doSignUp";
     public static final String AUTOCOMPLETEFLAG1 = "autoCompleteFlag1";
     public static final String AUTOCOMPLETEFLAG = "autoCompleteFlag";
     public static final String SIGNUPSUCCESSFLAG = "signupSuccessFlag";

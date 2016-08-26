@@ -114,7 +114,6 @@
 
         <!-- stop pubnub register our Broadcast Receiver and Service -->
 
-
         <receiver
             android:name=".GoogleCloudMessaging.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
@@ -134,7 +133,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
 
 
         <!--
@@ -161,19 +159,12 @@
 
         </service>
         -->
+
         <activity
             android:name="com.paytm.pgsdk.PaytmPGActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
-
-
-
-
-
-
-
-
 
 
         <receiver
@@ -188,10 +179,10 @@
         </receiver>
         <!-- [END gcm_receiver] -->
 
-
         <!-- [START gcm_listener] -->
         <!--<service
             android:name=".GoogleCloudMessaging.MyGcmListenerService"/>-->
+
         <service
             android:name=".GoogleCloudMessaging.MyGcmListenerService"
             android:exported="false" >
@@ -303,5 +294,6 @@
 
 
     </application>
+
 
 </manifest>

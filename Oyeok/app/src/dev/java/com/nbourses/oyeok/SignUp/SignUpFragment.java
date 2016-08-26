@@ -52,7 +52,6 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.User.UserProfileViewModel;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
 import com.nbourses.oyeok.activities.BrokerMainActivity;
-import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -251,9 +250,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         if(b.getString("lastFragment")!=null)
             if(b.getString("lastFragment")!=null)
                 lastFragment=b.getString("lastFragment");
-        Log.d(TAG, "lastFragment "+lastFragment);
+        Log.i(TAG, "lastFragment "+lastFragment);
 
-        redirectToOyeIntentSpecs=true;
+       // redirectToOyeIntentSpecs=true;
 
 
         View view1 =  inflater.inflate(R.layout.activity_deals_list, container, false);
@@ -262,8 +261,13 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         listViewDeals = (ListView) view1.findViewById(R.id.listViewDeals);
 
 
+/*if(lastFragment.equalsIgnoreCase("clientDrawer") || lastFragment.equalsIgnoreCase("oyed"))
+    okBroker = false;*/
+        if(lastFragment.equalsIgnoreCase("brokerDrawer")|| lastFragment.equalsIgnoreCase("okyed"))
+    okBroker = true;
 
-        if(lastFragment.equals("RentalBrokerAvailable")||lastFragment.equals("RentalBrokerRequirement")||
+
+       /* if(lastFragment.equals("RentalBrokerAvailable")||lastFragment.equals("RentalBrokerRequirement")||
                 lastFragment.equals("SaleBrokerAvailable")||lastFragment.equals("SaleBrokerRequirement") ||
                 lastFragment.equals("BrokerPreokFragment")||lastFragment.equals("ChatBroker")) {
                 okBroker = true;
@@ -279,7 +283,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         }
         if(lastFragment.equals("Chat")) {
             redirectToOyeIntentSpecs = false;
-        }
+        }*/
+
 
         Log.i("Signup called =", "view assigned");
 
@@ -861,7 +866,7 @@ if(newUser==true) {
                           }
 
                             final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                            builder.setMessage("Do you want to Login as a "+oldRole)
+                            builder.setMessage("You have a "+oldRole+" account associated with this number.\n Do you want to Login as a "+oldRole)
                                     .setCancelable(true)
                                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                         public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
@@ -906,25 +911,9 @@ if(newUser==true) {
                             submit.setBackgroundColor(ContextCompat.getColor(context, R.color.greenish_blue));
                             submit.setText("DONE");
 
-
-                            if (redirectToOyeIntentSpecs) {
-                                /*Fragment fragment = null;
-                                Bundle bundle = new Bundle();
-                                bundle.putString("cameFrom", "SignUp");
-                                bundle.putStringArray("propertySpecification", propertySpecification);
-                                fragment = new OyeIntentSpecs();
-                                fragment.setArguments(bundle);
-                                String title = "Oye Specifications";
-                                FragmentManager fragmentManager = getFragmentManager();
-                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.container_map, fragment);
-                                fragmentTransaction.commit();*/
-                            }
-
                             return;
-                        }else{
-                            Log.i("TAG","suspecto "+role_of_user);
-                            General.setSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
+
+
                         }
 
                         Log.i("TRACE", "Userid" +my_user_id);
@@ -932,6 +921,7 @@ if(newUser==true) {
                         //store user_id in shared preferences
                         General.setSharedPreferences(getActivity(), AppConstants.USER_ID, my_user_id);
                         General.setSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER, "yes");
+                        General.setSharedPreferences(context, AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
 
 
                         //save in realm
@@ -983,9 +973,85 @@ if(newUser==true) {
                         } else
                             dbHelper.save(DatabaseConstants.user, "Client");
 
-                        if (redirectToOyeIntentSpecs) {
+Log.i(TAG,"lastfragment "+lastFragment);
 
-                            letsOye();
+                        if(redirectBroker){
+
+                            Intent intent = new Intent(getContext(),BrokerMainActivity.class);
+                            intent.putExtra("userRole", "broker");
+                            //intent.putExtra("default_deal_flag",true);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                    Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+
+                            AppConstants.SIGNUP_FLAG =false;
+
+
+                        }
+                        else if(redirectClient){
+
+                            Intent intent = new Intent(getContext(),ClientMainActivity.class);
+                            intent.putExtra("userRole", "client");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                    Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+
+                            AppConstants.SIGNUP_FLAG =false;
+
+
+                            //intent.putExtra("default_deal_flag",true);
+                            startActivity(intent);
+                        }
+
+                       else if(lastFragment.equalsIgnoreCase("clientDrawer")){
+                            Log.i(TAG,"lastfragment 1 "+lastFragment);
+                            Intent intent = new Intent(getContext(),ClientMainActivity.class);
+                            intent.putExtra("userRole", "client");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                    Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+
+                            AppConstants.SIGNUP_FLAG =false;
+                        }
+                        else if(lastFragment.equalsIgnoreCase("brokerDrawer")){
+                            Log.i(TAG,"lastfragment 2 "+lastFragment);
+                            Intent intent = new Intent(getContext(),BrokerMainActivity.class);
+                            intent.putExtra("userRole", "client");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                    Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+
+                            AppConstants.SIGNUP_FLAG =false;
+                        }
+                        else if(lastFragment.equalsIgnoreCase("oyed")){
+                            General.publishOye(getActivity());
+
+                        }
+                        else if(lastFragment.equalsIgnoreCase("okyed")){
+                            Log.i(TAG,"chaman prasanna 1");
+                            jsonArray=b.getString("JsonArray");
+                            try {
+                                p=new JSONArray(jsonArray);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            int j=b.getInt("Position");
+                            Log.i(TAG,"chaman prasanna 2 " +j);
+                            AcceptOkCall a = new AcceptOkCall();
+                            a.setmCallBack(SignUpFragment.this);
+                            a.acceptOk(listings,p,j,dbHelper, getActivity());
+
+                        }
+
+                        /*if (redirectToOyeIntentSpecs) {
+
+                            Log.i(TAG,"chaman prasanna ");
+
+                           // letsOye();
                         }
                         else
                         {
@@ -1081,7 +1147,7 @@ if(newUser==true) {
                                 AppConstants.REGISTERING_FLAG=false;
                                 Log.i("REACHED", "I am here2");
                             }
-                        }
+                        }*/
 
                         /*activity=(DashboardActivity)getActivity();
                         activity.refresh();
@@ -1168,20 +1234,20 @@ if(newUser==true) {
         // UserCredentials.saveString(ChooseRoleActivity.this, PreferenceKeys.PIC_PATH, picturePath);
         // Log.i(TAG,"My user id is:"+FirebaseClass.getString(context,FirebaseClass.MY_USER_ID));
 
-        if (user_role.equalsIgnoreCase("client")) {
+        /*if (user_role.equalsIgnoreCase("client")) {
             Log.i("TAG", "Starting Client activity");
 
 //            Intent NextActivity = new Intent(context, MainActivity.class);
 //            startActivity(NextActivity);
 //            finish();
-            /*Intent returnIntent = new Intent();
+            *//*Intent returnIntent = new Intent();
             if(pass==0) {
                 setResult(Activity.RESULT_OK, returnIntent);
             }else if(pass == 1)
             {
                 setResult(Activity.RESULT_CANCELED, returnIntent);
-            }*/
-        }
+            }*//*
+        }*/
     }
 
     public interface ShowChatList

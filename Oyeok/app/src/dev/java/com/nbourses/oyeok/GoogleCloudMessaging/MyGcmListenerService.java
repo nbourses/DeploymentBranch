@@ -65,6 +65,7 @@ public class MyGcmListenerService extends GcmListenerService {
     private Boolean OR = false;
     private Boolean REQ = false;
     private Boolean AVL = false;
+    private OnGCMMSGRecieved gcmDelegate;
 
     /**
      * Called when message is received.
@@ -76,6 +77,13 @@ public class MyGcmListenerService extends GcmListenerService {
    // Log.i("notifications","bundle data is "+data);
     // [START receive_message]
 
+    public interface OnGCMMSGRecieved
+    {
+        public void didRecieveMessage(JSONObject jsonMsg);
+        //public void
+
+    }
+
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
@@ -83,6 +91,7 @@ public class MyGcmListenerService extends GcmListenerService {
         Log.i(TAG,"bundle data is inside");
         Log.i(TAG,"bundle data is "+data);
         Log.i("notifications","bundle data is "+data);
+
 
         //clear all badge counts
 //        General.setBadgeCount(getApplicationContext(),AppConstants.HDROOMS_COUNT,0);
@@ -105,7 +114,7 @@ public class MyGcmListenerService extends GcmListenerService {
         String deals;
 
 
-        Log.i(TAG,"Title is "+title);
+            Log.i(TAG, "Title is " + title);
 
         if(title != null)
         if(title.equalsIgnoreCase("Oye")){
@@ -119,21 +128,22 @@ public class MyGcmListenerService extends GcmListenerService {
             buyerCount = General.getBadgeCount(getApplicationContext(),AppConstants.BUYER_COUNT);
             sellerCount  = General.getBadgeCount(getApplicationContext(),AppConstants.SELLER_COUNT);
 
-            Log.i(TAG,"Message is "+message);   // Message: REQ-industrial-kitchen-1200000-LL
+
+                Log.i(TAG, "Message is " + message);   // Message: REQ-industrial-kitchen-1200000-LL
 
 
-            String[] split = message.split("-");
-            String a = null;
-            String b = null;
+                String[] split = message.split("-");
+                String a = null;
+                String b = null;
 
-            //for (int i = 0; i < split.length; i++) {
+                //for (int i = 0; i < split.length; i++) {
 
                 intend = split[0];
                 tType = split[1];
                 ptype = split[2];
                 pstype = split[3];
                 price = split[4];
-         //  DecimalFormat formatter = new DecimalFormat();
+                //  DecimalFormat formatter = new DecimalFormat();
 
             price = General.currencyFormat(price);
 
@@ -144,93 +154,94 @@ public class MyGcmListenerService extends GcmListenerService {
             Log.i("NOTIF","LL set true tType "+tType);
 
 
-            if(tType.equalsIgnoreCase("LL")) {
-                Log.i("NOTIF","LL set true");
-                LL = true;
-                Log.i("NOTIF","LL set true value "+LL);
-                b = "rent";
+                if (tType.equalsIgnoreCase("LL")) {
+                    Log.i("NOTIF", "LL set true");
+                    LL = true;
+                    Log.i("NOTIF", "LL set true value " + LL);
+                    b = "rent";
+                } else {
+                    OR = true;
+                    b = "sale";
+                }
+                if (intend.equalsIgnoreCase("REQ")) {
+                    REQ = true;
+                    a = "required";
+                } else {
+                    AVL = true;
+                    a = "available";
+                }
+                if (LL) {
+                    rentalCount++;
+                    LL = true;
+                    Log.i("NOTIF", "LL set true value rentalCount " + rentalCount);
+                    if (REQ) {
+                        tenantsCount++;
+                        Log.i("NOTIF", "LL set true value rentalCount " + tenantsCount);
+
+                    } else if (AVL)
+                        ownersCount++;
+                    LL = false;
+                    REQ = false;
+                    AVL = false;
+
+                } else if (OR) {
+                    resaleCount++;
+                    if (REQ)
+                        buyerCount++;
+                    else if (AVL)
+                        sellerCount++;
+                    OR = false;
+                    REQ = false;
+                    AVL = false;
+
+                }
+                ptype = ptype.substring(0, 1).toUpperCase() + ptype.substring(1);
+
+                message = ptype + "(" + pstype + ")" + " is " + a + " at price " + price + " for " + b + ".";
+
+                General.setBadgeCount(getApplicationContext(), AppConstants.RENTAL_COUNT, rentalCount);
+                General.setBadgeCount(getApplicationContext(), AppConstants.RESALE_COUNT, resaleCount);
+                General.setBadgeCount(getApplicationContext(), AppConstants.TENANTS_COUNT, tenantsCount);
+                General.setBadgeCount(getApplicationContext(), AppConstants.OWNERS_COUNT, ownersCount);
+                General.setBadgeCount(getApplicationContext(), AppConstants.BUYER_COUNT, buyerCount);
+                General.setBadgeCount(getApplicationContext(), AppConstants.SELLER_COUNT, sellerCount);
+
+                Intent intent = new Intent(AppConstants.BADGE_COUNT_BROADCAST);
+                intent.putExtra(AppConstants.RENTAL_COUNT, rentalCount);
+                intent.putExtra(AppConstants.RESALE_COUNT, resaleCount);
+                intent.putExtra(AppConstants.TENANTS_COUNT, tenantsCount);
+                intent.putExtra(AppConstants.OWNERS_COUNT, ownersCount);
+                intent.putExtra(AppConstants.BUYER_COUNT, buyerCount);
+                intent.putExtra(AppConstants.SELLER_COUNT, sellerCount);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+                Log.i(TAG, "rentalCount " + rentalCount);
+                Log.i(TAG, "resaleCount " + resaleCount);
+                Log.i(TAG, "tenantsCount " + tenantsCount);
+                Log.i(TAG, "ownersCount " + ownersCount);
+                Log.i(TAG, "buyerCount " + buyerCount);
+                Log.i(TAG, "sellerCount " + sellerCount);
+
             }
-               else {
-                OR = true;
-                b = "sale";
-            }
-            if(intend.equalsIgnoreCase("REQ")) {
-                REQ = true;
-                a = "required";
-            }else {
-                AVL = true;
-                a = "available";
-            }
-             if(LL){
-                 rentalCount++;
-                 LL = true;
-                 Log.i("NOTIF","LL set true value rentalCount "+rentalCount);
-                 if(REQ) {
-                     tenantsCount++;
-                     Log.i("NOTIF", "LL set true value rentalCount " + tenantsCount);
-
-                 }else if(AVL)
-                     ownersCount++;
-                 LL = false;
-                 REQ = false;
-                 AVL = false;
-
-             }
-            else if(OR){
-                 resaleCount++;
-                 if(REQ)
-                     buyerCount++;
-                 else if(AVL)
-                     sellerCount++;
-                 OR = false;
-                 REQ = false;
-                 AVL = false;
-
-             }
-            ptype = ptype.substring(0, 1).toUpperCase() + ptype.substring(1);
-
-            message = ptype+"("+pstype+")"+" is "+ a + " at price "+price+ " for "+b+".";
-
-            General.setBadgeCount(getApplicationContext(),AppConstants.RENTAL_COUNT,rentalCount);
-            General.setBadgeCount(getApplicationContext(),AppConstants.RESALE_COUNT,resaleCount);
-            General.setBadgeCount(getApplicationContext(),AppConstants.TENANTS_COUNT,tenantsCount);
-            General.setBadgeCount(getApplicationContext(),AppConstants.OWNERS_COUNT,ownersCount);
-            General.setBadgeCount(getApplicationContext(),AppConstants.BUYER_COUNT,buyerCount);
-            General.setBadgeCount(getApplicationContext(),AppConstants.SELLER_COUNT,sellerCount);
-
-            Intent intent = new Intent(AppConstants.BADGE_COUNT_BROADCAST);
-            intent.putExtra(AppConstants.RENTAL_COUNT,rentalCount);
-            intent.putExtra(AppConstants.RESALE_COUNT,resaleCount);
-            intent.putExtra(AppConstants.TENANTS_COUNT,tenantsCount);
-            intent.putExtra(AppConstants.OWNERS_COUNT,ownersCount);
-            intent.putExtra(AppConstants.BUYER_COUNT,buyerCount);
-            intent.putExtra(AppConstants.SELLER_COUNT,sellerCount);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
-            Log.i(TAG,"rentalCount "+rentalCount);
-            Log.i(TAG,"resaleCount "+resaleCount);
-            Log.i(TAG,"tenantsCount "+tenantsCount);
-            Log.i(TAG,"ownersCount "+ownersCount);
-            Log.i(TAG,"buyerCount "+buyerCount);
-            Log.i(TAG,"sellerCount "+sellerCount);
 
 
-        }
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            deals = General.getDefaultDeals(this);
 
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        deals = General.getDefaultDeals(this);
+            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+            }.getType();
+            HashMap<String, String> deals1 = gson.fromJson(deals, type);
 
-        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-        HashMap<String, String> deals1 = gson.fromJson(deals, type);
+            Log.d(TAG, "data is" + data);
+            Log.d(TAG, "deals are" + deals);
 
-        Log.d(TAG,"data is" + data);
-        Log.d(TAG,"deals are" + deals);
+            Log.d(TAG, "Message: " + message);     //["+918483014575","ritesh"]
 
-        Log.d(TAG, "Message: " + message);     //["+918483014575","ritesh"]
+            Log.d(TAG, "ROLE_OF_USER: " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
 
-        Log.d(TAG, "ROLE_OF_USER: " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
+            //Update hdRoomsCount badge
 
-        //Update hdRoomsCount badge
+            Log.i(TAG, "msg is " + message + " type of msg is: " + message.getClass().getSimpleName());
 
         Log.i(TAG,"msg is "+message+" type of msg is: "+message.getClass().getSimpleName());
 
@@ -240,11 +251,13 @@ public class MyGcmListenerService extends GcmListenerService {
 
                 okId = json.getString("ok_id");
 
+
                 if (!okId.equals("")) {
                     hdRoomsCount++;
                     badgeCount++;
                     Log.i(TAG, "badecount hd rooms badgeCount " + badgeCount);
                     Log.i(TAG, "badecount hd rooms hdRoomsCount " + hdRoomsCount);
+
 
                     ShortcutBadger.applyCount(this, badgeCount);
                     General.setBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT, hdRoomsCount);
@@ -253,9 +266,10 @@ public class MyGcmListenerService extends GcmListenerService {
 
             }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            }
+        catch (JSONException e) {
+                e.printStackTrace();
+            }
 
 
         if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equals("client")) {
@@ -271,7 +285,7 @@ public class MyGcmListenerService extends GcmListenerService {
                     Log.d(TAG, "okId is: " + okId);
 
 // store ok time for deals list
-                    storeDealTime(okId);
+//                    storeDealTime(okId);
 
                     // Collection d = deals1.values();
                     Log.i(TAG, "before deal " + deals1);
@@ -340,21 +354,21 @@ public class MyGcmListenerService extends GcmListenerService {
                     Log.d(TAG, "CLIENT_OK_ID: " + General.getSharedPreferences(getApplicationContext(), AppConstants.CLIENT_OK_ID));
                 }
 
-                }catch(Exception e){
+                } catch (Exception e) {
                     Log.i("TAG", "Inside catch");
                     e.printStackTrace();
                 }
             }
 
-        Log.d(TAG, "From: " + from);   // 463092685367
-        Log.d(TAG, "Title: "+ title);  // OyeOk
-        Log.d(TAG, "Message: " + message); //["+918483014575","ritesh"]
+            Log.d(TAG, "From: " + from);   // 463092685367
+            Log.d(TAG, "Title: " + title);  // OyeOk
+            Log.d(TAG, "Message: " + message); //["+918483014575","ritesh"]
 
-        if (from.startsWith("/topics/")) {
-            // message received from some topic.
-        } else {
-            // normal downstream message.
-        }
+            if (from.startsWith("/topics/")) {
+                // message received from some topic.
+            } else {
+                // normal downstream message.
+            }
 
 
         if(title != null)
@@ -370,12 +384,18 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
 
+            if (!message.equalsIgnoreCase("hello"))
+                this.sendNotification(title, message);
+
+            Log.d(TAG, "After sendNotification");
+
 //       if(!message.equalsIgnoreCase("hello"))
         this.sendNotification(title, message);
         Log.d(TAG, "After sendNotification");
 
-        // [END_EXCLUDE]
-    }
+           }
+
+
     // [END receive_message]
 
     /**
@@ -383,20 +403,23 @@ public class MyGcmListenerService extends GcmListenerService {
      *
      * @param message GCM message received.
      */
+
     private void sendNotification(String title,String message) {
         Context context = this.getBaseContext();
         PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
 
         boolean isScreenOn = pm.isScreenOn();
 
-        Log.i("screen on.......", ""+isScreenOn);
+        Log.e("screen on.......", ""+isScreenOn);
 
         if(isScreenOn==false)
         {
+
             PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK |PowerManager.ACQUIRE_CAUSES_WAKEUP |PowerManager.ON_AFTER_RELEASE,"MyLock");
             wl.acquire(10000);
             PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"MyCpuLock");
             wl_cpu.acquire(10000);
+
         }
 //        Intent intent = new Intent(this, DashboardActivity.class);
 
@@ -417,33 +440,50 @@ public class MyGcmListenerService extends GcmListenerService {
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+        Notification notification = new NotificationCompat.Builder(this)
                 .setContentTitle(title)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setGroup("ritz")
+                .setGroupSummary(true)
                 .setContentIntent(pendingIntent)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(message));
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message)).build();
+
+
+       /* NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setContentTitle(title)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setGroup("ritz")
+                .setGroupSummary(true)
+                .setContentIntent(pendingIntent)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message));*/
+
 
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
         if (NOTIFICATION_ID > 1073741824) {
             NOTIFICATION_ID = 0;
         }
+
         if(RefreshDrooms){
             Log.d(TAG,"Refresh Drooms flag is set1");
-           // Intent i = new Intent(this, ClientDealsListActivity.class);
-           // startActivity(i);
+            // Intent i = new Intent(this, ClientDealsListActivity.class);
+            // startActivity(i);
 
         }
-        notificationManager.notify(NOTIFICATION_ID++ /* ID of notification */, notificationBuilder.build());
+
+        notificationManager.notify(NOTIFICATION_ID++ /* ID of notification *//*, notificationBuilder.build()*/,notification);
         Log.d(TAG,"Notified");
     }
+
     private void storeDealTime(String okId){
         String dealTime;
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -451,10 +491,12 @@ public class MyGcmListenerService extends GcmListenerService {
 
         java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
         HashMap<String, String> dealTime1 = gson.fromJson(dealTime, type);
+
         if (dealTime1 == null) {
             dealTime1 = new HashMap<String, String>();
 
         }
+
         dealTime1.put(okId,String.valueOf(System.currentTimeMillis()));
 
         Gson g = new Gson();
@@ -482,6 +524,7 @@ public class MyGcmListenerService extends GcmListenerService {
         }
 
         try{
+
             Realm mmyRealm = General.realmconfig(this);
             RealmResults<DealTime> results1 =
                     mmyRealm.where(DealTime.class).findAll();
