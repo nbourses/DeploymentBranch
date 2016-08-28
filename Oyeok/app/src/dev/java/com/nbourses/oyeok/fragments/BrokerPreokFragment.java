@@ -395,6 +395,9 @@ private String Walkthrough,beacon;
 
 
     private void init() {
+
+        General.showOptions(getContext());
+
         bounce.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -2041,29 +2044,28 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
             Log.i("gcm local broadcast","gcm local broadcast3");
         rentalCount.setVisibility(View.VISIBLE);
         rentalCount.setText(String.valueOf(rentalCount1));
+            if (General.getSharedPreferences(getContext(), AppConstants.TT).equalsIgnoreCase("rental")) {
 
-            if(tenantsCount1 == 0){
-                Log.i(TAG,"saki ten if "+tenantsCount1);
-                option1Count.setVisibility(View.GONE);
-            }
-            else {
-                Log.i(TAG,"saki ten else "+tenantsCount1);
-                Log.i("gcm local broadcast","gcm local broadcast4 " +tenantsCount1);
-                option1Count.setVisibility(View.VISIBLE);
-                option1Count.setText(String.valueOf(tenantsCount1));
-            }
+                if (tenantsCount1 == 0) {
+                    Log.i(TAG, "saki ten if " + tenantsCount1);
+                    option1Count.setVisibility(View.GONE);
+                } else {
+                    Log.i(TAG, "saki ten else " + tenantsCount1);
+                    Log.i("gcm local broadcast", "gcm local broadcast4 " + tenantsCount1);
+                    option1Count.setVisibility(View.VISIBLE);
+                    option1Count.setText(String.valueOf(tenantsCount1));
+                }
 
-            if(ownersCount1 == 0){
-                Log.i(TAG,"saki ow if "+ownersCount1);
-                option2Count.setVisibility(View.GONE);
+                if (ownersCount1 == 0) {
+                    Log.i(TAG, "saki ow if " + ownersCount1);
+                    option2Count.setVisibility(View.GONE);
+                } else {
+                    Log.i(TAG, "saki ow else " + ownersCount1);
+                    Log.i(TAG, "OnSharedPreferenceChangeListener 3");
+                    option2Count.setVisibility(View.VISIBLE);
+                    option2Count.setText(String.valueOf(ownersCount1));
+                }
             }
-            else {
-                Log.i(TAG,"saki ow else "+ownersCount1);
-                Log.i(TAG, "OnSharedPreferenceChangeListener 3");
-                option2Count.setVisibility(View.VISIBLE);
-                option2Count.setText(String.valueOf(ownersCount1));
-            }
-
          }
 
         if(resaleCount1 == 0){
@@ -2074,31 +2076,32 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
 
         }
         else {
-            Log.i(TAG,"saki resale else "+resaleCount1);
+            Log.i(TAG, "saki resale else " + resaleCount1);
             Log.i(TAG, "OnSharedPreferenceChangeListener 3");
             resaleCount.setVisibility(View.VISIBLE);
             resaleCount.setText(String.valueOf(resaleCount1));
 
-            if(buyerCount1 == 0){
-                Log.i(TAG,"saki buy if "+buyerCount1);
-                option1Count.setVisibility(View.GONE);
-            }
-            else {
-                Log.i(TAG,"saki buy else "+buyerCount1);
-                Log.i(TAG, "OnSharedPreferenceChangeListener 3");
-                option1Count.setVisibility(View.VISIBLE);
-                option1Count.setText(String.valueOf(buyerCount1));
-            }
+            if (General.getSharedPreferences(getContext(), AppConstants.TT).equalsIgnoreCase("resale")) {
 
-            if(sellerCount1 == 0){
-                Log.i(TAG,"saki buy if "+sellerCount1);
-                option2Count.setVisibility(View.GONE);
-            }
-            else {
-                Log.i(TAG,"saki buy else "+sellerCount1);
-                Log.i(TAG, "OnSharedPreferenceChangeListener 3");
-                option2Count.setVisibility(View.VISIBLE);
-                option2Count.setText(String.valueOf(sellerCount1));
+                if (buyerCount1 == 0) {
+                    Log.i(TAG, "saki buy if " + buyerCount1);
+                    option1Count.setVisibility(View.GONE);
+                } else {
+                    Log.i(TAG, "saki buy else " + buyerCount1);
+                    Log.i(TAG, "OnSharedPreferenceChangeListener 3");
+                    option1Count.setVisibility(View.VISIBLE);
+                    option1Count.setText(String.valueOf(buyerCount1));
+                }
+
+                if (sellerCount1 == 0) {
+                    Log.i(TAG, "saki buy if " + sellerCount1);
+                    option2Count.setVisibility(View.GONE);
+                } else {
+                    Log.i(TAG, "saki buy else " + sellerCount1);
+                    Log.i(TAG, "OnSharedPreferenceChangeListener 3");
+                    option2Count.setVisibility(View.VISIBLE);
+                    option2Count.setText(String.valueOf(sellerCount1));
+                }
             }
         }
 

@@ -112,6 +112,15 @@
         android:id="@+id/container_Signup">
     </FrameLayout>
 
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/card"
+        android:layout_margin="40dp">
+    </FrameLayout>
+
+
+
    <!-- <GridLayout
         android:id="@+id/btnOnOyeClick"
         android:layout_width="match_parent"

@@ -18,14 +18,18 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.activities.BrokerDealsListActivity;
 import com.nbourses.oyeok.activities.BrokerMainActivity;
+import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.activities.ClientMainActivity;
+import com.nbourses.oyeok.activities.DealConversationActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.realmModels.DealTime;
 import com.nbourses.oyeok.realmModels.DefaultDeals;
+import com.nbourses.oyeok.realmModels.HalfDeals;
+import com.nbourses.oyeok.realmModels.NotifCount;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -65,7 +69,6 @@ public class MyGcmListenerService extends GcmListenerService {
     private Boolean OR = false;
     private Boolean REQ = false;
     private Boolean AVL = false;
-    private OnGCMMSGRecieved gcmDelegate;
 
     /**
      * Called when message is received.
@@ -74,60 +77,53 @@ public class MyGcmListenerService extends GcmListenerService {
      * @param data Data bundle containing message data as key/value pairs.
      *             For Set of keys use data.keySet().
      */
-   // Log.i("notifications","bundle data is "+data);
+    // Log.i("notifications","bundle data is "+data);
     // [START receive_message]
-
-    public interface OnGCMMSGRecieved
-    {
-        public void didRecieveMessage(JSONObject jsonMsg);
-        //public void
-
-    }
 
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
+        Log.i(TAG, "bundle data is inside pubnubgcm");
 
-        Log.i(TAG,"bundle data is inside");
-        Log.i(TAG,"bundle data is "+data);
-        Log.i("notifications","bundle data is "+data);
-
+        Log.i(TAG, "bundle data is pubnubgcm yo " + data);
+        //Log.i("notifications","bundle data is "+data);
 
         //clear all badge counts
 //        General.setBadgeCount(getApplicationContext(),AppConstants.HDROOMS_COUNT,0);
 //        General.setBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT,0);
 //        General.setBadgeCount(getApplicationContext(),AppConstants.SUPPORT_COUNT,0);
 
-        badgeCount = General.getBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT);
-        supportCount = General.getBadgeCount(getApplicationContext(),AppConstants.SUPPORT_COUNT);
-        hdRoomsCount = General.getBadgeCount(getApplicationContext(),AppConstants.HDROOMS_COUNT);
+        badgeCount = General.getBadgeCount(getApplicationContext(), AppConstants.BADGE_COUNT);
+        supportCount = General.getBadgeCount(getApplicationContext(), AppConstants.SUPPORT_COUNT);
+        hdRoomsCount = General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT);
+
 
         //ShortcutBadger.applyCount(this, badgeCount);
 
-        String title = null;
-
-        if(data.containsKey("title"))
-        data.getString("title");
-
-        String message = data.getString("message");
-        String okId = null;
-        String deals;
+        if (data.containsKey("title")) {
+            String title = data.getString("title");
+            String message = null;
+            if(data.containsKey("message")) {
+                message = data.getString("message");
+            }else{
+                message = data.getString("alert");
+            }
+            String okId = null;
+            String deals;
 
 
             Log.i(TAG, "Title is " + title);
 
-        if(title != null)
-        if(title.equalsIgnoreCase("Oye")){
-            badgeCount++;
-            General.setBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT,badgeCount);
-            ShortcutBadger.applyCount(this, badgeCount);
-            rentalCount = General.getBadgeCount(getApplicationContext(),AppConstants.RENTAL_COUNT);
-            resaleCount = General.getBadgeCount(getApplicationContext(),AppConstants.RESALE_COUNT);
-            tenantsCount = General.getBadgeCount(getApplicationContext(),AppConstants.TENANTS_COUNT);
-            ownersCount = General.getBadgeCount(getApplicationContext(),AppConstants.OWNERS_COUNT);
-            buyerCount = General.getBadgeCount(getApplicationContext(),AppConstants.BUYER_COUNT);
-            sellerCount  = General.getBadgeCount(getApplicationContext(),AppConstants.SELLER_COUNT);
-
+            if (title.equalsIgnoreCase("Oye")) {
+                badgeCount++;
+                General.setBadgeCount(getApplicationContext(), AppConstants.BADGE_COUNT, badgeCount);
+                ShortcutBadger.applyCount(this, badgeCount);
+                rentalCount = General.getBadgeCount(getApplicationContext(), AppConstants.RENTAL_COUNT);
+                resaleCount = General.getBadgeCount(getApplicationContext(), AppConstants.RESALE_COUNT);
+                tenantsCount = General.getBadgeCount(getApplicationContext(), AppConstants.TENANTS_COUNT);
+                ownersCount = General.getBadgeCount(getApplicationContext(), AppConstants.OWNERS_COUNT);
+                buyerCount = General.getBadgeCount(getApplicationContext(), AppConstants.BUYER_COUNT);
+                sellerCount = General.getBadgeCount(getApplicationContext(), AppConstants.SELLER_COUNT);
 
                 Log.i(TAG, "Message is " + message);   // Message: REQ-industrial-kitchen-1200000-LL
 
@@ -145,13 +141,21 @@ public class MyGcmListenerService extends GcmListenerService {
                 price = split[4];
                 //  DecimalFormat formatter = new DecimalFormat();
 
-            price = General.currencyFormat(price);
+                price = General.currencyFormat(price);
+//            int x =Integer.parseInt(price);
+//
+//            Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+//            price=format1.format(x);
+//            price = price.substring(0,price.length()-3);
+                //price ="₹ "+price;
 
-            Log.i("NOTIF","LL set true intend "+intend);
-            Log.i("NOTIF","LL set true ptype "+ptype );
-            Log.i("NOTIF","LL set true pstype "+pstype);
-            Log.i("NOTIF","LL set true price "+price);
-            Log.i("NOTIF","LL set true tType "+tType);
+
+                // }
+                Log.i("NOTIF", "LL set true intend " + intend);
+                Log.i("NOTIF", "LL set true ptype " + ptype);
+                Log.i("NOTIF", "LL set true pstype " + pstype);
+                Log.i("NOTIF", "LL set true price " + price);
+                Log.i("NOTIF", "LL set true tType " + tType);
 
 
                 if (tType.equalsIgnoreCase("LL")) {
@@ -222,6 +226,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 Log.i(TAG, "buyerCount " + buyerCount);
                 Log.i(TAG, "sellerCount " + sellerCount);
 
+
             }
 
 
@@ -243,21 +248,16 @@ public class MyGcmListenerService extends GcmListenerService {
 
             Log.i(TAG, "msg is " + message + " type of msg is: " + message.getClass().getSimpleName());
 
-        Log.i(TAG,"msg is "+message+" type of msg is: "+message.getClass().getSimpleName());
-
-        try{
+           /* try {
             if(data.containsKey("ok_id")) {
                 JSONObject json = new JSONObject(data.getString("message"));
 
                 okId = json.getString("ok_id");
-
-
                 if (!okId.equals("")) {
                     hdRoomsCount++;
                     badgeCount++;
                     Log.i(TAG, "badecount hd rooms badgeCount " + badgeCount);
                     Log.i(TAG, "badecount hd rooms hdRoomsCount " + hdRoomsCount);
-
 
                     ShortcutBadger.applyCount(this, badgeCount);
                     General.setBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT, hdRoomsCount);
@@ -265,17 +265,13 @@ public class MyGcmListenerService extends GcmListenerService {
                 }
 
             }
-
-            }
-        catch (JSONException e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
-            }
+            }*/
 
 
-        if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equals("client")) {
-            try {
-
-                if(data.containsKey("ok-id")) {
+            if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equals("client")) {
+                try {
                     Log.d(TAG, "Inside try");
                     JSONObject jsonObjectMsg = new JSONObject(data.getString("message"));
                     Log.d(TAG, "jsonObjectMsg is " + jsonObjectMsg);
@@ -285,9 +281,11 @@ public class MyGcmListenerService extends GcmListenerService {
                     Log.d(TAG, "okId is: " + okId);
 
 // store ok time for deals list
-//                    storeDealTime(okId);
+                    storeDealTime(okId);
+
 
                     // Collection d = deals1.values();
+
                     Log.i(TAG, "before deal " + deals1);
                     Iterator<Map.Entry<String, String>> iter = deals1.entrySet().iterator();
 
@@ -352,7 +350,6 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
                     Log.d(TAG, "CLIENT_OK_ID: " + General.getSharedPreferences(getApplicationContext(), AppConstants.CLIENT_OK_ID));
-                }
 
                 } catch (Exception e) {
                     Log.i("TAG", "Inside catch");
@@ -370,31 +367,118 @@ public class MyGcmListenerService extends GcmListenerService {
                 // normal downstream message.
             }
 
+            // [START_EXCLUDE]
+            /**
+             * Production applications would usually process the message here.
+             * Eg: - Syncing with server.
+             *     - Store message in local database.
+             *     - Update UI.
+             */
 
-        if(title != null)
-        if(title.equalsIgnoreCase("Oyeok")) {
-            badgeCount++;
-            General.setBadgeCount(getApplicationContext(),AppConstants.BADGE_COUNT,badgeCount);
-            ShortcutBadger.applyCount(this, badgeCount);
-            if(General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equals("client"))
-            message = "We have just assigned a broker to your request.";
-            else
-             message = "We have just created a dealing room on your request.";
+            /**
+             * In some cases it may be useful to show a notification indicating to the user
+             * that a message was received.
+             */
+
+/*
+        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+        HashMap<String, String> deals1 = gson.fromJson(deals, type);
+
+        Log.d("TRACE", "hashmap:" + deals1);
+
+        if(deals1 == null){
+            deals1 = new HashMap<String, String>();
+
         }
 
 
+        Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String,String> entry = iter.next();
+            Log.d("TRACE","Inside iterator "+entry);
+            if(okId.equalsIgnoreCase(entry.getKey())){
+                Log.d("TRACE","Deleted default deal "+entry);
+                iter.remove();
+
+            }
+        }
+
+*/
+
+            if (title.equalsIgnoreCase("Oyeok")) {
+
+                badgeCount++;
+                General.setBadgeCount(getApplicationContext(), AppConstants.BADGE_COUNT, badgeCount);
+                ShortcutBadger.applyCount(this, badgeCount);
+                if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equals("client"))
+                    message = "We have just assigned a broker to your request.";
+                else
+                    message = "We have just created a dealing room on your request.";
+            }
+
 
             if (!message.equalsIgnoreCase("hello"))
-                this.sendNotification(title, message);
-
+                this.sendNotification(title, message, data);
             Log.d(TAG, "After sendNotification");
 
-//       if(!message.equalsIgnoreCase("hello"))
-        this.sendNotification(title, message);
-        Log.d(TAG, "After sendNotification");
+            // [END_EXCLUDE]
+        } else {
+            try {
+                if (!General.getSharedPreferences(this, AppConstants.USER_ID).equalsIgnoreCase(data.getString("_from")) && !(General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID).equalsIgnoreCase(data.getString("to"))))
+                {
+                    if(!General.getMutedOKIds(this).contains(data.getString("to")))
+                        sendNotification("New Message Recieved", data.getString("to") + "@" + data.getString("message"), data);
 
-           }
 
+                    try {
+                        Realm myRealm = General.realmconfig(this);
+                        NotifCount notifcount = myRealm.where(NotifCount.class).equalTo(AppConstants.OK_ID, data.getString("to")).findFirst();
+                        Log.i(TAG, "Caught in exception notif insiderr cached msgs is the notifcount " + notifcount);
+                        if (notifcount == null) {
+                            NotifCount notifCount = new NotifCount();
+                            notifCount.setOk_id(data.getString("to"));
+                            notifCount.setNotif_count(1);
+                            myRealm.beginTransaction();
+                            NotifCount notifCount1 = myRealm.copyToRealmOrUpdate(notifCount);
+                            myRealm.commitTransaction();
+                        } else {
+                            myRealm.beginTransaction();
+                            notifcount.setNotif_count(notifcount.getNotif_count() + 1);
+                            myRealm.commitTransaction();
+                        }
+
+                        Intent intent = new Intent(AppConstants.BADGE_COUNT_BROADCAST);  // (this is for dealslist) same used for badges in preok also
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+                        try {
+                            Realm myRealm1 = General.realmconfig(this);
+                            RealmResults<NotifCount> results1 =
+                                    myRealm1.where(NotifCount.class).findAll();
+                            Log.i(TAG, "notif insiderr cached msgs is the " + results1);
+                            for (NotifCount c : results1) {
+                                Log.i(TAG, "notif insiderr cached msgs ");
+                                Log.i(TAG, "notif insiderr cached msgs " + c.getOk_id());
+                                Log.i(TAG, "notif insiderr cached msgs " + c.getNotif_count());
+                            }
+
+                            NotifCount notifcount1 = myRealm.where(NotifCount.class).equalTo(AppConstants.OK_ID, data.getString("to")).findFirst();
+                            Log.i(TAG, "notif count is the " + notifcount1.getNotif_count());
+
+                        } catch (Exception e) {
+                            Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 2 " + e);
+                        }
+
+                    } catch (Exception e) {
+                        Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 3 " + e);
+                    }
+                }
+            }
+            catch (Exception e) {
+                Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 3 " + e);
+            }
+
+        }
+    }
 
     // [END receive_message]
 
@@ -403,8 +487,7 @@ public class MyGcmListenerService extends GcmListenerService {
      *
      * @param message GCM message received.
      */
-
-    private void sendNotification(String title,String message) {
+    private void sendNotification(String title,String message, Bundle data) {
         Context context = this.getBaseContext();
         PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
 
@@ -414,24 +497,61 @@ public class MyGcmListenerService extends GcmListenerService {
 
         if(isScreenOn==false)
         {
-
             PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK |PowerManager.ACQUIRE_CAUSES_WAKEUP |PowerManager.ON_AFTER_RELEASE,"MyLock");
             wl.acquire(10000);
             PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"MyCpuLock");
             wl_cpu.acquire(10000);
-
         }
 //        Intent intent = new Intent(this, DashboardActivity.class);
 
         Intent intent = null;
-        if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
-                General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("broker")) {
-            intent = new Intent(context, BrokerMainActivity.class);
+        if(data.containsKey("to")) {
+
+            Realm myRealm = General.realmconfig(this);
+            HalfDeals halfDeals = myRealm.where(HalfDeals.class).equalTo(AppConstants.OK_ID, data.getString("to")).findFirst();
+            Log.i(TAG, "halfDeals is the " + halfDeals);
+
+
+
+
+            if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
+                    General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("broker")) {
+
+                if (halfDeals.equals("") || halfDeals.getSpec_code().isEmpty()) {
+                    Log.i(TAG, "halfDeals is the 1 ");
+                    intent = new Intent(context, BrokerDealsListActivity.class);
+                    intent.putExtra("defaul_deal_flag", "false");
+                } else {
+                    Log.i(TAG, "halfDeals is the 2 ");
+                    intent = new Intent(context, DealConversationActivity.class);
+                    intent.putExtra(AppConstants.OK_ID, data.getString("to"));
+                    intent.putExtra(AppConstants.SPEC_CODE, halfDeals.getSpec_code());
+                    intent.putExtra("userRole", "broker");
+                }
+
+            } else if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
+                    General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("client")) {
+                if (halfDeals.equals("") || halfDeals.getSpec_code().isEmpty()) {
+                    Log.i(TAG, "halfDeals is the 3 ");
+                    intent = new Intent(context, ClientDealsListActivity.class);
+                    intent.putExtra("defaul_deal_flag", "false");
+                } else {
+                    Log.i(TAG, "halfDeals is the 4 ");
+                    intent = new Intent(context, DealConversationActivity.class);
+                    intent.putExtra(AppConstants.OK_ID, data.getString("to"));
+                    intent.putExtra(AppConstants.SPEC_CODE, halfDeals.getSpec_code());
+                    intent.putExtra("userRole", "client");
+                }
+            }
         }
-        else {
-            intent = new Intent(context, ClientMainActivity.class);
-            //intent = new Intent(context, ClientDealsListActivity.class);
+        else{
+            if(!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
+                    General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("broker"))
+                intent = new Intent(context, BrokerMainActivity.class);
+            else
+                intent = new Intent(context, ClientMainActivity.class);
         }
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         int requestID = (int) System.currentTimeMillis();
@@ -472,18 +592,15 @@ public class MyGcmListenerService extends GcmListenerService {
         if (NOTIFICATION_ID > 1073741824) {
             NOTIFICATION_ID = 0;
         }
-
         if(RefreshDrooms){
             Log.d(TAG,"Refresh Drooms flag is set1");
             // Intent i = new Intent(this, ClientDealsListActivity.class);
             // startActivity(i);
 
         }
-
         notificationManager.notify(NOTIFICATION_ID++ /* ID of notification *//*, notificationBuilder.build()*/,notification);
         Log.d(TAG,"Notified");
     }
-
     private void storeDealTime(String okId){
         String dealTime;
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -491,12 +608,10 @@ public class MyGcmListenerService extends GcmListenerService {
 
         java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
         HashMap<String, String> dealTime1 = gson.fromJson(dealTime, type);
-
         if (dealTime1 == null) {
             dealTime1 = new HashMap<String, String>();
 
         }
-
         dealTime1.put(okId,String.valueOf(System.currentTimeMillis()));
 
         Gson g = new Gson();
@@ -509,22 +624,21 @@ public class MyGcmListenerService extends GcmListenerService {
 
         try {
             Realm myRealm = General.realmconfig(this);
-             DealTime dealtime = new DealTime();
+            DealTime dealtime = new DealTime();
 
-          dealtime.setOk_id(okId);
+            dealtime.setOk_id(okId);
             dealtime.setTimestamp(String.valueOf(System.currentTimeMillis()));
 
             myRealm.beginTransaction();
             myRealm.copyToRealmOrUpdate(dealtime);
             myRealm.commitTransaction();
 
-      }
-      catch(Exception e){
-          Log.i(TAG,"caught in exception deleting default droom timestamp "+e);
+        }
+        catch(Exception e){
+            Log.i(TAG,"caught in exception deleting default droom timestamp "+e);
         }
 
         try{
-
             Realm mmyRealm = General.realmconfig(this);
             RealmResults<DealTime> results1 =
                     mmyRealm.where(DealTime.class).findAll();

@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@drawable/rectangle_border_transparent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:id="@+id/y"
+        android:layout_margin="2dp">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:id="@+id/imageView6"
+        android:src="@drawable/splashcard"
+        android:scaleType="fitXY"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/card_map_border"
+        android:layout_marginTop="5dp"
+         /></FrameLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:paddingBottom="5dp">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WANT TO CONNECT WITH TOP 3 BROKERS IN A FLY?"
+            android:id="@+id/textView"
+            android:layout_below="@+id/imageView6"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/Black"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:paddingRight="7dp"
+            android:paddingLeft="7dp"
+            android:paddingTop="5dp"
+            android:layout_weight="0.6" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Select transaction type, locality and we connect you with three brokers instantly."
+            android:id="@+id/textView2"
+            android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true"
+            android:textColor="#272525"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_weight="0.4"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/seekbar_linearlayout1"
+        android:paddingTop="@dimen/eight_dp"
+        android:paddingLeft="@dimen/eight_dp"
+        android:paddingRight="@dimen/eight_dp"
+        android:background="@color/dark_white"
+        android:layout_below="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:visibility="visible"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="0.30">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:id="@+id/sh">
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rental"
+                android:id="@+id/rental" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:id="@+id/sh2">
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Buy/Sell"
+                android:id="@+id/buySell"
+                android:checked="false" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:id="@+id/rentalPanel">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tenant"
+                    android:id="@+id/tenant" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:id="@+id/sh2n">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Owner"
+                    android:id="@+id/owner"
+                    android:checked="false" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1"
+            android:visibility="gone"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:id="@+id/resalePanel">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Buyer"
+                    android:id="@+id/buyer" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:id="@+id/sh2no">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Seller"
+                    android:id="@+id/seller"
+                    android:checked="false" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_weight="1">
+
+
+            <ImageButton
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:id="@+id/cardMaps"
+                android:src="@drawable/card_location_picker"
+                android:background="@drawable/broker_marker"
+                android:clickable="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Andheri East"
+                android:id="@+id/locality"
+
+                android:maxLines="1"
+
+                android:gravity="center_horizontal|left"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="7dp"
+                android:layout_below="@+id/cardMaps"
+                android:textSize="12sp"
+                android:textColor="@color/Black" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/cardMaps"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="center_vertical"
+                android:layout_above="@+id/locality">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/cardMaps"
+                    android:id="@+id/localityLayout">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:id="@+id/imageView7"
+                        android:src="@drawable/arrow_left"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Select your locality."
+                        android:id="@+id/localityText"
+
+                        android:gravity="center_vertical"
+                        android:paddingLeft="5dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="1"
+                    android:layout_marginBottom="15dp"
+                    android:visibility="gone"
+                    android:id="@+id/hid"
+                    android:layout_weight="0">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="tenant"
+                        android:id="@+id/tenanto"
+                        android:layout_weight="0.50" />
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="owner"
+                        android:id="@+id/ownero"
+                        android:layout_weight="0.50"
+                        android:checked="false" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="1"
+                    android:layout_marginBottom="15dp"
+                    android:visibility="gone"
+                    android:id="@+id/hid2"
+                    android:layout_weight="0">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="buyer"
+                        android:id="@+id/buyero"
+                        android:layout_weight="0.50" />
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="seller"
+                        android:id="@+id/sellero"
+                        android:layout_weight="0.50"
+                        android:checked="false" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:clickable="false"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:gravity="bottom|top"
+        android:layout_below="@+id/seekbar_linearlayout1"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="3dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Sign up"
+            android:id="@+id/signUp"
+            android:layout_weight="1"
+            android:textColor="@color/crimson"
+            android:clickable="true"
+            android:background="@drawable/rectangle_background"
+            android:layout_marginRight="2dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Connect"
+            android:id="@+id/later"
+            android:layout_weight="1"
+            android:textColor="@color/darkcyan"
+            android:clickable="true"
+            android:background="@drawable/rectangle_background"
+            android:layout_marginLeft="2dp" />
+    </LinearLayout>
+
+
+
+
+</LinearLayout>
+
+    </FrameLayout>

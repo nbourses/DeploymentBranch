@@ -42,15 +42,13 @@
     <string name="follow">Follow</string>
     <string name="tweet">Tweet</string>
 
-        <!--phasedseekbar String-->
+    <!--phasedseekbar String-->
     <string name="Resale">Buy/Sell</string>
     <string name="Rental">Rental</string>
 
     <string name="UnFurnished">Un-Furnished</string>
     <string name="SemiFurnished">Semi-Furnished</string>
     <string name="FullFurnished">Fully-Furnished</string>
-
-
 
 
     <string name="memberinfo">Member /n Info</string>
@@ -115,7 +113,6 @@
         <item>@string/shareNo</item>
         <!--   <item>@string/updateProfile</item> -->
     </string-array>
-
 
 
     <string name="title_messages">Messages</string>

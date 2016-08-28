@@ -54,11 +54,13 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.adapters.BrokerDealsListAdapter;
+import com.nbourses.oyeok.enums.DealStatusType;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.BrokerDeals;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.PublishLetsOye;
+import com.nbourses.oyeok.realmModels.DealStatus;
 import com.nbourses.oyeok.realmModels.DefaultDeals;
 import com.nbourses.oyeok.realmModels.HalfDeals;
 import com.nispok.snackbar.Snackbar;
@@ -209,6 +211,13 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             networkConnectivity();
         }
     };
+    private BroadcastReceiver badgeCountBroadcast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            loadDefaultDeals();
+            loadBrokerDeals();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -329,6 +338,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 position = pos;
                 // mute or unmute toggle
                  String muteStatus = "Mute notifications";
+                String blockStatus = "Block deal";
                Log.i(TAG,"listbrokerdealsnew "+listBrokerDeals_new);
                 Log.i(TAG,"listbrokerdealsnew  def "+default_deals);
                 Log.i(TAG,"listbrokerdealsnew "+listBrokerDeals_new);
@@ -340,14 +350,28 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                         }
                     }
+
                 }catch(Exception e){
                     // handle this problem when no network and remove this try catch
                 }
 
+                try{
+                    Realm myRealm = General.realmconfig(ClientDealsListActivity.this);
+
+                    DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, total_deals.get(position).getOkId()).findFirst();
+                    if (dealStatus != null && dealStatus.getStatus().equalsIgnoreCase(DealStatusType.BLOCKED.toString())) {
+                   blockStatus = "Unblock deal";
+                    } else {
+                        blockStatus = "Block deal";
+                    }
+                }
+                catch(Exception e){}
+
                 switch (index) {
                     case 0:
                         final String muteStatus1 = muteStatus;
-                        final CharSequence[] items = { muteStatus1, /*"Delete deal",*/ "Cancel" };
+                        final String blockStatus1 = blockStatus;
+                        final CharSequence[] items = { muteStatus1, /*"Delete deal",*/blockStatus1, "Cancel" };
                         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ClientDealsListActivity.this);
                         builder.setTitle("More!");
                         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -506,7 +530,75 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                                     alertDialog.show();
 
-                                } else if (items[item].equals("Cancel")) {
+                                }
+                                else if (items[item].equals(blockStatus1)) {
+
+                        Log.i(TAG,"block 1 "+blockStatus1);
+                                    if(listBrokerDeals_new == null){
+                                        Log.i(TAG,"wadala default deals 1 ");
+                                        total_deals = new ArrayList<BrokerDeals>();
+                                        if(default_deals != null) {
+                                            total_deals.addAll(default_deals);
+                                        }
+                                        if(cachedDeals != null) {
+                                            total_deals.addAll(cachedDeals);
+                                        }
+                                    }
+
+                                    if(total_deals != null) {
+                                        Realm myRealm = General.realmconfig(ClientDealsListActivity.this);
+                                        DealStatusType dealStatusType = null;
+
+                                        DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, total_deals.get(position).getOkId()).findFirst();
+                                        if (dealStatus == null) {
+                                            Log.i(TAG,"block 2 " );
+                                            DealStatus dealStatus1 = new DealStatus();
+                                            dealStatus1.setOk_id(total_deals.get(position).getOkId());
+                                            dealStatus1.setStatus(DealStatusType.BLOCKED.toString());
+                                            myRealm.beginTransaction();
+                                            DealStatus dealStatus2 = myRealm.copyToRealmOrUpdate(dealStatus1);
+                                            myRealm.commitTransaction();
+                                        } else {
+                                            Log.i(TAG,"block 3 " );
+                                            myRealm.beginTransaction();
+                                            if(blockStatus1.toLowerCase().contains("Unblock".toLowerCase())) {
+                                                Log.i(TAG,"block 4 " );
+                                                dealStatus.setStatus(DealStatusType.ACTIVE.toString());
+                                                SnackbarManager.show(
+                                                        Snackbar.with(ClientDealsListActivity.this)
+                                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                                .text(total_deals.get(position).getSpecCode() + " unblocked!")
+                                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                                General.setDealStatus(ClientDealsListActivity.this,DealStatusType.ACTIVE.toString(),total_deals.get(position).getOkId(),"default",General.getSharedPreferences(ClientDealsListActivity.this,AppConstants.USER_ID));
+                                            }
+                                            else {
+                                                Log.i(TAG,"block 5 " );
+                                                dealStatus.setStatus(DealStatusType.BLOCKED.toString());
+                                                SnackbarManager.show(
+                                                        Snackbar.with(ClientDealsListActivity.this)
+                                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                                .text(total_deals.get(position).getSpecCode() + " blocked!")
+                                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                                General.setDealStatus(ClientDealsListActivity.this,DealStatusType.BLOCKED.toString(),total_deals.get(position).getOkId(),"default",General.getSharedPreferences(ClientDealsListActivity.this,AppConstants.USER_ID));
+                                            }
+                                            myRealm.commitTransaction();
+                                        }
+
+                                    }
+                                    else {
+                                        SnackbarManager.show(
+                                                Snackbar.with(ClientDealsListActivity.this)
+                                                        .position(Snackbar.SnackbarPosition.TOP)
+                                                        .text("Deals can not be Blocked offline.")
+                                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                    }
+
+                                }
+
+
+
+
+                                else if (items[item].equals("Cancel")) {
                                     dialog.dismiss();
                                 }
                             }
@@ -770,6 +862,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     protected void onResume() {
         super.onResume();
         // Register mMessageReceiver to receive messages.
+        LocalBroadcastManager.getInstance(this).registerReceiver(badgeCountBroadcast, new IntentFilter(AppConstants.BADGE_COUNT_BROADCAST));
 
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
     }
@@ -779,6 +872,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         super.onPause();
         // Unregister since the activity is not visible
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(badgeCountBroadcast);
 
     }
 
@@ -1307,7 +1401,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
             RestAdapter restAdapter = new RestAdapter
                     .Builder()
-                    .setEndpoint(AppConstants.SERVER_BASE_URL_101)
+                    .setEndpoint(AppConstants.SERVER_BASE_URL_102)
                     .setConverter(new GsonConverter(gson))
 
                     .build();
@@ -1319,7 +1413,10 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
             //params
             HdRooms hdRooms = new HdRooms();
             hdRooms.setUserRole("client");
-            hdRooms.setUserId(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
+          if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equals(""))
+                hdRooms.setUserId(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
+            else
+            hdRooms.setUserId(General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI));
             hdRooms.setGcmId(SharedPrefs.getString(getApplicationContext(), SharedPrefs.MY_GCM_ID));
             hdRooms.setLat("123456789");
             hdRooms.setLon("123456789");
@@ -1342,10 +1439,13 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
                     Log.i("TRACE", "in successs");
                     String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+                    Log.i(TAG, "tidin tidin tindin 1 "+strResponse);
                     try {
                         JSONObject jsonObjectServer = new JSONObject(strResponse);
+                        Log.i(TAG, "tidin tidin tindin 2"+jsonObjectServer);
                         if (jsonObjectServer.getBoolean("success")) {
                             JSONObject jsonObjectResponseData = new JSONObject(jsonObjectServer.getString("responseData"));
+                            Log.i(TAG, "tidin tidin tindin 3 "+jsonObjectResponseData);
                             Log.i("TRACE", "jsonObjectResponseData" + jsonObjectResponseData);
                             Log.d("CHATTRACE", "default drooms" + jsonObjectResponseData);
 
@@ -1416,7 +1516,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
                                     Log.i(TAG,"hdroom madhe name "+deals.getLocality());
 
-
+                                    Log.i("TRACE==", "list broker dealser 02" + deals);
                                     if(deals.getSpecCode().contains(TT+"-")) {
                                         if((filterPtype != null)&&deals.getSpecCode().contains(filterPtype)) {
                                             Log.i("DEALREFRESHPHASESEEKBA", "deal spec code " + deals.getSpecCode() + " for " + TT);
@@ -1436,12 +1536,19 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                                         }
 
                                     }
+
+                                    else if(deals.getOyeId().equalsIgnoreCase("unverified_user")){
+                                        Log.i("TRACE==", "list broker dealser 0 wagad " + deals);
+                                        listBrokerDeals_new.add(deals);
+                                        Log.i("TRACE==", "list broker dealser 1" + listBrokerDeals_new);
+                                }
                                 }
 
                             }
                             myRealm.commitTransaction();
 
-                            Log.i("TRACE==", "list broker deals" + listBrokerDeals_new);
+
+                            Log.i("TRACE==", "list broker dealser" + listBrokerDeals_new);
 
 
 
@@ -1999,6 +2106,8 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
 
     }
+
+
 }
 
 

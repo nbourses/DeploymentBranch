@@ -1,9 +1,11 @@
 package com.nbourses.oyeok.helpers;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -11,13 +13,25 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateStatus;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.activities.DealConversationActivity;
 import com.nbourses.oyeok.models.PublishLetsOye;
@@ -26,6 +40,7 @@ import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.sdsmdg.tastytoast.TastyToast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -318,6 +333,7 @@ while(slowInternetFlag) {
         editor.putString(prefName, value);
         editor.commit();
     }
+
 
     public static void saveBoolean(Context context, String prefName, boolean value) {
         Log.i("TRACE", "inside shared pref " + prefName + value);
@@ -751,7 +767,7 @@ while(slowInternetFlag) {
 
     }
 
-   /* public static PopupWindow showOptions(final Context mcon){
+    public static PopupWindow showOptions(final Context mcon){
         Log.i(TAG,"popup window shown 2 ");
         try{
             DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
@@ -763,16 +779,16 @@ while(slowInternetFlag) {
             LayoutInflater inflater = (LayoutInflater) mcon.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             View layout = inflater.inflate(R.layout.card1,null);
 
-            CustomPhasedSeekBar mPhasedSeekBar = (CustomPhasedSeekBar) layout.findViewById(R.id.phasedSeekBar1);
+           // CustomPhasedSeekBar mPhasedSeekBar = (CustomPhasedSeekBar) layout.findViewById(R.id.phasedSeekBar1);
             Button button =(Button) layout.findViewById(R.id.button);
             Button signUp =(Button) layout.findViewById(R.id.signUp);
             Button later =(Button) layout.findViewById(R.id.later);
             DBHelper dbHelper = new DBHelper(mcon);
-            if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
+          /*  if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
                 mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(mcon.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{mcon.getResources().getString(R.string.Rental), mcon.getResources().getString(R.string.Resale)}));
             else
                 mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(mcon.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
-           // mPhasedSeekBar.setListener(this);
+           // mPhasedSeekBar.setListener(this);*/
             final PopupWindow optionspu1 = greyOut(mcon);
             //final PopupWindow optionspu = new PopupWindow(layout, 600,1000, true);
             final PopupWindow optionspu = new PopupWindow(layout);
@@ -780,8 +796,8 @@ while(slowInternetFlag) {
             optionspu.setHeight(height-140);
             optionspu.setAnimationStyle(R.style.AnimationPopup);
 
-            *//*optionspu.setTouchable(true);
-            optionspu.setOutsideTouchable(false);*//*
+            /*optionspu.setTouchable(true);
+            optionspu.setOutsideTouchable(false);*/
 
             optionspu.setFocusable(false);
             optionspu.setTouchable(true);
@@ -852,7 +868,74 @@ while(slowInternetFlag) {
 
     }
 
-    @Override
+
+
+
+    public static void setDealStatus(Context c,String dealStatus, String okId, String lastseen,String blockBy){
+
+        UpdateStatus updateStatus = new UpdateStatus();
+
+
+
+        updateStatus.setOkId(okId);
+        updateStatus.setStatus(dealStatus);
+        updateStatus.setLast_seen(lastseen);
+        updateStatus.setBlocked_by(blockBy);
+        Log.i("updateStatus ","user_id "+General.getSharedPreferences(c,AppConstants.USER_ID)+" "+okId+" "+dealStatus+" "+lastseen+" "+blockBy);
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(AppConstants.SERVER_BASE_URL)
+                .build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+
+
+        try {
+            oyeokApiService.updateStatus(updateStatus, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+
+                    Log.i("updateStatus CALLED","updateStatus success ");
+
+
+
+                    JsonObject k = jsonElement.getAsJsonObject();
+                    try {
+
+                        Log.i("updateStatus","updateStatus success response "+response);
+
+
+                        JSONObject ne = new JSONObject(k.toString());
+                        Log.i("updateStatus","updateStatus success ne "+ne.getString("success"));
+
+
+                    }
+                    catch (JSONException e) {
+                        Log.e("TAG", e.getMessage());
+                        Log.i("updateStatus CALLED","updateStatus Failed "+e.getMessage());
+                    }
+
+
+
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.i("BROKER BUILDINGS CALLED","update status failed "+error);
+                }
+            });
+
+
+        }
+        catch (Exception e){
+            Log.e("TAG", e.getMessage());
+        }
+
+    }
+
+    /*@Override
     public void onPositionSelected(int position, int count) {
 
     }*/

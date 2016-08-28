@@ -8,7 +8,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/card_frame">
+        android:id="@+id/cardFrame">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:text="WANT TO CONNECT WITH TOP 3 BROKERS IN A FLY?"
         android:id="@+id/textView"
-        android:layout_below="@+id/card_frame"
+        android:layout_below="@+id/cardMapFrame"
         android:layout_centerHorizontal="true"
         android:textColor="@color/Black"
         android:textSize="20sp"
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Andheri"
-                android:id="@+id/textView3"
+                android:id="@+id/locality"
                 android:paddingTop="-20dp" />
 
             <ImageButton
@@ -98,7 +98,7 @@
                 android:id="@+id/cardMaps"
                 android:src="@drawable/card_location_picker"
                 android:background="?android:selectableItemBackground"
-                android:layout_below="@+id/textView3"
+                android:layout_below="@+id/locality"
                 android:layout_centerHorizontal="true"
                 android:clickable="true" />
         </RelativeLayout>

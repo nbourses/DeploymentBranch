@@ -2,10 +2,12 @@ package com.nbourses.oyeok.RPOT.ApiSupport.services;
 
 import com.google.gson.JsonElement;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AcceptOk;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.AutoOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.BrokerBuildings;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.LetsOye;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.ShareOwnersNoM;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateStatus;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.deleteHDroom;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.PublishLetsOye;
@@ -47,6 +49,15 @@ public interface OyeokApiService {
 
     @POST("/generate/coupon")
     void generateCoupon(@Body ShareOwnersNoM shareOwnersNoM, Callback<JsonElement> callback);
+
+    @POST("/unregistered/ok")
+    void autoOk(@Body AutoOk autoOk, Callback<JsonElement> callback);
+
+    @POST("/update/hdroom_status")
+    void updateStatus(@Body UpdateStatus updateStatus, Callback<JsonElement> callback);
+
+    @POST("/get/hdroom_status")
+    void getStatus(@Body UpdateStatus updateStatus, Callback<JsonElement> callback);
 
     @POST("/delete/hdroom")
     void deleteHDroom(@Body deleteHDroom deleteHDroom, Callback<JsonElement> callback);

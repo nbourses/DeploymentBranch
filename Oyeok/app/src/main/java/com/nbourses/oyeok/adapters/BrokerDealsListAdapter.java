@@ -6,6 +6,8 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.BrokerDeals;
+import com.nbourses.oyeok.realmModels.NotifCount;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,6 +28,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import io.realm.Realm;
 
 
 /**
@@ -37,6 +42,7 @@ public class BrokerDealsListAdapter extends BaseAdapter {
 
     private Context context;
     private BrokerDeals deal;
+    Animation bounce;
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("h:mm a");
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT1 = new SimpleDateFormat("DD:mm:yyyy");
 
@@ -92,6 +98,7 @@ public class BrokerDealsListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = null;
         ViewHolder holder;
+        bounce = AnimationUtils.loadAnimation(context, R.anim.bounce);
 
 Log.i("inside brokerdeals view","flag check "+this.default_deal);
             if (convertView == null) {
@@ -106,6 +113,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                 holder.txtFirstChar = (TextView) v.findViewById(R.id.txtFirstChar);
                 holder.locality = (TextView) v.findViewById(R.id.locality);
                 holder.listing = (TextView) v.findViewById(R.id.listing);
+                holder.hdroomsCount = (TextView) v.findViewById(R.id.hdroomsCount);
 
                 v.setTag(holder);
             } else {
@@ -117,6 +125,23 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
             //this block handles both default deals and hd rooms
 
             deal = dealses.get(position);
+            holder.hdroomsCount.clearAnimation();
+            holder.hdroomsCount.setVisibility(View.GONE); // dont remove me unless you want to see random chatcounts in dealslist :-P
+            try{
+                Realm myRealm = General.realmconfig(context);
+                NotifCount notifcount1 = myRealm.where(NotifCount.class).equalTo(AppConstants.OK_ID, deal.getOkId()).findFirst();
+                if(notifcount1.getNotif_count()>0){
+                    holder.hdroomsCount.setText(notifcount1.getNotif_count().toString());
+                    holder.hdroomsCount.setVisibility(View.VISIBLE);
+                    holder.hdroomsCount.setAnimation(bounce);
+                }
+
+                //Log.i(TAG, "notif count is the " + notifcount1.getNotif_count());
+
+            }
+            catch(Exception e){
+
+            }
 
 
             Log.i("HDROOMS CRASH", "deal.getSpecCode" + deal.getSpecCode());
@@ -284,6 +309,8 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                 Log.i("brokerDealsListAdapter","deals spec code may not be proper "+e);
             }
 
+
+
         }
         else if(this.default_deal)
         {
@@ -314,6 +341,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
         public ImageView dealPtype;
         public TextView locality;
         public TextView listing;
+        public TextView hdroomsCount;
 
     }
 

@@ -771,7 +771,6 @@ if(newUser==true) {
 
                         General.slowInternetFlag = false;
                         General.t.interrupt();
-
                         //Broadcast a map that signup has been done(to handle backs)
 //                        signupSuccessflag = true;
 //                        Log.i("signupSuccessflag s","signupSuccessflag "+signupSuccessflag);
@@ -786,8 +785,6 @@ if(newUser==true) {
 //                                        .text("Please wait we are signing you up.")
 //                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
-
-
 //
 //        userInfo.setName("fatyaa");
 //        user.setEmailId("dukatii@gmail.com");
@@ -800,8 +797,6 @@ if(newUser==true) {
 
 
 
-
-
 //                        RealmResults<UserInfo> results1 =
 //                                myRealm.where(UserInfo.class).findAll();
 //
@@ -809,8 +804,7 @@ if(newUser==true) {
 //                            Log.d("results1", c.getName());
 //                        }
 
-
-
+                        Log.i(TAG,"fakata responsedata "+signUp.responseData);
 
                        try {
                            my_user_id = signUp.responseData.getUserId();
