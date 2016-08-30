@@ -673,7 +673,8 @@ public class OyeScreenFragment extends Fragment {
     };
 
     private void updateLabel(){
-        String myFormat = "dd-MMM-yy"; //In which you need put here
+        String myFormat = "dd/MM/yyyy";
+        //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         txtcalendar.setText(sdf.format(myCalendar.getTime()));
         PossessionDate=txtcalendar.getText().toString();
@@ -685,7 +686,7 @@ public class OyeScreenFragment extends Fragment {
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH));
 
-        String myFormat = "dd/MM/yy"; //In which you need put here
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         Date d = null;

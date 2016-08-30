@@ -1752,7 +1752,7 @@ Log.i(TAG,"Image is the "+out);
         confirm_screen_title.setVisibility(View.GONE);
         dealsWrapper.setVisibility(View.VISIBLE);
         oyeconfirm_flag=false;
-        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).OnOyeClick();
+        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).OnOyeClick1();
 
     }
 

@@ -71,6 +71,39 @@ public class PublishLetsOye //extends Model {
     @Column(name = "gcm_id")
     public String gcmId;
 
+    @Expose
+    @SerializedName("possession_date")
+    @Column(name = "possession_date")
+    public String possession_date;
+
+
+
+    @Expose
+    @SerializedName("furnishing")
+    @Column(name = "furnishing")
+
+    public String furnishing;
+
+
+
+
+
+    public String getFurnishing() {
+        return furnishing;
+    }
+
+    public void setFurnishing(String furnishing) {
+        this.furnishing = furnishing;
+    }
+
+    public String getPossession_date() {
+        return possession_date;
+    }
+
+    public void setPossession_date(String possession_date) {
+        this.possession_date = possession_date;
+    }
+
     public String getTt() {
         return tt;
     }
