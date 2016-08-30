@@ -8,9 +8,21 @@ import java.util.List;
 
 public class Building {
 
+    @SerializedName("config")
+    @Expose
+    private String config;
     @SerializedName("name")
     @Expose
     private String name;
+
+    public String getConfig() {
+        return config;
+    }
+
+    public void setConfig(String config) {
+        this.config = config;
+    }
+
     @SerializedName("or_psf")
     @Expose
     private String orPsf;

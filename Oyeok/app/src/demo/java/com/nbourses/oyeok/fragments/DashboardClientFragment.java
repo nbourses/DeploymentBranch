@@ -2011,7 +2011,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 property_type_layout.clearAnimation();
                 parenttop.removeView(property_type_layout);
                 parentbottom.addView(property_type_layout,5);}
-//                property_type_layout.startAnimation(slide_up);
+
                 PropertyButtonSlideAnimation();
 //                index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
 //                Log.i("indexxx", "index of layout : " + index);
@@ -2069,7 +2069,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     property_type_layout.clearAnimation();
                     parenttop.removeView(property_type_layout);
                     parentbottom.addView(property_type_layout,5);}
-//                property_type_layout.startAnimation(slide_up);
                 PropertyButtonSlideAnimation();
 //                index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
 //                Log.i("indexxx", "index of layout : " + index);

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -26,7 +25,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -67,9 +65,11 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCusto
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.BrokerMap;
+import com.nbourses.oyeok.fragments.BuildingOyeConfirmation;
 import com.nbourses.oyeok.fragments.CardFragment;
 import com.nbourses.oyeok.fragments.DFragment;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
+import com.nbourses.oyeok.fragments.OyeConfirmation;
 import com.nbourses.oyeok.fragments.OyeScreenFragment;
 import com.nbourses.oyeok.fragments.ShareOwnersNo;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -161,6 +161,17 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     TextView hdroomsCount;
 Boolean Owner_detail=false;
 
+    @Bind(R.id.cancel_btn)
+    TextView cancel_btn;
+    @Bind(R.id.confirm_screen_title)
+    TextView confirm_screen_title;
+    @Bind(R.id.dealsWrapper)
+    RelativeLayout dealsWrapper;
+
+    boolean buidingInfoFlag=false;
+
+
+
     /*@Bind(R.id.tv_dealinfo)
     TextView tv_dealinfo;*/
 
@@ -223,7 +234,87 @@ private Boolean cardFlag = false;
         }
     };
 
+
+
     private BroadcastReceiver oyebuttondata = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(intent.getExtras().getString("isclicked")=="true") {
+
+                OyeConfirmation  oyeConfirmation1=new OyeConfirmation( );
+                confirm_screen_title.setVisibility(View.VISIBLE);
+                getSupportActionBar().setDisplayShowHomeEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                cancel_btn.setVisibility(View.VISIBLE);
+                getSupportActionBar().setTitle("");
+                if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")){
+
+                    if(AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner"))
+                        confirm_screen_title.setText("Posting Confirmation\n(I am Owner)");
+                    else
+                        confirm_screen_title.setText("Posting Confirmation \n(I am Tenant)");
+
+
+                }else
+                {
+
+                    if (AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner"))
+                        confirm_screen_title.setText("Posting Confirmation\n(I am Owner)");
+                    else
+                        confirm_screen_title.setText("Posting Confirmation\n(I am Tenant)");
+                }
+                loadFragment(oyeConfirmation1, null, R.id.container_OyeConfirmation, "");
+                dealsWrapper.setVisibility(View.GONE);
+                ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).getNearbyLatLong();
+                ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).broadcastingConfirmationMsg();
+
+
+
+
+
+
+
+                oyeconfirm_flag=true;
+                if (slidingLayout != null &&
+                        (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
+                                slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
+                    closeOyeScreen();
+
+                }
+
+            }
+
+
+
+
+
+        }
+    };
+
+public void signUp(){
+//    if (General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+        Log.i("TRACE", "clicked oyebutton if");
+        //show ƒlo up screen
+        Bundle bundle = new Bundle();
+        bundle.putStringArray("propertySpecification", null);
+        //bundle.putString("lastFragment", "OyeIntentSpecs");
+        bundle.putString("lastFragment", "oyed");
+
+        if (slidingLayout != null &&
+                (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
+                        slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
+            closeOyeScreen();
+
+        }
+
+        SignUpFragment signUpFragment = new SignUpFragment();
+        loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
+        Log.i("Signup called =", "Sign up");
+//    }
+}
+
+    private BroadcastReceiver oyebuttondata1 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -269,6 +360,40 @@ private Boolean cardFlag = false;
                     } else {
                         //create new deal
 
+
+                        OyeConfirmation  oyeConfirmation1=new OyeConfirmation( );
+                        confirm_screen_title.setVisibility(View.VISIBLE);
+                        getSupportActionBar().setDisplayShowHomeEnabled(false);
+                        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                        cancel_btn.setVisibility(View.VISIBLE);
+                        getSupportActionBar().setTitle("");
+                        if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")){
+
+                            if(AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner"))
+                                confirm_screen_title.setText("Posting Confirmation\n(I am Owner)");
+                            else
+                                confirm_screen_title.setText("Posting Confirmation \n(I am Tenant)");
+
+
+                        }else
+                        {
+
+                            if (AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner"))
+                                confirm_screen_title.setText("Posting Confirmation\n(I am Owner)");
+                            else
+                                confirm_screen_title.setText("Posting Confirmation\n(I am Tenant)");
+                        }
+                        loadFragment(oyeConfirmation1, null, R.id.container_OyeConfirmation, "");
+                        dealsWrapper.setVisibility(View.GONE);
+                        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).getNearbyLatLong();
+                        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).broadcastingConfirmationMsg();
+
+
+
+
+
+
+
                         oyeconfirm_flag=true;
                         if (slidingLayout != null &&
                                 (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
@@ -276,7 +401,7 @@ private Boolean cardFlag = false;
                             closeOyeScreen();
 
                         }
-                        alertbuilder();
+//                        alertbuilder();
 
 
 
@@ -341,7 +466,7 @@ private Boolean cardFlag = false;
     };
 
 
-private void alertbuilder()
+/*private void alertbuilder()
 
 {
     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -361,7 +486,7 @@ private void alertbuilder()
     final AlertDialog alert = builder.create();
     alert.show();
 
-}
+}*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1067,7 +1192,17 @@ private void alertbuilder()
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
-        if(cardFlag){
+        if(buidingInfoFlag==true)
+        {
+            Intent in = new Intent(AppConstants.MARKERSELECTED);
+            in.putExtra("markerClicked", "false");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(in);
+            backpress = 0;
+            ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).onMapclicked();
+//            buidingInfoFlag=false;
+            // CloseBuildingOyeComfirmation();
+
+        }else  if(cardFlag){
             Log.i(TAG,"card back ");
            // getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.card)).commit();
          //getSupportFragmentManager().popBackStack();
@@ -1086,8 +1221,9 @@ private void alertbuilder()
              else if(oyeconfirm_flag==true){
 //                super.onBackPressed();
             Log.i("SIGNUP_FLAG","Poke Poke Pokemon......: "+getFragmentManager().getBackStackEntryCount());
-            getSupportFragmentManager().popBackStack();
-            oyeconfirm_flag=false;
+//            getSupportFragmentManager().popBackStack();
+            closeOyeConfirmation();
+//            oyeconfirm_flag=false;
             backpress = 0;
         }else if(AppConstants.SIGNUP_FLAG){
 
@@ -1604,6 +1740,105 @@ Log.i(TAG,"Image is the "+out);
        // DashboardClientFragment.snapshot(callback);
 
     }
+
+
+
+    public  void EditOyeDetails(){
+        getSupportFragmentManager().popBackStack();
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        cancel_btn.setVisibility(View.GONE);
+        getSupportActionBar().setTitle("Live Region Rates");
+        confirm_screen_title.setVisibility(View.GONE);
+        dealsWrapper.setVisibility(View.VISIBLE);
+        oyeconfirm_flag=false;
+        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).OnOyeClick();
+
+    }
+
+    public  void OpenBuildingOyeConfirmation(){
+        buidingInfoFlag=true;
+
+        confirm_screen_title.setVisibility(View.VISIBLE);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        cancel_btn.setVisibility(View.VISIBLE);
+        getSupportActionBar().setTitle("");
+        if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")){
+
+            confirm_screen_title.setText("Live Building Rates \n(Rent)");
+
+
+        }else
+        {
+
+
+            confirm_screen_title.setText("Live Building Rates \n" + "(Buy/Sell)");
+
+        }
+        BuildingOyeConfirmation buildingOyeConfirmation = new BuildingOyeConfirmation();
+        loadFragment(buildingOyeConfirmation, null, R.id.container_OyeConfirmation, "");
+    }
+
+
+    public  void CloseBuildingOyeComfirmation(){
+        confirm_screen_title.setVisibility(View.GONE);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        cancel_btn.setVisibility(View.GONE);
+        getSupportActionBar().setTitle("Live Building Rates");
+        if( buidingInfoFlag==true)
+            getSupportFragmentManager().popBackStack();
+        buidingInfoFlag=false;
+    }
+    public void openOyeSreen(){
+        if (!isShowing) {
+
+
+            isShowing = true;
+//            OyeIntentFragment oye = new OyeIntentFragment();
+
+            //reset PublishLetsOye object
+            AppConstants.letsOye = new PublishLetsOye();
+
+            OyeScreenFragment oye = new OyeScreenFragment();
+            loadFragment(oye, bundle_args, R.id.container_oye, "");
+            slidingLayout.setAnchorPoint(0.5f);
+            slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+
+            // btnOnOyeClick.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    public  void closeOyeConfirmation(){
+        getSupportFragmentManager().popBackStack();
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        cancel_btn.setVisibility(View.GONE);
+        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).getPrice();
+        getSupportActionBar().setTitle("Live Region Rates");
+        confirm_screen_title.setVisibility(View.GONE);
+        dealsWrapper.setVisibility(View.VISIBLE);
+        oyeconfirm_flag=false;
+    }
+
+
+    @OnClick(R.id.cancel_btn)
+    public void oncancelBtnClick(){
+
+        if(buidingInfoFlag==true) {
+            Intent in = new Intent(AppConstants.MARKERSELECTED);
+            in.putExtra("markerClicked", "false");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(in);
+            CloseBuildingOyeComfirmation();
+            ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).onMapclicked();
+        }
+        else
+            closeOyeConfirmation();
+    }
+
+
 
 }
 

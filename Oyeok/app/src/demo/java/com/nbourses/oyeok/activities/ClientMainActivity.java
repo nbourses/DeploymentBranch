@@ -47,7 +47,6 @@ import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.BuildingOyeConfirmation;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.fragments.OyeConfirmation;
-import com.nbourses.oyeok.fragments.OyeScreenFragment;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.helpers.NetworkInterface;
@@ -970,6 +969,7 @@ private void alertbuilder()
             ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).onMapclicked();
 //            buidingInfoFlag=false;
            // CloseBuildingOyeComfirmation();
+            backpress = 0;
 
         }else
 

@@ -76,7 +76,7 @@
 
 <!--//rem-->
 
-        <LinearLayout
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/oye_select"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:clickable="true"
-            android:visibility="visible"
+            android:visibility="gone"
             android:orientation="horizontal"
             android:paddingTop="2dp">
 
@@ -226,7 +226,6 @@
 
         <!--//rem-->
 
-<!--
 <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -289,10 +288,9 @@ android:layout_marginBottom="4dp"
             />
 
     </LinearLayout>
--->
 
 
-<!--</LinearLayout>-->
+</LinearLayout>
 
 
 
@@ -453,7 +451,6 @@ android:layout_marginBottom="4dp"
             android:orientation="horizontal"
             android:id="@+id/lt"
             android:layout_height="wrap_content"
-
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
 
@@ -469,8 +466,7 @@ android:layout_marginBottom="4dp"
 
                 android:textColor="@color/abc_secondary_text_material_light"
                 android:layout_alignBottom="@+id/checkBox"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
+                android:gravity="center_horizontal"
                 android:textSize="13dp"
                 android:textStyle="bold|italic"
                 android:layout_weight="0.5"
@@ -482,10 +478,9 @@ android:layout_marginBottom="4dp"
             <CheckBox
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textAlignment="viewStart"
-                android:layout_gravity="start"
                 android:layout_marginTop="3dp"
-
+                android:gravity="center_horizontal"
+                android:foregroundGravity="center_horizontal"
                 android:text="Apply for finance\nSECURITY DEPOSIT"
                 android:id="@+id/checkBox"
                 android:layout_below="@+id/rootWrapper"
