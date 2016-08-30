@@ -185,6 +185,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     public AmazonS3 s3;
     public TransferUtility transferUtility;
     private String imageName = null;
+    private String messageTyped;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -566,15 +567,15 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
 
-                Log.i(TAG,"imageshare 2");
-
+                Log.i(TAG,"imageshare 2 edittypemsg "+edtTypeMsg.getText().toString());
+messageTyped = edtTypeMsg.getText().toString();
                 //send message
                 //sendMessage(edtTypeMsg.getText().toString());
 
                 final ChatMessage message = new ChatMessage();
                 message.setUserName("self");
                 message.setMessageStatus(ChatMessageStatus.SENT);
-                message.setMessageText(edtTypeMsg.getText().toString());
+                message.setMessageText(messageTyped);
                 message.setUserType(ChatMessageUserType.OTHER);
                 message.setMessageTime(System.currentTimeMillis()/10000);
                 chatMessages.add(message);
@@ -1489,7 +1490,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         PnApnsMessage apnsMessage = new PnApnsMessage();
         apnsMessage.setApsSound("melody");
-        apnsMessage.setApsAlert(json.toString());
+        apnsMessage.setApsAlert(json.getString("message"));
         apnsMessage.setApsBadge(1);
         apnsMessage.put("from",json.get("_from"));
         apnsMessage.put("to",json.get("to"));
@@ -2328,28 +2329,35 @@ Log.i(TAG,"back clicked");
 
 
                         JSONObject ne = new JSONObject(k.toString());
-                        Log.i("getStatus","getDealStatus success ne "+ne.getString("success"));
+                        Log.i("getStatus","getDealStatus success ne "+ne);
 
                         if(ne.getString("success").equalsIgnoreCase("true")){
 
-                           if(ne.getJSONObject("responseData").getString("status").equalsIgnoreCase("blocked")){
-                               SnackbarManager.show(
-                                       Snackbar.with(DealConversationActivity.this)
-                                               .position(Snackbar.SnackbarPosition.TOP)
-                                               .text("Counter user have blocked this deal. Message will not be sent.")
-                                               .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                            }
+                           if(ne.getJSONObject("responseData").getString("hdroom_status").equalsIgnoreCase("blocked")) {
+                               if (ne.getJSONObject("responseData").getString("blocked_by").equalsIgnoreCase(General.getSharedPreferences(DealConversationActivity.this, AppConstants.USER_ID))) {
+                                   SnackbarManager.show(
+                                           Snackbar.with(DealConversationActivity.this)
+                                                   .position(Snackbar.SnackbarPosition.TOP)
+                                                   .text("You have blocked this deal. Message will not be sent.")
+                                                   .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                               }
+                               else{
+                                   SnackbarManager.show(
+                                           Snackbar.with(DealConversationActivity.this)
+                                                   .position(Snackbar.SnackbarPosition.TOP)
+                                                   .text("Counter user have blocked this deal. Message will not be sent.")
+                                                   .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                               }
+                           }
                             else{
-                               sendMessage(edtTypeMsg.getText().toString());
+                               Log.i(TAG,"message to send is the "+messageTyped);
+                               sendMessage(messageTyped);
                             }
 
                         }
                         else if(ne.getString("success").equalsIgnoreCase("false")){
                             sendMessage(edtTypeMsg.getText().toString());
                         }
-
-
-
                     }
                     catch (JSONException e) {
                         Log.e("TAG", e.getMessage());

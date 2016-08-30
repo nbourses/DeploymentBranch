@@ -34,6 +34,7 @@ public class MyApplication extends MultiDexApplication {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -71,6 +72,7 @@ public class MyApplication extends MultiDexApplication {
     }
 
 
+
     public AuthCallback getAuthCallback(){
         return authCallback;
     }
@@ -80,4 +82,5 @@ public class MyApplication extends MultiDexApplication {
         super.onTerminate();
 
     }
+
 }

@@ -118,6 +118,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     @Bind(R.id.texPtype)
     TextView texPtype;
 
+    @Bind(R.id.pd)
+    TextView pd;
+
 //    @Bind(R.id.price)
 //    TextView price;
 
@@ -1018,11 +1021,15 @@ if(count<=220) {
 
 //        }
 
+
             preok.setUserRole("broker");
+            preok.setEmail("");
+            preok.setLocality("Mumbai");
             preok.setGcmId(SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
             preok.setLong(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
             preok.setLat(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
             preok.setPlatform("android");
+
             Log.i("PREOK", "user_id1 " + General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER));
             if (General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
                 preok.setUserId(General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
@@ -1035,7 +1042,7 @@ if(count<=220) {
 
             RestAdapter restAdapter = new RestAdapter.Builder()
                     //.setEndpoint(AppConstants.SERVER_BASE_URL_101)
-                    .setEndpoint(AppConstants.SERVER_BASE_URL_101)
+                    .setEndpoint(AppConstants.SERVER_BASE_URL_102)
                     .build();
             restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
@@ -1045,14 +1052,16 @@ if(count<=220) {
                     @Override
                     public void success(JsonElement jsonElement, Response response) {
                         //
+                        Log.i("PREOK CALLED", "preok success");
                         General.slowInternetFlag = false;
                         General.t.interrupt();
 
                         JsonObject k = jsonElement.getAsJsonObject();
                         try {
                             JSONObject ne = new JSONObject(k.toString());
+                            Log.i("PREOK CALLED", "ne is the" + ne);
                             JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
-                            Log.i("PREOK CALLED", "neighbours" + ne);
+
                             Log.i("PREOK CALLED", "neighbours" + neighbours);
 
                             jsonArrayReqLl = neighbours.getJSONArray("req_ll");
@@ -1081,13 +1090,13 @@ if(count<=220) {
 
                             onPositionSelected(currentSeekbarPosition, currentCount);
                         } catch (JSONException e) {
-                            Log.e(TAG, e.getMessage());
+                            Log.i("PREOK CALLED", "caught in exception inside preok"+e);
                         }
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-
+                        Log.i("PREOK CALLED", "Caught in exception preok " + jsonArrayReqLl);
                         General.slowInternetFlag = false;
                         General.t.interrupt();
                     }
@@ -1763,7 +1772,17 @@ catch (Exception e){
             selectedItemPosition = position;
             String ptype = null;
             String pstype;
+            String furnishing = "Semi-Furnished";
+            String possession_date = "";
+            if(jsonObjectArray.getJSONObject(position).getString("possession_date") != ""){
+                possession_date = jsonObjectArray.getJSONObject(position).getString("possession_date");
+
+            }
             pstype = jsonObjectArray.getJSONObject(position).getString("property_subtype");
+            if(jsonObjectArray.getJSONObject(position).getString("furnishing").equalsIgnoreCase("uf"))
+                furnishing = "Un-Furnished";
+            else if(jsonObjectArray.getJSONObject(position).getString("furnishing").equalsIgnoreCase("uf"))
+                furnishing = "Fully-Furnished";
             Log.i("debug circ","inside onclick");
             Log.i("debug circ","inside onclick m "+jsonObjectArray);
 
@@ -1784,6 +1803,7 @@ catch (Exception e){
                 ptype = "office";
             }
             */
+                    Log.i(TAG,"furnishing "+jsonObjectArray.getJSONObject(position).getString("furnishing"));
 
             ptype = jsonObjectArray.getJSONObject(position).getString("property_type");
 
@@ -1792,14 +1812,27 @@ catch (Exception e){
            // texPtype.setText("Property type: "+ptype);
             texPtype.setText(lookingSeeking);
            // texPstype.setText("Property subtype: "+pstype);
-if(ptype.equalsIgnoreCase("home"))
-    texPstype.setText(ptype.substring(0, 1).toUpperCase() + ptype.substring(1) + " (" + pstype + ")");
+if(ptype.equalsIgnoreCase("home")) {
+    texPstype.setText(furnishing + " " + ptype.substring(0, 1).toUpperCase() + ptype.substring(1));
 
-            else
-    texPstype.setText(ptype.substring(0, 1).toUpperCase() + ptype.substring(1) + " (" + pstype + "sq.ft)");
-       /*     texPtype.setText("Property Type: "+ptype);
+}
+            else {
+    texPstype.setText(furnishing + " " + ptype.substring(0, 1).toUpperCase() + ptype.substring(1) );
+    pstype = pstype + " sq.ft";
+}  /*     texPtype.setText("Property Type: "+ptype);
             texPstype.setText("Property Subtype: "+pstype);
             */
+Log.i("Diamond","diamond "+possession_date);
+            if(possession_date.isEmpty()){
+                Log.i("Diamond","diamond 1 "+possession_date);
+                pd.setVisibility(View.VISIBLE);
+                pd.setText(pstype);
+            }else{
+                Log.i("Diamond","diamond 2 "+possession_date);
+                pd.setVisibility(View.VISIBLE);
+                pd.setText(pstype+" by "+possession_date);
+            }
+
             //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")) {
                 rentText.setText("@" + General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")) + " /m.");
@@ -1862,6 +1895,7 @@ if(ptype.equalsIgnoreCase("home"))
                 //   displayOkText.setVisibility(View.GONE);
                 texPtype.setVisibility(View.GONE);
                 texPstype.setVisibility(View.GONE);
+                pd.setVisibility(View.GONE);
                 // pickContact.setVisibility(View.GONE);
                 // contactText.setVisibility(View.GONE);
             }

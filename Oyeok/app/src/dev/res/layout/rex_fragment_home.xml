@@ -823,11 +823,66 @@
             android:layout_alignParentBottom="true"
             android:visibility="visible">
 
+            <!--android:paddingTop="@dimen/eight_dp"-->
+            <!--android:paddingBottom="@dimen/eight_dp"-->
+<!--<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+            &lt;!&ndash;<TextView&ndash;&gt;
+                &lt;!&ndash;android:layout_width="100dp"&ndash;&gt;
+                &lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;
+                &lt;!&ndash;android:id="@+id/rental"&ndash;&gt;
+                &lt;!&ndash;android:textColor="@color/greenish_blue"&ndash;&gt;
+                &lt;!&ndash;android:textStyle="bold"&ndash;&gt;
+                &lt;!&ndash;android:visibility="visible"&ndash;&gt;
+                &lt;!&ndash;android:gravity="center_horizontal|center_vertical"&ndash;&gt;
+                &lt;!&ndash;android:text="home"/>&ndash;&gt;
+            &lt;!&ndash;<TextView&ndash;&gt;
+                &lt;!&ndash;android:layout_width="100dp"&ndash;&gt;
+                &lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;
+                &lt;!&ndash;android:id="@+id/sale"&ndash;&gt;
+                &lt;!&ndash;android:textColor="@color/greenish_blue"&ndash;&gt;
+                &lt;!&ndash;android:layout_marginLeft="130dp"&ndash;&gt;
+                &lt;!&ndash;android:textStyle="bold"&ndash;&gt;
+                &lt;!&ndash;android:visibility="visible"&ndash;&gt;
+                &lt;!&ndash;android:gravity="center_horizontal|center_vertical"&ndash;&gt;
+                &lt;!&ndash;android:text="home"/>&ndash;&gt;
+</RelativeLayout>-->
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Copyright © 2016 OYEOK."
+                    android:id="@+id/copyright"
+                    android:layout_alignParentBottom="true"
+                    android:visibility="gone"
+                    android:gravity="top"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:id="@+id/dateTime"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:visibility="gone"
+                    android:gravity="right|top"
+                    android:layout_weight="1" />
+            </LinearLayout>
 
             <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
                 android:id="@+id/phasedSeekBar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="wrap_content"/>
 
 
         </LinearLayout>
@@ -838,26 +893,6 @@
             android:layout_above="@+id/seekbar_linearlayout">-->
 
         <!--</RelativeLayout>-->
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Copyright © 2016 OYEOK. "
-            android:id="@+id/copyright"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/dateTime"
-            android:layout_gravity="right"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:visibility="gone" />
 
         <!--      <LinearLayout
                   android:orientation="horizontal"

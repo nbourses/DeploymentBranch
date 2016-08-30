@@ -941,10 +941,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         //if user is logged in then make phase seek bar visible, view is already made GONE from layout, on safer side we will still make it gone initially programatically
 
         phaseSeekBar.setVisibility(View.GONE);
-        if (!General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).isEmpty()) {
+       // if (!General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).isEmpty()) {
             phaseSeekBar.setVisibility(View.VISIBLE);
 
-        }
+       // }
 
 
         General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
@@ -1380,8 +1380,19 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                     else if(filterPtype == null){
 
                         if(searchQuery != null) {
+                            String searchString = "*";
+                            if(dealsa.getSpecCode() != ""){
+                                searchString = searchString + dealsa.getSpecCode();
+                            }
+                            if(dealsa.getName() != ""){
+                                searchString = searchString + dealsa.getName();
+                            }
+                            if(dealsa.getLocality() != ""){
+                                searchString = searchString + dealsa.getLocality();
+                            }
 
-                            if (dealsa.getSpecCode().contains(searchQuery)/*|| dealsa.getName().contains(searchQuery)||dealsa.getLocality().contains(searchQuery)*/){
+
+                            if (searchString.contains(searchQuery)/*|| dealsa.getName().contains(searchQuery)||dealsa.getLocality().contains(searchQuery)*/){
 
                                 if (default_deals == null) {
                                     default_deals = new ArrayList<BrokerDeals>();
@@ -1630,10 +1641,21 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                                         }
                                         else if (filterPtype == null) {
 
-                                            if(searchQuery != null)
-                                                if (deals.getSpecCode().contains(searchQuery) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
+                                            if(searchQuery != null) {
+                                                String searchString = "*";
+                                                if(deals.getSpecCode() != ""){
+                                                    searchString = searchString + deals.getSpecCode();
+                                                }
+                                                if(deals.getName() != ""){
+                                                    searchString = searchString + deals.getName();
+                                                }
+                                                if(deals.getLocality() != ""){
+                                                    searchString = searchString + deals.getLocality();
+                                                }
+                                                if (searchString.contains(searchQuery) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
                                                     listBrokerDeals_new.add(deals);
                                                 }
+                                            }
 
                                             if(searchQuery == null)
                                                 listBrokerDeals_new.add(deals); // add all
@@ -1642,10 +1664,12 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
                                     }
 
-                                    else if(deals.getOyeId().equalsIgnoreCase("unverified_user")){
-                                        Log.i("TRACE==", "list broker dealser 0 wagad " + deals);
-                                        listBrokerDeals_new.add(deals);
-                                        Log.i("TRACE==", "list broker dealser 1" + listBrokerDeals_new);
+                                    else if(deals.getOyeId().contains("unverified_user")){
+                                        if(deals.getSpecCode().contains("-"+TT)) {
+                                            Log.i("TRACE==", "list broker dealser 0 wagad " + deals.getSpecCode());
+                                            listBrokerDeals_new.add(deals);
+                                            Log.i("TRACE==", "list broker dealser 1" + listBrokerDeals_new);
+                                        }
                                 }
                                 }
 

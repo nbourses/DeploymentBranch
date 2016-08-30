@@ -511,7 +511,10 @@ TextView rental,resale;
         recordWorkout = (LinearLayout) rootView.findViewById(R.id.recordWorkout);
         ic_search = (ImageView) rootView.findViewById(R.id.ic_search);
 
-        if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
+
+
+        walkBeaconStatus();
+        /*if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
             beacon = "true";
             SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
         } else {
@@ -526,7 +529,7 @@ TextView rental,resale;
         } else {
             Walkthrough = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_WALKTHROUGH);
             Log.i("ischecked", "walkthrough3dashboard" + Walkthrough);
-        }
+        }*/
 
         Mmarker = (ImageView) rootView.findViewById(R.id.Mmarker);
 
@@ -2919,6 +2922,10 @@ TextView rental,resale;
                         if (beacon.equalsIgnoreCase("true")) {
                             beaconAlert(rootView);
                             Log.i("ischecked", "beacon_walk1  ==========   :" + beacon);
+                        }else
+                        {
+                            Log.i(TAG,"sasti masti 1 "+AppConstants.cardCounter);
+                            ((ClientMainActivity)getActivity()).showCard();
                         }
                     } catch (InterruptedException e) {e.printStackTrace();}
                     // rippleBackground4.startRippleAnimation();
@@ -2997,6 +3004,11 @@ TextView rental,resale;
                                 public void onFinish() {
 
                                     rippleBackground1.stopRippleAnimation();
+                                    Log.i(TAG,"sasti masti "+AppConstants.cardCounter);
+                                    try {
+                                        ((ClientMainActivity) getActivity()).showCard();
+                                    }
+                                    catch(Exception e){}
 
 
                                 }
@@ -3494,7 +3506,16 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
             RatePanel = true;
 //            tvFetchingrates.setVisibility(View.VISIBLE);
         }
+    }
 
+ public void walkBeaconStatus(){
+    if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
+        beacon = "true";
+        SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
+    } else {
+        beacon = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON);
+        // SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
+        Log.i("ischecked", "walkthrough3dashboard" + beacon);
     }
     public void OnOyeClick1(){
         openOyeScreen();
@@ -3521,6 +3542,28 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
 //        }
 
     }
+
+    if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("")) {
+        Walkthrough = "true";
+        SharedPrefs.save(getContext(), SharedPrefs.CHECK_WALKTHROUGH, "false");
+    } else {
+        Walkthrough = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_WALKTHROUGH);
+        Log.i("ischecked", "walkthrough3dashboard" + Walkthrough);
+    }
+
+
+     if(Walkthrough.equalsIgnoreCase("false") && beacon.equalsIgnoreCase("false")){
+         Log.i(TAG,"sasti masti 2 "+AppConstants.cardCounter);
+         ((ClientMainActivity)getActivity()).showCard();
+     }
+
+
+
+}
+
+
+
+
 
     private void StartOyeButtonAnimation() {
         Log.i("starting timer", " " + timer);

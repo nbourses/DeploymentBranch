@@ -22,7 +22,10 @@
                 android:id="@+id/toolbar"
                 layout="@layout/toolbar" />
 
+
         </LinearLayout>
+
+
 
         <ListView
             android:id="@+id/chat_list_view"

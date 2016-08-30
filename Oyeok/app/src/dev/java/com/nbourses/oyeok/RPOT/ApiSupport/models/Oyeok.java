@@ -17,6 +17,9 @@ public class Oyeok {
     @SerializedName("url")
     private String url;
 
+    @SerializedName("locality")
+    private String locality;
+
     @SerializedName("oye_id")
     private String oyeId;
 
@@ -628,6 +631,14 @@ public class Oyeok {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getLocality() {
+        return locality;
+    }
+
+    public void setLocality(String locality) {
+        this.locality = locality;
     }
 
 
