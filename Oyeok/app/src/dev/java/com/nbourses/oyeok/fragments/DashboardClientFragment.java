@@ -78,6 +78,7 @@ import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.Firebase.ChatList;
 import com.nbourses.oyeok.Firebase.DroomChatFirebase;
+import com.nbourses.oyeok.GooglePlacesApiServices.GooglePlacesReadTask;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
@@ -89,7 +90,6 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.activities.ClientMainActivity;
-import com.nbourses.oyeok.animations.FlipListener;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.interfaces.OnOyeClick;
@@ -245,6 +245,7 @@ Button home,shop,industrial,office;
     static int top, bottom, left, right, width, height, truncate_first;
     private int llMin=35, llMax=60, orMin=21000, orMax=27000;
     private String name, text;
+    private String[] config=new String[5];
 
     private static int count = 0;
     private static final String ischeck = "true";
@@ -253,6 +254,7 @@ Button home,shop,industrial,office;
     private int filterValueMultiplier = 950;
 TextView rental,resale;
     RelativeLayout property_type_layout;
+    LinearLayout dispProperty;
     private int countertut;
     private int[] or_psf = new int[5], ll_pm = new int[5];
     private LatLng loc;
@@ -266,8 +268,9 @@ TextView rental,resale;
     private Boolean autoc = false;
     private Boolean autocomplete = false;
   private  static  View  rootView;
-    private Boolean spanning = false,autoIsClicked=false;;
-
+    private Boolean spanning = false,autoIsClicked=false,pro_click=false;
+    RelativeLayout parenttop,parentbottom;
+    Animation zoomout_right, slide_up, zoomout_left, ani, zoomin_zoomout;
 //    Intent intent ;
 
     private RelativeLayout topView;
@@ -312,6 +315,8 @@ TextView rental,resale;
                     seekbar_linearlayout.setVisibility(View.VISIBLE);
                     seekbar_linearlayout.setAlpha(1f);
                     mPhasedSeekBar.setVisibility(View.VISIBLE);
+//                    property_type_layout.setVisibility(View.VISIBLE);
+                    dispProperty.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {}
         }
@@ -341,7 +346,7 @@ TextView rental,resale;
 
                 if ((intent.getExtras().getString("filterValue") != null)) {
                     // txtFilterValue.setText(Html.fromHtml(intent.getExtras().getString("filterValue")));
-                    Log.i("filtervalue","filtervalue "+intent.getExtras().getString("filterValue"));
+                    Log.i("filtervalue", "filtervalue " + intent.getExtras().getString("filterValue"));
                     txtFilterValue.setText(intent.getExtras().getString("filterValue"));
 
                 }
@@ -357,7 +362,10 @@ TextView rental,resale;
 
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            if (bhk.equalsIgnoreCase("1bhk"))
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            else
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
 
 //                        BroadCastMinMaxValue(llMin*filterValueMultiplier,llMax*filterValueMultiplier,orMin,orMax);
                         else
@@ -369,7 +377,10 @@ TextView rental,resale;
                         updateHorizontalPicker();
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            if (bhk.equalsIgnoreCase("2bhk"))
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            else
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
                         else
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("3bhk") || bhk.equalsIgnoreCase("<1600")) {
@@ -377,7 +388,10 @@ TextView rental,resale;
                         updateHorizontalPicker();
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            if (bhk.equalsIgnoreCase("3bhk"))
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            else
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
                         else
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("4bhk") || bhk.equalsIgnoreCase("<2100")) {
@@ -385,7 +399,10 @@ TextView rental,resale;
                         updateHorizontalPicker();
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            if (bhk.equalsIgnoreCase("4bhk"))
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            else
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
                         else
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     } else if (bhk.equalsIgnoreCase("4+bhk") || bhk.equalsIgnoreCase("<3000")) {
@@ -393,15 +410,19 @@ TextView rental,resale;
                         updateHorizontalPicker();
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            if (bhk.equalsIgnoreCase("4+bhk"))
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            else
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
+
                         else
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
-                    } else if (bhk.equalsIgnoreCase("<300")) {
+                    } else if (bhk.equalsIgnoreCase("<300") || bhk.equalsIgnoreCase("default")) {
                         filterValueMultiplier = 300;
                         updateHorizontalPicker();
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/psf");
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
                         else
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     }
@@ -440,12 +461,18 @@ TextView rental,resale;
         hideOnSearch = (FrameLayout) rootView.findViewById(R.id.hideOnSearch);
         seekbar_linearlayout = (LinearLayout) rootView.findViewById(R.id.seekbar_linearlayout);
         topView = (RelativeLayout) rootView.findViewById(R.id.top);
+        parentbottom=(RelativeLayout) rootView.findViewById(R.id.top);
+        parenttop=(RelativeLayout) rootView.findViewById(R.id.parent);
 //        hPicker = (RelativeLayout) rootView.findViewById(R.id.hPicker);
         // View locationButton = suppormanagerObj.getView().findViewById(2);
         if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
             General.setSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI, String.valueOf(System.currentTimeMillis()));
             Log.i("TIMESTAMP", "millis " + System.currentTimeMillis());
         }
+
+
+       init();
+
 
         Log.i("notifications", "sendNotification ==========================" + SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
@@ -646,6 +673,9 @@ TextView rental,resale;
                     autoIsClicked=true;
                     autoCompView.showDropDown();
                     // new LocationUpdater().execute();
+                    property_type_layout.setVisibility(View.GONE);
+                    dispProperty.setVisibility(View.GONE);
+
                     hideOnSearch.setVisibility(View.VISIBLE);
                     //seekbar_linearlayout.setVisibility(View.GONE);
                     mPhasedSeekBar.setVisibility(View.VISIBLE);
@@ -686,7 +716,9 @@ TextView rental,resale;
         mVisits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openOyeScreen();
+
+                OnOyeClick();
+              /*  openOyeScreen();
                 CancelAnimation();
 
                 if (clicked == true) {
@@ -707,7 +739,7 @@ TextView rental,resale;
                 } else {
                     RatePanel = true;
                     // tvFetchingrates.setVisibility(View.VISIBLE);
-                }
+                }*/
 
 
 //                openOyeScreen();
@@ -724,8 +756,8 @@ TextView rental,resale;
 //        });
 
 
-        mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
-        txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+        mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
+        txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
 
 
         try {
@@ -852,8 +884,8 @@ TextView rental,resale;
                             buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                             recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
                             customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
-                            mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
-                            txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+                            mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
+                            txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
                             UpdateRatePanel();
                             search_building_icon.setVisibility(View.GONE);
                         }
@@ -893,7 +925,8 @@ TextView rental,resale;
 
                     Log.i("MA999999 ", "MAP CLICK=========");
 
-                    spanning = false;
+                    onMapclicked();
+                   /* spanning = false;
                     mVisits.setEnabled(true);
                     txtFilterValue.setEnabled(true);
 
@@ -916,7 +949,7 @@ TextView rental,resale;
                             ll_marker.setEnabled(true);
                             tv_building.setVisibility(View.VISIBLE);
                         }
-                    }
+                    }*/
 
 
 
@@ -950,6 +983,8 @@ TextView rental,resale;
                             if (flag[i] == false) {
                                 Log.i("flag[i] == false ", "===========================");
 //                                mCustomerMarker[i].setIcon(icon2);
+                                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+                                ((ClientMainActivity)getActivity()).OpenBuildingOyeConfirmation();
                                 m=mCustomerMarker[i];
                                 mCustomerMarker[i].remove();
                                 mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).icon(icon2));
@@ -959,9 +994,8 @@ TextView rental,resale;
                                 tvRate.setVisibility(View.GONE);
                                 rupeesymbol.setVisibility(View.GONE);
                                 recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
-
-                                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
-                                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle1));
+                                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
+                                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
                                 ll_marker.setEnabled(false);
                                 mVisits.setEnabled(false);
                                 txtFilterValue.setEnabled(false);
@@ -996,6 +1030,7 @@ TextView rental,resale;
                                 flag[i] = true;
 
                             } else {
+                                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                                 m=mCustomerMarker[i];
                                 mCustomerMarker[i].remove();
                                 mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).icon(icon1));
@@ -1007,8 +1042,8 @@ TextView rental,resale;
                                 tvFetchingrates.setVisibility(View.GONE);
                                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 
-                                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
-                                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+                                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
+                                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
                                 mVisits.setEnabled(true);
                                 txtFilterValue.setEnabled(true);
                                 ll_marker.setEnabled(true);
@@ -1123,7 +1158,7 @@ TextView rental,resale;
          * animate views
          */
         mFlipAnimator = ValueAnimator.ofFloat(0f, 1f);
-        mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue,mVisits));
+//        mFlipAnimator.addUpdateListener(new FlipListener(txtFilterValue,mVisits));
 
 //        StartAnimation();
 //        Timer timer = new Timer();
@@ -1161,13 +1196,13 @@ TextView rental,resale;
 //}
 
 
-        //Tutorial and Beacon code
+
         if(Walkthrough.equalsIgnoreCase("true")) {
             Log.i("ischecked","walkthrough3dashboard1111111"+Walkthrough);
             tutorialAlert(rootView);
-//    beaconAlet(rootView);
+
             Walkthrough="false";
-    //SharedPrefs.save(getContext(),SharedPrefs.CHECK_WALKTHROUGH,Walkthrough);
+
         }
 
         else if(beacon.equalsIgnoreCase("true") ) {
@@ -1177,20 +1212,105 @@ TextView rental,resale;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-//    beaconAlet(rootView);
+
 
             beacon="false";
-           // SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, beacon);
-//    SharedPrefs.save(getContext(),SharedPrefs.CHECK_WALKTHROUGH,Walkthrough);
+
         }
 
-//&& Walkthrough.equalsIgnoreCase("false")
+
 
 
 
         return rootView;
     }
 
+
+
+
+
+
+    private void init() {
+        home = (Button) rootView.findViewById(R.id.home);
+        shop = (Button) rootView.findViewById(R.id.shop);
+        industrial = (Button) rootView.findViewById(R.id.industrial);
+        office = (Button) rootView.findViewById(R.id.office);
+
+        rental = (TextView) rootView.findViewById(R.id.rental);
+        resale = (TextView) rootView.findViewById(R.id.sale);
+        property_type_layout = (RelativeLayout) rootView.findViewById(R.id.property_type);
+        dispProperty=(LinearLayout) rootView.findViewById(R.id.property_type_layout);
+        zoomout_right = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_slide));
+        zoomout_left = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_slide_left));
+        slide_up = (AnimationUtils.loadAnimation(getContext(), R.anim.slide_up));
+        zoomin_zoomout = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_zoomin));
+        PropertyButtonSlideAnimation();
+        AppConstants.PROPERTY = "Home";
+
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pro_click=true;
+                property_type_layout.clearAnimation();
+                Property_type = "Home";
+                oyetext = "2BHK";
+                AppConstants.PROPERTY = "Home";
+                Log.i("home", "you are in home ");
+                parentbottom.removeView(property_type_layout);
+                parenttop.addView(property_type_layout,2);
+                PropertyButtonAnimation();
+                property_type_layout.setVisibility(View.GONE);
+
+            }
+        });
+        shop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pro_click=true;
+                property_type_layout.clearAnimation();
+                parentbottom.removeView(property_type_layout);
+                parenttop.addView(property_type_layout,2);
+                Property_type = "Shop";
+                oyetext = "SHOP";
+                AppConstants.PROPERTY = "Shop";
+                Log.i("home", "you are in shop ");
+                PropertyButtonAnimation();
+                property_type_layout.setVisibility(View.GONE);
+
+            }
+        });
+        industrial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pro_click=true;
+                property_type_layout.clearAnimation();
+                parentbottom.removeView(property_type_layout);
+                parenttop.addView(property_type_layout,2);
+                Property_type = "Industrial";
+                oyetext = "INDUS";
+                AppConstants.PROPERTY = "Industrial";
+                Log.i("home", "you are in industrial ");
+                PropertyButtonAnimation();
+                property_type_layout.setVisibility(View.GONE);
+
+            }
+        });
+        office.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pro_click=true;
+                property_type_layout.clearAnimation();
+                parentbottom.removeView(property_type_layout);
+                parenttop.addView(property_type_layout,2);
+                Log.i("home", "you are in office ");
+                Property_type = "Office";
+                AppConstants.PROPERTY = "Office";
+                oyetext = "OFFIC";
+                PropertyButtonAnimation();
+                property_type_layout.setVisibility(View.GONE);
+            }
+        });
+    }
 
 
 
@@ -1375,8 +1495,8 @@ TextView rental,resale;
         if (ll_marker.getId() == v.getId()) {
 
            // txtFilterValue.performClick();
-
-            openOyeScreen();
+            OnOyeClick();
+           /* openOyeScreen();
             Log.i("txtFilterValue","txtFilterValue =========================== "+SystemClock.currentThreadTimeMillis());
             CancelAnimation();
             if(clicked==true){
@@ -1398,14 +1518,16 @@ TextView rental,resale;
             else {
                 RatePanel = true;
                 // tvFetchingrates.setVisibility(View.VISIBLE);
-            }
+            }*/
         }
     }
 
     @OnClick(R.id.txtFilterValue)
     public void onTxtFilterValueClick(View v) {
 
-        openOyeScreen();
+
+        OnOyeClick();
+        /*openOyeScreen();
         Log.i("txtFilterValue","txtFilterValue =========================== "+SystemClock.currentThreadTimeMillis());
         CancelAnimation();
         if(clicked==true){
@@ -1426,7 +1548,7 @@ TextView rental,resale;
         else {
             RatePanel = true;
             // tvFetchingrates.setVisibility(View.VISIBLE);
-        }
+        }*/
     }
 
     private void openOyeScreen() {
@@ -1708,22 +1830,25 @@ TextView rental,resale;
                                 updateHorizontalPicker();
                                 marquee(500, 100);
 
-                                for (int i = 0; i < 5; i++) {
+                               /* for (int i = 0; i < 5; i++) {
 
                                     if (mCustomerMarker[i] != null)
                                         mCustomerMarker[i].remove();
-                                }
+                                }*/
+                                map.clear();
                                 buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
 
-                                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
-                                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+                                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
+                                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
                                 search_building_icon.setVisibility(View.GONE);
-
+                                StartOyeButtonAnimation();
                                 //if(mflag=false) {
 
 
                                 for (int i = 0; i < 5; i++) {
+                                    config[i] = getPrice.getResponseData().getBuildings().get(i).getConfig();
+                                    Log.i("TRACE", "RESPONSEDATAr" + name);
                                     name = getPrice.getResponseData().getBuildings().get(i).getName();
                                     Log.i("TRACE", "RESPONSEDATAr" + name);
 
@@ -1770,11 +1895,13 @@ TextView rental,resale;
                                     .text("We don't cater here yet")
                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());*/
                                 //horizontalPicker.stopScrolling();
-                                for (int i = 0; i < 5; i++) {
-
-                                    if (mCustomerMarker[i] != null)
-                                        mCustomerMarker[i].remove();
-                                }
+//                                for (int i = 0; i < 5; i++) {
+//
+//                                    if (mCustomerMarker[i] != null)
+//                                        mCustomerMarker[i].remove();
+//                                }
+                                map.clear();
+//                                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                                 tv_building.setVisibility(View.INVISIBLE);
                                 horizontalPicker.setVisibility(View.GONE);
                                 tvRate.setVisibility(View.INVISIBLE);
@@ -1795,11 +1922,13 @@ TextView rental,resale;
                             Snackbar.with(getActivity())
                                     .text("We don't cater here yet")
                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity()); */
-                            for (int i = 0; i < 5; i++) {
+                           /* for (int i = 0; i < 5; i++) {
 
                                 if (mCustomerMarker[i] != null)
                                     mCustomerMarker[i].remove();
-                            }
+                            }*/
+                            map.clear();
+//                            ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                             tv_building.setVisibility(View.INVISIBLE);
                             horizontalPicker.setVisibility(View.GONE);
                             tvRate.setVisibility(View.INVISIBLE);
@@ -1976,6 +2105,22 @@ TextView rental,resale;
     public void onPositionSelected(int position, int count) {
         if (count == 2) {
             if (position == 0) {
+
+
+                int index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
+                Log.i("indexxx", "index of layout : " + index);
+                if(index==2){
+                    property_type_layout.clearAnimation();
+                    parenttop.removeView(property_type_layout);
+                    parentbottom.addView(property_type_layout,5);}
+
+                PropertyButtonSlideAnimation();
+
+
+
+
+
+
                 marquee(500, 100);
 
                 SnackbarManager.show(
@@ -1990,7 +2135,18 @@ TextView rental,resale;
                 dbHelper.save(DatabaseConstants.brokerType, "LL");
                 dbHelper.save("brokerType", "On Rent");
                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                if (Property_type.equalsIgnoreCase("")) {
+                    rental.setText("Home");
+                    rental.setVisibility(View.VISIBLE);
+                    resale.setVisibility(View.INVISIBLE);
+                    property_type_layout.setVisibility(View.VISIBLE);
 
+                } else {
+                    rental.setVisibility(View.VISIBLE);
+                    resale.setVisibility(View.INVISIBLE);
+                    rental.setText(Property_type);
+                    property_type_layout.setVisibility(View.VISIBLE);
+                }
 
 
                 if(flag[INDEX]==true) {
@@ -2008,7 +2164,15 @@ TextView rental,resale;
 
                 marquee(500, 100);
 
+                int index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
+                Log.i("indexxx", "index of layout : " + index);
+                if(index==2){
+                    Log.i("indexx","inside if stmt");
+                    property_type_layout.clearAnimation();
+                    parenttop.removeView(property_type_layout);
+                    parentbottom.addView(property_type_layout,5);}
 
+                PropertyButtonSlideAnimation();
                 SnackbarManager.show(
                         Snackbar.with(getContext())
                                 .text("Buy/Sell Property Type set")
@@ -2022,6 +2186,19 @@ TextView rental,resale;
                 dbHelper.save(DatabaseConstants.brokerType, "OR");
                 dbHelper.save("brokerType", "For Sale");
 
+                if (Property_type.equalsIgnoreCase("")) {
+                    rental.setText("Home");
+                    resale.setVisibility(View.VISIBLE);
+                    rental.setVisibility(View.INVISIBLE);
+                    property_type_layout.setVisibility(View.VISIBLE);
+
+                } else {
+                    resale.setText(Property_type);
+                    resale.setVisibility(View.VISIBLE);
+                    rental.setVisibility(View.INVISIBLE);
+                    property_type_layout.setVisibility(View.VISIBLE);
+
+                }
 
                 if(flag[INDEX]==true) {
                     tv_building.setVisibility(View.VISIBLE);
@@ -2046,7 +2223,8 @@ TextView rental,resale;
        // ll_map.setAlpha(1f);
         hideOnSearch.setVisibility(View.GONE);
         seekbar_linearlayout.setVisibility(View.VISIBLE);
-
+//        property_type_layout.setVisibility(View.VISIBLE);
+        dispProperty.setVisibility(View.VISIBLE);
         seekbar_linearlayout.setBackgroundColor(Color.WHITE);
         seekbar_linearlayout.setAlpha(1);
         InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -2740,6 +2918,7 @@ TextView rental,resale;
                                     }
                                     catch(Exception e){}
 
+
                                 }
                             }.start();
 
@@ -2759,15 +2938,18 @@ TextView rental,resale;
 
 
 public void oyebuttonBackgrountColorOrange(){
-    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
-    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle1));
+    mVisits.clearAnimation();
+    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
+    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
     recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
 }
 
 
     public void oyebuttonBackgrountColorGreenishblue(){
-        mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.asset_oye_symbol_icon));
-        txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.deal_circle));
+        mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
+//        mVisits.startAnimation(zoomin_zoomout);
+        StartOyeButtonAnimation();
+        txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
         recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
     }
 
@@ -2906,7 +3088,10 @@ public void oyebuttonBackgrountColorOrange(){
                         if (now - lastTouched > SCROLL_TIME && !(motionEvent.getPointerCount() > 1) && isNetworkAvailable()) {
                             Log.i("MotionEvent.ACTION_UP", "=========================22");
                             Log.i("setScroll", "=======================setScrollGesturesEnabled==");
-
+                            ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+                            Intent in = new Intent(AppConstants.MARKERSELECTED);
+                            in.putExtra("markerClicked", "false");
+                            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
                             tvFetchingrates.setVisibility(View.VISIBLE);
                             mMarkerminmax.setVisibility(View.VISIBLE);
                             tvRate.setVisibility(View.VISIBLE);
@@ -3049,8 +3234,179 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
         startActivity(intent);
     }*/
 
+    protected void PropertyButtonAnimation() {
 
 
+        /*Intent intent = new Intent(AppConstants.PROPERTY_TYPE_BROADCAST);
+        intent.putExtra("protype",Property_type );
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);*/
+        if (brokerType.equalsIgnoreCase("rent")) {
+            ani = zoomout_left;
+            property_type_layout.startAnimation(ani);
+        } else {
+            ani = zoomout_right;
+            property_type_layout.startAnimation(ani);
+        }
+        ani.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+                if (brokerType.equalsIgnoreCase("rent")) {
+
+                    property_type_layout.clearAnimation();
+                    property_type_layout.setVisibility(View.GONE);
+//                    if(!Property_type.equalsIgnoreCase("home"))
+                    txtFilterValue.setText(oyetext);
+                    rental.setText(Property_type);
+
+
+                } else {
+
+                    property_type_layout.clearAnimation();
+                    property_type_layout.setVisibility(View.GONE);
+//                    if(!Property_type.equalsIgnoreCase("home"))
+                    txtFilterValue.setText(oyetext);
+                    resale.setText(Property_type);
+                }
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+
+        });
+
+    }
+
+
+
+    protected void PropertyButtonSlideAnimation() {
+
+
+
+        property_type_layout.startAnimation(slide_up);
+        pro_click=false;
+        slide_up.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if(  pro_click==false) {
+                    property_type_layout.clearAnimation();
+                    property_type_layout.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+
+        });
+
+    }
+
+
+
+    public void getNearbyLatLong() {
+        map.getUiSettings().setAllGesturesEnabled(false);
+
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesUrl.append("location=" + lat + "," + lng);
+        googlePlacesUrl.append("&radius=1000");
+        googlePlacesUrl.append("&types=" + "ATM");
+        googlePlacesUrl.append("&sensor=true");
+        googlePlacesUrl.append("&key=AIzaSyD9u7py1PGKcnlrO77NuY_40jxgIOhX34I");
+        Log.i("url", "Url for google Place" + googlePlacesUrl);
+        GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
+        Object[] toPass = new Object[2];
+        toPass[0] = map;
+        toPass[1] = googlePlacesUrl.toString();
+        googlePlacesReadTask.execute(toPass);
+
+    }
+
+    /*public void clearGooglemap() {
+        map.clear();
+    }*/
+
+    public void broadcastingConfirmationMsg(){
+        String text;
+        tv_building.setText("Inform brokers,get listing & schedule visits");
+        tvFetchingrates.setTextSize(12);
+        text="Brodcasting to <font color=#2dc4b6><big><b>"+AppConstants.NUMBER_OF_BROKER+"</b></big></font> brokers  <font color=#2dc4b6>@ <big><b>"+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+"</b></big></font>";
+        tvFetchingrates.setText(Html.fromHtml(text));
+
+    }
+
+
+
+    public void onMapclicked(){
+        spanning = false;
+        mVisits.setEnabled(true);
+        txtFilterValue.setEnabled(true);
+
+        for (int i = 0; i < 5; i++) {
+            if (flag[i] == true) {
+                mCustomerMarker[i].setIcon(icon1);
+                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+                Intent in = new Intent(AppConstants.MARKERSELECTED);
+                in.putExtra("markerClicked", "false");
+                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+                search_building_icon.setVisibility(View.GONE);
+                flag[i] = false;
+                horizontalPicker.setVisibility(View.VISIBLE);
+                tvFetchingrates.setVisibility(View.GONE);
+                recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                tvRate.setVisibility(View.VISIBLE);
+                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                rupeesymbol.setVisibility(View.VISIBLE);
+                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
+//                            mVisits.startAnimation(zoomin_zoomout);
+                StartOyeButtonAnimation();
+                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
+                ll_marker.setEnabled(true);
+                tv_building.setVisibility(View.VISIBLE);
+            }
+        }
+
+    }
+
+    public void OnOyeClick(){
+        openOyeScreen();
+        CancelAnimation();
+        AppConstants.GOOGLE_MAP = map;
+        if (clicked == true) {
+            oyebuttonBackgrountColorOrange();
+            clicked = false;
+            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
+            mHelperView.setEnabled(false);
+        } else {
+            oyebuttonBackgrountColorGreenishblue();
+            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+            mHelperView.setEnabled(true);
+            clicked = true;
+
+        }
+        if (RatePanel == true) {
+            UpdateRatePanel();
+            RatePanel = false;
+        } else {
+            RatePanel = true;
+//            tvFetchingrates.setVisibility(View.VISIBLE);
+        }
+    }
 
  public void walkBeaconStatus(){
     if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
@@ -3082,6 +3438,30 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
 
 
 
+
+
+    private void StartOyeButtonAnimation() {
+        Log.i("starting timer", " " + timer);
+        if (timer == null) {
+            timer = new Timer();
+            Log.i("starting timer2", " " + timer);
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.i("starting timer1", " " + timer);
+                                mVisits.startAnimation(zoomin_zoomout);
+                            }
+                        });
+                    }
+                }
+            }, 1000, 1000);
+
+        }
+    }
 
 
 
