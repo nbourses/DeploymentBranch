@@ -1335,6 +1335,7 @@ Log.i(TAG,"persy 1 ");
                 Log.i(TAG, "until loadCachedDeals " + c.getOk_id());
                 Log.i(TAG, "until loadCachedDeals " + c.getName());
                 Log.i(TAG, "until loadCachedDeals " + c.getLocality());
+                Log.i(TAG, "until loadCachedDeals " + c.getSpec_code());
                 BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), true);
 
                 if(cachedDealsLL == null){

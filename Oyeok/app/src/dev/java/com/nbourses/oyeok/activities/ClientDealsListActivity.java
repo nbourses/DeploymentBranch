@@ -1380,8 +1380,19 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                     else if(filterPtype == null){
 
                         if(searchQuery != null) {
+                            String searchString = "*";
+                            if(dealsa.getSpecCode() != ""){
+                                searchString = searchString + dealsa.getSpecCode();
+                            }
+                            if(dealsa.getName() != ""){
+                                searchString = searchString + dealsa.getName();
+                            }
+                            if(dealsa.getLocality() != ""){
+                                searchString = searchString + dealsa.getLocality();
+                            }
 
-                            if (dealsa.getSpecCode().contains(searchQuery)/*|| dealsa.getName().contains(searchQuery)||dealsa.getLocality().contains(searchQuery)*/){
+
+                            if (searchString.contains(searchQuery)/*|| dealsa.getName().contains(searchQuery)||dealsa.getLocality().contains(searchQuery)*/){
 
                                 if (default_deals == null) {
                                     default_deals = new ArrayList<BrokerDeals>();
@@ -1630,10 +1641,21 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                                         }
                                         else if (filterPtype == null) {
 
-                                            if(searchQuery != null)
-                                                if (deals.getSpecCode().contains(searchQuery) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
+                                            if(searchQuery != null) {
+                                                String searchString = "*";
+                                                if(deals.getSpecCode() != ""){
+                                                    searchString = searchString + deals.getSpecCode();
+                                                }
+                                                if(deals.getName() != ""){
+                                                    searchString = searchString + deals.getName();
+                                                }
+                                                if(deals.getLocality() != ""){
+                                                    searchString = searchString + deals.getLocality();
+                                                }
+                                                if (searchString.contains(searchQuery) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
                                                     listBrokerDeals_new.add(deals);
                                                 }
+                                            }
 
                                             if(searchQuery == null)
                                                 listBrokerDeals_new.add(deals); // add all

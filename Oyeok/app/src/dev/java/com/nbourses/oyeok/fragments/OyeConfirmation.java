@@ -172,12 +172,15 @@ public class OyeConfirmation extends Fragment {
             public void onClick(View v) {
 
                 if (General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                    getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
+
                     ((ClientMainActivity)getActivity()).signUp();
-                    General.publishOye(getContext());
+                   // General.publishOye(getContext());
+
 
                 }else
                     General.publishOye(getContext());
-//                ((ClientMainActivity)getActivity()).closeOyeConfirmation();
+             // ((ClientMainActivity)getActivity()).closeOyeConfirmation();
 
             }
         });
