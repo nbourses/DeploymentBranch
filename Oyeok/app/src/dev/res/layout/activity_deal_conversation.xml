@@ -13,6 +13,20 @@
         android:layout_height="0dp"
         android:layout_weight="100">
 
+        <LinearLayout
+            android:id="@+id/container_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/toolbar" />
+
+
+
+        </LinearLayout>
+
 
         <ListView
             android:id="@+id/chat_list_view"
@@ -24,7 +38,8 @@
             android:scrollbarStyle="outsideOverlay"
             android:layout_above="@+id/bottomlayout"
             android:layout_height="match_parent"
-            android:stackFromBottom="true">
+            android:stackFromBottom="true"
+            android:layout_below="@+id/container_toolbar">
 
         </ListView>
 

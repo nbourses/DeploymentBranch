@@ -941,10 +941,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         //if user is logged in then make phase seek bar visible, view is already made GONE from layout, on safer side we will still make it gone initially programatically
 
         phaseSeekBar.setVisibility(View.GONE);
-        if (!General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).isEmpty()) {
+       // if (!General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).isEmpty()) {
             phaseSeekBar.setVisibility(View.VISIBLE);
 
-        }
+       // }
 
 
         General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
@@ -1642,10 +1642,12 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
                                     }
 
-                                    else if(deals.getOyeId().equalsIgnoreCase("unverified_user")){
-                                        Log.i("TRACE==", "list broker dealser 0 wagad " + deals);
-                                        listBrokerDeals_new.add(deals);
-                                        Log.i("TRACE==", "list broker dealser 1" + listBrokerDeals_new);
+                                    else if(deals.getOyeId().contains("unverified_user")){
+                                        if(deals.getSpecCode().contains("-"+TT)) {
+                                            Log.i("TRACE==", "list broker dealser 0 wagad " + deals.getSpecCode());
+                                            listBrokerDeals_new.add(deals);
+                                            Log.i("TRACE==", "list broker dealser 1" + listBrokerDeals_new);
+                                        }
                                 }
                                 }
 

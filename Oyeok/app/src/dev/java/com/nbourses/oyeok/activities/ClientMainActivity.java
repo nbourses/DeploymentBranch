@@ -385,46 +385,6 @@ private void alertbuilder()
         AppConstants.CURRENT_USER_ROLE ="client";
         ShortcutBadger.removeCount(this);
         Log.i(TAG,"popup window shown 1 ");
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                Log.i(TAG,"popup window shown delay ");
-                if(General.getSharedPreferences(ClientMainActivity.this,"popcard").equalsIgnoreCase("yes")) {
-                    showOptions(ClientMainActivity.this);
-                    General.setSharedPreferences(ClientMainActivity.this,"popcard","");
-                }
-              //  DFragment d = new DFragment();
-               //loadFragment(d,null,R.id.container_Signup,"");
-              //  d.setArguments(null);
-                /*containerSignup.setBackgroundColor(Color.parseColor("#CC000000"));
-                containerSignup.setClickable(true);*/
-                //containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-
-                /*fragmentTransaction.addToBackStack("card");
-                fragmentTransaction.replace(R.id.container_Signup, d);
-                fragmentTransaction.commitAllowingStateLoss();*/
-
-              CardFragment c = new CardFragment();
-                //loadFragment(d,null,R.id.container_Signup,"");
-                c.setArguments(null);
-//                FragmentManager fragmentManager = getSupportFragmentManager();
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-                /*card.setClickable(true);
-                fragmentTransaction.addToBackStack("card");
-                fragmentTransaction.replace(R.id.card, c);
-                fragmentTransaction.commitAllowingStateLoss();
-                cardFlag = true;*/
-
-
-            }
-        }, 2000);
-
         Log.i(TAG,"popup window shown 5 ");
 //        lintent=getIntent();
 //        String txt=lintent.getStringExtra("client_heading");
@@ -450,12 +410,15 @@ private void alertbuilder()
         //General.settSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER, yes);
 //       General.setSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER, "yes");
         init();
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        AppConstants.cardCounter++;
+        Log.i(TAG,"fork resumed "+AppConstants.cardCounter);
         // Register mMessageReceiver to receive messages.
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(oyebuttondata, new IntentFilter(AppConstants.ON_FILTER_VALUE_UPDATE));
@@ -471,6 +434,7 @@ private void alertbuilder()
     @Override
     protected void onPause() {
         super.onPause();
+        Log.i(TAG,"fork paused");
         // Unregister since the activity is not visible
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(closeOyeScreenSlide);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(oyebuttondata);
@@ -1605,5 +1569,53 @@ Log.i(TAG,"Image is the "+out);
 
     }
 
-}
+    public void showCard() {
+
+            if (AppConstants.cardCounter > 3) {
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Log.i(TAG, "popup window shown delay ");
+                        if (General.getSharedPreferences(ClientMainActivity.this, "popcard").equalsIgnoreCase("yes")) {
+                            showOptions(ClientMainActivity.this);
+                            General.setSharedPreferences(ClientMainActivity.this, "popcard", "");
+                        }
+                        //  DFragment d = new DFragment();
+                        //loadFragment(d,null,R.id.container_Signup,"");
+                        //  d.setArguments(null);
+                        containerSignup.setBackgroundColor(Color.parseColor("#CC000000"));
+                        containerSignup.setClickable(true);
+                        //containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+                /*fragmentTransaction.addToBackStack("card");
+                fragmentTransaction.replace(R.id.container_Signup, d);
+                fragmentTransaction.commitAllowingStateLoss();*/
+
+                        CardFragment c = new CardFragment();
+                        //loadFragment(d,null,R.id.container_Signup,"");
+                        c.setArguments(null);
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+                        card.setClickable(true);
+                        fragmentTransaction.addToBackStack("card");
+                        fragmentTransaction.replace(R.id.card, c);
+                        fragmentTransaction.commitAllowingStateLoss();
+                        cardFlag = true;
+                        AppConstants.cardCounter = 0;
+
+                    }
+
+                }, 2000);
+            }
+        }
+    }
+
+
 
