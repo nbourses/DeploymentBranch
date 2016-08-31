@@ -71,6 +71,7 @@ public class MyApplication extends MultiDexApplication {
     }
 
 
+
     public AuthCallback getAuthCallback(){
         return authCallback;
     }
@@ -80,4 +81,5 @@ public class MyApplication extends MultiDexApplication {
         super.onTerminate();
 
     }
+
 }

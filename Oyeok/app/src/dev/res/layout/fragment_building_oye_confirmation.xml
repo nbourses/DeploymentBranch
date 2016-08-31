@@ -1,0 +1,145 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:background="@color/white"
+    tools:context="com.nbourses.oyeok.fragments.BuildingOyeConfirmation">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="Available Size:"
+            android:textStyle="bold"
+            android:gravity="center_horizontal|center_vertical"
+            android:foregroundGravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:gravity="center_horizontal|center_vertical"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/conf"
+                android:text="1BHK"
+                android:visibility="gone"
+                android:layout_marginLeft="15dp"
+                android:textColor="@color/black"
+                android:layout_marginRight="15dp"
+                android:foregroundGravity="center_horizontal|center_vertical"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/conf1"
+                android:text="2BHK"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/black"
+                android:foregroundGravity="center_horizontal"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/conf2"
+                android:text="3BHK"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="15dp"
+                android:textColor="@color/black"
+                android:foregroundGravity="center_horizontal"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/conf3"
+                android:text="3.5BHK"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="15dp"
+                android:textColor="@color/black"
+                android:foregroundGravity="center_horizontal"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/conf4"
+                android:text="4BHK"
+                android:visibility="gone"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/black"
+                android:foregroundGravity="center_horizontal"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/black_overlay"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/listingcount"
+            android:text="In last 6 Months: 3 Txns | 30 listings on 5 portals"
+            android:textColor="@color/black"
+            android:gravity="center_horizontal|center_vertical"/>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/black_overlay"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/sharing"
+            android:text="Share this data with your contact"
+            android:textColor="@color/black"
+            android:gravity="center_horizontal|center_vertical"/>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/black_overlay"/>
+    </LinearLayout>
+
+</LinearLayout>

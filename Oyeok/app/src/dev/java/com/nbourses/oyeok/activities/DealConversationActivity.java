@@ -179,12 +179,15 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private Boolean oyed = false;
     private Boolean okyed = false;
 
+    private Boolean UnverifiedDeal = false;
+
     // File fileToUpload = new File("/storage/sdcard0/Pictures/Screenshots/photos.png");
     private File fileToUpload = new File("/storage/emulated/0/DCIM/Facebook/FB_IMG_1467990952511.jpg");
     private File fileToDownload = new File("/storage/sdcard0/Pictures/OYEOK");
     public AmazonS3 s3;
     public TransferUtility transferUtility;
     private String imageName = null;
+    private String messageTyped;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -193,12 +196,22 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     };
 
 
+    private BroadcastReceiver unverifiedDeal = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Bundle bundle = getIntent().getExtras();
+            UnverifiedDeal = bundle.getBoolean("unverfieddeals");
+        }
+    };
+
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             networkConnectivity();
         }
     };
+
     private BroadcastReceiver chatMessageReceived = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -208,14 +221,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             Bundle b = (Bundle)intent.getExtras();
 
-
-
           /* Bundle b = (Bundle)intent.getExtras().get("bundle");
             Log.i(TAG,"message received is b"+b);*/
-
-
-
-
 
         }
     };
@@ -228,7 +235,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
             i(TAG, "on edtTypeMsg changed");
+
             if (edtTypeMsg.getText().toString().equals("")) {
                 //when nothing is typed shows attachement symbol
                 imgSendMsg.setImageResource(R.drawable.attachment);
@@ -269,7 +278,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //        LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
         // UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
 
+        String userId = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
+
+        if(userId == null)
         UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
+        else
+        UUID = userId;
+
         i("WHERENOW", "UUID " + UUID);
 
         pubnub = new Pubnub(AppConstants.PUBNUB_PUBLISH_KEY, AppConstants.PUBNUB_SUBSCRIBE_KEY);
@@ -566,17 +581,19 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
 
-                Log.i(TAG,"imageshare 2");
-
+                Log.i(TAG,"imageshare 2 edittypemsg "+edtTypeMsg.getText().toString());
+                messageTyped = edtTypeMsg.getText().toString();
                 //send message
 
 
+                Log.i("CHANNEL NAME"," "+channel_name);
                 final ChatMessage message = new ChatMessage();
                 message.setUserName("self");
                 message.setMessageStatus(ChatMessageStatus.SENT);
-                message.setMessageText(edtTypeMsg.getText().toString());
+                message.setMessageText(messageTyped);
                 message.setUserType(ChatMessageUserType.OTHER);
                 message.setMessageTime(System.currentTimeMillis()/10000);
+
                 chatMessages.add(message);
                 listAdapter.notifyDataSetChanged();
 
@@ -623,7 +640,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             else{
                 Log.i(TAG,"getDealStatus ");
-                getDealStatus(this,channel_name);
+                String demo_channel = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
+
+                if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCase(demo_channel))
+                    getDealStatus(this,channel_name);
+                else
+                    sendMessage(messageTyped);
             }
         }
     }
@@ -872,6 +894,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private void displayMessage(JSONObject jsonMsg) {
 
         try{
+
             if(!jsonMsg.getJSONObject("pn_gcm").getJSONObject("data").getString("_from").equalsIgnoreCase(General.getSharedPreferences(this,AppConstants.USER_ID)) && !jsonMsg.getJSONObject("pn_gcm").getJSONObject("data").getString("_from").equalsIgnoreCase(General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI)) ) {
                 JSONObject j = jsonMsg.getJSONObject("pn_gcm").getJSONObject("data");
                 Log.i(TAG, "in displayMessage rt " + j);
@@ -943,7 +966,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     imageName = imageUrl.substring(imageUrl.lastIndexOf("/")+1);
 
                     Log.i("grrrr IMG IMAGE NAME"," "+imageName);
-
                     Log.i(TAG, "calipso" + userSubtype);
 
                 }
@@ -1185,16 +1207,27 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             Log.i(TAG, "Role is not properly saved in shared preferences" + role);
 
         try {
+
             JSONObject jsonMsg = new JSONObject();
-            jsonMsg.put("_from", General.getSharedPreferences(this ,AppConstants.USER_ID));
+
+            if(General.getSharedPreferences(this ,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes"))
+                 jsonMsg.put("_from", General.getSharedPreferences(this ,AppConstants.USER_ID));
+            else
+                jsonMsg.put("_from", General.getSharedPreferences(this ,AppConstants.TIME_STAMP_IN_MILLI));
+
             jsonMsg.put("name", dbHelper.getValue(DatabaseConstants.name));
             jsonMsg.put("to", channel_name);
             jsonMsg.put("message", messageText);
             jsonMsg.put("status", "");
 
+            Log.i("TEST", "jsonMsg in send msg USER_ID " + General.getSharedPreferences(this ,AppConstants.USER_ID));
+            Log.i("TEST", "jsonMsg in send msg DEMO_ID " + General.getSharedPreferences(this ,AppConstants.TIME_STAMP_IN_MILLI));
+
             jsonMsgtoWhereNow = jsonMsg;
 
-            Log.i("TEST", "jsonMsgtoWhereNow in send msg " + jsonMsgtoWhereNow);
+//            Log.i("TEST", "jsonMsg in send msg from " + General.getSharedPreferences(this ,AppConstants.USER_ID));
+//            Log.i("TEST", "jsonMsg in send msg from " + General.getSharedPreferences(this ,AppConstants.TIME_STAMP_IN_MILLI));
+
             //publish message
 
 
@@ -1202,9 +1235,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 channel_name = General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI);
 
-
             }
 
+            Log.i("TEST", "jsonMsg in send msg _from" + jsonMsg);
             sendNotification(jsonMsg);
             displayMessage(jsonMsg);
             lastMessageTime = String.valueOf(System.currentTimeMillis());
@@ -2217,7 +2250,6 @@ Log.i(TAG,"back clicked");
                     Log.i("getStatus CALLED","getDealStatus success ");
 
 
-
                     JsonObject k = jsonElement.getAsJsonObject();
                     try {
 
@@ -2225,28 +2257,35 @@ Log.i(TAG,"back clicked");
 
 
                         JSONObject ne = new JSONObject(k.toString());
-                        Log.i("getStatus","getDealStatus success ne "+ne.getString("success"));
+                        Log.i("getStatus","getDealStatus success ne "+ne);
 
                         if(ne.getString("success").equalsIgnoreCase("true")){
 
-                           if(ne.getJSONObject("responseData").getString("status").equalsIgnoreCase("blocked")){
-                               SnackbarManager.show(
-                                       Snackbar.with(DealConversationActivity.this)
-                                               .position(Snackbar.SnackbarPosition.TOP)
-                                               .text("Counter user have blocked this deal. Message will not be sent.")
-                                               .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                            }
+                           if(ne.getJSONObject("responseData").getString("hdroom_status").equalsIgnoreCase("blocked")) {
+                               if (ne.getJSONObject("responseData").getString("blocked_by").equalsIgnoreCase(General.getSharedPreferences(DealConversationActivity.this, AppConstants.USER_ID))) {
+                                   SnackbarManager.show(
+                                           Snackbar.with(DealConversationActivity.this)
+                                                   .position(Snackbar.SnackbarPosition.TOP)
+                                                   .text("You have blocked this deal. Message will not be sent.")
+                                                   .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                               }
+                               else{
+                                   SnackbarManager.show(
+                                           Snackbar.with(DealConversationActivity.this)
+                                                   .position(Snackbar.SnackbarPosition.TOP)
+                                                   .text("Counter user have blocked this deal. Message will not be sent.")
+                                                   .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                               }
+                           }
                             else{
-                               sendMessage(edtTypeMsg.getText().toString());
+                               Log.i(TAG,"message to send is the "+messageTyped);
+                               sendMessage(messageTyped);
                             }
 
                         }
                         else if(ne.getString("success").equalsIgnoreCase("false")){
                             sendMessage(edtTypeMsg.getText().toString());
                         }
-
-
-
                     }
                     catch (JSONException e) {
                         Log.e("TAG", e.getMessage());

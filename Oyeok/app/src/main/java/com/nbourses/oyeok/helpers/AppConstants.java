@@ -19,6 +19,7 @@ public class AppConstants {
     public static  int maxSale = 27000;
 
     public static final int slowInternet = 5;
+    public static int cardCounter = 0;
 
     public static PopupWindow optionspu;
     public static PopupWindow optionspu1;

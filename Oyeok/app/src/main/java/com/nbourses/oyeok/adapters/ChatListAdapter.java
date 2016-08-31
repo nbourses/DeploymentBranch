@@ -452,6 +452,7 @@ private WebView i;
     public int getItemViewType(int position) {
 
             ChatMessage message = chatMessages.get(position);
+//        Log.i("USERTYPE"," "+message.getUserType().ordinal());
             return message.getUserType().ordinal();
 
     }
@@ -504,10 +505,6 @@ private WebView i;
         public TextView messageTextView;
         public TextView timeTextView;
     }
-
-
-
-
 
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

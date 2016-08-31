@@ -927,10 +927,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
         phaseSeekBar.setVisibility(View.GONE);
 
-        if (!General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).isEmpty()) {
+       // if (!General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).isEmpty()) {
             phaseSeekBar.setVisibility(View.VISIBLE);
 
-        }
+       // }
 
 
         General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
@@ -1065,6 +1065,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     bgtxtlayout.setVisibility(View.VISIBLE);
                     bgtxt.setText("Go Back &,\nBroadcast yours needs\nto create New DEALs\nwith more Brokers");
                 }else{bgtxtlayout.setVisibility(View.GONE);}
+
                 listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -1537,10 +1538,12 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
                                     }
 
-                                    else if(deals.getOyeId().equalsIgnoreCase("unverified_user")){
-                                        Log.i("TRACE==", "list broker dealser 0 wagad " + deals);
-                                        listBrokerDeals_new.add(deals);
-                                        Log.i("TRACE==", "list broker dealser 1" + listBrokerDeals_new);
+                                    else if(deals.getOyeId().contains("unverified_user")){
+                                        if(deals.getSpecCode().contains("-"+TT)) {
+                                            Log.i("TRACE==", "list broker dealser 0 wagad " + deals.getSpecCode());
+                                            listBrokerDeals_new.add(deals);
+                                            Log.i("TRACE==", "list broker dealser 1" + listBrokerDeals_new);
+                                        }
                                 }
                                 }
 
@@ -1728,135 +1731,8 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 //        intent.putExtra("channel_name","my_channel");
             intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
             startActivity(intent);
-//        }
-//        else
-//        {
-//            supportChat.setVisibility(View.GONE);
-//            view.setVisibility(View.GONE);
-//            listViewDeals.setVisibility(View.GONE);
-//            fragment_container1.setVisibility(View.VISIBLE);
-//            Bundle bundle = new Bundle();
-//            bundle.putStringArray("Chat", null);
-//            bundle.putString("lastFragment", "Chat");
-//
-////            FrameLayout frame = new FrameLayout(this);
-////            frame.setId(SIGNUP_VIEW_ID);
-////            setContentView(frame, new LayoutParams(
-////                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-//
-//
-//            SignUpFragment signUpFragment = new SignUpFragment();
-////            signUpFragment.getView().bringToFront();
-//            loadFragment(signUpFragment, bundle, R.id.fragment_container1, "");
-//            Log.i("Signup called =", "Sign up");
-
-//        }
-    }
-
-    /*private void init() {
-        try {
-            publishLetsOyes = PublishLetsOye.getAll();
-            if (publishLetsOyes.size() > 0) {
-                txtNoActiveDeal.setVisibility(View.GONE);
-                listViewDeals.setVisibility(View.VISIBLE);
-                DealsListAdapter listAdapter = new DealsListAdapter(publishLetsOyes, this);
-                listViewDeals.setAdapter(listAdapter);
-                listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
-                        String clientOkId = General.getSharedPreferences(getApplicationContext(), AppConstants.CLIENT_OK_ID);
-                        intent.putExtra(AppConstants.OK_ID, clientOkId);
-                        startActivity(intent);
-                    }
-                });
-            }
-            else {
-                txtNoActiveDeal.setVisibility(View.VISIBLE);
-                listViewDeals.setVisibility(View.GONE);
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("My Deals");
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
-
-
-
-
-   /* @OnClick(R.id.search)
-    public void onClickzSearch(View v) {
-        showbgtext = false;
-
-        filterPtype = null;
-        searchgone.setVisibility(View.VISIBLE);
-        search.setVisibility(View.GONE);
-        supportChat.clearAnimation();
-        supportChat.setVisibility(View.GONE);
-
-        if(listBrokerDeals_new != null)
-            listBrokerDeals_new.clear();
-        if(default_deals != null)
-            default_deals.clear();
-        loadDefaultDeals();
-        loadBrokerDeals();
-
-        supportChat.setVisibility(View.GONE);
-
-        searchView.setVisibility(View.VISIBLE);
-        searchView.startAnimation(bounce);
-        searchView.setIconified(false);
-
-
-
 
     }
-
-    @OnClick(R.id.searchgone)
-    public void onClickzSearchgone(View v) {
-        showbgtext = true;
-
-        filterPtype = null;
-        searchQuery = null;
-        search.setVisibility(View.VISIBLE);
-        searchgone.setVisibility(View.GONE);
-        searchView.clearAnimation();
-        searchView.setVisibility(View.GONE);
-        supportChat.clearAnimation();
-        supportChat.setVisibility(View.VISIBLE);
-        supportChat.startAnimation(bounce);
-
-
-        if(listBrokerDeals_new != null)
-            listBrokerDeals_new.clear();
-        if(default_deals != null)
-            default_deals.clear();
-        loadDefaultDeals();
-        loadBrokerDeals();
-
-
-
-
-
-
-    }*/
-
-
-
-
 
 
 
@@ -1876,7 +1752,6 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
             loadDefaultDeals();
             //RefreshDrooms = false;
 
-
             loadBrokerDeals();
 
             Toast.makeText(context, "We have just assigned a broker to your request.", Toast.LENGTH_LONG).show();
@@ -1887,9 +1762,11 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
     @Override
     protected void onDestroy() {
+
         Log.i("SHINE3", "dystroyed");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(handlePushNewMessage);
         super.onDestroy();
+
     }
 
     private void loadFragment(Fragment fragment, Bundle args, int containerId, String title) {
@@ -1929,6 +1806,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
             loadDefaultDeals();
             loadBrokerDeals();
+
             getSupportActionBar().setTitle("DEALING ROOMs (Rental)");
             SnackbarManager.show(
                     Snackbar.with(this)

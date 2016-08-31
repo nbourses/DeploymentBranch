@@ -313,8 +313,18 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 Log.i(TAG, "phoneNumber " + phoneNumber);
                 Log.i(TAG, "getPhoneNumber " + session.getPhoneNumber());
                 mobile_number = session.getPhoneNumber();
+                Log.i(TAG,"mobile number is the 2 "+mobile_number);
 
-                submitButton();
+                if(mobile_number.isEmpty()){
+                    SnackbarManager.show(
+                            Snackbar.with(context)
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Currently We are experiencing issues with sign ups, Please try again later.")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }
+                else{
+                    submitButton();
+                }
             }
 
             @Override
@@ -547,7 +557,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 Log.i("TRACE", "inside submitprofile button");
 
 
-
+                Log.i(TAG,"mobile number is the 1 "+mobile_number);
                 Log.i("TRACE inside sb","mobile_number");
                 Log.i("TRACE inside sb",""+mobile_number);
 
@@ -581,6 +591,7 @@ if(newUser==true) {
         Digits.authenticate(authCallback, R.style.CustomDigitsTheme);
 }else
                     Digits.authenticate(authCallback, R.style.CustomDigitsTheme);
+
 
 
 //                context = getContext();
@@ -714,7 +725,7 @@ if(newUser==true) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(API).setLogLevel(RestAdapter.LogLevel.FULL).build();
         OyeokApiService service;
-
+Log.i(TAG,"mobile number is the "+mobile_number);
         User user = new User();
         user.setMobileNo(mobile_number);
         user.setMobileCode("+91");
@@ -760,6 +771,66 @@ if(newUser==true) {
         userProfileViewModel.setDeviceId(my_user_id);
         General.setSharedPreferences(getContext(),AppConstants.NAME,Sname); //necessary to get name for default deal
 
+/*
+
+        if(General.isNetworkAvailable(getContext())) {
+            General.slowInternet(getContext());
+
+            RestAdapter restAdapter1 = new RestAdapter.Builder()
+                    .setEndpoint(AppConstants.SERVER_BASE_URL)
+                    .build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+            OyeokApiService oyeokApiService = restAdapter1.create(OyeokApiService.class);
+
+
+            try {
+                oyeokApiService.signUp(user, new Callback<JsonElement>() {
+                    @Override
+                    public void success(JsonElement jsonElement, Response response) {
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
+                        Log.i("signup CALLED", "updateStatus success ");
+
+
+                        JsonObject k = jsonElement.getAsJsonObject();
+                        try {
+
+                            Log.i("signup", "updateStatus success response " + response);
+
+
+                            JSONObject ne = new JSONObject(k.toString());
+                            Log.i("signup", "updateStatus success ne " + ne.getString("success"));
+
+
+                        } catch (JSONException e) {
+                            Log.e("TAG", e.getMessage());
+                            Log.i("signup CALLED", "updateStatus Failed " + e.getMessage());
+                        }
+
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
+                        Log.i("BROKER BUILDINGS CALLED", "update status failed " + error);
+                    }
+                });
+
+
+            } catch (Exception e) {
+                Log.e("TAG", e.getMessage());
+            }
+
+        }
+        else{
+
+            General.internetConnectivityMsg(getContext());
+        }
+
+*/
 
         if(General.isNetworkAvailable(getContext())) {
             General.slowInternet(getContext());

@@ -42,7 +42,6 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
-import com.nbourses.oyeok.fragments.OyeScreenFragment;
 import com.nbourses.oyeok.fragments.ShareOwnersNo;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;

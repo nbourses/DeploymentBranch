@@ -8,9 +8,33 @@ import java.util.List;
 
 public class Building {
 
+    @SerializedName("config")
+    @Expose
+    private String config;
     @SerializedName("name")
     @Expose
     private String name;
+
+    public String getRate_growth() {
+        return rate_growth;
+    }
+
+    public void setRate_growth(String rate_growth) {
+        this.rate_growth = rate_growth;
+    }
+
+    @SerializedName("rate_growth")
+    @Expose
+    private String rate_growth;
+
+    public String getConfig() {
+        return config;
+    }
+
+    public void setConfig(String config) {
+        this.config = config;
+    }
+
     @SerializedName("or_psf")
     @Expose
     private String orPsf;
@@ -20,6 +44,8 @@ public class Building {
     @SerializedName("loc")
     @Expose
     private List<String> loc = new ArrayList<String>();
+
+
 
     /**
      *

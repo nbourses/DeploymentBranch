@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/parent"
     xmlns:fab="http://schemas.android.com/apk/res-auto">
 
 
@@ -24,14 +25,14 @@
                   android:layout_height="match_parent"/> -->
 
 
-            <fragmentx
+            <fragment
                 android:id="@+id/map"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 class="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment"
                 android:orientation="vertical"
                 android:layout_gravity="center_vertical">
-            </fragmentx>
+            </fragment>
 
             <!--<fragment-->
             <!--android:id="@+id/map"-->
@@ -193,7 +194,51 @@
                         <!--    android:layout_toEndOf="@+id/tvFetchingRates"
                         android:layout_toEndOf="@+id/beacons2"-->
 
+
+
+                        <TextView
+                            android:layout_width="255dp"
+                            android:layout_height="40dp"
+                            android:id="@+id/tvFetchingRates"
+                            android:textColor="@color/White"
+                            android:visibility="visible"
+                            android:foregroundGravity="center_horizontal|center_vertical"
+                            android:layout_marginTop="15dp"
+                            android:paddingTop="-15dp"
+                            android:paddingBottom="10dp"
+                            android:text=""
+                            android:gravity="center_horizontal|center_vertical"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
                         <LinearLayout
+                            android:layout_width="265dp"
+                            android:layout_height="fill_parent"
+                            android:orientation="vertical"
+                            android:layout_below="@+id/tv_building"
+                            android:layout_alignBottom="@+id/tvRate">
+
+                            <com.skyfishjy.library.RippleBackground
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:id="@+id/client_content3"
+                                app:rb_color="#ff0000"
+                                app:rb_radius="4dp"
+                                android:layout_margin="-5dp"
+                                app:rb_rippleAmount="4"
+                                app:rb_duration="3000"
+                                app:rb_scale="6">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:visibility="gone"/>
+                            </com.skyfishjy.library.RippleBackground>
+
+                        </LinearLayout>
+
+                        <!--<LinearLayout
                             android:layout_width="265dp"
                             android:layout_height="fill_parent"
                             android:orientation="vertical"
@@ -227,19 +272,18 @@
                                 android:textStyle="bold" />
                             </com.skyfishjy.library.RippleBackground>
 
-                        </LinearLayout>
+                        </LinearLayout>-->
 
 
 
 
 
-                         <RelativeLayout
+                         <!--<RelativeLayout
                              android:layout_width="60dp"
                              android:layout_height="wrap_content"
                              android:layout_alignParentRight="true"
 
                              >
-                             <!--&gt;-->
 
 
 
@@ -259,33 +303,7 @@
                             android:textSize="20sp"
                             android:layout_alignParentRight="true"
                             android:layout_margin="5dp" />
-                             <!--android:background="@drawable/deal_circle"-->
 
-                             <!--android:text="Oye"-->
-                        <!--<ImageView-->
-                            <!--android:layout_width="15dp"-->
-                            <!--android:layout_height="15dp"-->
-                            <!--android:id="@+id/beacons2"-->
-                            <!--android:layout_alignParentTop="true"-->
-                            <!--android:layout_alignParentStart="true" />-->
-
-
-
-                                 <!--&gt;-->
-
-
-                             <!--<com.skyfishjy.library.RippleBackground-->
-                                 <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-                                 <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-                                 <!--android:layout_width="match_parent"-->
-                                 <!--android:layout_height="match_parent"-->
-                                 <!--android:id="@+id/content4"-->
-                                 <!--app:rb_color="#ff0000"-->
-                                 <!--app:rb_radius="3dp"-->
-                                 <!--app:rb_rippleAmount="4"-->
-                                 <!--app:rb_duration="3000"-->
-                                 <!--app:rb_scale="6"-->
-                                 <!--android:layout_alignParentRight="true">-->
 
                         <TextView
                             android:id="@+id/txtFilterValue"
@@ -302,10 +320,52 @@
                             android:visibility="visible"
                             android:layout_alignParentRight="true" />
 
-                             <!--android:background="@drawable/deal_circle"-->
-                                 <!--</com.skyfishjy.library.RippleBackground>-->
-                             <!--</FrameLayout>-->
-                        </RelativeLayout>
+
+                        </RelativeLayout>-->
+
+                        <LinearLayout
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_alignParentRight="true"
+
+                            >
+
+                            <TextView
+                                android:id="@+id/newVisits"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+
+
+                                android:gravity="center_horizontal|center_vertical"
+                                android:paddingLeft="1dp"
+                                android:paddingRight="1dp"
+                                android:layout_marginBottom="-6dp"
+                                android:layout_marginTop="6dp"
+                                android:layout_marginLeft="8dp"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:layout_alignParentRight="true"
+                                />
+
+                            <TextView
+                                android:id="@+id/txtFilterValue"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:text="Home"
+                                android:textStyle="bold|italic"
+                                android:gravity="center_horizontal|center_vertical"
+                                android:paddingLeft="1dp"
+                                android:paddingRight="1dp"
+                                android:layout_marginRight="2dp"
+                                android:layout_marginLeft="-45dp"
+                                android:layout_marginTop="3dp"
+                                android:textColor="@color/white"
+                                android:textSize="13sp"
+                                android:visibility="visible"
+                                android:layout_alignParentRight="true" />
+
+                        </LinearLayout>
+
                         <LinearLayout
                             android:layout_width="60dp"
                             android:layout_height="60dp"
@@ -428,7 +488,7 @@
                 android:background="@drawable/gradient_call_button_border"
                 android:layout_marginLeft="10dp"
 
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="40dp"
                 android:layout_marginTop="10dp" />
 
 
@@ -635,7 +695,7 @@
 
 
 
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/seekbar_linearlayout"
             android:paddingTop="6dp"
             android:paddingLeft="@dimen/eight_dp"
@@ -649,7 +709,108 @@
             android:baselineAligned="false"
             android:foregroundGravity="bottom"
             android:layout_alignParentBottom="true"
+            android:visibility="visible">-->
+
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/property_type"
+            android:gravity="bottom"
+            android:layout_above="@+id/top"
+            android:layout_marginBottom="75dp"
+            android:foregroundGravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="440dp"
+            android:layout_height="50dp">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="45dp"
+                android:gravity="bottom"
+
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Home"
+                    android:textColor="@color/greenish_blue"
+                    android:background="@drawable/gradient_button_bg_with_border"
+                    android:id="@+id/home"
+
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="1dp"
+                    />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Shop"
+                    android:textColor="@color/greenish_blue"
+                    android:background="@drawable/gradient_button_bg_with_border"
+                    android:id="@+id/shop"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="1dp"
+                    />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Industrial"
+                    android:textColor="@color/greenish_blue"
+                    android:background="@drawable/gradient_button_bg_with_border"
+                    android:id="@+id/industrial"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="1dp"
+                    />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Office"
+                    android:textColor="@color/greenish_blue"
+                    android:background="@drawable/gradient_button_bg_with_border"
+                    android:id="@+id/office"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="1dp"
+                    />
+
+
+            </LinearLayout>
+        </RelativeLayout>
+
+
+
+        <ViewStub
+            android:id="@+id/layout_stub"
+            android:inflatedId="@+id/message_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.75" />
+
+        <LinearLayout
+            android:id="@+id/seekbar_linearlayout"
+            android:paddingTop="6dp"
+            android:paddingLeft="@dimen/eight_dp"
+            android:paddingRight="@dimen/eight_dp"
+
+            android:background="@color/dark_white"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:orientation="vertical"
+            android:gravity="bottom"
+            android:baselineAligned="false"
+            android:foregroundGravity="bottom"
+            android:layout_alignParentBottom="true"
             android:visibility="visible">
+
             <!--android:paddingTop="@dimen/eight_dp"-->
             <!--android:paddingBottom="@dimen/eight_dp"-->
 <!--<RelativeLayout
@@ -675,10 +836,41 @@
                 &lt;!&ndash;android:gravity="center_horizontal|center_vertical"&ndash;&gt;
                 &lt;!&ndash;android:text="home"/>&ndash;&gt;
 </RelativeLayout>-->
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Copyright © 2016 OYEOK."
+                    android:id="@+id/copyright"
+                    android:layout_alignParentBottom="true"
+                    android:visibility="gone"
+                    android:gravity="top"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:id="@+id/dateTime"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:visibility="gone"
+                    android:gravity="right|top"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
             <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
                 android:id="@+id/phasedSeekBar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="wrap_content"/>
 
 
         </LinearLayout>
@@ -689,26 +881,6 @@
             android:layout_above="@+id/seekbar_linearlayout">-->
 
         <!--</RelativeLayout>-->
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Copyright © 2016 OYEOK. "
-            android:id="@+id/copyright"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/dateTime"
-            android:layout_gravity="right"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:visibility="gone" />
 
         <!--      <LinearLayout
                   android:orientation="horizontal"
@@ -727,7 +899,9 @@
     </RelativeLayout>
 
 
-    <!--<LinearLayout
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="bottom"
@@ -755,9 +929,7 @@
             android:visibility="gone"
             android:gravity="center_horizontal|center_vertical"
             android:text="Home"/>
-    </LinearLayout>-->
-
-
+    </LinearLayout>
     <!--////rem changes sushil-->
 
     <!--<RelativeLayout

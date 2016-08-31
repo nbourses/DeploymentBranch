@@ -43,6 +43,8 @@ public class BrokerDealsListAdapter extends BaseAdapter {
     private Context context;
     private BrokerDeals deal;
     Animation bounce;
+    private  String description;
+    private String ptype = "home";
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("h:mm a");
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT1 = new SimpleDateFormat("DD:mm:yyyy");
 
@@ -161,34 +163,59 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
             try {
                 String name = deal.getName().toUpperCase();
+                Log.i("spec code is", "name is the name " + name);
+
 
                 String spec = (!deal.getSpecCode().equals("")) ? deal.getSpecCode() : "None";
-
+                Log.i("spec code is", "name is the spec " + spec);
                 Log.i("spec code is", "spec hd rooms res " + spec);
                 Log.i("spec code ok id is", "ok id is " + deal.getOkId());
 
-                String[] split = spec.split("-");
-                //StringBuilder sb = new StringBuilder();
-                String intend = split[0];
-                String tt = split[1].toUpperCase();
+                if(deal.getOyeId().contains("unverified_user")) {
+                    String[] split = spec.split("-");
+                    String intend = split[0];
+                    String tt = split[1].toUpperCase();
 
-                String ptype = split[2];
-                String pstype = split[3];
-                String price = split[4];
+                    if (tt.equalsIgnoreCase("LL")) {
+                        tt = "Renting";
+                    } else if (tt.equalsIgnoreCase("OR")) {
+                        tt = "Selling";
+                    }
 
-                if (tt.equalsIgnoreCase("LL")) {
-                    tt = "Rent";
-                } else if (tt.equalsIgnoreCase("OR")) {
-                    tt = "Sale";
+                    if (intend.equalsIgnoreCase("REQ")) {
+                        intend = "required for";
+                    } else if (intend.equalsIgnoreCase("AVL")) {
+                        intend = "available for";
+                    }
+
+                    description = "Property " + intend + " " + tt + ".";
+
+
                 }
+                else {
+                    String[] split = spec.split("-");
+                    //StringBuilder sb = new StringBuilder();
+                    String intend = split[0];
+                    String tt = split[1].toUpperCase();
 
-                if (intend.equalsIgnoreCase("REQ")) {
-                    intend = "required at";
-                } else if (intend.equalsIgnoreCase("AVL")) {
-                    intend = "available for";
+                     ptype = split[2];
+                    String pstype = split[3];
+                    String price = split[4];
+
+                    if (tt.equalsIgnoreCase("LL")) {
+                        tt = "Rent";
+                    } else if (tt.equalsIgnoreCase("OR")) {
+                        tt = "Sale";
+                    }
+
+                    if (intend.equalsIgnoreCase("REQ")) {
+                        intend = "required at";
+                    } else if (intend.equalsIgnoreCase("AVL")) {
+                        intend = "available for";
+                    }
+                    description = ptype.substring(0, 1).toUpperCase() + ptype.substring(1) + " property (" + pstype + ") " + intend + " " + General.currencyFormat(price) + ".";
+
                 }
-
-
 //            String ptype = null;
 
 //            if(pstype.equalsIgnoreCase("1bhk") || pstype.equalsIgnoreCase("2bhk") || pstype.equalsIgnoreCase("3bhk") || pstype.equalsIgnoreCase("4bhk") || pstype.equalsIgnoreCase("4+bhk")){
@@ -223,27 +250,24 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 ////                }
 //                }
 
-                Log.i("CHAT", "default deal flag is " + default_deal);
 
-
-                String description = ptype.substring(0, 1).toUpperCase() + ptype.substring(1) + " property (" + pstype + ") " + intend + " " + General.currencyFormat(price) + ".";
-
-                Log.i("Deal data", "Deal data is" + deal.getName());
-
-                //         holder.txtFirstChar.setText(name.substring(0, 1).toUpperCase());
-
-                Log.i("Deal data", "Deal data is" + deal.getName());
-
+                Log.i("TAG","description description 1 "+description);
                 // String specs = String.valueOf(spec.charAt(0)).toUpperCase() + spec.subSequence(1, spec.length());
 
 
-                if ( General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+               if ( General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                   if(deal.getOyeId().contains("unverified_user")){
 
-                    holder.txtTitle.setText(name);
-                    holder.listing.setText(" Verified ");
+                       holder.txtTitle.setText(name);
+                       holder.listing.setText(" Unverified ");
+                   }
+                   else {
+                       holder.txtTitle.setText(name);
+                       holder.listing.setText(" Verified ");
+                   }
                 }
                 else {
-                    if(General.getSharedPreferences(context, AppConstants.NAME).equalsIgnoreCase(name)) {
+                    if(General.getSharedPreferences(context, AppConstants.NAME).equalsIgnoreCase(name)) { // change this condition as names can be same for two user
                         holder.txtTitle.setText("Searching brokers..");
                         holder.listing.setText(" Listed ");
                     }else{
@@ -263,7 +287,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
 
                 //  holder.txtDescription.setText(deal.getMobileNo());
-
+Log.i("TAG","description description "+description);
                 holder.txtDescription.setText(description);
 
                 // get time from shared if not available then assign random date from last few months
