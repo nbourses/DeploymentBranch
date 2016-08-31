@@ -1047,7 +1047,7 @@ TextView rental,resale;
 
                             } else {
 
-                                
+
                                 mCustomerMarker[i].hideInfoWindow();
                                 ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
 
@@ -1134,12 +1134,12 @@ TextView rental,resale;
                     if (arg0.getId().equals(mCustomerMarker[i].getId())) {
                         if (flag[i] == false) {
                             rate = rate_growth[i];
-                            Log.i("flag stat","    : "+flag[i]);
-                            flag[i] = true;
-
-                        }else{
-                            flag[i] = false;
+                            Log.i("flag stat", "    : " + flag[i]);
+//                            flag[i] = true;
                         }
+//                        else{
+//                            flag[i] = false;
+//                        }
                     }
                 }
 
