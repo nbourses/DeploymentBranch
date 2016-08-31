@@ -8,6 +8,15 @@ import java.util.List;
 
 public class Building {
 
+
+
+
+    @SerializedName("rate_growth")
+    @Expose
+    private String rate_growth;
+
+
+
     @SerializedName("config")
     @Expose
     private String config;
@@ -23,17 +32,12 @@ public class Building {
         this.rate_growth = rate_growth;
     }
 
-    @SerializedName("rate_growth")
-    @Expose
-    private String rate_growth;
 
     public String getConfig() {
         return config;
     }
 
-    public void setConfig(String config) {
-        this.config = config;
-    }
+
 
     @SerializedName("or_psf")
     @Expose
@@ -45,13 +49,15 @@ public class Building {
     @Expose
     private List<String> loc = new ArrayList<String>();
 
-
-
     /**
      *
      * @return
      * The name
      */
+
+
+
+
     public String getName() {
         return name;
     }

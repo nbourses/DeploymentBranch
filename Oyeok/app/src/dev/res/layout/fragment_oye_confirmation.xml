@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="bottom"
+    android:clickable="true"
     android:background="@color/transparent"
     tools:context="com.nbourses.oyeok.fragments.OyeConfirmation"
     >

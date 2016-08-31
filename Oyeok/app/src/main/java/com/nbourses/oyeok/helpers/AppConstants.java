@@ -19,7 +19,7 @@ public class AppConstants {
     public static  int maxSale = 27000;
 
     public static final int slowInternet = 5;
-    public static int cardCounter = 0;
+    public static int cardCounter = 4;
 
     public static PopupWindow optionspu;
     public static PopupWindow optionspu1;
@@ -65,7 +65,7 @@ public class AppConstants {
     //public static final String SERVER_BASE_URL_101 = "http://52.41.200.154:9000/1.01";
     //public static final String SERVER_BASE_URL_102 = "http://52.41.200.154:9000/1.02";
     public static final String SERVER_BASE_URL = "https://ssl.hailyo.com/1";
-    public static final String SERVER_BASE_URL_101 = "https://ssl.hailyo.com/1.01";
+    public static final String SERVER_BASE_URL_1_02 = "https://ssl.hailyo.com/1.02";
    public static final String SERVER_BASE_URL_102 = "https://ssl.hailyo.com/1.02";
 
 
@@ -112,6 +112,9 @@ public class AppConstants {
 
 // REALM dB model app constants by Ritesh
 //USERINFO MODEL
+
+    public static final String STOP_CARD = "stopCard";
+
     public static final String MOBILE_NUMBER = "mobileNumber";
     public static final String PTYPE = "ptype";
     public static final String PSTYPE = "pstype";

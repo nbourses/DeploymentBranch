@@ -5,10 +5,10 @@
         android:duration="500"
         android:fromYDelta="100%"
         android:toYDelta="0%" />
- <!--   <translate
+    <translate
         android:duration="500"
         android:startOffset="3500"
         android:fromYDelta="0"
         android:toYDelta="100%"
-        /> -->
+        />
 </set>

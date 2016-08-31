@@ -422,7 +422,10 @@ public void signUp(){
     private BroadcastReceiver doSignUp = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            card.setClickable(false);
+            cardFlag = false;
+            containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
+            containerSignup.setClickable(false);
             SignUpFragment d = new SignUpFragment();
             //loadFragment(d,null,R.id.container_Signup,"");
             Bundle bundle = new Bundle();
@@ -1612,8 +1615,9 @@ Log.i(TAG,"Image is the "+out);
 
 
     public void showCard() {
+        if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("")) {
 
-            if (AppConstants.cardCounter > 3) {
+            if (AppConstants.cardCounter >3) {
 
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -1654,9 +1658,10 @@ Log.i(TAG,"Image is the "+out);
 
                     }
 
-                }, 2000);
+                }, 500);
             }
         }
+    }
 
 
 
@@ -1672,7 +1677,7 @@ Log.i(TAG,"Image is the "+out);
         confirm_screen_title.setVisibility(View.GONE);
         dealsWrapper.setVisibility(View.VISIBLE);
         oyeconfirm_flag=false;
-        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).OnOyeClick();
+        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).OnOyeClick1();
 
     }
 

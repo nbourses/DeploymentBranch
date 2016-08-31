@@ -198,7 +198,12 @@ public class CardFragment  extends Fragment{
                                                       sh.setLayoutParams(params1);
                                                       hid.setVisibility(View.VISIBLE);*/
                                                       buysell.setChecked(false);
+                                                      buyer.setChecked(false);
+                                                      seller.setChecked(false);
 
+                                                  }else{
+                                                      tenant.setChecked(false);
+                                                      owner.setChecked(false);
                                                   }
 
                                               }
@@ -244,7 +249,13 @@ public class CardFragment  extends Fragment{
 
                                                        hid2.setVisibility(View.VISIBLE);*/
                                                        rental.setChecked(false);
+                                                       tenant.setChecked(false);
+                                                       owner.setChecked(false);
 
+                                                   }
+                                                   else{
+                                                       buyer.setChecked(false);
+                                                       seller.setChecked(false);
                                                    }
 
                                                }
@@ -262,6 +273,7 @@ public class CardFragment  extends Fragment{
                                                       showLocalityText();
 
                                                   }
+
 
                                               }
                                           }
@@ -369,7 +381,7 @@ if(!(rental.isChecked() || buysell.isChecked())) {
                     SnackbarManager.show(
                             Snackbar.with(getContext())
                                     .position(Snackbar.SnackbarPosition.TOP)
-                                    .text("Please select transaction type Role.")
+                                    .text("Please select transaction subtype.")
                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
                 }
@@ -440,7 +452,7 @@ private void showLocalityText(){
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
 
-                    Log.i("AUTO OK CALLED","autook success ");
+                    Log.i("AUTO OK CALLED","autook success "+General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
 
 
 
@@ -459,9 +471,14 @@ private void showLocalityText(){
                         Log.i("BROKER BUILDINGS CALLED","success ne "+ne.getJSONObject("responseData"));
 
 
+
                         Log.i("BROKER BUILDINGS CALLED","success ne "+ne.getJSONObject("responseData").getString("coupon"));
                         coupon.setText(ne.getJSONObject("responseData").getString("coupon"));*/
                        // getFragmentManager().popBackStack();
+if(ne.getString("success").equalsIgnoreCase("true")){
+    General.setSharedPreferences(getContext(),AppConstants.STOP_CARD,"yes");
+}
+
                         Intent inten = new Intent(getContext(), ClientDealsListActivity.class);
 
                         startActivity(inten);

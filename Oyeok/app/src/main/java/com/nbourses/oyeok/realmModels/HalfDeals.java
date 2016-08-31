@@ -12,6 +12,7 @@ public class HalfDeals extends RealmObject {
     private String spec_code;
     private String name;
     private String locality;
+    private String oyeId;
     public HalfDeals() { }
 
     public String getOk_id() {
@@ -44,5 +45,13 @@ public class HalfDeals extends RealmObject {
 
     public void setLocality(String locality) {
         this.locality = locality;
+    }
+
+    public String getOyeId() {
+        return oyeId;
+    }
+
+    public void setOyeId(String oyeId) {
+        this.oyeId = oyeId;
     }
 }

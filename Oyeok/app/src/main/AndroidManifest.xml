@@ -26,12 +26,14 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-feature android:name="android.hardware.camera"/>
 
-    <permission android:name="com.nbourses.oyeok.permission.C2D_MESSAGE"
+    <uses-feature android:name="android.hardware.camera" />
+
+    <permission
+        android:name="com.nbourses.oyeok.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-    <uses-permission android:name="com.nbourses.oyeok.permission.C2D_MESSAGE" />
 
+    <uses-permission android:name="com.nbourses.oyeok.permission.C2D_MESSAGE" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -42,14 +44,12 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/MyMaterialTheme"
         android:largeHeap="true"
+        android:theme="@style/MyMaterialTheme"
         tools:replace="android:icon" >
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
-
+            android:value="@string/facebook_app_id" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD9u7py1PGKcnlrO77NuY_40jxgIOhX34I" />
@@ -95,22 +95,22 @@
             </intent-filter>
         </receiver>
 
-        <!-- start pubnub register our Broadcast Receiver and Service-->
+        <!-- start pubnub register our Broadcast Receiver and Service -->
         <receiver
-             android:name=".GoogleCloudMessaging.GcmBroadcastReceiver"
-             android:permission="com.google.android.c2dm.permission.SEND" >
-             <intent-filter>
-                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            android:name=".GoogleCloudMessaging.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
-                 <category android:name="com.nbourses.oyeok" />
-             </intent-filter>
-         </receiver>
+                <category android:name="com.nbourses.oyeok" />
+            </intent-filter>
+        </receiver>
 
-         <service android:name=".GoogleCloudMessaging.GcmIntentService" />
+        <service android:name=".GoogleCloudMessaging.GcmIntentService" />
 
-         <meta-data
-             android:name="com.google.android.gms.version"
-             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <!-- stop pubnub register our Broadcast Receiver and Service -->
 
@@ -125,7 +125,6 @@
         </receiver>
 
         <service android:name=".GoogleCloudMessaging.GcmIntentService" />
-
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
@@ -180,8 +179,6 @@
         <!-- [END gcm_receiver] -->
 
         <!-- [START gcm_listener] -->
-        <!--<service
-            android:name=".GoogleCloudMessaging.MyGcmListenerService"/>-->
 
         <service
             android:name=".GoogleCloudMessaging.MyGcmListenerService"
@@ -202,7 +199,6 @@
             android:exported="false" >
         </service>
 
-
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="5cb2d245b093b24fceb1a6a8d63dcfaf38688f1d" />
@@ -211,11 +207,10 @@
             android:name=".activities.ClientMainActivity"
             android:screenOrientation="portrait" >
         </activity>
-
         <activity
             android:name=".activities.ClientDealsListActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" >
         </activity>
 
         <service
@@ -232,8 +227,8 @@
         </activity>
         <activity
             android:name=".activities.BrokerDealsListActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" >
         </activity>
         <activity
             android:name=".activities.BrokerMainActivity"
@@ -243,7 +238,6 @@
             android:name=".activities.ProfileActivity"
             android:screenOrientation="portrait" >
         </activity>
-
         <activity
             android:name=".activities.IntroActivity"
             android:screenOrientation="portrait" >
@@ -262,14 +256,21 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
             <!-- AppLink example -->
-            <intent-filter android:autoVerify="true">
+            <intent-filter android:autoVerify="true" >
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="8rj5.app.link" />
-                <data android:scheme="http" android:host="bnc.lt"/>
+
+                <data
+                    android:host="8rj5.app.link"
+                    android:scheme="https" />
+                <data
+                    android:host="bnc.lt"
+                    android:scheme="http" />
             </intent-filter>
 
             <!--<intent-filter>-->
@@ -295,10 +296,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
-
-
     </application>
-
 
 </manifest>

@@ -480,6 +480,21 @@ while(slowInternetFlag) {
                 AppConstants.letsOye.setUserId(General.getSharedPreferences(context, AppConstants.USER_ID));
                 //set gcmId
                 AppConstants.letsOye.setGcmId(SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
+                AppConstants.letsOye.setPossession_date(General.getSharedPreferences(context,AppConstants.POSSESSION_DATE));
+
+                String furnishingStatus="sf",furnishing=General.getSharedPreferences(context,AppConstants.FURNISHING);
+                    if (furnishing.equalsIgnoreCase("Fully-Furnished")){
+                        furnishingStatus="ff";
+                    }else if (furnishing.equalsIgnoreCase("Un-furnished")){
+                        furnishingStatus="uf";
+                    }else if (furnishing.equalsIgnoreCase("Semi-furnished")){
+                        furnishingStatus="sf";
+                    }
+                AppConstants.letsOye.setFurnishing(furnishingStatus);
+
+                Log.i("TRACE", "Get Furnishing from model " + AppConstants.letsOye.getFurnishing());
+                Log.i("TRACE", "Get Possession Date from model " + AppConstants.letsOye.getPossession_date());
+
 
                 Log.i("TRACE", "GCM id is" + SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
 

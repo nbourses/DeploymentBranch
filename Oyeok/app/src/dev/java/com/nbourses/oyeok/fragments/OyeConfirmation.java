@@ -172,12 +172,15 @@ public class OyeConfirmation extends Fragment {
             public void onClick(View v) {
 
                 if (General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                    getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
+
                     ((ClientMainActivity)getActivity()).signUp();
-                    General.publishOye(getContext());
+                   // General.publishOye(getContext());
+
 
                 }else
                     General.publishOye(getContext());
-//                ((ClientMainActivity)getActivity()).closeOyeConfirmation();
+             // ((ClientMainActivity)getActivity()).closeOyeConfirmation();
 
             }
         });
@@ -197,7 +200,7 @@ public class OyeConfirmation extends Fragment {
 
 
     private void updateLabel(){
-        String myFormat = "dd/MMM/yy"; //In which you need put here
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         display_date.setText(sdf.format(myCalendar.getTime()));
     }
@@ -208,7 +211,7 @@ public class OyeConfirmation extends Fragment {
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH));
 
-        String myFormat = "dd/MM/yy"; //In which you need put here
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         Date d = null;
@@ -285,7 +288,7 @@ public class OyeConfirmation extends Fragment {
         if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent"))
         text="<u><b><big>"+AppConstants.PROPERTY+"</big></u><small> Expectation = </small><big>"+numToVal(price)+" </big><small>| Deposit </small><big>"+numToVal(price*4)+ " </big></b>(negotiable)";
        else
-            text="<u><b><big>"+AppConstants.PROPERTY+"</big></u><small> Expectation = </small><big>"+numToVal(price)+" (negotiable)";
+            text="<u><b><big>"+AppConstants.PROPERTY+"</big></u><small> Expectation = </small><big>"+numToVal(price)+" </big><b>(negotiable)";
 
         MyExpectation.setText(Html.fromHtml(text));
         Property_conf_furnishing.setText(Property_Config+" "+Furnishing);
