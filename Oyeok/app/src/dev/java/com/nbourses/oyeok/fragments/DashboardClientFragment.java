@@ -997,9 +997,9 @@ TextView rental,resale;
                                 ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                                 ((ClientMainActivity)getActivity()).OpenBuildingOyeConfirmation();
                                 m=mCustomerMarker[i];
-                                mCustomerMarker[i].remove();
+//                                mCustomerMarker[i].remove();
 
-                                mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).icon(icon2));
+                                mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).icon(icon2));
                                 search_building_icon.setVisibility(View.VISIBLE);
                                 mCustomerMarker[i].showInfoWindow();
                                 horizontalPicker.setVisibility(View.GONE);
@@ -1020,7 +1020,7 @@ TextView rental,resale;
                                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
 //                                Log.i("coming soon", "coming soon :" + marker.getTitle().toString());
                                 tv_building.setVisibility(View.VISIBLE);
-                                String text1 ="Observed <big>30</big> online listing in last 1 WEEK";
+                                String text1 ="Observed <big><font color=#ff9f1c> 30</big> online listing in last 1 WEEK";
                                         tv_building.setText(Html.fromHtml(text1));
 
                                 if(brokerType.equalsIgnoreCase("rent")) {
@@ -1046,13 +1046,17 @@ TextView rental,resale;
                                 flag[i] = true;
 
                             } else {
-                                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
-                                m=mCustomerMarker[i];
-                                mCustomerMarker[i].remove();
 
-                                mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).icon(icon1));
-                                Log.i("mm_mithai","marker draw");
+                                
                                 mCustomerMarker[i].hideInfoWindow();
+                                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+
+                                m=mCustomerMarker[i];
+//                                mCustomerMarker[i].remove();
+
+                                mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).icon(icon1));
+                                Log.i("mm_mithai","marker draw");
+
 //                                mCustomerMarker[i].setIcon(icon1);
                                 search_building_icon.setVisibility(View.GONE);
                                 flag[i] = false;
@@ -1084,7 +1088,11 @@ TextView rental,resale;
 
                             }
                         } else {
-                            mCustomerMarker[i].setIcon(icon1);
+                            m=mCustomerMarker[i];
+//                            mCustomerMarker[i].remove();
+                            mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).icon(icon1));
+                            mCustomerMarker[i].hideInfoWindow();
+                            flag[i] = false;
                         }
                     }
 
@@ -1124,8 +1132,14 @@ TextView rental,resale;
                 String rate="0";
                 for(int i=0;i<5;i++) {
                     if (arg0.getId().equals(mCustomerMarker[i].getId())) {
-                        if (flag[i] == false)
+                        if (flag[i] == false) {
                             rate = rate_growth[i];
+                            Log.i("flag stat","    : "+flag[i]);
+                            flag[i] = true;
+
+                        }else{
+                            flag[i] = false;
+                        }
                     }
                 }
 
@@ -2072,7 +2086,7 @@ TextView rental,resale;
     // map.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener));
 
 
-    private void updateHorizontalPicker() {
+    private void  updateHorizontalPicker() {
 
 
     if (horizontalPicker != null) {
@@ -3449,14 +3463,16 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
         spanning = false;
         mVisits.setEnabled(true);
         txtFilterValue.setEnabled(true);
-        txtFilterValue.setTextColor(Color.parseColor("white"));
-        mVisits.setTextColor(Color.parseColor("white"));
 
+//        mVisits.setTextColor(Color.parseColor("white"));
+        txtFilterValue.setText(oyetext);
         for (int i = 0; i < 5; i++) {
             if (flag[i] == true) {
 
                 mCustomerMarker[i].setIcon(icon1);
+                txtFilterValue.setTextColor(Color.parseColor("white"));
                 if(oyetext.equalsIgnoreCase("home"))
+
                     txtFilterValue.setText("2BHK");
                 else
                    txtFilterValue.setText(oyetext);
@@ -3475,6 +3491,7 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
                 mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
 //                            mVisits.startAnimation(zoomin_zoomout);
                 StartOyeButtonAnimation();
+                updateHorizontalPicker();
                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
                 ll_marker.setEnabled(true);
                 tv_building.setVisibility(View.VISIBLE);
@@ -3517,31 +3534,7 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
         // SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
         Log.i("ischecked", "walkthrough3dashboard" + beacon);
     }
-    public void OnOyeClick1(){
-        openOyeScreen();
-        CancelAnimation();
-        AppConstants.GOOGLE_MAP = map;
-//        if (clicked == true) {
-            oyebuttonBackgrountColorOrange();
-            clicked = false;
-            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
-            mHelperView.setEnabled(false);
-//        } else {
-//            oyebuttonBackgrountColorGreenishblue();
-//            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
-//            mHelperView.setEnabled(true);
-//            clicked = true;
-//
-//        }
-//        if (RatePanel == true) {
-//            UpdateRatePanel();
-//            RatePanel = false;
-//        } else {
-//            RatePanel = true;
-////            tvFetchingrates.setVisibility(View.VISIBLE);
-//        }
 
-    }
 
     if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("")) {
         Walkthrough = "true";
@@ -3562,7 +3555,31 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
 }
 
 
+    public void OnOyeClick1(){
+        openOyeScreen();
+        CancelAnimation();
+        AppConstants.GOOGLE_MAP = map;
+//        if (clicked == true) {
+        oyebuttonBackgrountColorOrange();
+        clicked = false;
+        customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
+        mHelperView.setEnabled(false);
+//        } else {
+//            oyebuttonBackgrountColorGreenishblue();
+//            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+//            mHelperView.setEnabled(true);
+//            clicked = true;
+//
+//        }
+//        if (RatePanel == true) {
+//            UpdateRatePanel();
+//            RatePanel = false;
+//        } else {
+//            RatePanel = true;
+////            tvFetchingrates.setVisibility(View.VISIBLE);
+//        }
 
+    }
 
 
     private void StartOyeButtonAnimation() {

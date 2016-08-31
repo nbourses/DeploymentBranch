@@ -17,7 +17,7 @@ public class BuildingOyeConfirmation extends Fragment {
 
     }
 
-View view;
+    View view;
     TextView conf1,conf2,conf3,conf4,conf;
     TextView listingcount,sharing;
 
@@ -74,7 +74,7 @@ View view;
 
     private void init(){
        String text;
-        text="In last 6 Months : <b><font color=#2dc4b6><big>3 Txns</big></font> | <big><font color=#ff9f1c>30</font></big> listing on <big>5 </big>portals<b>";
+        text="In last 6 Months : <b><font color=#2dc4b6><big>3 Txns</big></font> | <big>30</big> listing on <big>5 </big>portals<b>";
         listingcount.setText(Html.fromHtml(text));
 
     }
