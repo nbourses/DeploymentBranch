@@ -240,6 +240,12 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
                 searchQuery = newText.trim();
                 Log.i(TAG,"newText "+searchQuery);
 
+                if(cachedDealsLL != null)
+                    cachedDealsLL.clear();
+
+                if(cachedDealsOR != null)
+                    cachedDealsOR.clear();
+loadCachedDeals();
 
                 if(listBrokerDeals_new != null)
                     listBrokerDeals_new.clear();
@@ -976,7 +982,7 @@ Log.i("SWIPE","inside swipe menu creator");
                             while (it.hasNext())
                             {
                                 BrokerDeals deals = it.next();
-                                Log.i("TRACE==","deals.are"+deals);
+                                Log.i("TRACE==","deals.are oyeId"+deals.getOyeId());
                                 Log.i("TRACE==","deals.ok_id"+deals.getOkId());
                                 if(!(deals.getOkId() == null))
                                 {
@@ -987,12 +993,13 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
                                     Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 9");
+                                halfDeals.setOyeId(deals.getOyeId());
                                 halfDeals.setOk_id(deals.getOkId());
                                     Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 5");
                                 halfDeals.setName(deals.getName());
                                 halfDeals.setLocality(deals.getLocality());
                                 halfDeals.setSpec_code(deals.getSpecCode());
-                                    Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 1");
+                                    Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 1 ");
                                 myRealm.copyToRealmOrUpdate(halfDeals);
 
 
@@ -1005,11 +1012,25 @@ Log.i("SWIPE","inside swipe menu creator");
                                         }
                                         else if (filterPtype == null) {
 
-                                            if(searchQuery != null)
-                                                if (deals.getSpecCode().contains(searchQuery) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
-                                                    listBrokerDeals_new.add(deals);
+                                            if(searchQuery != null) {
+
+                                                String searchString = "";
+                                                if(deals.getSpecCode() != ""){
+                                                    searchString = searchString +" "+ deals.getSpecCode();
+                                                }
+                                                if(deals.getName() != ""){
+                                                    searchString = searchString +" "+ deals.getName();
+                                                }
+                                                if(deals.getLocality() != ""){
+                                                    searchString = searchString +" "+ deals.getLocality();
                                                 }
 
+                                                Log.i(TAG,"searchString "+searchString);
+
+                                                if (searchString.toLowerCase().contains(searchQuery.toLowerCase()) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
+                                                    listBrokerDeals_new.add(deals);
+                                                }
+                                            }
                                             if(searchQuery == null)
                                                 listBrokerDeals_new.add(deals); // add all
 
@@ -1336,20 +1357,58 @@ Log.i(TAG,"persy 1 ");
                 Log.i(TAG, "until loadCachedDeals " + c.getName());
                 Log.i(TAG, "until loadCachedDeals " + c.getLocality());
                 Log.i(TAG, "until loadCachedDeals " + c.getSpec_code());
-                BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), true);
 
-                if(cachedDealsLL == null){
-                    cachedDealsLL = new ArrayList<BrokerDeals>();
+                if(searchQuery != null) {
+                    String searchString = "";
+                    if (c.getSpec_code() != "") {
+                        searchString = searchString + " " + c.getSpec_code();
+                    }
+                    if (c.getName() != "") {
+                        searchString = searchString + " " + c.getName();
+                    }
+                    if (c.getLocality() != "") {
+                        searchString = searchString + " " + c.getLocality();
+                    }
+
+                    if (searchString.toLowerCase().contains(searchQuery.toLowerCase())){
+                        BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(), true);
+
+                        if(cachedDealsLL == null){
+                            cachedDealsLL = new ArrayList<BrokerDeals>();
+                        }
+                        if(cachedDealsOR == null){
+                            cachedDealsOR = new ArrayList<BrokerDeals>();
+                        }
+                        if(c.getSpec_code().toLowerCase().contains("LL-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-LL".toLowerCase())){
+                            cachedDealsLL.add(dealsa);
+                        }
+                        else if(c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("OR-".toLowerCase())){
+                            cachedDealsOR.add(dealsa);
+                        }
+
+                    }
+
+                }else if(searchQuery == null) {
+
+                    BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(), true);
+
+                    if(cachedDealsLL == null){
+                        cachedDealsLL = new ArrayList<BrokerDeals>();
+                    }
+                    if(cachedDealsOR == null){
+                        cachedDealsOR = new ArrayList<BrokerDeals>();
+                    }
+                    if(c.getSpec_code().toLowerCase().contains("LL-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-LL".toLowerCase())){
+                        cachedDealsLL.add(dealsa);
+                    }
+                    else if(c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("OR-".toLowerCase())){
+                        cachedDealsOR.add(dealsa);
+                    }
+
                 }
-                if(cachedDealsOR == null){
-                    cachedDealsOR = new ArrayList<BrokerDeals>();
-                }
-                if(c.getSpec_code().contains("LL-")){
-                    cachedDealsLL.add(dealsa);
-                }
-                else if(c.getSpec_code().contains("OR-")){
-                    cachedDealsOR.add(dealsa);
-                }
+
+
+
 
             }
 
@@ -1378,6 +1437,15 @@ Log.i(TAG,"persy 1 ");
             else
 
                 cachedDeals.addAll(cachedDealsOR);
+
+
+
+
+
+
+
+
+
 
             if (cachedDeals.size() < 3 && showbgtext == true  && !General.isNetworkAvailable(this)) {
                 bgtxtlayout.setVisibility(View.VISIBLE);

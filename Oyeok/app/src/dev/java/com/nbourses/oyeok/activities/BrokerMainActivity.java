@@ -775,13 +775,13 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             backpress = 0;
         }
 
-        else if(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equals("")) {
+        else if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equals("")) {
 
 
             Log.i("SIGNUP_FLAG", " closing app =================== 3" + getFragmentManager().getBackStackEntryCount());
             if (backpress < 1) {
                 backpress = (backpress + 1);
-                TastyToast.makeText(this, "Press Back again to Exit!", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                TastyToast.makeText(this, "Press Back again to Exit!", TastyToast.LENGTH_LONG, TastyToast.INFO);
                 //Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
             } else if (backpress >= 1) {
                 backpress = 0;

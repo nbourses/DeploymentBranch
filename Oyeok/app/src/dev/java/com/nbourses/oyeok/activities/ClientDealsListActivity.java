@@ -908,6 +908,13 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 searchQuery = newText.trim();
                 Log.i(TAG,"newText "+searchQuery);
 
+                if(cachedDealsLL != null)
+                    cachedDealsLL.clear();
+
+                if(cachedDealsOR != null)
+                    cachedDealsOR.clear();
+                loadCachedDeals();
+
                 if(default_deals != null)
                     default_deals.clear();
                 if(listBrokerDeals_new != null)
@@ -1380,19 +1387,19 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                     else if(filterPtype == null){
 
                         if(searchQuery != null) {
-                            String searchString = "*";
+                            String searchString = "";
                             if(dealsa.getSpecCode() != ""){
-                                searchString = searchString + dealsa.getSpecCode();
+                                searchString = searchString +" "+ dealsa.getSpecCode();
                             }
                             if(dealsa.getName() != ""){
-                                searchString = searchString + dealsa.getName();
+                                searchString = searchString +" "+ dealsa.getName();
                             }
                             if(dealsa.getLocality() != ""){
-                                searchString = searchString + dealsa.getLocality();
+                                searchString = searchString +" "+ dealsa.getLocality();
                             }
 
 
-                            if (searchString.contains(searchQuery)/*|| dealsa.getName().contains(searchQuery)||dealsa.getLocality().contains(searchQuery)*/){
+                            if (searchString.toLowerCase().contains(searchQuery.toLowerCase())/*|| dealsa.getName().contains(searchQuery)||dealsa.getLocality().contains(searchQuery)*/){
 
                                 if (default_deals == null) {
                                     default_deals = new ArrayList<BrokerDeals>();
@@ -1541,7 +1548,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
             hdRooms.setPage("1");
 
 
-            Log.i("TRACE", "in Load broker deals");
+            Log.i("TRACE", "in Load broker deals ");
             OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
             oyeokApiService.seeHdRooms(hdRooms, new Callback<PublishLetsOye>() {
                 @Override
@@ -1554,7 +1561,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                     General.slowInternetFlag = false;
                     General.t.interrupt();
 
-                    Log.i("TRACE", "in successs");
+                    Log.i("TRACE", "in successs "+General.getSharedPreferences(ClientDealsListActivity.this,AppConstants.TIME_STAMP_IN_MILLI));
                     String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                     Log.i(TAG, "tidin tidin tindin 1 "+strResponse);
                     try {
@@ -1619,6 +1626,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
                                     halfDeals = new HalfDeals();
                                     Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 4 "+deals.getOkId());
+                                    halfDeals.setOyeId(deals.getOyeId());
 
 
                                     Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 9");
@@ -1642,17 +1650,17 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                                         else if (filterPtype == null) {
 
                                             if(searchQuery != null) {
-                                                String searchString = "*";
+                                                String searchString = "";
                                                 if(deals.getSpecCode() != ""){
-                                                    searchString = searchString + deals.getSpecCode();
+                                                    searchString = searchString +" "+ deals.getSpecCode();
                                                 }
                                                 if(deals.getName() != ""){
-                                                    searchString = searchString + deals.getName();
+                                                    searchString = searchString +" "+ deals.getName();
                                                 }
                                                 if(deals.getLocality() != ""){
-                                                    searchString = searchString + deals.getLocality();
+                                                    searchString = searchString +" "+ deals.getLocality();
                                                 }
-                                                if (searchString.contains(searchQuery) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
+                                                if (searchString.toLowerCase().contains(searchQuery.toLowerCase()) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
                                                     listBrokerDeals_new.add(deals);
                                                 }
                                             }
@@ -2132,19 +2140,55 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                 Log.i(TAG, "until loadCachedDeals " + c.getOk_id());
                 Log.i(TAG, "until loadCachedDeals " + c.getName());
                 Log.i(TAG, "until loadCachedDeals " + c.getLocality());
-                BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), true);
 
-                if(cachedDealsLL == null){
-                    cachedDealsLL = new ArrayList<BrokerDeals>();
-                }
-                if(cachedDealsOR == null){
-                    cachedDealsOR = new ArrayList<BrokerDeals>();
-                }
-                if(c.getSpec_code().contains("LL-")){
-                    cachedDealsLL.add(dealsa);
-                }
-                else if(c.getSpec_code().contains("OR-")){
-                    cachedDealsOR.add(dealsa);
+                if(searchQuery != null) {
+                    String searchString = "";
+                    if (c.getSpec_code() != "") {
+                        searchString = searchString + " " + c.getSpec_code();
+                    }
+                    if (c.getName() != "") {
+                        searchString = searchString + " " + c.getName();
+                    }
+                    if (c.getLocality() != "") {
+                        searchString = searchString + " " + c.getLocality();
+                    }
+
+                    if (searchString.toLowerCase().contains(searchQuery.toLowerCase())){
+                        BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(), true);
+
+                        if(cachedDealsLL == null){
+                            cachedDealsLL = new ArrayList<BrokerDeals>();
+                        }
+                        if(cachedDealsOR == null){
+                            cachedDealsOR = new ArrayList<BrokerDeals>();
+                        }
+                        if(c.getSpec_code().toLowerCase().contains("LL-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-LL".toLowerCase())){
+                            cachedDealsLL.add(dealsa);
+                        }
+                        else if(c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("OR-".toLowerCase())){
+                            cachedDealsOR.add(dealsa);
+                        }
+
+                    }
+
+
+                }else if(searchQuery == null) {
+
+                    BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(), true);
+
+                    if(cachedDealsLL == null){
+                        cachedDealsLL = new ArrayList<BrokerDeals>();
+                    }
+                    if(cachedDealsOR == null){
+                        cachedDealsOR = new ArrayList<BrokerDeals>();
+                    }
+                    if(c.getSpec_code().toLowerCase().contains("LL-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-LL".toLowerCase())){
+                        cachedDealsLL.add(dealsa);
+                    }
+                    else if(c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("OR-".toLowerCase())){
+                        cachedDealsOR.add(dealsa);
+                    }
+
                 }
 
             }
