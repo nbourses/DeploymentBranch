@@ -1096,7 +1096,7 @@ if(count<=220) {
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Log.i("PREOK CALLED", "Caught in exception preok " + jsonArrayReqLl);
+                        Log.i("PREOK CALLED", "Caught in exception preok " + error);
                         General.slowInternetFlag = false;
                         General.t.interrupt();
                     }

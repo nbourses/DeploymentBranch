@@ -19,7 +19,7 @@ public class AppConstants {
     public static  int maxSale = 27000;
 
     public static final int slowInternet = 5;
-    public static int cardCounter = 0;
+    public static int cardCounter = 4;
 
     public static PopupWindow optionspu;
     public static PopupWindow optionspu1;
@@ -112,6 +112,9 @@ public class AppConstants {
 
 // REALM dB model app constants by Ritesh
 //USERINFO MODEL
+
+    public static final String STOP_CARD = "stopCard";
+
     public static final String MOBILE_NUMBER = "mobileNumber";
     public static final String PTYPE = "ptype";
     public static final String PSTYPE = "pstype";
