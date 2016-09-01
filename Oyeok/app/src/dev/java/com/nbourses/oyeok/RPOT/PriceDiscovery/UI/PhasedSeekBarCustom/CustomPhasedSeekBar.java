@@ -369,7 +369,7 @@ public class CustomPhasedSeekBar extends View {
 
 
             canvas.drawText(brokerName, mAnchors[i][0] - (30 * DPTOPX_SCALE / count),
-                    (65 * DPTOPX_SCALE), paint);
+                    (62 * DPTOPX_SCALE), paint);
 
             /*canvas.drawText("Broker", mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
                     2 * mAnchors[i][1] - 10 * DPTOPX_SCALE, paint);*/

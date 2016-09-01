@@ -71,51 +71,15 @@
                     android:clickable="true"
                     android:background="@drawable/maker_bg">
 
-                    <!--  <LinearLayout
-                          android:layout_width="fill_parent"
-                          android:layout_height="fill_parent"
-                          android:orientation="vertical"
-                          android:paddingTop="4dp"
-                          android:paddingBottom="4dp"
-                          android:layout_gravity="center"
-                          android:gravity="center"
-                          android:visibility="gone">
-                          <TextView
-                              android:layout_width="fill_parent"
-                              android:layout_height="wrap_content"
-                              android:text="Non Serviceable Region"
-                              android:textColor="@color/white"
-                              android:textSize="@dimen/fourteen_sp"
-                              android:gravity="center" />
-                          <TextView
-                              android:layout_width="fill_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="-6dp"
-                              android:text="No Broker Available"
-                              android:textColor="@color/white"
-                              android:textSize="@dimen/fourteen_sp"
-                              android:gravity="center" />
-
-                      </LinearLayout>-->
 
                     <RelativeLayout
                         android:id="@+id/markerpanelminmax"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
+                        android:clickable="true"
                         android:visibility="visible">
 
-                        <!--<TextView
-                            android:id="@+id/linearlayout_drooms"
-                            android:layout_width="wrap_content"
-                            android:layout_height="fill_parent"
-                            android:text="Deal"
-                            android:paddingLeft="@dimen/eight_dp"
-                            android:paddingRight="@dimen/eight_dp"
-                            android:background="@drawable/deal_circle"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/sixteen_sp"
-                            android:gravity="center_vertical"
-                            android:layout_alignParentLeft="true"/>-->
+
 
                         <TextView
                             android:layout_width="fill_parent"
@@ -144,6 +108,7 @@
                             android:ellipsize="marquee"
                             android:textStyle="bold"
                             android:marqueeRepeatLimit="1"
+                            android:clickable="false"
                             android:focusable="true"
                             android:layout_below="@+id/tv_building"
                             app:values="@array/hpicker"
@@ -160,6 +125,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="psf"
+                            android:clickable="false"
                             android:textColor="@color/greenish_blue"
                             android:layout_alignParentBottom="true"
                             android:textSize="12sp"
@@ -171,6 +137,7 @@
                             android:id="@+id/rupeesymbol"
                             android:layout_width="wrap_content"
                             android:text="@string/Rs"
+                            android:clickable="false"
                             android:layout_marginLeft="98dp"
                             android:layout_marginBottom="4dp"
                             android:textColor="@color/greenish_blue"
@@ -689,7 +656,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:textColor="@color/white"
-                android:text="We don't cater here yet"/>
+                android:text="We cater Only in Mumbai."/>
 
         </RelativeLayout>
 

@@ -572,7 +572,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 Log.i(TAG,"imageshare 1");
                 //open file chooser options
                 selectImage();
-            } else {
+            }
+            else {
 
 
                /* Realm myRealm = General.realmconfig(this);
@@ -708,7 +709,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 loadHistoryFromPubnub(channel_name);
             }
 
-            if(!channel_name.equals("my_channel"))
+//            if(!channel_name.equals("my_channel"))
             {
                 loadHistoryFromPubnub(channel_name);
             }
@@ -917,6 +918,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 Log.i(TAG, "in displayMessage rt " + j);
                 jsonMsg = j;
             }
+
         }
         catch(Exception e){
 
@@ -995,18 +997,25 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
                 }
+                /*
+<<<<<<<HEAD
 
                else if (!FROM.equalsIgnoreCase(userID))
                 {
                     userType = ChatMessageUserType.SELF;
                 }
+=======
+>>>>>>> 9c44010c32f1e536ca300f0c6fc41566727c7cc4
+*/
                 else
                 {
                     Log.i("TAG","OTHER ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
                     userType = ChatMessageUserType.OTHER;
                 }
 
-                if(userID.equalsIgnoreCase(FROM))
+                String demoId = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
+
+                if(userID.equalsIgnoreCase(FROM) || demoId.equalsIgnoreCase(FROM))
                 {
                     userSubtype = ChatMessageUserSubtype.SELF;
                 }
@@ -1015,6 +1024,19 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     userSubtype = ChatMessageUserSubtype.OTHER;
                 }
 
+                if(msgStatus == null)
+                {
+                    Log.i("TAG","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
+                    if(userID.equalsIgnoreCase(FROM) || demoId.equalsIgnoreCase(FROM))
+                    {
+                        userType = ChatMessageUserType.SELF;
+                    }
+                    else
+                    {
+                        userType = ChatMessageUserType.OTHER;
+                    }
+                }
+                Log.i("TAG","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%   "+msgStatus);
                 Log.i(TAG, "calipso yo" + userSubtype);
                 Log.i(TAG, "calipso yo" + userType);
                 Log.i(TAG,"calipso yo message "+body);
@@ -1203,12 +1225,16 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private void sendMessage(final String messageText)
     {
         Log.i(TAG, "Inside send message");
-if(messageText != null) {
-    if (messageText.trim().length() == 0)
+
+
+        if(messageText != null)
+        {
+            if(messageText.trim().length()==0)
+                return;
+        }
+        else
         return;
-}else {
-    return;
-}
+
 
         // Rt find to?
         String To = "support";
@@ -1373,9 +1399,7 @@ if(messageText != null) {
 
                                 displayMessage(message);
                             }
-
                         }
-
                     }
 
                     else {
@@ -1955,19 +1979,22 @@ if(messageText != null) {
         String user_id = null;
 
 
-        if(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes"))
+         if(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes"))
             user_id = General.getSharedPreferences(this,AppConstants.USER_ID);
         else
             user_id = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
 
+
+
         try {
             JSONObject jsonMsg = new JSONObject();
-
 
             jsonMsg.put("timestamp",String.valueOf(System.currentTimeMillis()));
 
             //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
+
             jsonMsg.put("_from", user_id);
+
             jsonMsg.put("to", channel_name);
             //jsonMsg.put("to", "client");
 //            jsonMsg.put("imageUrl", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);

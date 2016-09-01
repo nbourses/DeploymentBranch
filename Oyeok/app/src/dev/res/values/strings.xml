@@ -95,7 +95,7 @@
         <item>@string/likeOnFb</item>
         <item>@string/aboutUs</item>
         <item>@string/settings</item>
-        <item>@string/shareNo</item>
+        <!--<item>@string/shareNo</item>-->
 
         <!--   <item>@string/updateProfile</item> -->
 
@@ -112,7 +112,7 @@
         <item>@string/likeOnFb</item>
         <item>@string/aboutUs</item>
         <item>@string/settings</item>
-        <item>@string/shareNo</item>
+        <!--<item>@string/shareNo</item>-->
         <!--   <item>@string/updateProfile</item> -->
     </string-array>
 

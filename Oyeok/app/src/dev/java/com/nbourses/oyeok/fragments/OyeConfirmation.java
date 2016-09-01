@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -32,6 +34,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static java.lang.Math.log10;
 
@@ -48,7 +52,8 @@ public class OyeConfirmation extends Fragment {
     TextView MyExpectation;
     TextView Property_conf_furnishing,selected_loc_to_oye;
     GoogleMap googleMap;
-
+    Animation slide_arrow;
+    private Timer timer;
     private OnFragmentInteractionListener mListener;
 
     public OyeConfirmation() {
@@ -68,33 +73,7 @@ public class OyeConfirmation extends Fragment {
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
     Calendar myCalendar = Calendar.getInstance();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Override
@@ -111,7 +90,8 @@ public class OyeConfirmation extends Fragment {
         MyExpectation=(TextView) view.findViewById(R.id.rate);
         Property_conf_furnishing=(TextView) view.findViewById(R.id.property_config);
         selected_loc_to_oye=(TextView) view.findViewById(R.id.selected_loc_to_oye);
-
+        slide_arrow=(AnimationUtils.loadAnimation(getContext(), R.anim.sliding_arrow));
+        StartOyeButtonAnimation();
         updateLabel();
 
         init();
@@ -119,6 +99,28 @@ public class OyeConfirmation extends Fragment {
         return view;
     }
 
+
+    private void StartOyeButtonAnimation() {
+
+        if (timer == null) {
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                proceed_to_oye.startAnimation(slide_arrow);
+
+                            }
+                        });
+                    }
+                }
+            }, 2000, 2000);
+
+        }
+    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
 
@@ -269,7 +271,7 @@ public class OyeConfirmation extends Fragment {
     }
 
 
-    public void SetPropertyDetail(/*String price,String Config,String Date,String furnishing*/){
+    public void SetPropertyDetail(){
         /*Bundle bundle = this.getArguments();
         Log.i("confirmation1", "myexpectation" + bundle);
         if(bundle.getString("my")!=null) {
@@ -285,21 +287,40 @@ public class OyeConfirmation extends Fragment {
         Furnishing=General.getSharedPreferences(getContext(),AppConstants.FURNISHING);
        int price= Integer.parseInt(my_expectation);
         display_date.setText(PossessionDate);
-        if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent"))
-        text="<u><b><big>"+AppConstants.PROPERTY+"</big></u><small> Expectation = </small><big>"+numToVal(price)+" </big><small>| Deposit </small><big>"+numToVal(price*4)+ " </big></b>(negotiable)";
-       else
-            text="<u><b><big>"+AppConstants.PROPERTY+"</big></u><small> Expectation = </small><big>"+numToVal(price)+" </big><b>(negotiable)";
+        if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")) {
+            if(AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner")) {
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u><small> Expectation = </small><big>" + numToVal(price) + " </big><small>| Deposit </small><big>" + numToVal(price * 4) + " </big></b>(negotiable)";
+                MyExpectation.setText(Html.fromHtml(text));
+                text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Tenants</b>";
+                selected_loc_to_oye.setText(Html.fromHtml(text));
+            } else {
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u><small> Budget = </small><big>" + numToVal(price) + " </big><small>| Deposit </small><big>" + numToVal(price * 4) + " </big></b>(negotiable)";
+                MyExpectation.setText(Html.fromHtml(text));
+                text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Properties</b>";
+                selected_loc_to_oye.setText(Html.fromHtml(text));
+            }
+        }
+       else {
+            if (AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner")) {
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u><small> Expectation = </small><big>" + numToVal(price) + " </big><b>(negotiable)";
+                MyExpectation.setText(Html.fromHtml(text));
+                text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Tenants</b>";
+                selected_loc_to_oye.setText(Html.fromHtml(text));
 
-        MyExpectation.setText(Html.fromHtml(text));
-        Property_conf_furnishing.setText(Property_Config+" "+Furnishing);
-        if(AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner"))
-          text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Tenants</b>";
-        else
-            text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Properties</b>";
+            }else {
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u><small> Budget = </small><big>" + numToVal(price) + " </big><b>(negotiable)";
+                MyExpectation.setText(Html.fromHtml(text));
+                text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Properties</b>";
+                selected_loc_to_oye.setText(Html.fromHtml(text));
 
-        selected_loc_to_oye.setText(Html.fromHtml(text));
+            }
+            }
+
+                Property_conf_furnishing.setText(Property_Config+" "+Furnishing);
 
     }
+
+
 
 
     String numToVal(int no){
