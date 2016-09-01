@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -32,6 +34,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static java.lang.Math.log10;
 
@@ -48,7 +52,8 @@ public class OyeConfirmation extends Fragment {
     TextView MyExpectation;
     TextView Property_conf_furnishing,selected_loc_to_oye;
     GoogleMap googleMap;
-
+    Animation slide_arrow;
+    private Timer timer;
     private OnFragmentInteractionListener mListener;
 
     public OyeConfirmation() {
@@ -68,33 +73,7 @@ public class OyeConfirmation extends Fragment {
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
     Calendar myCalendar = Calendar.getInstance();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Override
@@ -111,7 +90,8 @@ public class OyeConfirmation extends Fragment {
         MyExpectation=(TextView) view.findViewById(R.id.rate);
         Property_conf_furnishing=(TextView) view.findViewById(R.id.property_config);
         selected_loc_to_oye=(TextView) view.findViewById(R.id.selected_loc_to_oye);
-
+        slide_arrow=(AnimationUtils.loadAnimation(getContext(), R.anim.sliding_arrow));
+        StartOyeButtonAnimation();
         updateLabel();
 
         init();
@@ -119,6 +99,28 @@ public class OyeConfirmation extends Fragment {
         return view;
     }
 
+
+    private void StartOyeButtonAnimation() {
+
+        if (timer == null) {
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                proceed_to_oye.startAnimation(slide_arrow);
+
+                            }
+                        });
+                    }
+                }
+            }, 2000, 2000);
+
+        }
+    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
 

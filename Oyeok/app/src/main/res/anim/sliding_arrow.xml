@@ -2,11 +2,12 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android">
     <translate
         android:duration="1000"
-        android:fromXDelta="-50%"
-        android:toXDelta="150%"/>
+        android:fromXDelta="0%"
+        android:toXDelta="25%"/>
     <translate
+        android:startOffset="1000"
         android:duration="1000"
-        android:fromXDelta="-50%"
-        android:toXDelta="100%"/>
+        android:fromXDelta="0%"
+        android:toXDelta="-25%"/>
 
 </set>
