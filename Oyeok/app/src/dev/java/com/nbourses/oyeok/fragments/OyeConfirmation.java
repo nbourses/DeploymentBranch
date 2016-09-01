@@ -271,7 +271,7 @@ public class OyeConfirmation extends Fragment {
     }
 
 
-    public void SetPropertyDetail(/*String price,String Config,String Date,String furnishing*/){
+    public void SetPropertyDetail(){
         /*Bundle bundle = this.getArguments();
         Log.i("confirmation1", "myexpectation" + bundle);
         if(bundle.getString("my")!=null) {
@@ -287,21 +287,40 @@ public class OyeConfirmation extends Fragment {
         Furnishing=General.getSharedPreferences(getContext(),AppConstants.FURNISHING);
        int price= Integer.parseInt(my_expectation);
         display_date.setText(PossessionDate);
-        if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent"))
-        text="<u><b><big>"+AppConstants.PROPERTY+"</big></u><small> Expectation = </small><big>"+numToVal(price)+" </big><small>| Deposit </small><big>"+numToVal(price*4)+ " </big></b>(negotiable)";
-       else
-            text="<u><b><big>"+AppConstants.PROPERTY+"</big></u><small> Expectation = </small><big>"+numToVal(price)+" </big><b>(negotiable)";
+        if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")) {
+            if(AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner")) {
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u><small> Expectation = </small><big>" + numToVal(price) + " </big><small>| Deposit </small><big>" + numToVal(price * 4) + " </big></b>(negotiable)";
+                MyExpectation.setText(Html.fromHtml(text));
+                text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Tenants</b>";
+                selected_loc_to_oye.setText(Html.fromHtml(text));
+            } else {
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u><small> Budget = </small><big>" + numToVal(price) + " </big><small>| Deposit </small><big>" + numToVal(price * 4) + " </big></b>(negotiable)";
+                MyExpectation.setText(Html.fromHtml(text));
+                text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Properties</b>";
+                selected_loc_to_oye.setText(Html.fromHtml(text));
+            }
+        }
+       else {
+            if (AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner")) {
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u><small> Expectation = </small><big>" + numToVal(price) + " </big><b>(negotiable)";
+                MyExpectation.setText(Html.fromHtml(text));
+                text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Tenants</b>";
+                selected_loc_to_oye.setText(Html.fromHtml(text));
 
-        MyExpectation.setText(Html.fromHtml(text));
-        Property_conf_furnishing.setText(Property_Config+" "+Furnishing);
-        if(AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner"))
-          text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Tenants</b>";
-        else
-            text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Properties</b>";
+            }else {
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u><small> Budget = </small><big>" + numToVal(price) + " </big><b>(negotiable)";
+                MyExpectation.setText(Html.fromHtml(text));
+                text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Properties</b>";
+                selected_loc_to_oye.setText(Html.fromHtml(text));
 
-        selected_loc_to_oye.setText(Html.fromHtml(text));
+            }
+            }
+
+                Property_conf_furnishing.setText(Property_Config+" "+Furnishing);
 
     }
+
+
 
 
     String numToVal(int no){
