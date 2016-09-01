@@ -18,6 +18,7 @@ public class Message extends RealmObject {
     private String status;
     public Message() { }
 
+
     public String getOk_id() {
         return ok_id;
     }

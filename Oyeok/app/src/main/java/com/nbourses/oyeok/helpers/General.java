@@ -464,64 +464,11 @@ while(slowInternetFlag) {
             General.getSharedPreferences(context, "MY_SPEC_CODE");
             Log.i("TRACE", "Spec code got from shared prefs" + General.getSharedPreferences(context, "MY_SPEC_CODE"));
 
-            // String[] array;                   // <--declared statement
-//            String[] array = new String[100];
-//            Log.i("TRACE", "zala be");
-//            saveArray(array, speccode, context);
-//            Log.i("TRACE", "zala be1");
-//
-//            Log.i("TRACE", "zala be2" + loadArray(speccode,context));
-            //Set<String> set;
-
-            // Set defaultDeals = new HashSet<>();
-            //   private List<Issue> issues = new ArrayList<>();
-//            String elements[] = {"a"};
-            ////           Set<String> set = new HashSet();
-//            Set<String> set = new HashSet<>(Arrays.asList(elements));
-            //        Log.i("TRACE", "abc");
-            //          set = getDefaultDeals(context);
-//            Log.i("TRACE", "zala be1");
-//          //  Log.i("TRACE", "Set is:-" + set);
-            //       set.add(speccode);
-            //    Log.i("TRACE", "efg");
-//            Log.i("TRACE", "set is:" + speccode);
-            //      saveDefaultDeals(context, set);
-            //       Log.i("TRACE", "Saved");
-//            Log.i("TRACE", "Get default deal" + defaultDeals);
-//            if(speccode != null) {
-//                set.add(speccode);
-//                Log.i("TRACE", "Get default deal" + getDefaultDeals(context));
-//                saveDefaultDeals(context, set);
-//            }
-//            else {
-//
-//                saveDefaultDeals(context, );
-//            }
 
 
             //set = new HashSet<String>();
             Log.i("TRACE", "speccode:" + speccode);
             //set = new HashSet<String>(Arrays.asList("speccode"));
-
-//            set = new HashSet<String>(Arrays.asList(new String[]{
-//                    "a", "b"
-//            }));
-    /*        Log.i("TRACE", "efg" + set);
-            Log.i("TRACE", "abc ");
-
-          set = getDefaultDeals(context);
-
-            if(set == null)
-            {
-                set = new HashSet<String>();
-            }
-
-            Log.i("TRACE", "efg" + set);
-            set.add(speccode);
-            Log.i("TRACE", "efg");
-
-            saveDefaultDeals(context, set);
-            */
 
 
             //  Log.i("TRACE","Okid from shared prefs is " +General.getSharedPreferences(context, "OK_ID"));
@@ -580,9 +527,6 @@ while(slowInternetFlag) {
                         Log.e(TAG, "RETROFIT SUCCESS " + strResponse);
 
                         Log.i("TRACE", "Response" + strResponse);
-
-                        //
-                        //
 
                         //now user is logged in user
                         General.setSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER, "yes");
@@ -647,43 +591,17 @@ while(slowInternetFlag) {
                                     deals1 = new HashMap<String, String>();
 
                                 }
+
                                 // HashMap<String, String> hashMap = new HashMap<String, String>();
                                 Log.i("TRACE", "hashmap entry" + General.getSharedPreferences(context, "OK_ID"));
 
                                 storeDealTime(jsonResponseData.getString("ok_id"),context);
 
-                                //Check here if new default deal is redundant Uncomment to replace old oyes with new with same specs
-                   /*
-
-                            Collection d = deals1.values();
-                            Log.i("TRACE","values after jugad collection1" +d);
-
-                            Iterator it = d.iterator();
-                            while (it.hasNext()) {
-                                String s = it.next().toString();
-
-                                if(s.equals(speccode)){
-                                    Log.i("TRACE","redundant deals comparison " +s +speccode);
-                                    Log.i("TRACE","Removed entries for " +s);
-
-                                    deals1.values().removeAll(Collections.singleton(s));
-                                    Log.i("TRACE", "hashmap after removing redundant deals:" + deals1);
-                                    Toast.makeText(context, "Your old oye with same specs: " + speccode+" has been replaced with new one.", Toast.LENGTH_LONG).show();
-                                    SnackbarManager.show(
-                                            Snackbar.with(context)
-                                                    .position(Snackbar.SnackbarPosition.TOP)
-                                                    .text("Your old oye with same specs: " + speccode)
-                                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                                }
-                                //   Log.i("TRACE", "element of set Set from shared == " + s);
-
-                            } */
-
 
                                 deals1.put(General.getSharedPreferences(context, "OK_ID"), speccode);
                                 // Log.i("TRACE", "hashmap" + deals1);
 
-                                Log.i("TRACE", "step1");
+//                                Log.i("TRACE", "step1");
 
                                 //convert to string using gson
                                 Gson g = new Gson();

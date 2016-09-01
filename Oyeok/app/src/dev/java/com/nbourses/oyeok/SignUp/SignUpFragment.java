@@ -709,7 +709,6 @@ if(newUser==true) {
       AppConstants.REGISTERING_FLAG=true;
            signup_success();
 
-
         }
 
 
@@ -733,10 +732,12 @@ Log.i(TAG,"mobile number is the "+mobile_number);
         user.setEmail(Semail);
         user.setDemoId(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
         user.setName(Sname);
+
         if(okBroker)
             user.setUserRole("broker");
         else
             user.setUserRole("client");
+
         user.setPushToken(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
@@ -843,38 +844,8 @@ Log.i(TAG,"mobile number is the "+mobile_number);
 
                         General.slowInternetFlag = false;
                         General.t.interrupt();
-                        //Broadcast a map that signup has been done(to handle backs)
-//                        signupSuccessflag = true;
-//                        Log.i("signupSuccessflag s","signupSuccessflag "+signupSuccessflag);
-//                        Intent i = new Intent(AppConstants.SIGNUPSUCCESSFLAG);
-//                        i.putExtra("signupSuccessflag",signupSuccessflag);
-//                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
 
                         Log.i("TAG", "Inside signup success");
-//                        SnackbarManager.show(
-//                                Snackbar.with(context)
-//                                        .position(Snackbar.SnackbarPosition.BOTTOM)
-//                                        .text("Please wait we are signing you up.")
-//                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-
-//
-//        userInfo.setName("fatyaa");
-//        user.setEmailId("dukatii@gmail.com");
-//
-//        myRealm.beginTransaction();
-//        UserInfo users = myRealm.copyToRealm(user);
-//        myRealm.commitTransaction();
-
-                        // Set its fields
-
-
-
-//                        RealmResults<UserInfo> results1 =
-//                                myRealm.where(UserInfo.class).findAll();
-//
-//                        for(UserInfo c:results1) {
-//                            Log.d("results1", c.getName());
-//                        }
 
                         Log.i(TAG,"fakata responsedata "+signUp.responseData);
 

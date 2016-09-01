@@ -911,6 +911,7 @@ private void alertbuilder()
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }*/
+
                 Intent inten = new Intent(this, ClientMainActivity.class);
                 inten.addFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP |

@@ -968,6 +968,9 @@ Log.i("SWIPE","inside swipe menu creator");
                                             }.getType());
                         Log.i("TRACEOK", "listbrokerdeals size is "+listBrokerDeals.size());
 
+                        //deals.getOyeId().contains("unverified_user")
+
+
                         if (listBrokerDeals.size() > 0) {
                             myRealm = General.realmconfig(BrokerDealsListActivity.this);
                             Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 3 "+myRealm.isInTransaction());
@@ -1334,93 +1337,88 @@ Log.i(TAG,"persy 1 ");
     }
 
     private  void loadCachedDeals(){
+if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")) {
+
+    Realm myRealm = General.realmconfig(this);
+
+    try {
 
 
-        Realm myRealm = General.realmconfig(this);
-
-       try {
-
-
-
-           // listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
+        // listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
         Log.i(TAG, "until loadCachedDeals called 2");
-           // listViewDeals.setAdapter(listAdapter);
+        // listViewDeals.setAdapter(listAdapter);
         Log.i(TAG, "until loadCachedDeals called 3");
-            RealmResults<HalfDeals> results1 =
-                    myRealm.where(HalfDeals.class).findAll();
+        RealmResults<HalfDeals> results1 =
+                myRealm.where(HalfDeals.class).findAll();
 
-        Log.i(TAG, "until loadCachedDeals called 4 "+results1);
+        Log.i(TAG, "until loadCachedDeals called 4 " + results1);
 
-            for (HalfDeals c : results1) {
-                Log.i(TAG, "until loadCachedDeals ");
-                Log.i(TAG, "until loadCachedDeals " + c.getOk_id());
-                Log.i(TAG, "until loadCachedDeals " + c.getName());
-                Log.i(TAG, "until loadCachedDeals " + c.getLocality());
-                Log.i(TAG, "until loadCachedDeals " + c.getSpec_code());
+        for (HalfDeals c : results1) {
+            Log.i(TAG, "until loadCachedDeals ");
+            Log.i(TAG, "until loadCachedDeals " + c.getOk_id());
+            Log.i(TAG, "until loadCachedDeals " + c.getName());
+            Log.i(TAG, "until loadCachedDeals " + c.getLocality());
+            Log.i(TAG, "until loadCachedDeals " + c.getSpec_code());
 
-                if(searchQuery != null) {
-                    String searchString = "";
-                    if (c.getSpec_code() != "") {
-                        searchString = searchString + " " + c.getSpec_code();
-                    }
-                    if (c.getName() != "") {
-                        searchString = searchString + " " + c.getName();
-                    }
-                    if (c.getLocality() != "") {
-                        searchString = searchString + " " + c.getLocality();
-                    }
+            if (searchQuery != null) {
+                String searchString = "";
+                if (c.getSpec_code() != "") {
+                    searchString = searchString + " " + c.getSpec_code();
+                }
+                if (c.getName() != "") {
+                    searchString = searchString + " " + c.getName();
+                }
+                if (c.getLocality() != "") {
+                    searchString = searchString + " " + c.getLocality();
+                }
 
-                    if (searchString.toLowerCase().contains(searchQuery.toLowerCase())){
-                        BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(), true);
-
-                        if(cachedDealsLL == null){
-                            cachedDealsLL = new ArrayList<BrokerDeals>();
-                        }
-                        if(cachedDealsOR == null){
-                            cachedDealsOR = new ArrayList<BrokerDeals>();
-                        }
-                        if(c.getSpec_code().toLowerCase().contains("LL-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-LL".toLowerCase())){
-                            cachedDealsLL.add(dealsa);
-                        }
-                        else if(c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("OR-".toLowerCase())){
-                            cachedDealsOR.add(dealsa);
-                        }
-
-                    }
-
-                }else if(searchQuery == null) {
-
+                if (searchString.toLowerCase().contains(searchQuery.toLowerCase())) {
                     BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(), true);
 
-                    if(cachedDealsLL == null){
+                    if (cachedDealsLL == null) {
                         cachedDealsLL = new ArrayList<BrokerDeals>();
                     }
-                    if(cachedDealsOR == null){
+                    if (cachedDealsOR == null) {
                         cachedDealsOR = new ArrayList<BrokerDeals>();
                     }
-                    if(c.getSpec_code().toLowerCase().contains("LL-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-LL".toLowerCase())){
+                    if (c.getSpec_code().toLowerCase().contains("LL-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-LL".toLowerCase())) {
                         cachedDealsLL.add(dealsa);
-                    }
-                    else if(c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("OR-".toLowerCase())){
+                    } else if (c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("OR-".toLowerCase())) {
                         cachedDealsOR.add(dealsa);
                     }
 
                 }
 
+            } else if (searchQuery == null) {
 
+                BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(), true);
 
+                if (cachedDealsLL == null) {
+                    cachedDealsLL = new ArrayList<BrokerDeals>();
+                }
+                if (cachedDealsOR == null) {
+                    cachedDealsOR = new ArrayList<BrokerDeals>();
+                }
+                if (c.getSpec_code().toLowerCase().contains("LL-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-LL".toLowerCase())) {
+                    cachedDealsLL.add(dealsa);
+                } else if (c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("OR-".toLowerCase())) {
+                    cachedDealsOR.add(dealsa);
+                }
 
             }
 
-           setCachedDeals();
 
-        }catch(Exception e){
-            Log.i(TAG,"Caught in the exception reading cache from realm "+e);
         }
-        finally {
 
-            Log.i(TAG,"finally loadCachedDeals ");
-        }
+        setCachedDeals();
+
+    } catch (Exception e) {
+        Log.i(TAG, "Caught in the exception reading cache from realm " + e);
+    } finally {
+
+        Log.i(TAG, "finally loadCachedDeals ");
+    }
+}
     }
 
 

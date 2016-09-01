@@ -159,7 +159,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
     @Bind(R.id.hdroomsCount)
     TextView hdroomsCount;
-Boolean Owner_detail=false;
+    Boolean Owner_detail=false;
 
     @Bind(R.id.cancel_btn)
     TextView cancel_btn;
@@ -469,8 +469,10 @@ public void signUp(){
     };
 
 
+
 /*private void alertbuilder()
 
+>>>>>>> d913aac859dc5536d7db3c12aaa4f05270661598
 {
     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setMessage("Do you want to publish this oye?")
@@ -580,22 +582,21 @@ public void signUp(){
      */
     private void init() {
 
+
         try {
-            SharedPreferences prefs =
+            SharedPreferences prefs1 =
                     PreferenceManager.getDefaultSharedPreferences(this);
             listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-
                     if (key.equals(AppConstants.EMAIL)) {
                         emailTxt.setText(General.getSharedPreferences(ClientMainActivity.this,AppConstants.EMAIL));
                     }
-
 
                 }
 
 
             };
-            prefs.registerOnSharedPreferenceChangeListener(listener);
+            prefs1.registerOnSharedPreferenceChangeListener(listener);
 
         }
         catch (Exception e){
@@ -675,6 +676,7 @@ public void signUp(){
 ////            Log.i(TAG,"insider3 "+c.getName());
 ////            Log.i(TAG,"insider4 "+c.getEmailId());
 //        }
+
 
 
 
@@ -764,28 +766,6 @@ public void signUp(){
   //      mToolbar.setNavigationIcon(R.drawable.home);
       getSupportActionBar().setTitle("Live Region Rates");
 
-    //    getSupportActionBar().setIcon(R.drawable.ic_launcher); // or setLogo()
-    //    getSupportActionBar().setLogo(R.drawable.industry);
-
-//        ActionBar actionbar = getSupportActionBar ();
-//        actionbar.setDisplayHomeAsUpEnabled(true);
-//        actionbar.setHomeAsUpIndicator(R.drawable.home);
-
-
-//        mToolbar.setNavigationIcon(R.drawable.home);
-//        mToolbar.setTitle("Title");
-//        mToolbar.setSubtitle("Sub");
-//        mToolbar.setLogo(R.drawable.ic_launcher);
-
-
-   //  getSupportActionBar().setHomeAsUpIndicator(R.drawable.shop);
-//        if (Build.VERSION.SDK_INT >= 18) {
-//            getSupportActionBar().setHomeAsUpIndicator(
-//                    getResources().getDrawable(R.drawable.home));
-//        }
-
-
-
 
 
 
@@ -821,13 +801,6 @@ public void signUp(){
         updateEmail();
 
 
-
-
-
-
-
-
-
         //by default load broker_map view
         dashboardClientFragment = new DashboardClientFragment();
         dashboardClientFragment.setOyeButtonClickListener(this);
@@ -855,6 +828,7 @@ public void signUp(){
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
 
+        //set title
         //set title
 //        getSupportActionBar().setTitle(title);
     }
@@ -1215,7 +1189,9 @@ public void signUp(){
             closeOyeConfirmation();
 //            oyeconfirm_flag=false;
             backpress = 0;
+
         }else if(AppConstants.SIGNUP_FLAG){
+
 
 /*            if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")){
             Intent back = new Intent(this, BrokerMainActivity.class);
@@ -1226,6 +1202,7 @@ public void signUp(){
                 startActivity(back);
             }
             finish();*/
+
             if(AppConstants.REGISTERING_FLAG){}else{
             getSupportFragmentManager().popBackStack();
 
@@ -1267,11 +1244,14 @@ public void signUp(){
                 backpress = 0;
 
 
-            }else {
+            }
+            else {
+
                 super.onBackPressed();
                 Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
                 backpress = 0;
+
             }
 
         }

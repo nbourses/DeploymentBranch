@@ -180,6 +180,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private Boolean oyed = false;
     private Boolean okyed = false;
 
+    private Boolean UnverifiedDeal = false;
+
     // File fileToUpload = new File("/storage/sdcard0/Pictures/Screenshots/photos.png");
     private File fileToUpload = new File("/storage/emulated/0/DCIM/Facebook/FB_IMG_1467990952511.jpg");
     private File fileToDownload = new File("/storage/sdcard0/Pictures/OYEOK");
@@ -198,12 +200,22 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     };
 
 
+    private BroadcastReceiver unverifiedDeal = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Bundle bundle = getIntent().getExtras();
+            UnverifiedDeal = bundle.getBoolean("unverfieddeals");
+        }
+    };
+
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             networkConnectivity();
         }
     };
+
     private BroadcastReceiver chatMessageReceived = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -213,14 +225,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             Bundle b = (Bundle)intent.getExtras();
 
-
-
           /* Bundle b = (Bundle)intent.getExtras().get("bundle");
             Log.i(TAG,"message received is b"+b);*/
-
-
-
-
 
         }
     };
@@ -233,7 +239,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
             i(TAG, "on edtTypeMsg changed");
+
             if (edtTypeMsg.getText().toString().equals("")) {
                 //when nothing is typed shows attachement symbol
                 imgSendMsg.setImageResource(R.drawable.attachment);
@@ -274,7 +282,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //        LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
         // UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
 
+        String userId = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
+
+        if(userId == null)
         UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
+        else
+        UUID = userId;
+
         i("WHERENOW", "UUID " + UUID);
 
         pubnub = new Pubnub(AppConstants.PUBNUB_PUBLISH_KEY, AppConstants.PUBNUB_SUBSCRIBE_KEY);
@@ -316,9 +330,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private void init() {
 
-
         setSupportActionBar(mToolbar);
             getSupportActionBar().setTitle("Dealing Room");
+
 
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -585,16 +599,18 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
                 Log.i(TAG,"imageshare 2 edittypemsg "+edtTypeMsg.getText().toString());
-messageTyped = edtTypeMsg.getText().toString();
+                messageTyped = edtTypeMsg.getText().toString();
                 //send message
-                //sendMessage(edtTypeMsg.getText().toString());
 
+
+                Log.i("CHANNEL NAME"," "+channel_name);
                 final ChatMessage message = new ChatMessage();
                 message.setUserName("self");
                 message.setMessageStatus(ChatMessageStatus.SENT);
                 message.setMessageText(messageTyped);
                 message.setUserType(ChatMessageUserType.OTHER);
                 message.setMessageTime(System.currentTimeMillis()/10000);
+
                 chatMessages.add(message);
                 listAdapter.notifyDataSetChanged();
 
@@ -641,7 +657,12 @@ messageTyped = edtTypeMsg.getText().toString();
 
             else{
                 Log.i(TAG,"getDealStatus ");
-                getDealStatus(this,channel_name);
+                String demo_channel = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
+
+                if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCase(demo_channel))
+                    getDealStatus(this,channel_name);
+                else
+                    sendMessage(messageTyped);
             }
         }
     }
@@ -886,12 +907,11 @@ messageTyped = edtTypeMsg.getText().toString();
      * @param jsonMsg
      */
 
+
     private void displayMessage(JSONObject jsonMsg) {
-        Log.i(TAG,"in displayMessage "+jsonMsg);
-
-
 
         try{
+
             if(!jsonMsg.getJSONObject("pn_gcm").getJSONObject("data").getString("_from").equalsIgnoreCase(General.getSharedPreferences(this,AppConstants.USER_ID)) && !jsonMsg.getJSONObject("pn_gcm").getJSONObject("data").getString("_from").equalsIgnoreCase(General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI)) ) {
                 JSONObject j = jsonMsg.getJSONObject("pn_gcm").getJSONObject("data");
                 Log.i(TAG, "in displayMessage rt " + j);
@@ -935,11 +955,11 @@ messageTyped = edtTypeMsg.getText().toString();
 
             if(jsonMsg.has("status"))
                 msgStatus = jsonMsg.getString("status");
+
             /*else if(jsonMsg.getString("message").contains("https://"))
                 msgStatus = "IMG";*/
             else
                 msgStatus = "undefined";
-
 
 
             if (jsonMsg.has("message") && FROM != null && jsonMsg.has("to")) {
@@ -963,10 +983,10 @@ messageTyped = edtTypeMsg.getText().toString();
                     imageName = imageUrl.substring(imageUrl.lastIndexOf("/")+1);
 
                     Log.i("grrrr IMG IMAGE NAME"," "+imageName);
-
                     Log.i(TAG, "calipso" + userSubtype);
 
                 }
+
                 else if (msgStatus.equalsIgnoreCase("LISTING")){
 
                     Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
@@ -976,18 +996,12 @@ messageTyped = edtTypeMsg.getText().toString();
 
                 }
 
-//                else if(FROM.equalsIgnoreCase("support")) // TEST WITH DEMO ID AND USER ID FOR SUPPORT CHAT
-//                {
-//
-//                    userType = ChatMessageUserType.OTHER;     // for support
-//                }
-                else if (!FROM.equalsIgnoreCase(userID))
+               else if (!FROM.equalsIgnoreCase(userID))
                 {
                     userType = ChatMessageUserType.SELF;
                 }
                 else
                 {
-
                     Log.i("TAG","OTHER ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
                     userType = ChatMessageUserType.OTHER;
                 }
@@ -1057,118 +1071,6 @@ messageTyped = edtTypeMsg.getText().toString();
 
 
 
-
-
-      /*  try {
-
-            if (jsonMsg.has("message")) {
-
-                JSONObject j = jsonMsg.getJSONObject("message");
-                timetoken = jsonMsg.getString("timetoken");
-
-
-
-                if (j.has("message") && FROM != null && j.has("to")) {
-
-                    body = j.getString("message");
-
-
-                    if (j.getString("status").equalsIgnoreCase("DEFAULT")){
-
-                        userType = ChatMessageUserType.DEFAULT;
-                    }
-                    else if (j.getString("status").equalsIgnoreCase("IMG")){
-
-                        userType = ChatMessageUserType.IMG;
-                        if(j.has("imageUrl")){
-
-                            imageUrl = j.getString("imageUrl");
-                        }
-                        /*if(jsonMsg.getString("to").equalsIgnoreCase("support"))
-                            userSubtype = ChatMessageUserSubtype.SUPPORT;*
-
-                        if(j.has("user_id")) {
-
-                           // else
-                            if (j.getString("user_id").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID))) {
-                                userSubtype = ChatMessageUserSubtype.OTHER;
-                            } else {
-                                userSubtype = ChatMessageUserSubtype.SELF;
-                            }
-                        }
-                        else userSubtype = ChatMessageUserSubtype.OTHER;
-
-                    }
-                    else if (j.getString("from").equalsIgnoreCase("LISTING")){
-                        Log.i("CONVER", "LISTING set");
-                        userType = ChatMessageUserType.LISTING;
-                    }
-                    else if(j.getString("to").equalsIgnoreCase("support"))
-                    {
-                        userType = ChatMessageUserType.OTHER;     // for support
-                    }
-                    else if (!j.getString("from").equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID)))
-                    {
-                        userType = ChatMessageUserType.SELF;
-                    }
-                    else {
-                        userType = ChatMessageUserType.OTHER;
-                    }
-                    Log.i(TAG, "ragnar" + jsonMsg);
-                    Log.i(TAG, "ragnar lagartha" + userType);
-                    Log.i("CHAT","lure "+userSubtype);
-                    //  if(userType == ChatMessageUserType.OTHER && channel_name.equals("my_channel"))
-                    //     channel_name = General.getSharedPreferences(this ,AppConstants.USER_ID);
-                    message.setUserName(roleOfUser);
-                    message.setMessageStatus(ChatMessageStatus.SENT);
-                    message.setMessageText(body);
-                    message.setUserType(userType);
-                    message.setImageUrl(imageUrl);
-                    message.setUserSubtype(userSubtype);
-                    // message.setMessageTime(new Date().getTime());
-                    message.setMessageTime(Long.valueOf(timetoken)/10000);
-
-
-
-
-                    chatMessages.add(message);
-
-
-                    Log.i(TAG, "message after adding to chatMessages" + chatMessages);
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.i(TAG, "message runOnUiThread" + listAdapter);
-                            if (listAdapter != null) {
-//                                Log.i(TAG, "message runOnUiThread  not null");
-                                listAdapter.notifyDataSetChanged();
-                            }
-//                            Log.i(TAG, "message runOnUiThread edtTypeMsg1");
-                            edtTypeMsg.setText("");
-//                            Log.i(TAG, "message runOnUiThread edtTypeMsg2");
-                        }
-                    });
-                }
-
-
-
-            }
-
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.i(TAG, "caught in display message1 debug yo" + e);
-        }
-
-
-        chatListView.post(new Runnable() {
-            @Override
-            public void run() {
-                chatListView.setSelection(listAdapter.getCount());
-            }
-        });*/
     }
 
 
@@ -1217,7 +1119,6 @@ messageTyped = edtTypeMsg.getText().toString();
                 }
                 else if (c.getStatus().equalsIgnoreCase("IMG")){
 
-
                     userType = ChatMessageUserType.IMG;
 
                     imageUrl = c.getImageUrl();
@@ -1242,7 +1143,7 @@ messageTyped = edtTypeMsg.getText().toString();
                     }*/
 
                 }
-                else if (c.getStatus().equalsIgnoreCase("LISTING")) {
+                else if ("LISTING".equalsIgnoreCase(c.getStatus())) {
                     Log.i("CONVER", "LISTING set");
                     userType = ChatMessageUserType.LISTING;
                 }
@@ -1302,9 +1203,12 @@ messageTyped = edtTypeMsg.getText().toString();
     private void sendMessage(final String messageText)
     {
         Log.i(TAG, "Inside send message");
-
-        if(messageText.trim().length()==0)
-            return;
+if(messageText != null) {
+    if (messageText.trim().length() == 0)
+        return;
+}else {
+    return;
+}
 
         // Rt find to?
         String To = "support";
@@ -1318,16 +1222,27 @@ messageTyped = edtTypeMsg.getText().toString();
             Log.i(TAG, "Role is not properly saved in shared preferences" + role);
 
         try {
+
             JSONObject jsonMsg = new JSONObject();
-            jsonMsg.put("_from", General.getSharedPreferences(this ,AppConstants.USER_ID));
+
+            if(General.getSharedPreferences(this ,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes"))
+                 jsonMsg.put("_from", General.getSharedPreferences(this ,AppConstants.USER_ID));
+            else
+                jsonMsg.put("_from", General.getSharedPreferences(this ,AppConstants.TIME_STAMP_IN_MILLI));
+
             jsonMsg.put("name", dbHelper.getValue(DatabaseConstants.name));
             jsonMsg.put("to", channel_name);
             jsonMsg.put("message", messageText);
             jsonMsg.put("status", "");
 
+            Log.i("TEST", "jsonMsg in send msg USER_ID " + General.getSharedPreferences(this ,AppConstants.USER_ID));
+            Log.i("TEST", "jsonMsg in send msg DEMO_ID " + General.getSharedPreferences(this ,AppConstants.TIME_STAMP_IN_MILLI));
+
             jsonMsgtoWhereNow = jsonMsg;
 
-            Log.i("TEST", "jsonMsgtoWhereNow in send msg " + jsonMsgtoWhereNow);
+//            Log.i("TEST", "jsonMsg in send msg from " + General.getSharedPreferences(this ,AppConstants.USER_ID));
+//            Log.i("TEST", "jsonMsg in send msg from " + General.getSharedPreferences(this ,AppConstants.TIME_STAMP_IN_MILLI));
+
             //publish message
 
 
@@ -1335,9 +1250,9 @@ messageTyped = edtTypeMsg.getText().toString();
 
                 channel_name = General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI);
 
-
             }
 
+            Log.i("TEST", "jsonMsg in send msg _from" + jsonMsg);
             sendNotification(jsonMsg);
             displayMessage(jsonMsg);
             lastMessageTime = String.valueOf(System.currentTimeMillis());
@@ -1418,10 +1333,13 @@ messageTyped = edtTypeMsg.getText().toString();
         pubnub.whereNow(UUID, callback);
   }
 */
+
     /**
      * load pubnub history
      */
+
     private void loadHistoryFromPubnub(String channel_name) {
+
         Log.i(TAG, "inside loadHistoryFromPubnub");
         Log.i(TAG, "inside loadHistoryFromPubnub channel name is" + channel_name);
 
@@ -1449,9 +1367,9 @@ messageTyped = edtTypeMsg.getText().toString();
 //                            Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub jsonArrayHistory" + jsonArrayHistory);
 //                            Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub" + jsonMsg);
 
+
                             if(jsonMsg.getJSONObject("message").has("pn_gcm")) {
                                 JSONObject message = jsonMsg.getJSONObject("message").getJSONObject("pn_gcm").getJSONObject("data");
-
 
                                 displayMessage(message);
                             }
@@ -1892,6 +1810,7 @@ messageTyped = edtTypeMsg.getText().toString();
             JSONObject jsonMsg = new JSONObject();
             //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
             jsonMsg.put("_from", General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
+
             //jsonMsg.put("to", "client");
 
             jsonMsg.put("to", channel_name);
@@ -1913,8 +1832,10 @@ messageTyped = edtTypeMsg.getText().toString();
 
             Log.i(TAG, "displayCardView msg is "+jsonMsg);
             displayMessage(jsonMsg);
+
             sendNotification(jsonMsg);
            // pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+
         }
         catch(Exception e){
 
@@ -1934,7 +1855,8 @@ messageTyped = edtTypeMsg.getText().toString();
 
             //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
 //            jsonMsg.put("_from", "DEFAULT");
-            jsonMsg.put("_from", General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
+           jsonMsg.put("_from", General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
+
 
             jsonMsg.put("to",channel_name);
 
@@ -1971,9 +1893,11 @@ messageTyped = edtTypeMsg.getText().toString();
             }
 */
 
+
             Log.i(TAG,"display default message "+jsonMsg);
             displayMessage(jsonMsg);
             sendNotification(jsonMsg);
+
 
         }
 
@@ -2028,7 +1952,13 @@ messageTyped = edtTypeMsg.getText().toString();
         Log.i(TAG, "calipso inside displayimage msg"+bucketName +" "+imgName );
         Log.i(TAG, "displayImgMessage called ");
 
-        String user_id = General.getSharedPreferences(this,AppConstants.USER_ID);
+        String user_id = null;
+
+
+        if(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes"))
+            user_id = General.getSharedPreferences(this,AppConstants.USER_ID);
+        else
+            user_id = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
 
         try {
             JSONObject jsonMsg = new JSONObject();
@@ -2160,7 +2090,9 @@ messageTyped = edtTypeMsg.getText().toString();
         }
         catch (Exception e)
         {
+
             Log.i(TAG, "Caught in exFception saving image /oyeok " + e);
+
         }
 
 
@@ -2358,6 +2290,7 @@ Log.i(TAG,"back clicked");
 
     }
 
+
     private void getDealStatus(Context c,String okId){
         Log.i(TAG,"getDealStatus 1 ");
         UpdateStatus updateStatus = new UpdateStatus();
@@ -2380,7 +2313,6 @@ Log.i(TAG,"back clicked");
                 public void success(JsonElement jsonElement, Response response) {
 
                     Log.i("getStatus CALLED","getDealStatus success ");
-
 
 
                     JsonObject k = jsonElement.getAsJsonObject();
@@ -2440,6 +2372,7 @@ Log.i(TAG,"back clicked");
         }
 
     }
+
 
 
 }

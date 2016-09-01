@@ -131,8 +131,6 @@ public class FragmentDrawer extends Fragment {
         // Inflating view layout
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
 
-//        txtemail=(TextView) layout.findViewById(R.id.txtEmail);
-
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -145,6 +143,7 @@ public class FragmentDrawer extends Fragment {
     final List<SimpleSectionedRecyclerViewAdapter.Section> sections = new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
 
 //Sections
+
 
         sections.add(new SimpleSectionedRecyclerViewAdapter.Section(2,"general"));
 
@@ -167,7 +166,9 @@ public class FragmentDrawer extends Fragment {
                 recyclerView.getAdapter().getItemId(position);
 //                recyclerView.getAdapter().notifyItemChanged();
                 drawerListener.onDrawerItemSelected(view, position, navDrawerItems.get(position).getTitle());
+
                 Log.i("title","=================================title"+navDrawerItems.get(position).getTitle()+"  "+position+sections.size());
+
                // navDrawerItems.get(position).set("#2dc4b6");
                 mDrawerLayout.closeDrawer(containerView);
             }

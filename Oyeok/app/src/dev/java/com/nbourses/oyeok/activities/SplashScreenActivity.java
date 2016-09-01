@@ -14,10 +14,11 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 
-import org.json.JSONObject;
-
+import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
+import io.branch.referral.util.LinkProperties;
+
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -50,6 +51,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     Log.i("splash","is logged in yo man 2 ");
                     intent = new Intent(context, ClientMainActivity.class);
                 }
+
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
@@ -58,28 +60,31 @@ public class SplashScreenActivity extends AppCompatActivity {
         }, 2000);
     }
 
+
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
         Branch branch = Branch.getInstance();
-
-        branch.initSession(new Branch.BranchReferralInitListener(){
+        branch.initSession(new Branch.BranchUniversalReferralInitListener() {
             @Override
-            public void onInitFinished(JSONObject referringParams, BranchError error) {
-                if (error == null) {
-                    // params are the deep linked params associated with the link that the user clicked -> was re-directed to this app
-                    // params will be empty if no data found
-                    // ... insert custom logic here ...
-                } else {
-                    Log.i("MyApp", error.getMessage());
+            public void onInitFinished(BranchUniversalObject branchUniversalObject, LinkProperties linkProperties, BranchError error) {
+                if (error == null && branchUniversalObject != null) {
+                    // This code will execute when your app is opened from a Branch deep link, which
+                    // means that you can route to a custom activity depending on what they clicked.
+                    // In this example, we'll just print out the data from the link that was clicked.
+
+                    Log.i("BranchTestBed", "referring Branch Universal Object: " + branchUniversalObject.toString());
+
+                    // check if the item is contained in the metadata
+                    if (branchUniversalObject.getMetadata().containsKey("item_id")) {
+                        Intent i = new Intent(getApplicationContext(), ClientMainActivity.class);
+                        i.putExtra("picture_id", branchUniversalObject.getMetadata().get("item_id"));
+                        startActivity(i);
+                    }
+
                 }
             }
         }, this.getIntent().getData(), this);
-    }
-
-    @Override
-    public void onNewIntent(Intent intent) {
-        this.setIntent(intent);
     }
 
 }

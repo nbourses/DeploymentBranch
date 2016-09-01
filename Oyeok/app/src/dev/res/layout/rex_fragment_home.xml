@@ -18,16 +18,11 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/border_line">
 
-
             <!--  <fragment
                   android:id="@+id/broker_map"
                   android:name="com.google.android.gms.maps.SupportMapFragment"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"/> -->
-
-
-
-
 
 
             <fragment
@@ -499,13 +494,6 @@
 
 
         </FrameLayout>
-
-
-
-
-
-
-
 
 
         <FrameLayout
