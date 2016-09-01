@@ -1169,11 +1169,13 @@ TextView rental,resale;
 
                             }
                         } else {
-                            m=mCustomerMarker[i];
+                            mCustomerMarker[i].setIcon(icon1);
+
 //                            mCustomerMarker[i].remove();
-                            mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).icon(icon1));
-                            mCustomerMarker[i].hideInfoWindow();
-                            flag[i] = false;
+//
+//                            mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).icon(icon1));
+//                            mCustomerMarker[i].hideInfoWindow();
+//                            flag[i] = false;
                         }
                     }
 
