@@ -148,6 +148,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private ChatListAdapter listAdapter;
     private ArrayList<ChatMessage> chatMessages;
     private String UUID;
+    private Boolean isUnverified = false;
 
 
     private String userRole = "client";
@@ -186,6 +187,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     public TransferUtility transferUtility;
     private String imageName = null;
     private String messageTyped;
+    //for default unverified msg
+    private String locality;
+    private String specs;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -388,6 +392,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     if (bundle.getString("Oyed").equalsIgnoreCase("yes")) {
                         Log.i(TAG,"dealconv oyed");
                         oyed = true;
+
                         //chatMessages.clear();
 
                     }
@@ -406,6 +411,18 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Log.i(TAG,"listing ghya listing "+bundle.getSerializable("listing"));
 
                 }*/
+                if(bundle.containsKey(AppConstants.OYE_ID)){
+                    Log.i(TAG,"perser 1 ");
+                    if (bundle.getString(AppConstants.OYE_ID).toLowerCase().contains("unverified_user".toLowerCase())) {
+                        Log.i(TAG,"perser 2 ");
+                        isUnverified = true;
+                        locality = bundle.getString(AppConstants.LOCALITY);
+                        specs = bundle.getString(AppConstants.SPEC_CODE);
+                        Log.i(TAG,"perser 3 "+isUnverified);
+
+                    }
+
+                }
             }
         }
         catch(Exception e){
@@ -1444,6 +1461,10 @@ messageTyped = edtTypeMsg.getText().toString();
                     }
 
                     else {
+                        if(isUnverified){
+                            Log.i(TAG, "perser 4");
+                            displayDefaultMessageUnverified();
+                        }
 
                         Log.i(TAG, "loadhistory empty");
 
@@ -1962,6 +1983,46 @@ messageTyped = edtTypeMsg.getText().toString();
         }
     }
 
+
+    private void displayDefaultMessageUnverified(){
+        Log.i(TAG, "perser 5");
+        Log.i(TAG, "displayDefaultMessage called ");
+        try {
+            JSONObject jsonMsg = new JSONObject();
+
+            jsonMsg.put("_from", General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI));
+
+            jsonMsg.put("to",channel_name);
+
+            jsonMsg.put("status","SYSTEM"); // SYSTEM as this would be welcome message
+
+            Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
+            String intent;
+             if( specs.toLowerCase().contains("LL".toLowerCase()))
+                 intent = "Renting";
+            else if( specs.toLowerCase().contains("OR".toLowerCase()) && specs.toLowerCase().contains("AVL".toLowerCase()))
+                 intent = "Buying";
+            else
+             intent = "Selling";
+
+                jsonMsg.put("message", "You have initiated an enquiry for property in "+locality+" for "+intent+". ");
+
+
+
+
+
+
+            Log.i(TAG,"display default message "+jsonMsg);
+            displayMessage(jsonMsg);
+            sendNotification(jsonMsg);
+
+        }
+
+        catch(Exception e){
+            Log.i(TAG, "perser 6 exception "+e);
+        }
+
+    }
     private void displayImgMessage(String bucketName, String imgName){
 
         Log.i(TAG, "calipso inside displayimage msg"+bucketName +" "+imgName );
@@ -2007,7 +2068,7 @@ messageTyped = edtTypeMsg.getText().toString();
             Log.i("yoyoyo","urlo "+jsonMsg);
             Log.i(TAG, "calipso inside calling displayMsg "+jsonMsg );
 
-            displayMessage(jsonMsg);
+           displayMessage(jsonMsg);
             sendNotification(jsonMsg);
 //            pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
 

@@ -579,6 +579,28 @@ public void signUp(){
      * init all components
      */
     private void init() {
+
+        try {
+            SharedPreferences prefs =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+
+                    if (key.equals(AppConstants.EMAIL)) {
+                        emailTxt.setText(General.getSharedPreferences(ClientMainActivity.this,AppConstants.EMAIL));
+                    }
+
+
+                }
+
+
+            };
+            prefs.registerOnSharedPreferenceChangeListener(listener);
+
+        }
+        catch (Exception e){
+            Log.e("loc", e.getMessage());
+        }
 //        RealmConfiguration config = new RealmConfiguration
 //                .Builder(this)
 //                .deleteRealmIfMigrationNeeded()
@@ -785,7 +807,7 @@ public void signUp(){
 //
 //        }
 
-        if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+        /*if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
             //if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
             if (!General.getSharedPreferences(this,AppConstants.EMAIL).equalsIgnoreCase("null")) {
                 emailTxt.setVisibility(View.VISIBLE);
@@ -795,7 +817,8 @@ public void signUp(){
             }
         }else{
             emailTxt.setVisibility(View.INVISIBLE);
-        }
+        }*/
+        updateEmail();
 
 
 
@@ -1710,7 +1733,7 @@ Log.i(TAG,"Image is the "+out);
 
 
     public void showCard() {
-        if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("")) {
+       if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("")) {
 
             if (AppConstants.cardCounter >3) {
 
@@ -1856,6 +1879,20 @@ Log.i(TAG,"Image is the "+out);
         }
         else
             closeOyeConfirmation();
+    }
+    public void updateEmail(){
+        if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+            //if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+            if (!General.getSharedPreferences(this,AppConstants.EMAIL).equalsIgnoreCase("null")) {
+                emailTxt.setVisibility(View.VISIBLE);
+                emailTxt.setText(General.getSharedPreferences(this,AppConstants.EMAIL));
+                Log.i(TAG,"emailsa "+General.getSharedPreferences(this,AppConstants.EMAIL));
+
+            }
+        }else{
+            emailTxt.setVisibility(View.INVISIBLE);
+        }
+
     }
 
 

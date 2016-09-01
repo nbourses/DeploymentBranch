@@ -169,9 +169,15 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                 String spec = (!deal.getSpecCode().equals("")) ? deal.getSpecCode() : "None";
                 Log.i("spec code is", "name is the spec " + spec);
                 Log.i("spec code is", "spec hd rooms res " + spec);
-                Log.i("spec code ok id is", "ok id is " + deal.getOkId());
+                Log.i("spec code ok id is", "spec code ok id is ok id is " + deal.getOkId());
+                Log.i("spec code ok id is", "spec code ok id is speccode is " + deal.getSpecCode());
+                Log.i("spec code ok id is", "spec code ok id is oye id is " + deal.getOyeId());
 
-                if(deal.getOyeId().contains("unverified_user")) {
+
+
+
+
+                if(deal.getOyeId().toLowerCase().contains("unverified_user".toLowerCase())) {
                     String[] split = spec.split("-");
                     String intend = split[0];
                     String tt = split[1].toUpperCase();

@@ -68,9 +68,7 @@ public class BrokerDeals {
         this.okId = ok_id;
         this.specCode = specs;
         this.name = name;
-        this.locality = locality;
-
-
+        this.oyeId = ok_id;
 
     }
 

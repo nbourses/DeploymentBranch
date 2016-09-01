@@ -145,9 +145,9 @@ private WebView i;
             holder4.building2.setText(list.get(2));
             holder4.building3.setText(list.get(4));
 
-            holder4.price1.setText(" @₹"+list.get(1));
-            holder4.price2.setText(" @₹"+list.get(3));
-            holder4.price3.setText(" @₹"+list.get(5));
+            holder4.price1.setText(" @"+ General.currencyFormat(list.get(1).substring(0 , list.get(1).indexOf("."))));
+            holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(3).indexOf("."))));
+            holder4.price3.setText(" @"+ General.currencyFormat(list.get(5).substring(0 , list.get(5).indexOf("."))));
             /*holder4.price1.setText(" @"+General.currencyFormat(list.get(1).substring(0,list.get(1).length()-2)));
             holder4.price2.setText(" @"+General.currencyFormat(list.get(3).substring(0,list.get(3).length()-2)));
             holder4.price3.setText(" @"+General.currencyFormat(list.get(5).substring(0,list.get(5).length()-2)));*/
@@ -348,7 +348,12 @@ private WebView i;
             }
 
             //String userName = message.getUserName(); // broker
-            String userName = General.getSharedPreferences(context, AppConstants.NAME);
+           // String userName = General.getSharedPreferences(context, AppConstants.NAME);
+            String userName = "unverified user";
+            if(General.getSharedPreferences(context, AppConstants.NAME) != "") {
+               userName = General.getSharedPreferences(context, AppConstants.NAME);
+            }
+
             String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
 
             Log.i("CONVER", "Chat message is2" + message.getMessageText());

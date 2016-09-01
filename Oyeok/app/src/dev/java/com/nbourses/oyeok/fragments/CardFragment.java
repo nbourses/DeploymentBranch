@@ -461,11 +461,17 @@ private void showLocalityText(){
 
                         Log.i("AUTOOK CALLED","autook success response "+response);
 
-
                         JSONObject ne = new JSONObject(k.toString());
+//                        JSONObject neo = ne.getJSONObject("responseData");
+//                        Log.i("AUTOOK CALLED","autook response "+neo);
                         Log.i("AUTOOK CALLED","autook response "+ne);
+                        //Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getString("message"));
+                     //  Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getJSONArray("ok_ids"));
+                       // Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getJSONArray("ok_ids").toJSONArray());
+
                         TastyToast.makeText(getContext(), "We have connected you with 3 brokers in your area.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
                         TastyToast.makeText(getContext(), "Sign up to connect with 7 more brokers waiting for you.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+
 
                         /*Log.i("BROKER BUILDINGS CALLED","success ne "+ne);
                         Log.i("BROKER BUILDINGS CALLED","success ne "+ne.getJSONObject("responseData"));
@@ -475,6 +481,8 @@ private void showLocalityText(){
                         Log.i("BROKER BUILDINGS CALLED","success ne "+ne.getJSONObject("responseData").getString("coupon"));
                         coupon.setText(ne.getJSONObject("responseData").getString("coupon"));*/
                        // getFragmentManager().popBackStack();
+
+
 if(ne.getString("success").equalsIgnoreCase("true")){
     General.setSharedPreferences(getContext(),AppConstants.STOP_CARD,"yes");
 }
@@ -485,9 +493,9 @@ if(ne.getString("success").equalsIgnoreCase("true")){
 
                     }
                     catch (JSONException e) {
-                        Log.e("TAG", e.getMessage());
+                        Log.e("TAG","Something went wrong "+e.getMessage());
                         TastyToast.makeText(getContext(), "Something went wrong.", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
-                        TastyToast.makeText(getContext(), "Please signup to get connected with 10 brokers waiting for you", TastyToast.LENGTH_LONG, TastyToast.INFO);
+//                        TastyToast.makeText(getContext(), "Please signup to get connected with 10 brokers waiting for you", TastyToast.LENGTH_LONG, TastyToast.INFO);
 
                         Log.i("BROKER AUTOOK CALLED ","autook Failed "+e.getMessage());
                     }
