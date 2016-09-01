@@ -314,7 +314,7 @@ public void signUp(){
 //    }
 }
 
-    private BroadcastReceiver oyebuttondata1 = new BroadcastReceiver() {
+   /* private BroadcastReceiver oyebuttondata1 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -416,7 +416,7 @@ public void signUp(){
 
 
         }
-    };
+    };*/
 
 
     private BroadcastReceiver doSignUp = new BroadcastReceiver() {
@@ -1184,6 +1184,10 @@ public void signUp(){
             Log.i("SIGNUP_FLAG"," closing app =================== 3"+getFragmentManager().getBackStackEntryCount());
             if(backpress <1) {
                 backpress = (backpress + 1);
+                for(int i=0;i<getFragmentManager().getBackStackEntryCount();i++){
+                    getFragmentManager().popBackStackImmediate();
+                }
+
                 TastyToast.makeText(this, "Press Back again to Exit!", TastyToast.LENGTH_LONG, TastyToast.INFO);
                 //Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
             }else if (backpress>=1) {
@@ -1735,7 +1739,10 @@ Log.i(TAG,"Image is the "+out);
 
 
     public  void closeOyeConfirmation(){
-        getSupportFragmentManager().popBackStack();
+        if(oyeconfirm_flag==true) {
+            getSupportFragmentManager().popBackStack();
+            oyeconfirm_flag=false;
+        }
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         cancel_btn.setVisibility(View.GONE);

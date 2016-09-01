@@ -141,18 +141,24 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="60dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/grey">
     <ImageView
-        android:layout_width="310dp"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
         android:id="@+id/addContact"
         android:background="@drawable/addcontact"
          />
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:id="@+id/proceed_to_oye"
-            android:background="@drawable/arrow_confirm"/>
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:id="@+id/proceed_to_oye"
+                android:layout_marginLeft="-10dp"
+                android:src="@drawable/arrow2"
+                />
+
+
     </LinearLayout>
 
 
