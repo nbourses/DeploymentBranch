@@ -133,6 +133,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
+
         <!--
         <activity
             android:name=".RPOT.PriceDiscovery.UI.QrCode.CaptureActivityAnyOrientation"
@@ -157,11 +158,13 @@
 
         </service>
         -->
+
         <activity
             android:name="com.paytm.pgsdk.PaytmPGActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
+
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
@@ -175,12 +178,8 @@
         </receiver>
         <!-- [END gcm_receiver] -->
 
-
         <!-- [START gcm_listener] -->
-        <!--
-            <service
-            android:name=".GoogleCloudMessaging.MyGcmListenerService"/>
-        -->
+
         <service
             android:name=".GoogleCloudMessaging.MyGcmListenerService"
             android:exported="false" >
@@ -251,14 +250,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!--
-            <intent-filter>
-                <data
-                    android:host="open"
-                    android:scheme="oyeok://" />
 
+            <!-- AppLink example -->
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
@@ -277,6 +272,17 @@
                     android:host="bnc.lt"
                     android:scheme="http" />
             </intent-filter>
+
+            <!--<intent-filter>-->
+                <!--<data-->
+                    <!--android:host="open"-->
+                    <!--android:scheme="oyeok://" />-->
+
+                <!--<action android:name="android.intent.action.VIEW" />-->
+
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+            <!--</intent-filter>-->
         </activity>
         <!--
         <activity

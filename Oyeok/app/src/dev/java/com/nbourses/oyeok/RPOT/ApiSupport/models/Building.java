@@ -24,6 +24,19 @@ public class Building {
     @Expose
     private String name;
 
+    public String getRate_growth() {
+        return rate_growth;
+    }
+
+    public void setRate_growth(String rate_growth) {
+        this.rate_growth = rate_growth;
+    }
+
+
+    public String getConfig() {
+        return config;
+    }
+
 
 
     @SerializedName("or_psf")
@@ -35,24 +48,6 @@ public class Building {
     @SerializedName("loc")
     @Expose
     private List<String> loc = new ArrayList<String>();
-
-
-    public String getConfig() {
-        return config;
-    }
-
-    public void setConfig(String config) {
-        this.config = config;
-    }
-
-
-    public String getRate_growth() {
-        return rate_growth;
-    }
-
-    public void setRate_growth(String rate_growth) {
-        this.rate_growth = rate_growth;
-    }
 
     /**
      *

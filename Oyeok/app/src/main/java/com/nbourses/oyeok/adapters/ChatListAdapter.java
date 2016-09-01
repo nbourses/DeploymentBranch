@@ -85,7 +85,6 @@ private WebView i;
     public View getView(int position, View convertView, final ViewGroup parent) {
 
 
-
         View v = null;
         final ChatMessage message = chatMessages.get(position);
         ViewHolder1 holder1;
@@ -93,7 +92,7 @@ private WebView i;
         ViewHolder3 holder3;
         ViewHolder4 holder4;
 
-        Log.i("uri","message ust "+message.getUserSubtype());
+        Log.i("uri","message ust "+message.getUserType());
 
 
 
@@ -168,9 +167,11 @@ private WebView i;
                     v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);
                 else
                 v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
+
                /* else //(message.getUserSubtype() == ChatMessageUserSubtype.OTHER)
                     v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);*/
 //v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
+
                 holder5 = new ViewHolder5();
                 holder5.imageView = (ImageView) v.findViewById(R.id.shareImage);
                 holder5.messageTextView = (TextView) v.findViewById(R.id.message_text);
@@ -181,9 +182,12 @@ private WebView i;
                 v.setTag(holder5);
             }
             else {
+
                 v = convertView;
                 holder5 = (ViewHolder5) v.getTag();
+
             }
+
             holder5.imageView.setVisibility(View.VISIBLE);
             holder5.messageTextView.setVisibility(View.GONE);
             holder5.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
@@ -400,7 +404,8 @@ private WebView i;
             holder1.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
             Log.i("CONVER","message time self "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
         }
-        else if (message.getUserType() == ChatMessageUserType.OTHER) {
+        else if (message.getUserType() == ChatMessageUserType.OTHER)
+        {
 
             if (convertView == null) {
                 v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);
@@ -412,7 +417,9 @@ private WebView i;
                 holder2.messageStatus = (ImageView) v.findViewById(R.id.user_reply_status);
                 v.setTag(holder2);
 
-            } else {
+            }
+            else
+            {
                 v = convertView;
                 holder2 = (ViewHolder2) v.getTag();
 
@@ -445,6 +452,7 @@ private WebView i;
     public int getItemViewType(int position) {
 
             ChatMessage message = chatMessages.get(position);
+//        Log.i("USERTYPE"," "+message.getUserType().ordinal());
             return message.getUserType().ordinal();
 
     }
@@ -499,10 +507,6 @@ private WebView i;
     }
 
 
-
-
-
-
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
@@ -527,6 +531,7 @@ private WebView i;
                     Log.e("Error", e.getMessage());
                     e.printStackTrace();
                 }
+
                 return mIcon11;
             }
             else{
@@ -614,7 +619,8 @@ private WebView i;
                 Log.i("TAG","result compressed"+result);
 //
                 // if phone DOES have sd card
-            } else if (Environment.getExternalStorageState() != null) {
+            }
+            else if (Environment.getExternalStorageState() != null) {
                 // search for directory on SD card
                 File directory = new File(Environment.getExternalStorageDirectory()
                         + "/oyeok/");
@@ -629,6 +635,7 @@ private WebView i;
                 result.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 stream.close();
                 Log.i("TAG","result compressed"+result);
+
 //                destdir = new File(Environment.getExternalStorageDirectory()
 //                        + "/oyeok2/"+imageName);
                 /*DealConversationActivity d = new DealConversationActivity();

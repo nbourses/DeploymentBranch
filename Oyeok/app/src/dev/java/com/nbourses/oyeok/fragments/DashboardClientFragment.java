@@ -187,11 +187,15 @@ Button home,shop,industrial,office;
     private LinearLayout ll_marker;
     private ImageView Mmarker;
     private ImageView search_building_icon;
-    private BitmapDescriptor icon1,icon2;
+
+    private BitmapDescriptor icon1;
+    private BitmapDescriptor icon2;
     private Drawable sort_down_black,sort_down_red,sort_up_black,sort_up_green,comman_icon;
+
 
     long then;
     long now;
+
     private Thread r;
     private RelativeLayout wrapper;
 
@@ -244,8 +248,8 @@ Button home,shop,industrial,office;
     static int x, y;
     static int top, bottom, left, right, width, height, truncate_first;
     private int llMin=35, llMax=60, orMin=21000, orMax=27000;
-    private String  text;
-    private String[] config=new String[5],name=new String[5],rate_growth =new String[5];
+    private String  text,name;
+    private String[] config=new String[5],rate_growth =new String[5];
 
     private static int count = 0;
     private static final String ischeck = "true";
@@ -267,7 +271,11 @@ TextView rental,resale;
     private FrameLayout hideOnSearch;
     private Boolean autoc = false;
     private Boolean autocomplete = false;
-  private  static  View  rootView,v1;
+
+  private  static  View  rootView;
+
+    private View v1;
+
     private Boolean spanning = false,autoIsClicked=false,pro_click=false;
     RelativeLayout parenttop,parentbottom;
     Animation zoomout_right, slide_up, zoomout_left, ani, zoomin_zoomout,slide_up1;
@@ -338,6 +346,7 @@ TextView rental,resale;
 //
 //        }
 //    };
+
 
     private BroadcastReceiver onFilterValueUpdate = new BroadcastReceiver() {
         @Override
@@ -452,7 +461,9 @@ TextView rental,resale;
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
-         v1 = inflater.inflate(R.layout.info_window_layout, null);
+
+        v1 = inflater.inflate(R.layout.info_window_layout, null);
+
         ButterKnife.bind(this, rootView);
 
 
@@ -460,9 +471,12 @@ TextView rental,resale;
 //        myLoc = (ImageView) rootView.findViewById(R.id.myLoc);
         hideOnSearch = (FrameLayout) rootView.findViewById(R.id.hideOnSearch);
         seekbar_linearlayout = (LinearLayout) rootView.findViewById(R.id.seekbar_linearlayout);
+
         topView = (RelativeLayout) rootView.findViewById(R.id.top);
+
         parentbottom=(RelativeLayout) rootView.findViewById(R.id.top);
         parenttop=(RelativeLayout) rootView.findViewById(R.id.parent);
+
 //        hPicker = (RelativeLayout) rootView.findViewById(R.id.hPicker);
         // View locationButton = suppormanagerObj.getView().findViewById(2);
         if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
@@ -517,7 +531,9 @@ TextView rental,resale;
         /*if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
             beacon = "true";
             SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
-        } else {
+        }
+        else
+        {
             beacon = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON);
             // SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
             Log.i("ischecked", "walkthrough3dashboard" + beacon);
@@ -543,12 +559,21 @@ TextView rental,resale;
             sort_up_black = getContext().getResources().getDrawable(R.drawable.sort_up_black);
             sort_up_green = getContext().getResources().getDrawable(R.drawable.sort_up_green);
 
-        } catch (Exception e) {
+            sort_down_black = getContext().getResources().getDrawable(R.drawable.sort_down_black);
+            sort_down_red = getContext().getResources().getDrawable(R.drawable.sort_down_red);
+            sort_up_black = getContext().getResources().getDrawable(R.drawable.sort_up_black);
+            sort_up_green = getContext().getResources().getDrawable(R.drawable.sort_up_green);
+
+        }
+        catch (Exception e)
+        {
             Log.i("BITMAP", "message " + e.getMessage());
         }
+
         recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
         //selected_property = BitmapDescriptorFactory.fromResource(R.drawable.search_building_icon);
         search_building_icon = (ImageView) rootView.findViewById(R.id.selected_property);
+
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 Mmarker.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -779,6 +804,54 @@ TextView rental,resale;
             final View mMapView = getChildFragmentManager().findFragmentById(R.id.map).getView();
             // mapView =(MapView) rootView.findViewById(R.id.map);
             map = customMapFragment.getMap();
+            map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+
+
+                @Override
+                public View getInfoWindow(Marker arg0) {
+                    Log.i("INSIDE INFO WNDW","======================");
+                    return null;
+                }
+                @Override
+                public View getInfoContents(Marker arg0) {
+
+                    Log.i("INSIDE CONTNT WNDW","======================");
+                    LatLng latLng = arg0.getPosition();
+                    ImageView rate_change_img = (ImageView) v1.findViewById(R.id.rate_change_img);
+                    TextView rate_change_value = (TextView) v1.findViewById(R.id.rate_change_value);
+                    String rate="0";
+                    for(int i=0;i<5;i++) {
+                        if (arg0.getId().equals(mCustomerMarker[i].getId())) {
+                            if (flag[i] == false)
+                                rate = rate_growth[i];
+                            Log.i("RATE"," ============== "+rate);
+                        }
+                    }
+
+                    if (Integer.parseInt(rate) < 0){
+                        comman_icon=sort_down_red;
+                        rate_change_value.setTextColor(Color.parseColor("red"));
+                        rate_change_img.setBackground(comman_icon);
+                        rate_change_value.setText(rate.subSequence(1, rate.length())+" %");
+                    }
+                    else if(Integer.parseInt(rate) > 0){
+                        comman_icon = sort_up_green;
+                        rate_change_value.setTextColor(Color.parseColor("green"));
+                        rate_change_img.setBackground(comman_icon);
+                        rate_change_value.setText(Integer.parseInt(rate)+" %");
+                    }
+                    else{
+                        rate_change_img.setBackground(null);
+                        rate_change_value.setTextColor(Color.parseColor("black"));
+                        rate_change_value.setText(Integer.parseInt(rate)+" %");
+                    }
+
+
+                    return v1;
+
+                }
+            });
             map.getUiSettings().setRotateGesturesEnabled(false);
             map.getUiSettings().setMyLocationButtonEnabled(true);
             map.getUiSettings().setScrollGesturesEnabled(true);
@@ -878,6 +951,8 @@ TextView rental,resale;
             //}
 
             map.getUiSettings().setZoomGesturesEnabled(true);
+
+
 
 
             //}
@@ -999,8 +1074,9 @@ TextView rental,resale;
                                 ((ClientMainActivity)getActivity()).OpenBuildingOyeConfirmation();
 
                                 m=mCustomerMarker[i];
-                                mCustomerMarker[i].remove();
 
+//                                marker.showInfoWindow();
+                                mCustomerMarker[i].remove();
                                 mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).icon(icon2));
                                 search_building_icon.setVisibility(View.VISIBLE);
 
@@ -1009,28 +1085,31 @@ TextView rental,resale;
                                 tvRate.setVisibility(View.GONE);
                                 rupeesymbol.setVisibility(View.GONE);
                                 recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
-                                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
+
+                                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
                                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_bg_color_white));
                                 txtFilterValue.setText(rate_growth[i]);
                                 txtFilterValue.setTextColor(Color.parseColor("black"));
                                 ll_marker.setEnabled(false);
                                 mVisits.setEnabled(false);
                                 txtFilterValue.setEnabled(false);
-
+//                                txtFilterValue.setTextColor(Color.parseColor("green"));
                                 CancelAnimation();
                                 Intent in = new Intent(AppConstants.MARKERSELECTED);
                                 in.putExtra("markerClicked", "true");
                                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
 //                                Log.i("coming soon", "coming soon :" + marker.getTitle().toString());
                                 tv_building.setVisibility(View.VISIBLE);
-                                String text1 ="Observed <big><font color=#ff9f1c>30</font></big> online listing in last 1 WEEK";
-                                        tv_building.setText(Html.fromHtml(text1));
 
+
+                                String text1 ="Observed <big><font color=#ff9f1c>30</font></big> online listing in last 1 WEEK";
+                                tv_building.setText(Html.fromHtml(text1));
                                 if(brokerType.equalsIgnoreCase("rent")) {
-                                    String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
+                                    String text = "<font color=#ffffff >"+"ewrkuheulkg" + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
                                     tvFetchingrates.setText(Html.fromHtml(text));
                                 }else {
-                                    String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font></br>";
+                                    String text = "<font color=#ffffff >" +"ajsdkjs" + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font></br>";
+
                                     tvFetchingrates.setText(Html.fromHtml(text));
                                 }
                                 tvFetchingrates.setTypeface(null, Typeface.BOLD);
@@ -1055,8 +1134,10 @@ TextView rental,resale;
                                 mCustomerMarker[i].remove();
 
                                 mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).icon(icon1));
-                                Log.i("mm_mithai","marker draw");
                                 mCustomerMarker[i].hideInfoWindow();
+
+                                Log.i("mm_mithai","marker draw");
+
 //                                mCustomerMarker[i].setIcon(icon1);
                                 search_building_icon.setVisibility(View.GONE);
                                 flag[i] = false;
@@ -1090,6 +1171,7 @@ TextView rental,resale;
                             }
                         } else {
                             mCustomerMarker[i].setIcon(icon1);
+
                         }
                     }
 
@@ -1894,20 +1976,15 @@ TextView rental,resale;
 
                                 for (int i = 0; i < 5; i++) {
                                     config[i] = getPrice.getResponseData().getBuildings().get(i).getConfig();
-                                    Log.i("TRACE", "RESPONSEDATAr" + config[i]);
-                                    name[i] = getPrice.getResponseData().getBuildings().get(i).getName();
-                                    Log.i("TRACE", "RESPONSEDATAr" + name[i]);
-
+                                    Log.i("TRACE", "RESPONSEDATAr" + name);
+                                    name = getPrice.getResponseData().getBuildings().get(i).getName();
+                                    Log.i("TRACE", "RESPONSEDATAr" + name);
                                     rate_growth[i] = getPrice.getResponseData().getBuildings().get(i).getRate_growth();
                                     Log.i("TRACE", "RESPONSEDATAr" + rate_growth[i]);
+//                                    config[i] = getPrice.getResponseData().getBuildings().get(i).getConfig();
+//                                    Log.i("TRACE", "RESPONSEDATAr" + config[i]);
 
 
-                                    /*int rate_change = Integer.parseInt(rate_growth);
-                                    if (rate_change < 0){
-                                        comman_icon=sort_down_red;
-                                    }
-                                    else
-                                        comman_icon=sort_up_green;*/
 
                                     or_psf[i] = Integer.parseInt(getPrice.getResponseData().getBuildings().get(i).getOrPsf());
                                     Log.i("TRACE", "RESPONSEDATAr" + or_psf);
@@ -2210,7 +2287,7 @@ TextView rental,resale;
 
                     tv_building.setVisibility(View.VISIBLE);
                     tv_building.setText("Average Rate in last 1 WEEK");
-                    String text = "<font color=#ffffff>"+name[INDEX]+"</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c>\u20B9"+General.currencyFormat(String.valueOf(ll_pm[INDEX])).substring(2,General.currencyFormat(String.valueOf(ll_pm[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font>";
+                    String text = "<font color=#ffffff>"+mCustomerMarker[INDEX]+"</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c>\u20B9"+General.currencyFormat(String.valueOf(ll_pm[INDEX])).substring(2,General.currencyFormat(String.valueOf(ll_pm[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/m</sub></font>";
                     tvFetchingrates.setText(Html.fromHtml(text));
 
                 }
@@ -2260,7 +2337,7 @@ TextView rental,resale;
                 if(flag[INDEX]==true) {
                     tv_building.setVisibility(View.VISIBLE);
                     tv_building.setText("Average Rate in last 1 WEEK");
-                    String text = "<font color=#ffffff>"+name[INDEX]+"</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9"+General.currencyFormat(String.valueOf(or_psf[INDEX])).substring(2,General.currencyFormat(String.valueOf(or_psf[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font>";
+                    String text = "<font color=#ffffff>"+mCustomerMarker[INDEX]+"</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9"+General.currencyFormat(String.valueOf(or_psf[INDEX])).substring(2,General.currencyFormat(String.valueOf(or_psf[INDEX])).length())+"</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font>";
                     tvFetchingrates.setText(Html.fromHtml(text));
                 }
                 // onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),950,orMin,orMax);
@@ -2639,7 +2716,6 @@ TextView rental,resale;
 
 
 
-
     private void BroadCastMinMaxValue(int llMin, int llMax,int orMin,int orMax) {
 
         int llmin=numToVals(llMin);
@@ -2658,7 +2734,6 @@ TextView rental,resale;
         //intent.putExtra("tv_dealinfo",oyeButtonData);
 
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-
 
     }
 
@@ -3151,6 +3226,9 @@ public void oyebuttonBackgrountColorOrange(){
                             txtFilterValue.setTextColor(Color.parseColor("white"));
                             txtFilterValue.setText(oyetext);
                             LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+                            txtFilterValue.setTextColor(Color.parseColor("white"));
+                            txtFilterValue.setText(oyetext);
+
                             tvFetchingrates.setVisibility(View.VISIBLE);
                             mMarkerminmax.setVisibility(View.VISIBLE);
                             tvRate.setVisibility(View.VISIBLE);
@@ -3437,7 +3515,12 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
 
                 mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
 //                            mVisits.startAnimation(zoomin_zoomout);
+
                 StartOyeButtonAnimation();
+
+                txtFilterValue.setTextColor(Color.parseColor("white"));
+                txtFilterValue.setText(oyetext);
+
                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
                 txtFilterValue.setTextColor(Color.parseColor("white"));
                     txtFilterValue.setText(oyetext);

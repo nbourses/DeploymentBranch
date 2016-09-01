@@ -106,7 +106,7 @@ public class MyGcmListenerService extends GcmListenerService {
             if(data.containsKey("message")) {
                 message = data.getString("message");
             }else{
-               message = data.getString("alert");
+                message = data.getString("alert");
             }
             String okId = null;
             String deals;
@@ -427,58 +427,59 @@ public class MyGcmListenerService extends GcmListenerService {
                 if (!General.getSharedPreferences(this, AppConstants.USER_ID).equalsIgnoreCase(data.getString("_from")) && !(General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID).equalsIgnoreCase(data.getString("to"))))
                 {
                     if(!General.getMutedOKIds(this).contains(data.getString("to")))
-                    sendNotification("New Message Recieved", data.getString("to") + "@" + data.getString("message"), data);
+                        sendNotification("New Message Recieved", data.getString("to") + "@" + data.getString("message"), data);
 
-
-                try {
-                    Realm myRealm = General.realmconfig(this);
-                    NotifCount notifcount = myRealm.where(NotifCount.class).equalTo(AppConstants.OK_ID, data.getString("to")).findFirst();
-                    Log.i(TAG, "Caught in exception notif insiderr cached msgs is the notifcount " + notifcount);
-                    if (notifcount == null) {
-                        NotifCount notifCount = new NotifCount();
-                        notifCount.setOk_id(data.getString("to"));
-                        notifCount.setNotif_count(1);
-                        myRealm.beginTransaction();
-                        NotifCount notifCount1 = myRealm.copyToRealmOrUpdate(notifCount);
-                        myRealm.commitTransaction();
-                    } else {
-                        myRealm.beginTransaction();
-                        notifcount.setNotif_count(notifcount.getNotif_count() + 1);
-                        myRealm.commitTransaction();
-                    }
-
-                    Intent intent = new Intent(AppConstants.BADGE_COUNT_BROADCAST);  // (this is for dealslist) same used for badges in preok also
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
                     try {
-                        Realm myRealm1 = General.realmconfig(this);
-                        RealmResults<NotifCount> results1 =
-                                myRealm1.where(NotifCount.class).findAll();
-                        Log.i(TAG, "notif insiderr cached msgs is the " + results1);
-                        for (NotifCount c : results1) {
-                            Log.i(TAG, "notif insiderr cached msgs ");
-                            Log.i(TAG, "notif insiderr cached msgs " + c.getOk_id());
-                            Log.i(TAG, "notif insiderr cached msgs " + c.getNotif_count());
+                        Realm myRealm = General.realmconfig(this);
+                        NotifCount notifcount = myRealm.where(NotifCount.class).equalTo(AppConstants.OK_ID, data.getString("to")).findFirst();
+                        Log.i(TAG, "Caught in exception notif insiderr cached msgs is the notifcount " + notifcount);
+                        if (notifcount == null) {
+                            NotifCount notifCount = new NotifCount();
+                            notifCount.setOk_id(data.getString("to"));
+                            notifCount.setNotif_count(1);
+                            myRealm.beginTransaction();
+                            NotifCount notifCount1 = myRealm.copyToRealmOrUpdate(notifCount);
+                            myRealm.commitTransaction();
+                        } else {
+                            myRealm.beginTransaction();
+                            notifcount.setNotif_count(notifcount.getNotif_count() + 1);
+                            myRealm.commitTransaction();
                         }
 
-                        NotifCount notifcount1 = myRealm.where(NotifCount.class).equalTo(AppConstants.OK_ID, data.getString("to")).findFirst();
-                        Log.i(TAG, "notif count is the " + notifcount1.getNotif_count());
+                        Intent intent = new Intent(AppConstants.BADGE_COUNT_BROADCAST);  // (this is for dealslist) same used for badges in preok also
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+                        try {
+                            Realm myRealm1 = General.realmconfig(this);
+                            RealmResults<NotifCount> results1 =
+                                    myRealm1.where(NotifCount.class).findAll();
+                            Log.i(TAG, "notif insiderr cached msgs is the " + results1);
+                            for (NotifCount c : results1) {
+                                Log.i(TAG, "notif insiderr cached msgs ");
+                                Log.i(TAG, "notif insiderr cached msgs " + c.getOk_id());
+                                Log.i(TAG, "notif insiderr cached msgs " + c.getNotif_count());
+                            }
+
+                            NotifCount notifcount1 = myRealm.where(NotifCount.class).equalTo(AppConstants.OK_ID, data.getString("to")).findFirst();
+                            Log.i(TAG, "notif count is the " + notifcount1.getNotif_count());
+
+                        } catch (Exception e) {
+                            Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 2 " + e);
+                        }
 
                     } catch (Exception e) {
-                        Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 2 " + e);
+                        Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 3 " + e);
                     }
-
-                } catch (Exception e) {
-                    Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 3 " + e);
                 }
-            }
             }
             catch (Exception e) {
                 Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 3 " + e);
             }
 
-            }
+        }
     }
+
     // [END receive_message]
 
     /**
@@ -546,7 +547,7 @@ public class MyGcmListenerService extends GcmListenerService {
         else{
             if(!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
                     General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("broker"))
-            intent = new Intent(context, BrokerMainActivity.class);
+                intent = new Intent(context, BrokerMainActivity.class);
             else
                 intent = new Intent(context, ClientMainActivity.class);
         }
