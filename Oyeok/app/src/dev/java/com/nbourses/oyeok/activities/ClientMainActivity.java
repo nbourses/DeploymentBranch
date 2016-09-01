@@ -669,9 +669,7 @@ public void signUp(){
   //      mToolbar.setNavigationIcon(R.drawable.home);
       getSupportActionBar().setTitle("Live Region Rates");
 
-
-
-
+        
         //TODO: need to validate this functionality
         dbHelper = new DBHelper(getBaseContext());
         mHandler = new Handler();

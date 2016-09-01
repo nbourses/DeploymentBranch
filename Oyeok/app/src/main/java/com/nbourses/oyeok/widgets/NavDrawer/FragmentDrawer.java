@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -92,7 +91,7 @@ public class FragmentDrawer extends Fragment {
 
         // drawer labels
         dbHelper=new DBHelper(getActivity());
-        userType=dbHelper.getValue(DatabaseConstants.user);
+//        userType=dbHelper.getValue(DatabaseConstants.user);
 
 
 

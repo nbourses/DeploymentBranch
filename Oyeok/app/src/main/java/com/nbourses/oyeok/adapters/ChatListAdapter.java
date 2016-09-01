@@ -451,8 +451,9 @@ private WebView i;
     @Override
     public int getItemViewType(int position) {
 
+        Log.i("VIEW TYPE","========  "+position);
             ChatMessage message = chatMessages.get(position);
-//        Log.i("USERTYPE"," "+message.getUserType().ordinal());
+        Log.i("VIEW TYPE","========  "+message.getUserType());
             return message.getUserType().ordinal();
 
     }
