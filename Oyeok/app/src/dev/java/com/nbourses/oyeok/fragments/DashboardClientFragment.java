@@ -1045,7 +1045,7 @@ TextView rental,resale;
 //                                mCustomerMarker[i].setIcon(icon2);
                                // mCustomerMarker[i].showInfoWindow();
 
-//                                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+                                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                                 ((ClientMainActivity)getActivity()).OpenBuildingOyeConfirmation();
 
                                 m=mCustomerMarker[i];

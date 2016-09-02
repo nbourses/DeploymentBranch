@@ -357,7 +357,6 @@ private WebView i;
 
             Log.i("CONVER", "Chat message is2" + message.getMessageText());
 
-
             Log.i("TRACE DEALS FLAG", "FLAG " + isDefaultDeal);
             if(!isDefaultDeal) {
                 holder3.spinnerProgress.setVisibility(View.INVISIBLE);
