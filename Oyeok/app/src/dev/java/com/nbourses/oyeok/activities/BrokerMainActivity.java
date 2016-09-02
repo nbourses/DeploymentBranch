@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -142,15 +143,18 @@ GoogleMap map;
     private BroadcastReceiver profileEmailUpdate = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            Log.i("pikachu","ppppp1"+intent.getExtras().getString("emailProfile"));
+            Log.i("closer","closer ");
+         updateEmail();
+            /*Log.i("pikachu","ppppp1"+intent.getExtras().getString("emailProfile"));
             if(intent.getExtras().getString("emailProfile") != null){
                 Log.i("pikachu","ppp111111"+intent.getExtras().getString("emailProfile"));
          String email=intent.getExtras().getString("emailProfile");
                 emailTxt.setText(email);
-            }
+            }*/
         }
     };
+
+
 
 //    private BroadcastReceiver signupSuccessFlag = new BroadcastReceiver() {
 //        @Override
@@ -272,27 +276,15 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
                 R.anim.slide_down);
         openmaps.setVisibility(View.VISIBLE);
 
-       /* try {
+       try {
             SharedPreferences prefs =
                     PreferenceManager.getDefaultSharedPreferences(this);
             listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 
-                    if (key.equals(SharedPrefs.MY_LOCALITY)) {
-                        Log.i("loc","OnSharedPreferenceChangeListener 1");
-                        Log.i("loc","OnSharedPreferenceChangeListener 1 rent "+SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
-                        if (SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY) ==null ) {
-                            Log.i("loc","OnSharedPreferenceChangeListener 2");
-                            tv_change_region.setVisibility(View.GONE);
-                        }
-                        else {
-                            Log.i("loc","OnSharedPreferenceChangeListener 3");
-                            tv_change_region.setVisibility(View.VISIBLE);
-                            tv_change_region.setText(String.valueOf(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY)));
-                        }
+                    if (key.equals(AppConstants.EMAIL)) {
+                        emailTxt.setText(General.getSharedPreferences(BrokerMainActivity.this,AppConstants.EMAIL));
                     }
-
-
                 }
 
 
@@ -302,7 +294,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         }
         catch (Exception e){
             Log.e("loc", e.getMessage());
-        }*/
+        }
 
         /*Fragment fragment = new Ok_Broker_MainScreen();
         loadFragment(fragment, null, R.id.container_map, "");*/
@@ -411,16 +403,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
 
-        if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-            //if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
-            if (!General.getSharedPreferences(this,AppConstants.EMAIL).equalsIgnoreCase("null")) {
-                emailTxt.setVisibility(View.VISIBLE);
-                emailTxt.setText(General.getSharedPreferences(this,AppConstants.EMAIL));
-
-            }
-        }else{
-            emailTxt.setVisibility(View.INVISIBLE);
-        }
+        updateEmail();
 
 
 
@@ -860,17 +843,23 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
     }
 
 
-public void profileEmailUpdate(String email){
-//        emailTxt.setVisibility(View.VISIBLE);
-    //SharedPrefs.getString(this,SharedPrefs.EMAIL_PROFILE);
-    emailTxt.setText(General.getSharedPreferences(this,AppConstants.EMAIL));
-//    emailTxt.setText(email);
-//    Log.i("kaka","kaka   : "+AppConstants.EMAIL.toString()+" :: " +dbHelper.getValue(DatabaseConstants.email));
-//        emailTxt.setText( dbHelper.getValue(DatabaseConstants.email));
+
+    public void updateEmail(){
+        Log.i("closer","closer 1 ");
+        if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+            Log.i("closer","closer 2 "+General.getSharedPreferences(this,AppConstants.EMAIL));
+            //if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+            if (!General.getSharedPreferences(this,AppConstants.EMAIL).equalsIgnoreCase("null")) {
+                emailTxt.setVisibility(View.VISIBLE);
+                emailTxt.setText(General.getSharedPreferences(this,AppConstants.EMAIL));
 
 
+            }
+        }else{
+            emailTxt.setVisibility(View.INVISIBLE);
+        }
 
-}
+    }
 
 
 
