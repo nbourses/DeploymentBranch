@@ -379,7 +379,7 @@ private WebView i;
         }
 
 
-        else if (message.getUserType() == ChatMessageUserType.SELF) {
+        else if (message.getUserType() == ChatMessageUserType.OTHER || message.getUserSubtype() == ChatMessageUserSubtype.OTHER) {
             if (convertView == null) {
                 v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
                 holder1 = new ViewHolder1();
@@ -391,6 +391,7 @@ private WebView i;
                 holder1.spinnerProgress = (ProgressBar) v.findViewById(R.id.spinnerProgress);
 
                 v.setTag(holder1);
+
             } else {
                 v = convertView;
                 holder1 = (ViewHolder1) v.getTag();
@@ -408,7 +409,7 @@ private WebView i;
             holder1.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
             Log.i("CONVER","message time self "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
         }
-        else if (message.getUserType() == ChatMessageUserType.OTHER)
+        else if (message.getUserType() == ChatMessageUserType.SELF || message.getUserSubtype() == ChatMessageUserSubtype.SELF)
         {
 
             if (convertView == null) {
@@ -429,8 +430,8 @@ private WebView i;
 
             }
 
-            Log.i("CONVER","Chat message is other4"+message.getMessageText());
-            Log.i("CONVER","message time other "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
+//            Log.i("CONVER","Chat message is other4"+message.getMessageText());
+//            Log.i("CONVER","message time other "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
 
             holder2.imageFrame.setVisibility(View.GONE);
             holder2.messageTextView.setText(message.getMessageText());
@@ -443,6 +444,7 @@ private WebView i;
                 holder2.messageStatus.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_single_tick));
 
             }
+
         }
         return v;
     }
@@ -460,7 +462,10 @@ private WebView i;
             ChatMessage message = chatMessages.get(position);
         Log.i("VIEW TYPE","========  "+message.getUserType());
 
+        if(message.getUserType() != null)
             return message.getUserType().ordinal();
+
+        return message.getUserSubtype().ordinal();
 
     }
 

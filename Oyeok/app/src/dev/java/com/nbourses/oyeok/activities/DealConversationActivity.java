@@ -576,29 +576,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             else {
 
 
-               /* Realm myRealm = General.realmconfig(this);
-                DealStatusType dealStatusType = null;
-
-                DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, channel_name).findFirst();
-                Log.i(TAG, "Caught in exception notif insiderr cached msgs is the notifcount " + dealStatus);
-                if (dealStatus != null && dealStatus.getStatus().equalsIgnoreCase(DealStatusType.BLOCKED.toString())) {
-                   *//* myRealm.beginTransaction();
-                    dealStatus.setStatus(DealStatusType.BLOCKED.toString());
-                    myRealm.commitTransaction();*//*
-                    SnackbarManager.show(
-                            Snackbar.with(this)
-                                    .position(Snackbar.SnackbarPosition.TOP)
-                                    .text("You have blocked this deal.")
-                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                }
-                else{
-                    getDealStatus(this,channel_name);
-
-                }
-                else {*/
-
-
-
                 Log.i(TAG,"imageshare 2 edittypemsg "+edtTypeMsg.getText().toString());
                 messageTyped = edtTypeMsg.getText().toString();
                 //send message
@@ -974,7 +951,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     userType = ChatMessageUserType.DEFAULT;
                 }
 
-                else if (msgStatus.equalsIgnoreCase("IMG")){
+                 if (msgStatus.equalsIgnoreCase("IMG")){
 
                     Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
 
@@ -989,28 +966,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 }
 
-                else if (msgStatus.equalsIgnoreCase("LISTING")){
+                 if (msgStatus.equalsIgnoreCase("LISTING")){
 
                     Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
 
                     userType = ChatMessageUserType.LISTING;
 
 
-                }
-                /*
-<<<<<<<HEAD
-
-               else if (!FROM.equalsIgnoreCase(userID))
-                {
-                    userType = ChatMessageUserType.SELF;
-                }
-=======
->>>>>>> 9c44010c32f1e536ca300f0c6fc41566727c7cc4
-*/
-                else
-                {
-                    Log.i("TAG","OTHER ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
-                    userType = ChatMessageUserType.OTHER;
                 }
 
                 String demoId = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
@@ -1035,7 +997,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     {
                         userType = ChatMessageUserType.OTHER;
                     }
+
                 }
+
                 Log.i("TAG","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%   "+msgStatus);
                 Log.i(TAG, "calipso yo" + userSubtype);
                 Log.i(TAG, "calipso yo" + userType);
@@ -1120,8 +1084,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         try {
 
-
-
             myRealm.beginTransaction();
             RealmResults<Message> results1 =
                     myRealm.where(Message.class).equalTo(AppConstants.OK_ID, channelName).findAll();
@@ -1129,11 +1091,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             for (Message c : results1) {
                 Log.i(TAG, "until insideroui2 ");
                 Log.i(TAG, "until insideroui3 " + c.getOk_id());
-                Log.i(TAG, "until insideroui4 " + c.getTimestamp());
-                Log.i(TAG, "until insideroui4 " + c.getMessage());
-                Log.i(TAG, "until insideroui4 " + c.getFrom());
-                Log.i(TAG, "until insideroui4 " + c.getTo());
-                Log.i(TAG, "until insideroui4 " + c.getImageUrl());
+//                Log.i(TAG, "until insideroui4 " + c.getTimestamp());
+//                Log.i(TAG, "until insideroui4 " + c.getMessage());
+//                Log.i(TAG, "until insideroui4 " + c.getFrom());
+//                Log.i(TAG, "until insideroui4 " + c.getTo());
+//                Log.i(TAG, "until insideroui4 " + c.getImageUrl());
 
                 if (c.getFrom().equalsIgnoreCase("DEFAULT")) {
                     Log.i("CONVER", "DEFAULT set");
@@ -1150,19 +1112,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                     if (!user_id.equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID))) {
                         userSubtype = ChatMessageUserSubtype.SELF;
-                    } else {
-                        userSubtype = ChatMessageUserSubtype.OTHER;
-                    }
-
-                    /*if(jsonMsg.getString("to").equalsIgnoreCase("support"))
-                        userSubtype = ChatMessageUserSubtype.SUPPORT;
-                    else if (!jsonMsg.getString("from").equalsIgnoreCase()))
-                    {
-                        userSubtype = ChatMessageUserSubtype.SELF;
                     }
                     else {
                         userSubtype = ChatMessageUserSubtype.OTHER;
-                    }*/
+                    }
+
+
 
                 }
                 else if ("LISTING".equalsIgnoreCase(c.getStatus())) {
@@ -1259,7 +1214,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             jsonMsg.put("name", dbHelper.getValue(DatabaseConstants.name));
             jsonMsg.put("to", channel_name);
             jsonMsg.put("message", messageText);
-            jsonMsg.put("status", "");
+            jsonMsg.put("status", " ");
 
             Log.i("TEST", "jsonMsg in send msg USER_ID " + General.getSharedPreferences(this ,AppConstants.USER_ID));
             Log.i("TEST", "jsonMsg in send msg DEMO_ID " + General.getSharedPreferences(this ,AppConstants.TIME_STAMP_IN_MILLI));
