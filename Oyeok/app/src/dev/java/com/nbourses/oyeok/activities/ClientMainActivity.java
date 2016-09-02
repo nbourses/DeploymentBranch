@@ -583,7 +583,7 @@ public void signUp(){
     private void init() {
 
 
-        try {
+        /*try {
             SharedPreferences prefs1 =
                     PreferenceManager.getDefaultSharedPreferences(this);
             listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -600,8 +600,8 @@ public void signUp(){
 
         }
         catch (Exception e){
-            Log.e("loc", e.getMessage());
-        }
+            Log.e(TAG,"listener shared 2 "+e.getMessage());
+        }*/
 //        RealmConfiguration config = new RealmConfiguration
 //                .Builder(this)
 //                .deleteRealmIfMigrationNeeded()
@@ -692,8 +692,10 @@ public void signUp(){
             SharedPreferences prefs =
                     PreferenceManager.getDefaultSharedPreferences(this);
 
+
             listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                    Log.e(TAG,"listener shared 0 "+key);
                     if (key.equals(AppConstants.HDROOMS_COUNT)) {
                         if (General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT) <= 0)
                             hdroomsCount.setVisibility(View.GONE);
@@ -706,13 +708,16 @@ public void signUp(){
 
 
                     }
+                    if (key.equals(AppConstants.EMAIL)) {
+                        emailTxt.setText(General.getSharedPreferences(ClientMainActivity.this,AppConstants.EMAIL));
+                    }
                 }
             };
 
             prefs.registerOnSharedPreferenceChangeListener(listener);
         }
         catch (Exception e){
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG,"listener shared 1 "+e.getMessage());
         }
 
         //You need to set the Android context using Firebase.setAndroidContext() before using Firebase.

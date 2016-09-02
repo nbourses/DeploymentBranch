@@ -361,6 +361,7 @@ Log.i("SWIPE","inside swipe menu creator");
                 //           ApplicationInfo item =  listAdapter.getItem(position);
                  position = pos;
                 String muteStatus = "Mute notifications";
+                String blockStatus = "Block deal";
                 if(listBrokerDeals_new != null) {     // temp fix
                     if (!(General.getMutedOKIds(BrokerDealsListActivity.this) == null)) {
                         mutedOKIds.addAll(General.getMutedOKIds(BrokerDealsListActivity.this));
@@ -370,11 +371,28 @@ Log.i("SWIPE","inside swipe menu creator");
 
                         }
                     }
+
+                    try{
+                        Realm myRealm = General.realmconfig(BrokerDealsListActivity.this);
+
+                        DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, listBrokerDeals_new.get(position).getOkId()).findFirst();
+                        if (dealStatus != null && dealStatus.getStatus().equalsIgnoreCase(DealStatusType.BLOCKED.toString())) {
+                            blockStatus = "Unblock deal";
+                            Log.i(TAG,"Block deal Block deal "+blockStatus);
+                        } else {
+                            blockStatus = "Block deal";
+                            Log.i(TAG,"Block deal Block deal "+blockStatus);
+                        }
+                    }
+                    catch(Exception e){
+                        Log.i(TAG,"caught in exception reading block status from realm "+e);
+                    }
                 }
                 switch (index) {
                     case 0:
                         final String muteStatus1 = muteStatus;
-                        final CharSequence[] items = { muteStatus1,/* "Delete deal",*/"Block deal", "Cancel" };
+                        final String blockStatus1 = blockStatus;
+                        final CharSequence[] items = { muteStatus1,/* "Delete deal",*/blockStatus1, "Cancel" };
                         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(BrokerDealsListActivity.this);
                         builder.setTitle("More!");
                         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -485,31 +503,67 @@ Log.i("SWIPE","inside swipe menu creator");
                                     alertDialog.show();
 
 
-                                }else if (items[item].equals("Block deal")) {
+                                }
 
-
+                                else if (items[item].equals(blockStatus1)) {
+                                    Log.i(TAG," block idhar");
+                                    /*Log.i(TAG,"block 1 "+blockStatus1);
+                                    if(listBrokerDeals_new == null){
+                                        Log.i(TAG,"wadala default deals 1 ");
+                                        total_deals = new ArrayList<BrokerDeals>();
+                                        if(default_deals != null) {
+                                            total_deals.addAll(default_deals);
+                                        }
+                                        if(cachedDeals != null) {
+                                            total_deals.addAll(cachedDeals);
+                                        }
+                                    }*/
 
                                     if(listBrokerDeals_new != null) {
                                         Realm myRealm = General.realmconfig(BrokerDealsListActivity.this);
                                         DealStatusType dealStatusType = null;
 
                                         DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, listBrokerDeals_new.get(position).getOkId()).findFirst();
-                                        Log.i(TAG, "Caught in exception notif insiderr cached msgs is the notifcount " + dealStatus);
+                                        Log.i(TAG," block deal status dealStatus "+dealStatus.getStatus());
                                         if (dealStatus == null) {
+                                            Log.i(TAG,"block 2 " );
                                             DealStatus dealStatus1 = new DealStatus();
                                             dealStatus1.setOk_id(listBrokerDeals_new.get(position).getOkId());
                                             dealStatus1.setStatus(DealStatusType.BLOCKED.toString());
                                             myRealm.beginTransaction();
                                             DealStatus dealStatus2 = myRealm.copyToRealmOrUpdate(dealStatus1);
                                             myRealm.commitTransaction();
+                                            SnackbarManager.show(
+                                                    Snackbar.with(BrokerDealsListActivity.this)
+                                                            .position(Snackbar.SnackbarPosition.TOP)
+                                                            .text(listBrokerDeals_new.get(position).getSpecCode() + " blocked!")
+                                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                            General.setDealStatus(BrokerDealsListActivity.this,DealStatusType.BLOCKED.toString(),listBrokerDeals_new.get(position).getOkId(),"default",General.getSharedPreferences(BrokerDealsListActivity.this,AppConstants.USER_ID));
                                         } else {
+                                            Log.i(TAG,"block 3 " );
                                             myRealm.beginTransaction();
-                                            dealStatus.setStatus(DealStatusType.BLOCKED.toString());
+                                            if(blockStatus1.toLowerCase().contains("Unblock".toLowerCase())) {
+                                                Log.i(TAG,"block 4 " );
+                                                dealStatus.setStatus(DealStatusType.ACTIVE.toString());
+                                                SnackbarManager.show(
+                                                        Snackbar.with(BrokerDealsListActivity.this)
+                                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                                .text(listBrokerDeals_new.get(position).getSpecCode() + " unblocked!")
+                                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                                General.setDealStatus(BrokerDealsListActivity.this,DealStatusType.ACTIVE.toString(),listBrokerDeals_new.get(position).getOkId(),"default",General.getSharedPreferences(BrokerDealsListActivity.this,AppConstants.USER_ID));
+                                            }
+                                            else {
+                                                Log.i(TAG,"block 5 " );
+                                                dealStatus.setStatus(DealStatusType.BLOCKED.toString());
+                                                SnackbarManager.show(
+                                                        Snackbar.with(BrokerDealsListActivity.this)
+                                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                                .text(listBrokerDeals_new.get(position).getSpecCode() + " blocked!")
+                                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                                General.setDealStatus(BrokerDealsListActivity.this,DealStatusType.BLOCKED.toString(),listBrokerDeals_new.get(position).getOkId(),"default",General.getSharedPreferences(BrokerDealsListActivity.this,AppConstants.USER_ID));
+                                            }
                                             myRealm.commitTransaction();
                                         }
-
-
-
 
                                     }
                                     else {

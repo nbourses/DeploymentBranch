@@ -506,7 +506,7 @@
                 android:id="@+id/box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="106dp"
+                android:paddingLeft="96dp"
                 android:visibility="visible">
                 <TextView
 
@@ -532,7 +532,8 @@
                 android:id="@+id/box1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="271dp">
+                android:paddingLeft="210dp"
+                android:visibility="visible">
 
                 <TextView
 

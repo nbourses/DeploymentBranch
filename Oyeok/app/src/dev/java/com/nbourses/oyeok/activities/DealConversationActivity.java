@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -567,40 +568,23 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     @OnClick(R.id.imgSendMsg)
     public void onSendMsgClick(View v) {
         String currentImg = (String) v.getTag();
-        if (currentImg != null) {
+        Log.i(TAG,"imageshare yo 3"+currentImg);
+        if (currentImg != "") {
             if (currentImg.equals("attachment")) {
-                Log.i(TAG,"imageshare 1");
+                Log.i(TAG,"imageshare yo 1");
                 //open file chooser options
+               if(verifyStoragePermissions(DealConversationActivity.this))
                 selectImage();
             }
-            else {
+            else if(currentImg.equals("message")) {
+                Log.i(TAG,"imageshare yo 2"+currentImg);
 
-
-               /* Realm myRealm = General.realmconfig(this);
-                DealStatusType dealStatusType = null;
-
-                DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, channel_name).findFirst();
-                Log.i(TAG, "Caught in exception notif insiderr cached msgs is the notifcount " + dealStatus);
-                if (dealStatus != null && dealStatus.getStatus().equalsIgnoreCase(DealStatusType.BLOCKED.toString())) {
-                   *//* myRealm.beginTransaction();
-                    dealStatus.setStatus(DealStatusType.BLOCKED.toString());
-                    myRealm.commitTransaction();*//*
-                    SnackbarManager.show(
-                            Snackbar.with(this)
-                                    .position(Snackbar.SnackbarPosition.TOP)
-                                    .text("You have blocked this deal.")
-                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                }
-                else{
-                    getDealStatus(this,channel_name);
-
-                }
-                else {*/
 
 
 
                 Log.i(TAG,"imageshare 2 edittypemsg "+edtTypeMsg.getText().toString());
                 messageTyped = edtTypeMsg.getText().toString();
+
                 //send message
 
 
@@ -627,7 +611,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     e.printStackTrace();
                 }
 
-                edtTypeMsg.setText("");
+
 
                 chatListView.post(new Runnable() {
                     @Override
@@ -640,32 +624,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 chatMessages.remove(chatMessages.size()-1);
 
-            }
 
-            Realm myRealm = General.realmconfig(this);
-            DealStatusType dealStatusType = null;
+        checkLocalBlockStatus();
 
-            DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, channel_name).findFirst();
-            Log.i(TAG, "Caught in exception notif insiderr cached msgs is the notifcount " + dealStatus);
-            if (dealStatus != null && dealStatus.getStatus().equalsIgnoreCase(DealStatusType.BLOCKED.toString())) {
-
-                SnackbarManager.show(
-                        Snackbar.with(this)
-                                .position(Snackbar.SnackbarPosition.TOP)
-                                .text("You have blocked this deal. Message will not be sent.")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-            }
-
-            else{
-                Log.i(TAG,"getDealStatus ");
-                String demo_channel = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
-
-                if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCase(demo_channel))
-                    getDealStatus(this,channel_name);
-                else
-                    sendMessage(messageTyped);
-            }
         }
+        //imgSendMsg.setClickable(false);
+       // edtTypeMsg.setText("");
+    }
     }
 
     /**
@@ -797,7 +762,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             public void onClick(DialogInterface dialog, int item) {
 
                 if (items[item].equals("Choose from Library")) {
-                    verifyStoragePermissions(DealConversationActivity.this);
+
 
                     Log.d(TAG, "lolwa imagewa 4 ");
 
@@ -1017,11 +982,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 if(userID.equalsIgnoreCase(FROM) || demoId.equalsIgnoreCase(FROM))
                 {
-                    userSubtype = ChatMessageUserSubtype.SELF;
+                    userSubtype = ChatMessageUserSubtype.OTHER.SELF;
                 }
                 else
                 {
-                    userSubtype = ChatMessageUserSubtype.OTHER;
+                    userSubtype = ChatMessageUserSubtype.OTHER.OTHER;
                 }
 
                 if(msgStatus == null)
@@ -1224,7 +1189,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private void sendMessage(final String messageText)
     {
-        Log.i(TAG, "Inside send message");
+        Log.i(TAG, "Inside send message" +edtTypeMsg.getText());
 
 
         if(messageText != null)
@@ -1287,6 +1252,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 
   /*  private void pubnubWhereNow(final String UUID){
@@ -2224,7 +2191,7 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
 
 
 
-    public static void verifyStoragePermissions(Activity activity) {
+    public static boolean verifyStoragePermissions(Activity activity) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -2235,6 +2202,10 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
                     PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE
             );
+            return false;
+        }else
+        {
+           return true;
         }
     }
 
@@ -2400,6 +2371,46 @@ Log.i(TAG,"back clicked");
 
     }
 
+    private void checkLocalBlockStatus(){
+        Realm myRealm = General.realmconfig(this);
+        DealStatusType dealStatusType = null;
+
+        DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, channel_name).findFirst();
+        Log.i(TAG, "Caught in exception notif insiderr cached msgs is the notifcount " + dealStatus);
+        if (dealStatus != null && dealStatus.getStatus().equalsIgnoreCase(DealStatusType.BLOCKED.toString())) {
+
+            SnackbarManager.show(
+                    Snackbar.with(this)
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("You have blocked this deal. Message will not be sent.")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+        }
+
+        else{
+            Log.i(TAG,"getDealStatus ");
+            String demo_channel = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
+
+            if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCase(demo_channel))
+                getDealStatus(this,channel_name);
+            else
+                sendMessage(messageTyped);
+        }
+    }
 
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode==REQUEST_EXTERNAL_STORAGE){
+            if(permissions.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                selectImage();
+            }
+            else{
+                //do nothing
+            }
+        }
+
+
+    }
 }

@@ -293,32 +293,37 @@ private String Walkthrough,beacon;
     private BroadcastReceiver badgeCountBroadcast = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            try {
 
-            Log.i("gcm local broadcast","gcm local broadcast");
-            if(intent.getExtras().getInt(AppConstants.RENTAL_COUNT) != 0 ){
-                Log.i("gcm local broadcast","gcm local broadcast1");
-                rentalCount1 = intent.getExtras().getInt(AppConstants.RENTAL_COUNT);
+                Log.i("gcm local broadcast", "gcm local broadcast");
+                if (intent.getExtras().getInt(AppConstants.RENTAL_COUNT) != 0) {
+                    Log.i("gcm local broadcast", "gcm local broadcast1");
+                    rentalCount1 = intent.getExtras().getInt(AppConstants.RENTAL_COUNT);
+
+                }
+
+                if (intent.getExtras().getInt(AppConstants.RESALE_COUNT) != 0) {
+                    resaleCount1 = intent.getExtras().getInt(AppConstants.RESALE_COUNT);
+                }
+                if (intent.getExtras().getInt(AppConstants.TENANTS_COUNT) != 0) {
+                    Log.i("gcm local broadcast", "gcm local broadcast2");
+                    tenantsCount1 = intent.getExtras().getInt(AppConstants.TENANTS_COUNT);
+                }
+                if (intent.getExtras().getInt(AppConstants.OWNERS_COUNT) != 0) {
+                    ownersCount1 = intent.getExtras().getInt(AppConstants.OWNERS_COUNT);
+                }
+                if (intent.getExtras().getInt(AppConstants.BUYER_COUNT) != 0) {
+                    buyerCount1 = intent.getExtras().getInt(AppConstants.BUYER_COUNT);
+                }
+                if (intent.getExtras().getInt(AppConstants.SELLER_COUNT) != 0) {
+                    sellerCount1 = intent.getExtras().getInt(AppConstants.SELLER_COUNT);
+                }
+
+                setBadges();
+            }
+            catch(Exception e){
 
             }
-
-            if(intent.getExtras().getInt(AppConstants.RESALE_COUNT) != 0){
-                resaleCount1 = intent.getExtras().getInt(AppConstants.RESALE_COUNT);
-            }
-            if(intent.getExtras().getInt(AppConstants.TENANTS_COUNT) != 0){
-                Log.i("gcm local broadcast","gcm local broadcast2");
-                tenantsCount1 = intent.getExtras().getInt(AppConstants.TENANTS_COUNT);
-            }
-            if(intent.getExtras().getInt(AppConstants.OWNERS_COUNT) != 0){
-                ownersCount1 = intent.getExtras().getInt(AppConstants.OWNERS_COUNT);
-            }
-            if(intent.getExtras().getInt(AppConstants.BUYER_COUNT) != 0){
-                buyerCount1 = intent.getExtras().getInt(AppConstants.BUYER_COUNT);
-            }
-            if(intent.getExtras().getInt(AppConstants.SELLER_COUNT) != 0){
-                sellerCount1 = intent.getExtras().getInt(AppConstants.SELLER_COUNT);
-            }
-
-            setBadges();
         }
     };
 
