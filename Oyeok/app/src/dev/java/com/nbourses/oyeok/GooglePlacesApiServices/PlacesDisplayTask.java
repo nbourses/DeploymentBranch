@@ -39,8 +39,9 @@ public class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<S
 
     @Override
     protected void onPostExecute(List<HashMap<String, String>> list) {
-//        googleMap.clear();
+        googleMap.clear();
       BitmapDescriptor icon1 = BitmapDescriptorFactory.fromResource(R.drawable.broker_color_icon);
+        Log.i("brokericon","Broker"+list.size());
         AppConstants.NUMBER_OF_BROKER=String.valueOf(list.size());
         if(list.size()>=1) {
             for (int i = 0; i < list.size(); i++) {

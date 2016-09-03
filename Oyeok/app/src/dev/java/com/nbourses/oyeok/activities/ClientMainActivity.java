@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -268,14 +269,8 @@ private Boolean cardFlag = false;
                 dealsWrapper.setVisibility(View.GONE);
                 ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).getNearbyLatLong();
                 ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).broadcastingConfirmationMsg();
-
-
-
-
-
-
-
                 oyeconfirm_flag=true;
+
                 if (slidingLayout != null &&
                         (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
                                 slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
@@ -786,8 +781,12 @@ public void signUp(){
 
     public void closeOyeScreen() {
         isShowing = false;
+
         slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-       // btnOnOyeClick.setVisibility(View.GONE);
+        /*for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
+            getSupportFragmentManager().popBackStackImmediate();*/
+
+        // btnOnOyeClick.setVisibility(View.GONE);
     }
 
     @Override
@@ -1086,7 +1085,7 @@ public void signUp(){
 
              else if(oyeconfirm_flag==true){
 //                super.onBackPressed();
-            Log.i("SIGNUP_FLAG","Poke Poke Pokemon......: "+getFragmentManager().getBackStackEntryCount());
+            Log.i("SIGNUP_FLAG","Poke Poke Pokemon......: "+getSupportFragmentManager().getBackStackEntryCount());
 //            getSupportFragmentManager().popBackStack();
             closeOyeConfirmation();
 //            oyeconfirm_flag=false;
@@ -1213,8 +1212,18 @@ public void signUp(){
             General.setBadgeCount(this, AppConstants.HDROOMS_COUNT,0);
             hdroomsCount.setVisibility(View.GONE);
         }
-       if(btnMyDeals.getText().toString().equalsIgnoreCase("share"))
-        dashboardClientFragment.screenShot();
+       if(btnMyDeals.getText().toString().equalsIgnoreCase("share")) {
+
+           int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+
+           if (permission != PackageManager.PERMISSION_GRANTED) {
+               Log.i(TAG,"persy 12345");
+               ActivityCompat.requestPermissions(this,PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+           }else {
+               dashboardClientFragment.screenShot();
+           }
+       }
         else {
            Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
            openDealsListing.putExtra("defaul_deal_flag", "false");
@@ -1286,6 +1295,18 @@ public void signUp(){
 
     ////////////////// Network method implementation //////////
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode==REQUEST_EXTERNAL_STORAGE){
+            if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+              dashboardClientFragment.screenShot();
+            }
+        }
+    }
+
     public void NetworkStatusChanged(String status)
     {
         Log.i("TRACE NETWORK","status ");
@@ -1310,7 +1331,7 @@ public void signUp(){
            if(intent.getExtras().getString("markerClicked").equalsIgnoreCase("true"))
            {
                getSupportActionBar().setTitle("Live Building Rates");
-               btnMyDeals.setBackgroundColor(getResources().getColor(R.color.greenish_blue));
+               btnMyDeals.setBackground(getResources().getDrawable(R.drawable.share_btn_background));
                btnMyDeals.setText("Share");
 
            }
@@ -1673,7 +1694,12 @@ Log.i(TAG,"Image is the "+out);
 
 
     public  void EditOyeDetails(){
-        getSupportFragmentManager().popBackStack();
+        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).OnOyeClick1();
+        if(oyeconfirm_flag==true) {
+            for(int i=1;i<getSupportFragmentManager().getBackStackEntryCount();i++)
+                getSupportFragmentManager().popBackStackImmediate();
+            oyeconfirm_flag=false;
+        }
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         cancel_btn.setVisibility(View.GONE);
@@ -1681,7 +1707,7 @@ Log.i(TAG,"Image is the "+out);
         confirm_screen_title.setVisibility(View.GONE);
         dealsWrapper.setVisibility(View.VISIBLE);
         oyeconfirm_flag=false;
-        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).OnOyeClick1();
+
 
     }
 
@@ -1711,13 +1737,18 @@ Log.i(TAG,"Image is the "+out);
 
 
     public  void CloseBuildingOyeComfirmation(){
+        Intent in = new Intent(AppConstants.MARKERSELECTED);
+        in.putExtra("markerClicked", "false");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(in);
         confirm_screen_title.setVisibility(View.GONE);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         cancel_btn.setVisibility(View.GONE);
         getSupportActionBar().setTitle("Live Building Rates");
+
         if( buidingInfoFlag==true)
-            getSupportFragmentManager().popBackStack();
+//            for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
+                getSupportFragmentManager().popBackStack();
         buidingInfoFlag=false;
     }
     public void openOyeSreen(){
@@ -1741,8 +1772,11 @@ Log.i(TAG,"Image is the "+out);
 
 
     public  void closeOyeConfirmation(){
+        Log.i("backstack count","   : "+oyeconfirm_flag+"  "+getSupportFragmentManager().getBackStackEntryCount());
         if(oyeconfirm_flag==true) {
-            getSupportFragmentManager().popBackStack();
+//            for(int i=1;i<getSupportFragmentManager().getBackStackEntryCount();i++)
+            getSupportFragmentManager().popBackStackImmediate();
+//            getSupportFragmentManager().popBackStackImmediate();
             oyeconfirm_flag=false;
         }
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -1751,8 +1785,9 @@ Log.i(TAG,"Image is the "+out);
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).getPrice();
         getSupportActionBar().setTitle("Live Region Rates");
         confirm_screen_title.setVisibility(View.GONE);
+        Log.i("backstack count1","   : "+oyeconfirm_flag+"  "+getSupportFragmentManager().getBackStackEntryCount());
         dealsWrapper.setVisibility(View.VISIBLE);
-        oyeconfirm_flag=false;
+//        oyeconfirm_flag=false;
     }
 
 
