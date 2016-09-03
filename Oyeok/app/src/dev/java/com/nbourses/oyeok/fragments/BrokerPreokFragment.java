@@ -404,7 +404,6 @@ private String Walkthrough,beacon;
 
     private void init() {
 
-        General.showOptions(getContext());
 
         bounce.setAnimationListener(new Animation.AnimationListener() {
             @Override

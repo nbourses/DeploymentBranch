@@ -5,9 +5,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -32,6 +35,12 @@ import com.nbourses.oyeok.realmModels.NotifCount;
 
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -103,6 +112,7 @@ public class MyGcmListenerService extends GcmListenerService {
         if (data.containsKey("title")) {
             String title = data.getString("title");
             String message = null;
+            String imgUrl = null;
             if(data.containsKey("message")) {
                 message = data.getString("message");
             }else{
@@ -113,8 +123,16 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
             Log.i(TAG, "Title is " + title);
+            if(title.toLowerCase().contains("promo")){
+                if(data.containsKey("bicon")) {
+                    imgUrl = data.getString("bicon");
+                    sendNotification(title,message,data);
+                    return;
+                }
 
-            if (title.equalsIgnoreCase("Oye")) {
+            }
+
+            else if (title.equalsIgnoreCase("Oye")) {
                 badgeCount++;
                 General.setBadgeCount(getApplicationContext(), AppConstants.BADGE_COUNT, badgeCount);
                 ShortcutBadger.applyCount(this, badgeCount);
@@ -426,9 +444,14 @@ public class MyGcmListenerService extends GcmListenerService {
             try {
                 if (!General.getSharedPreferences(this, AppConstants.USER_ID).equalsIgnoreCase(data.getString("_from")) && !(General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID).equalsIgnoreCase(data.getString("to"))))
                 {
-                    if(!General.getMutedOKIds(this).contains(data.getString("to")))
+                    Log.i(TAG,"muted ok ids "+General.getMutedOKIds(this));
+                    if(General.getMutedOKIds(this) != null) {
+                        if (!General.getMutedOKIds(this).contains(data.getString("to")))
+                            sendNotification("New Message Recieved", data.getString("to") + "@" + data.getString("message"), data);
+                    }
+                    else{
                         sendNotification("New Message Recieved", data.getString("to") + "@" + data.getString("message"), data);
-
+                    }
 
                     try {
                         Realm myRealm = General.realmconfig(this);
@@ -469,12 +492,12 @@ public class MyGcmListenerService extends GcmListenerService {
                         }
 
                     } catch (Exception e) {
-                        Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 3 " + e);
+                        Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 3 1 " + e);
                     }
                 }
             }
             catch (Exception e) {
-                Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 3 " + e);
+                Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 3 2 " + e);
             }
 
         }
@@ -488,6 +511,7 @@ public class MyGcmListenerService extends GcmListenerService {
      * @param message GCM message received.
      */
     private void sendNotification(String title,String message, Bundle data) {
+        Log.i(TAG,"send notifications ");
         Context context = this.getBaseContext();
         PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
 
@@ -510,8 +534,6 @@ public class MyGcmListenerService extends GcmListenerService {
             Realm myRealm = General.realmconfig(this);
             HalfDeals halfDeals = myRealm.where(HalfDeals.class).equalTo(AppConstants.OK_ID, data.getString("to")).findFirst();
             Log.i(TAG, "halfDeals is the " + halfDeals);
-
-
 
 
             if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
@@ -544,6 +566,18 @@ public class MyGcmListenerService extends GcmListenerService {
                 }
             }
         }
+        else if(data.containsKey("bicon")){
+            if(!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
+                    General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("broker")) {
+                Log.i("TRACE", " toto 3");
+                intent = new Intent(context, BrokerMainActivity.class);
+                intent.putExtra("bicon", data.getString("bicon"));
+            }
+            else {
+                intent = new Intent(context, ClientMainActivity.class);
+                intent.putExtra("bicon", data.getString("bicon"));
+            }
+        }
         else{
             if(!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
                     General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("broker"))
@@ -558,19 +592,60 @@ public class MyGcmListenerService extends GcmListenerService {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, requestID, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification notification;
+        if(data.containsKey("bicon")){
+            Log.i(TAG,"chaniya 1 ");
+            Bitmap b = getBitmapFromURL(data.getString("bicon"));
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        Notification notification = new NotificationCompat.Builder(this)
-                .setContentTitle(title)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentText(message)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setGroup("ritz")
-                .setGroupSummary(true)
-                .setContentIntent(pendingIntent)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(message)).build();
+            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            /*notification = new Notification.Builder(this)
+                    .setContentTitle(title)
+                    .setContentText(message)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setStyle(new Notification.BigPictureStyle()
+                            .bigPicture(b))
+                    .setContentIntent(pendingIntent)
+                    .build();*/
+            notification = new NotificationCompat.Builder(this)
+                    .setContentTitle(title)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentText(message)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent)
+                    .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(b))
+                    //.setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                    .build();
+
+            General.setSharedPreferences(this,AppConstants.PROMO_IMAGE_URL,data.getString("bicon"));
+
+
+
+
+        }else{
+            Log.i(TAG,"chaniya 2 ");
+
+            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            notification = new NotificationCompat.Builder(this)
+                    .setContentTitle(title)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentText(message)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setGroup("ritz")
+                    .setGroupSummary(true)
+                    .setContentIntent(pendingIntent)
+                    //.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(b))
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                    .build();
+
+        }
+
 
 
        /* NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
@@ -652,4 +727,64 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
     }
+    public Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            saveImageLocally("promo",myBitmap);
+            return myBitmap;
+
+        } catch (Exception e) {
+            // Log exception
+            return null;
+        }
+    }
+
+    private void saveImageLocally(String imageName,Bitmap result){
+        try {
+            if (Environment.getExternalStorageState() == null) {
+                //create new file directory object
+                File directory = new File(Environment.getDataDirectory()
+                        + "/oyeok/");
+
+                // if no directory exists, create new directory
+                if (!directory.exists()) {
+                    directory.mkdir();
+                }
+
+                OutputStream stream = new FileOutputStream(Environment.getDataDirectory() + "/oyeok/"+imageName);
+                result.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                stream.close();
+                Log.i("TAG","result compressed"+result);
+//
+                // if phone DOES have sd card
+            }
+            else if (Environment.getExternalStorageState() != null) {
+                // search for directory on SD card
+                File directory = new File(Environment.getExternalStorageDirectory()
+                        + "/oyeok/");
+
+
+                if (!directory.exists()) {
+                    directory.mkdir();
+                }
+
+                OutputStream stream = new FileOutputStream(Environment.getExternalStorageDirectory() + "/oyeok/"+imageName+".png");
+                result.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                stream.close();
+                Log.i("TAG","result compressed"+result);
+
+            }
+
+        }catch(Exception e){
+            Log.i("chatlistadapter", "Caught in exception saving image recievers /oyeok 1 "+e);
+        }
+
+
+    }
+
 }

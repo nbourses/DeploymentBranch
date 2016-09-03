@@ -6,9 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -20,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -28,7 +32,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateStatus;
@@ -43,8 +46,13 @@ import com.sdsmdg.tastytoast.TastyToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -79,6 +87,8 @@ public class General extends BroadcastReceiver {
     private static Context con;
     public static Thread t;
     public static Boolean slowInternetFlag;
+    private static Bitmap mIcon12 = null; // null image for test condition in download image
+    private static ImageView img;
 
 
     public static void slowInternet(Context context) {
@@ -782,8 +792,9 @@ while(slowInternetFlag) {
 
     }
 
-    public static PopupWindow showOptions(final Context mcon){
-        Log.i(TAG,"popup window shown 2 ");
+    public static PopupWindow showOptions(final Context mcon, final Bitmap b){
+        Log.i(TAG,"porter 13 "+b);
+        Log.i(TAG,"porter 14 "+mcon);
         try{
             DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
 
@@ -796,10 +807,48 @@ while(slowInternetFlag) {
 
            // CustomPhasedSeekBar mPhasedSeekBar = (CustomPhasedSeekBar) layout.findViewById(R.id.phasedSeekBar1);
             Button button =(Button) layout.findViewById(R.id.button);
-            Button signUp =(Button) layout.findViewById(R.id.signUp);
-            Button later =(Button) layout.findViewById(R.id.later);
-            DBHelper dbHelper = new DBHelper(mcon);
-          /*  if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
+
+            img = (ImageView) layout.findViewById(R.id.imageView6);
+            img.setImageBitmap(b);
+           /* try {
+                if (Environment.getExternalStorageState() == null) {
+                    //create new file directory object
+
+                    File file = new File(Environment.getDataDirectory()+"/oyeok/promo.png"); //your image file path
+                    Uri uri = Uri.fromFile(file);
+                    img.setImageURI(uri);
+//
+                    // if phone DOES have sd card
+                }
+                else if (Environment.getExternalStorageState() != null) {
+                    // search for directory on SD card
+
+
+                    File file = new File(Environment.getExternalStorageDirectory()+"/oyeok/promo.png"); //your image file path
+                    Uri uri = Uri.fromFile(file);
+                    img.setImageURI(uri);
+
+
+                }
+
+            }catch(Exception e){
+                Log.i("chatlistadapter", "Caught in exception saving image recievers /oyeok "+e);
+            }*/
+
+
+
+
+           // new DownloadImageTask(img)
+                  //  .execute("http://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png");
+
+
+            //new DownloadImageTask(img).execute("http://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png");
+
+
+
+
+           /* DBHelper dbHelper = new DBHelper(mcon);
+       */   /*  if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
                 mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(mcon.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{mcon.getResources().getString(R.string.Rental), mcon.getResources().getString(R.string.Resale)}));
             else
                 mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(mcon.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
@@ -807,8 +856,8 @@ while(slowInternetFlag) {
             final PopupWindow optionspu1 = greyOut(mcon);
             //final PopupWindow optionspu = new PopupWindow(layout, 600,1000, true);
             final PopupWindow optionspu = new PopupWindow(layout);
-            optionspu.setWidth(width-140);
-            optionspu.setHeight(height-140);
+            optionspu.setWidth(width-180);
+            optionspu.setHeight(height-180);
             optionspu.setAnimationStyle(R.style.AnimationPopup);
 
             /*optionspu.setTouchable(true);
@@ -832,29 +881,8 @@ while(slowInternetFlag) {
                     optionspu.dismiss();
                 }
             });
-            signUp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.i(TAG,"popup window shown 13 ");
-                    optionspu1.dismiss();
-                    optionspu.dismiss();
-                    Intent intent = new Intent(AppConstants.DOSIGNUP);
-                    LocalBroadcastManager.getInstance(mcon).sendBroadcast(intent);
 
-                }
-            });
-            later.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.i(TAG,"popup window shown 13 ");
-                    optionspu1.dismiss();
-                    optionspu.dismiss();
-                    TastyToast.makeText(mcon, "We have connected you with 3 brokers in your area.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
-                    TastyToast.makeText(mcon, "Sign up to connect with 7 more brokers waiting for you.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
-
-                }
-            });
-
+            General.setSharedPreferences(mcon,AppConstants.PROMO_IMAGE_URL,"");
             return optionspu;
         }
         catch (Exception e){e.printStackTrace();
@@ -883,6 +911,33 @@ while(slowInternetFlag) {
 
     }
 
+
+
+
+    /*private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
+    }*/
 
 
 
@@ -955,6 +1010,73 @@ while(slowInternetFlag) {
 
     }*/
 
+
+
+
+
+    public static Bitmap getBitmapFromURL(String src) {
+
+        Log.i("chatlistadapter", "promot called");
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            Log.i("chatlistadapter", "promot 22 "+myBitmap);
+           // saveImageLocally("promo",myBitmap);
+            return myBitmap;
+
+        } catch (Exception e) {
+            Log.i("chatlistadapter", "Caught in exception saving image recievers /oyeok 8 "+e);
+            return null;
+        }
+    }
+
+    public static void saveImageLocally(String imageName, Bitmap result){
+        Log.i("chatlistadapter", "promot called 2");
+        try {
+            if (Environment.getExternalStorageState() == null) {
+                //create new file directory object
+                File directory = new File(Environment.getDataDirectory()
+                        + "/oyeok/");
+
+                // if no directory exists, create new directory
+                if (!directory.exists()) {
+                    directory.mkdir();
+                }
+
+                OutputStream stream = new FileOutputStream(Environment.getDataDirectory() + "/oyeok/"+imageName+".png");
+                result.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                stream.close();
+                Log.i("TAG","result compressed"+result);
+//
+                // if phone DOES have sd card
+            }
+            else if (Environment.getExternalStorageState() != null) {
+                // search for directory on SD card
+                File directory = new File(Environment.getExternalStorageDirectory()
+                        + "/oyeok/");
+
+
+                if (!directory.exists()) {
+                    directory.mkdir();
+                }
+
+                OutputStream stream = new FileOutputStream(Environment.getExternalStorageDirectory() + "/oyeok/"+imageName+".png");
+                result.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                stream.close();
+                Log.i("TAG","result compressed"+result);
+
+            }
+
+        }catch(Exception e){
+            Log.i("chatlistadapter", "Caught in exception saving image recievers /oyeok 1 "+e);
+        }
+
+
+    }
 
 
 }

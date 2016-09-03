@@ -23,6 +23,7 @@ public class AppConstants {
 
     public static PopupWindow optionspu;
     public static PopupWindow optionspu1;
+    public static final String PROMO_IMAGE_URL = "promoImageUrl";
     public static String MY_LAT = "myLat";
     public static String MY_LNG = "myLong";
     public static String LOCALITY = "locality";

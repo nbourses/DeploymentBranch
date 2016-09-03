@@ -579,9 +579,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             else if(currentImg.equals("message")) {
                 Log.i(TAG,"imageshare yo 2"+currentImg);
 
-
-
-
                 Log.i(TAG,"imageshare 2 edittypemsg "+edtTypeMsg.getText().toString());
                 messageTyped = edtTypeMsg.getText().toString();
 
@@ -939,7 +936,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     userType = ChatMessageUserType.DEFAULT;
                 }
 
-                else if (msgStatus.equalsIgnoreCase("IMG")){
+                 if (msgStatus.equalsIgnoreCase("IMG")){
 
                     Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
 
@@ -954,28 +951,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 }
 
-                else if (msgStatus.equalsIgnoreCase("LISTING")){
+                 if (msgStatus.equalsIgnoreCase("LISTING")){
 
                     Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
 
                     userType = ChatMessageUserType.LISTING;
 
 
-                }
-                /*
-<<<<<<<HEAD
-
-               else if (!FROM.equalsIgnoreCase(userID))
-                {
-                    userType = ChatMessageUserType.SELF;
-                }
-=======
->>>>>>> 9c44010c32f1e536ca300f0c6fc41566727c7cc4
-*/
-                else
-                {
-                    Log.i("TAG","OTHER ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
-                    userType = ChatMessageUserType.OTHER;
                 }
 
                 String demoId = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
@@ -1000,7 +982,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     {
                         userType = ChatMessageUserType.OTHER;
                     }
+
                 }
+
                 Log.i("TAG","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%   "+msgStatus);
                 Log.i(TAG, "calipso yo" + userSubtype);
                 Log.i(TAG, "calipso yo" + userType);
@@ -1085,8 +1069,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         try {
 
-
-
             myRealm.beginTransaction();
             RealmResults<Message> results1 =
                     myRealm.where(Message.class).equalTo(AppConstants.OK_ID, channelName).findAll();
@@ -1094,13 +1076,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             for (Message c : results1) {
                 Log.i(TAG, "until insideroui2 ");
                 Log.i(TAG, "until insideroui3 " + c.getOk_id());
-                Log.i(TAG, "until insideroui4 " + c.getTimestamp());
-                Log.i(TAG, "until insideroui4 " + c.getMessage());
-                Log.i(TAG, "until insideroui4 " + c.getFrom());
-                Log.i(TAG, "until insideroui4 " + c.getTo());
-                Log.i(TAG, "until insideroui4 " + c.getImageUrl());
+//                Log.i(TAG, "until insideroui4 " + c.getTimestamp());
+//                Log.i(TAG, "until insideroui4 " + c.getMessage());
+//                Log.i(TAG, "until insideroui4 " + c.getFrom());
+//                Log.i(TAG, "until insideroui4 " + c.getTo());
+//                Log.i(TAG, "until insideroui4 " + c.getImageUrl());
 
-                if (c.getFrom().equalsIgnoreCase("DEFAULT")) {
+                if (c.getStatus().equalsIgnoreCase("DEFAULT")) {
                     Log.i("CONVER", "DEFAULT set");
                     userType = ChatMessageUserType.DEFAULT;
                 }
@@ -1115,29 +1097,22 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                     if (!user_id.equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID))) {
                         userSubtype = ChatMessageUserSubtype.SELF;
-                    } else {
-                        userSubtype = ChatMessageUserSubtype.OTHER;
-                    }
-
-                    /*if(jsonMsg.getString("to").equalsIgnoreCase("support"))
-                        userSubtype = ChatMessageUserSubtype.SUPPORT;
-                    else if (!jsonMsg.getString("from").equalsIgnoreCase()))
-                    {
-                        userSubtype = ChatMessageUserSubtype.SELF;
                     }
                     else {
                         userSubtype = ChatMessageUserSubtype.OTHER;
-                    }*/
+                    }
+
+
 
                 }
                 else if ("LISTING".equalsIgnoreCase(c.getStatus())) {
                     Log.i("CONVER", "LISTING set");
                     userType = ChatMessageUserType.LISTING;
                 }
-                else if(c.getFrom().equalsIgnoreCase("support"))
-                {
-                    userType = ChatMessageUserType.OTHER;     // for support
-                }
+//                else if(c.getStatus().equalsIgnoreCase("support"))
+//                {
+//                    userType = ChatMessageUserType.OTHER;     // for support
+//                }
                 else if (!c.getFrom().equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID))) {
                     userType = ChatMessageUserType.SELF;
                 } else {
@@ -1169,10 +1144,27 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             myRealm.commitTransaction();
             Log.i(TAG,"until fitra 4 "+myRealm.isInTransaction());
         }
-        chatListView.post(new Runnable() {
+//        chatListView.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                chatListView.setSelection(listAdapter.getCount());
+//            }
+//        });
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                chatListView.setSelection(listAdapter.getCount());
+
+//                        Log.i(TAG, "message runOnUiThread" + listAdapter);
+
+                if (listAdapter != null) {
+                    Log.i(TAG, "message runOnUiThread  not null");
+                    Log.i(TAG, "calipso yo notify" );
+                    listAdapter.notifyDataSetChanged();
+                }
+
+//                edtTypeMsg.setText("");
+
+//                        Log.i(TAG, "message runOnUiThread edtTypeMsg2");
             }
         });
 
@@ -1224,7 +1216,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             jsonMsg.put("name", dbHelper.getValue(DatabaseConstants.name));
             jsonMsg.put("to", channel_name);
             jsonMsg.put("message", messageText);
-            jsonMsg.put("status", "");
+            jsonMsg.put("status", " ");
 
             Log.i("TEST", "jsonMsg in send msg USER_ID " + General.getSharedPreferences(this ,AppConstants.USER_ID));
             Log.i("TEST", "jsonMsg in send msg DEMO_ID " + General.getSharedPreferences(this ,AppConstants.TIME_STAMP_IN_MILLI));
