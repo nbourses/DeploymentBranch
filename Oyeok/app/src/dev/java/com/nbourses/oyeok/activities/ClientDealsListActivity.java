@@ -1183,12 +1183,16 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
     private void deleteDealingroom(String deleteOyeId,String deleteOKId, final String specCode){
         if(General.isNetworkAvailable(this)) {
             General.slowInternet(this);
+            deleteDroomDb(deleteOKId);
             Log.i(TAG,"wadala default deals 3 ");
 
             deleteHDroom deleteHDroom  = new deleteHDroom();
             deleteHDroom.setOkId(deleteOKId);
             deleteHDroom.setDeleteOyeId(deleteOyeId);
+            if(!General.getSharedPreferences(ClientDealsListActivity.this,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase(""))
             deleteHDroom.setUserId(General.getSharedPreferences(this,AppConstants.USER_ID));
+            else
+            deleteHDroom.setUserId(General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI));
             deleteHDroom.setPage("1");
             deleteHDroom.setGcmId(General.getSharedPreferences(this,AppConstants.GCM_ID));
 
@@ -1206,7 +1210,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                     public void success(JsonElement jsonElement, Response response) {
                         General.slowInternetFlag = false;
                         General.t.interrupt();
-                        Log.i("deleteDR CALLED","success");
+                        Log.i("deleteDR CALLED","delete hdroom success");
                         loadBrokerDeals();
 
                         SnackbarManager.show(
@@ -1219,7 +1223,10 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                         JsonObject k = jsonElement.getAsJsonObject();
                         try {
                             JSONObject ne = new JSONObject(k.toString());
+                            Log.i("deleteDR CALLED","sdelete hdroom succes "+ne);
                             String success = ne.getString("success");
+
+
 
 
 
@@ -1230,7 +1237,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
                         catch (JSONException e) {
                             Log.e(TAG, e.getMessage());
-                            Log.i("deleteDR CALLED","Failed "+e.getMessage());
+                            Log.i("deleteDR CALLED","delete hdroom Failed "+e.getMessage());
                         }
 
 
@@ -1569,6 +1576,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                                     }
 
                                     else if(deals.getOyeId().contains("unverified_user")){
+
                                         if(deals.getSpecCode().contains("-"+TT)) {
                                             Log.i("TRACE==", "list broker dealser 0 wagad " + deals.getSpecCode());
                                             listBrokerDeals_new.add(deals);
@@ -1647,9 +1655,11 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                                             Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
                                             intent.putExtra("userRole", "client");
                                             intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
+                                            intent.putExtra(AppConstants.OYE_ID, brokerDeals.getOyeId());
                                             intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
+                                            intent.putExtra(AppConstants.LOCALITY, brokerDeals.getLocality());
                                             intent.putExtra("isDefaultDeal",brokerDeals.getdefaultDeal());
-                                            Log.i("TRACE DEALS FLAG 2", "FLAG " + brokerDeals.getdefaultDeal());
+                                            Log.i("TRACE DEALS FLAG 2", "FLAG " + brokerDeals.getOyeId());
                                             startActivity(intent);
                                         }
                                     });
@@ -1933,10 +1943,12 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                         if(cachedDealsOR == null){
                             cachedDealsOR = new ArrayList<BrokerDeals>();
                         }
+
                         if(c.getSpec_code().toLowerCase().contains("LL-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-LL".toLowerCase())){
+
                             cachedDealsLL.add(dealsa);
                         }
-                        else if(c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("OR-".toLowerCase())){
+                        else if(c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-OR".toLowerCase())){
                             cachedDealsOR.add(dealsa);
                         }
 
@@ -1953,10 +1965,13 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
                     if(cachedDealsOR == null){
                         cachedDealsOR = new ArrayList<BrokerDeals>();
                     }
+                    Log.i(TAG,"robosasa 1 "+dealsa);
                     if(c.getSpec_code().toLowerCase().contains("LL-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-LL".toLowerCase())){
+                        Log.i(TAG,"robosasa "+dealsa.getSpecCode());
                         cachedDealsLL.add(dealsa);
                     }
-                    else if(c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("OR-".toLowerCase())){
+                    else if(c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-OR".toLowerCase())){
+                        Log.i(TAG,"robosasa "+dealsa.getSpecCode());
                         cachedDealsOR.add(dealsa);
                     }
 
@@ -1964,7 +1979,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
             }
 
-            setCachedDeals();
+           setCachedDeals();
 
         }catch(Exception e){
             Log.i(TAG,"Caught in the exception reading cache from realm "+e);
@@ -1995,7 +2010,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
             } else {
                 bgtxtlayout.setVisibility(View.GONE);
             }
-
+Log.i(TAG,"cachedDeals sizer "+cachedDealsLL.size()+" "+cachedDealsOR.size()+" "+cachedDeals.size());
             if (cachedDeals != null) {
                 listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
                 listViewDeals.setAdapter(listAdapter);

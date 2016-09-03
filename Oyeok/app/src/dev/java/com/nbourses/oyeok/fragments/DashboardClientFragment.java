@@ -1105,10 +1105,12 @@ TextView rental,resale;
                                 if (flag[i] == false) {
                                     Log.i("flag[i] == false ", "===========================");
 
+
                                     ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
                                     ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation();
                                     mCustomerMarker[i].setIcon(icon2);
                                 /*m=mCustomerMarker[i];
+
 
 
                                 mCustomerMarker[i].remove();

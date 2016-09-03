@@ -232,6 +232,7 @@ public class Profile extends Fragment {
                 //drawerFragment = (FragmentDrawer) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
 //                AppConstants.EMAIL_PROFILE=email;
                 profileImageMain = (ImageView)getActivity().findViewById(R.id.profile_image_main);
+
 //                if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
 //                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbhelper.getValue(DatabaseConstants.imageFilePath));
 //                    profileImageMain.setImageBitmap(yourSelectedImage);
@@ -246,9 +247,9 @@ public class Profile extends Fragment {
                          BrokerMainActivity();
                 act.profileEmailUpdate(email);*/
 //                ((BrokerMainActivity)getContext()).profileEmailUpdate(email);
-                Log.i("kaka","kaka       :");
+
                 Intent in = new Intent(AppConstants.EMAIL_PROFILE);
-                in.putExtra("emailProfile", email);
+                //in.putExtra("emailProfile", email);
                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
 //                tx=(TextView) getView().findViewById(R.id.txtEmail);
 //                Log.i("kaka","kaka"+tx.getText());

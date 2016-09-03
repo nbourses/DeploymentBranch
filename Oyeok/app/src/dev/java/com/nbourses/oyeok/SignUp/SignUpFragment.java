@@ -730,6 +730,7 @@ Log.i(TAG,"mobile number is the "+mobile_number);
         user.setMobileNo(mobile_number);
         user.setMobileCode("+91");
         user.setEmail(Semail);
+        user.setDemoId(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
         user.setName(Sname);
 
         if(okBroker)
@@ -1086,7 +1087,7 @@ Log.i(TAG,"lastfragment "+lastFragment);
 
                         }
                         else if(lastFragment.equalsIgnoreCase("okyed")){
-                            Log.i(TAG,"chaman prasanna 1");
+                            Log.i(TAG,"prasanna 1");
                             jsonArray=b.getString("JsonArray");
                             try {
                                 p=new JSONArray(jsonArray);
@@ -1094,7 +1095,7 @@ Log.i(TAG,"lastfragment "+lastFragment);
                                 e.printStackTrace();
                             }
                             int j=b.getInt("Position");
-                            Log.i(TAG,"chaman prasanna 2 " +j);
+                            Log.i(TAG,"c prasanna 2 " +j);
                             AcceptOkCall a = new AcceptOkCall();
                             a.setmCallBack(SignUpFragment.this);
                             a.acceptOk(listings,p,j,dbHelper, getActivity());

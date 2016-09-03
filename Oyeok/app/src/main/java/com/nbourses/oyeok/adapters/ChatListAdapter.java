@@ -144,9 +144,9 @@ private WebView i;
             holder4.building2.setText(list.get(2));
             holder4.building3.setText(list.get(4));
 
-            holder4.price1.setText(" @₹"+list.get(1));
-            holder4.price2.setText(" @₹"+list.get(3));
-            holder4.price3.setText(" @₹"+list.get(5));
+            holder4.price1.setText(" @"+ General.currencyFormat(list.get(1).substring(0 , list.get(1).indexOf("."))));
+            holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(3).indexOf("."))));
+            holder4.price3.setText(" @"+ General.currencyFormat(list.get(5).substring(0 , list.get(5).indexOf("."))));
             /*holder4.price1.setText(" @"+General.currencyFormat(list.get(1).substring(0,list.get(1).length()-2)));
             holder4.price2.setText(" @"+General.currencyFormat(list.get(3).substring(0,list.get(3).length()-2)));
             holder4.price3.setText(" @"+General.currencyFormat(list.get(5).substring(0,list.get(5).length()-2)));*/
@@ -352,11 +352,15 @@ private WebView i;
             }
 
             //String userName = message.getUserName(); // broker
-            String userName = General.getSharedPreferences(context, AppConstants.NAME);
+           // String userName = General.getSharedPreferences(context, AppConstants.NAME);
+            String userName = "unverified user";
+            if(General.getSharedPreferences(context, AppConstants.NAME) != "") {
+               userName = General.getSharedPreferences(context, AppConstants.NAME);
+            }
+
             String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
 
             Log.i("CONVER", "Chat message is2" + message.getMessageText());
-
 
             Log.i("TRACE DEALS FLAG", "FLAG " + isDefaultDeal);
             if(!isDefaultDeal) {
@@ -375,7 +379,7 @@ private WebView i;
         }
 
 
-        else if (message.getUserType() == ChatMessageUserType.SELF) {
+        else if (message.getUserType() == ChatMessageUserType.OTHER || message.getUserSubtype() == ChatMessageUserSubtype.OTHER) {
             if (convertView == null) {
                 v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
                 holder1 = new ViewHolder1();
@@ -387,6 +391,7 @@ private WebView i;
                 holder1.spinnerProgress = (ProgressBar) v.findViewById(R.id.spinnerProgress);
 
                 v.setTag(holder1);
+
             } else {
                 v = convertView;
                 holder1 = (ViewHolder1) v.getTag();
@@ -404,7 +409,7 @@ private WebView i;
             holder1.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
             Log.i("CONVER","message time self "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
         }
-        else if (message.getUserType() == ChatMessageUserType.OTHER)
+        else if (message.getUserType() == ChatMessageUserType.SELF || message.getUserSubtype() == ChatMessageUserSubtype.SELF)
         {
 
             if (convertView == null) {
@@ -425,8 +430,8 @@ private WebView i;
 
             }
 
-            Log.i("CONVER","Chat message is other4"+message.getMessageText());
-            Log.i("CONVER","message time other "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
+//            Log.i("CONVER","Chat message is other4"+message.getMessageText());
+//            Log.i("CONVER","message time other "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
 
             holder2.imageFrame.setVisibility(View.GONE);
             holder2.messageTextView.setText(message.getMessageText());
@@ -439,21 +444,28 @@ private WebView i;
                 holder2.messageStatus.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_single_tick));
 
             }
+
         }
         return v;
     }
 
     @Override
     public int getViewTypeCount() {
-        return 6;
+        return 5;
     }
 
     @Override
     public int getItemViewType(int position) {
 
+
+        Log.i("VIEW TYPE","========  "+position);
             ChatMessage message = chatMessages.get(position);
-//        Log.i("USERTYPE"," "+message.getUserType().ordinal());
+        Log.i("VIEW TYPE","========  "+message.getUserType());
+
+        if(message.getUserType() != null)
             return message.getUserType().ordinal();
+
+        return message.getUserSubtype().ordinal();
 
     }
 

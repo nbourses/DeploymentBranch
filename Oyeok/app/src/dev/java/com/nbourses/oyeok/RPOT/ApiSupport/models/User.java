@@ -41,6 +41,9 @@ public class User {
         public ResponseData responseData= new ResponseData();
         @SerializedName("name")
         private String name;
+        @SerializedName("demo_id")
+        private String demoId;
+
         @SerializedName("mobile_no")
         private String mobileNo;
         @SerializedName("mobile_code")
@@ -133,7 +136,15 @@ public class User {
         @SerializedName("my_photo")
         public String myPhoto;
 
-        public class ResponseData{
+    public String getDemoId() {
+        return demoId;
+    }
+
+    public void setDemoId(String demoId) {
+        this.demoId = demoId;
+    }
+
+    public class ResponseData{
                 @SerializedName("otp")
                 private String otp;
 

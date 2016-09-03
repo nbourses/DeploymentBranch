@@ -49,6 +49,7 @@ public class AppConstants {
     public static final String IS_LOGGED_IN_USER = "isLoggedInUser";
 
     public static final String USER_ID = "userId";
+
     public static final String NAME = "name";
 
     public static final String EMAIL = "email";
@@ -71,7 +72,13 @@ public class AppConstants {
 
     public static final String OK_ID = "ok_id";
 
+    public static final String OYE_ID = "oye_id";
+
+
+
     public static final String ROLE_OF_USER = "role_of_user";
+
+
 
     public static final String CLIENT_OK_ID = "client_ok_id";
 

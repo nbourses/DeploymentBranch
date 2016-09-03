@@ -39,7 +39,7 @@ public class MyApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         OneSignal.startInit(this).init();
-        new Instabug.Builder(this, "cc39b2bf5c9fffb413e7fd81ce5e9f2e") .setInvocationEvent(IBGInvocationEvent.IBGInvocationEventShake) .build();
+        new Instabug.Builder(this, "cc39b2bf5c9fffb413e7fd81ce5e9f2e").setInvocationEvent(IBGInvocationEvent.IBGInvocationEventShake) .build();
 
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Crashlytics(), new TwitterCore(authConfig), new Digits());
