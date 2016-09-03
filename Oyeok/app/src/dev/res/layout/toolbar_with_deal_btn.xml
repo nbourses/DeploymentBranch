@@ -130,7 +130,7 @@
         android:textColor="@color/white"
         android:gravity="center_horizontal|center_vertical"
         android:text=""
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="30dp"
         android:id="@+id/confirm_screen_title"
         android:textStyle="bold"
         android:textSize="18dp"
@@ -158,11 +158,12 @@
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_gravity="right"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="10dp"
             android:layout_alignParentRight="true"
             android:text=""
-            android:textSize="18sp"
-            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="normal"
+            android:textColor="@color/greenish_blue"
             android:background="@drawable/asset_dealsbutton_v1" />
         </LinearLayout>
         <TextView
@@ -178,6 +179,7 @@
             android:gravity="center"
             android:textColor="#FFF"
             android:textSize="11sp"
+
             android:layout_alignParentRight="true"
             android:visibility="gone" />
            <!-- android:layout_above="@+id/btnMyDeals" -->
