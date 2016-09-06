@@ -1250,10 +1250,6 @@ TextView rental,resale;
 //                                Log.i("coming soon", "coming soon :" + marker.getTitle().toString());
                                     tv_building.setVisibility(View.VISIBLE);
 
-
-
-
-
                                     tvFetchingrates.setTypeface(null, Typeface.BOLD);
                                     lng = mCustomerMarker[i].getPosition().longitude;
                                     lat = mCustomerMarker[i].getPosition().latitude;
@@ -3696,6 +3692,8 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
         map.clear();
         oyebuttonBackgrountColorOrange();
         clicked = false;
+        txtFilterValue.setEnabled(true);
+        mVisits.setEnabled(true);
         customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
         mHelperView.setEnabled(false);
         horizontalPicker.setVisibility(View.GONE);

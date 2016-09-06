@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -285,9 +286,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         String userId = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
 
         if(userId == null)
-        UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
+            UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
         else
-        UUID = userId;
+         UUID = userId;
 
         i("WHERENOW", "UUID " + UUID);
 
@@ -305,14 +306,16 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         if (!channel_name.equals(""))
             Log.i(TAG, "chanel name was not null" + channel_name);
+
+
         if(!channel_name.equals("my_channel"))
         {
-
             setupPubnub(channel_name);
         }  // DEals OK ID
         else {
             setupPubnub(UUID);
         }
+
         General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,channel_name);
     }
 
@@ -331,12 +334,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private void init() {
 
         setSupportActionBar(mToolbar);
-            getSupportActionBar().setTitle("Dealing Room");
-
+        getSupportActionBar().setTitle("Dealing Room");
 
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         //if there is no SD card, create new directory objects to make directory on device
         if (Environment.getExternalStorageState() == null) {
             //create new file directory object
@@ -360,6 +363,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 directory.mkdir();
             }
         }
+
         // end of SD card checking
         // callback method to call credentialsProvider method.
         credentialsProvider();
@@ -372,7 +376,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
         edtTypeMsg.addTextChangedListener(edtTypeMsgListener);
-
         chatMessages = new ArrayList<>();
 
         Log.i(TAG, "chatMessages are" + chatMessages);
@@ -417,6 +420,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     channel_name = bundle.getString(AppConstants.OK_ID); //my_channel if came from root item
                 }
 
+
                 Log.i(TAG,"listing ghya listing 1 "+channel_name);
 
 
@@ -425,6 +429,29 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Log.i(TAG,"listing ghya listing "+bundle.getSerializable("listing"));
 
                 }*/
+
+                if(channel_name.equalsIgnoreCase("my_channel"))
+                {
+                    String uuid = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
+                    Log.i("MY CHANNEL ","=== ====== ====== ===== ====== "+uuid);
+                    loadHistoryFromPubnub(uuid);
+
+                    if(firstMessage)
+                    {
+
+                        JSONObject jsonMsg = new JSONObject();
+                        //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
+                        jsonMsg.put("_from", uuid);
+                        jsonMsg.put("message", "Looking for CRM");
+                        jsonMsg.put("to", uuid);
+                        jsonMsg.put("status","");
+                        displayMessage(jsonMsg);
+
+
+                    }
+//                    pubnubWhereNow(uuid);
+                }
+
                 if(bundle.containsKey(AppConstants.OYE_ID)){
                     Log.i(TAG,"perser 1 ");
                     if (bundle.getString(AppConstants.OYE_ID).toLowerCase().contains("unverified_user".toLowerCase())) {
@@ -469,7 +496,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         });
 
 
-
         listAdapter = new ChatListAdapter(chatMessages,isDefaultDeal, this);
         chatListView.setAdapter(listAdapter);
 
@@ -477,7 +503,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         Log.i(TAG, "channel_name yo" + channel_name);
 
         General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,channel_name);
-
 
         userRole = bundle.getString("userRole");
 
@@ -509,7 +534,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 } else {
                     adapterSuggestions = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, suggestionsORAvl);
                 }
-
 
             }
         }
@@ -567,17 +591,20 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     @OnClick(R.id.imgSendMsg)
     public void onSendMsgClick(View v) {
         String currentImg = (String) v.getTag();
-        if (currentImg != null) {
+        Log.i(TAG,"imageshare yo 3"+currentImg);
+        if (currentImg != "") {
             if (currentImg.equals("attachment")) {
-                Log.i(TAG,"imageshare 1");
+                Log.i(TAG,"imageshare yo 1");
                 //open file chooser options
+               if(verifyStoragePermissions(DealConversationActivity.this))
                 selectImage();
             }
-            else {
-
+            else if(currentImg.equals("message")) {
+                Log.i(TAG,"imageshare yo 2"+currentImg);
 
                 Log.i(TAG,"imageshare 2 edittypemsg "+edtTypeMsg.getText().toString());
                 messageTyped = edtTypeMsg.getText().toString();
+
                 //send message
 
 
@@ -604,7 +631,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     e.printStackTrace();
                 }
 
-                edtTypeMsg.setText("");
 
                 chatListView.post(new Runnable() {
                     @Override
@@ -617,32 +643,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 chatMessages.remove(chatMessages.size()-1);
 
-            }
 
-            Realm myRealm = General.realmconfig(this);
-            DealStatusType dealStatusType = null;
+        checkLocalBlockStatus();
 
-            DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, channel_name).findFirst();
-            Log.i(TAG, "Caught in exception notif insiderr cached msgs is the notifcount " + dealStatus);
-            if (dealStatus != null && dealStatus.getStatus().equalsIgnoreCase(DealStatusType.BLOCKED.toString())) {
-
-                SnackbarManager.show(
-                        Snackbar.with(this)
-                                .position(Snackbar.SnackbarPosition.TOP)
-                                .text("You have blocked this deal. Message will not be sent.")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-            }
-
-            else{
-                Log.i(TAG,"getDealStatus ");
-                String demo_channel = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
-
-                if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCase(demo_channel))
-                    getDealStatus(this,channel_name);
-                else
-                    sendMessage(messageTyped);
-            }
         }
+        //imgSendMsg.setClickable(false);
+       // edtTypeMsg.setText("");
+    }
     }
 
     /**
@@ -681,15 +688,17 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 }
                 else {
                     displayMessage();
+                    loadHistoryFromPubnub(channel_name);
                 }
 
-                loadHistoryFromPubnub(channel_name);
+
             }
 
 //            if(!channel_name.equals("my_channel"))
-            {
-                loadHistoryFromPubnub(channel_name);
-            }
+//            {
+//
+//                loadHistoryFromPubnub(channel_name);
+//            }
 
             pubnub.subscribe(channel_name, new Callback() {
                         @Override
@@ -722,42 +731,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         @Override
                         public void errorCallback(String channel, PubnubError error) {
                         }
+
                     }
             );
 
-           /* String channel = channel_name + "-pndebug";
-            Log.i("channel name for debug","====== "+channel);
-            pubnub.subscribe(channel, new Callback() {
-                        @Override
-                        public void connectCallback(String channel, Object message) {
-                        }
 
-                        @Override
-                        public void disconnectCallback(String channel, Object message) {
-                        }
-
-                        public void reconnectCallback(String channel, Object message) {
-                        }
-
-                        @Override
-                        public void successCallback(String channel, final Object message) {
-                            try {
-                                Log.i("WHERENOW", "6 ");
-                                JSONObject jsonMsg = (JSONObject) message;
-                                Log.i(TAG, "pubnub setup success" + jsonMsg);
-
-                                displayMessage(jsonMsg);
-                            }
-                            catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void errorCallback(String channel, PubnubError error) {
-                        }
-                    }
-            );*/
         }
         catch (PubnubException e) {
             e.getMessage();
@@ -774,7 +752,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             public void onClick(DialogInterface dialog, int item) {
 
                 if (items[item].equals("Choose from Library")) {
-                    verifyStoragePermissions(DealConversationActivity.this);
+
 
                     Log.d(TAG, "lolwa imagewa 4 ");
 
@@ -795,6 +773,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         });
         builder.show();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -979,11 +958,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 if(userID.equalsIgnoreCase(FROM) || demoId.equalsIgnoreCase(FROM))
                 {
-                    userSubtype = ChatMessageUserSubtype.SELF;
+                    userSubtype = ChatMessageUserSubtype.OTHER.SELF;
                 }
                 else
                 {
-                    userSubtype = ChatMessageUserSubtype.OTHER;
+                    userSubtype = ChatMessageUserSubtype.OTHER.OTHER;
                 }
 
                 if(msgStatus == null)
@@ -1097,7 +1076,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //                Log.i(TAG, "until insideroui4 " + c.getTo());
 //                Log.i(TAG, "until insideroui4 " + c.getImageUrl());
 
-                if (c.getFrom().equalsIgnoreCase("DEFAULT")) {
+                if (c.getStatus().equalsIgnoreCase("DEFAULT")) {
                     Log.i("CONVER", "DEFAULT set");
                     userType = ChatMessageUserType.DEFAULT;
                 }
@@ -1124,10 +1103,10 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Log.i("CONVER", "LISTING set");
                     userType = ChatMessageUserType.LISTING;
                 }
-                else if(c.getFrom().equalsIgnoreCase("support"))
-                {
-                    userType = ChatMessageUserType.OTHER;     // for support
-                }
+//                else if(c.getStatus().equalsIgnoreCase("support"))
+//                {
+//                    userType = ChatMessageUserType.OTHER;     // for support
+//                }
                 else if (!c.getFrom().equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID))) {
                     userType = ChatMessageUserType.SELF;
                 } else {
@@ -1159,10 +1138,27 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             myRealm.commitTransaction();
             Log.i(TAG,"until fitra 4 "+myRealm.isInTransaction());
         }
-        chatListView.post(new Runnable() {
+//        chatListView.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                chatListView.setSelection(listAdapter.getCount());
+//            }
+//        });
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                chatListView.setSelection(listAdapter.getCount());
+
+//                        Log.i(TAG, "message runOnUiThread" + listAdapter);
+
+                if (listAdapter != null) {
+                    Log.i(TAG, "message runOnUiThread  not null");
+                    Log.i(TAG, "calipso yo notify" );
+                    listAdapter.notifyDataSetChanged();
+                }
+
+//                edtTypeMsg.setText("");
+
+//                        Log.i(TAG, "message runOnUiThread edtTypeMsg2");
             }
         });
 
@@ -1179,7 +1175,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private void sendMessage(final String messageText)
     {
-        Log.i(TAG, "Inside send message");
+        Log.i(TAG, "Inside send message" +edtTypeMsg.getText());
 
 
         if(messageText != null)
@@ -1234,26 +1230,30 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             }
 
             Log.i("TEST", "jsonMsg in send msg _from" + jsonMsg);
+
             sendNotification(jsonMsg);
             displayMessage(jsonMsg);
+
             lastMessageTime = String.valueOf(System.currentTimeMillis());
 
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 
-  /*  private void pubnubWhereNow(final String UUID){
+    private void pubnubWhereNow(final String UUID){
 
         Callback callback = new Callback() {
             public void successCallback(String channel, Object response) {
                 System.out.println(response.toString());
 
-                Log.i("TEST", "pubnubWhereNow" + response.toString());
-
+                Log.i("TEST", "pubnubWhereNow ======" + response.toString());
 
                 JSONObject obj = null;
+
                 try {
                     obj = new JSONObject(response.toString());
                 } catch (JSONException e) {
@@ -1290,14 +1290,17 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     {
                         Log.i("TEST", "jsonMsgtoWhereNow in wherenow " + jsonMsgtoWhereNow);
                         firstMessage = true;
-<<<<<<< HEAD
+
+/*<<<<<<< HEAD
 //                        sendNotification("my_channel");
 =======
                        sendNotification("my_channel",jsonMsgtoWhereNow);
->>>>>>> 609773f27c3c8c5863a88896a07ded5037c98d9d
+>>>>>>> 609773f27c3c8c5863a88896a07ded5037c98d9d*/
+
                         Log.i("Pubnub push","inside pubnub where now its first msg ");
                         pubnub.publish("my_channel", jsonMsgtoWhereNow, true, new Callback() {
                         });
+
                         lastMessageTime = String.valueOf(System.currentTimeMillis());
 
                         Log.i("TEST","first message" +firstMessage);
@@ -1306,14 +1309,15 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-  }
+            }
             public void errorCallback(String channel, PubnubError error) {
                 System.out.println(error.toString());
             }
         };
+
         pubnub.whereNow(UUID, callback);
   }
-*/
+
 
     /**
      * load pubnub history
@@ -1404,7 +1408,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         gcmMessage.setData(json);
 
-// Create APNS message
+        // Create APNS message
 
         PnApnsMessage apnsMessage = new PnApnsMessage();
         apnsMessage.setApsSound("melody");
@@ -1491,6 +1495,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             getWindow().getDecorView().clearFocus();
         }
+
     }
 
     @Override
@@ -2179,7 +2184,7 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
 
 
 
-    public static void verifyStoragePermissions(Activity activity) {
+    public static boolean verifyStoragePermissions(Activity activity) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -2190,6 +2195,10 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
                     PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE
             );
+            return false;
+        }else
+        {
+           return true;
         }
     }
 
@@ -2347,7 +2356,6 @@ Log.i(TAG,"back clicked");
                 }
             });
 
-
         }
         catch (Exception e){
             Log.e("TAG","Caught in get status " +e.getMessage());
@@ -2355,6 +2363,47 @@ Log.i(TAG,"back clicked");
 
     }
 
+    private void checkLocalBlockStatus(){
+        Realm myRealm = General.realmconfig(this);
+        DealStatusType dealStatusType = null;
+
+        DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, channel_name).findFirst();
+        Log.i(TAG, "Caught in exception notif insiderr cached msgs is the notifcount " + dealStatus);
+
+        if (dealStatus != null && dealStatus.getStatus().equalsIgnoreCase(DealStatusType.BLOCKED.toString())) {
+
+            SnackbarManager.show(
+                    Snackbar.with(this)
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("You have blocked this deal. Message will not be sent.")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+        }
+
+        else{
+            Log.i(TAG,"getDealStatus ");
+            String demo_channel = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
+
+            if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCase(demo_channel))
+                getDealStatus(this,channel_name);
+            else
+                sendMessage(messageTyped);
+        }
+    }
 
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode==REQUEST_EXTERNAL_STORAGE){
+            if(permissions.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                selectImage();
+            }
+            else{
+                //do nothing
+            }
+        }
+
+
+    }
 }

@@ -15,6 +15,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -534,6 +535,10 @@ public void signUp(){
         //Hardcode user login in shared prefs
         //General.settSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER, yes);
 //       General.setSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER, "yes");
+
+
+
+
         init();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -578,7 +583,7 @@ public void signUp(){
     private void init() {
 
 
-        try {
+        /*try {
             SharedPreferences prefs1 =
                     PreferenceManager.getDefaultSharedPreferences(this);
             listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -595,8 +600,8 @@ public void signUp(){
 
         }
         catch (Exception e){
-            Log.e("loc", e.getMessage());
-        }
+            Log.e(TAG,"listener shared 2 "+e.getMessage());
+        }*/
 //        RealmConfiguration config = new RealmConfiguration
 //                .Builder(this)
 //                .deleteRealmIfMigrationNeeded()
@@ -632,7 +637,6 @@ public void signUp(){
 //        myRealm.commitTransaction();
 
 
-
 //        RealmResults<Country> results1 =
 //                myRealm.where(Country.class).findAll();
 //
@@ -651,7 +655,6 @@ public void signUp(){
 //
 //        UserInfo copyOfCountry = myRealm.copyToRealmOrUpdate(user);
 //        myRealm.commitTransaction();
-
 
 
 //        UserInfo usera = new UserInfo();
@@ -673,9 +676,7 @@ public void signUp(){
 //        }
 
 
-
-
-        if(General.getBadgeCount(this,AppConstants.HDROOMS_COUNT)<=0)
+        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) <= 0)
             hdroomsCount.setVisibility(View.GONE);
         else {
             hdroomsCount.setVisibility(View.VISIBLE);
@@ -687,8 +688,10 @@ public void signUp(){
             SharedPreferences prefs =
                     PreferenceManager.getDefaultSharedPreferences(this);
 
+
             listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                    Log.e(TAG, "listener shared 0 " + key);
                     if (key.equals(AppConstants.HDROOMS_COUNT)) {
                         if (General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT) <= 0)
                             hdroomsCount.setVisibility(View.GONE);
@@ -701,13 +704,15 @@ public void signUp(){
 
 
                     }
+                    if (key.equals(AppConstants.EMAIL)) {
+                        emailTxt.setText(General.getSharedPreferences(ClientMainActivity.this, AppConstants.EMAIL));
+                    }
                 }
             };
 
             prefs.registerOnSharedPreferenceChangeListener(listener);
-        }
-        catch (Exception e){
-            Log.e(TAG, e.getMessage());
+        } catch (Exception e) {
+            Log.e(TAG, "listener shared 1 " + e.getMessage());
         }
 
         //You need to set the Android context using Firebase.setAndroidContext() before using Firebase.
@@ -753,20 +758,20 @@ public void signUp(){
 //            }
         });
 
-      //  RelativeLayout re = (RelativeLayout) findViewById(R.id.badge);
+        //  RelativeLayout re = (RelativeLayout) findViewById(R.id.badge);
         //setup toolbar
         setSupportActionBar(mToolbar);
-       getSupportActionBar().setDisplayShowHomeEnabled(true);
-       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-  //      mToolbar.setNavigationIcon(R.drawable.home);
-      getSupportActionBar().setTitle("Live Region Rates");
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //      mToolbar.setNavigationIcon(R.drawable.home);
+        getSupportActionBar().setTitle("Live Region Rates");
 
-        
+
         //TODO: need to validate this functionality
         dbHelper = new DBHelper(getBaseContext());
         mHandler = new Handler();
 
-        dbHelper.save(DatabaseConstants.userRole,"Client");
+        dbHelper.save(DatabaseConstants.userRole, "Client");
 
         //setup navigation drawer
         drawerFragment = (FragmentDrawer)
@@ -799,9 +804,60 @@ public void signUp(){
         dashboardClientFragment.setOyeButtonClickListener(this);
         loadFragment(dashboardClientFragment, null, R.id.container_map, "Client Dashboard");
 
+        Bundle bundle = getIntent().getExtras();
+
+        try {
+            if (bundle != null) {
+                if (bundle.containsKey("bicon")) {
+                    Log.i("TRACE", " toto "+bundle.getString("bicon"));
+                    Log.i("TRACE", " toto 1 "+bundle.getString("bicon"));
+                    new DownloadImageTask().execute(bundle.getString("bicon"));
+                }}}
+        catch(Exception e){}
+
+        /*if(General.getSharedPreferences(ClientMainActivity.this,AppConstants.PROMO_IMAGE_URL) != "") {
+            Log.i("TAG","porter 1 "+General.getSharedPreferences(ClientMainActivity.this,AppConstants.PROMO_IMAGE_URL));
+            new DownloadImageTask().execute(General.getSharedPreferences(ClientMainActivity.this, AppConstants.PROMO_IMAGE_URL));
+        }*/
+
 
     }
 
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+
+
+        protected Bitmap doInBackground(String... urls) {
+
+            Log.i("TAG","stopDownloadImage3 yo bro porter 2 "+urls[0]);
+
+
+            final String urldisplay = urls[0];
+            Bitmap mIcon11 = General.getBitmapFromURL(urldisplay);
+
+
+            return mIcon11;
+
+
+        }
+
+        protected void onPostExecute(final Bitmap result) {
+            if(result != null) {
+                Log.i("flok", "flokai 2 porter 3 "+result);
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        General.showOptions(ClientMainActivity.this,result);
+                        // General.setSharedPreferences(ClientMainActivity.this,AppConstants.PROMO_IMAGE_URL,"");
+
+                    }
+
+                }, 1000);
+
+
+            }
+        }
+    }
     /**
      * load fragment
      * @param fragment
@@ -873,6 +929,20 @@ public void signUp(){
 
         getSupportFragmentManager().popBackStack();
         oyeconfirm_flag=false;
+    }*/
+
+
+  /*  @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==REQUEST_EXTERNAL_STORAGE){
+            if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                Log.i(TAG,"promot 1"+General.getSharedPreferences(ClientMainActivity.this, AppConstants.PROMO_IMAGE_URL));
+                //Bitmap b = General.getBitmapFromURL(General.getSharedPreferences(ClientMainActivity.this, AppConstants.PROMO_IMAGE_URL));
+                General.showOptions(ClientMainActivity.this,General.getBitmapFromURL(General.getSharedPreferences(ClientMainActivity.this, AppConstants.PROMO_IMAGE_URL)));
+                //General.setSharedPreferences(ClientMainActivity.this, AppConstants.PROMO_IMAGE_URL, "");
+            }
+        }
     }*/
 
     public void closeOyeScreen() {
@@ -1460,7 +1530,7 @@ public void signUp(){
             Button later =(Button) layout.findViewById(R.id.later);
             ImageButton cardMaps = (ImageButton) layout.findViewById(R.id.cardMaps);
              final FrameLayout cardFrame = (FrameLayout) layout.findViewById(R.id.cardMapFrame);
-            final FrameLayout a = (FrameLayout) layout.findViewById(R.id.a);
+
 
 
 
@@ -1746,10 +1816,10 @@ Log.i(TAG,"Image is the "+out);
                     public void run() {
 
                         Log.i(TAG, "popup window shown delay ");
-                        if (General.getSharedPreferences(ClientMainActivity.this, "popcard").equalsIgnoreCase("yes")) {
+                        /*if (General.getSharedPreferences(ClientMainActivity.this, "popcard").equalsIgnoreCase("yes")) {
                             showOptions(ClientMainActivity.this);
                             General.setSharedPreferences(ClientMainActivity.this, "popcard", "");
-                        }
+                        }*/
                         //  DFragment d = new DFragment();
                         //loadFragment(d,null,R.id.container_Signup,"");
                         //  d.setArguments(null);

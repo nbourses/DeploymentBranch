@@ -8,8 +8,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -239,6 +242,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 //        General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
 
 
+
         init();
     }
     @Override
@@ -457,7 +461,62 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
             }
         });
-        
+
+
+        Bundle bundle = getIntent().getExtras();
+
+        try {
+            if (bundle != null) {
+                if (bundle.containsKey("bicon")) {
+                    Log.i("TRACE", " toto "+bundle.getString("bicon"));
+                    Log.i("TRACE", " toto 1 "+bundle.getString("bicon"));
+                    new DownloadImageTask().execute(bundle.getString("bicon"));
+                }}}
+        catch(Exception e){}
+
+
+        /*if(General.getSharedPreferences(BrokerMainActivity.this,AppConstants.PROMO_IMAGE_URL) != "") {
+            Log.i("TAG","porter 1 "+General.getSharedPreferences(BrokerMainActivity.this,AppConstants.PROMO_IMAGE_URL));
+            new DownloadImageTask().execute(General.getSharedPreferences(BrokerMainActivity.this, AppConstants.PROMO_IMAGE_URL));
+        }*/
+
+
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+
+
+        protected Bitmap doInBackground(String... urls) {
+
+            Log.i("TAG","stopDownloadImage3 yo bro porter 2 "+urls[0]);
+
+
+            final String urldisplay = urls[0];
+            Bitmap mIcon11 = General.getBitmapFromURL(urldisplay);
+
+
+            return mIcon11;
+
+
+        }
+
+        protected void onPostExecute(final Bitmap result) {
+            if(result != null) {
+                Log.i("flok", "flokai 2 porter 3 "+result);
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        General.showOptions(BrokerMainActivity.this,result);
+                        // General.setSharedPreferences(ClientMainActivity.this,AppConstants.PROMO_IMAGE_URL,"");
+
+                    }
+
+                }, 1000);
+
+
+            }
+        }
     }
 
     private void enableMyLocation() {
@@ -860,6 +919,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         }
 
     }
+
 
 
 

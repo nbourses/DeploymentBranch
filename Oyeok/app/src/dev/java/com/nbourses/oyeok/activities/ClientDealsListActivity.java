@@ -361,11 +361,15 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, total_deals.get(position).getOkId()).findFirst();
                     if (dealStatus != null && dealStatus.getStatus().equalsIgnoreCase(DealStatusType.BLOCKED.toString())) {
                    blockStatus = "Unblock deal";
+                        Log.i(TAG,"Block deal Block deal "+blockStatus);
                     } else {
                         blockStatus = "Block deal";
+                        Log.i(TAG,"Block deal Block deal "+blockStatus);
                     }
                 }
-                catch(Exception e){}
+                catch(Exception e){
+                    Log.i(TAG,"caught in exception reading block status from realm "+e);
+                }
 
                 switch (index) {
                     case 0:
