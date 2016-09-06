@@ -345,8 +345,33 @@ TextView rental,resale;
 //
 //            }
 //
-//        }
+//        }phasedSeekBarClicked
 //    };
+
+
+
+    private BroadcastReceiver phasedSeekBarClicked = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getExtras().getString("phaseseek") != null) {
+                if ((intent.getExtras().getString("phaseseek").equalsIgnoreCase("clicked"))) {
+
+                    int index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
+                    Log.i("indexxx", "index of layoutsusussjcdnck : " + index);
+                    if(index==2){
+                        property_type_layout.clearAnimation();
+                        parenttop.removeView(property_type_layout);
+                        parentbottom.addView(property_type_layout,5);}
+
+                    PropertyButtonSlideAnimation();
+
+
+                }
+
+            }
+        }
+    };
+
 
 
     private BroadcastReceiver onFilterValueUpdate = new BroadcastReceiver() {
@@ -558,12 +583,8 @@ TextView rental,resale;
             sort_down_black = getContext().getResources().getDrawable(R.drawable.sort_down_black);
             sort_down_red = getContext().getResources().getDrawable(R.drawable.sort_down_red);
             sort_up_black = getContext().getResources().getDrawable(R.drawable.sort_up_black);
-            sort_up_green = getContext().getResources().getDrawable(R.drawable.sort_up_green);
+            sort_up_green = getContext().getResources().getDrawable(R.drawable.up);
 
-            sort_down_black = getContext().getResources().getDrawable(R.drawable.sort_down_black);
-            sort_down_red = getContext().getResources().getDrawable(R.drawable.sort_down_red);
-            sort_up_black = getContext().getResources().getDrawable(R.drawable.sort_up_black);
-            sort_up_green = getContext().getResources().getDrawable(R.drawable.sort_up_green);
 
         }
         catch (Exception e)
@@ -677,12 +698,29 @@ TextView rental,resale;
 
 
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
-        if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
+        if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")) {
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), getContext().getResources().getString(R.string.Resale)}));
-        else
+
+        } else {
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
+        }
         mPhasedSeekBar.setListener(this);
 
+
+
+        /*mPhasedSeekBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
+                Log.i("indexxx", "index of layoutsusussjcdnck : " + index);
+                if(index==2){
+                    property_type_layout.clearAnimation();
+                    parenttop.removeView(property_type_layout);
+                    parentbottom.addView(property_type_layout,5);}
+
+                PropertyButtonSlideAnimation();
+            }
+        });*/
 
         ic_search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -709,6 +747,7 @@ TextView rental,resale;
 
                     ((ClientMainActivity)getActivity()).closeOyeConfirmation();
                     ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+                    txtFilterValue.setTextSize(13);
 
                     txtFilterValue.setTextColor(Color.parseColor("white"));
                     txtFilterValue.setText(oyetext);
@@ -996,7 +1035,7 @@ TextView rental,resale;
                             ( (ClientMainActivity)getActivity()).closeOyeScreen();
                             ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                             ( (ClientMainActivity)getActivity()).closeOyeConfirmation();
-
+                            txtFilterValue.setTextSize(13);
                             txtFilterValue.setTextColor(Color.parseColor("white"));
                             txtFilterValue.setText(oyetext);
                             buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
@@ -1030,14 +1069,46 @@ TextView rental,resale;
                 @Override
                 public View getInfoWindow(Marker arg0) {
                     Log.i("inside getinfo","==========");
+                    LatLng latLng = arg0.getPosition();
+//                    v1 = inflater.inflate(R.layout.info_window_layout, null);
+                    v1 = getActivity().getLayoutInflater().inflate(R.layout.info_window_layout, null);
+                    ImageView rate_change_img = (ImageView) v1.findViewById(R.id.rate_change_img);
+                    TextView rate_change_value = (TextView) v1.findViewById(R.id.rate_change_value);
+                    String rate="0";
+                    for(int i=0;i<5;i++) {
+                        if (arg0.getId().equals(mCustomerMarker[i].getId())) {
+                            if (flag[i] == false)
+                                rate = rate_growth[i];
+                        }
+                    }
 
-                    return null;
+                    if (Integer.parseInt(rate) < 0){
+                        comman_icon=sort_down_red;
+                        rate_change_value.setTextColor(Color.parseColor("#ffb91422"));// FFA64139 red
+
+
+                        rate_change_img.setBackground(comman_icon);
+                        rate_change_value.setText(rate.subSequence(1, rate.length())+" %");
+                    }
+                    else if(Integer.parseInt(rate) > 0){
+                        comman_icon = sort_up_green;
+                        rate_change_value.setTextColor(Color.parseColor("#2dc4b6"));// FF377C39 green FF2CA621   FFB91422
+
+                        rate_change_img.setBackground(comman_icon);
+                        rate_change_value.setText(Integer.parseInt(rate)+" %");
+                    }
+                    else{
+                        rate_change_img.setBackground(null);
+                        rate_change_value.setTextColor(Color.parseColor("black"));
+                        rate_change_value.setText(Integer.parseInt(rate)+" %");
+                    }
+                    return v1;
                 }
                 @Override
                 public View getInfoContents(Marker arg0) {
 
                     Log.i("inside getinfo","==========");
-                    LatLng latLng = arg0.getPosition();
+                    /*LatLng latLng = arg0.getPosition();
 //                    v1 = inflater.inflate(R.layout.info_window_layout, null);
                     v1 = getActivity().getLayoutInflater().inflate(R.layout.info_window_layout, null);
                     ImageView rate_change_img = (ImageView) v1.findViewById(R.id.rate_change_img);
@@ -1066,9 +1137,9 @@ TextView rental,resale;
                         rate_change_img.setBackground(null);
                         rate_change_value.setTextColor(Color.parseColor("black"));
                         rate_change_value.setText(Integer.parseInt(rate)+" %");
-                    }
+                    }*/
 
-                    return v1;
+                    return null;
 
                 }
             });
@@ -1125,8 +1196,49 @@ TextView rental,resale;
 
                                     mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
                                     txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_bg_color_white));
+                                    String text1;//="<font color=#ffffff size=20> "+rate_growth[i] + " %</font>";
+
+                                    text1 = "<font color=#ffffff>Observed </font><font color=#ff9f1c> 30 </font> <font color=#ffffff>online listing in last 1 WEEK</font>";
+                                    tv_building.setText(Html.fromHtml(text1));
                                     txtFilterValue.setText(rate_growth[i] + " %");
-                                    txtFilterValue.setTextColor(Color.parseColor("black"));
+                                    txtFilterValue.setTextSize(16);
+                                    txtFilterValue.setTypeface(Typeface.DEFAULT_BOLD);
+                                    if (Integer.parseInt(rate_growth[i]) < 0){
+                                        txtFilterValue.setTextColor(Color.parseColor("#ffb91422"));// FFA64139 red
+                                        if (brokerType.equalsIgnoreCase("rent")) {
+                                            String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#b91422><sub>/m</sub></font></br>";
+                                            tvFetchingrates.setText(Html.fromHtml(text));
+                                        } else {
+                                            String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
+                                            tvFetchingrates.setText(Html.fromHtml(text));
+                                        }
+                                    }
+                                    else if(Integer.parseInt(rate_growth[i]) > 0){
+                                        txtFilterValue.setTextColor(Color.parseColor("#2dc4b6"));// FF377C39 green FF2CA621   FFB91422
+                                        if (brokerType.equalsIgnoreCase("rent")) {
+
+                                            String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#2dc4b6>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#2dc4b6><sub>/m</sub></font></br>";
+                                            tvFetchingrates.setText(Html.fromHtml(text));
+                                        } else {
+
+                                            String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#2dc4b6>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#2dc4b6><sub>/sq.ft</sub></font></br>";
+
+                                            tvFetchingrates.setText(Html.fromHtml(text));
+                                        }
+                                    }
+                                    else{
+                                        if (brokerType.equalsIgnoreCase("rent")) {
+                                            String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
+                                            tvFetchingrates.setText(Html.fromHtml(text));
+                                        } else {
+                                            String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font></br>";
+
+                                            tvFetchingrates.setText(Html.fromHtml(text));
+                                        }
+                                        txtFilterValue.setTextColor(Color.parseColor("black"));
+
+                                    }
+//                                    txtFilterValue.setTextColor(Color.parseColor("black"));
                                     ll_marker.setEnabled(false);
                                     mVisits.setEnabled(false);
                                     txtFilterValue.setEnabled(false);
@@ -1140,20 +1252,8 @@ TextView rental,resale;
 
 
 
-                                    String text1 = "<font color=#ffffff>Observed </font><font color=#ff9f1c> 30 </font> <font color=#ffffff>online listing in last 1 WEEK</font>";
-                                    tv_building.setText(Html.fromHtml(text1));
-                                   if (brokerType.equalsIgnoreCase("rent")) {
-                                       /*String text1 = "<font color=#ffffff>Observed </font><font color=#ff9f1c> 30 </font> <font color=#ffffff>online listing in last 1 WEEK</font>";
-                                       tv_building.setText(Html.fromHtml(text1));*/
-                                        String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
-                                        tvFetchingrates.setText(Html.fromHtml(text));
-                                    } else {
-                                       /*String text1 = "<font color=#ff9f1c><big>30</big></font>";
-                                       tv_building.setText("Observed "+Html.fromHtml(text1)+" online listing in last 1 WEEK");*/
-                                        String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font></br>";
 
-                                        tvFetchingrates.setText(Html.fromHtml(text));
-                                    }
+
                                     tvFetchingrates.setTypeface(null, Typeface.BOLD);
                                     lng = mCustomerMarker[i].getPosition().longitude;
                                     lat = mCustomerMarker[i].getPosition().latitude;
@@ -1188,6 +1288,7 @@ TextView rental,resale;
 
                                     mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
                                     txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
+                                    txtFilterValue.setTextSize(13);
                                     txtFilterValue.setTextColor(Color.parseColor("white"));
                                     txtFilterValue.setText(oyetext);
 
@@ -1799,6 +1900,7 @@ TextView rental,resale;
         //LocalBroadcastManager.getInstance(getContext()).registerReceiver(oncheckbeacon, new IntentFilter(AppConstants.CHECK_BEACON));
 
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(autoComplete, new IntentFilter(AppConstants.AUTOCOMPLETEFLAG1));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(phasedSeekBarClicked, new IntentFilter(AppConstants.PHASED_SEEKBAR_CLICKED));
 
     }
 
@@ -1808,6 +1910,7 @@ TextView rental,resale;
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(onFilterValueUpdate);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(closeOyeScreenSlide);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(autoComplete);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(phasedSeekBarClicked);
 //        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oncheckWalkthrough);
         // LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oncheckbeacon);
 
@@ -2214,8 +2317,11 @@ TextView rental,resale;
     }
 
 
+
+
     @Override
     public void onPositionSelected(int position, int count) {
+
         if (count == 2) {
             if (position == 0) {
 
@@ -2425,6 +2531,7 @@ TextView rental,resale;
 
     //@Override
     public void onPositionSelected(int position) {
+        Log.i("sushil","onposition    ====  ");
         // Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
     }
 
@@ -3195,13 +3302,15 @@ public void oyebuttonBackgrountColorOrange(){
                         if (now - lastTouched > SCROLL_TIME && !(motionEvent.getPointerCount() > 1) && isNetworkAvailable()) {
                             Log.i("MotionEvent.ACTION_UP", "=========================22");
                             Log.i("setScroll", "=======================setScrollGesturesEnabled==");
+                            txtFilterValue.setTextSize(13);
+                            txtFilterValue.setTextColor(Color.parseColor("white"));
+                            txtFilterValue.setText(oyetext);
                             ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                             Intent in = new Intent(AppConstants.MARKERSELECTED);
                             in.putExtra("markerClicked", "false");
-                            txtFilterValue.setTextColor(Color.parseColor("white"));
-                            txtFilterValue.setText(oyetext);
+
                             LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
-                            txtFilterValue.setTextColor(Color.parseColor("white"));
+//                            txtFilterValue.setTextColor(Color.parseColor("white"));
                             txtFilterValue.setText(oyetext);
 
                             tvFetchingrates.setVisibility(View.VISIBLE);
@@ -3482,6 +3591,7 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
 
         for (int i = 0; i < 5; i++) {
             if (flag[i] == true) {
+
                 mVisits.setEnabled(true);
                 txtFilterValue.setEnabled(true);
                 tvRate.setVisibility(View.VISIBLE);
@@ -3502,10 +3612,13 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
                 mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
 //                            mVisits.startAnimation(zoomin_zoomout);
                 StartOyeButtonAnimation();
+                updateHorizontalPicker();
+                txtFilterValue.setTextSize(13);
+
                 txtFilterValue.setTextColor(Color.parseColor("white"));
                 txtFilterValue.setText(oyetext);
                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
-                txtFilterValue.setTextColor(Color.parseColor("white"));
+//                txtFilterValue.setTextColor(Color.parseColor("white"));
                 txtFilterValue.setText(oyetext);
 //                txtFilterValue.setText("sushil");
                 Log.i("onMapclicked","Inside onMapclicked 909099099099  "+oyetext);

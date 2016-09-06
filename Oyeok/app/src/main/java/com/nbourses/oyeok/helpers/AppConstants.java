@@ -146,7 +146,7 @@ public class AppConstants {
     public static  String PROPERTY_CONFIG = "propertyConfig";
     public static  String POSSESSION_DATE = "posseessionDate";
     public  static GoogleMap GOOGLE_MAP;
-
+    public static  String PHASED_SEEKBAR_CLICKED = "clicked";
     public static String NUMBER_OF_BROKER="19";
     public static String CUSTOMER_TYPE="Tenant";
 
