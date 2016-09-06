@@ -1154,6 +1154,8 @@ TextView rental,resale;
 
                                         tvFetchingrates.setText(Html.fromHtml(text));
                                     }
+
+
                                     tvFetchingrates.setTypeface(null, Typeface.BOLD);
                                     lng = mCustomerMarker[i].getPosition().longitude;
                                     lat = mCustomerMarker[i].getPosition().latitude;
