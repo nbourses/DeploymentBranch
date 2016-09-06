@@ -74,7 +74,7 @@ public class BuildingOyeConfirmation extends Fragment {
 
     private void init(){
        String text;
-        text="In last 6 Months : <b><font color=#2dc4b6><big>3 Txns</big></font> | <big>30</big> listing on <big>5 </big>portals<b>";
+        text="In last 6 Months : <b><font color=#2dc4b6><big>3 Txns</big></font> | <font color=#ff9f1c><big>30</big></font> listing on <big>5 </big>portals<b>";
         listingcount.setText(Html.fromHtml(text));
 
     }

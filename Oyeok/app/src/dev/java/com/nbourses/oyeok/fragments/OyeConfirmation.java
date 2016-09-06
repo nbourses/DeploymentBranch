@@ -43,7 +43,7 @@ import static java.lang.Math.log10;
 public class OyeConfirmation extends Fragment {
 
 
-   private ImageView calendar,proceed_to_oye;
+   private ImageView calendar,proceed_to_oye,addContact;
     private TextView display_date;
     LinearLayout available_sizes;
     LinearLayout confirm_layout_with_edit_button;
@@ -86,6 +86,7 @@ public class OyeConfirmation extends Fragment {
         available_sizes=(LinearLayout) view.findViewById(R.id.available_sizes);
         confirm_layout_with_edit_button=(LinearLayout) view.findViewById(R.id.confirm_layout_with_edit_button);
         proceed_to_oye=(ImageView) view.findViewById(R.id.proceed_to_oye);
+        addContact=(ImageView) view.findViewById(R.id.addContact);
         editDetails=(Button) view.findViewById(R.id.editDetails);
         MyExpectation=(TextView) view.findViewById(R.id.rate);
         Property_conf_furnishing=(TextView) view.findViewById(R.id.property_config);
@@ -168,6 +169,17 @@ public class OyeConfirmation extends Fragment {
 //            }
 //        });
 //
+
+        addContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+              proceed_to_oye.performClick();
+
+            }
+        });
+
+
 
         proceed_to_oye.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -289,12 +301,12 @@ public class OyeConfirmation extends Fragment {
         display_date.setText(PossessionDate);
         if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")) {
             if(AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner")) {
-                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u><small> Expectation = </small><big>" + numToVal(price) + " </big><small>| Deposit </small><big>" + numToVal(price * 4) + " </big></b>(negotiable)";
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u>&nbsp   <small>   Expectation = </small><big>\u20B9 " + numToVal(price) + " </big><small>| Deposit </small><big>\u20B9 " + numToVal(price * 4) + " </big></b><small>(negotiable)</small>";
                 MyExpectation.setText(Html.fromHtml(text));
                 text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Tenants</b>";
                 selected_loc_to_oye.setText(Html.fromHtml(text));
             } else {
-                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u><small> Budget = </small><big>" + numToVal(price) + " </big><small>| Deposit </small><big>" + numToVal(price * 4) + " </big></b>(negotiable)";
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u>  &nbsp <small>   Budget = </small><big>\u20B9 " + numToVal(price) + " </big><small> | Deposit </small><big>\u20B9 " + numToVal(price * 4) + " </big></b><small>(negotiable)<small>";
                 MyExpectation.setText(Html.fromHtml(text));
                 text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Properties</b>";
                 selected_loc_to_oye.setText(Html.fromHtml(text));
@@ -302,13 +314,13 @@ public class OyeConfirmation extends Fragment {
         }
        else {
             if (AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner")) {
-                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u><small> Expectation = </small><big>" + numToVal(price) + " </big><b>(negotiable)";
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u>&nbsp<small>   Expectation = </small><big>\u20B9 " + numToVal(price) + " </big><b><small>(negotiable)</small>";
                 MyExpectation.setText(Html.fromHtml(text));
                 text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Tenants</b>";
                 selected_loc_to_oye.setText(Html.fromHtml(text));
 
             }else {
-                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u><small> Budget = </small><big>" + numToVal(price) + " </big><b>(negotiable)";
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u>&nbsp<small>   Budget = </small><big>\u20B9 " + numToVal(price) + " </big><b><small>(negotiable)</small>";
                 MyExpectation.setText(Html.fromHtml(text));
                 text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Properties</b>";
                 selected_loc_to_oye.setText(Html.fromHtml(text));

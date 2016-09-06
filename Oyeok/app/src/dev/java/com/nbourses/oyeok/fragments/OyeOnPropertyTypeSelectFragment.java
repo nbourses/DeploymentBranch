@@ -95,9 +95,10 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
                 General.saveBoolean(getContext(), "propertySubtypeFlag", true);
                 rootView = inflater.inflate(R.layout.fragment_any_click, container, false);
                 Log.i("retail","===========================ssssssssss");
-                General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"<950");
+                General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"<950 sq.ft");
                 txtPreviousTextView = (TextView) rootView.findViewById(R.id.txt950h);
                 txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
+//                txtPreviousTextView.setText("<950 sq.ft");
 
                 onFilterValueUpdate("SHOP","default");
                 break;
@@ -106,9 +107,10 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
                 General.saveBoolean(getContext(),"propertySubtypeFlag",true);
                 rootView = inflater.inflate(R.layout.fragment_any_click, container, false);
                 Log.i("retail","===========================iiiiiiiii");
-                General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"<950");
+                General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"<950 sq.ft");
                 txtPreviousTextView = (TextView) rootView.findViewById(R.id.txt950h);
                 txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
+//                txtPreviousTextView.setText("<950 sq.ft");
 
                 onFilterValueUpdate("IND.","default");
                 break;
@@ -117,9 +119,10 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
                 General.saveBoolean(getContext(), "propertySubtypeFlag", true);
                 rootView = inflater.inflate(R.layout.fragment_any_click, container, false);
                 Log.i("retail","===========================ooooooooo");
-                General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"<950");
+                General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"<950 sq.ft");
                 txtPreviousTextView = (TextView) rootView.findViewById(R.id.txt950h);
                 txtPreviousTextView.setTextColor(Color.parseColor("#2DC4B6"));
+//                txtPreviousTextView.setText("<950 sq.ft");
 
                 onFilterValueUpdate("OFFC","default");
                 break;
@@ -195,7 +198,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         AppConstants.letsOye.setSize(txtPreviousTextView.getText().toString());
         oyeButtonData = txtPreviousTextView.getText().toString();
         setOyeButtonData(oyeButtonData);
-        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,oyeButtonData);
+        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,oyeButtonData+" sq.ft");
         onFilterValueUpdate(oyeButtonData,oyeButtonData);
     }
 
