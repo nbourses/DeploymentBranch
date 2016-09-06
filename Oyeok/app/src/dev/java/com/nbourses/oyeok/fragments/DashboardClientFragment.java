@@ -1583,7 +1583,12 @@ TextView rental,resale;
 //            Log.i("inside notification","=======");
             UpdateRatePanel();
 
-            ll_map.setAlpha(1f);
+ try {  // crash on card
+    ll_map.setAlpha(1f);
+}
+catch(Exception e){
+
+}
 //            StartAnimation();
             if(clicked==false){
                 oyebuttonBackgrountColorGreenishblue();

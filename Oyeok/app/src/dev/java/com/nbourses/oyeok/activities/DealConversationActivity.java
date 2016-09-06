@@ -648,9 +648,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             Log.i(TAG, "before loadHistoryFromPubnub");
 
-            if(!channel_name.equals("my_channel")) {
+            if(!channel_name.equals("my_channel")) { //if not support chat
 
-                if( okyed){
+                if( okyed){    // if okeyed
                     okyed = false;
 
                     displayCardView();
@@ -658,23 +658,25 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     chatMessages.clear();
 
                 }
-                else if(oyed) {
+                else if(oyed) {   // if oyed
                     oyed = false;
                     displayDefaultMessage();
 
                     chatMessages.clear();
                 }
-                else {
+                else {    // if regular then load msgs from chat, then load history
                     displayMessage();
+                    loadHistoryFromPubnub(channel_name);
                 }
 
-                loadHistoryFromPubnub(channel_name);
+
             }
 
+
 //            if(!channel_name.equals("my_channel"))
-            {
+            /*{
                 loadHistoryFromPubnub(channel_name);
-            }
+            }*/
 
             pubnub.subscribe(channel_name, new Callback() {
                         @Override
@@ -872,12 +874,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
     private void displayMessage(JSONObject jsonMsg) {
-
+        Log.i(TAG,"displayMessage called inside displaymessge =====  jsonMSG "+jsonMsg);
         try{
 
             if(!jsonMsg.getJSONObject("pn_gcm").getJSONObject("data").getString("_from").equalsIgnoreCase(General.getSharedPreferences(this,AppConstants.USER_ID)) && !jsonMsg.getJSONObject("pn_gcm").getJSONObject("data").getString("_from").equalsIgnoreCase(General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI)) ) {
                 JSONObject j = jsonMsg.getJSONObject("pn_gcm").getJSONObject("data");
                 Log.i(TAG, "in displayMessage rt " + j);
+                Log.i(TAG,"displayMessage called recieved inside displaymessge =====  jsonMSG "+jsonMsg);
                 jsonMsg = j;
             }
 
@@ -964,11 +967,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 if(userID.equalsIgnoreCase(FROM) || demoId.equalsIgnoreCase(FROM))
                 {
-                    userSubtype = ChatMessageUserSubtype.OTHER.SELF;
+                    //userSubtype = ChatMessageUserSubtype.OTHER.SELF;
+                    userSubtype = ChatMessageUserSubtype.SELF;
                 }
                 else
                 {
-                    userSubtype = ChatMessageUserSubtype.OTHER.OTHER;
+                    //userSubtype = ChatMessageUserSubtype.OTHER.OTHER;
+                    userSubtype = ChatMessageUserSubtype.OTHER;
                 }
 
                 if(msgStatus == null)
@@ -1391,7 +1396,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         };
 
         // pubnub.history(channel_name, 10, false, callback);
-        pubnub.history(channel_name,true, 5,callback);
+        pubnub.history(channel_name,true, 15,callback);
     }
 
 
@@ -1628,6 +1633,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         }
 
 
+
 //        JSONObject jo = new JSONObject();
 //
 //// populate the array
@@ -1779,7 +1785,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         };
 
         // pubnub.history(channel_name, 10, false, callback);
-        pubnub.history(channel_name,true, 5,callback);
+        pubnub.history(channel_name,true, 15,callback);
         Log.i(TAG, "inside loadHistoryFromPubnub channel name is2 yo jsonArrayHistory 1 "+jsonArrayHistory);
 
 
@@ -1857,7 +1863,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 JSONObject jsonResponse = new JSONObject(json);
                 // Log.i(TAG, "role of user def 4 ");
 
-                jsonMsg.put("message", "Client have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
+                jsonMsg.put("message", "You have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
 
 
             }
@@ -1884,7 +1890,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         }
 
-        catch(Exception e){}
+        catch(Exception e){
+            Log.i(TAG,"Caught in exception showing default message "+e);
+        }
         finally {
             //chatMessages.clear();   // clears chatmessages to avoid redundant messages after loadhistory called(Clears out cached msgs before loading actual)
         }
