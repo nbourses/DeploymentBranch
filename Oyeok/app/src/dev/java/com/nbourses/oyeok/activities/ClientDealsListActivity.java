@@ -1012,7 +1012,104 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         if (!RefreshDrooms) {
 
 
-            Log.i("TRACE", "refreshdrooms is not set " + RefreshDrooms);
+
+            if (defaultOkIds != null)
+                defaultOkIds.clear();
+            else
+                defaultOkIds = new ArrayList<String>();
+
+            if (default_deals == null) {
+                default_deals = new ArrayList<BrokerDeals>();
+            } else {
+                default_deals.clear();
+            }
+            Realm myRealm = General.realmconfig(this);
+
+            try {
+
+
+                // listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
+                Log.i(TAG, "until defaultDeals called 2");
+                // listViewDeals.setAdapter(listAdapter);
+                Log.i(TAG, "until defaultDeals called 3");
+                RealmResults<DefaultDeals> results1 =
+                        myRealm.where(DefaultDeals.class).findAll();
+
+                Log.i(TAG, "until defaultDeals called 4 " + results1);
+
+                for (DefaultDeals c : results1) {
+                    Log.i(TAG, "until defaultDeals ro 1 " + c.getSpec_code());
+                    Log.i(TAG, "until defaultDeals ro 2 " + c.getOk_id());
+                    Log.i(TAG, "until defaultDeals ro 3 " + c.getLocality());
+
+                    if (searchQuery != null) {
+                        String searchString = "";
+                        if (c.getSpec_code() != "") {
+                            searchString = searchString + " " + c.getSpec_code();
+                        }
+                        if (c.getLocality() != "") {
+                            searchString = searchString + " " + c.getLocality();
+                        }
+
+                        if (searchString.toLowerCase().contains(searchQuery.toLowerCase())) {
+                            BrokerDeals dealsa = new BrokerDeals(General.getSharedPreferences(this, AppConstants.NAME), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOk_id(), true);
+
+                            if (c.getSpec_code().contains(TT + "-")) {
+
+                                Log.i(TAG, "default deals are" + default_deals);
+                                default_deals.add(dealsa);
+
+                            }
+/*
+                            if(cachedDealsLL == null){
+                            cachedDealsLL = new ArrayList<BrokerDeals>();
+                        }
+                        if(cachedDealsOR == null){
+                            cachedDealsOR = new ArrayList<BrokerDeals>();
+                        }
+
+                        if(c.getSpec_code().toLowerCase().contains("LL-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-LL".toLowerCase())){
+
+                            cachedDealsLL.add(dealsa);
+                        }
+                        else if(c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-OR".toLowerCase())){
+                            cachedDealsOR.add(dealsa);
+                        }*/
+
+                        }
+
+
+                    } else if (searchQuery == null) {
+
+                        Log.i(TAG, "locality is the r " + c.getLocality());
+
+                        BrokerDeals dealsa = new BrokerDeals(General.getSharedPreferences(this, AppConstants.NAME), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOk_id(), true);
+
+                        if (c.getSpec_code().contains(TT + "-")) {
+
+                            Log.i(TAG, "default deals are" + default_deals);
+                            default_deals.add(dealsa);
+
+                        }
+
+                    }
+
+                }
+
+
+
+
+            /////////
+
+
+
+
+
+
+
+//////////////////////////////////////////////////
+
+        /*   Log.i("TRACE", "refreshdrooms is not set " + RefreshDrooms);
             deals = General.getDefaultDeals(this);
             Log.d("CHATTRACE", "deals from shared" + deals);
 
@@ -1108,6 +1205,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             }
 
 
+            */
+
+
             loadCachedDeals();
             if(default_deals != null){
                 if(default_deals_copy == null)
@@ -1160,6 +1260,13 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 });
 
 
+            }
+
+            } catch (Exception e) {
+                Log.i(TAG, "Caught in the exception reading defaultdeals from realm " + e);
+            } finally {
+
+                Log.i(TAG, "finally loaddefaultDeals ");
             }
 
 //    loadBrokerDeals();
@@ -1321,7 +1428,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
 
 
-    private  void loadDefaultDealsfromRealm() {
+    private  void loadDefaultDeals() {
        Log.i(TAG,"load default deals called ");
 
         if (defaultOkIds != null)
@@ -1463,7 +1570,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
     }
 
 
-    private void loadDefaultDeals(){
+    private void loadDefaultDeals1(){
 
         Log.i("TRACE", "refreshdrooms is not set "+RefreshDrooms);
 
@@ -1925,6 +2032,7 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
 
             }
         }
+
         Log.i(TAG,"after deal "+deals1);
 
         Gson g = new Gson();
@@ -1932,6 +2040,23 @@ if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIg
         General.saveDefaultDeals(this, hashMapString);
 
 
+
+
+
+        try {
+            for (String okId : matchedOkIds) {
+            Realm myRealm = General.realmconfig(this);
+            RealmResults<DefaultDeals> result = myRealm.where(DefaultDeals.class).equalTo(AppConstants.OK_ID, okId).findAll();
+
+
+
+            result.clear();
+            RefreshDrooms = true;
+            myRealm.commitTransaction();
+        }
+        } catch (Exception e) {
+            Log.i(TAG, "caught in exception deleting default droom");
+        }
 
     }
 
