@@ -153,7 +153,7 @@
     <string name="sign_up_login">Sign Up/Login</string>
     <string name="name">Name</string>
     <string name="email">Email</string>
-    <string name="client_sign_up_content"><![CDATA[(Check locality rates,Check Building rates,\nReponse < 5 min from 50 Brokers,\nschedule site visit and close faster)]]></string>
+    <string name="client_sign_up_content"><![CDATA[(Check locality rates,Check Building rates,\nResponse < 5 min from 50 Brokers,\nschedule site visit and close faster)]]></string>
     <string name="client_sign_up_heading">You are registering as a Customer</string>
     <string name="broker_sign_up_heading">You are registering as a Broker</string>
     <string name="broker_sign_up_content">(Get free leads,do site visits,chat with customer,\nsave time with automatic listing\nand close faster)</string>

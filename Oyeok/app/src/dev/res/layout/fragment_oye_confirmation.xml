@@ -148,7 +148,7 @@
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:id="@+id/addContact"
-        android:background="@drawable/addcontact"
+        android:background="@drawable/add_contact_button_border"
          />
 
             <ImageView
