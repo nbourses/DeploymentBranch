@@ -10,6 +10,7 @@ public class DefaultDeals extends RealmObject {
     @PrimaryKey
     private String ok_id;
     private String spec_code;
+    private String locality;
     public DefaultDeals() { }
 
     public String getOk_id() {
@@ -26,5 +27,13 @@ public class DefaultDeals extends RealmObject {
 
     public void setSpec_code(String spec_code) {
         this.spec_code = spec_code;
+    }
+
+    public String getLocality() {
+        return locality;
+    }
+
+    public void setLocality(String locality) {
+        this.locality = locality;
     }
 }

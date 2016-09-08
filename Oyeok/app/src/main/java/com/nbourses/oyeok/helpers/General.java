@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -633,8 +634,12 @@ while(slowInternetFlag) {
                             DefaultDeals defaultDeals = new DefaultDeals();
                             defaultDeals.setOk_id(General.getSharedPreferences(context, "OK_ID"));
                             defaultDeals.setSpec_code(speccode);
+                            Log.i("locality is thee ","locality is thee " +SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY));
+                            defaultDeals.setLocality(SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY));
                             myRealm.beginTransaction();
                             DefaultDeals defaultDeals1 = myRealm.copyToRealmOrUpdate(defaultDeals);
+                            Log.i("locality is thee ","locality is thee w " +defaultDeals1.getLocality());
+
                             myRealm.commitTransaction();
                         }
                         catch(Exception e){}
@@ -647,6 +652,7 @@ while(slowInternetFlag) {
                                 // Log.i(TAG,"insiderro2 ");
                                 Log.i(TAG, "insiderrou3 " + r.getOk_id());
                                 Log.i(TAG, "insiderrou4 " + r.getSpec_code());
+                                Log.i(TAG, "insiderrou5 " + r.getLocality());
                             }
 
                         }
@@ -792,7 +798,7 @@ while(slowInternetFlag) {
 
     }
 
-    public static PopupWindow showOptions(final Context mcon, final Bitmap b){
+    public static PopupWindow showOptions(final Context mcon, final Bitmap b, final String desc, final String heading){
         Log.i(TAG,"porter 13 "+b);
         Log.i(TAG,"porter 14 "+mcon);
         try{
@@ -807,7 +813,9 @@ while(slowInternetFlag) {
 
            // CustomPhasedSeekBar mPhasedSeekBar = (CustomPhasedSeekBar) layout.findViewById(R.id.phasedSeekBar1);
             Button button =(Button) layout.findViewById(R.id.button);
-
+            TextView description =(TextView) layout.findViewById(R.id.desc);
+            button.setText(heading);
+            description.setText(desc);
             img = (ImageView) layout.findViewById(R.id.imageView6);
             img.setImageBitmap(b);
            /* try {
@@ -883,9 +891,13 @@ while(slowInternetFlag) {
             });
 
             General.setSharedPreferences(mcon,AppConstants.PROMO_IMAGE_URL,"");
+            AppConstants.cardNotif = true;
+            AppConstants.optionspu = optionspu;
             return optionspu;
+
         }
         catch (Exception e){e.printStackTrace();
+            AppConstants.cardNotif = false;
             Log.i(TAG,"popup window shown 4 "+e);
             return null;}
 
@@ -902,6 +914,7 @@ while(slowInternetFlag) {
             optionspu1.setTouchable(true);
             optionspu1.setOutsideTouchable(false);
             optionspu1.showAtLocation(layout, Gravity.CENTER, 0, 0);
+            AppConstants.optionspu1 = optionspu1;
             return optionspu1;
         }
         catch (Exception e){e.printStackTrace();

@@ -194,9 +194,12 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     private Bitmap inputBMP = null, bmp, bmp1;
     private ImageView mImage;
     private DashboardClientFragment dashboardClientFragment;
+    /*private PopupWindow optionspu;
+    private PopupWindow optionspu1;*/
     // screen shot
 
-
+private String description;
+    private String heading;
 
 private Boolean cardFlag = false;
     private WebView webView;
@@ -809,6 +812,9 @@ public void signUp(){
         try {
             if (bundle != null) {
                 if (bundle.containsKey("bicon")) {
+                    description = bundle.getString("desc");
+                    heading = bundle.getString("title");
+
                     Log.i("TRACE", " toto "+bundle.getString("bicon"));
                     Log.i("TRACE", " toto 1 "+bundle.getString("bicon"));
                     new DownloadImageTask().execute(bundle.getString("bicon"));
@@ -847,7 +853,7 @@ public void signUp(){
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        General.showOptions(ClientMainActivity.this,result);
+                        General.showOptions(ClientMainActivity.this,result,description, heading);
                         // General.setSharedPreferences(ClientMainActivity.this,AppConstants.PROMO_IMAGE_URL,"");
 
                     }
@@ -1223,7 +1229,13 @@ public void signUp(){
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
-        if(buidingInfoFlag==true)
+        if(AppConstants.cardNotif){
+            AppConstants.cardNotif = false;
+            AppConstants.optionspu1.dismiss();
+            AppConstants.optionspu.dismiss();
+        }
+
+        else if(buidingInfoFlag==true)
         {
             Intent in = new Intent(AppConstants.MARKERSELECTED);
             in.putExtra("markerClicked", "false");

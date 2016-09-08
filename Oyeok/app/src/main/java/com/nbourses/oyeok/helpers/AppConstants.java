@@ -12,6 +12,7 @@ import com.nbourses.oyeok.models.PublishLetsOye;
  * Created by rohit on 09/02/16.
  */
 public class AppConstants {
+    public static boolean cardNotif = false;
     public static  int minRent = 35000;
     public static  int maxRent = 60000;
 
