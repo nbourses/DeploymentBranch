@@ -333,12 +333,10 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private void init() {
 
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Dealing Room");
 
 
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
         //if there is no SD card, create new directory objects to make directory on device
         if (Environment.getExternalStorageState() == null) {
@@ -435,6 +433,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     String uuid = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
                     Log.i("MY CHANNEL ","=== ====== ====== ===== ====== "+uuid);
                     loadHistoryFromPubnub(uuid);
+                    setSupportActionBar(mToolbar);
+                    getSupportActionBar().setTitle("OyeOk Assistant");
 
                     if(firstMessage)
                     {
@@ -443,14 +443,20 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
                         jsonMsg.put("_from", uuid);
                         jsonMsg.put("message", "Looking for CRM");
-                        jsonMsg.put("to", uuid);
+                        jsonMsg.put("to", "my_channel");
                         jsonMsg.put("status","");
-                        displayMessage(jsonMsg);
+                        sendNotification(jsonMsg);
 
 
                     }
 //                    pubnubWhereNow(uuid);
                 }
+                else{
+                    setSupportActionBar(mToolbar);
+                    getSupportActionBar().setTitle("Dealing Room");
+                }
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
                 if(bundle.containsKey(AppConstants.OYE_ID)){
                     Log.i(TAG,"perser 1 ");
@@ -2322,6 +2328,7 @@ Log.i(TAG,"back clicked");
 
                         JSONObject ne = new JSONObject(k.toString());
                         Log.i("getStatus","getDealStatus success ne "+ne);
+                        Log.i("getStatus","getDealStatus success ne 1 "+ne.getJSONObject("responseData").getString("hdroom_status"));
 
                         if(ne.getString("success").equalsIgnoreCase("true")){
 

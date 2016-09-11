@@ -44,6 +44,8 @@ public class BrokerDeals {
     @SerializedName("locality")
     private String locality;
 
+
+
     public BrokerDeals(String name,String ok_id, String specs,String locality,String oyeId, Boolean default_deal)
     { // Constructor for default deal
         //this.okId = "default_id";
@@ -131,4 +133,6 @@ public class BrokerDeals {
     public void setLocality(String locality) {
         this.locality = locality;
     }
+
+
 }

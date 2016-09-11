@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="75dp"
     android:orientation="horizontal"
     android:id="@+id/dealItemRoot">
 
@@ -32,7 +32,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Problems? Get Support"
+        android:text="OyeOk Assistant"
         android:textStyle="normal|italic"
         android:textSize="16sp"
         android:id="@+id/txtTitle"
@@ -51,7 +51,7 @@
         android:layout_marginLeft="12dp"
         android:layout_gravity="center_vertical"
         android:layout_marginRight="8dp"
-        android:text="You can now get personalized help on almost anything."/>
+        android:text="OyeOk Assistant your personal advisor."/>
 
     <LinearLayout
         android:layout_width="wrap_content"

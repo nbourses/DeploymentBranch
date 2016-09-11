@@ -18,7 +18,7 @@
     <string name="shareApp">Share App</string>
     <string name="chat_list">chat_list</string>
     <string name="supportChat">Support Chat</string>
-    <string name="notifications">SupportChat</string>
+    <string name="notifications">OyeOK Assistant</string>
     <string name="likeOnFb">Like us on Facebook</string>
     <string name="aboutUs">About us</string>
     <string name="settings">Settings</string>
@@ -153,11 +153,11 @@
     <string name="sign_up_login">Sign Up/Login</string>
     <string name="name">Name</string>
     <string name="email">Email</string>
-    <string name="client_sign_up_content"><![CDATA[(Check locality rates,Check Building rates,\nReponse < 5 min from 50 Brokers,\nschedule site visit and close faster)]]></string>
-    <string name="client_sign_up_heading">You are registering as a Customer</string>
+    <string name="client_sign_up_content"><![CDATA[(Check locality rates,Check Building rates,\nResponse < 5 min from 50 Brokers,\nschedule site visit and close faster)]]></string>
+    <string name="client_sign_up_heading">You are registering as a Client</string>
     <string name="broker_sign_up_heading">You are registering as a Broker</string>
     <string name="broker_sign_up_content">(Get free leads,do site visits,chat with customer,\nsave time with automatic listing\nand close faster)</string>
-    <string name="client_log_in_heading">You are Logging in as a Customer</string>
+    <string name="client_log_in_heading">You are Logging in as a Client</string>
     <string name="broker_log_in_heading">You are Logging in as a Broker</string>
     <string name="facebook_app_id">273470946346289</string>
 </resources>
