@@ -150,13 +150,24 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_gravity="center">
-                <com.zcw.togglebutton.ToggleButton
+               <!-- <com.zcw.togglebutton.ToggleButton
                     android:id="@+id/toggleBtn"
                     android:layout_width="54dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     toggle:tbAsDefaultOn="false"
-                    toggle:tbAnimate="true" />
+                    toggle:tbAnimate="true" />-->
+                <com.zcw.togglebutton.ToggleButton
+                    android:layout_gravity="center"
+                    android:id="@+id/toggleBtn"
+                    android:layout_width="54dp"
+                    android:layout_height="27dp"
+                    toggle:tbBorderWidth="1dp"
+                    toggle:tbOffBorderColor="#2dc4b6"
+                    toggle:tbOffColor="#2dc4b6"
+                    toggle:tbOnColor="#2dc4b6"
+                    toggle:tbSpotColor="#fff">
+                </com.zcw.togglebutton.ToggleButton>
 
             </LinearLayout>
 

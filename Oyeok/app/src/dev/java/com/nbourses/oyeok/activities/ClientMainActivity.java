@@ -888,6 +888,18 @@ public void signUp(){
 //        getSupportActionBar().setTitle(title);
     }
 
+    private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
+
     public void onClickButton(Bundle args) {
         if (!isShowing) {
 
@@ -1039,7 +1051,8 @@ public void signUp(){
             // signUpFragment.getView().bringToFront();
             Bundle bundle = new Bundle();
             bundle.putString("lastFragment", "clientDrawer");
-            loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
+            loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup, "");
+            AppConstants.SIGNUP_FLAG = true;
 
 
 
@@ -1283,9 +1296,11 @@ public void signUp(){
             finish();*/
 
             if(AppConstants.REGISTERING_FLAG){}else{
-            getSupportFragmentManager().popBackStack();
+            //getSupportFragmentManager().popBackStack();
+                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
 
-            AppConstants.SIGNUP_FLAG=false;
+
+                AppConstants.SIGNUP_FLAG=false;
             backpress = 0;}
             Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff");
 
