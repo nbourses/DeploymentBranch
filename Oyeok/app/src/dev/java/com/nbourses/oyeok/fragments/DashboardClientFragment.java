@@ -2073,7 +2073,7 @@ catch(Exception e){
                                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
                                 search_building_icon.setVisibility(View.GONE);
                                 StartOyeButtonAnimation();
-
+                                try {
                                 for (int i = 0; i < 5; i++) {
                                     config[i] = getPrice.getResponseData().getBuildings().get(i).getConfig();
                                     Log.i("TRACE", "RESPONSEDATAr" + name);
@@ -2096,9 +2096,18 @@ catch(Exception e){
                                     mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc).title(name[i]).snippet(customSnippet).icon(icon1).flat(true));
                                     Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
                                     flag[i] = false;
-                                }
 
-                                mVisits.setEnabled(true);
+                                }
+                                SnackbarManager.show(
+                                        Snackbar.with(getActivity())
+                                                .text("Displaying 5 buildings out of 12,000.")
+                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+                            }catch(Exception e){
+
+                            }
+
+                            mVisits.setEnabled(true);
                                 txtFilterValue.setEnabled(true);
                                 horizontalPicker.setVisibility(View.VISIBLE);
                                 tv_building.setVisibility(View.VISIBLE);
@@ -3176,10 +3185,10 @@ public void oyebuttonBackgrountColorOrange(){
     private void  buildingTextChange(String locality,int area){
         if(isNetworkAvailable()) {
             Log.i(TAG,"buildingTextChange if called");
-            tv_building.setText("Average Rate @ " + locality + " | Area " + area + "sqft.");
+            tv_building.setText(Html.fromHtml("<font color='#2dc4b6'>Avg Rate</font> @ " + locality + " | Area " + area + "sqft."));
         }else{
             Log.i(TAG,"buildingTextChange else called");
-            tv_building.setText("Average Rate @ Andheri | Area " + area + "sqft.");
+            tv_building.setText(Html.fromHtml("<font color='#2dc4b6'>Avg Rate</font> @ Andheri | Area " + area + "sqft."));
 
 //            llMin = 35;
 //            llMax = 60;

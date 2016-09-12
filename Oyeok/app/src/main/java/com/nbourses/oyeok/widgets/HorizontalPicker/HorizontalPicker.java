@@ -158,6 +158,7 @@ public class HorizontalPicker extends View {
     private Integer interval = 500;
     private Integer minValue = 0;
     private Integer maxValue = 0;
+    private Integer avg = 0;
     private String rupeeUnit = "";
 
 
@@ -1229,17 +1230,24 @@ public class HorizontalPicker extends View {
     public void setInterval(int min, int max, int nIntervals, String rupeeUnit){
         minValue = min;
         maxValue = max;
-       // interval = Integer.valueOf((max - min)/nIntervals);
-        int interval = 500;
-       // setRupeeUnit(rupeeUnit);
-        /*Log.d(TAG, "minValue " + minValue);
-        Log.d(TAG, "maxValue "+maxValue);
-        Log.d(TAG, "interval "+interval);
-        Log.d(TAG, "rupeeUnit "+rupeeUnit);*/
+
+        ArrayList<CharSequence> valueList = new ArrayList<CharSequence>();
+        if (minValue != 0 && maxValue != 0 ) {
+            avg = (maxValue + minValue)/2;
+            //CharSequence object;
+            valueList.add(minValue.toString());
+            valueList.add(avg.toString());
+            valueList.add(maxValue.toString());
+            setValues(valueList);
+            setSelectedItem(1);
+        }
+        /*int interval = 500;
+
+
         nIntervals = 0;
         Log.i("TRACE", "min"+minValue);
         Log.i("TRACE", "max"+maxValue);
-       if (minValue != 0 && maxValue != 0 /*&& interval != 0 */) {
+       if (minValue != 0 && maxValue != 0 ) {
             ArrayList<CharSequence> valueList = new ArrayList<CharSequence>();
             int value = minValue;
             CharSequence object;
@@ -1248,33 +1256,24 @@ public class HorizontalPicker extends View {
                 value += interval;
                 Log.i("TRACE", "Value"+value);
                 object = value + "";
-               // Log.i("TRACE", "object"+object);
+
                 if (value <= maxValue) {
                     valueList.add(object);
-                    //rem
-                   // mValues.add(object);
+
                 }
                 else
                     break;
             }
            Log.i("TRACE","nintervals"+nIntervals);
-      /*  ArrayList<CharSequence> valueList = new ArrayList<CharSequence>();
-         for(int i= minValue;i <= maxValue; i=i+500){
-             int value = i;
-             CharSequence object;
-             object = value + "";
-             valueList.add(object);
 
-         } */
            Log.i("TRACE", "valueList"+valueList);
 
 
             setValues(valueList);
-            /*Log.d(TAG, "index " + ((int) (nIntervals / 2)));
-            Log.d(TAG, "valueList index " + valueList.get((int) (nIntervals / 2)));*/
+
             setSelectedItem(((int) (nIntervals / 2)));
            Log.i("TRACE", "nintervals center" + nIntervals/2);
-        }
+        }*/
     }
     public Integer getInterval(){
         return interval;
