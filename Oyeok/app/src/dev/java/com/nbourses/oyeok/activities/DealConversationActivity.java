@@ -300,7 +300,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     @Override
     protected void onResume() {
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(chatMessageReceived, new IntentFilter(AppConstants.CHAT_MESSAGE_RECIEVED));
+//        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(chatMessageReceived, new IntentFilter(AppConstants.CHAT_MESSAGE_RECIEVED));
 
         super.onResume();
 
@@ -310,9 +310,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         if(!channel_name.equals("my_channel"))
         {
+            Log.i("------ ","======= SET UP PUBNUB "+channel_name);
             setupPubnub(channel_name);
         }  // DEals OK ID
         else {
+
+            Log.i("------ ","======= SET UP PUBNUB UUID");
             setupPubnub(UUID);
         }
 
@@ -322,7 +325,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
-        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(chatMessageReceived);
+//        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(chatMessageReceived);
         General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,null);
 
         super.onPause();
@@ -374,6 +377,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         Log.i(TAG, "role of user def yoman " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
         //listings = new HashMap<String, Float>();
 
+
+        imgSendMsg.setImageResource(R.drawable.attachment);
+        imgSendMsg.setTag("attachment");
 
         edtTypeMsg.addTextChangedListener(edtTypeMsgListener);
         chatMessages = new ArrayList<>();
@@ -446,7 +452,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         jsonMsg.put("to", uuid);
                         jsonMsg.put("status","");
                         displayMessage(jsonMsg);
-
 
                     }
 //                    pubnubWhereNow(uuid);
@@ -591,7 +596,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     @OnClick(R.id.imgSendMsg)
     public void onSendMsgClick(View v) {
         String currentImg = (String) v.getTag();
+        Log.i(TAG,"imageshare yo 3"+v.getTag());
         Log.i(TAG,"imageshare yo 3"+currentImg);
+        if(currentImg != null)
         if (currentImg != "") {
             if (currentImg.equals("attachment")) {
                 Log.i(TAG,"imageshare yo 1");
@@ -606,7 +613,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 messageTyped = edtTypeMsg.getText().toString();
 
                 //send message
-
 
                 Log.i("CHANNEL NAME"," "+channel_name);
                 final ChatMessage message = new ChatMessage();
@@ -658,11 +664,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private void setupPubnub(String channel_name) {
 
-        chatMessages.clear();
-        listAdapter.notifyDataSetChanged();
+//        chatMessages.clear();
+//        listAdapter.notifyDataSetChanged();
         Log.i("WHERENOW", "3 ");
 
         try {
+
+
             Log.i("WHERENOW", "4 ");
 
             //pubnub = new Pubnub(AppConstants.PUBNUB_PUBLISH_KEY, AppConstants.PUBNUB_SUBSCRIBE_KEY);
@@ -673,6 +681,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             if(!channel_name.equals("my_channel")) {
 
                 if( okyed){
+
+                    Log.i("SETUPPUBNUB","OKYED =============");
                     okyed = false;
 
                     displayCardView();
@@ -680,18 +690,24 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     chatMessages.clear();
 
                 }
-                else if(oyed) {
+                else if(oyed) {Log.i("SETUPPUBNUB","OYED =============");
                     oyed = false;
                     displayDefaultMessage();
 
                     chatMessages.clear();
                 }
                 else {
+                    Log.i("SETUPPUBNUB"," ================ "+channel_name);
                     displayMessage();
                     loadHistoryFromPubnub(channel_name);
                 }
 
 
+            }
+            else {
+                Log.i("SETUPPUBNUB","MY_CHANNEL ================");
+                displayMessage();
+                loadHistoryFromPubnub(channel_name);
             }
 
 //            if(!channel_name.equals("my_channel"))
@@ -744,7 +760,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     }
 
     private void selectImage() {
-        final CharSequence[] items = {/* "Take Photo",*/ "Choose from Library", "Cancel" };
+        final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(DealConversationActivity.this);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -767,17 +783,26 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                     Log.d(TAG, "lolwa imagewa 2 ");
                 } else if (items[item].equals("Cancel")) {
+
+                    Log.i("Cancel","======================= ");
                     dialog.dismiss();
                 }
+                else
+                {
+                    Log.i("Cancel"," 2222 222====================== ");
+                    dialog.dismiss();
+                }
+
             }
         });
+
         builder.show();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "lolwa imagewa 3 ");
+        Log.d(TAG, "lolwa imagewa 3 "+data);
 
         if (requestCode == SELECT_FILE && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
@@ -790,6 +815,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             setFileToUpload(saveBitmapToFile(fileToUpload));
 
             try {
+
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 Log.i(TAG, "lolwa imagewa "+String.valueOf(bitmap));
 
@@ -853,6 +879,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100 , outputStream);
 
+
+            Log.i("JPEG IMAGE","===================");
             return file;
         } catch (Exception e) {
             return null;
@@ -893,10 +921,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
         String userID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
 
-        if(General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals(""))
+        if(General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("yes"))
         {
-            userID = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
+            userID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
         }
+        else
+            userID = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
 
 
         try {
@@ -917,7 +947,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             /*else if(jsonMsg.getString("message").contains("https://"))
                 msgStatus = "IMG";*/
             else
-                msgStatus = "undefined";
+                msgStatus = null;
 
 
             if (jsonMsg.has("message") && FROM != null && jsonMsg.has("to")) {
@@ -967,7 +997,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 if(msgStatus == null)
                 {
-                    Log.i("TAG","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
+                    Log.i("MSGSTATUS","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%% "+userID);
                     if(userID.equalsIgnoreCase(FROM) || demoId.equalsIgnoreCase(FROM))
                     {
                         userType = ChatMessageUserType.SELF;
@@ -980,7 +1010,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 }
 
                 Log.i("TAG","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%   "+msgStatus);
-                Log.i(TAG, "calipso yo" + userSubtype);
+                Log.i(TAG, "calipso yo" + roleOfUser);
                 Log.i(TAG, "calipso yo" + userType);
                 Log.i(TAG,"calipso yo message "+body);
 
@@ -1052,6 +1082,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         String channelName;  // local
 
+        Log.i("TAG","INSIDE DISPLAYMESSAGE =========================");
+
         if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME))
         {
             // Replace my_channel with demo_id
@@ -1096,8 +1128,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         userSubtype = ChatMessageUserSubtype.OTHER;
                     }
 
-
-
                 }
                 else if ("LISTING".equalsIgnoreCase(c.getStatus())) {
                     Log.i("CONVER", "LISTING set");
@@ -1134,6 +1164,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         }catch(Exception e){
             Log.i(TAG,"Caught in the exception reading cache from realm "+e);
         }
+
         finally {
             myRealm.commitTransaction();
             Log.i(TAG,"until fitra 4 "+myRealm.isInTransaction());
@@ -1486,6 +1517,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         else {
             showSuggestionBox();
         }
+
+
 
         //hide keyboard if opened and edit message focus
         View view = this.getCurrentFocus();
@@ -2236,13 +2269,13 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
     public void onBackPressed() {
         General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,null);
 
-Log.i(TAG,"back clicked");
+    Log.i(TAG,"back clicked");
+
         if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME))
             channel_name = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
 
 
         storeDealTime();
-
 
         loadFinalHistory();
 
@@ -2258,7 +2291,6 @@ Log.i(TAG,"back clicked");
 
         if(AppConstants.CLIENT_DEAL_FLAG == true){
             Log.i(TAG,"dealconv 1");
-
 
 
             Intent back = new Intent(this, ClientDealsListActivity.class); // to refresh adapter to display newly saved last message time
@@ -2383,10 +2415,10 @@ Log.i(TAG,"back clicked");
             Log.i(TAG,"getDealStatus ");
             String demo_channel = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
 
-            if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCase(demo_channel))
+//            if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCase(demo_channel))
                 getDealStatus(this,channel_name);
-            else
-                sendMessage(messageTyped);
+//            else
+//                sendMessage(messageTyped);
         }
     }
 
@@ -2397,6 +2429,8 @@ Log.i(TAG,"back clicked");
 
         if(requestCode==REQUEST_EXTERNAL_STORAGE){
             if(permissions.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+
+                Log.i("==== ","SELECT IMAGE ==============");
                 selectImage();
             }
             else{
