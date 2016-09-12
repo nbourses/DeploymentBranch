@@ -685,7 +685,6 @@
             android:layout_width="match_parent"
             android:id="@+id/property_type"
             android:gravity="bottom"
-            android:layout_above="@+id/top"
             android:layout_marginBottom="75dp"
             android:foregroundGravity="bottom"
             android:layout_alignParentBottom="true"
@@ -838,6 +837,8 @@
                 android:id="@+id/phasedSeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
+
+
 
 
         </LinearLayout>

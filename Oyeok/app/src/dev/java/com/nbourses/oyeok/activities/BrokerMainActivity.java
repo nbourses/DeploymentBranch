@@ -99,7 +99,8 @@ GoogleMap map;
     private Boolean webviewFlag = false;
     private Boolean signupSuccessflag = false;
 
-
+    private String description;
+    private String heading;
 
 
 
@@ -468,6 +469,8 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         try {
             if (bundle != null) {
                 if (bundle.containsKey("bicon")) {
+                    description = bundle.getString("desc");
+                    heading = bundle.getString("title");
                     Log.i("TRACE", " toto "+bundle.getString("bicon"));
                     Log.i("TRACE", " toto 1 "+bundle.getString("bicon"));
                     new DownloadImageTask().execute(bundle.getString("bicon"));
@@ -507,7 +510,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        General.showOptions(BrokerMainActivity.this,result);
+                        General.showOptions(BrokerMainActivity.this,result, description, heading);
                         // General.setSharedPreferences(ClientMainActivity.this,AppConstants.PROMO_IMAGE_URL,"");
 
                     }
@@ -716,8 +719,12 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
         Log.i("ONBACKPRESSED","broker main activity "+setting);
 
-
-        if(AppConstants.SIGNUP_FLAG){
+        if(AppConstants.cardNotif){
+            AppConstants.cardNotif = false;
+            AppConstants.optionspu1.dismiss();
+            AppConstants.optionspu.dismiss();
+        }
+        else if(AppConstants.SIGNUP_FLAG){
            if(AppConstants.REGISTERING_FLAG){}else{
                 getSupportFragmentManager().popBackStackImmediate();
 

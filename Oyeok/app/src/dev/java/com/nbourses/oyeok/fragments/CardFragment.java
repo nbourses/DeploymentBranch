@@ -37,6 +37,7 @@ import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.sdsmdg.tastytoast.TastyToast;
+import com.zcw.togglebutton.ToggleButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,8 +62,8 @@ public class CardFragment  extends Fragment{
     private CustomPhasedSeekBar mPhasedSeekBar;
     private FrameLayout cardFrame;
     private TextView locality;
-    private CheckBox rental;
-    private CheckBox buysell;
+    private TextView rental;
+    private TextView buysell;
     private CheckBox tenant;
     private CheckBox owner;
     private CheckBox buyer;
@@ -81,15 +82,19 @@ public class CardFragment  extends Fragment{
     private LinearLayout localityLayout;
     private LinearLayout rentalPanel;
     private LinearLayout resalePanel;
+    ToggleButton toggleBtn;
+    private Boolean rent = true;
+    private String loc;
 
     private BroadcastReceiver localityBroadcast = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getExtras().getString("locality") != null) {
-                String loc = intent.getExtras().getString("locality");
+                loc = intent.getExtras().getString("locality");
                 Log.i("localityBroadcast", "localityBroadcast1 ");
                 Log.i("localityBroadcast", "localityBroadcast " + locality);
-                locality.setText(loc);
+                setLocality();
+
             }
         }
     };
@@ -106,15 +111,15 @@ public class CardFragment  extends Fragment{
        /* mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar1);*/
         cardFrame = (FrameLayout) rootView.findViewById(R.id.cardMapFrame);
         locality = (TextView) rootView.findViewById(R.id.locality);
-        rental = (CheckBox) rootView.findViewById(R.id.rental);
-        buysell = (CheckBox) rootView.findViewById(R.id.buySell);
+        rental = (TextView) rootView.findViewById(R.id.rental);
+        buysell = (TextView) rootView.findViewById(R.id.buySell);
         tenant = (CheckBox) rootView.findViewById(R.id.tenant);
         owner = (CheckBox) rootView.findViewById(R.id.owner);
         buyer = (CheckBox) rootView.findViewById(R.id.buyer);
         seller = (CheckBox) rootView.findViewById(R.id.seller);
 
-        sh = (LinearLayout) rootView.findViewById(R.id.sh);
-        sh2 = (LinearLayout) rootView.findViewById(R.id.sh2);
+       //* sh = (LinearLayout) rootView.findViewById(R.id.sh);
+        //*  sh2 = (LinearLayout) rootView.findViewById(R.id.sh2);
         hid = (LinearLayout) rootView.findViewById(R.id.hid);
         hid2 = (LinearLayout) rootView.findViewById(R.id.hid2);
         seekbar_linearlayout1 = (LinearLayout) rootView.findViewById(R.id.seekbar_linearlayout1);
@@ -122,6 +127,7 @@ public class CardFragment  extends Fragment{
         localityLayout = (LinearLayout) rootView.findViewById(R.id.localityLayout);
         rentalPanel = (LinearLayout) rootView.findViewById(R.id.rentalPanel);
         resalePanel = (LinearLayout) rootView.findViewById(R.id.resalePanel);
+        toggleBtn = (ToggleButton) rootView.findViewById(R.id.toggleBtn);
         // Do something else
         init();
         return rootView;
@@ -145,6 +151,8 @@ public class CardFragment  extends Fragment{
     }
 
     private void init() {
+        buysell.setTextColor(Color.parseColor("#a8a8a8"));
+
         animFadein = AnimationUtils.loadAnimation(getContext(),
                 R.anim.rotate);
         bounce = AnimationUtils.loadAnimation(getContext(),
@@ -152,13 +160,49 @@ public class CardFragment  extends Fragment{
         //cardMaps.startAnimation(animFadein);
         locality.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
         DBHelper dbHelper = new DBHelper(getContext());
+
+       // toggleBtn.toggle();
+        toggleBtn.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
+            @Override
+            public void onToggle(boolean on) {
+                Log.i("TAG","on is the "+on);
+                if(on){
+                    //resale
+                    rent = false;
+                    owner.setChecked(false);
+                    tenant.setChecked(false);
+                    buysell.setTextColor(getResources().getColor(R.color.greenish_blue));
+                    rental.setTextColor(Color.parseColor("#a8a8a8"));
+                    rentalPanel.clearAnimation();
+                    resalePanel.clearAnimation();
+                    rentalPanel.setVisibility(View.GONE);
+                    resalePanel.setVisibility(View.VISIBLE);
+                    resalePanel.startAnimation(bounce);
+                }
+                else{
+                    rent = true;
+                    buyer.setChecked(false);
+                    seller.setChecked(false);
+                    rental.setTextColor(getResources().getColor(R.color.greenish_blue));
+                    buysell.setTextColor(Color.parseColor("#a8a8a8"));
+                    rentalPanel.clearAnimation();
+                    resalePanel.clearAnimation();
+                    resalePanel.setVisibility(View.GONE);
+                    rentalPanel.setVisibility(View.VISIBLE);
+                    rentalPanel.startAnimation(bounce);
+                }
+            }
+        });
+
+
        /* if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getContext().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), getContext().getResources().getString(R.string.Resale)}));
         else
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getContext().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
         mPhasedSeekBar.setListener(this);*/
+/*
 
-        rental.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+       rental.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                                               @Override
                                               public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
@@ -169,16 +213,19 @@ public class CardFragment  extends Fragment{
                                                       rentalPanel.setVisibility(View.VISIBLE);
                                                       rentalPanel.startAnimation(bounce);
 
-                                                      /*localityLayout.clearAnimation();
+                                                      */
+/*localityLayout.clearAnimation();
                                                       localityLayout.setVisibility(View.GONE);
 
                                                       hid2.clearAnimation();
                                                       hid2.setVisibility(View.GONE);
 
                                                       hid.setVisibility(View.VISIBLE);
-                                                      hid.startAnimation(bounce);*/
+                                                      hid.startAnimation(bounce);*//*
 
-                                                      /*seekbar_linearlayout1.removeView(hid);
+
+                                                      */
+/*seekbar_linearlayout1.removeView(hid);
                                                       seekbar_linearlayout1.removeView(hid2);
                                                       sh.removeView(rental);
                                                       sh2.removeView(hid2);
@@ -196,7 +243,8 @@ public class CardFragment  extends Fragment{
                                                               sh.getLayoutParams();
                                                       params.weight = 0.7f;
                                                       sh.setLayoutParams(params1);
-                                                      hid.setVisibility(View.VISIBLE);*/
+                                                      hid.setVisibility(View.VISIBLE);*//*
+
                                                       buysell.setChecked(false);
                                                       buyer.setChecked(false);
                                                       seller.setChecked(false);
@@ -210,6 +258,7 @@ public class CardFragment  extends Fragment{
                                           }
         );
 
+
         buysell.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                                                @Override
@@ -220,15 +269,18 @@ public class CardFragment  extends Fragment{
                                                        rentalPanel.setVisibility(View.GONE);
                                                        resalePanel.setVisibility(View.VISIBLE);
                                                        resalePanel.startAnimation(bounce);
-                                                      /* localityLayout.clearAnimation();
+                                                      */
+/* localityLayout.clearAnimation();
                                                        localityLayout.setVisibility(View.GONE);
                                                        hid.clearAnimation();
                                                        hid.setVisibility(View.GONE);
 
                                                        hid2.setVisibility(View.VISIBLE);
-                                                       hid2.startAnimation(bounce);*/
+                                                       hid2.startAnimation(bounce);*//*
 
-                                                       /*seekbar_linearlayout1.removeView(hid);
+
+                                                       */
+/*seekbar_linearlayout1.removeView(hid);
                                                        seekbar_linearlayout1.removeView(hid2);
 
                                                        sh2.removeView(buysell);
@@ -247,7 +299,8 @@ public class CardFragment  extends Fragment{
                                                        params.weight = 0.7f;
                                                        sh2.setLayoutParams(params);
 
-                                                       hid2.setVisibility(View.VISIBLE);*/
+                                                       hid2.setVisibility(View.VISIBLE);*//*
+
                                                        rental.setChecked(false);
                                                        tenant.setChecked(false);
                                                        owner.setChecked(false);
@@ -261,6 +314,7 @@ public class CardFragment  extends Fragment{
                                                }
                                            }
         );
+*/
 
         tenant.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -269,7 +323,7 @@ public class CardFragment  extends Fragment{
                                                   if(isChecked){
 
                                                       owner.setChecked(false);
-                                                      rental.setChecked(true);
+                                                     //* rental.setChecked(true);
                                                       showLocalityText();
 
                                                   }
@@ -286,7 +340,7 @@ public class CardFragment  extends Fragment{
                                                   if(isChecked){
 
                                                       tenant.setChecked(false);
-                                                      rental.setChecked(true);
+                                                    //*  rental.setChecked(true);
                                                       showLocalityText();
                                                   }
 
@@ -301,7 +355,7 @@ public class CardFragment  extends Fragment{
                                                   if(isChecked){
 
                                                       buyer.setChecked(false);
-                                                      buysell.setChecked(true);
+                                                    //*  buysell.setChecked(true);
                                                       showLocalityText();
 
                                                   }
@@ -316,7 +370,7 @@ public class CardFragment  extends Fragment{
                                                   if(isChecked){
 
                                                       seller.setChecked(false);
-                                                      buysell.setChecked(true);
+                                                   //*   buysell.setChecked(true);
                                                       showLocalityText();
 
                                                   }
@@ -328,22 +382,31 @@ public class CardFragment  extends Fragment{
         cardMaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!(tenant.isChecked() || owner.isChecked() || buyer.isChecked() || seller.isChecked())) {
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Please select transaction subtype.")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
-                //  BrokerMap brokerMap=new BrokerMap();
-                //set arguments
-                BrokerMap brokerMap = new BrokerMap();
+                }else {
+
+                    //  BrokerMap brokerMap=new BrokerMap();
+                    //set arguments
+                    BrokerMap brokerMap = new BrokerMap();
 
 
-                //loadFragment(d,null,R.id.container_Signup,"");
-                brokerMap.setArguments(null);
-                FragmentManager fragmentManager = getChildFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_up);
+                    //loadFragment(d,null,R.id.container_Signup,"");
+                    brokerMap.setArguments(null);
+                    FragmentManager fragmentManager = getChildFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_up);
 
-                fragmentTransaction.addToBackStack("cardMap");
-                fragmentTransaction.replace(R.id.y, brokerMap);
-                fragmentTransaction.commitAllowingStateLoss();
-                localitySet = true;
+                    fragmentTransaction.addToBackStack("cardMap");
+                    fragmentTransaction.replace(R.id.y, brokerMap);
+                    fragmentTransaction.commitAllowingStateLoss();
+                    localitySet = true;
+                }
                 //loadFragment(brokerMap,null,R.id.container_Signup,"");
 
 
@@ -369,7 +432,7 @@ public class CardFragment  extends Fragment{
             @Override
             public void onClick(View v) {
 
-if(!(rental.isChecked() || buysell.isChecked())) {
+/*if(!(rental.isChecked() || buysell.isChecked())) {
     SnackbarManager.show(
             Snackbar.with(getContext())
                     .position(Snackbar.SnackbarPosition.TOP)
@@ -377,7 +440,8 @@ if(!(rental.isChecked() || buysell.isChecked())) {
                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
 }
-               else if(!(tenant.isChecked() || owner.isChecked() || buyer.isChecked() || seller.isChecked())) {
+ */
+                if(!(tenant.isChecked() || owner.isChecked() || buyer.isChecked() || seller.isChecked())) {
                     SnackbarManager.show(
                             Snackbar.with(getContext())
                                     .position(Snackbar.SnackbarPosition.TOP)
@@ -419,9 +483,9 @@ private void showLocalityText(){
 }
     private void autoOk(){
         Log.i("AUTO OK CALLED","autook 1 is "+General.getSharedPreferences(getContext(),AppConstants.MY_LAT)+" "+General.getSharedPreferences(getContext(),AppConstants.MY_LNG)+" "+General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
-        if(rental.isChecked())
+        if(rent)
             tt = "LL";
-        else
+         else
             tt = "OR";
 
         if(tenant.isChecked() || buyer.isChecked())
@@ -521,6 +585,10 @@ if(ne.getString("success").equalsIgnoreCase("true")){
 
 
 
+    }
+    private void setLocality(){
+        locality.setText(loc);
+        General.setSharedPreferences(getContext(), AppConstants.LOCALITY,loc);
     }
 
 

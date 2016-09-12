@@ -220,8 +220,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         b=getArguments();
         redirectToOyeIntentSpecs=false;
         okBroker=false;
-
-
+        //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //listings= (HashMap<String, Float>) b.getSerializable("listings");
         Log.i("signup fragment","building listings are "+listings);
         String[] bNames = new String[3];

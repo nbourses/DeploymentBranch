@@ -119,8 +119,9 @@
         android:textColor="@color/black"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="1dp"
+        android:textStyle="italic"
         android:background="@color/white"
-        android:textSize="12sp" />
+        android:textSize="10sp" />
 
 </LinearLayout>
 

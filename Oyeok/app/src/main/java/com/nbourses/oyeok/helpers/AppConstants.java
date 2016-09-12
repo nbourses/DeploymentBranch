@@ -12,6 +12,7 @@ import com.nbourses.oyeok.models.PublishLetsOye;
  * Created by rohit on 09/02/16.
  */
 public class AppConstants {
+    public static boolean cardNotif = false;
     public static  int minRent = 35000;
     public static  int maxRent = 60000;
 
@@ -147,7 +148,7 @@ public class AppConstants {
     public static  String PROPERTY_CONFIG = "propertyConfig";
     public static  String POSSESSION_DATE = "posseessionDate";
     public  static GoogleMap GOOGLE_MAP;
-
+    public static  String PHASED_SEEKBAR_CLICKED = "clicked";
     public static String NUMBER_OF_BROKER="19";
     public static String CUSTOMER_TYPE="Tenant";
 

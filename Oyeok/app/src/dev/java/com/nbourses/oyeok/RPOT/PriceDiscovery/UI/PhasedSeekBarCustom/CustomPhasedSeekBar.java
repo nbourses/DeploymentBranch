@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -12,6 +13,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyCharacterMap;
@@ -213,9 +215,11 @@ public class CustomPhasedSeekBar extends View {
             mListener.onPositionSelected(currentItem,getCount());
         }
 
+      //
 
-
-
+        Intent in = new Intent(AppConstants.PHASED_SEEKBAR_CLICKED);
+        in.putExtra("phaseseek", "clicked");
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
 
 
         mCurrentItem = currentItem;
@@ -228,13 +232,15 @@ public class CustomPhasedSeekBar extends View {
             TT = AppConstants.RESALE;
         }
 
-        Log.i(TAG, "PHASED seekbar current" + mCurrentItem +" "+General.getSharedPreferences(getContext(), "TT"));
+        Log.i(TAG, "PHASED  current" + mCurrentItem +" "+General.getSharedPreferences(getContext(), "TT"));
         General.setSharedPreferences(getContext(), AppConstants.TT, TT);
 
 
 
         //General.getSharedPreferences(getContext(), "TT");
     }
+
+
 
     public void setFirstDraw(boolean firstDraw) {
         mFirstDraw = firstDraw;
@@ -433,6 +439,7 @@ public class CustomPhasedSeekBar extends View {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_UP:
+                Log.i("====","===========================");
                 return true;
         }
         return super.onTouchEvent(event);
@@ -446,6 +453,7 @@ public class CustomPhasedSeekBar extends View {
     public void setListener(CustomPhasedListener listener) {
         mListener = listener;
     }
+
 
 //    public void setListener(ClientDealsListActivity listener) {
 //        mListener1 = listener;

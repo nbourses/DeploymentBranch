@@ -78,6 +78,8 @@ public class MyGcmListenerService extends GcmListenerService {
     private Boolean OR = false;
     private Boolean REQ = false;
     private Boolean AVL = false;
+    private String description;
+    private String heading;
 
     /**
      * Called when message is received.
@@ -124,8 +126,10 @@ public class MyGcmListenerService extends GcmListenerService {
 
             Log.i(TAG, "Title is " + title);
             if(title.toLowerCase().contains("promo")){
-                if(data.containsKey("bicon")) {
-                    imgUrl = data.getString("bicon");
+
+                if(data.containsKey("bicon") && data.containsKey("alert")) {
+                    heading = title.substring(title.indexOf("-") + 1);
+                    //imgUrl = data.getString("bicon");
                     sendNotification(title,message,data);
                     return;
                 }
@@ -572,10 +576,14 @@ public class MyGcmListenerService extends GcmListenerService {
                 Log.i("TRACE", " toto 3");
                 intent = new Intent(context, BrokerMainActivity.class);
                 intent.putExtra("bicon", data.getString("bicon"));
+                intent.putExtra("desc", data.getString("alert"));
+                intent.putExtra("title", heading);
             }
             else {
                 intent = new Intent(context, ClientMainActivity.class);
                 intent.putExtra("bicon", data.getString("bicon"));
+                intent.putExtra("desc", data.getString("alert"));
+                intent.putExtra("title", heading);
             }
         }
         else{
@@ -610,7 +618,7 @@ public class MyGcmListenerService extends GcmListenerService {
                     .setContentIntent(pendingIntent)
                     .build();*/
             notification = new NotificationCompat.Builder(this)
-                    .setContentTitle(title)
+                    .setContentTitle(heading)
                     .setPriority(Notification.PRIORITY_HIGH)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentText(message)
