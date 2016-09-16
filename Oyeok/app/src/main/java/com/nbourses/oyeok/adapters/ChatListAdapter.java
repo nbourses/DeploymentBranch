@@ -431,6 +431,7 @@ private WebView i;
             else
             {
                 v = convertView;
+                Log.i("TAG","v.getTag() v.getTag() "+v.getTag());
                 holder2 = (ViewHolder2) v.getTag();
 
             }
@@ -462,7 +463,7 @@ private WebView i;
     @Override
     public int getItemViewType(int position) {
 
-        if(position >0)
+         if(position >0)
         Log.i("VIEW TYPE","======== yo 1  "+chatMessages.get(position-1).getMessageText());
         Log.i("VIEW TYPE","======== yo 2  "+position);
 

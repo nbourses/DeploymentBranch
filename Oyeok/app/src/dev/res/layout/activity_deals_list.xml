@@ -368,7 +368,8 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/phaseSeekbar"
             android:layout_below="@+id/view"
-            android:background="@color/dark_white" />
+            android:background="@color/dark_white"
+            android:dividerHeight="1dp"/>
 
 
         <LinearLayout

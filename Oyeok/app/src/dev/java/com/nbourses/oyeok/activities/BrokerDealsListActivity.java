@@ -1151,20 +1151,20 @@ Log.i("SWIPE","inside swipe menu creator");
 
                                     bundle.putIntArray("bPrice",bPrice);
                                     bundle.putStringArray("bNames",bNames);
-
+                                    intent.putExtra(AppConstants.NAME, brokerDeals.getName().substring(0, 1).toUpperCase() + brokerDeals.getName().substring(1).toLowerCase());
                                     intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
                                     intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
                                     startActivity(intent);
                                 }
                             });
                         }
-                        else {
+                       /* else {
 
-                        }
+                        }*/
                     }
-                    else {
+                    /*else {
 
-                    }
+                    }*/
                 }
                 catch (Exception e) {
 
@@ -1200,7 +1200,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
         SignUpFragment d = new SignUpFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("lastFragment", "clientDrawer");  //consider as direct signup so keep last fragment as clientDrawer
+        bundle.putString("lastFragment", "brokerDrawer");  //consider as direct signup so keep last fragment as clientDrawer
 
         d.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -1530,14 +1530,6 @@ if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgno
             else
 
                 cachedDeals.addAll(cachedDealsOR);
-
-
-
-
-
-
-
-
 
 
             if (cachedDeals.size() < 3 && showbgtext == true  && !General.isNetworkAvailable(this)) {

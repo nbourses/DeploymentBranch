@@ -860,8 +860,15 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 //                Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
 //            }else if (backpress>=1) {
 //                backpress = 0;
-                this.finish();
+                /*this.finish();*/
 //            }
+            Intent inten = new Intent(this, ClientMainActivity.class);
+            inten.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(inten);
+            finish();
 
         }
 

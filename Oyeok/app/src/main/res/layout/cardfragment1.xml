@@ -166,7 +166,8 @@
                     toggle:tbOffBorderColor="#2dc4b6"
                     toggle:tbOffColor="#2dc4b6"
                     toggle:tbOnColor="#2dc4b6"
-                    toggle:tbSpotColor="#fff">
+                    toggle:tbSpotColor="#fff"
+                    toggle:tbAnimate="true">
                 </com.zcw.togglebutton.ToggleButton>
 
             </LinearLayout>

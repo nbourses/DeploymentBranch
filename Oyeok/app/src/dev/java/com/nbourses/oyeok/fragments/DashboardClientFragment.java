@@ -49,6 +49,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
@@ -620,6 +622,8 @@ TextView rental,resale;
                 Log.i("t1", "co-ordinate" + x + " " + y);
             }
         });
+
+
 
         dashboardActivity = (ClientMainActivity) getActivity();
 
@@ -2096,6 +2100,7 @@ catch(Exception e){
                                     mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc).title(name[i]).snippet(customSnippet).icon(icon1).flat(true));
                                     Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
                                     flag[i] = false;
+                                    dropPinEffect(mCustomerMarker[i]);
 
                                 }
                                 SnackbarManager.show(
@@ -3757,7 +3762,32 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
 
 
 
+    private void dropPinEffect(final Marker marker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        final long duration = 1500;
 
+        final Interpolator interpolator = new BounceInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = Math.max(
+                        1 - interpolator.getInterpolation((float) elapsed
+                                / duration), 0);
+                marker.setAnchor(0.5f, 1.0f + 14 * t);
+
+                if (t > 0.0) {
+                    // Post again 15ms later.
+                    handler.postDelayed(this, 15);
+                } else {
+                    marker.showInfoWindow();
+
+                }
+            }
+        });
+    }
 
 
 

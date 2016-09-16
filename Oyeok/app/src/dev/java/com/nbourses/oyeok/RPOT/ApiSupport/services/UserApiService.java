@@ -97,8 +97,7 @@ import retrofit.http.POST;
         @POST("/1/give/rating")
         void getUserRoleRating (@Body User user, Callback<User> callback);
 
-        //Pratik's playground
-        //SignUp removed from the user flow
+
         @POST("/1.1/user/signup")
         void userSignUp(@Body User user, Callback<SignUp> callback);
 

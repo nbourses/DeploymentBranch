@@ -31,7 +31,7 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AutoOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
-import com.nbourses.oyeok.activities.ClientDealsListActivity;
+import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
@@ -39,6 +39,7 @@ import com.nispok.snackbar.SnackbarManager;
 import com.sdsmdg.tastytoast.TastyToast;
 import com.zcw.togglebutton.ToggleButton;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -523,18 +524,25 @@ private void showLocalityText(){
                     JsonObject k = jsonElement.getAsJsonObject();
                     try {
 
-                        Log.i("AUTOOK CALLED","autook success response "+response);
+                        Log.i("AUTOOK CALLED","autook success response 23 "+response);
 
                         JSONObject ne = new JSONObject(k.toString());
 //                        JSONObject neo = ne.getJSONObject("responseData");
 //                        Log.i("AUTOOK CALLED","autook response "+neo);
                         Log.i("AUTOOK CALLED","autook response "+ne);
+
+
+                        if(ne.getString("success").equalsIgnoreCase("true")){
+                            JSONArray ne1 = ne.getJSONObject("responseData").getJSONArray("ok_ids");
+                            Log.i("AUTOOK CALLED","autook response 24 "+ne1);
+
+                            General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT,ne1.length());
                         //Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getString("message"));
                      //  Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getJSONArray("ok_ids"));
                        // Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getJSONArray("ok_ids").toJSONArray());
 
-                        TastyToast.makeText(getContext(), "We have connected you with 3 brokers in your area.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
-                        TastyToast.makeText(getContext(), "Sign up to connect with 7 more brokers waiting for you.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                        TastyToast.makeText(getContext(), "We have connected you with "+ne1.length()+" brokers in your area.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                        TastyToast.makeText(getContext(), "Sign up to connect with "+(10 - ne1.length())+" more brokers waiting for you.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
 
 
                         /*Log.i("BROKER BUILDINGS CALLED","success ne "+ne);
@@ -547,20 +555,30 @@ private void showLocalityText(){
                        // getFragmentManager().popBackStack();
 
 
-if(ne.getString("success").equalsIgnoreCase("true")){
+
     General.setSharedPreferences(getContext(),AppConstants.STOP_CARD,"yes");
+
+                            Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                            inten.addFlags(
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                            Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(inten);
+
 }
 
-                        Intent inten = new Intent(getContext(), ClientDealsListActivity.class);
-
-                        startActivity(inten);
 
                     }
                     catch (JSONException e) {
                         Log.e("TAG","Something went wrong "+e.getMessage());
                         TastyToast.makeText(getContext(), "Something went wrong.", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
 //                        TastyToast.makeText(getContext(), "Please signup to get connected with 10 brokers waiting for you", TastyToast.LENGTH_LONG, TastyToast.INFO);
-
+                        Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                        inten.addFlags(
+                                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                        Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(inten);
                         Log.i("BROKER AUTOOK CALLED ","autook Failed "+e.getMessage());
                     }
 

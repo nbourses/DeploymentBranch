@@ -226,6 +226,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -257,6 +258,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         listViewDeals.setVisibility(View.VISIBLE);
 
         ButterKnife.bind(this);
+
 
         Log.i("CHAT","in client deals list activity "+DateFormat.getDateTimeInstance().format(new Date()));
 
@@ -461,7 +463,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                                                             String deals;
                                                             deals = General.getDefaultDeals(ClientDealsListActivity.this);
-                                                            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+                                                            Type type = new TypeToken<HashMap<String, String>>() {
                                                             }.getType();
                                                             HashMap<String, String> deals1 = gson.fromJson(deals, type);
 
@@ -728,7 +730,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                                                 String deals;
                                                 deals = General.getDefaultDeals(ClientDealsListActivity.this);
-                                                java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+                                                Type type = new TypeToken<HashMap<String, String>>() {
                                                 }.getType();
                                                 HashMap<String, String> deals1 = gson.fromJson(deals, type);
 
@@ -1071,6 +1073,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                 Log.i(TAG, "default deals are" + default_deals);
                                 default_deals.add(dealsa);
 
+
                             }
 /*
                             if(cachedDealsLL == null){
@@ -1101,6 +1104,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                             Log.i(TAG, "default deals are" + default_deals);
                             default_deals.add(dealsa);
+                            defaultOkIds.add(dealsa.getOkId());
 
                         }
 
@@ -1445,6 +1449,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
     private  void loadDefaultDeals() {
         Log.i(TAG,"load default deals called ");
+        if(matchedOkIds != null)
+            matchedOkIds.clear();
+        else
+            matchedOkIds = new ArrayList<String>();
 
         if (defaultOkIds != null)
             defaultOkIds.clear();
@@ -1456,6 +1464,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         } else {
             default_deals.clear();
         }
+
+        if (defaultOkIds != null)
+            defaultOkIds.clear();
+        else
+            defaultOkIds = new ArrayList<String>();
         Realm myRealm = General.realmconfig(this);
 
         try {
@@ -1490,6 +1503,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                         if (c.getSpec_code().contains(TT + "-")) {
 
                             Log.i(TAG, "default deals are" + default_deals);
+                            defaultOkIds.add(c.getOk_id());
                             default_deals.add(dealsa);
 
                         }
@@ -1521,6 +1535,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     if (c.getSpec_code().contains(TT + "-")) {
 
                         Log.i(TAG, "default deals are" + default_deals);
+                        defaultOkIds.add(c.getOk_id());
                         default_deals.add(dealsa);
 
                     }
@@ -1529,6 +1544,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
             }
 
+            Log.i(TAG, "defaultOkIds are" + defaultOkIds);
 
             loadCachedDeals();
 
@@ -1836,11 +1852,13 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                     Log.i(TAG,"chakala default ok ids are matched ok ids "+matchedOkIds);
                                     if(matchedOkIds != null){
                                         Log.i(TAG,"chakala default ok ids are matched ok ids 2 "+matchedOkIds);
+                                        Log.i(TAG,"Delete default deals called before calling"+matchedOkIds);
                                         deleteDefaultDeals();
                                         if(default_deals != null)
                                             default_deals.clear();
                                         if(listBrokerDeals_new != null)
                                             listBrokerDeals_new.clear();
+                                        Log.i(TAG,"Delete default deals called after call completed ");
                                         loadDefaultDeals();
                                         loadBrokerDeals();
                                         return;                // important
@@ -1979,6 +1997,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                             intent.putExtra(AppConstants.OYE_ID, brokerDeals.getOyeId());
                                             intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
                                             intent.putExtra(AppConstants.LOCALITY, brokerDeals.getLocality());
+                                            intent.putExtra(AppConstants.NAME, brokerDeals.getName().substring(0, 1).toUpperCase() + brokerDeals.getName().substring(1).toLowerCase());
                                             intent.putExtra("isDefaultDeal",brokerDeals.getdefaultDeal());
                                             Log.i("TRACE DEALS FLAG 2", "FLAG " + brokerDeals.getOyeId());
                                             startActivity(intent);
@@ -2031,23 +2050,27 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
     private void deleteDefaultDeals() {
 
+        Log.i(TAG,"Delete default deals called "+matchedOkIds);
+
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         deals = General.getDefaultDeals(this);
 
         java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
         HashMap<String, String> deals1 = gson.fromJson(deals, type);
-
+        Log.i(TAG,"Delete default deals called 2"+deals1);
         Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
 
         while (iter.hasNext()) {
             Map.Entry<String,String> entry = iter.next();
-            Log.d(TAG,"entry.getKey"+entry.getKey());
+            Log.i(TAG,"entry.getKey"+entry.getKey());
             if(matchedOkIds.contains(entry.getKey())){
+
                 iter.remove();
 
             }
         }
 
+        Log.i(TAG,"Delete default deals called 1"+deals1);
         Log.i(TAG,"after deal "+deals1);
 
         Gson g = new Gson();
@@ -2059,12 +2082,13 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
         try {
+
             for (String okId : matchedOkIds) {
                 Realm myRealm = General.realmconfig(this);
                 RealmResults<DefaultDeals> result = myRealm.where(DefaultDeals.class).equalTo(AppConstants.OK_ID, okId).findAll();
 
-
-
+                Log.d(TAG,"entry.getKey removed from default "+result);
+                Log.i(TAG,"Delete default deals called 1"+result);
                 result.clear();
                 RefreshDrooms = true;
                 myRealm.commitTransaction();

@@ -202,8 +202,7 @@ public class OyeConfirmation extends Fragment {
         editDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                
 //                ((ClientMainActivity)getActivity()).closeOyeConfirmation();
 
                 ((ClientMainActivity)getActivity()).EditOyeDetails();

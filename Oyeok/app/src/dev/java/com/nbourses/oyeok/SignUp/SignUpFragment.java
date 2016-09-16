@@ -846,7 +846,7 @@ Log.i(TAG,"mobile number is the "+mobile_number);
 
                         Log.i("TAG", "Inside signup success");
 
-                        Log.i(TAG,"fakata responsedata "+signUp.responseData);
+                        Log.i(TAG,"fakata responsedata "+signUp.responseData.getMessage());
 
                        try {
                            my_user_id = signUp.responseData.getUserId();
