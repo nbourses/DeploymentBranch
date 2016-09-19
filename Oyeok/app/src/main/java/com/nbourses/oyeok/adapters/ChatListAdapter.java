@@ -141,13 +141,31 @@ private WebView i;
             List<String> list = Arrays.asList(message.getMessageText().split("--"));
 
 
-            holder4.building1.setText(list.get(0));
-            holder4.building2.setText(list.get(2));
-            holder4.building3.setText(list.get(4));
 
-            holder4.price1.setText(" @"+ General.currencyFormat(list.get(1).substring(0 , list.get(1).indexOf("."))));
-            holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(3).indexOf("."))));
-            holder4.price3.setText(" @"+ General.currencyFormat(list.get(5).substring(0 , list.get(5).indexOf("."))));
+            if(list.size() >0)
+            {
+                for (int i=0; i<list.size();i++) {
+
+                    if(i==0)
+                        holder4.building1.setText(list.get(i));
+                    if(i==1)
+                        holder4.price1.setText(" @"+ General.currencyFormat(list.get(1).substring(0 , list.get(1).indexOf("."))));
+                    if(i == 2)
+                        holder4.building2.setText(list.get(2));
+                    if(i==3)
+                        holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(3).indexOf("."))));
+                    if(i == 4)
+                       holder4.building3.setText(list.get(4));
+                    if(i==5)
+                        holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(5).indexOf("."))));
+                }
+            }
+
+
+
+
+
+//            holder4.price3.setText(" @"+ General.currencyFormat(list.get(5).substring(0 , list.get(5).indexOf("."))));
             /*holder4.price1.setText(" @"+General.currencyFormat(list.get(1).substring(0,list.get(1).length()-2)));
             holder4.price2.setText(" @"+General.currencyFormat(list.get(3).substring(0,list.get(3).length()-2)));
             holder4.price3.setText(" @"+General.currencyFormat(list.get(5).substring(0,list.get(5).length()-2)));*/
@@ -413,6 +431,7 @@ private WebView i;
             holder1.chatReplyAuthor.setText(name);
             holder1.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
             Log.i("CONVER","message time self "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
+
         }
         else if (message.getUserType() == ChatMessageUserType.SELF || message.getUserSubtype() == ChatMessageUserSubtype.SELF)
         {

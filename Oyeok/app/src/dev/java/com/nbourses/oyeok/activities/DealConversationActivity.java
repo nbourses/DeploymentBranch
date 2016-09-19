@@ -451,6 +451,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         jsonMsg.put("message", "Looking for CRM");
                         jsonMsg.put("to", "my_channel");
                         jsonMsg.put("status","");
+
                         sendNotification(jsonMsg);
 
                     }
@@ -617,7 +618,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 Log.i(TAG,"imageshare 2 edittypemsg "+edtTypeMsg.getText().toString());
                 messageTyped = edtTypeMsg.getText().toString();
-
+//                edtTypeMsg.setText("");
                 //send message
 
                 Log.i("CHANNEL NAME"," "+channel_name);
@@ -774,7 +775,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     }
 
     private void selectImage() {
-        final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
+        final CharSequence[] items = { /*"Take Photo",*/ "Choose from Library", "Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(DealConversationActivity.this);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -911,10 +912,16 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         Log.i(TAG,"displayMessage called inside displaymessge =====  jsonMSG "+jsonMsg);
         try{
 
-            if(!jsonMsg.getJSONObject("pn_gcm").getJSONObject("data").getString("_from").equalsIgnoreCase(General.getSharedPreferences(this,AppConstants.USER_ID)) && !jsonMsg.getJSONObject("pn_gcm").getJSONObject("data").getString("_from").equalsIgnoreCase(General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI)) ) {
-                JSONObject j = jsonMsg.getJSONObject("pn_gcm").getJSONObject("data");
-                Log.i(TAG, "in displayMessage rt " + j);
-                Log.i(TAG,"displayMessage called recieved inside displaymessge =====  jsonMSG "+jsonMsg);
+            if(jsonMsg.has("pn_gcm")) {
+                JSONObject j;
+                if (!jsonMsg.getJSONObject("pn_gcm").getJSONObject("data").getString("_from").equalsIgnoreCase(General.getSharedPreferences(this, AppConstants.USER_ID)) && !jsonMsg.getJSONObject("pn_gcm").getJSONObject("data").getString("_from").equalsIgnoreCase(General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI))) {
+                     j = jsonMsg.getJSONObject("pn_gcm").getJSONObject("data");
+                    Log.i(TAG, "in displayMessage rt " + j);
+                    Log.i(TAG, "displayMessage called recieved inside displaymessge =====  jsonMSG " + jsonMsg);
+                    jsonMsg = j;
+                }
+
+                 j = jsonMsg.getJSONObject("pn_gcm").getJSONObject("data");
                 jsonMsg = j;
             }
 
@@ -965,6 +972,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 msgStatus = null;
 
 
+            Log.i(TAG," after assigning =====  _from "+msgStatus);
             if (jsonMsg.has("message") && FROM != null && jsonMsg.has("to")) {
 
                 body = jsonMsg.getString("message");
@@ -1012,7 +1020,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     userSubtype = ChatMessageUserSubtype.OTHER;
                 }
 
-                if(msgStatus == null)
+                if(msgStatus == null || userType == null)
                 {
                     Log.i("MSGSTATUS","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%% "+userID);
                     if(userID.equalsIgnoreCase(FROM) || demoId.equalsIgnoreCase(FROM))
@@ -1025,6 +1033,15 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     }
 
                 }
+
+//                if(userID.equalsIgnoreCase(FROM) || demoId.equalsIgnoreCase(FROM))
+//                {
+//                    userType = ChatMessageUserType.SELF;
+//                }
+//                else
+//                {
+//                    userType = ChatMessageUserType.OTHER;
+//                }
 
                 Log.i("TAG","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%   "+msgStatus);
                 Log.i(TAG, "calipso yo" + roleOfUser);
