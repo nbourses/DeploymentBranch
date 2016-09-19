@@ -631,6 +631,11 @@ while(slowInternetFlag) {
                         //to do: use Appconstants.OKID replace all dependencies
                         try {
 
+                            if(myRealm.isInTransaction()) {
+                                Log.i("HOTFIX","is in transaction saving default deal");
+
+                                myRealm.commitTransaction();
+                            }
                             DefaultDeals defaultDeals = new DefaultDeals();
                             defaultDeals.setOk_id(General.getSharedPreferences(context, "OK_ID"));
                             defaultDeals.setSpec_code(speccode);
@@ -642,7 +647,9 @@ while(slowInternetFlag) {
 
                             myRealm.commitTransaction();
                         }
-                        catch(Exception e){}
+                        catch(Exception e){
+                            Log.i("Exception","Caught in saving default deal "+e);
+                        }
 
                         try{
                             RealmResults<DefaultDeals> results1 =

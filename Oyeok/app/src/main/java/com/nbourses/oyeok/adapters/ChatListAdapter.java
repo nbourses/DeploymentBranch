@@ -140,14 +140,32 @@ private WebView i;
 
             List<String> list = Arrays.asList(message.getMessageText().split("--"));
 
+            if(list.size() >0)
+            {
+                for (int i=0; i<list.size();i++) {
 
-            holder4.building1.setText(list.get(0));
+                    if(i==0)
+                        holder4.building1.setText(list.get(i));
+                    if(i==1)
+                        holder4.price1.setText(" @"+ General.currencyFormat(list.get(1).substring(0 , list.get(1).indexOf("."))));
+                    if(i == 2)
+                        holder4.building2.setText(list.get(2));
+                    if(i==3)
+                        holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(3).indexOf("."))));
+                    if(i == 4)
+                        holder4.building3.setText(list.get(4));
+                    if(i==5)
+                        holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(5).indexOf("."))));
+                }
+            }
+
+           /* holder4.building1.setText(list.get(0));
             holder4.building2.setText(list.get(2));
             holder4.building3.setText(list.get(4));
 
             holder4.price1.setText(" @"+ General.currencyFormat(list.get(1).substring(0 , list.get(1).indexOf("."))));
             holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(3).indexOf("."))));
-            holder4.price3.setText(" @"+ General.currencyFormat(list.get(5).substring(0 , list.get(5).indexOf("."))));
+            holder4.price3.setText(" @"+ General.currencyFormat(list.get(5).substring(0 , list.get(5).indexOf("."))));*/
             /*holder4.price1.setText(" @"+General.currencyFormat(list.get(1).substring(0,list.get(1).length()-2)));
             holder4.price2.setText(" @"+General.currencyFormat(list.get(3).substring(0,list.get(3).length()-2)));
             holder4.price3.setText(" @"+General.currencyFormat(list.get(5).substring(0,list.get(5).length()-2)));*/

@@ -321,13 +321,21 @@ TextView rental,resale;
             try {
                 if (intent.getExtras().getBoolean("autocomplete") == true) {
                     // autocomplete = true;
-                    Log.i(TAG, "hohohoh 2");
+                 /*   Log.i(TAG, "hohohoh 2");
                     hideOnSearch.setVisibility(View.GONE);
                     seekbar_linearlayout.setVisibility(View.VISIBLE);
                     seekbar_linearlayout.setAlpha(1f);
                     mPhasedSeekBar.setVisibility(View.VISIBLE);
 //                    property_type_layout.setVisibility(View.VISIBLE);
+                    dispProperty.setVisibility(View.VISIBLE);*/
+
+
+                    hideOnSearch.setVisibility(View.GONE);
+                    seekbar_linearlayout.setVisibility(View.VISIBLE);
+//        property_type_layout.setVisibility(View.VISIBLE);
                     dispProperty.setVisibility(View.VISIBLE);
+                    seekbar_linearlayout.setBackgroundColor(Color.WHITE);
+                    seekbar_linearlayout.setAlpha(1);
                 }
             } catch (Exception e) {}
         }
@@ -357,16 +365,21 @@ TextView rental,resale;
         public void onReceive(Context context, Intent intent) {
             if (intent.getExtras().getString("phaseseek") != null) {
                 if ((intent.getExtras().getString("phaseseek").equalsIgnoreCase("clicked"))) {
+                    try {
+                        Log.i("indexxx", "index of layoutsusussjcdnck : ");
+                        int index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
+                        Log.i("indexxx", "index of layoutsusussjcdnck : " + index);
+                        if (index == 2) {
+                            property_type_layout.clearAnimation();
+                            parenttop.removeView(property_type_layout);
+                            parentbottom.addView(property_type_layout, 5);
+                        }
 
-                    int index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
-                    Log.i("indexxx", "index of layoutsusussjcdnck : " + index);
-                    if(index==2){
-                        property_type_layout.clearAnimation();
-                        parenttop.removeView(property_type_layout);
-                        parentbottom.addView(property_type_layout,5);}
+                        PropertyButtonSlideAnimation();
+                    }
+                    catch(Exception e){
 
-                    PropertyButtonSlideAnimation();
-
+                    }
 
                 }
 
@@ -761,9 +774,10 @@ TextView rental,resale;
                     autoIsClicked=true;
                     autoCompView.showDropDown();
                     // new LocationUpdater().execute();
+                    property_type_layout.clearAnimation(); /////
                     property_type_layout.setVisibility(View.GONE);
                     dispProperty.setVisibility(View.GONE);
-
+hideOnSearch.clearAnimation();/////
                     hideOnSearch.setVisibility(View.VISIBLE);
                     //seekbar_linearlayout.setVisibility(View.GONE);
                     mPhasedSeekBar.setVisibility(View.VISIBLE);
@@ -3782,7 +3796,8 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
                     // Post again 15ms later.
                     handler.postDelayed(this, 15);
                 } else {
-                    marker.showInfoWindow();
+                    Log.i(TAG,"building drop ");
+                   // marker.showInfoWindow();
 
                 }
             }

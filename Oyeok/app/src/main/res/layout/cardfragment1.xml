@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:toggle="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 <LinearLayout
@@ -157,7 +159,7 @@
                     android:layout_gravity="center"
                     toggle:tbAsDefaultOn="false"
                     toggle:tbAnimate="true" />-->
-                <com.zcw.togglebutton.ToggleButton
+               <!-- <com.zcw.togglebutton.ToggleButton
                     android:layout_gravity="center"
                     android:id="@+id/toggleBtn"
                     android:layout_width="54dp"
@@ -168,8 +170,15 @@
                     toggle:tbOnColor="#2dc4b6"
                     toggle:tbSpotColor="#fff"
                     toggle:tbAnimate="true">
-                </com.zcw.togglebutton.ToggleButton>
-
+                </com.zcw.togglebutton.ToggleButton> -->
+                <com.kyleduo.switchbutton.SwitchButton
+                    android:id="@+id/toggleBtn"
+                    android:layout_width="54dp"
+                    android:layout_height="27dp"
+                    android:checked="true"
+                    app:kswThumbColor="@color/greenish_blue"
+                    android:layout_gravity="center"/>
+                <!--app:kswTintColor="#B13254"-->
             </LinearLayout>
 
             <LinearLayout

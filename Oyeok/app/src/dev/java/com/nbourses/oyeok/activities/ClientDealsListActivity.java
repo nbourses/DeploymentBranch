@@ -351,8 +351,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 String muteStatus = "Mute notifications";
                 String blockStatus = "Block deal";
                 Log.i(TAG,"listbrokerdealsnew "+listBrokerDeals_new);
-                Log.i(TAG,"listbrokerdealsnew  def "+default_deals);
-                Log.i(TAG,"listbrokerdealsnew "+listBrokerDeals_new);
+                Log.i(TAG,"listbrokerdealsnew  def "+default_deals_copy);
+                Log.i(TAG,"listbrokerdealsnew total "+total_deals);
+
+
                 try {
                     if (!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
                         mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
@@ -397,8 +399,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                     if(listBrokerDeals_new == null){
                                         Log.i(TAG,"wadala default deals 1 ");
                                         total_deals = new ArrayList<BrokerDeals>();
-                                        if(default_deals != null) {
-                                            total_deals.addAll(default_deals);
+                                        if(default_deals_copy != null) {
+                                            total_deals.addAll(default_deals_copy);
                                         }
                                         if(cachedDeals != null) {
                                             total_deals.addAll(cachedDeals);
@@ -409,13 +411,23 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                     if(!(General.getMutedOKIds(ClientDealsListActivity.this) == null)) {
                                         mutedOKIds.addAll(General.getMutedOKIds(ClientDealsListActivity.this));
 
-                                        if(mutedOKIds.contains(total_deals.get(position).getOkId())) {
-                                            mutedOKIds.remove(total_deals.get(position).getOkId());
-                                            SnackbarManager.show(
-                                                    Snackbar.with(ClientDealsListActivity.this)
-                                                            .position(Snackbar.SnackbarPosition.TOP)
-                                                            .text(total_deals.get(position).getSpecCode() + " unmuted!")
-                                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                        if(mutedOKIds != null) {
+                                            if (mutedOKIds.contains(total_deals.get(position).getOkId())) {
+                                                mutedOKIds.remove(total_deals.get(position).getOkId());
+                                                SnackbarManager.show(
+                                                        Snackbar.with(ClientDealsListActivity.this)
+                                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                                .text(total_deals.get(position).getSpecCode() + " unmuted!")
+                                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                            }
+                                            else {
+                                                mutedOKIds.add(total_deals.get(position).getOkId());
+                                                SnackbarManager.show(
+                                                        Snackbar.with(ClientDealsListActivity.this)
+                                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                                .text(total_deals.get(position).getSpecCode() + " muted!")
+                                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                            }
                                         }
                                         else {
                                             mutedOKIds.add(total_deals.get(position).getOkId());
@@ -435,10 +447,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                                 } else if (items[item].equals("Delete deal")) {
 
-                                    if(listBrokerDeals_new.isEmpty()){
+                                    if(listBrokerDeals_new == null){
                                         Log.i(TAG,"wadala default deals 1 ");
                                         total_deals = new ArrayList<BrokerDeals>();
-                                        total_deals.addAll(default_deals);
+                                        total_deals.addAll(default_deals_copy);
                                     }
 
 
@@ -574,8 +586,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                     if(listBrokerDeals_new == null){
                                         Log.i(TAG,"wadala default deals 1 ");
                                         total_deals = new ArrayList<BrokerDeals>();
-                                        if(default_deals != null) {
-                                            total_deals.addAll(default_deals);
+                                        if(default_deals_copy != null) {
+                                            total_deals.addAll(default_deals_copy);
                                         }
                                         if(cachedDeals != null) {
                                             total_deals.addAll(cachedDeals);
@@ -694,13 +706,13 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     case 1:
                         Log.i(TAG,"wadala listBrokerDeals_new "+listBrokerDeals_new);
                         Log.i(TAG,"wadala total_deals "+total_deals);
-                        Log.i(TAG,"wadala default deals "+default_deals);
+                        Log.i(TAG,"wadala default deals "+default_deals_copy);
 
                         if(listBrokerDeals_new == null){
                             Log.i(TAG,"wadala default deals 1 ");
                             total_deals = new ArrayList<BrokerDeals>();
-                            if(default_deals != null) {
-                                total_deals.addAll(default_deals);
+                            if(default_deals_copy != null) {
+                                total_deals.addAll(default_deals_copy);
 
                             }
                             if(cachedDeals != null) {
@@ -721,9 +733,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
 
-                                        if(default_deals != null) {
+                                        if(default_deals_copy != null) {
                                             Log.i(TAG,"wadala default deals 2 ");
-                                            if (default_deals.contains(total_deals.get(position))){
+                                            if (default_deals_copy.contains(total_deals.get(position))){
 
                                                 Log.i("deleteDR CALLED", "Its default deal " + total_deals.get(position).getSpecCode());
 
@@ -793,7 +805,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 
                                         if(listBrokerDeals_new != null) {
-                                            Log.i(TAG,"wadala default deals 2 ");
+                                            Log.i(TAG,"wadala 01 listBrokerDeals_new "+listBrokerDeals_new);
+                                            Log.i(TAG,"wadala 01 total_deals "+total_deals);
+                                            Log.i(TAG,"wadala 01 default deals "+default_deals_copy);
+                                            Log.i(TAG,"wadala 01 default deals 2 ");
                                             if (listBrokerDeals_new.contains(total_deals.get(position))) {
 
                                                 Log.i("deleteDR CALLED", "Its HDroom " + total_deals.get(position).getSpecCode());
@@ -953,6 +968,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             public boolean onQueryTextSubmit(String query) {
                 searchQuery = query.trim();
                 // callSearch1(query);
+
                 Log.i(TAG,"1111111111");
 
                 if(default_deals != null)
@@ -1020,7 +1036,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")){
             signUpCard.setVisibility(View.VISIBLE);
         }
-            Log.i("Phaseseekbar", "oncreate value " + General.getSharedPreferences(this, AppConstants.TT));
+        Log.i("Phaseseekbar", "oncreate value " + General.getSharedPreferences(this, AppConstants.TT));
 
 
         if (!RefreshDrooms) {
@@ -1236,10 +1252,12 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 if(cachedDeals != null && default_deals !=null){
                     default_deals.addAll(cachedDeals);
                 }
+
+
                 if (default_deals != null) {
                     BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
                     listViewDeals.setAdapter(listAdapter);
-                    Log.i("inside adapter ", "object " + listAdapter);
+
                     if(default_deals.size() <3 && showbgtext == true){
                         bgtxtlayout.setVisibility(View.VISIBLE);
                         bgtxt.setText("Go Back &,\nBroadcast yours needs\nto create New DEALs\nwith more Brokers");
@@ -1281,11 +1299,18 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             } catch (Exception e) {
                 Log.i(TAG, "Caught in the exception reading defaultdeals from realm " + e);
             } finally {
-
-                Log.i(TAG, "finally loaddefaultDeals ");
+                /*Log.i("inside adapter ", "tester testing 1 ");
+                Log.i("inside adapter ", "tester testing " + default_deals.size()+" "+showbgtext);
+              */ /* if(default_deals.size() <3 && showbgtext == true){
+                    Log.i("inside adapter ", "tester testing 12 ");
+                    bgtxtlayout.setVisibility(View.VISIBLE);
+                    bgtxt.setText("Go Back &,\nBroadcast yours needs\nto create New DEALs\nwith more Brokers");
+                }else{bgtxtlayout.setVisibility(View.GONE);
+                    Log.i("inside adapter ", "tester testing 13 ");}*/
+                Log.i(TAG, "finally loaddefaultDeals tor");
             }
 
-//    loadBrokerDeals();
+            loadBrokerDeals();
 //
 //}
 
@@ -1297,10 +1322,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             //       }//Log.i("TRACE", "Get default deal" + General.getDefaultDeals(this));
 
 
-            loadBrokerDeals();
+            // loadBrokerDeals();
 
             setSupportActionBar(mToolbar);
-                getSupportActionBar().setTitle("DEALING ROOMs (Rental)");
+            getSupportActionBar().setTitle("DEALING ROOMs (Rental)");
 
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -1563,7 +1588,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             }
 
 
+
             if (default_deals != null) {
+
 
                 BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
                 listViewDeals.setAdapter(listAdapter);
@@ -1595,8 +1622,13 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         } catch (Exception e) {
             Log.i(TAG, "Caught in the exception reading defaultdeals from realm " + e);
         } finally {
-
-            Log.i(TAG, "finally loaddefaultDeals ");
+           /* Log.i("inside adapter ", "tester testing 1 ");
+            Log.i("inside adapter ", "tester testing " + default_deals.size()+" "+showbgtext);
+          */ /* if(default_deals.size() <3 && showbgtext == true){
+                bgtxtlayout.setVisibility(View.VISIBLE);
+                bgtxt.setText("Go Back &,\nBroadcast yours needs\nto create New DEALs\nwith more Brokers");
+            }else{bgtxtlayout.setVisibility(View.GONE);}*/
+            Log.i(TAG, "finally loaddefaultDeals stag");
         }
     }
 
@@ -1934,7 +1966,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                             if (listBrokerDeals_new.size() > 0) {
 
-                                Log.i("TRACE", "NOT inside default deal");
+
 //
 
                                 total_deals = new ArrayList<BrokerDeals>();
@@ -1948,6 +1980,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                 if(listBrokerDeals_new != null)
                                     total_deals.addAll(listBrokerDeals_new);
 
+                                Log.i("TRACE", "NOT inside default deal total_deals "+total_deals);
 
                                 BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
                                 if(total_deals.size() <3 && showbgtext == true){
@@ -1967,6 +2000,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                     //listViewDeals.setAdapter(null);
                                     //listViewDeals.setAdapter(listAdapter);
                                 }else {
+
 
                                     Log.i("Shine", "Drooms not refreshed");
 
@@ -2025,9 +2059,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                         }
                     } catch (Exception e) {
+                        Log.i(TAG,"Caught in exception loading broker deals "+e);
 
                     } finally {
-
                     }
                 }
 

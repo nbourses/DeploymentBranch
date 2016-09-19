@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.kyleduo.switchbutton.SwitchButton;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AutoOk;
@@ -37,7 +38,6 @@ import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.sdsmdg.tastytoast.TastyToast;
-import com.zcw.togglebutton.ToggleButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,7 +83,7 @@ public class CardFragment  extends Fragment{
     private LinearLayout localityLayout;
     private LinearLayout rentalPanel;
     private LinearLayout resalePanel;
-    ToggleButton toggleBtn;
+    SwitchButton toggleBtn;
     private Boolean rent = true;
     private String loc;
 
@@ -128,7 +128,9 @@ public class CardFragment  extends Fragment{
         localityLayout = (LinearLayout) rootView.findViewById(R.id.localityLayout);
         rentalPanel = (LinearLayout) rootView.findViewById(R.id.rentalPanel);
         resalePanel = (LinearLayout) rootView.findViewById(R.id.resalePanel);
-        toggleBtn = (ToggleButton) rootView.findViewById(R.id.toggleBtn);
+        //toggleBtn = (ToggleButton) rootView.findViewById(R.id.toggleBtn);
+
+                toggleBtn = (SwitchButton) rootView.findViewById(R.id.toggleBtn);
         // Do something else
         init();
         return rootView;
@@ -152,6 +154,7 @@ public class CardFragment  extends Fragment{
     }
 
     private void init() {
+
         buysell.setTextColor(Color.parseColor("#a8a8a8"));
 
         animFadein = AnimationUtils.loadAnimation(getContext(),
@@ -162,8 +165,8 @@ public class CardFragment  extends Fragment{
         locality.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
         DBHelper dbHelper = new DBHelper(getContext());
 
-       // toggleBtn.toggle();
-        toggleBtn.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
+        toggleBtn.toggle();
+       /* toggleBtn.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(boolean on) {
                 Log.i("TAG","on is the "+on);
@@ -194,8 +197,40 @@ public class CardFragment  extends Fragment{
                 }
             }
         });
+*/
 
 
+
+        toggleBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+               if(isChecked){
+                   //resale
+                   rent = false;
+                   owner.setChecked(false);
+                   tenant.setChecked(false);
+                   buysell.setTextColor(getResources().getColor(R.color.greenish_blue));
+                   rental.setTextColor(Color.parseColor("#a8a8a8"));
+                   rentalPanel.clearAnimation();
+                   resalePanel.clearAnimation();
+                   rentalPanel.setVisibility(View.GONE);
+                   resalePanel.setVisibility(View.VISIBLE);
+                   resalePanel.startAnimation(bounce);
+               }
+               else{
+                   rent = true;
+                   buyer.setChecked(false);
+                   seller.setChecked(false);
+                   rental.setTextColor(getResources().getColor(R.color.greenish_blue));
+                   buysell.setTextColor(Color.parseColor("#a8a8a8"));
+                   rentalPanel.clearAnimation();
+                   resalePanel.clearAnimation();
+                   resalePanel.setVisibility(View.GONE);
+                   rentalPanel.setVisibility(View.VISIBLE);
+                   rentalPanel.startAnimation(bounce);
+               }
+            }
+        });
        /* if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getContext().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), getContext().getResources().getString(R.string.Resale)}));
         else
