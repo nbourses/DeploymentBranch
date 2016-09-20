@@ -26,19 +26,20 @@ import android.widget.TextView;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.kyleduo.switchbutton.SwitchButton;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AutoOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
-import com.nbourses.oyeok.activities.ClientDealsListActivity;
+import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.sdsmdg.tastytoast.TastyToast;
-import com.zcw.togglebutton.ToggleButton;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -82,7 +83,7 @@ public class CardFragment  extends Fragment{
     private LinearLayout localityLayout;
     private LinearLayout rentalPanel;
     private LinearLayout resalePanel;
-    ToggleButton toggleBtn;
+    SwitchButton toggleBtn;
     private Boolean rent = true;
     private String loc;
 
@@ -127,7 +128,9 @@ public class CardFragment  extends Fragment{
         localityLayout = (LinearLayout) rootView.findViewById(R.id.localityLayout);
         rentalPanel = (LinearLayout) rootView.findViewById(R.id.rentalPanel);
         resalePanel = (LinearLayout) rootView.findViewById(R.id.resalePanel);
-        toggleBtn = (ToggleButton) rootView.findViewById(R.id.toggleBtn);
+        //toggleBtn = (ToggleButton) rootView.findViewById(R.id.toggleBtn);
+
+                toggleBtn = (SwitchButton) rootView.findViewById(R.id.toggleBtn);
         // Do something else
         init();
         return rootView;
@@ -151,6 +154,7 @@ public class CardFragment  extends Fragment{
     }
 
     private void init() {
+
         buysell.setTextColor(Color.parseColor("#a8a8a8"));
 
         animFadein = AnimationUtils.loadAnimation(getContext(),
@@ -161,8 +165,8 @@ public class CardFragment  extends Fragment{
         locality.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
         DBHelper dbHelper = new DBHelper(getContext());
 
-       // toggleBtn.toggle();
-        toggleBtn.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
+        toggleBtn.toggle();
+       /* toggleBtn.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(boolean on) {
                 Log.i("TAG","on is the "+on);
@@ -193,8 +197,40 @@ public class CardFragment  extends Fragment{
                 }
             }
         });
+*/
 
 
+
+        toggleBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+               if(isChecked){
+                   //resale
+                   rent = false;
+                   owner.setChecked(false);
+                   tenant.setChecked(false);
+                   buysell.setTextColor(getResources().getColor(R.color.greenish_blue));
+                   rental.setTextColor(Color.parseColor("#a8a8a8"));
+                   rentalPanel.clearAnimation();
+                   resalePanel.clearAnimation();
+                   rentalPanel.setVisibility(View.GONE);
+                   resalePanel.setVisibility(View.VISIBLE);
+                   resalePanel.startAnimation(bounce);
+               }
+               else{
+                   rent = true;
+                   buyer.setChecked(false);
+                   seller.setChecked(false);
+                   rental.setTextColor(getResources().getColor(R.color.greenish_blue));
+                   buysell.setTextColor(Color.parseColor("#a8a8a8"));
+                   rentalPanel.clearAnimation();
+                   resalePanel.clearAnimation();
+                   resalePanel.setVisibility(View.GONE);
+                   rentalPanel.setVisibility(View.VISIBLE);
+                   rentalPanel.startAnimation(bounce);
+               }
+            }
+        });
        /* if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getContext().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), getContext().getResources().getString(R.string.Resale)}));
         else
@@ -523,18 +559,25 @@ private void showLocalityText(){
                     JsonObject k = jsonElement.getAsJsonObject();
                     try {
 
-                        Log.i("AUTOOK CALLED","autook success response "+response);
+                        Log.i("AUTOOK CALLED","autook success response 23 "+response);
 
                         JSONObject ne = new JSONObject(k.toString());
 //                        JSONObject neo = ne.getJSONObject("responseData");
 //                        Log.i("AUTOOK CALLED","autook response "+neo);
                         Log.i("AUTOOK CALLED","autook response "+ne);
+
+
+                        if(ne.getString("success").equalsIgnoreCase("true")){
+                            JSONArray ne1 = ne.getJSONObject("responseData").getJSONArray("ok_ids");
+                            Log.i("AUTOOK CALLED","autook response 24 "+ne1);
+
+                            General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT,ne1.length());
                         //Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getString("message"));
                      //  Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getJSONArray("ok_ids"));
                        // Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getJSONArray("ok_ids").toJSONArray());
 
-                        TastyToast.makeText(getContext(), "We have connected you with 3 brokers in your area.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
-                        TastyToast.makeText(getContext(), "Sign up to connect with 7 more brokers waiting for you.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                        TastyToast.makeText(getContext(), "We have connected you with "+ne1.length()+" brokers in your area.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                        TastyToast.makeText(getContext(), "Sign up to connect with "+(10 - ne1.length())+" more brokers waiting for you.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
 
 
                         /*Log.i("BROKER BUILDINGS CALLED","success ne "+ne);
@@ -547,20 +590,30 @@ private void showLocalityText(){
                        // getFragmentManager().popBackStack();
 
 
-if(ne.getString("success").equalsIgnoreCase("true")){
+
     General.setSharedPreferences(getContext(),AppConstants.STOP_CARD,"yes");
+
+                            Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                            inten.addFlags(
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                            Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(inten);
+
 }
 
-                        Intent inten = new Intent(getContext(), ClientDealsListActivity.class);
-
-                        startActivity(inten);
 
                     }
                     catch (JSONException e) {
                         Log.e("TAG","Something went wrong "+e.getMessage());
                         TastyToast.makeText(getContext(), "Something went wrong.", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
 //                        TastyToast.makeText(getContext(), "Please signup to get connected with 10 brokers waiting for you", TastyToast.LENGTH_LONG, TastyToast.INFO);
-
+                        Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                        inten.addFlags(
+                                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                        Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(inten);
                         Log.i("BROKER AUTOOK CALLED ","autook Failed "+e.getMessage());
                     }
 

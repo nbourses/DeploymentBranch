@@ -106,11 +106,13 @@
         </LinearLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
+
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/container_Signup">
     </FrameLayout>
+
 
     <FrameLayout
         android:layout_width="fill_parent"

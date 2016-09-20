@@ -1177,9 +1177,12 @@ if(count<=220) {
 
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
                     fragmentTransaction.replace(R.id.container_sign, fragment);
                     // fragmentTransaction.replace(R.id.container_map, fragment);
                     fragmentTransaction.commit();
+                AppConstants.SIGNUP_FLAG = true;
+
                 } else {
                     //here broker is registered
 
@@ -1766,7 +1769,8 @@ catch (Exception e){
     @Override
     public void onclick(int position, JSONArray m, String show, int x_c, int y_c) {
         deal.setEnabled(true);
-        deal.setBackgroundColor(Color.parseColor("#ff9f1c"));
+        //deal.setBackgroundColor(Color.parseColor("#ff9f1c"));
+        deal.setBackground(getResources().getDrawable(R.drawable.deals_button_background));
         //deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.orange));
         try {
             leadPrompt.setVisibility(View.VISIBLE);

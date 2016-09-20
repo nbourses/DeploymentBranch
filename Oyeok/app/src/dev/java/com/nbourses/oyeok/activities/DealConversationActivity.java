@@ -265,10 +265,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     //protected
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_deal_conversation);
-
-
         ButterKnife.bind(this);
         texrating = (TextView) findViewById(R.id.texRating);
         ratingBar.setOnRatingBarChangeListener(this);
@@ -283,14 +280,14 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //        LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
         // UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
 
-        String userId = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
+        //String userId = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
 
-        if(userId == null)
+       // if(userId == null)
             UUID = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
-        else
-         UUID = userId;
+       // else
+        // UUID = userId;
 
-        i("WHERENOW", "UUID " + UUID);
+        i("WHERENOW", "UUID lotto " + UUID);
 
         pubnub = new Pubnub(AppConstants.PUBNUB_PUBLISH_KEY, AppConstants.PUBNUB_SUBSCRIBE_KEY);
 
@@ -315,7 +312,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         }  // DEals OK ID
         else {
 
-            Log.i("------ ","======= SET UP PUBNUB UUID");
+            Log.i("------ ","======= SET UP PUBNUB UUID lotto "+UUID);
             setupPubnub(UUID);
         }
 
@@ -459,7 +456,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 }
                 else{
                     setSupportActionBar(mToolbar);
+                    if(bundle.containsKey(AppConstants.NAME))
+                        getSupportActionBar().setTitle(bundle.getString(AppConstants.NAME));
+                        else
                     getSupportActionBar().setTitle("Dealing Room");
+
                 }
                 getSupportActionBar().setDisplayShowHomeEnabled(true);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -626,10 +627,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 message.setUserName("self");
                 message.setMessageStatus(ChatMessageStatus.SENT);
                 message.setMessageText(messageTyped);
-                message.setUserType(ChatMessageUserType.OTHER);
+                message.setUserType(ChatMessageUserType.SELF);
                 message.setMessageTime(System.currentTimeMillis()/10000);
-
+                Log.i(TAG,"chatMessages chatMessages 1"+chatMessages);
                 chatMessages.add(message);
+                Log.i(TAG,"chatMessages chatMessages 1"+chatMessages);
                 listAdapter.notifyDataSetChanged();
 
                 Log.i(TAG,"aawaj 1");
@@ -654,10 +656,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 });
 
-                chatMessages.remove(chatMessages.size()-1);
+               // chatMessages.remove(chatMessages.size()-1);
 
 
         checkLocalBlockStatus();
+                chatMessages.remove(chatMessages.size()-1);
 
         }
         //imgSendMsg.setClickable(false);
@@ -670,14 +673,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
      */
 
     private void setupPubnub(String channel_name) {
+        Log.i("WHERENOW", "4 lotto "+channel_name);
 
 //        chatMessages.clear();
 //        listAdapter.notifyDataSetChanged();
         Log.i("WHERENOW", "3 ");
 
         try {
-
-
             Log.i("WHERENOW", "4 ");
 
             //pubnub = new Pubnub(AppConstants.PUBNUB_PUBLISH_KEY, AppConstants.PUBNUB_SUBSCRIBE_KEY);
@@ -687,16 +689,16 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             if(!channel_name.equals("my_channel")) { //if not support chat
 
-
                 if( okyed){
 
-                    Log.i("SETUPPUBNUB","OKYED =============");
+                    Log.i("SETUPPUBNUB","OKYED ============= channel_name "+channel_name);
 
                     okyed = false;
-
                     displayCardView();
+                    loadHistoryFromPubnub(channel_name);
 
-                    chatMessages.clear();
+
+                    //chatMessages.clear();
 
                 }
 
@@ -705,7 +707,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     oyed = false;
                     displayDefaultMessage();
 
-                    chatMessages.clear();
+                    //chatMessages.clear();
                 }
 
                 else {
@@ -2383,7 +2385,6 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
 
                         JSONObject ne = new JSONObject(k.toString());
                         Log.i("getStatus","getDealStatus success ne "+ne);
-                        Log.i("getStatus","getDealStatus success ne 1 "+ne.getJSONObject("responseData").getString("hdroom_status"));
 
                         if(ne.getString("success").equalsIgnoreCase("true")){
 

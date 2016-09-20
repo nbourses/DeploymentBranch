@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker">
+    tools:context="com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker"
+    android:background="@color/dark_white">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -31,19 +32,19 @@
     <com.nbourses.oyeok.RPOT.OkBroker.CircularSeekBar.CircularSeekBarNew
         android:id="@+id/circularSeekbar"
         android:layout_width="match_parent"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_gravity="center"
         android:layout_height="match_parent"
         app:circlenew_color="#81C784"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="50dp"
         app:circlenew_stroke_width="5dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="15dp"
         android:orientation="horizontal"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp">
 
         <RelativeLayout
             android:layout_weight="1"
@@ -64,7 +65,7 @@
                 <Button
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:background="@color/greenish_blue"
+                    android:background="@drawable/ok_button_background"
                     android:layout_marginLeft="5dp"
                     android:text="Ok"
                     android:layout_height="wrap_content"
@@ -147,7 +148,7 @@
             android:id="@+id/deal"
             android:textColor="@color/white"
             android:text="Deals"
-            android:background="@color/yellow"
+            android:background="@drawable/deals_button_background"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_width="fill_parent"

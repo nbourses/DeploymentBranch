@@ -308,8 +308,9 @@ public void signUp(){
         }
 
         SignUpFragment signUpFragment = new SignUpFragment();
-        loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
-        Log.i("Signup called =", "Sign up");
+        loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup, "");
+    AppConstants.SIGNUP_FLAG = true;
+        Log.i("Signup called =", "Sign up yo "+AppConstants.SIGNUP_FLAG);
 //    }
 }
 
@@ -585,6 +586,8 @@ public void signUp(){
      */
     private void init() {
 
+       /* Intent inten = new Intent(this, IntroActivity.class);
+        startActivity(inten);*/
 
         /*try {
             SharedPreferences prefs1 =
@@ -678,6 +681,7 @@ public void signUp(){
 ////            Log.i(TAG,"insider4 "+c.getEmailId());
 //        }
 
+        Toast.makeText(this,String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)),Toast.LENGTH_LONG);
 
         if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) <= 0)
             hdroomsCount.setVisibility(View.GONE);
@@ -888,6 +892,18 @@ public void signUp(){
 //        getSupportActionBar().setTitle(title);
     }
 
+    private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
+
     public void onClickButton(Bundle args) {
         if (!isShowing) {
 
@@ -1039,7 +1055,8 @@ public void signUp(){
             // signUpFragment.getView().bringToFront();
             Bundle bundle = new Bundle();
             bundle.putString("lastFragment", "clientDrawer");
-            loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
+            loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup, "");
+            AppConstants.SIGNUP_FLAG = true;
 
 
 
@@ -1225,11 +1242,13 @@ public void signUp(){
     @Override
     public void onBackPressed() {
 
+        Log.i(TAG,"flaga isa "+AppConstants.SIGNUP_FLAG);
 
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         if(AppConstants.cardNotif){
+            Log.i(TAG,"flaga isa 1 ");
             AppConstants.cardNotif = false;
             AppConstants.optionspu1.dismiss();
             AppConstants.optionspu.dismiss();
@@ -1237,6 +1256,7 @@ public void signUp(){
 
         else if(buidingInfoFlag==true)
         {
+            Log.i(TAG,"flaga isa 2 ");
             Intent in = new Intent(AppConstants.MARKERSELECTED);
             in.putExtra("markerClicked", "false");
             LocalBroadcastManager.getInstance(this).sendBroadcast(in);
@@ -1246,6 +1266,7 @@ public void signUp(){
             // CloseBuildingOyeComfirmation();
 
         }else  if(cardFlag){
+            Log.i(TAG,"flaga isa 3 ");
             Log.i(TAG,"card back ");
            // getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.card)).commit();
          //getSupportFragmentManager().popBackStack();
@@ -1261,15 +1282,8 @@ public void signUp(){
 
 
 
-             else if(oyeconfirm_flag==true){
-//                super.onBackPressed();
-            Log.i("SIGNUP_FLAG","Poke Poke Pokemon......: "+getSupportFragmentManager().getBackStackEntryCount());
-//            getSupportFragmentManager().popBackStack();
-            closeOyeConfirmation();
-//            oyeconfirm_flag=false;
-            backpress = 0;
-
-        }else if(AppConstants.SIGNUP_FLAG){
+             else if(AppConstants.SIGNUP_FLAG){
+            Log.i(TAG,"flaga isa 6 ");
 
 
 /*            if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")){
@@ -1283,11 +1297,23 @@ public void signUp(){
             finish();*/
 
             if(AppConstants.REGISTERING_FLAG){}else{
-            getSupportFragmentManager().popBackStack();
+           // getSupportFragmentManager().popBackStack();
+               getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
 
-            AppConstants.SIGNUP_FLAG=false;
+
+                AppConstants.SIGNUP_FLAG=false;
             backpress = 0;}
             Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff");
+
+        }
+        else if(oyeconfirm_flag==true){
+            Log.i(TAG,"flaga isa 5 ");
+//                super.onBackPressed();
+            Log.i("SIGNUP_FLAG","Poke Poke Pokemon......: "+getSupportFragmentManager().getBackStackEntryCount());
+//            getSupportFragmentManager().popBackStack();
+            closeOyeConfirmation();
+//            oyeconfirm_flag=false;
+            backpress = 0;
 
         }
 
@@ -1951,12 +1977,7 @@ Log.i(TAG,"Image is the "+out);
 
     public  void closeOyeConfirmation(){
         Log.i("backstack count","   : "+oyeconfirm_flag+"  "+getSupportFragmentManager().getBackStackEntryCount());
-        if(oyeconfirm_flag==true) {
-//            for(int i=1;i<getSupportFragmentManager().getBackStackEntryCount();i++)
-            getSupportFragmentManager().popBackStackImmediate();
-//            getSupportFragmentManager().popBackStackImmediate();
-            oyeconfirm_flag=false;
-        }
+
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         cancel_btn.setVisibility(View.GONE);
@@ -1965,7 +1986,14 @@ Log.i(TAG,"Image is the "+out);
         confirm_screen_title.setVisibility(View.GONE);
         Log.i("backstack count1","   : "+oyeconfirm_flag+"  "+getSupportFragmentManager().getBackStackEntryCount());
         dealsWrapper.setVisibility(View.VISIBLE);
-//        oyeconfirm_flag=false;
+        if(oyeconfirm_flag==true) {
+//            for(int i=1;i<getSupportFragmentManager().getBackStackEntryCount();i++)
+            // getSupportFragmentManager().popBackStackImmediate();
+          //  getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
+
+            getSupportFragmentManager().popBackStackImmediate();
+            oyeconfirm_flag=false;
+        }
     }
 
 

@@ -2,11 +2,36 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="72eee987-c422-42ec-8275-641253420ec3" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/drawable/deals_button_background.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/drawable/ok_button_background.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/drawable/search_suggestion_border.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/build.gradle" afterPath="$PROJECT_DIR$/Oyeok/app/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/RPOT/ApiSupport/services/UserApiService.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/RPOT/ApiSupport/services/UserApiService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/RPOT/PriceDiscovery/UI/PhasedSeekBarCustom/CustomPhasedSeekBar.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/RPOT/PriceDiscovery/UI/PhasedSeekBarCustom/CustomPhasedSeekBar.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/SignUp/SignUpFragment.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/SignUp/SignUpFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/BrokerDealsListActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/BrokerDealsListActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/BrokerMainActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/BrokerMainActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/ClientDealsListActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/ClientDealsListActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/ClientMainActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/ClientMainActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/DealConversationActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/DealConversationActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/BrokerMap.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/BrokerMap.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/BrokerPreokFragment.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/BrokerPreokFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/CardFragment.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/CardFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/DashboardClientFragment.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/DashboardClientFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/OyeConfirmation.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/OyeConfirmation.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/activity_dashboard.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/activity_dashboard.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/activity_deals_list.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/activity_deals_list.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/deal_item.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/deal_item.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/fragment_broker_preok.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/fragment_broker_preok.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/fragment_broker_preok_common.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/fragment_broker_preok_common.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/fragment_sign_up.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/fragment_sign_up.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/list_item1.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/list_item1.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/AndroidManifest.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/adapters/ChatListAdapter.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/adapters/ChatListAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/build.gradle" afterPath="$PROJECT_DIR$/Oyeok/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/adapters/IntroAdapter.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/adapters/IntroAdapter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/helpers/General.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/helpers/General.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/cardfragment1.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/cardfragment1.xml" />
     </list>
     <ignored path="DeploymentBranch.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,9 +56,12 @@
         <entry file="file://$PROJECT_DIR$/Oyeok/app/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
+              <caret line="167" column="0" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
               <folding>
-                <marker date="1474116705000" expanded="true" signature="9402:9481" placeholder="..." />
+                <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+                <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+                <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+                <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
               </folding>
             </state>
           </provider>
@@ -602,7 +630,10 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
           <folding>
-            <marker date="1474116705000" expanded="true" signature="9402:9481" placeholder="..." />
+            <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+            <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+            <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+            <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -652,7 +683,10 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
           <folding>
-            <marker date="1474116705000" expanded="true" signature="9402:9481" placeholder="..." />
+            <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+            <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+            <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+            <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -702,7 +736,10 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
           <folding>
-            <marker date="1474116705000" expanded="true" signature="9402:9481" placeholder="..." />
+            <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+            <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+            <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+            <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -752,7 +789,10 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
           <folding>
-            <marker date="1474116705000" expanded="true" signature="9402:9481" placeholder="..." />
+            <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+            <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+            <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+            <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -802,7 +842,10 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
           <folding>
-            <marker date="1474116705000" expanded="true" signature="9402:9481" placeholder="..." />
+            <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+            <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+            <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+            <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -927,9 +970,12 @@
     <entry file="file://$PROJECT_DIR$/Oyeok/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
+          <caret line="167" column="0" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
           <folding>
-            <marker date="1474116705000" expanded="true" signature="9402:9481" placeholder="..." />
+            <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+            <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+            <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+            <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
           </folding>
         </state>
       </provider>
