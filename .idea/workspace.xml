@@ -2,7 +2,36 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="72eee987-c422-42ec-8275-641253420ec3" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/drawable/deals_button_background.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/drawable/ok_button_background.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/drawable/search_suggestion_border.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/build.gradle" afterPath="$PROJECT_DIR$/Oyeok/app/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/RPOT/ApiSupport/services/UserApiService.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/RPOT/ApiSupport/services/UserApiService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/RPOT/PriceDiscovery/UI/PhasedSeekBarCustom/CustomPhasedSeekBar.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/RPOT/PriceDiscovery/UI/PhasedSeekBarCustom/CustomPhasedSeekBar.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/SignUp/SignUpFragment.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/SignUp/SignUpFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/BrokerDealsListActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/BrokerDealsListActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/BrokerMainActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/BrokerMainActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/ClientDealsListActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/ClientDealsListActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/ClientMainActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/ClientMainActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/DealConversationActivity.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/activities/DealConversationActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/BrokerMap.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/BrokerMap.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/BrokerPreokFragment.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/BrokerPreokFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/CardFragment.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/CardFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/DashboardClientFragment.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/DashboardClientFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/OyeConfirmation.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/java/com/nbourses/oyeok/fragments/OyeConfirmation.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/activity_dashboard.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/activity_dashboard.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/activity_deals_list.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/activity_deals_list.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/deal_item.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/deal_item.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/fragment_broker_preok.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/fragment_broker_preok.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/fragment_broker_preok_common.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/fragment_broker_preok_common.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/fragment_sign_up.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/fragment_sign_up.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/list_item1.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/dev/res/layout/list_item1.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/AndroidManifest.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/adapters/ChatListAdapter.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/adapters/ChatListAdapter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/adapters/IntroAdapter.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/adapters/IntroAdapter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/helpers/General.java" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/java/com/nbourses/oyeok/helpers/General.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/cardfragment1.xml" afterPath="$PROJECT_DIR$/Oyeok/app/src/main/res/layout/cardfragment1.xml" />
     </list>
     <ignored path="DeploymentBranch.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,8 +56,13 @@
         <entry file="file://$PROJECT_DIR$/Oyeok/app/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
-              <folding />
+              <caret line="167" column="0" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
+              <folding>
+                <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+                <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+                <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+                <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -66,8 +100,8 @@
       <file leaf-file-name="build.gradle" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Oyeok/MPChartLib/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5502392">
-              <caret line="23" column="16" selection-start-line="23" selection-start-column="16" selection-end-line="23" selection-end-column="16" />
+            <state vertical-scroll-proportion="0.14354067">
+              <caret line="6" column="30" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -119,7 +153,7 @@
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
+    <navigator currentView="AndroidView" proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -133,7 +167,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -186,7 +220,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -201,11 +235,11 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Oyeok" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="show.migrate.to.gradle.popup" value="false" />
@@ -510,7 +544,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="4" y="23" width="1276" height="773" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977098" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -524,7 +558,7 @@
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24878444" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20259319" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Fabric" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
@@ -559,11 +593,48 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/Oyeok/MPChartLib/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Oyeok/MPChartLib/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Oyeok/MPChartLib/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Oyeok/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Oyeok/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+            <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+            <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+            <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -611,7 +682,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+            <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+            <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+            <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -659,7 +735,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+            <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+            <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+            <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -707,7 +788,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+            <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+            <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+            <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -755,7 +841,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+            <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+            <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+            <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -879,8 +970,13 @@
     <entry file="file://$PROJECT_DIR$/Oyeok/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
-          <folding />
+          <caret line="167" column="0" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
+          <folding>
+            <marker date="1474280759000" expanded="true" signature="125:400" placeholder="{...}" />
+            <marker date="1474280759000" expanded="true" signature="224:234" placeholder="{" />
+            <marker date="1474280759000" expanded="true" signature="299:305" placeholder="}" />
+            <marker date="1474280759000" expanded="true" signature="10792:10832" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -918,8 +1014,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Oyeok/MPChartLib/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5502392">
-          <caret line="23" column="16" selection-start-line="23" selection-start-column="16" selection-end-line="23" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.14354067">
+          <caret line="6" column="30" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
           <folding />
         </state>
       </provider>
