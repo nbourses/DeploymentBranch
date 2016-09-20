@@ -51,6 +51,7 @@ public class SimpleCustomPhasedAdapter implements CustomPhasedAdapter {
 
     @Override
     public String getBrokerDetails(int position) {
+
         return time[position];
     }
 }

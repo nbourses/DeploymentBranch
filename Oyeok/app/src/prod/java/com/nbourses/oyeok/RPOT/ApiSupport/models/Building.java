@@ -8,9 +8,37 @@ import java.util.List;
 
 public class Building {
 
+
+
+
+    @SerializedName("rate_growth")
+    @Expose
+    private String rate_growth;
+
+
+
+    @SerializedName("config")
+    @Expose
+    private String config;
     @SerializedName("name")
     @Expose
     private String name;
+
+    public String getRate_growth() {
+        return rate_growth;
+    }
+
+    public void setRate_growth(String rate_growth) {
+        this.rate_growth = rate_growth;
+    }
+
+
+    public String getConfig() {
+        return config;
+    }
+
+
+
     @SerializedName("or_psf")
     @Expose
     private String orPsf;
@@ -26,6 +54,10 @@ public class Building {
      * @return
      * The name
      */
+
+
+
+
     public String getName() {
         return name;
     }

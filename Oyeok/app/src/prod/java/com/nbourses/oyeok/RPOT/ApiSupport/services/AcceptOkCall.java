@@ -45,7 +45,7 @@ public class AcceptOkCall {
 
     OnAcceptOkSuccess mCallBack;
     public void acceptOk(final HashMap<String, Float> listings, JSONArray m, int position, final DBHelper dbHelper, final Activity activity) {
-
+        Log.i(TAG,"chaman prasanna 2");
         if(General.isNetworkAvailable(activity)) {
             General.slowInternet(activity);
 
@@ -107,11 +107,12 @@ public class AcceptOkCall {
         Log.i("TRACEOK", "if called "+user1);
 //        if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")&& isNetworkAvailable(activity))
 //        if (isNetworkAvailable(activity)) {
+            Log.i(TAG,"chaman prasanna 3");
             try {
                 user1.acceptOk(acceptOk, new Callback<AcceptOk>() {
                     @Override
                     public void success(AcceptOk acceptOk, Response response) {
-
+                        Log.i(TAG,"chaman prasanna 4");
                         General.slowInternetFlag = false;
                         General.t.interrupt();
 
@@ -133,9 +134,11 @@ public class AcceptOkCall {
 
                         if (acceptOk.responseData.getMessage() == null) {
                             Log.i("TRACEOK", "if called "+response);
-
+                            Log.i(TAG,"chaman prasanna 5");
                            // Log.d(TAG, "getOyeId " + acceptOk.responseData.getOyeId());
-                            Log.d(TAG, "getOkId " + acceptOk.responseData.getOkId());
+                            Log.i(TAG,"chaman prasanna 6 "+ acceptOk.responseData);
+
+                            Log.i(TAG, "getOkId " + acceptOk.responseData.getOkId());
 
 
 
@@ -150,6 +153,7 @@ public class AcceptOkCall {
                             Log.i("TRACEOK", "if called mCallBack"+mCallBack);
 
                             if (mCallBack != null) {
+                                Log.i(TAG,"chaman prasanna 7");
                                 Log.i("TRACEOK", "if called ");
                                 Log.i("TRACEOK", "if called " +acceptOk.responseData.getMessage());
 
@@ -181,7 +185,7 @@ public class AcceptOkCall {
                                 Bundle extra = new Bundle();
                                 extra.putSerializable("listings",listings);
                                 openDealsListing.putExtras(extra);
-                               openDealsListing.putExtra("OkAccepted","yes");
+                                openDealsListing.putExtra("OkAccepted","yes");
                                 openDealsListing.putExtra(AppConstants.OK_ID, acceptOk.responseData.getOkId());
                                 openDealsListing.putExtra("userRole", "broker");
 
@@ -210,6 +214,7 @@ public class AcceptOkCall {
                     droomChatFirebase.updateChatRoom(okId,userId1,userId2,droomDetails);*/
                         }
                         else {
+                            Log.i(TAG,"chaman prasanna 8");
                             Log.i("TRACE", "else called ");
                             Log.i("TRACE","serverMessage "+acceptOk.responseData.getMessage());
 

@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,9 +48,11 @@ public class Profile extends Fragment {
     private ImageView profileImage,profileImageMain;
     DBHelper dbhelper;
     String filePath="";
-
+//
+//    @Bind(R.id.txtEmail)
+//    TextView emailTxt1;
      String name;
-
+    TextView tx;
     String email ;
     String namePattern = "[a-zA-Z]+[a-zA-Z0-9]+";
     String emailPattern = "[a-z]+[a-zA-Z0-9._-]+@[a-z]+\\.+(in|com|org|net)";
@@ -127,6 +130,7 @@ public class Profile extends Fragment {
                 name  = username_txt.getText().toString().trim();
                 email = emailTxt.getText().toString().trim();
                 validationCheck();
+
                 //updateProfile();
             }
         });
@@ -212,7 +216,6 @@ public class Profile extends Fragment {
 
                 General.slowInternetFlag = false;
                 General.t.interrupt();
-
                 Log.i("Profile","success"+response);
                 SnackbarManager.show(
                     Snackbar.with(getContext())
@@ -227,12 +230,31 @@ public class Profile extends Fragment {
                 General.setSharedPreferences(getContext(),AppConstants.NAME,username_txt.getText().toString());
                 dbhelper.save(DatabaseConstants.imageFilePath,filePath);
                 //drawerFragment = (FragmentDrawer) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-
+//                AppConstants.EMAIL_PROFILE=email;
                 profileImageMain = (ImageView)getActivity().findViewById(R.id.profile_image_main);
+
 //                if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
 //                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbhelper.getValue(DatabaseConstants.imageFilePath));
 //                    profileImageMain.setImageBitmap(yourSelectedImage);
 //                }
+
+               /* if (!General.getSharedPreferences(getContext(),AppConstants.EMAIL).equalsIgnoreCase("null")) {
+                    emailTxt1.setVisibility(View.VISIBLE);
+                    emailTxt1.setText(General.getSharedPreferences(getContext(),AppConstants.EMAIL));
+
+                }*/
+                /*BrokerMainActivity act=new
+                         BrokerMainActivity();
+                act.profileEmailUpdate(email);*/
+//                ((BrokerMainActivity)getContext()).profileEmailUpdate(email);
+
+                Intent in = new Intent(AppConstants.EMAIL_PROFILE);
+                //in.putExtra("emailProfile", email);
+                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+//                tx=(TextView) getView().findViewById(R.id.txtEmail);
+//                Log.i("kaka","kaka"+tx.getText());
+//                tx.setText("sushil");
+//                Log.i("kaka","kaka"+tx.getText());
 
             }
 
@@ -274,6 +296,8 @@ public class Profile extends Fragment {
          if (name.matches(namePattern) && (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) )
         {
             updateProfile();
+                //if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+
 
         }
 

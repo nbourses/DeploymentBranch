@@ -52,7 +52,6 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.User.UserProfileViewModel;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
 import com.nbourses.oyeok.activities.BrokerMainActivity;
-import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -74,6 +73,9 @@ import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+
+//import com.nbourses.oyeok.RPOT.Droom_Real_Estate.UI.Droom_Chat_New;
+//import com.nbourses.oyeok.RPOT.OyeOkBroker.OyeIntentSpecs;
 
 //digits
 //digits end
@@ -218,8 +220,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         b=getArguments();
         redirectToOyeIntentSpecs=false;
         okBroker=false;
-
-
+        //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //listings= (HashMap<String, Float>) b.getSerializable("listings");
         Log.i("signup fragment","building listings are "+listings);
         String[] bNames = new String[3];
@@ -251,9 +252,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         if(b.getString("lastFragment")!=null)
             if(b.getString("lastFragment")!=null)
                 lastFragment=b.getString("lastFragment");
-        Log.d(TAG, "lastFragment "+lastFragment);
+        Log.i(TAG, "lastFragment "+lastFragment);
 
-        redirectToOyeIntentSpecs=true;
+       // redirectToOyeIntentSpecs=true;
 
 
         View view1 =  inflater.inflate(R.layout.activity_deals_list, container, false);
@@ -262,8 +263,13 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         listViewDeals = (ListView) view1.findViewById(R.id.listViewDeals);
 
 
+/*if(lastFragment.equalsIgnoreCase("clientDrawer") || lastFragment.equalsIgnoreCase("oyed"))
+    okBroker = false;*/
+        if(lastFragment.equalsIgnoreCase("brokerDrawer")|| lastFragment.equalsIgnoreCase("okyed"))
+    okBroker = true;
 
-        if(lastFragment.equals("RentalBrokerAvailable")||lastFragment.equals("RentalBrokerRequirement")||
+
+       /* if(lastFragment.equals("RentalBrokerAvailable")||lastFragment.equals("RentalBrokerRequirement")||
                 lastFragment.equals("SaleBrokerAvailable")||lastFragment.equals("SaleBrokerRequirement") ||
                 lastFragment.equals("BrokerPreokFragment")||lastFragment.equals("ChatBroker")) {
                 okBroker = true;
@@ -279,7 +285,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         }
         if(lastFragment.equals("Chat")) {
             redirectToOyeIntentSpecs = false;
-        }
+        }*/
+
 
         Log.i("Signup called =", "view assigned");
 
@@ -305,8 +312,18 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 Log.i(TAG, "phoneNumber " + phoneNumber);
                 Log.i(TAG, "getPhoneNumber " + session.getPhoneNumber());
                 mobile_number = session.getPhoneNumber();
+                Log.i(TAG,"mobile number is the 2 "+mobile_number);
 
-                submitButton();
+                if(mobile_number.isEmpty()){
+                    SnackbarManager.show(
+                            Snackbar.with(context)
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Currently We are experiencing issues with sign ups, Please try again later.")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }
+                else{
+                    submitButton();
+                }
             }
 
             @Override
@@ -388,7 +405,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         tvcontent= (TextView) view.findViewById(R.id.tvcontent);
          editProfile_pic = (ImageView) view.findViewById(R.id.editProfile_pic);
 
-        if(okBroker==false) {
+        if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
             tvheading.setText(R.string.client_sign_up_heading);
             tvcontent.setText(R.string.client_sign_up_content);
         }
@@ -435,7 +452,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
 
         submit.setText("LOGIN");
-        if(okBroker==false) {
+        if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
             tvheading.setText(R.string.client_log_in_heading);
             tvcontent.setText(R.string.client_sign_up_content);
         }
@@ -458,7 +475,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
      new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
      submit.setText("REGISTER");
 
-     if(okBroker==false) {
+     if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
          tvheading.setText(R.string.client_sign_up_heading);
          tvcontent.setText(R.string.client_sign_up_content);
      }
@@ -539,7 +556,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 Log.i("TRACE", "inside submitprofile button");
 
 
-
+                Log.i(TAG,"mobile number is the 1 "+mobile_number);
                 Log.i("TRACE inside sb","mobile_number");
                 Log.i("TRACE inside sb",""+mobile_number);
 
@@ -573,6 +590,7 @@ if(newUser==true) {
         Digits.authenticate(authCallback, R.style.CustomDigitsTheme);
 }else
                     Digits.authenticate(authCallback, R.style.CustomDigitsTheme);
+
 
 
 //                context = getContext();
@@ -690,7 +708,6 @@ if(newUser==true) {
       AppConstants.REGISTERING_FLAG=true;
            signup_success();
 
-
         }
 
 
@@ -707,16 +724,19 @@ if(newUser==true) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(API).setLogLevel(RestAdapter.LogLevel.FULL).build();
         OyeokApiService service;
-
+Log.i(TAG,"mobile number is the "+mobile_number);
         User user = new User();
         user.setMobileNo(mobile_number);
         user.setMobileCode("+91");
         user.setEmail(Semail);
+        user.setDemoId(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
         user.setName(Sname);
+
         if(okBroker)
             user.setUserRole("broker");
         else
             user.setUserRole("client");
+
         user.setPushToken(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
         user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
@@ -751,6 +771,66 @@ if(newUser==true) {
         userProfileViewModel.setDeviceId(my_user_id);
         General.setSharedPreferences(getContext(),AppConstants.NAME,Sname); //necessary to get name for default deal
 
+/*
+
+        if(General.isNetworkAvailable(getContext())) {
+            General.slowInternet(getContext());
+
+            RestAdapter restAdapter1 = new RestAdapter.Builder()
+                    .setEndpoint(AppConstants.SERVER_BASE_URL)
+                    .build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+            OyeokApiService oyeokApiService = restAdapter1.create(OyeokApiService.class);
+
+
+            try {
+                oyeokApiService.signUp(user, new Callback<JsonElement>() {
+                    @Override
+                    public void success(JsonElement jsonElement, Response response) {
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
+                        Log.i("signup CALLED", "updateStatus success ");
+
+
+                        JsonObject k = jsonElement.getAsJsonObject();
+                        try {
+
+                            Log.i("signup", "updateStatus success response " + response);
+
+
+                            JSONObject ne = new JSONObject(k.toString());
+                            Log.i("signup", "updateStatus success ne " + ne.getString("success"));
+
+
+                        } catch (JSONException e) {
+                            Log.e("TAG", e.getMessage());
+                            Log.i("signup CALLED", "updateStatus Failed " + e.getMessage());
+                        }
+
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
+                        Log.i("BROKER BUILDINGS CALLED", "update status failed " + error);
+                    }
+                });
+
+
+            } catch (Exception e) {
+                Log.e("TAG", e.getMessage());
+            }
+
+        }
+        else{
+
+            General.internetConnectivityMsg(getContext());
+        }
+
+*/
 
         if(General.isNetworkAvailable(getContext())) {
             General.slowInternet(getContext());
@@ -764,45 +844,9 @@ if(newUser==true) {
                         General.slowInternetFlag = false;
                         General.t.interrupt();
 
-                        //Broadcast a map that signup has been done(to handle backs)
-//                        signupSuccessflag = true;
-//                        Log.i("signupSuccessflag s","signupSuccessflag "+signupSuccessflag);
-//                        Intent i = new Intent(AppConstants.SIGNUPSUCCESSFLAG);
-//                        i.putExtra("signupSuccessflag",signupSuccessflag);
-//                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
-
                         Log.i("TAG", "Inside signup success");
-//                        SnackbarManager.show(
-//                                Snackbar.with(context)
-//                                        .position(Snackbar.SnackbarPosition.BOTTOM)
-//                                        .text("Please wait we are signing you up.")
-//                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
-
-
-//
-//        userInfo.setName("fatyaa");
-//        user.setEmailId("dukatii@gmail.com");
-//
-//        myRealm.beginTransaction();
-//        UserInfo users = myRealm.copyToRealm(user);
-//        myRealm.commitTransaction();
-
-                        // Set its fields
-
-
-
-
-
-//                        RealmResults<UserInfo> results1 =
-//                                myRealm.where(UserInfo.class).findAll();
-//
-//                        for(UserInfo c:results1) {
-//                            Log.d("results1", c.getName());
-//                        }
-
-
-
+                        Log.i(TAG,"fakata responsedata "+signUp.responseData.getMessage());
 
                        try {
                            my_user_id = signUp.responseData.getUserId();
@@ -861,7 +905,7 @@ if(newUser==true) {
                           }
 
                             final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                            builder.setMessage("Do you want to Login as a "+oldRole)
+                            builder.setMessage("You have a "+oldRole+" account associated with this number.\n Do you want to Login as a "+oldRole)
                                     .setCancelable(true)
                                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                         public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
@@ -906,10 +950,13 @@ if(newUser==true) {
                             submit.setBackgroundColor(ContextCompat.getColor(context, R.color.greenish_blue));
                             submit.setText("DONE");
 
+                            return;
 
-                            if (redirectToOyeIntentSpecs) {
-                                /*Fragment fragment = null;
-                                Bundle bundle = new Bundle();
+
+                           /* if (redirectToOyeIntentSpecs) {
+                                //Fragment fragment = null;
+
+                                *//*Bundle bundle = new Bundle();
                                 bundle.putString("cameFrom", "SignUp");
                                 bundle.putStringArray("propertySpecification", propertySpecification);
                                 fragment = new OyeIntentSpecs();
@@ -918,13 +965,9 @@ if(newUser==true) {
                                 FragmentManager fragmentManager = getFragmentManager();
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                 fragmentTransaction.replace(R.id.container_map, fragment);
-                                fragmentTransaction.commit();*/
+                                fragmentTransaction.commit();*//*
                             }
-
-                            return;
-                        }else{
-                            Log.i("TAG","suspecto "+role_of_user);
-                            General.setSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
+*/
                         }
 
                         Log.i("TRACE", "Userid" +my_user_id);
@@ -932,6 +975,7 @@ if(newUser==true) {
                         //store user_id in shared preferences
                         General.setSharedPreferences(getActivity(), AppConstants.USER_ID, my_user_id);
                         General.setSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER, "yes");
+                        General.setSharedPreferences(context, AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
 
 
                         //save in realm
@@ -983,9 +1027,85 @@ if(newUser==true) {
                         } else
                             dbHelper.save(DatabaseConstants.user, "Client");
 
-                        if (redirectToOyeIntentSpecs) {
+Log.i(TAG,"lastfragment "+lastFragment);
 
-                            letsOye();
+                        if(redirectBroker){
+
+                            Intent intent = new Intent(getContext(),BrokerMainActivity.class);
+                            intent.putExtra("userRole", "broker");
+                            //intent.putExtra("default_deal_flag",true);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                    Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+
+                            AppConstants.SIGNUP_FLAG =false;
+
+
+                        }
+                        else if(redirectClient){
+
+                            Intent intent = new Intent(getContext(),ClientMainActivity.class);
+                            intent.putExtra("userRole", "client");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                    Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+
+                            AppConstants.SIGNUP_FLAG =false;
+
+
+                            //intent.putExtra("default_deal_flag",true);
+                            startActivity(intent);
+                        }
+
+                       else if(lastFragment.equalsIgnoreCase("clientDrawer")){
+                            Log.i(TAG,"lastfragment 1 "+lastFragment);
+                            Intent intent = new Intent(getContext(),ClientMainActivity.class);
+                            intent.putExtra("userRole", "client");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                    Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+
+                            AppConstants.SIGNUP_FLAG =false;
+                        }
+                        else if(lastFragment.equalsIgnoreCase("brokerDrawer")){
+                            Log.i(TAG,"lastfragment 2 "+lastFragment);
+                            Intent intent = new Intent(getContext(),BrokerMainActivity.class);
+                            intent.putExtra("userRole", "client");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                    Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+
+                            AppConstants.SIGNUP_FLAG =false;
+                        }
+                        else if(lastFragment.equalsIgnoreCase("oyed")){
+                            General.publishOye(getActivity());
+
+                        }
+                        else if(lastFragment.equalsIgnoreCase("okyed")){
+                            Log.i(TAG,"prasanna 1");
+                            jsonArray=b.getString("JsonArray");
+                            try {
+                                p=new JSONArray(jsonArray);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            int j=b.getInt("Position");
+                            Log.i(TAG,"c prasanna 2 " +j);
+                            AcceptOkCall a = new AcceptOkCall();
+                            a.setmCallBack(SignUpFragment.this);
+                            a.acceptOk(listings,p,j,dbHelper, getActivity());
+
+                        }
+
+                        /*if (redirectToOyeIntentSpecs) {
+
+                            Log.i(TAG,"chaman prasanna ");
+
+                           // letsOye();
                         }
                         else
                         {
@@ -1081,7 +1201,7 @@ if(newUser==true) {
                                 AppConstants.REGISTERING_FLAG=false;
                                 Log.i("REACHED", "I am here2");
                             }
-                        }
+                        }*/
 
                         /*activity=(DashboardActivity)getActivity();
                         activity.refresh();
@@ -1126,8 +1246,10 @@ if(newUser==true) {
                         Log.i("TRACE", "Inside signup Failure" + error);
 
                         Log.i("TAG", "Inside signup Failure" + error.getMessage());
+
                         if (redirectToOyeIntentSpecs) {
                            /* Fragment fragment = null;
+
                             Bundle bundle = new Bundle();
                             bundle.putString("cameFrom", "SignUp");
                             bundle.putStringArray("propertySpecification", propertySpecification);
@@ -1137,8 +1259,10 @@ if(newUser==true) {
                             FragmentManager fragmentManager = getFragmentManager();
                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                             fragmentTransaction.replace(R.id.container_map, fragment);
+
                             fragmentTransaction.commit();*/
                         }
+
                     }
                 });
             }catch (Exception e){
@@ -1168,20 +1292,20 @@ if(newUser==true) {
         // UserCredentials.saveString(ChooseRoleActivity.this, PreferenceKeys.PIC_PATH, picturePath);
         // Log.i(TAG,"My user id is:"+FirebaseClass.getString(context,FirebaseClass.MY_USER_ID));
 
-        if (user_role.equalsIgnoreCase("client")) {
+        /*if (user_role.equalsIgnoreCase("client")) {
             Log.i("TAG", "Starting Client activity");
 
 //            Intent NextActivity = new Intent(context, MainActivity.class);
 //            startActivity(NextActivity);
 //            finish();
-            /*Intent returnIntent = new Intent();
+            *//*Intent returnIntent = new Intent();
             if(pass==0) {
                 setResult(Activity.RESULT_OK, returnIntent);
             }else if(pass == 1)
             {
                 setResult(Activity.RESULT_CANCELED, returnIntent);
-            }*/
-        }
+            }*//*
+        }*/
     }
 
     public interface ShowChatList
@@ -1208,6 +1332,7 @@ if(newUser==true) {
             //open deals listing of broker
             Intent openBrokerDealsListing = new Intent(context, BrokerDealsListActivity.class);
             openBrokerDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
             context.startActivity(openBrokerDealsListing);
         }
 
@@ -1458,7 +1583,7 @@ if(newUser==true) {
 
        /* Log.i("TRACE","in ReplaceFrag");
 
-        Fragment fragment = new Droom_Chat_New();
+   /*     Fragment fragment = new Droom_Chat_New();
         fragment.setArguments(args);
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
