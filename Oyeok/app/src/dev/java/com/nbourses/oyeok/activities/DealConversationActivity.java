@@ -619,7 +619,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 Log.i(TAG,"imageshare 2 edittypemsg "+edtTypeMsg.getText().toString());
                 messageTyped = edtTypeMsg.getText().toString();
-//                edtTypeMsg.setText("");
+
                 //send message
 
                 Log.i("CHANNEL NAME"," "+channel_name);
@@ -652,16 +652,17 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     public void run() {
                         // Select the last row so it will scroll into view...
                         chatListView.setSelection(listAdapter.getCount());
+                        //
                     }
 
                 });
 
-               // chatMessages.remove(chatMessages.size()-1);
 
 
         checkLocalBlockStatus();
-                chatMessages.remove(chatMessages.size()-1);
 
+                Log.i(TAG,"chatMessages chatMessages 1"+chatMessages);
+                chatMessages.remove(chatMessages.size()-1);
         }
         //imgSendMsg.setClickable(false);
        // edtTypeMsg.setText("");
@@ -927,6 +928,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 jsonMsg = j;
             }
 
+
         }
         catch(Exception e){
 
@@ -943,7 +945,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         String msgStatus = null;
         final ChatMessage message = new ChatMessage();
         String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
-        String userID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
+        String userID = null;
 
         if(General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("yes"))
         {
@@ -1114,8 +1116,14 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         ChatMessageUserSubtype userSubtype = null;
         ChatMessageUserType userType = null;
         ChatMessage message;
+        String userID = null;
         String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
-
+        if(General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("yes"))
+        {
+            userID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
+        }
+        else
+            userID = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
         String channelName;  // local
 
         Log.i("TAG","INSIDE DISPLAYMESSAGE =========================");
@@ -1137,46 +1145,66 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             for (Message c : results1) {
                 Log.i(TAG, "until insideroui2 ");
-                Log.i(TAG, "until insideroui3 " + c.getOk_id());
+                Log.i(TAG, "until insideroui3 " + c.getFrom());
 //                Log.i(TAG, "until insideroui4 " + c.getTimestamp());
 //                Log.i(TAG, "until insideroui4 " + c.getMessage());
 //                Log.i(TAG, "until insideroui4 " + c.getFrom());
 //                Log.i(TAG, "until insideroui4 " + c.getTo());
 //                Log.i(TAG, "until insideroui4 " + c.getImageUrl());
 
-                if (c.getStatus().equalsIgnoreCase("DEFAULT")) {
+                if (c.getStatus().equalsIgnoreCase("DEFAULT") || c.getStatus().equalsIgnoreCase("SYSTEM")){
                     Log.i("CONVER", "DEFAULT set");
                     userType = ChatMessageUserType.DEFAULT;
                 }
-                else if (c.getStatus().equalsIgnoreCase("IMG")){
+
+                if (c.getStatus().equalsIgnoreCase("IMG")){
+
+                    Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
 
                     userType = ChatMessageUserType.IMG;
 
-                    imageUrl = c.getImageUrl();
+                    imageUrl = c.getMessage();
 
-                    user_id = c.getUser_id();
+                    imageName = imageUrl.substring(imageUrl.lastIndexOf("/")+1);
 
-
-                    if (!user_id.equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID))) {
-                        userSubtype = ChatMessageUserSubtype.SELF;
-                    }
-                    else {
-                        userSubtype = ChatMessageUserSubtype.OTHER;
-                    }
+                    Log.i("grrrr IMG IMAGE NAME"," "+imageName);
+                    Log.i(TAG, "calipso" + userSubtype);
 
                 }
-                else if ("LISTING".equalsIgnoreCase(c.getStatus())) {
-                    Log.i("CONVER", "LISTING set");
+
+                if (c.getStatus().equalsIgnoreCase("LISTING")){
+
+                    Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
+
                     userType = ChatMessageUserType.LISTING;
+
+
                 }
-//                else if(c.getStatus().equalsIgnoreCase("support"))
-//                {
-//                    userType = ChatMessageUserType.OTHER;     // for support
-//                }
-                else if (!c.getFrom().equalsIgnoreCase(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID))) {
-                    userType = ChatMessageUserType.SELF;
-                } else {
-                    userType = ChatMessageUserType.OTHER;
+
+                String demoId = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
+
+                if(userID.equalsIgnoreCase(c.getFrom()) || demoId.equalsIgnoreCase(c.getFrom()))
+                {
+
+                    userSubtype = ChatMessageUserSubtype.SELF;
+                }
+                else
+                {
+                    userSubtype = ChatMessageUserSubtype.OTHER;
+                }
+
+                if(c.getStatus() == null || userType == null)
+                {
+                    Log.i("MSGSTATUS","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%% "+userID);
+                    if(userID.equalsIgnoreCase(c.getFrom()) || demoId.equalsIgnoreCase(c.getFrom()))
+                    {
+                        userType = ChatMessageUserType.SELF;
+                    }
+                    else
+                    {
+                        userType = ChatMessageUserType.OTHER;
+                    }
+
                 }
 
                 message = new ChatMessage();
@@ -1299,7 +1327,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             Log.i("TEST", "jsonMsg in send msg _from" + jsonMsg);
 
             sendNotification(jsonMsg);
-            displayMessage(jsonMsg);
+            //displayMessage(jsonMsg);    // Dont uncomment (avoid redundant messages in list)
 
             lastMessageTime = String.valueOf(System.currentTimeMillis());
 
@@ -1609,58 +1637,77 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //        }
 
 
+
         try {
 
             int jsonArrayHistoryLength = jsonArrayHistory.length();
 
-            Log.i(TAG, "until here is the 1 jsonArrayHistory "+jsonArrayHistory);
-            Log.i(TAG, "until here is the 1 jsonArrayHistoryLength "+jsonArrayHistoryLength);
+            Log.i(TAG, "until here is the cacheMessages 1 jsonArrayHistory "+jsonArrayHistory);
+            Log.i(TAG, "until here is the cacheMessages 1 jsonArrayHistoryLength "+jsonArrayHistoryLength);
 //            myRealm = General.realmconfig(this);
 
             myRealm = General.realmconfig(this);
             myRealm.beginTransaction();
 
             for (int i = 0; i < jsonArrayHistoryLength; i++) {
-                JSONObject jsonMsg = jsonArrayHistory.getJSONObject(i);
+                JSONObject js = jsonArrayHistory.getJSONObject(i);
+                Log.i(TAG, "until here is the cacheMessages 1 jsonMsg yo yo to " + js);
+                if(js.getJSONObject("message").has("pn_gcm")) {
+
+                    JSONObject jsonMsg = js.getJSONObject("message").getJSONObject("pn_gcm").getJSONObject("data");
 
 
+                    Log.i(TAG, "until here is the cacheMessages 1 jsonMsg yo yo yo " + jsonMsg);
 
-                Log.i(TAG, "until here is the 1 jsonMsg "+jsonMsg);
+                    if (jsonMsg.has("message") && (jsonMsg.has("from") || jsonMsg.has("_from"))) {
 
-                if (jsonMsg.has("message") && jsonMsg.has("from")) {
-                    JSONObject j = jsonMsg.getJSONObject("message");
-                    String timetoken = jsonMsg.getString("timetoken");
-                    String imageUrl = null;
-                    Log.i(TAG, "until here is the 1  " + jsonMsg.getString("message"));
-                    String from = j.getString("from");
-                    String to = j.getString("to");
-                    String body = j.getString("message");
-                    if(j.has("imageUrl"))
-                        imageUrl = j.getString("imageUrl");
-                    else
-                        imageUrl = null;
+                        String timetoken = js.getString("timetoken");
+                        String imageUrl = null;
+                        String from = null;
+                        String msgStatus = null;
+                        Log.i(TAG, "until here is the cacheMessages 1 to to to  " + jsonMsg.getString("message"));
 
-                    if(j.has("user_id"))
-                        user_id = j.getString("user_id");
+                        if (jsonMsg.has("from")) {
+                            from = jsonMsg.getString("from");
+                        } else {
+                            from = jsonMsg.getString("_from");
+                        }
 
-                    Log.i(TAG,"until here is the 1 2 "+from+" "+to+" "+body);
+                        String to = jsonMsg.getString("to");
+                        String body = jsonMsg.getString("message");
+                        if (jsonMsg.has("imageUrl"))
+                            imageUrl = jsonMsg.getString("imageUrl");
+                        else
+                            imageUrl = null;
 
-                    message = new Message();
-                    Log.i(TAG,"until here is the 1 2 ithe "+myRealm.isInTransaction());
+                        if (jsonMsg.has("user_id"))
+                            user_id = jsonMsg.getString("user_id");
+
+                        if (jsonMsg.has("status"))
+                            msgStatus = jsonMsg.getString("status");
+                        else
+                            msgStatus = null;
+
+
+                        Log.i(TAG, "until here is the cacheMessages 1 2 " + from + " " + to + " " + body);
+
+                        message = new Message();
+                        Log.i(TAG, "until here is the cacheMessages 1 2 ithe " + myRealm.isInTransaction());
 //
-                    message = myRealm.createObject(Message.class); //new Message();
-                    Log.i(TAG,"until here is the 1 2 Tithe");
-                    message.setOk_id(channel_name);
-                    message.setMessage(body);
-                    message.setImageUrl(imageUrl);
-                    message.setTimestamp(timetoken);
-                    message.setFrom(from);
-                    message.setUser_id(user_id);
-                    message.setTo(to);
+                        message = myRealm.createObject(Message.class); //new Message();
+                        Log.i(TAG, "until here is the cacheMessages 1 2 Tithe");
+                        message.setOk_id(channel_name);
+                        message.setMessage(body);
+                        message.setImageUrl(imageUrl);
+                        message.setTimestamp(timetoken);
+                        message.setFrom(from);
+                        message.setUser_id(user_id);
+                        message.setTo(to);
+                        message.setStatus(msgStatus);
 
-                    Log.i(TAG,"until here is the 246 "+body);
-                    myRealm.copyToRealm(message);
-                    Log.i(TAG,"until here is the 634 "+body);
+                        Log.i(TAG, "until here is the cacheMessages 246 " + body);
+                        myRealm.copyToRealm(message);
+                        Log.i(TAG, "until here is the cacheMessages 634 " + body);
 
 //                    myRealm.executeTransaction(new Realm.Transaction() {
 //                        @Override
@@ -1677,8 +1724,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //                    });
 
 
-                    Log.i(TAG,"until here is the 1 3 I am back "+body);
+                        Log.i(TAG, "until here is the cacheMessages 1 3 I am back " + body);
 
+                    }
                 }
             }
 
@@ -1933,7 +1981,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
             }
 
-/*    ******************************     DO WE NEED THIS FOR BROKER? CHANGE IT WITH LISTING
+/*    ******************************
 
   if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
 
@@ -1959,7 +2007,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             Log.i(TAG,"Caught in exception showing default message "+e);
         }
         finally {
-            //chatMessages.clear();   // clears chatmessages to avoid redundant messages after loadhistory called(Clears out cached msgs before loading actual)
+          //  chatMessages.clear();   // clears chatmessages to avoid redundant messages after loadhistory called(Clears out cached msgs before loading actual)
         }
     }
 
@@ -1986,10 +2034,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
              intent = "Selling";
 
                 jsonMsg.put("message", "You have initiated an enquiry for property in "+locality+" for "+intent+". ");
-
-
-
-
 
 
             Log.i(TAG,"display default message "+jsonMsg);
@@ -2405,7 +2449,7 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
                                }
                            }
                             else{
-                               Log.i(TAG,"message to send is the "+messageTyped);
+                               Log.i(TAG,"message to send is the pro "+messageTyped);
                                sendMessage(messageTyped);
                             }
 
@@ -2417,6 +2461,7 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
                     catch (JSONException e) {
                         Log.e("TAG", e.getMessage());
                         Log.i("getStatus CALLED","Failed "+e.getMessage());
+                        sendMessage(edtTypeMsg.getText().toString());
                     }
 
                 }
