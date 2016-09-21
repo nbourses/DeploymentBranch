@@ -151,6 +151,12 @@ public class AppConstants {
     public static  String PHASED_SEEKBAR_CLICKED = "clicked";
     public static String NUMBER_OF_BROKER="19";
     public static String CUSTOMER_TYPE="Tenant";
+    public static String DRAWTEXT="true";
+    public static String DRAWTEXT1="true1";
+    public static String DRAWTEXT2="true2";
+    public static String DRAWTEXT3="true3";
+    public static String DRAWTEXT4="true4";
+
 
 
 }

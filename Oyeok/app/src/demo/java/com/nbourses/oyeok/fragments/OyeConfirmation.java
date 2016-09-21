@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -27,11 +29,11 @@ import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static java.lang.Math.log10;
 
@@ -39,7 +41,7 @@ import static java.lang.Math.log10;
 public class OyeConfirmation extends Fragment {
 
 
-   private ImageView calendar,proceed_to_oye;
+   private ImageView calendar,proceed_to_oye,addContact;
     private TextView display_date;
     LinearLayout available_sizes;
     LinearLayout confirm_layout_with_edit_button;
@@ -48,7 +50,8 @@ public class OyeConfirmation extends Fragment {
     TextView MyExpectation;
     TextView Property_conf_furnishing,selected_loc_to_oye;
     GoogleMap googleMap;
-
+    Animation slide_arrow;
+    private Timer timer;
     private OnFragmentInteractionListener mListener;
 
     public OyeConfirmation() {
@@ -68,33 +71,7 @@ public class OyeConfirmation extends Fragment {
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
     Calendar myCalendar = Calendar.getInstance();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Override
@@ -107,11 +84,13 @@ public class OyeConfirmation extends Fragment {
         available_sizes=(LinearLayout) view.findViewById(R.id.available_sizes);
         confirm_layout_with_edit_button=(LinearLayout) view.findViewById(R.id.confirm_layout_with_edit_button);
         proceed_to_oye=(ImageView) view.findViewById(R.id.proceed_to_oye);
+        addContact=(ImageView) view.findViewById(R.id.addContact);
         editDetails=(Button) view.findViewById(R.id.editDetails);
         MyExpectation=(TextView) view.findViewById(R.id.rate);
         Property_conf_furnishing=(TextView) view.findViewById(R.id.property_config);
         selected_loc_to_oye=(TextView) view.findViewById(R.id.selected_loc_to_oye);
-
+        slide_arrow=(AnimationUtils.loadAnimation(getContext(), R.anim.sliding_arrow));
+        StartOyeButtonAnimation();
         updateLabel();
 
         init();
@@ -119,6 +98,28 @@ public class OyeConfirmation extends Fragment {
         return view;
     }
 
+
+    private void StartOyeButtonAnimation() {
+
+        if (timer == null) {
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                proceed_to_oye.startAnimation(slide_arrow);
+
+                            }
+                        });
+                    }
+                }
+            }, 2000, 2000);
+
+        }
+    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
 
@@ -167,10 +168,31 @@ public class OyeConfirmation extends Fragment {
 //        });
 //
 
+        addContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+              proceed_to_oye.performClick();
+
+            }
+        });
+
+
+
         proceed_to_oye.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                General.publishOye(getContext());
+
+                if (General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                    getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
+
+                    ((ClientMainActivity)getActivity()).signUp();
+                   // General.publishOye(getContext());
+
+
+                }else
+                    General.publishOye(getContext());
+             // ((ClientMainActivity)getActivity()).closeOyeConfirmation();
 
             }
         });
@@ -190,18 +212,19 @@ public class OyeConfirmation extends Fragment {
 
 
     private void updateLabel(){
-        String myFormat = "dd/MMM/yy"; //In which you need put here
+        myCalendar.add(Calendar.DATE,1);
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         display_date.setText(sdf.format(myCalendar.getTime()));
     }
 
-    private void displayDatePicker(){
+  /*  private void displayDatePicker(){
 
         DatePickerDialog dpd = new DatePickerDialog(getContext(), date, myCalendar
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH));
 
-        String myFormat = "dd/MM/yy"; //In which you need put here
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         Date d = null;
@@ -223,7 +246,7 @@ public class OyeConfirmation extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 
 
@@ -259,7 +282,7 @@ public class OyeConfirmation extends Fragment {
     }
 
 
-    public void SetPropertyDetail(/*String price,String Config,String Date,String furnishing*/){
+    public void SetPropertyDetail(){
         /*Bundle bundle = this.getArguments();
         Log.i("confirmation1", "myexpectation" + bundle);
         if(bundle.getString("my")!=null) {
@@ -275,17 +298,40 @@ public class OyeConfirmation extends Fragment {
         Furnishing=General.getSharedPreferences(getContext(),AppConstants.FURNISHING);
        int price= Integer.parseInt(my_expectation);
         display_date.setText(PossessionDate);
-        text="<u><b><big>"+AppConstants.PROPERTY+"</big></u><small> Expectation = </small><big>"+numToVal(price)+" </big><small>| Deposit </small><big>"+numToVal(price*4)+ " </big></b>(negotiable)";
-        MyExpectation.setText(Html.fromHtml(text));
-        Property_conf_furnishing.setText(Property_Config+" "+Furnishing);
-        if(AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner"))
-          text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Tenants</b>";
-        else
-            text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Properties</b>";
+        if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")) {
+            if(AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner")) {
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u>&nbsp   <small>   Expectation = </small><big>\u20B9 " + numToVal(price) + " </big><small>| Deposit </small><big>\u20B9 " + numToVal(price * 4) + " </big></b><small>(negotiable)</small>";
+                MyExpectation.setText(Html.fromHtml(text));
+                text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Tenants</b>";
+                selected_loc_to_oye.setText(Html.fromHtml(text));
+            } else {
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u>  &nbsp <small>   Budget = </small><big>\u20B9 " + numToVal(price) + " </big><small> | Deposit </small><big>\u20B9 " + numToVal(price * 4) + " </big></b><small>(negotiable)<small>";
+                MyExpectation.setText(Html.fromHtml(text));
+                text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Properties</b>";
+                selected_loc_to_oye.setText(Html.fromHtml(text));
+            }
+        }
+       else {
+            if (AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner")) {
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u>&nbsp<small>   Expectation = </small><big>\u20B9 " + numToVal(price) + " </big><b><small>(negotiable)</small>";
+                MyExpectation.setText(Html.fromHtml(text));
+                text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Tenants</b>";
+                selected_loc_to_oye.setText(Html.fromHtml(text));
 
-        selected_loc_to_oye.setText(Html.fromHtml(text));
+            }else {
+                text = "<u><b><big>" + AppConstants.PROPERTY + "</big></u>&nbsp<small>   Budget = </small><big>\u20B9 " + numToVal(price) + " </big><b><small>(negotiable)</small>";
+                MyExpectation.setText(Html.fromHtml(text));
+                text = "Send Msg to<b> "+ SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" </b>Brokers to match <b>Properties</b>";
+                selected_loc_to_oye.setText(Html.fromHtml(text));
+
+            }
+            }
+
+                Property_conf_furnishing.setText(Property_Config+" "+Furnishing);
 
     }
+
+
 
 
     String numToVal(int no){

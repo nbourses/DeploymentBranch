@@ -3291,6 +3291,7 @@ public void oyebuttonBackgrountColorOrange(){
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 //                    horizontalPicker.stopScrolling();
 //                    marquee(500,100);
+                    updateHorizontalPicker();
                             if(!spanning) {
                     if (isNetworkAvailable()) {
                         Log.i("MotionEvent.ACTION_UP", "=========================");

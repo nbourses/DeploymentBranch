@@ -47,11 +47,13 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.adapters.BrokerDealsListAdapter;
+import com.nbourses.oyeok.enums.DealStatusType;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.BrokerDeals;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.PublishLetsOye;
+import com.nbourses.oyeok.realmModels.DealStatus;
 import com.nbourses.oyeok.realmModels.HalfDeals;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -148,6 +150,13 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
             networkConnectivity();
         }
     };
+    private BroadcastReceiver badgeCountBroadcast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            loadBrokerDeals();
+        }
+    };
+
 //    private BroadcastReceiver signupSuccessFlag = new BroadcastReceiver() {
 //        @Override
 //        public void onReceive(Context context, Intent intent) {
@@ -186,6 +195,7 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
 //        init();
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
      //   LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(signupSuccessFlag, new IntentFilter(AppConstants.SIGNUPSUCCESSFLAG));
+        LocalBroadcastManager.getInstance(this).registerReceiver(badgeCountBroadcast, new IntentFilter(AppConstants.BADGE_COUNT_BROADCAST));
 
     }
 
@@ -196,7 +206,7 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
         // Unregister since the activity is not visible
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
      //   LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(signupSuccessFlag);
-
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(badgeCountBroadcast);
 
     }
 
@@ -230,6 +240,12 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
                 searchQuery = newText.trim();
                 Log.i(TAG,"newText "+searchQuery);
 
+                if(cachedDealsLL != null)
+                    cachedDealsLL.clear();
+
+                if(cachedDealsOR != null)
+                    cachedDealsOR.clear();
+loadCachedDeals();
 
                 if(listBrokerDeals_new != null)
                     listBrokerDeals_new.clear();
@@ -345,17 +361,38 @@ Log.i("SWIPE","inside swipe menu creator");
                 //           ApplicationInfo item =  listAdapter.getItem(position);
                  position = pos;
                 String muteStatus = "Mute notifications";
-                if(!(General.getMutedOKIds(BrokerDealsListActivity.this) == null)) {
-                    mutedOKIds.addAll(General.getMutedOKIds(BrokerDealsListActivity.this));
-                    if(mutedOKIds.contains(listBrokerDeals_new.get(position).getOkId())) {
-                        muteStatus = "Unmute notifications";
+                String blockStatus = "Block deal";
+                if(listBrokerDeals_new != null) {     // temp fix
+                    if (!(General.getMutedOKIds(BrokerDealsListActivity.this) == null)) {
+                        mutedOKIds.addAll(General.getMutedOKIds(BrokerDealsListActivity.this));
+                        Log.i("TAG", "listBrokerDeals_new is the tha " + listBrokerDeals_new);
+                        if (mutedOKIds.contains(listBrokerDeals_new.get(position).getOkId())) {
+                            muteStatus = "Unmute notifications";
 
+                        }
+                    }
+
+                    try{
+                        Realm myRealm = General.realmconfig(BrokerDealsListActivity.this);
+
+                        DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, listBrokerDeals_new.get(position).getOkId()).findFirst();
+                        if (dealStatus != null && dealStatus.getStatus().equalsIgnoreCase(DealStatusType.BLOCKED.toString())) {
+                            blockStatus = "Unblock deal";
+                            Log.i(TAG,"Block deal Block deal "+blockStatus);
+                        } else {
+                            blockStatus = "Block deal";
+                            Log.i(TAG,"Block deal Block deal "+blockStatus);
+                        }
+                    }
+                    catch(Exception e){
+                        Log.i(TAG,"caught in exception reading block status from realm "+e);
                     }
                 }
                 switch (index) {
                     case 0:
                         final String muteStatus1 = muteStatus;
-                        final CharSequence[] items = { muteStatus1, "Delete deal", "Cancel" };
+                        final String blockStatus1 = blockStatus;
+                        final CharSequence[] items = { muteStatus1,/* "Delete deal",*/blockStatus1, "Cancel" };
                         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(BrokerDealsListActivity.this);
                         builder.setTitle("More!");
                         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -466,7 +503,82 @@ Log.i("SWIPE","inside swipe menu creator");
                                     alertDialog.show();
 
 
-                                } else if (items[item].equals("Cancel")) {
+                                }
+
+                                else if (items[item].equals(blockStatus1)) {
+                                    Log.i(TAG," block idhar");
+                                    /*Log.i(TAG,"block 1 "+blockStatus1);
+                                    if(listBrokerDeals_new == null){
+                                        Log.i(TAG,"wadala default deals 1 ");
+                                        total_deals = new ArrayList<BrokerDeals>();
+                                        if(default_deals != null) {
+                                            total_deals.addAll(default_deals);
+                                        }
+                                        if(cachedDeals != null) {
+                                            total_deals.addAll(cachedDeals);
+                                        }
+                                    }*/
+
+                                    if(listBrokerDeals_new != null) {
+                                        Realm myRealm = General.realmconfig(BrokerDealsListActivity.this);
+                                        DealStatusType dealStatusType = null;
+
+                                        DealStatus dealStatus = myRealm.where(DealStatus.class).equalTo(AppConstants.OK_ID, listBrokerDeals_new.get(position).getOkId()).findFirst();
+                                        Log.i(TAG," block deal status dealStatus "+dealStatus.getStatus());
+                                        if (dealStatus == null) {
+                                            Log.i(TAG,"block 2 " );
+                                            DealStatus dealStatus1 = new DealStatus();
+                                            dealStatus1.setOk_id(listBrokerDeals_new.get(position).getOkId());
+                                            dealStatus1.setStatus(DealStatusType.BLOCKED.toString());
+                                            myRealm.beginTransaction();
+                                            DealStatus dealStatus2 = myRealm.copyToRealmOrUpdate(dealStatus1);
+                                            myRealm.commitTransaction();
+                                            SnackbarManager.show(
+                                                    Snackbar.with(BrokerDealsListActivity.this)
+                                                            .position(Snackbar.SnackbarPosition.TOP)
+                                                            .text(listBrokerDeals_new.get(position).getSpecCode() + " blocked!")
+                                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                            General.setDealStatus(BrokerDealsListActivity.this,DealStatusType.BLOCKED.toString(),listBrokerDeals_new.get(position).getOkId(),"default",General.getSharedPreferences(BrokerDealsListActivity.this,AppConstants.USER_ID));
+                                        } else {
+                                            Log.i(TAG,"block 3 " );
+                                            myRealm.beginTransaction();
+                                            if(blockStatus1.toLowerCase().contains("Unblock".toLowerCase())) {
+                                                Log.i(TAG,"block 4 " );
+                                                dealStatus.setStatus(DealStatusType.ACTIVE.toString());
+                                                SnackbarManager.show(
+                                                        Snackbar.with(BrokerDealsListActivity.this)
+                                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                                .text(listBrokerDeals_new.get(position).getSpecCode() + " unblocked!")
+                                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                                General.setDealStatus(BrokerDealsListActivity.this,DealStatusType.ACTIVE.toString(),listBrokerDeals_new.get(position).getOkId(),"default",General.getSharedPreferences(BrokerDealsListActivity.this,AppConstants.USER_ID));
+                                            }
+                                            else {
+                                                Log.i(TAG,"block 5 " );
+                                                dealStatus.setStatus(DealStatusType.BLOCKED.toString());
+                                                SnackbarManager.show(
+                                                        Snackbar.with(BrokerDealsListActivity.this)
+                                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                                .text(listBrokerDeals_new.get(position).getSpecCode() + " blocked!")
+                                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                                General.setDealStatus(BrokerDealsListActivity.this,DealStatusType.BLOCKED.toString(),listBrokerDeals_new.get(position).getOkId(),"default",General.getSharedPreferences(BrokerDealsListActivity.this,AppConstants.USER_ID));
+                                            }
+                                            myRealm.commitTransaction();
+                                        }
+
+                                    }
+                                    else {
+                                        SnackbarManager.show(
+                                                Snackbar.with(BrokerDealsListActivity.this)
+                                                        .position(Snackbar.SnackbarPosition.TOP)
+                                                        .text("Deals can not be Blocked offline.")
+                                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                    }
+
+                                }
+
+
+
+                                else if (items[item].equals("Cancel")) {
                                     dialog.dismiss();
                                 }
                             }
@@ -678,7 +790,9 @@ Log.i("SWIPE","inside swipe menu creator");
         mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(this.getResources(),
                 new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
                 new String[]{"30", "15"},
-                new String[]{this.getResources().getString(R.string.Rental), this.getResources().getString(R.string.Resale)
+
+                new String[]{getBaseContext().getResources().getString(R.string.Rental), getBaseContext().getResources().getString(R.string.Resale)
+
                 }));
         mCustomPhasedSeekbar.setListener((this));
 
@@ -719,7 +833,12 @@ Log.i("SWIPE","inside swipe menu creator");
         Log.i("TRACEOK", "after loadbroker deals ");
 
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("My Deals");
+        if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIgnoreCase("")) {
+
+            getSupportActionBar().setTitle("DEALING ROOMs (Rental)");
+        }else
+            getSupportActionBar().setTitle("DEALING ROOMs");
+//        getSupportActionBar().setTitle("My Deals");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -844,7 +963,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
         RestAdapter restAdapter = new RestAdapter
                 .Builder()
-                .setEndpoint(AppConstants.SERVER_BASE_URL_101)
+                .setEndpoint(AppConstants.SERVER_BASE_URL_102)
                 .setConverter(new GsonConverter(gson))
                 .build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
@@ -857,7 +976,10 @@ Log.i("SWIPE","inside swipe menu creator");
         //params
         HdRooms hdRooms = new HdRooms();
         hdRooms.setUserRole("broker");
-        hdRooms.setUserId(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
+            if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equals(""))
+                hdRooms.setUserId(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
+            else
+                hdRooms.setUserId(General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI));
         hdRooms.setGcmId(SharedPrefs.getString(getApplicationContext(), SharedPrefs.MY_GCM_ID));
         hdRooms.setLat("123456789");
         hdRooms.setLon("123456789");
@@ -881,7 +1003,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
                 General.slowInternetFlag = false;
                 General.t.interrupt();
-                Log.i("TRACEOK", "inside hdrooms api call success ");
+                Log.i("TRACEOK", "inside hdrooms api call success "+General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
                 String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                 Log.i("TRACEOK", "strResponse "+strResponse);
                 try {
@@ -900,6 +1022,9 @@ Log.i("SWIPE","inside swipe menu creator");
                                             }.getType());
                         Log.i("TRACEOK", "listbrokerdeals size is "+listBrokerDeals.size());
 
+                        //deals.getOyeId().contains("unverified_user")
+
+
                         if (listBrokerDeals.size() > 0) {
                             myRealm = General.realmconfig(BrokerDealsListActivity.this);
                             Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 3 "+myRealm.isInTransaction());
@@ -914,7 +1039,7 @@ Log.i("SWIPE","inside swipe menu creator");
                             while (it.hasNext())
                             {
                                 BrokerDeals deals = it.next();
-                                Log.i("TRACE==","deals.are"+deals);
+                                Log.i("TRACE==","deals.are oyeId"+deals.getOyeId());
                                 Log.i("TRACE==","deals.ok_id"+deals.getOkId());
                                 if(!(deals.getOkId() == null))
                                 {
@@ -925,12 +1050,13 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
                                     Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 9");
+                                halfDeals.setOyeId(deals.getOyeId());
                                 halfDeals.setOk_id(deals.getOkId());
                                     Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 5");
                                 halfDeals.setName(deals.getName());
                                 halfDeals.setLocality(deals.getLocality());
                                 halfDeals.setSpec_code(deals.getSpecCode());
-                                    Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 1");
+                                    Log.i("DEALREFRESHPHASESEEKBA", "yaha kaha 1 ");
                                 myRealm.copyToRealmOrUpdate(halfDeals);
 
 
@@ -943,11 +1069,25 @@ Log.i("SWIPE","inside swipe menu creator");
                                         }
                                         else if (filterPtype == null) {
 
-                                            if(searchQuery != null)
-                                                if (deals.getSpecCode().contains(searchQuery) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
-                                                    listBrokerDeals_new.add(deals);
+                                            if(searchQuery != null) {
+
+                                                String searchString = "";
+                                                if(deals.getSpecCode() != ""){
+                                                    searchString = searchString +" "+ deals.getSpecCode();
+                                                }
+                                                if(deals.getName() != ""){
+                                                    searchString = searchString +" "+ deals.getName();
+                                                }
+                                                if(deals.getLocality() != ""){
+                                                    searchString = searchString +" "+ deals.getLocality();
                                                 }
 
+                                                Log.i(TAG,"searchString "+searchString);
+
+                                                if (searchString.toLowerCase().contains(searchQuery.toLowerCase()) /*|| deals.getName().contains(searchQuery)||deals.getLocality().contains(searchQuery)*/) {
+                                                    listBrokerDeals_new.add(deals);
+                                                }
+                                            }
                                             if(searchQuery == null)
                                                 listBrokerDeals_new.add(deals); // add all
 
@@ -974,6 +1114,7 @@ Log.i("SWIPE","inside swipe menu creator");
 //                            displayListView();
 
                             //list all broker deals
+
 
                             BrokerDealsListAdapter listAdapter = new BrokerDealsListAdapter(listBrokerDeals_new, getApplicationContext());
                             listViewDeals.setAdapter(listAdapter);
@@ -1050,32 +1191,6 @@ Log.i("SWIPE","inside swipe menu creator");
             intent.putExtra("userRole", "broker");
             intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
             startActivity(intent);
-//        }
-//        else
-//        {
-//            supportChat.setVisibility(View.GONE);
-//            view.setVisibility(View.GONE);
-//            listViewDeals.setVisibility(View.GONE);
-//            fragment_container1.setVisibility(View.VISIBLE);
-//            Bundle bundle = new Bundle();
-//            bundle.putStringArray("Chat", null);
-//            bundle.putString("lastFragment", "ChatBroker");
-//            dbHelper.save(DatabaseConstants.userRole, "Broker");
-//
-//
-////            FrameLayout frame = new FrameLayout(this);
-////            frame.setId(SIGNUP_VIEW_ID);
-////            setContentView(frame, new LayoutParams(
-////                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-//
-//
-//            SignUpFragment signUpFragment = new SignUpFragment();
-////            signUpFragment.getView().bringToFront();
-//            loadFragment(signUpFragment, bundle, R.id.fragment_container1, "");
-//            Log.i("Signup called =", "Sign up");
-//
-//        }
-
 
 
     }
@@ -1181,23 +1296,37 @@ Log.i("SWIPE","inside swipe menu creator");
 
 
         if(AppConstants.SIGNUP_FLAG){
-
-            getSupportFragmentManager().popBackStackImmediate();
-            Intent inten = new Intent(this,BrokerMainActivity.class);
-            startActivity(inten);
+Log.i(TAG,"persy 1 ");
+               // getSupportFragmentManager().popBackStackImmediate();
+               /* Intent inten = new Intent(this, BrokerMainActivity.class);
+                startActivity(inten);
+                finish();
+                AppConstants.SIGNUP_FLAG = false;*/
+            Intent intent = new Intent(this, BrokerMainActivity.class);
+            intent.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
             finish();
-            AppConstants.SIGNUP_FLAG=false;
+            AppConstants.SIGNUP_FLAG = false;
 
         }else {
-//            Intent intent = new Intent(this, BrokerMainActivity.class);
-//            intent.addFlags(
-//                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-//                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
-//                            Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(intent);
-//            finish();
-            super.onBackPressed();
+            Log.i(TAG,"persy 2 ");
+           super.onBackPressed();
+
+
+
+
         }
+           /* Intent intent = new Intent(this, BrokerMainActivity.class);
+            intent.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();*/
+    /*    }*/
     }
 
     private void loadFragment(Fragment fragment, Bundle args, int containerId, String title)
@@ -1224,6 +1353,7 @@ Log.i("SWIPE","inside swipe menu creator");
             TT = "LL";
             setCachedDeals();
             loadBrokerDeals();
+            getSupportActionBar().setTitle("DEALING ROOMs (Rental)");
             SnackbarManager.show(
                     Snackbar.with(this)
                             .text("Rental Deal Type set")
@@ -1236,6 +1366,7 @@ Log.i("SWIPE","inside swipe menu creator");
             TT = "OR";
             setCachedDeals();
             loadBrokerDeals();
+            getSupportActionBar().setTitle("DEALING ROOMs (Buy/Sell)");
             SnackbarManager.show(
                     Snackbar.with(this)
                             .text("Buy/Sell Deal Type set")
@@ -1260,54 +1391,88 @@ Log.i("SWIPE","inside swipe menu creator");
     }
 
     private  void loadCachedDeals(){
+if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")) {
+
+    Realm myRealm = General.realmconfig(this);
+
+    try {
 
 
-        Realm myRealm = General.realmconfig(this);
-
-       try {
-
-
-
-           // listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
+        // listAdapter = new BrokerDealsListAdapter(cachedDeals, getApplicationContext());
         Log.i(TAG, "until loadCachedDeals called 2");
-           // listViewDeals.setAdapter(listAdapter);
+        // listViewDeals.setAdapter(listAdapter);
         Log.i(TAG, "until loadCachedDeals called 3");
-            RealmResults<HalfDeals> results1 =
-                    myRealm.where(HalfDeals.class).findAll();
+        RealmResults<HalfDeals> results1 =
+                myRealm.where(HalfDeals.class).findAll();
 
-        Log.i(TAG, "until loadCachedDeals called 4 "+results1);
+        Log.i(TAG, "until loadCachedDeals called 4 " + results1);
 
-            for (HalfDeals c : results1) {
-                Log.i(TAG, "until loadCachedDeals ");
-                Log.i(TAG, "until loadCachedDeals " + c.getOk_id());
-                Log.i(TAG, "until loadCachedDeals " + c.getName());
-                Log.i(TAG, "until loadCachedDeals " + c.getLocality());
-                BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), true);
+        for (HalfDeals c : results1) {
+            Log.i(TAG, "until loadCachedDeals ");
+            Log.i(TAG, "until loadCachedDeals " + c.getOk_id());
+            Log.i(TAG, "until loadCachedDeals " + c.getName());
+            Log.i(TAG, "until loadCachedDeals " + c.getLocality());
+            Log.i(TAG, "until loadCachedDeals " + c.getSpec_code());
 
-                if(cachedDealsLL == null){
+            if (searchQuery != null) {
+                String searchString = "";
+                if (c.getSpec_code() != "") {
+                    searchString = searchString + " " + c.getSpec_code();
+                }
+                if (c.getName() != "") {
+                    searchString = searchString + " " + c.getName();
+                }
+                if (c.getLocality() != "") {
+                    searchString = searchString + " " + c.getLocality();
+                }
+
+                if (searchString.toLowerCase().contains(searchQuery.toLowerCase())) {
+                    BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(), true);
+
+                    if (cachedDealsLL == null) {
+                        cachedDealsLL = new ArrayList<BrokerDeals>();
+                    }
+                    if (cachedDealsOR == null) {
+                        cachedDealsOR = new ArrayList<BrokerDeals>();
+                    }
+                    if (c.getSpec_code().toLowerCase().contains("LL-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-LL".toLowerCase())) {
+                        cachedDealsLL.add(dealsa);
+                    } else if (c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("OR-".toLowerCase())) {
+                        cachedDealsOR.add(dealsa);
+                    }
+
+                }
+
+            } else if (searchQuery == null) {
+
+                BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(), true);
+
+                if (cachedDealsLL == null) {
                     cachedDealsLL = new ArrayList<BrokerDeals>();
                 }
-                if(cachedDealsOR == null){
+                if (cachedDealsOR == null) {
                     cachedDealsOR = new ArrayList<BrokerDeals>();
                 }
-                if(c.getSpec_code().contains("LL-")){
+                if (c.getSpec_code().toLowerCase().contains("LL-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("-LL".toLowerCase())) {
                     cachedDealsLL.add(dealsa);
-                }
-                else if(c.getSpec_code().contains("OR-")){
+                } else if (c.getSpec_code().toLowerCase().contains("OR-".toLowerCase()) || c.getSpec_code().toLowerCase().contains("OR-".toLowerCase())) {
                     cachedDealsOR.add(dealsa);
                 }
 
             }
 
-           setCachedDeals();
 
-        }catch(Exception e){
-            Log.i(TAG,"Caught in the exception reading cache from realm "+e);
         }
-        finally {
 
-            Log.i(TAG,"finally loadCachedDeals ");
-        }
+        setCachedDeals();
+
+    } catch (Exception e) {
+        Log.i(TAG, "Caught in the exception reading cache from realm " + e);
+    } finally {
+
+        Log.i(TAG, "finally loadCachedDeals ");
+    }
+}
     }
 
 
@@ -1324,6 +1489,15 @@ Log.i("SWIPE","inside swipe menu creator");
             else
 
                 cachedDeals.addAll(cachedDealsOR);
+
+
+
+
+
+
+
+
+
 
             if (cachedDeals.size() < 3 && showbgtext == true  && !General.isNetworkAvailable(this)) {
                 bgtxtlayout.setVisibility(View.VISIBLE);
