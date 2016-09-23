@@ -64,6 +64,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
+import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
@@ -2003,7 +2004,7 @@ Log.i("Diamond","diamond "+possession_date);
             }
 
             //open deals listing
-            Intent openDealsListing = new Intent(getActivity(), BrokerDealsListActivity.class);
+            Intent openDealsListing = new Intent(getActivity(), ClientDealsListActivity.class);
             /*openDealsListing.addFlags(
                     Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);*/
             startActivity(openDealsListing);

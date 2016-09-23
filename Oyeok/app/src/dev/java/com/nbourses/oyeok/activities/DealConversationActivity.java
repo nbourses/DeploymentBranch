@@ -1026,7 +1026,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 if(msgStatus == null || userType == null)
                 {
-                    Log.i("MSGSTATUS","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%% "+userID);
+                    Log.i("MSGSTATUS","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%% tork "+userID+"  "+FROM);
                     if(userID.equalsIgnoreCase(FROM) || demoId.equalsIgnoreCase(FROM))
                     {
                         userType = ChatMessageUserType.SELF;
@@ -1144,7 +1144,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     myRealm.where(Message.class).equalTo(AppConstants.OK_ID, channelName).findAll();
 
             for (Message c : results1) {
-                Log.i(TAG, "until insideroui2 ");
+                Log.i(TAG, "until toro foro "+c.getStatus());
                 Log.i(TAG, "until insideroui3 " + c.getFrom());
 //                Log.i(TAG, "until insideroui4 " + c.getTimestamp());
 //                Log.i(TAG, "until insideroui4 " + c.getMessage());
@@ -1195,7 +1195,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 if(c.getStatus() == null || userType == null)
                 {
-                    Log.i("MSGSTATUS","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%% "+userID);
+                    Log.i("MSGSTATUS","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%% toro "+userID+"  "+c.getFrom());
                     if(userID.equalsIgnoreCase(c.getFrom()) || demoId.equalsIgnoreCase(c.getFrom()))
                     {
                         userType = ChatMessageUserType.SELF;
@@ -1206,6 +1206,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     }
 
                 }
+
+                Log.i(TAG, "until toro foro loro "+userType);
 
                 message = new ChatMessage();
                 message.setUserName(roleOfUser);
@@ -1975,8 +1977,14 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 JSONObject jsonResponse = new JSONObject(json);
                 // Log.i(TAG, "role of user def 4 ");
+                Log.i("TORO","froyo "+jsonResponse);
+String furnishing = "Semi-Furnished";
+                if(jsonResponse.getString("furnishing").equalsIgnoreCase("uf"))
+                    furnishing = "Un-Furnished";
+                else if (jsonResponse.getString("furnishing").equalsIgnoreCase("ff"))
+                    furnishing = "Fully-Furnished";
 
-                jsonMsg.put("message", "You have initiated enquiry for a " + jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
+                jsonMsg.put("message", "You have initiated enquiry for a "+furnishing+" "+ jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") by "+jsonResponse.getString("possession_date")+" within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
 
 
             }

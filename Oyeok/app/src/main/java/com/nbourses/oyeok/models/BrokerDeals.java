@@ -25,6 +25,11 @@ public class BrokerDeals {
     private String oyeUserId;
 
     @Expose
+    @SerializedName("ok_user_id")
+    private String okUserId;
+
+
+    @Expose
     @SerializedName("name")
     private String name;
 
@@ -44,6 +49,17 @@ public class BrokerDeals {
     @SerializedName("locality")
     private String locality;
 
+    @Expose
+    @SerializedName("hdroom_status")
+    private HDroomStatus hdroomStatus;
+
+    @Expose
+    @SerializedName("last_seen")
+    private String lastSeen;
+
+
+
+
 
 
     public BrokerDeals(String name,String ok_id, String specs,String locality,String oyeId, Boolean default_deal)
@@ -61,6 +77,28 @@ public class BrokerDeals {
         this.oyeId = oyeId;
 
     }
+
+    public BrokerDeals(String name,String ok_id, String specs,String locality,String oyeId,String selfStatus,String otherStatus,String oyeUserId, Boolean default_deal)
+    { // Constructor for default deal
+        //this.okId = "default_id";
+
+
+        Log.i("IN BROKERDEALS ","FLAG "+selfStatus);
+        this.okId = ok_id;
+        this.specCode = specs;
+        this.name = name;
+        this.locality = locality;
+
+        this.defaultDeal = default_deal;
+        this.oyeId = oyeId;
+        //this.getHDroomStatus().selfStatus = selfStatus;
+        HDroomStatus hDroomStatus = new HDroomStatus(selfStatus, otherStatus);
+
+        /*this.hdroomStatus.selfStatus = selfStatus;
+        this.hdroomStatus.otherStatus = otherStatus;*/
+        this.oyeUserId = oyeUserId;
+
+    }
     public BrokerDeals(String name,String ok_id, String specs, Boolean default_deal)
     { // Constructor for default deal
         //this.okId = "default_id";
@@ -72,6 +110,48 @@ public class BrokerDeals {
         this.name = name;
         this.oyeId = ok_id;
 
+    }
+
+
+    public class HDroomStatus{
+        @Expose
+        @SerializedName("self_status")
+        private String selfStatus;
+
+        @Expose
+        @SerializedName("other_status")
+
+
+        private String otherStatus;
+
+        public HDroomStatus(String selfStatus,String otherStatus){
+            this.selfStatus = selfStatus;
+            this.otherStatus = otherStatus;
+        }
+        public String getSelfStatus() {
+            return selfStatus;
+        }
+
+        public void setSelfStatus(String selfStatus) {
+            this.selfStatus = selfStatus;
+        }
+        public String getOtherStatus() {
+            return otherStatus;
+        }
+
+        public void setOtherStatus(String otherStatus) {
+            this.otherStatus = otherStatus;
+        }
+
+
+    }
+
+    public HDroomStatus getHDroomStatus() {
+        return hdroomStatus;
+    }
+
+    public void setHDroomStatus(HDroomStatus hdroomStatus) {
+        this.hdroomStatus = hdroomStatus;
     }
 
     public Boolean getdefaultDeal() {
@@ -86,6 +166,15 @@ public class BrokerDeals {
         this.okId = okId;
     }
 
+
+
+    public String getOkUserId() {
+        return okUserId;
+    }
+
+    public void setOkUserId(String oyeUserId) {
+        this.okUserId = okUserId;
+    }
     public String getOyeId() {
         return oyeId;
     }
@@ -134,5 +223,12 @@ public class BrokerDeals {
         this.locality = locality;
     }
 
+    public String getLastSeen() {
+        return lastSeen;
+    }
+
+    public void setLastSeen(String lastSeen) {
+        this.lastSeen = lastSeen;
+    }
 
 }

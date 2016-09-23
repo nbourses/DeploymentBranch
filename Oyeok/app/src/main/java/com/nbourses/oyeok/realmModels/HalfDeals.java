@@ -13,6 +13,10 @@ public class HalfDeals extends RealmObject {
     private String name;
     private String locality;
     private String oyeId;
+    private String selfStatus;
+    private String otherStatus;
+    private String oyeUserId;
+    private String okUserId;
     public HalfDeals() { }
 
     public String getOk_id() {
@@ -53,5 +57,37 @@ public class HalfDeals extends RealmObject {
 
     public void setOyeId(String oyeId) {
         this.oyeId = oyeId;
+    }
+
+    public String getSelfStatus() {
+        return selfStatus;
+    }
+
+    public void setSelfStatus(String selfStatus) {
+        this.selfStatus = selfStatus;
+    }
+
+    public String getOtherStatus() {
+        return otherStatus;
+    }
+
+    public void setOtherStatus(String otherStatus) {
+        this.otherStatus = otherStatus;
+    }
+
+    public String getOyeUserId() {
+        return oyeUserId;
+    }
+
+    public void setOyeUserId(String oyeUserId) {
+        this.oyeUserId = oyeUserId;
+    }
+
+    public String getOkUserId() {
+        return okUserId;
+    }
+
+    public void setOkUserId(String okUserId) {
+        this.okUserId = okUserId;
     }
 }

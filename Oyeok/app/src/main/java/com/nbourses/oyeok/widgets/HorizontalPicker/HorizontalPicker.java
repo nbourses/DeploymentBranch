@@ -574,6 +574,50 @@ public class HorizontalPicker extends View {
     public void stopScrolling(){
         endlessScroll = false;
     }
+
+   /* @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if(!isEnabled()) {
+            return false;
+        }
+        tvRate.setVisibility(View.GONE);
+        rupeeText.setVisibility(View.GONE);
+        if (mVelocityTracker == null) {
+            mVelocityTracker = VelocityTracker.obtain();
+        }
+        mVelocityTracker.addMovement(event);
+
+        int action = event.getActionMasked();
+        //ACTION_MOVE = 2, ACTION_DOWN = 0, ACTION_UP = 1, ACTION_CANCEL = 3
+        switch (action) {
+            case MotionEvent.ACTION_MOVE:
+
+
+                break;
+            case MotionEvent.ACTION_DOWN:
+
+
+                break;
+            case MotionEvent.ACTION_UP:
+                return performClick();
+                break;
+            case MotionEvent.ACTION_CANCEL:
+
+
+                break;
+        }
+
+        return true;
+    }*/
+
+    @Override
+    public boolean onTouchEvent(final MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_UP){
+            Log.i(TAG,"asterik");
+
+        }
+        return false;  // dont remove
+    }
     /*@Override
     public boolean onTouchEvent(MotionEvent event) {
         if(!isEnabled()) {

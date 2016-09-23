@@ -232,12 +232,12 @@ private Boolean cardFlag = false;
         }
     };
 
-    private BroadcastReceiver closeOyeScreenSlide = new BroadcastReceiver() {
+    /*private BroadcastReceiver closeOyeScreenSlide = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             closeOyeScreen();
         }
-    };
+    };*/
 
 
 
@@ -554,7 +554,7 @@ public void signUp(){
         AppConstants.cardCounter++;
         Log.i(TAG,"fork resumed "+AppConstants.cardCounter);
         // Register mMessageReceiver to receive messages.
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
+//        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(oyebuttondata, new IntentFilter(AppConstants.ON_FILTER_VALUE_UPDATE));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(markerstatus, new IntentFilter(AppConstants.MARKERSELECTED));
@@ -570,7 +570,7 @@ public void signUp(){
         super.onPause();
         Log.i(TAG,"fork paused");
         // Unregister since the activity is not visible
-        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(closeOyeScreenSlide);
+//        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(closeOyeScreenSlide);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(oyebuttondata);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(markerstatus);
@@ -1258,7 +1258,7 @@ public void signUp(){
         {
             Log.i(TAG,"flaga isa 2 ");
             Intent in = new Intent(AppConstants.MARKERSELECTED);
-            in.putExtra("markerClicked", "false");
+              in.putExtra("markerClicked", "false");
             LocalBroadcastManager.getInstance(this).sendBroadcast(in);
             backpress = 0;
             ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).onMapclicked();

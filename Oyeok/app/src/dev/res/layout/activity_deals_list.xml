@@ -372,6 +372,27 @@
             android:background="@color/dark_white"
             android:dividerHeight="1dp"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Sign up to broadcast yours needs to create New DEALs with more Brokers"
+            android:id="@+id/bgtxt1"
+            android:textSize="17sp"
+            android:layout_weight="7"
+            android:background="@drawable/greenishblue_border_grey_solid"
+            android:layout_alignBottom="@+id/listViewDeals"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentStart="false"
+            android:visibility="gone"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentTop="false"
+            android:layout_alignWithParentIfMissing="false"
+            android:layout_marginRight="3dp"
+            android:layout_marginLeft="3dp"
+            android:gravity="center"
+            android:padding="5dp" />
+
 
         <LinearLayout
             android:orientation="horizontal"
