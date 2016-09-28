@@ -1,5 +1,6 @@
 package com.nbourses.oyeok.fragments;
 
+import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,11 +16,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.Database.SharedPrefs;
@@ -32,6 +37,11 @@ import com.nispok.snackbar.SnackbarManager;
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -85,6 +95,8 @@ public class OyeScreenFragment extends Fragment {
     @Bind(R.id.budgetText)
     TextView budgetText;
     String oyedata="" ;
+    TextView txtcalendar;
+    String property,pro,PossessionDate,Furnishing,my_expectation,Property_Config="2BHK";
 
 //    DiscreteSeekBar discreteSeekBar;
 //@Bind(R.id.tv_dealinfo)
@@ -124,7 +136,7 @@ public class OyeScreenFragment extends Fragment {
     }
 
 
-
+    Calendar myCalendar = Calendar.getInstance();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -139,10 +151,16 @@ public class OyeScreenFragment extends Fragment {
         satView.setVisibility(View.VISIBLE);
         bundle = getArguments();
       tv_fd_bank=(TextView)rootView.findViewById(R.id.tv_fd_bank);
+        txtcalendar=(TextView)rootView.findViewById(R.id.txtcalendar);
 //        tv_dealinfo=(TextView)rootView.findViewById(R.id.tv_dealinfo);
-
-
-
+        AppConstants.CUSTOMER_TYPE="Tenant";
+        updateLabel();
+        txtcalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayDatePicker();
+            }
+        });
             init();
 
         satView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -165,6 +183,36 @@ public class OyeScreenFragment extends Fragment {
 
 
 
+        Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner2);
+// Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.Property_Furnishing_Condition, android.R.layout.simple_spinner_item);
+// Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // An item was selected. You can retrieve the selected item using
+                // parent.getItemAtPosition(pos)
+                Log.i("confirmaton", "Furnishing================" + Furnishing);
+                Furnishing = parent.getItemAtPosition(position).toString();
+                Log.i("confirmaton", "Furnishing+++++++++++++++++++" + Furnishing);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+// Another interface callback
+
+            }
+        });
+
+
+
+
             return rootView;
 
 
@@ -177,27 +225,66 @@ public class OyeScreenFragment extends Fragment {
     private BroadcastReceiver oyebuttondata = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-           // if(intent.getExtras().getString("tv_dealinfo") != null) {
-                // intent.getExtras().getString("tv_dealinfo")+
-//            if(txtPreviouslySelectedOption.getText().toString().equalsIgnoreCase(txtOptionSee.getText().toString())){
-                 oyedata = SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY);
-//                tv_dealinfo.setText(oyedata);
-                Log.i("oyedata","oyedata==============="+oyedata);
 
-
-
-
-
-               // setdealtext(oyedata);
-               // tv_dealinfo.setText("sushil");
-
-
-            //}
+            oyedata = SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
+            Log.i("oyedata", "oyedata===============" + oyedata);
 
         }
     };
 
 
+
+
+    /*private BroadcastReceiver ProType = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+             Log.i("protype","protype :  "+intent.getExtras().getString("protype"));
+            if ((intent.getExtras().getString("protype") != null)) {
+                String pt=intent.getExtras().getString("protype");
+                Log.i("protype","protype :  "+intent.getExtras().getString("protype"));
+                if (pt.equalsIgnoreCase("home")) {
+
+//                    Log.i("protype","protype :  "+intent.getExtras().getString("protype"));
+                    AppConstants.letsOye.setPropertyType("home");
+                    loadHomeOptionView("home");
+                    AppConstants.PROPERTY="home";
+//                    property="home";
+                    //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"home");
+
+                }
+                else if(pt.equalsIgnoreCase("shop")) {
+
+                    AppConstants.letsOye.setPropertyType("shop");
+                    loadHomeOptionView("shop");
+//                    property="shop";
+                    AppConstants.PROPERTY="shop";
+                    // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"shop");
+                }
+                else if(pt.equalsIgnoreCase("industrial")) {
+
+                    AppConstants.letsOye.setPropertyType("industrial");
+                    loadHomeOptionView("industrial");
+//                    property="industrial";
+                    AppConstants.PROPERTY="industrial";
+                    // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"industrial");
+                }
+                else if(pt.equalsIgnoreCase("office")) {
+
+                    AppConstants.letsOye.setPropertyType("office");
+                    loadHomeOptionView("office");
+                    AppConstants.PROPERTY="office";
+//                    property="office";
+                    //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"office");
+                }
+
+            }
+
+
+
+
+        }
+    };
+*/
 
 
 
@@ -213,8 +300,9 @@ public class OyeScreenFragment extends Fragment {
         //by default Home option is selected
         txtPreviouslySelectedPropertyType = txtHome;
         txtHome.setBackgroundResource(R.drawable.buy_option_circle);
-        AppConstants.letsOye.setPropertyType("home");
-        loadHomeOptionView("home");
+        if(AppConstants.PROPERTY.equalsIgnoreCase("")){AppConstants.PROPERTY="Home";}
+        AppConstants.letsOye.setPropertyType(AppConstants.PROPERTY);
+        loadHomeOptionView(AppConstants.PROPERTY);
 
         //by default buy option is selected
         txtPreviouslySelectedOption = txtOptionSee;
@@ -240,7 +328,9 @@ public class OyeScreenFragment extends Fragment {
                value=value/1000;
                 value=value*1000;
                // }
-                txtSelected.setText(General.currencyFormat(String.valueOf(value)));
+                String val=String.valueOf(value);
+                my_expectation=val;
+                txtSelected.setText(General.currencyFormat(val));
 
                 AppConstants.letsOye.setPrice("" + value);
             }
@@ -258,7 +348,13 @@ public class OyeScreenFragment extends Fragment {
         AppConstants.letsOye.setUserRole("client");
         AppConstants.letsOye.setLat(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
         AppConstants.letsOye.setLon(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
+
+
     }
+
+
+
+
 
     private void loadHomeOptionView(String propertyType) {
         OyeOnPropertyTypeSelectFragment oyeOnPropertyTypeSelectFragment = OyeOnPropertyTypeSelectFragment.newInstance(propertyType);
@@ -283,6 +379,7 @@ public class OyeScreenFragment extends Fragment {
         txtPreviouslySelectedOption = (TextView) v;
 
         if (txtOptionSee.getId() == v.getId()) {
+            AppConstants.CUSTOMER_TYPE="Tenant";
             txtOptionSee.setBackgroundResource(R.color.greenish_blue);
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")){
             tv_fd_bank.setText("I like to pay my \n SECURITY DEPOSIT");
@@ -302,6 +399,7 @@ public class OyeScreenFragment extends Fragment {
 
         if (txtOptionShow.getId() == v.getId()) {
             txtOptionShow.setBackgroundResource(R.color.greenish_blue);
+            AppConstants.CUSTOMER_TYPE="Owner";
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")){
             tv_fd_bank.setText("I like Monthly RENT CHEQUE(s)");
             satView.setText("Apply for finance FULL ADVANCE RENT");
@@ -332,6 +430,7 @@ public class OyeScreenFragment extends Fragment {
             txtHome.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("home");
             loadHomeOptionView("home");
+            property="home";
             //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"home");
 
         }
@@ -339,18 +438,21 @@ public class OyeScreenFragment extends Fragment {
             txtShop.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("shop");
             loadHomeOptionView("shop");
+            property="shop";
            // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"shop");
         }
         else if(txtIndustrial.getId() == v.getId()) {
             txtIndustrial.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("industrial");
             loadHomeOptionView("industrial");
+            property="industrial";
            // tv_dealinfo.setText(tv_dealinfo.getText()+" "+"industrial");
         }
         else if(txtOffice.getId() == v.getId()) {
             txtOffice.setBackgroundResource(R.drawable.buy_option_circle);
             AppConstants.letsOye.setPropertyType("office");
             loadHomeOptionView("office");
+            property="office";
             //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"office");
         }
     }
@@ -417,7 +519,7 @@ public class OyeScreenFragment extends Fragment {
                 budgetSeekBar.setProgress(AppConstants.minRent);
                // budgetSeekBar.setProgress(500);
                 txtSelected.setText(General.currencyFormat(String.valueOf(AppConstants.minRent)));
-
+                my_expectation=String.valueOf(AppConstants.minRent);
                 txtOptionSee.setText(getString(R.string.oye_rental_req));
                 txtOptionShow.setText(getString(R.string.oye_rental_avail));
 
@@ -432,7 +534,7 @@ public class OyeScreenFragment extends Fragment {
                // budgetSeekBar.setProgress(10);
                // budgetSeekBar.incrementProgressBy(10);
                 txtSelected.setText(General.currencyFormat(String.valueOf(AppConstants.minSale)));
-
+                my_expectation=String.valueOf(AppConstants.minSale);
                 txtOptionSee.setText(getString(R.string.oye_sale_req));
                 txtOptionShow.setText(getString(R.string.oye_sale_avail));
 
@@ -474,6 +576,8 @@ public class OyeScreenFragment extends Fragment {
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(BroadCastMinMaxValue, new IntentFilter(AppConstants.BROADCAST_MIN_MAX_VAL));
 
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(oyebuttondata, new IntentFilter(AppConstants.ON_FILTER_VALUE_UPDATE));
+//        LocalBroadcastManager.getInstance(getContext()).registerReceiver(ProType, new IntentFilter(AppConstants.PROPERTY_TYPE_BROADCAST));
+
 
     }
 
@@ -481,6 +585,7 @@ public class OyeScreenFragment extends Fragment {
     public void onPause() {
         super.onPause();
        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(BroadCastMinMaxValue);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oyebuttondata);
 
     }
 
@@ -522,15 +627,18 @@ public class OyeScreenFragment extends Fragment {
 
     @OnClick(R.id.btnOnOyeClick)
     public void submitOyeOk(View v) {
-
+//        my_expectation=txtSelected.getText().toString();
+        SendDataToOyeConfirmationScreen();
         if(General.isNetworkAvailable(getContext())) {
             Log.i("TAG", "property subtype selected" + General.retriveBoolean(getContext(), "propertySubtypeFlag"));
             if (General.retriveBoolean(getContext(), "propertySubtypeFlag")) {
                 isclicked = "true";
+
                 Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
                 intent.putExtra("isclicked", isclicked);
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                 Log.i("isclicked", "isclicked===============================");
+
             } else {
                 SnackbarManager.show(
                         Snackbar.with(getContext())
@@ -542,6 +650,90 @@ public class OyeScreenFragment extends Fragment {
             General.internetConnectivityMsg(getContext());
         }
     }
+
+
+
+
+
+    final  DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+
+            updateLabel();
+
+        }
+
+    };
+
+    private void updateLabel(){
+        String myFormat = "dd/MM/yyyy";
+        //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        txtcalendar.setText(sdf.format(myCalendar.getTime()));
+        PossessionDate=txtcalendar.getText().toString();
+    }
+
+    private void displayDatePicker(){
+
+        DatePickerDialog dpd = new DatePickerDialog(getContext(), date, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH));
+
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        Date d = null;
+        try {
+            Calendar now= Calendar.getInstance();
+            d  = sdf.parse(sdf.format(now.getTime()));
+            now.add(Calendar.MONTH,6);
+
+            Date dd = sdf.parse(  now.get(Calendar.DATE)
+                    + "/"+ (now.get(Calendar.MONTH) + 1)
+                    + "/"
+
+                    + now.get(Calendar.YEAR));
+
+//                    Date dd = sdf.parse("26/1/2017");
+            dpd.getDatePicker().setMinDate(d.getTime());
+            dpd.getDatePicker().setMaxDate(dd.getTime());
+            dpd.show();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+    public  void SendDataToOyeConfirmationScreen(){
+Log.i("confirmation","I am In SendDataToOyeConfirmationScreen function : ");
+  /*      Intent intent = new Intent(AppConstants.BROADCAST_PROPERTY_DETAILS);
+        intent.putExtra("propertyConfig", Property_Config);
+        intent.putExtra("furnishing", Furnishing);
+        intent.putExtra("possessionDate", PossessionDate);
+        intent.putExtra("myExpectation", my_expectation);
+        //intent.putExtra("tv_dealinfo",oyeButtonData);
+        Log.i("confirmaton","Furnishing       ;"+Furnishing);
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);*/
+
+//        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,Property_Config);
+        General.setSharedPreferences(getContext(),AppConstants.FURNISHING,Furnishing);
+        General.setSharedPreferences(getContext(),AppConstants.POSSESSION_DATE,PossessionDate);
+        General.setSharedPreferences(getContext(),AppConstants.MY_EXPECTATION,my_expectation);
+
+
+    }
+
+
+
 
 
 

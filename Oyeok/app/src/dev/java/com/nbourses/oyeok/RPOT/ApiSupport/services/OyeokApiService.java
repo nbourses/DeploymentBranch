@@ -66,6 +66,11 @@ public interface OyeokApiService {
     @POST("/user/signup")
     void signUp(@Body User user, Callback<JsonElement> callback);
 
+    @POST("/generate/token")
+    void updateStatus1(@Body UpdateStatus updateStatus, Callback<JsonElement> callback);
+
+    @POST("/check/token")
+    void updateStatus2(@Body UpdateStatus updateStatus, Callback<JsonElement> callback);
 
 }
 

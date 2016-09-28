@@ -84,8 +84,9 @@ private WebView i;
     @Override
     public View getView(int position, View convertView, final ViewGroup parent) {
 
-
+        Log.i("POSITION "," =============== "+position);
         View v = null;
+
         final ChatMessage message = chatMessages.get(position);
         ViewHolder1 holder1;
         ViewHolder2 holder2;
@@ -95,13 +96,13 @@ private WebView i;
         Log.i("uri","message ust "+message.getUserType());
 
 
-
         if (message.getUserType() == ChatMessageUserType.LISTING) {
             if (convertView == null) {
                 v = LayoutInflater.from(context).inflate(R.layout.cardview, null, false);
 
                 holder4 = new ViewHolder4();
                 holder4.spinnerProgress = (ProgressBar) v.findViewById(R.id.spinnerProgress);
+
                 //holder4.messageTextView = (TextView) v.findViewById(R.id.message_text);
                 //holder4.timeTextView = (TextView) v.findViewById(R.id.time_text);
                // holder4.chatReplyAuthor = (TextView) v.findViewById(R.id.chat_reply_author);
@@ -128,7 +129,6 @@ private WebView i;
 
             Log.i("CONVER", "Chat message is Listing1" + message.getMessageText());
 
-
             Log.i("TRACE DEALS FLAG", "FLAG " + isDefaultDeal);
             if(!isDefaultDeal) {
                 holder4.spinnerProgress.setVisibility(View.INVISIBLE);
@@ -137,16 +137,49 @@ private WebView i;
                 holder4.spinnerProgress.setVisibility(View.VISIBLE);
                 holder4.txtFirstChar.setVisibility(View.INVISIBLE);
             }
+
             List<String> list = Arrays.asList(message.getMessageText().split("--"));
 
+            if(list.size() >0)
+            {
+                for (int i=0; i<list.size();i++) {
 
-            holder4.building1.setText(list.get(0));
-            holder4.building2.setText(list.get(2));
-            holder4.building3.setText(list.get(4));
+                    if(i==0)
+                        holder4.building1.setText(list.get(i));
+                    if(i==1)
+                        holder4.price1.setText(" @"+ General.currencyFormat(list.get(1).substring(0 , list.get(1).indexOf("."))));
+                    if(i == 2)
+                        holder4.building2.setText(list.get(2));
+                    if(i==3)
+                        holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(3).indexOf("."))));
+                    if(i == 4)
+                        holder4.building3.setText(list.get(4));
+                    if(i==5)
+                        holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(5).indexOf("."))));
+                }
+            }
 
-            holder4.price1.setText(" @"+ General.currencyFormat(list.get(1).substring(0 , list.get(1).indexOf("."))));
-            holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(3).indexOf("."))));
-            holder4.price3.setText(" @"+ General.currencyFormat(list.get(5).substring(0 , list.get(5).indexOf("."))));
+
+            if(list.size() >0)
+            {
+                for (int i=0; i<list.size();i++) {
+
+                    if(i==0)
+                        holder4.building1.setText(list.get(i));
+                    if(i==1)
+                        holder4.price1.setText(" @"+ General.currencyFormat(list.get(1).substring(0 , list.get(1).indexOf("."))));
+                    if(i == 2)
+                        holder4.building2.setText(list.get(2));
+                    if(i==3)
+                        holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(3).indexOf("."))));
+                    if(i == 4)
+                       holder4.building3.setText(list.get(4));
+                    if(i==5)
+                        holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(5).indexOf("."))));
+                }
+            }
+
+
             /*holder4.price1.setText(" @"+General.currencyFormat(list.get(1).substring(0,list.get(1).length()-2)));
             holder4.price2.setText(" @"+General.currencyFormat(list.get(3).substring(0,list.get(3).length()-2)));
             holder4.price3.setText(" @"+General.currencyFormat(list.get(5).substring(0,list.get(5).length()-2)));*/
@@ -159,6 +192,8 @@ private WebView i;
         }
 
         else if (message.getUserType() == ChatMessageUserType.IMG) {
+
+            Log.i("TEST","================================================== IMG");
             Log.i("image adapter","image adapter "+message.getUserSubtype()+message.getUser_id());
 
             Boolean stopDownloadImage = false;
@@ -213,6 +248,7 @@ private WebView i;
             Log.i("IMGURL", "flokie 7 "+message.getImageName());
             Log.i("IMGURL","image url is yo yo to "+message.getImageUrl());
             Log.i("IMGURL","image name is yo yo to "+message.getImageName());
+
             imgName = message.getImageUrl().split("/")[4];
             Log.i("IMGURL","image name is yo yo to po "+imgName);
 
@@ -361,8 +397,8 @@ private WebView i;
             String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
 
             Log.i("CONVER", "Chat message is2" + message.getMessageText());
-
             Log.i("TRACE DEALS FLAG", "FLAG " + isDefaultDeal);
+
             if(!isDefaultDeal) {
                 holder3.spinnerProgress.setVisibility(View.INVISIBLE);
                 holder3.txtFirstChar.setVisibility(View.VISIBLE);
@@ -370,6 +406,7 @@ private WebView i;
                 holder3.spinnerProgress.setVisibility(View.VISIBLE);
                 holder3.txtFirstChar.setVisibility(View.INVISIBLE);
             }
+
             holder3.messageTextView.setText(message.getMessageText());
             holder3.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
             holder3.chatReplyAuthor.setText("Welcome "+name);
@@ -408,6 +445,7 @@ private WebView i;
             holder1.chatReplyAuthor.setText(name);
             holder1.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
             Log.i("CONVER","message time self "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
+
         }
         else if (message.getUserType() == ChatMessageUserType.SELF || message.getUserSubtype() == ChatMessageUserSubtype.SELF)
         {
@@ -426,6 +464,7 @@ private WebView i;
             else
             {
                 v = convertView;
+                Log.i("TAG","v.getTag() v.getTag() "+v.getTag());
                 holder2 = (ViewHolder2) v.getTag();
 
             }
@@ -457,17 +496,22 @@ private WebView i;
     @Override
     public int getItemViewType(int position) {
 
-        Log.i("VIEW TYPE","======== yo 1  "+chatMessages);
+         if(position >0)
+        Log.i("VIEW TYPE","======== yo 1  "+chatMessages.get(position-1).getMessageText());
         Log.i("VIEW TYPE","======== yo 2  "+position);
-            ChatMessage message = chatMessages.get(position);
-        Log.i("VIEW TYPE","======== yo 3  "+message.getUserType());
 
+        ChatMessage message = chatMessages.get(position);
+
+        Log.i("VIEW TYPE","======== yo 3  "+message.getUserType());
+        Log.i("VIEW TYPE","======== yo 4  "+message.getUserSubtype());
         if(message.getUserType() != null)
             return message.getUserType().ordinal();
 
-        return message.getUserSubtype().ordinal();
+        return 1;
 
+//        return message.getUserSubtype().ordinal();
     }
+
 
     private class ViewHolder1 {
         public ProgressBar spinnerProgress;
@@ -568,9 +612,6 @@ private WebView i;
                     };
 
                     thread.start();
-
-
-
 
 
                 }

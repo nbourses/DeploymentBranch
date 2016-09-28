@@ -64,6 +64,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
+import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
@@ -1177,9 +1178,12 @@ if(count<=220) {
 
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
                     fragmentTransaction.replace(R.id.container_sign, fragment);
                     // fragmentTransaction.replace(R.id.container_map, fragment);
                     fragmentTransaction.commit();
+                AppConstants.SIGNUP_FLAG = true;
+
                 } else {
                     //here broker is registered
 
@@ -1766,7 +1770,8 @@ catch (Exception e){
     @Override
     public void onclick(int position, JSONArray m, String show, int x_c, int y_c) {
         deal.setEnabled(true);
-        deal.setBackgroundColor(Color.parseColor("#ff9f1c"));
+        //deal.setBackgroundColor(Color.parseColor("#ff9f1c"));
+        deal.setBackground(getResources().getDrawable(R.drawable.deals_button_background));
         //deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.orange));
         try {
             leadPrompt.setVisibility(View.VISIBLE);
@@ -1999,7 +2004,7 @@ Log.i("Diamond","diamond "+possession_date);
             }
 
             //open deals listing
-            Intent openDealsListing = new Intent(getActivity(), BrokerDealsListActivity.class);
+            Intent openDealsListing = new Intent(getActivity(), ClientDealsListActivity.class);
             /*openDealsListing.addFlags(
                     Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);*/
             startActivity(openDealsListing);

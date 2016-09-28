@@ -23,6 +23,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,6 +47,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
+import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.adapters.BrokerDealsListAdapter;
 import com.nbourses.oyeok.enums.DealStatusType;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -142,6 +144,10 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     private ArrayList<BrokerDeals> cachedDealsOR;
     private Realm myRealm;
     private int position;
+    private Boolean signUpCardFlag = false;
+    private LinearLayout signUpCard;
+    private Button signUp;
+    private TextView signUpCardText;
     //  private Boolean signupSuccessflag = false;
 
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
@@ -174,6 +180,9 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
         listViewDeals = (SwipeMenuListView) findViewById(R.id.listViewDeals);
         supportChat = (LinearLayout)findViewById(R.id.supportChat);
         fragment_container1 = (FrameLayout)findViewById(R.id.fragment_container1);
+        signUpCard = (LinearLayout) findViewById(R.id.signUpCard);
+        signUp = (Button) findViewById(R.id.signUp);
+        signUpCardText = (TextView) findViewById(R.id.signUpCardText);
         //  listViewDeals.setAdapter(new SearchingBrokersAdapter(this));
 
         supportChat.setVisibility(View.VISIBLE);
@@ -211,6 +220,10 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
     }
 
     private void init() {
+        if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")){
+            signUpCard.setVisibility(View.VISIBLE);
+            signUpCardText.setText("Sign up to 'OK' More LEADs to create dealing rooms with new client.");
+        }
 
         loadCachedDeals();    //Load cached hd rooms from realm
         searchView = (SearchView) findViewById(R.id.searchView);
@@ -1138,20 +1151,20 @@ Log.i("SWIPE","inside swipe menu creator");
 
                                     bundle.putIntArray("bPrice",bPrice);
                                     bundle.putStringArray("bNames",bNames);
-
+                                    intent.putExtra(AppConstants.NAME, brokerDeals.getName().substring(0, 1).toUpperCase() + brokerDeals.getName().substring(1).toLowerCase());
                                     intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
                                     intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
                                     startActivity(intent);
                                 }
                             });
                         }
-                        else {
+                       /* else {
 
-                        }
+                        }*/
                     }
-                    else {
+                    /*else {
 
-                    }
+                    }*/
                 }
                 catch (Exception e) {
 
@@ -1176,6 +1189,31 @@ Log.i("SWIPE","inside swipe menu creator");
         General.internetConnectivityMsg(this);
 
     }
+    }
+
+
+    @OnClick(R.id.signUp)
+    public void onClickSignUp(View v) {
+
+
+
+
+        SignUpFragment d = new SignUpFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("lastFragment", "brokerDrawer");  //consider as direct signup so keep last fragment as clientDrawer
+
+        d.setArguments(bundle);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+        fragmentTransaction.addToBackStack("cardSignUp");
+        fragment_container1.setVisibility(View.VISIBLE);
+        fragmentTransaction.replace(R.id.fragment_container1, d);
+        signUpCardFlag = true;
+        fragmentTransaction.commitAllowingStateLoss();
+
+
     }
 
     @OnClick(R.id.dealItemRoot)
@@ -1293,9 +1331,12 @@ Log.i("SWIPE","inside swipe menu creator");
 //            finish();
 //        }
 
+        if(signUpCardFlag){
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.fragment_container1)).commit();
+            signUpCardFlag = false;
+        }
 
-
-        if(AppConstants.SIGNUP_FLAG){
+        else if(AppConstants.SIGNUP_FLAG){
 Log.i(TAG,"persy 1 ");
                // getSupportFragmentManager().popBackStackImmediate();
                /* Intent inten = new Intent(this, BrokerMainActivity.class);
@@ -1489,14 +1530,6 @@ if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgno
             else
 
                 cachedDeals.addAll(cachedDealsOR);
-
-
-
-
-
-
-
-
 
 
             if (cachedDeals.size() < 3 && showbgtext == true  && !General.isNetworkAvailable(this)) {

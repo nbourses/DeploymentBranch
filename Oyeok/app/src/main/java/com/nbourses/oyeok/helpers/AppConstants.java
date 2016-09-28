@@ -37,6 +37,7 @@ public class AppConstants {
     public static final String NETWORK_CONNECTIVITY = "networkConnectivity";
     public static final String CLOSE_OYE_SCREEN_SLIDE = "closeOyeScreenSlide";
     public static final String OYE_BUTTON_DATA = "oyeButtonData";
+    public static final String token = "Token";
 
     public static final String BADGE_COUNT_BROADCAST = "badgeCountBroadcast";
     public static final String CHECK_BEACON = "checkBeacon";
@@ -69,7 +70,9 @@ public class AppConstants {
     //public static final String SERVER_BASE_URL_102 = "http://52.41.200.154:9000/1.02";
     public static final String SERVER_BASE_URL = "https://test.hailyo.com/1";
     public static final String SERVER_BASE_URL_1_02 = "https://test.hailyo.com/1.02";
-   public static final String SERVER_BASE_URL_102 = "https://test.hailyo.com/1.02";
+    public static final String SERVER_BASE_URL_102 = "https://test.hailyo.com/1.02";
+
+
 
 
     public static final String OK_ID = "ok_id";

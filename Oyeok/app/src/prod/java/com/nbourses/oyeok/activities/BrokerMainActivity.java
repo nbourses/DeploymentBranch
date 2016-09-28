@@ -8,8 +8,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -45,6 +49,7 @@ import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -94,7 +99,8 @@ GoogleMap map;
     private Boolean webviewFlag = false;
     private Boolean signupSuccessflag = false;
 
-
+    private String description;
+    private String heading;
 
 
 
@@ -138,6 +144,22 @@ GoogleMap map;
         }
     };
 
+    private BroadcastReceiver profileEmailUpdate = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("closer","closer ");
+         updateEmail();
+            /*Log.i("pikachu","ppppp1"+intent.getExtras().getString("emailProfile"));
+            if(intent.getExtras().getString("emailProfile") != null){
+                Log.i("pikachu","ppp111111"+intent.getExtras().getString("emailProfile"));
+         String email=intent.getExtras().getString("emailProfile");
+                emailTxt.setText(email);
+            }*/
+        }
+    };
+
+
+
 //    private BroadcastReceiver signupSuccessFlag = new BroadcastReceiver() {
 //        @Override
 //        public void onReceive(Context context, Intent intent) {
@@ -165,6 +187,7 @@ GoogleMap map;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agent_main);
+        AppConstants.CURRENT_USER_ROLE ="broker";
 
 
 
@@ -220,6 +243,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 //        General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
 
 
+
         init();
     }
     @Override
@@ -230,7 +254,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(localityBroadcast, new IntentFilter(AppConstants.LOCALITY_BROADCAST));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(buildingSliderFlag, new IntentFilter(AppConstants.BUILDINGSLIDERFLAG));
-//        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(signupSuccessFlag, new IntentFilter(AppConstants.SIGNUPSUCCESSFLAG));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(profileEmailUpdate, new IntentFilter(AppConstants.EMAIL_PROFILE));
 
     }
 
@@ -241,7 +265,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(networkConnectivity);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(localityBroadcast);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(buildingSliderFlag);
-//        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(signupSuccessFlag);
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(profileEmailUpdate);
 
 
     }
@@ -257,27 +281,15 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
                 R.anim.slide_down);
         openmaps.setVisibility(View.VISIBLE);
 
-       /* try {
+       try {
             SharedPreferences prefs =
                     PreferenceManager.getDefaultSharedPreferences(this);
             listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 
-                    if (key.equals(SharedPrefs.MY_LOCALITY)) {
-                        Log.i("loc","OnSharedPreferenceChangeListener 1");
-                        Log.i("loc","OnSharedPreferenceChangeListener 1 rent "+SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
-                        if (SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY) ==null ) {
-                            Log.i("loc","OnSharedPreferenceChangeListener 2");
-                            tv_change_region.setVisibility(View.GONE);
-                        }
-                        else {
-                            Log.i("loc","OnSharedPreferenceChangeListener 3");
-                            tv_change_region.setVisibility(View.VISIBLE);
-                            tv_change_region.setText(String.valueOf(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY)));
-                        }
+                    if (key.equals(AppConstants.EMAIL)) {
+                        emailTxt.setText(General.getSharedPreferences(BrokerMainActivity.this,AppConstants.EMAIL));
                     }
-
-
                 }
 
 
@@ -287,7 +299,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         }
         catch (Exception e){
             Log.e("loc", e.getMessage());
-        }*/
+        }
 
         /*Fragment fragment = new Ok_Broker_MainScreen();
         loadFragment(fragment, null, R.id.container_map, "");*/
@@ -396,16 +408,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
 
-        if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-            //if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
-            if (!General.getSharedPreferences(this,AppConstants.EMAIL).equalsIgnoreCase("null")) {
-                emailTxt.setVisibility(View.VISIBLE);
-                emailTxt.setText(General.getSharedPreferences(this,AppConstants.EMAIL));
-
-            }
-        }else{
-            emailTxt.setVisibility(View.INVISIBLE);
-        }
+        updateEmail();
 
 
 
@@ -459,7 +462,64 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
             }
         });
-        
+
+
+        Bundle bundle = getIntent().getExtras();
+
+        try {
+            if (bundle != null) {
+                if (bundle.containsKey("bicon")) {
+                    description = bundle.getString("desc");
+                    heading = bundle.getString("title");
+                    Log.i("TRACE", " toto "+bundle.getString("bicon"));
+                    Log.i("TRACE", " toto 1 "+bundle.getString("bicon"));
+                    new DownloadImageTask().execute(bundle.getString("bicon"));
+                }}}
+        catch(Exception e){}
+
+
+        /*if(General.getSharedPreferences(BrokerMainActivity.this,AppConstants.PROMO_IMAGE_URL) != "") {
+            Log.i("TAG","porter 1 "+General.getSharedPreferences(BrokerMainActivity.this,AppConstants.PROMO_IMAGE_URL));
+            new DownloadImageTask().execute(General.getSharedPreferences(BrokerMainActivity.this, AppConstants.PROMO_IMAGE_URL));
+        }*/
+
+
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+
+
+        protected Bitmap doInBackground(String... urls) {
+
+            Log.i("TAG","stopDownloadImage3 yo bro porter 2 "+urls[0]);
+
+
+            final String urldisplay = urls[0];
+            Bitmap mIcon11 = General.getBitmapFromURL(urldisplay);
+
+
+            return mIcon11;
+
+
+        }
+
+        protected void onPostExecute(final Bitmap result) {
+            if(result != null) {
+                Log.i("flok", "flokai 2 porter 3 "+result);
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        General.showOptions(BrokerMainActivity.this,result, description, heading);
+                        // General.setSharedPreferences(ClientMainActivity.this,AppConstants.PROMO_IMAGE_URL,"");
+
+                    }
+
+                }, 1000);
+
+
+            }
+        }
     }
 
     private void enableMyLocation() {
@@ -495,6 +555,17 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
         fragmentTransaction.show(fragment);
         fragmentTransaction.addToBackStack(title);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
+    private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+
+        fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -570,8 +641,8 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             // signUpFragment.getView().bringToFrFont();
             Bundle bundle = new Bundle();
             bundle.putStringArray("Chat", null);
-            bundle.putString("lastFragment", "drawer");
-            loadFragment(signUpFragment, bundle, R.id.container_sign, "");
+            bundle.putString("lastFragment", "brokerDrawer");
+            loadFragmentAnimated(signUpFragment, bundle, R.id.container_sign, "");
 
 
 
@@ -659,15 +730,22 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
         Log.i("ONBACKPRESSED","broker main activity "+setting);
 
-
-        if(AppConstants.SIGNUP_FLAG){
+        if(AppConstants.cardNotif){
+            AppConstants.cardNotif = false;
+            AppConstants.optionspu1.dismiss();
+            AppConstants.optionspu.dismiss();
+        }
+        else if(AppConstants.SIGNUP_FLAG){
            if(AppConstants.REGISTERING_FLAG){}else{
-                getSupportFragmentManager().popBackStackImmediate();
+                //getSupportFragmentManager().popBackStackImmediate();
+               getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
 
-            Intent inten = new Intent(this, BrokerMainActivity.class);
+
+
+              /* Intent inten = new Intent(this, BrokerMainActivity.class);
 
             startActivity(inten);
-            finish();
+            finish();*/
             AppConstants.SIGNUP_FLAG=false;
 
             backpress = 0;}
@@ -759,6 +837,21 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             Owner_detail=false;
             backpress = 0;
         }
+
+        else if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equals("")) {
+
+
+            Log.i("SIGNUP_FLAG", " closing app =================== 3" + getFragmentManager().getBackStackEntryCount());
+            if (backpress < 1) {
+                backpress = (backpress + 1);
+                TastyToast.makeText(this, "Press Back again to Exit!", TastyToast.LENGTH_LONG, TastyToast.INFO);
+                //Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+            } else if (backpress >= 1) {
+                backpress = 0;
+                this.finish();
+
+            }
+        }
         else{
 
 //            if(backpress <1) {
@@ -767,8 +860,15 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 //                Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
 //            }else if (backpress>=1) {
 //                backpress = 0;
-                this.finish();
+                /*this.finish();*/
 //            }
+            Intent inten = new Intent(this, ClientMainActivity.class);
+            inten.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(inten);
+            finish();
 
         }
 
@@ -830,6 +930,23 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
     }
 
 
+
+    public void updateEmail(){
+        Log.i("closer","closer 1 ");
+        if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+            Log.i("closer","closer 2 "+General.getSharedPreferences(this,AppConstants.EMAIL));
+            //if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
+            if (!General.getSharedPreferences(this,AppConstants.EMAIL).equalsIgnoreCase("null")) {
+                emailTxt.setVisibility(View.VISIBLE);
+                emailTxt.setText(General.getSharedPreferences(this,AppConstants.EMAIL));
+
+
+            }
+        }else{
+            emailTxt.setVisibility(View.INVISIBLE);
+        }
+
+    }
 
 
 

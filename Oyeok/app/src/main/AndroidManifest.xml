@@ -205,12 +205,14 @@
 
         <activity
             android:name=".activities.ClientMainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"
+            >
         </activity>
         <activity
             android:name=".activities.ClientDealsListActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" >
+            android:windowSoftInputMode="adjustPan">
         </activity>
 
         <service
@@ -223,12 +225,13 @@
 
         <activity
             android:name=".activities.DealConversationActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name=".activities.BrokerDealsListActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" >
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
             android:name=".activities.BrokerMainActivity"

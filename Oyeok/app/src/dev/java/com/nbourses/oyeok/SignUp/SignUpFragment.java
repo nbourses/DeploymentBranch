@@ -55,6 +55,7 @@ import com.nbourses.oyeok.activities.BrokerMainActivity;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.realmModels.HalfDeals;
 import com.nbourses.oyeok.realmModels.UserInfo;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
@@ -220,8 +221,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         b=getArguments();
         redirectToOyeIntentSpecs=false;
         okBroker=false;
-
-
+        //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //listings= (HashMap<String, Float>) b.getSerializable("listings");
         Log.i("signup fragment","building listings are "+listings);
         String[] bNames = new String[3];
@@ -847,7 +847,7 @@ Log.i(TAG,"mobile number is the "+mobile_number);
 
                         Log.i("TAG", "Inside signup success");
 
-                        Log.i(TAG,"fakata responsedata "+signUp.responseData);
+                        Log.i(TAG,"fakata responsedata "+signUp.responseData.getMessage());
 
                        try {
                            my_user_id = signUp.responseData.getUserId();
@@ -1027,6 +1027,28 @@ Log.i(TAG,"mobile number is the "+mobile_number);
                             dbHelper.save(DatabaseConstants.user, "Broker");
                         } else
                             dbHelper.save(DatabaseConstants.user, "Client");
+
+
+
+                        try {  // clear unregistered deals from realm
+                            Realm myRealm = General.realmconfig(getContext());
+
+
+                            myRealm.beginTransaction();
+
+                            RealmResults<HalfDeals> result = myRealm.where(HalfDeals.class).findAll();
+
+                            result.clear();
+
+                        }catch(Exception e){
+                            Log.i(TAG,"Caught in the exception clearing deals after signup "+e );
+                        }
+                        finally{
+                            myRealm.commitTransaction();
+                        }
+
+
+
 
 Log.i(TAG,"lastfragment "+lastFragment);
 

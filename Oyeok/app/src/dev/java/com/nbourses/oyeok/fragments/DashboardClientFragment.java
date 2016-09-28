@@ -49,13 +49,18 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +76,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nbourses.oyeok.Database.DBHelper;
@@ -81,7 +88,9 @@ import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.GooglePlacesApiServices.GooglePlacesReadTask;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateStatus;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
@@ -124,6 +133,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Callback;
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -191,6 +201,8 @@ Button home,shop,industrial,office;
 
     private BitmapDescriptor icon1;
     private BitmapDescriptor icon2;
+    private BitmapDescriptor iconHome;
+    private BitmapDescriptor iconOffice;
     private Drawable sort_down_black,sort_down_red,sort_up_black,sort_up_green,comman_icon;
 
 
@@ -274,6 +286,7 @@ TextView rental,resale;
     private Boolean autocomplete = false,MarkerClickEnable=true;
 
   private  static  View  rootView;
+    private Boolean buildingSelected = true;
 
     private View v1;
 
@@ -287,6 +300,12 @@ TextView rental,resale;
     private String Walkthrough, permission, beacon;
     AutoCompleteTextView inputSearch;
     private int INDEX;
+    Animation bounce;
+    Animation slideUp;
+    Animation slideDown;
+
+    private String favTitle;
+    private BitmapDescriptor favIcon;
 //    @Bind(R.id.seekbar_linearlayout)
 //    LinearLayout seekbarLinearLayout;
 
@@ -301,6 +320,40 @@ TextView rental,resale;
 
     @Bind(R.id.copyright)
     TextView copyright;
+
+    @Bind(R.id.fav)
+    ImageView fav;
+
+    @Bind(R.id.favImg)
+    ImageView favImg;
+
+    @Bind(R.id.favBoard)
+    LinearLayout favboard;
+
+    @Bind(R.id.favSave)
+    Button favSave;
+
+    @Bind(R.id.favCancel)
+    Button favCancel;
+
+    @Bind(R.id.favAdrs)
+    TextView favAdrs;
+
+    @Bind(R.id.favOText)
+    EditText favOText;
+
+    @Bind(R.id.favHome)
+    RadioButton favHome;
+
+    @Bind(R.id.favWork)
+    RadioButton favWork;
+
+    @Bind(R.id.favOther)
+    RadioButton favOther;
+
+    @Bind(R.id.favRG)
+    RadioGroup favRG;
+
 
 //    @Bind(R.id.hPicker)
 //    LinearLayout hPicker;
@@ -319,13 +372,22 @@ TextView rental,resale;
             try {
                 if (intent.getExtras().getBoolean("autocomplete") == true) {
                     // autocomplete = true;
-                    Log.i(TAG, "hohohoh 2");
+                 /*   Log.i(TAG, "hohohoh 2");
                     hideOnSearch.setVisibility(View.GONE);
                     seekbar_linearlayout.setVisibility(View.VISIBLE);
                     seekbar_linearlayout.setAlpha(1f);
                     mPhasedSeekBar.setVisibility(View.VISIBLE);
 //                    property_type_layout.setVisibility(View.VISIBLE);
+                    dispProperty.setVisibility(View.VISIBLE);*/
+
+                    getPrice();
+                    new LocationUpdater().execute();
+                    hideOnSearch.setVisibility(View.GONE);
+                    seekbar_linearlayout.setVisibility(View.VISIBLE);
+//        property_type_layout.setVisibility(View.VISIBLE);
                     dispProperty.setVisibility(View.VISIBLE);
+                    seekbar_linearlayout.setBackgroundColor(Color.WHITE);
+                    seekbar_linearlayout.setAlpha(1);
                 }
             } catch (Exception e) {}
         }
@@ -355,16 +417,21 @@ TextView rental,resale;
         public void onReceive(Context context, Intent intent) {
             if (intent.getExtras().getString("phaseseek") != null) {
                 if ((intent.getExtras().getString("phaseseek").equalsIgnoreCase("clicked"))) {
+                    try {
+                        Log.i("indexxx", "index of layoutsusussjcdnck : ");
+                        int index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
+                        Log.i("indexxx", "index of layoutsusussjcdnck : " + index);
+                        if (index == 2) {
+                            property_type_layout.clearAnimation();
+                            parenttop.removeView(property_type_layout);
+                            parentbottom.addView(property_type_layout, 5);
+                        }
 
-                    int index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
-                    Log.i("indexxx", "index of layoutsusussjcdnck : " + index);
-                    if(index==2){
-                        property_type_layout.clearAnimation();
-                        parenttop.removeView(property_type_layout);
-                        parentbottom.addView(property_type_layout,5);}
+                        PropertyButtonSlideAnimation();
+                    }
+                    catch(Exception e){
 
-                    PropertyButtonSlideAnimation();
-
+                    }
 
                 }
 
@@ -584,6 +651,8 @@ TextView rental,resale;
             sort_down_red = getContext().getResources().getDrawable(R.drawable.sort_down_red);
             sort_up_black = getContext().getResources().getDrawable(R.drawable.sort_up_black);
             sort_up_green = getContext().getResources().getDrawable(R.drawable.up);
+            iconHome = BitmapDescriptorFactory.fromResource(R.drawable.favhome);
+            iconOffice = BitmapDescriptorFactory.fromResource(R.drawable.favoffice);
 
 
         }
@@ -620,6 +689,8 @@ TextView rental,resale;
                 Log.i("t1", "co-ordinate" + x + " " + y);
             }
         });
+
+
 
         dashboardActivity = (ClientMainActivity) getActivity();
 
@@ -757,9 +828,13 @@ TextView rental,resale;
                     autoIsClicked=true;
                     autoCompView.showDropDown();
                     // new LocationUpdater().execute();
+                    property_type_layout.clearAnimation(); /////
                     property_type_layout.setVisibility(View.GONE);
                     dispProperty.setVisibility(View.GONE);
 
+
+//hideOnSearch.clearAnimation();/////
+                    hideOnSearch.setVisibility(View.VISIBLE);
                     hideOnSearch.setVisibility(View.VISIBLE);
                     //seekbar_linearlayout.setVisibility(View.GONE);
                     mPhasedSeekBar.setVisibility(View.VISIBLE);
@@ -779,11 +854,17 @@ TextView rental,resale;
                     //  ll_map.setAlpha(0.5f);
                     //hideOnSearch.setAlpha(0.5f);
                 } catch (Exception e) {
+                    Log.i(TAG,"Caught in exception autocompleteview click "+e);
                 }
 
 
             }
         });
+
+
+
+
+
 
 
 
@@ -1069,7 +1150,9 @@ TextView rental,resale;
                     new CountDownTimer(200, 50) {
 
                         public void onTick(long millisUntilFinished) {
-                            ( (ClientMainActivity)getActivity()).closeOyeScreen();
+                            Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+//                            ( (ClientMainActivity)getActivity()).closeOyeScreen();
                             ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                             ( (ClientMainActivity)getActivity()).closeOyeConfirmation();
                             txtFilterValue.setTextSize(13);
@@ -1186,7 +1269,8 @@ TextView rental,resale;
                 public void onMapClick(LatLng latLng) {
 
                     Log.i("MA999999 ", "MAP CLICK=========");
-
+                    tvRate.setVisibility(View.VISIBLE);
+                    rupeesymbol.setVisibility(View.VISIBLE);
                     onMapclicked();
 
 
@@ -1246,7 +1330,7 @@ TextView rental,resale;
                                             String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#b91422><sub>/m</sub></font></br>";
                                             tvFetchingrates.setText(Html.fromHtml(text));
                                         } else {
-                                            String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
+                                            String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 " + General.currencyFormat(String.valueOf(or_psf[i])).substring(2, General.currencyFormat(String.valueOf(or_psf[i])).length()) + "</font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
                                             tvFetchingrates.setText(Html.fromHtml(text));
                                         }
                                     }
@@ -1258,7 +1342,7 @@ TextView rental,resale;
                                             tvFetchingrates.setText(Html.fromHtml(text));
                                         } else {
 
-                                            String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#2dc4b6>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#2dc4b6><sub>/sq.ft</sub></font></br>";
+                                            String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#2dc4b6>\u20B9 " + General.currencyFormat(String.valueOf(or_psf[i])).substring(2, General.currencyFormat(String.valueOf(or_psf[i])).length()) + "</font><b><font color=#2dc4b6><sub>/sq.ft</sub></font></br>";
 
                                             tvFetchingrates.setText(Html.fromHtml(text));
                                         }
@@ -1268,7 +1352,7 @@ TextView rental,resale;
                                             String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font></br>";
                                             tvFetchingrates.setText(Html.fromHtml(text));
                                         } else {
-                                            String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(ll_pm[i])).substring(2, General.currencyFormat(String.valueOf(ll_pm[i])).length()) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font></br>";
+                                            String text = "<font color=#ffffff >" + name[i] + "</b></font> <font color=#ffffff> @</font>&nbsp<font color=#ff9f1c>\u20B9 " + General.currencyFormat(String.valueOf(or_psf[i])).substring(2, General.currencyFormat(String.valueOf(or_psf[i])).length()) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font></br>";
 
                                             tvFetchingrates.setText(Html.fromHtml(text));
                                         }
@@ -1283,6 +1367,7 @@ TextView rental,resale;
                                     CancelAnimation();
                                      Intent in = new Intent(AppConstants.MARKERSELECTED);
                                     in.putExtra("markerClicked", "true");
+                                    buildingSelected = false;
                                     LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
 //                                Log.i("coming soon", "coming soon :" + marker.getTitle().toString());
                                     tv_building.setVisibility(View.VISIBLE);
@@ -1332,6 +1417,7 @@ TextView rental,resale;
                                     //intent.putExtra("client_heading", "Live Region Rates");
                                     Intent in = new Intent(AppConstants.MARKERSELECTED);
                                     in.putExtra("markerClicked", "false");
+                                    buildingSelected = true;
                                     buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                                     LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
 //                                Log.i("coming soon", "coming soon :" + marker.getTitle().toString() + recordWorkout);
@@ -1512,6 +1598,29 @@ TextView rental,resale;
 
 
     private void init() {
+
+        setDealStatus2(getContext());
+        bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+        slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
+        slideDown = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down);
+        bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+        bounce.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                favboard.clearAnimation();
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
         home = (Button) rootView.findViewById(R.id.home);
         shop = (Button) rootView.findViewById(R.id.shop);
         industrial = (Button) rootView.findViewById(R.id.industrial);
@@ -1611,6 +1720,101 @@ TextView rental,resale;
                 property_type_layout.setVisibility(View.GONE);
             }
         });
+
+        fav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // if(!buildingSelected)
+                    buildingSelected = true;
+                favboard.clearAnimation();
+                Boolean t = false;
+                for(int i =0; i>5; i++){
+                    if(flag[i])
+                        t = true;
+                }
+                Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                if(!t) {
+
+//                            ( (ClientMainActivity)getActivity()).closeOyeScreen();
+                    ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+                    ((ClientMainActivity) getActivity()).closeOyeConfirmation();
+                    txtFilterValue.setTextSize(13);
+                    txtFilterValue.setTextColor(Color.parseColor("white"));
+                    txtFilterValue.setText(oyetext);
+                }
+                favboard.setVisibility(View.VISIBLE);
+                favboard.setAnimation(bounce);
+                /*favboard.animate()
+                        .translationYBy(0)
+                        .translationY(favboard.getHeight())
+                        .setDuration(500);*/
+
+            }
+        });
+
+        favRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                if(checkedId == R.id.favHome) {
+                    favImg.setImageResource((R.drawable.favhome));
+                    favOText.setVisibility(View.GONE);
+                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(favboard.getWindowToken(), 0);
+                    favTitle = "My Home";
+                    favIcon = iconHome;
+
+                } else if(checkedId == R.id.favWork) {
+                    favImg.setImageResource((R.drawable.favoffice));
+                    favOText.setVisibility(View.GONE);
+                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(favboard.getWindowToken(), 0);
+                    favTitle = "My Office";
+                    favIcon = iconOffice;
+
+                } else {
+                    favImg.setImageResource((R.drawable.favother));
+                    favOText.setVisibility(View.VISIBLE);
+                    favOText.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(favOText, InputMethodManager.SHOW_IMPLICIT);
+
+                }
+            }
+        });
+
+
+        /*favSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                favboard.clearAnimation();
+                favboard.setVisibility(View.GONE);
+                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(favboard.getWindowToken(), 0);
+                *//*favboard.animate()
+                        .translationYBy(0)
+                        .translationY(favboard.getHeight())
+                        .setDuration(getResources().getInteger(android.R.integer.config_longAnimTime));*//*
+            }
+        });
+
+        favCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                favboard.clearAnimation();
+                favboard.setVisibility(View.GONE);
+                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(favboard.getWindowToken(), 0);
+               *//* favboard.animate()
+                        .translationYBy(0)
+                        .translationY(favboard.getHeight())
+                        .setDuration(getResources().getInteger(android.R.integer.config_longAnimTime));*//*
+            }
+        });*/
+
     }
 
 
@@ -1714,8 +1918,11 @@ TextView rental,resale;
     private BroadcastReceiver closeOyeScreenSlide = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-//            Log.i("inside notification","=======");
+      Log.i("closeOyeScreenSlide","=======");
             UpdateRatePanel();
+            RatePanel = true;
+//            OnOyeClick();
+            ((ClientMainActivity)getActivity()).closeOyeScreen();
 
  try {  // crash on card
     ll_map.setAlpha(1f);
@@ -1940,6 +2147,7 @@ catch(Exception e){
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(autoComplete, new IntentFilter(AppConstants.AUTOCOMPLETEFLAG1));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(phasedSeekBarClicked, new IntentFilter(AppConstants.PHASED_SEEKBAR_CLICKED));
 
+
     }
 
     @Override
@@ -2110,7 +2318,7 @@ catch(Exception e){
                                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
                                 search_building_icon.setVisibility(View.GONE);
                                 StartOyeButtonAnimation();
-
+                                try {
                                 for (int i = 0; i < 5; i++) {
                                     config[i] = getPrice.getResponseData().getBuildings().get(i).getConfig();
                                     Log.i("TRACE", "RESPONSEDATAr" + name);
@@ -2133,9 +2341,19 @@ catch(Exception e){
                                     mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc).title(name[i]).snippet(customSnippet).icon(icon1).flat(true));
                                     Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
                                     flag[i] = false;
-                                }
+                                    dropPinEffect(mCustomerMarker[i]);
 
-                                mVisits.setEnabled(true);
+                                }
+                                SnackbarManager.show(
+                                        Snackbar.with(getActivity())
+                                                .text("Displaying 5 buildings out of 12,000.")
+                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+                            }catch(Exception e){
+
+                            }
+
+                            mVisits.setEnabled(true);
                                 txtFilterValue.setEnabled(true);
                                 horizontalPicker.setVisibility(View.VISIBLE);
                                 tv_building.setVisibility(View.VISIBLE);
@@ -2722,6 +2940,7 @@ catch(Exception e){
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             autoCompView.setText(s);
+            favAdrs.setText(s);
             Log.i("", "");
             autoCompView.dismissDropDown();
             autoCompView.setCursorVisible(false);
@@ -3213,10 +3432,10 @@ public void oyebuttonBackgrountColorOrange(){
     private void  buildingTextChange(String locality,int area){
         if(isNetworkAvailable()) {
             Log.i(TAG,"buildingTextChange if called");
-            tv_building.setText("Average Rate @ " + locality + " | Area " + area + "sqft.");
+            tv_building.setText(Html.fromHtml("<font color='#2dc4b6'>Avg Rate</font> @ " + locality + " | Area " + area + "sqft."));
         }else{
             Log.i(TAG,"buildingTextChange else called");
-            tv_building.setText("Average Rate @ Andheri | Area " + area + "sqft.");
+            tv_building.setText(Html.fromHtml("<font color='#2dc4b6'>Avg Rate</font> @ Andheri | Area " + area + "sqft."));
 
 //            llMin = 35;
 //            llMax = 60;
@@ -3347,6 +3566,7 @@ public void oyebuttonBackgrountColorOrange(){
                             ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                             Intent in = new Intent(AppConstants.MARKERSELECTED);
                             in.putExtra("markerClicked", "false");
+                            buildingSelected = true;
 
                             LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
 //                            txtFilterValue.setTextColor(Color.parseColor("white"));
@@ -3640,6 +3860,7 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
                 ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                 Intent in = new Intent(AppConstants.MARKERSELECTED);
                 in.putExtra("markerClicked", "false");
+                buildingSelected = true;
                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
                 search_building_icon.setVisibility(View.GONE);
                 flag[i] = false;
@@ -3671,8 +3892,10 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
     public void OnOyeClick(){
         openOyeScreen();
         CancelAnimation();
+
         AppConstants.GOOGLE_MAP = map;
         if (clicked == true) {
+            MarkerClickEnable=false;
             oyebuttonBackgrountColorOrange();
             clicked = false;
             map.getUiSettings().setAllGesturesEnabled(false);
@@ -3681,6 +3904,7 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
             oyebuttonBackgrountColorGreenishblue();
             map.getUiSettings().setAllGesturesEnabled(true);
             mHelperView.setEnabled(true);
+            MarkerClickEnable=true;
             clicked = true;
 
         }
@@ -3786,7 +4010,259 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
 
 
 
+    private void dropPinEffect(final Marker marker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        final long duration = 1500;
 
+        final Interpolator interpolator = new BounceInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = Math.max(
+                        1 - interpolator.getInterpolation((float) elapsed
+                                / duration), 0);
+                marker.setAnchor(0.5f, 1.0f + 14 * t);
+
+                if (t > 0.0) {
+                    // Post again 15ms later.
+                    handler.postDelayed(this, 15);
+                } else {
+                    Log.i(TAG,"building drop ");
+                   // marker.showInfoWindow();
+
+                }
+            }
+        });
+    }
+
+    @OnClick({R.id.ll_marker, R.id.markerpanelminmax, R.id.picker, R.id.tv_building, R.id.tvRate, R.id.rupeesymbol, R.id.tvFetchingRates})
+    public void onOptionClickM(View v) {
+        Log.i(TAG,"I am clicked "+v +" "+buildingSelected);
+if(buildingSelected)
+    OnOyeClick();
+
+    }
+
+
+
+
+    @OnClick({R.id.favSave, R.id.favCancel})
+    public void onOptionClick(View v) {
+
+        Log.i(TAG,"fav2 yo");
+        if (v.getId() == favSave.getId()) {
+
+            Log.i(TAG,"fav2 save");
+            favboard.clearAnimation();
+            favboard.setVisibility(View.GONE);
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(favboard.getWindowToken(), 0);
+
+            Marker marker = map.addMarker(new MarkerOptions()
+                    .position(new LatLng(Double.parseDouble(SharedPrefs.getString(getContext(),SharedPrefs.MY_LAT)), Double.parseDouble(SharedPrefs.getString(getContext(),SharedPrefs.MY_LNG))))
+                    .title("Home")
+                    .icon(iconHome));
+
+            /*try {
+                Realm myRealm = General.realmconfig(getContext());
+                favourites = new Favourites();
+                favourites.setFavTitle(favTitle);
+                latlon = new Latlng();
+                latlon.setLat(Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT)));
+                latlon.setLon(Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
+                favourites.setLatLng(latlon);
+
+                Log.i(TAG,"fav2 3 latlng "+Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT))+" "+Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
+                Log.i(TAG,"fav2 latlng "+Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT))+" "+Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
+                myRealm.beginTransaction();
+                myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) favourites);
+                myRealm.commitTransaction();
+
+               RealmResults<Favourites> results1 =
+                        myRealm.where(Favourites.class).findAll();
+
+                for (Favourites c : results1) {
+                    Log.i(TAG, "insiderr2 ");
+                    Log.i(TAG, "insiderr3 " + c.getFavTitle());
+                    Log.i(TAG, "insiderr4 " + c.getLatLng().getLat());
+                    Log.i(TAG, "insiderr4 " + c.getLatLng().getLon());
+                }
+
+            }
+            catch(Exception e){
+                Log.i(TAG,"Caught in exception Favourites Realm "+e );
+            }*/
+
+
+        }
+        else if (v.getId() == favCancel.getId()) {
+
+            Log.i(TAG,"fav2 cancel");
+            favboard.clearAnimation();
+            favboard.setVisibility(View.GONE);
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(favboard.getWindowToken(), 0);
+
+        }
+
+
+    }
+
+
+
+   private void setDealStatus2(Context c){
+       Log.i("updateStatus CALLED","updateStatus success called ");
+       UpdateStatus updateStatus = new UpdateStatus();
+
+
+
+       updateStatus.setOkId("okId");
+       updateStatus.setStatus("dealStatus");
+       updateStatus.setLast_seen("lastseen");
+       updateStatus.setBlocked_by("blockBy");
+
+
+          RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(AppConstants.SERVER_BASE_URL)
+                .setRequestInterceptor(new RequestInterceptor() {
+                    @Override
+                    public void intercept(RequestFacade request) {
+                        request.addHeader("Accept", "application/json;versions=1");
+                        if ( General.getSharedPreferences(getContext(),AppConstants.token) != null) {
+                            String token = General.getSharedPreferences(getContext(),AppConstants.token);
+                            request.addHeader("Token", token);
+                        }
+                    }
+                })
+                .build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+
+
+        try {
+            oyeokApiService.updateStatus1(updateStatus, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+
+                    Log.i("updateStatus CALLED","updateStatus success ");
+
+
+
+                    JsonObject k = jsonElement.getAsJsonObject();
+                    try {
+
+                        Log.i("updateStatus","updateStatus success response "+response);
+
+
+                        JSONObject ne = new JSONObject(k.toString());
+                        General.setSharedPreferences(getContext(),AppConstants.token,ne.getString("token"));
+                        setDealStatus3(getContext());
+                        Log.i("updateStatus","updateStatus success ne "+ne);
+
+
+                    }
+                    catch (JSONException e) {
+                        Log.e("TAG", e.getMessage());
+                        Log.i("updateStatus CALLED","updateStatus Failed "+e.getMessage());
+                    }
+
+
+
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.i("BROKER BUILDINGS CALLED","update status failed "+error);
+                }
+            });
+
+
+        }
+        catch (Exception e){
+            Log.e("TAG", "Caught in the the"+ e.getMessage());
+        }
+
+    }
+
+    private void setDealStatus3(Context c){
+        Log.i("updateStatus CALLED","updateStatus3 success called ");
+        UpdateStatus updateStatus = new UpdateStatus();
+
+
+
+        updateStatus.setOkId("okId");
+        updateStatus.setStatus("dealStatus");
+        updateStatus.setLast_seen("lastseen");
+        updateStatus.setBlocked_by("blockBy");
+
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(AppConstants.SERVER_BASE_URL)
+                .setRequestInterceptor(new RequestInterceptor() {
+                    @Override
+                    public void intercept(RequestFacade request) {
+                        request.addHeader("Accept", "application/json;versions=1");
+                        if ( General.getSharedPreferences(getContext(),AppConstants.token) != null) {
+                            String token = General.getSharedPreferences(getContext(),AppConstants.token);
+                            request.addHeader("Token", token);
+                        }
+                    }
+                })
+                .build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+
+
+        try {
+            oyeokApiService.updateStatus2(updateStatus, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+
+                    Log.i("updateStatus CALLED","updateStatus3 success ");
+
+
+
+                    JsonObject k = jsonElement.getAsJsonObject();
+                    try {
+
+                        Log.i("updateStatus","updateStatus3 success response "+response);
+
+
+                        JSONObject ne = new JSONObject(k.toString());
+//                        General.setSharedPreferences(getContext(),AppConstants.token,ne.getString("token"));
+                        Log.i("updateStatus","updateStatus3 success ne "+ne);
+
+
+                    }
+                    catch (JSONException e) {
+                        Log.e("TAG", e.getMessage());
+                        Log.i("updateStatus CALLED","updateStatus3 Failed "+e.getMessage());
+                    }
+
+
+
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.i("BROKER BUILDINGS CALLED","update status failed "+error);
+                }
+            });
+
+
+        }
+        catch (Exception e){
+            Log.e("TAG", "Caught in the the"+ e.getMessage());
+        }
+
+    }
 
 
 

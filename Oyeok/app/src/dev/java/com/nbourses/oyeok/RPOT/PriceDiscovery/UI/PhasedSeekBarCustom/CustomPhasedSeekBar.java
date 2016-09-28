@@ -194,7 +194,8 @@ public class CustomPhasedSeekBar extends View {
         paint.setTypeface(Typeface.DEFAULT_BOLD);
         paint.setAntiAlias(true);
 //            int brokerlength = (int) (6 * 15 *DPTOPX_SCALE)/2;
-        paint.setColor(Color.BLACK);
+     paint.setColor(Color.BLACK);
+       // paint.setColor(Color.parseColor("#2dc4b6"));
 
     }
 

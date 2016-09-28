@@ -2210,6 +2210,7 @@ catch(Exception e){
                                 search_building_icon.setVisibility(View.GONE);
                                 StartOyeButtonAnimation();
 
+<<<<<<< HEAD
                                 for (int i = 0; i < 5; i++) {
                                     config[i] = getPrice.getResponseData().getBuildings().get(i).getConfig();
                                     Log.i("TRACE", "RESPONSEDATAr" + name);
@@ -2244,6 +2245,36 @@ catch(Exception e){
                                     flag[i] = false;
                                 }
                                 OnScreenCo_ordinateFromLatLng();
+=======
+    for (int i = 0; i < 5; i++) {
+        name = getPrice.getResponseData().getBuildings().get(i).getName();
+        Log.i("TRACE", "RESPONSEDATAr" + name);
+
+        or_psf[i] = Integer.parseInt(getPrice.getResponseData().getBuildings().get(i).getOrPsf());
+        Log.i("TRACE", "RESPONSEDATAr" + or_psf);
+        ll_pm[i] = Integer.parseInt(getPrice.getResponseData().getBuildings().get(i).getLlPm());
+
+        Log.i("TRACE", "RESPONSEDATAr" + ll_pm);
+        double lat = Double.parseDouble(getPrice.getResponseData().getBuildings().get(i).getLoc().get(1));
+        Log.i("TRACE", "RESPONSEDATAr" + lat);
+        double longi = Double.parseDouble(getPrice.getResponseData().getBuildings().get(i).getLoc().get(0));
+        Log.i("TRACE", "RESPONSEDATAr" + longi);
+        loc = new LatLng(lat, longi);
+        Log.i("TRACE", "RESPONSEDATAr" + loc);
+        Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
+
+        mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc).title(name).snippet("Rent:" + ll_pm[i] + " " + "Sale" + or_psf[i]).icon(icon1).flat(true));
+
+        Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
+        flag[i] = false;
+    }
+
+                                //mflag=true;
+
+                                // }
+                                // updateHorizontalPicker();
+
+>>>>>>> 76036d8daec418e6635ad5345d9b8a889bd8e45b
                                 mVisits.setEnabled(true);
                                 txtFilterValue.setEnabled(true);
                                 horizontalPicker.setVisibility(View.VISIBLE);

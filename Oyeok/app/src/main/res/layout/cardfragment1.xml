@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:toggle="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 <LinearLayout
@@ -78,18 +81,34 @@
         android:layout_marginRight="10dp"
         android:layout_weight="0.30">
 
+
+
+
+
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="1"
-            android:layout_marginBottom="10dp"
+            android:layout_height="0dp"
+            android:weightSum="3"
             android:layout_weight="1">
+            <!--<com.zcw.togglebutton.ToggleButton
+                android:layout_width="70dp"
+                android:layout_height="28dp"
+                toggle:tbBorderWidth="2dp"
+                toggle:tbOffBorderColor="#2dc4b6"
+                toggle:tbOffColor="#2dc4b6"
+                toggle:tbOnColor="#2dc4b6"
+                toggle:tbSpotColor="#fff">
+            </com.zcw.togglebutton.ToggleButton>-->
+
+
+            <!--
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.6"
+                android:layout_weight="0.5"
                 android:id="@+id/sh">
             <CheckBox
                 android:layout_width="wrap_content"
@@ -101,7 +120,7 @@
                 android:orientation="horizontal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
+                android:layout_weight="0.5"
                 android:id="@+id/sh2">
             <CheckBox
                 android:layout_width="wrap_content"
@@ -110,14 +129,79 @@
                 android:id="@+id/buySell"
                 android:checked="false" />
             </LinearLayout>
+            -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Rental"
+                android:id="@+id/rental"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textColor="@color/greenish_blue" /> </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center">
+               <!-- <com.zcw.togglebutton.ToggleButton
+                    android:id="@+id/toggleBtn"
+                    android:layout_width="54dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    toggle:tbAsDefaultOn="false"
+                    toggle:tbAnimate="true" />-->
+               <!-- <com.zcw.togglebutton.ToggleButton
+                    android:layout_gravity="center"
+                    android:id="@+id/toggleBtn"
+                    android:layout_width="54dp"
+                    android:layout_height="27dp"
+                    toggle:tbBorderWidth="1dp"
+                    toggle:tbOffBorderColor="#2dc4b6"
+                    toggle:tbOffColor="#2dc4b6"
+                    toggle:tbOnColor="#2dc4b6"
+                    toggle:tbSpotColor="#fff"
+                    toggle:tbAnimate="true">
+                </com.zcw.togglebutton.ToggleButton> -->
+                <com.kyleduo.switchbutton.SwitchButton
+                    android:id="@+id/toggleBtn"
+                    android:layout_width="54dp"
+                    android:layout_height="27dp"
+                    android:checked="true"
+                    app:kswThumbColor="@color/greenish_blue"
+                    android:layout_gravity="center"/>
+                <!--app:kswTintColor="#B13254"-->
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Buy/Sell"
+                android:id="@+id/buySell"
+                android:layout_gravity="center" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:weightSum="1"
-            android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:id="@+id/rentalPanel">
             <LinearLayout
@@ -149,10 +233,9 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:weightSum="1"
             android:visibility="gone"
-            android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:id="@+id/resalePanel">
             <LinearLayout
@@ -186,8 +269,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_weight="1">
+            android:layout_height="0dp"
+            android:layout_weight="2">
 
 
             <ImageButton

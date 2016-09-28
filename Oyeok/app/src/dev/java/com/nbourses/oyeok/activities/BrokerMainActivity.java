@@ -557,6 +557,17 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         fragmentTransaction.addToBackStack(title);
         fragmentTransaction.commitAllowingStateLoss();
     }
+    private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
 
     @Override
     public void onDrawerItemSelected(View view, int position, String itemTitle) {
@@ -631,7 +642,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
             Bundle bundle = new Bundle();
             bundle.putStringArray("Chat", null);
             bundle.putString("lastFragment", "brokerDrawer");
-            loadFragment(signUpFragment, bundle, R.id.container_sign, "");
+            loadFragmentAnimated(signUpFragment, bundle, R.id.container_sign, "");
 
 
 
@@ -726,12 +737,15 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         }
         else if(AppConstants.SIGNUP_FLAG){
            if(AppConstants.REGISTERING_FLAG){}else{
-                getSupportFragmentManager().popBackStackImmediate();
+                //getSupportFragmentManager().popBackStackImmediate();
+               getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
 
-            Intent inten = new Intent(this, BrokerMainActivity.class);
+
+
+              /* Intent inten = new Intent(this, BrokerMainActivity.class);
 
             startActivity(inten);
-            finish();
+            finish();*/
             AppConstants.SIGNUP_FLAG=false;
 
             backpress = 0;}
@@ -846,8 +860,15 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 //                Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
 //            }else if (backpress>=1) {
 //                backpress = 0;
-                this.finish();
+                /*this.finish();*/
 //            }
+            Intent inten = new Intent(this, ClientMainActivity.class);
+            inten.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(inten);
+            finish();
 
         }
 

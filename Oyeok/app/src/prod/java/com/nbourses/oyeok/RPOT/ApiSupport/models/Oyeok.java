@@ -17,6 +17,9 @@ public class Oyeok {
     @SerializedName("url")
     private String url;
 
+    @SerializedName("locality")
+    private String locality;
+
     @SerializedName("oye_id")
     private String oyeId;
 
@@ -180,7 +183,7 @@ public class Oyeok {
 
     @Expose
     @SerializedName("listing")
-    Map<String, Float> listings = new HashMap<String, Float>();
+    HashMap<String, Float> listings = new HashMap<String, Float>();
 
     public String getPropertySubtype() {
         return propertySubtype;
@@ -202,12 +205,12 @@ public class Oyeok {
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     //@JsonAnyGetter
-    public Map<String, Float> getListings() {
+    public HashMap<String, Float> getListings() {
         return this.listings;
     }
 
     //@JsonAnySetter
-    public void setListings(Map<String ,Float>listing) {
+    public void setListings(HashMap<String ,Float>listing) {
         this.listings= listing;
     }
 
@@ -628,6 +631,14 @@ public class Oyeok {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getLocality() {
+        return locality;
+    }
+
+    public void setLocality(String locality) {
+        this.locality = locality;
     }
 
 

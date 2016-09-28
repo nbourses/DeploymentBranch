@@ -94,7 +94,8 @@
                             android:gravity="top"
                             android:layout_alignParentTop="true"
                             android:layout_marginLeft="25dp"
-                            android:textStyle="bold|italic" />
+                            android:textStyle="bold|italic"
+                            android:clickable="false" />
 
                         <com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker
                             android:id="@+id/picker"
@@ -103,19 +104,19 @@
                             android:layout_marginRight="50dp"
                             android:layout_marginTop="1dp"
                             android:textColor="@android:color/white"
-                            android:background="@android:color/black"
+                            android:background="@color/Black"
                             android:textSize="16sp"
                             android:ellipsize="marquee"
                             android:textStyle="bold"
                             android:marqueeRepeatLimit="1"
-                            android:clickable="false"
-                            android:focusable="true"
+                            android:clickable="true"
+                            android:focusable="false"
                             android:layout_below="@+id/tv_building"
                             app:values="@array/hpicker"
                             app:dividerSize="10dp"
                             app:sideItems="@integer/sideItems"
 
-                            android:focusableInTouchMode="true"
+                            android:focusableInTouchMode="false"
 
                             android:layout_above="@+id/tvRate" />
                         <!--app:values="@array/hpicker"-->
@@ -168,7 +169,7 @@
                             android:layout_height="40dp"
                             android:id="@+id/tvFetchingRates"
                             android:textColor="@color/White"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             android:foregroundGravity="center_horizontal|center_vertical"
                             android:layout_marginTop="15dp"
                             android:paddingTop="-15dp"
@@ -182,7 +183,9 @@
                             android:layout_height="fill_parent"
                             android:orientation="vertical"
                             android:layout_below="@+id/tv_building"
-                            android:layout_alignBottom="@+id/tvRate">
+                            android:layout_alignBottom="@+id/tvRate"
+                            android:clickable="false"
+                            android:visibility="gone">
 
                             <com.skyfishjy.library.RippleBackground
                                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -195,7 +198,9 @@
                                 android:layout_margin="-5dp"
                                 app:rb_rippleAmount="4"
                                 app:rb_duration="3000"
-                                app:rb_scale="6">
+                                app:rb_scale="6"
+                                android:clickable="false"
+                                android:visibility="gone">
 
                                 <TextView
                                     android:layout_width="match_parent"
@@ -478,14 +483,16 @@
 
 
         <LinearLayout
-            android:layout_width="500dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
             android:orientation="horizontal"
             android:id="@+id/recordWorkout"
             android:background="@android:color/transparent"
 
-            android:layout_margin="5dp">
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp">
             <!--@color/greenish_blue-->
             <LinearLayout
                 android:layout_width="24dp"
@@ -527,12 +534,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:weightSum="1"
                 android:id="@+id/route"
                 android:nestedScrollingEnabled="false">
 
-
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
+                    android:id="@+id/fav"
+                    android:src="@drawable/heart"
+                    android:visibility="visible"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp" />
 
                  <AutoCompleteTextView android:id="@+id/inputSearch"
                     android:inputType="textMultiLine|textPostalAddress"
@@ -631,6 +645,118 @@
                     android:id="@+id/myLoc" />
 
             </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="500dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@+id/recordWorkout"
+            android:background="@color/dark_white"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:id="@+id/favBoard"
+            android:visibility="gone"
+            android:transitionGroup="false"
+            android:paddingTop="-5dp">
+
+
+
+                <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                android:id="@+id/favRG"
+                    android:visibility="visible"
+                android:checkedButton="@+id/favHome" >
+
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Home"
+                    android:id="@+id/favHome"
+                    android:layout_weight="1"
+                    android:checked="false" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Work"
+                    android:id="@+id/favWork"
+                    android:layout_weight="1"
+                    android:checked="false" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Other"
+                    android:id="@+id/favOther"
+                    android:layout_weight="1"
+                    android:checked="false" />
+
+                </RadioGroup>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:id="@+id/favOText"
+                android:hint="Name your favourite"
+                android:layout_marginLeft="40dp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="-5dp"
+                android:paddingBottom="-5dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/favImg"
+                    android:src="@drawable/favhome" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Andheri West"
+                    android:id="@+id/favAdrs"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center_vertical"
+                    android:textSize="12sp"
+                    android:maxLines="2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end">
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:text="Cancel"
+                    android:id="@+id/favCancel"
+                    android:layout_gravity="right" />
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:text="save"
+                    android:id="@+id/favSave"
+                    android:layout_gravity="right" />
+            </LinearLayout>
+
 
         </LinearLayout>
 
