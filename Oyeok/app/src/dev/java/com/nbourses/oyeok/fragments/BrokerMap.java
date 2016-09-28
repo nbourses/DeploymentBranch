@@ -181,12 +181,44 @@ try {
 
 //        if (customMapFragment == null) {
             customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.g_map));
-            customMapFragment.getMap();
+
 //        }
 //            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
         final View mMapView = getChildFragmentManager().findFragmentById(R.id.g_map).getView();
         // mapView =(MapView) rootView.findViewById(R.id.map);
-        gmap = customMapFragment.getMap();
+        customMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+
+                gmap = googleMap;
+
+                // map = googleMap;
+                final LocationManager Loc_manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+                if (!isNetworkAvailable() || !(Loc_manager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
+                    gmap = googleMap;
+                    double lat11 = 19.1269299;
+                    double lng11 = 72.8376545999999;
+                    Log.i("slsl", "location====================:1 ");
+                    LatLng currLatLong = new LatLng(lat11, lng11);
+                    gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 15));
+                }
+
+                enableMyLocation();
+                Log.i("slsl", "location====================: ");
+                getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+                // map.setPadding(left, top, right, bottom);
+                gmap.setPadding(0, 100, 0, 0);
+
+
+            }
+        });
+        /*customMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                gmap=googleMap;
+            }
+        });*/
         gmap.getUiSettings().setRotateGesturesEnabled(false);
         gmap.getUiSettings().setMyLocationButtonEnabled(true);
         gmap.getUiSettings().setScrollGesturesEnabled(true);
@@ -246,11 +278,11 @@ try {
 
 
 
-        if (gmap != null) {
+      //  if (gmap != null) {
             //if ((int) Build.VERSION.SDK_INT <= 23) {
 
 
-            customMapFragment.getMapAsync(new OnMapReadyCallback() {
+           /* customMapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
 
@@ -276,9 +308,9 @@ try {
 
 
                 }
-            });
+            });*/
 
-        }
+      //  }
 
         location_button.setOnClickListener(new View.OnClickListener() {
             @Override

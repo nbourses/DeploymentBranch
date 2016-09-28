@@ -22,6 +22,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -30,6 +31,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -171,7 +173,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private static final int REQUEST_CALL_PHONE = 1;
 
     View mHelperView;
-Button home,shop,industrial,office;
+    Button home,shop,industrial,office;
     String Property_type="",oyetext="2BHK";
     private static final int INITIAL_REQUEST = 133;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
@@ -183,7 +185,7 @@ Button home,shop,industrial,office;
     private TextView mVisits;
     private ImageView mQrCode;
     private LinearLayout mMarkerPanel;
-    private Timer timer;
+    private Timer timer,timer1;
     private RelativeLayout mMarkerminmax;
     private GoogleMap map;
     private LinearLayout ll_marker;
@@ -310,6 +312,9 @@ TextView rental,resale;
     int balance=34;
     Thread [] gamethread=new Thread[5];
     boolean [] textFlag=new boolean[5];
+    boolean locked;
+    private Timer []gametimer=new Timer[5];
+     int[] gamecount = new int[5];
 
 
 
@@ -723,7 +728,7 @@ TextView rental,resale;
 
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
         if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")) {
-            mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector,R.drawable.broker_type3_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15","40"}, new String[]{getContext().getResources().getString(R.string.Rental),"Game", getContext().getResources().getString(R.string.Resale)}));
+            mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector,R.drawable.broker_type3_selector, R.drawable.broker_type2_selector}, new String[]{"15", "30","45"}, new String[]{getContext().getResources().getString(R.string.Rental),"Game", getContext().getResources().getString(R.string.Resale)}));
 
         } else {
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
@@ -1182,6 +1187,7 @@ TextView rental,resale;
 
                     Log.i("MA999999 ", "MAP CLICK=========");
 
+                    if(mposition!=1)
                     onMapclicked();
 
 
@@ -1209,15 +1215,56 @@ TextView rental,resale;
                                        balance=balance-rand[i];
                                    //rate= rand[i];
                                    ((ClientMainActivity)getActivity()).UpdateBalancesub(rand[i]);
-                                   flag[i] = true;}
+                                   flag[i] = true;
+                                   }else{
+                                       SnackbarManager.show(
+                                               Snackbar.with(getActivity())
+                                                       .text("Sorry , low balance")
+                                                       .position(Snackbar.SnackbarPosition.BOTTOM_CENTER)
+                                                       .color(Color.RED), getActivity());
+                                   }
 
                                } else {
+                                   int j;
+                                   if(i<4)
+                                   j=i+1;
+                                   else
+                                   j=0;
+
                                    mCustomerMarker[i].remove();
                                    balance=balance+rand[i];
+                                   gamethread[i].interrupt();
+                                   stopTimer(i);
                                    Markertext[i].remove();
                                    textFlag[i]=false;
+
+
+                                   Log.i("printj","print the value;  "+j);
+                                   mCustomerMarker[j]= map.addMarker(new MarkerOptions().position(loc[j]).icon(icon1));
+                                   dropPinEffect(mCustomerMarker[j] );
+                                   playSound();
+                                   if(j==0) {
+                                       randomrate1();
+                                       Log.i("printj","print the value1;  "+j);
+                                   }
+                                   else if(j==1) {
+                                       randomrate2();
+                                       Log.i("printj","print the value2;  "+j);
+                                   }
+                                   else if(j==2) {
+                                       randomrate3();
+                                       Log.i("printj","print the value3;  "+j);
+                                   }
+                                   else if(j==3) {
+                                       randomrate4();
+                                       Log.i("printj","print the value4;  "+j);
+                                   }
+                                   else if(j==4) {
+                                       randomrate5();
+                                       Log.i("printj","print the value5;  "+j);
+                                   }
                                    ((ClientMainActivity)getActivity()).UpdateBalanceadd(rand[i]);
-                                   flag[i] = false;
+                                   flag[j] = false;
 
                                }
                            } else {
@@ -1393,6 +1440,20 @@ TextView rental,resale;
         lock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(locked){
+                    mHelperView.setEnabled(false);
+                    recordWorkout.setVisibility(View.GONE);
+                    map.getUiSettings().setAllGesturesEnabled(false);
+                    lock.setBackgroundResource(R.drawable.unlock);
+                    locked=false;
+                }else{
+                    mHelperView.setEnabled(true);
+                    recordWorkout.setVisibility(View.VISIBLE);
+                    map.getUiSettings().setScrollGesturesEnabled(true);
+                    lock.setBackgroundResource(R.drawable.lock);
+                    locked=true;
+                }
 
             }
         });
@@ -1802,7 +1863,7 @@ catch(Exception e){
                 timer = null;
 
 //        if (isFlipped()) {
-                mFlipAnimator.start();
+               // mFlipAnimator.start();
 //        }
             }
         }catch(Exception e){}
@@ -2411,6 +2472,10 @@ catch(Exception e){
         if (count == 3) {
             if (position == 0) {
                 mposition=0;
+                if(gameflag==true) {
+                    mHelperView.setEnabled(true);
+                    map.getUiSettings().setScrollGesturesEnabled(true);
+                }
                 lock.setVisibility(View.GONE);
                 ((ClientMainActivity)getActivity()).GameModeDeactivated();
                 hPicker.setVisibility(View.VISIBLE);
@@ -2469,14 +2534,24 @@ catch(Exception e){
 
 
             } else if (position == 1) {
+                mHelperView.setEnabled(false);
+//                map.getUiSettings().setScrollGesturesEnabled(false);
+                recordWorkout.setVisibility(View.GONE);
 
+                map.getUiSettings().setZoomControlsEnabled(false);
+                map.getUiSettings().setAllGesturesEnabled(false);
                 mposition=1;
                 hPicker.setVisibility(View.GONE);
                 ((ClientMainActivity)getActivity()).GameModeActivated();
                 lock.setVisibility(View.VISIBLE);
                 try{
-                    if(gameflag==true)
+                    if(gameflag==true) {
+                        /*map.clear();
+                        metropolitandraw(0);*/
+                        locked=false;
                 Displaybuilding();
+                    }
+
                     else
                         gameflag=true;
                 }catch (Exception e){}
@@ -2488,6 +2563,10 @@ catch(Exception e){
 
             }else if (position == 2) {
                 mposition=2;
+                if(gameflag==true) {
+                    mHelperView.setEnabled(true);
+                    map.getUiSettings().setScrollGesturesEnabled(true);
+                }
                 lock.setVisibility(View.GONE);
 
                 ((ClientMainActivity)getActivity()).GameModeDeactivated();
@@ -3730,45 +3809,47 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
 
         Log.i("onMapclicked","Inside onMapclicked   ");
 
-        for (int i = 0; i < 5; i++) {
-            if (flag[i] == true) {
+        if(mposition!=1) {
+            for (int i = 0; i < 5; i++) {
+                if (flag[i] == true) {
 
-                mVisits.setEnabled(true);
-                txtFilterValue.setEnabled(true);
-                tvRate.setVisibility(View.VISIBLE);
-                rupeesymbol.setVisibility(View.VISIBLE);
-                mCustomerMarker[i].setIcon(icon1);
-                mCustomerMarker[i].hideInfoWindow();
-                if(mposition!=1)
-                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
-                Intent in = new Intent(AppConstants.MARKERSELECTED);
-                in.putExtra("markerClicked", "false");
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
-                search_building_icon.setVisibility(View.GONE);
-                flag[i] = false;
-                horizontalPicker.setVisibility(View.VISIBLE);
-                tvFetchingrates.setVisibility(View.GONE);
-                recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-                tvRate.setVisibility(View.VISIBLE);
-                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
-                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
+                    mVisits.setEnabled(true);
+                    txtFilterValue.setEnabled(true);
+                    tvRate.setVisibility(View.VISIBLE);
+                    rupeesymbol.setVisibility(View.VISIBLE);
+                    mCustomerMarker[i].setIcon(icon1);
+                    mCustomerMarker[i].hideInfoWindow();
+                    if (mposition != 1)
+                        ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+                    Intent in = new Intent(AppConstants.MARKERSELECTED);
+                    in.putExtra("markerClicked", "false");
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+                    search_building_icon.setVisibility(View.GONE);
+                    flag[i] = false;
+                    horizontalPicker.setVisibility(View.VISIBLE);
+                    tvFetchingrates.setVisibility(View.GONE);
+                    recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                    tvRate.setVisibility(View.VISIBLE);
+                    buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
 //                            mVisits.startAnimation(zoomin_zoomout);
-                StartOyeButtonAnimation();
-                updateHorizontalPicker();
-                txtFilterValue.setTextSize(13);
+                    StartOyeButtonAnimation();
+                    updateHorizontalPicker();
+                    txtFilterValue.setTextSize(13);
 
-                txtFilterValue.setTextColor(Color.parseColor("white"));
-                txtFilterValue.setText(oyetext);
-                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
+                    txtFilterValue.setTextColor(Color.parseColor("white"));
+                    txtFilterValue.setText(oyetext);
+                    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
 //                txtFilterValue.setTextColor(Color.parseColor("white"));
-                txtFilterValue.setText(oyetext);
+                    txtFilterValue.setText(oyetext);
 //                txtFilterValue.setText("sushil");
-                Log.i("onMapclicked","Inside onMapclicked 909099099099  "+oyetext);
-                ll_marker.setEnabled(true);
-                tv_building.setVisibility(View.VISIBLE);
+                    Log.i("onMapclicked", "Inside onMapclicked 909099099099  " + oyetext);
+                    ll_marker.setEnabled(true);
+                    tv_building.setVisibility(View.VISIBLE);
+                }
             }
-        }
 
+        }
     }
 
     public void OnOyeClick(){
@@ -3925,7 +4006,7 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
         }
         for(int i=0;i<5;i++) {
 
-            p= new Point(buildingPosition[i].x,buildingPosition[i].y-48);
+            p= new Point(buildingPosition[i].x,buildingPosition[i].y-55);
            cent[i]= map.getProjection().fromScreenLocation(p);
             Log.i("OnScreen","OnScreenCo_ordinateFromLatLng  : "+buildingPosition[i]);
         }
@@ -4013,7 +4094,7 @@ public void createTextView(){
             loc[0]=new LatLng(19.1095416,72.8413011);
         map.clear();
 //       mCustomerMarker[0]= map.addMarker(new MarkerOptions().position(loc[0]).icon(icon1));
-//       mCustomerMarker[1]= map.addMarker(new MarkerOptions().position(loc[1]).icon(icon1));
+       mCustomerMarker[1]= map.addMarker(new MarkerOptions().position(loc[1]).icon(icon1));
       // mCustomerMarker[2]= map.addMarker(new MarkerOptions().position(loc[2]).icon(icon1));
        //mCustomerMarker[3]= map.addMarker(new MarkerOptions().position(loc[3]).icon(icon1));
        mCustomerMarker[4]= map.addMarker(new MarkerOptions().position(loc[4]).icon(icon1));
@@ -4025,129 +4106,218 @@ public void createTextView(){
 
 
 //        dropPinEffect(mCustomerMarker[0] );
-//        dropPinEffect(mCustomerMarker[1] );
+        dropPinEffect(mCustomerMarker[1] );
         /*dropPinEffect(mCustomerMarker[2] );
         dropPinEffect(mCustomerMarker[3] );*/
         dropPinEffect(mCustomerMarker[4] );
+        playSound();
 //        randomrate1();
-//        randomrate2();
+        randomrate2();
        /* randomrate3();
         randomrate4();*/
         randomrate5();
 
 
-
-
     }
 
 
 
 
+
+    /*public void randomrate(int i){
+        Log.i("countervalue","count : sushil12 ");
+        timer = new Timer();
+        textFlag[0]=true;
+        game_min[0]=;
+        game_max[0]=268;
+        timer.schedule(new TimerTask() {
+
+            public void run() {
+                gamethread[0]=new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(textFlag[0]==true) {
+                            Intent intent = new Intent(AppConstants.DRAWTEXT);
+                            intent.putExtra("text1", "true");
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                        }else
+                            gamethread[0].interrupt();
+                    }
+                });
+                gamethread[0].start();
+            }
+        }, 1500, 200);
+    }*/
+
     public void randomrate1(){
         Log.i("countervalue","count : sushil12 ");
-            timer = new Timer();
+        gamecount[0]=0;
+
         textFlag[0]=true;
-        game_min[0]=222;
-        game_max[0]=268;
-            timer.schedule(new TimerTask() {
+        game_max[0]=74;
+        game_min[0]=50;
+
+        gametimer[0] = new Timer();
+        gametimer[0].schedule(new TimerTask() {
 
                 public void run() {
                     gamethread[0]=new Thread(new Runnable() {
                         @Override
                         public void run() {
+
                             if(textFlag[0]==true) {
+                                gamecount[0] = gamecount[0] +1;
+                                Log.i("countervalue","count "+gamecount[0] );
                                 Intent intent = new Intent(AppConstants.DRAWTEXT);
                                 intent.putExtra("text1", "true");
                                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                            }else
+
+                            }
+                            /*else
+                                gamethread[0].interrupt();*/
+                            /*if(gamecount[0] >=50){
+
+                                mCustomerMarker[0].remove();
                                 gamethread[0].interrupt();
+                                stopTimer(0);
+                                Markertext[0].remove();
+                                textFlag[0]=false;
+                                gamecount[0] =0;
+                            }*/
+                            gamethread[0].interrupt();
                         }
                     });
                     gamethread[0].start();
                 }
-            }, 1500, 200);
+            }, 1500, 500);
     }
 
     public void randomrate2(){
         Log.i("countervalue","count : sushil13 ");
+        gamecount[1] = 0;
         textFlag[1]=true;
-        game_max[1]=187;
-        game_min[1]=144+2;
-            timer = new Timer();
+        game_max[1]=67;
+        game_min[1]=52;
 
-            timer.schedule(new TimerTask() {
+        gametimer[1] = new Timer();
+
+        gametimer[1].schedule(new TimerTask() {
                 @Override
                 public void run() {
                     gamethread[1]= new Thread(new Runnable() {
                         public void run() {
                             if(textFlag[1]==true) {
+                                gamecount[1] = gamecount[1] +1;
+                                Log.i("countervalue","count "+gamecount[1] );
                                 Intent intent = new Intent(AppConstants.DRAWTEXT1);
                                 intent.putExtra("text2", "true1");
                                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                            }else
+
+                            }
+//                            else
+//                                gamethread[1].interrupt();
+                            /*if(gamecount[1] >=50){
+                                mCustomerMarker[1].remove();
                                 gamethread[1].interrupt();
+                                stopTimer(1);
+                                Markertext[1].remove();
+                                textFlag[1]=false;
+                                gamecount[1] = 0;
+
+                            }*/
+                            gamethread[1].interrupt();
                         }
                     });
                     gamethread[1].start();
 
                 }
-            }, 1500, 200);
+            }, 1500, 500);
 
     }
     public void randomrate3(){
         Log.i("countervalue","count : sushil14 ");
-            timer = new Timer();
+
+        gamecount[2] = 0;
         textFlag[2]=true;
         game_max[2]=84;
-        game_min[2]=45+2;
-            timer.schedule(new TimerTask() {
+        game_min[2]=45;
+        gametimer[2] = new Timer();
+        gametimer[2].schedule(new TimerTask() {
                 @Override
                 public void run() {
                     gamethread[2]= new Thread(new Runnable() {
                         public void run() {
                             if(textFlag[2]==true) {
+                                gamecount[2] = gamecount[2] +1;
+                                Log.i("countervalue","count "+gamecount[2] );
                                 Intent intent = new Intent(AppConstants.DRAWTEXT2);
                                 intent.putExtra("text3", "true2");
                                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                            }else
-                                gamethread[2].interrupt();
 
+                            }/*else
+                                gamethread[2].interrupt();
+*/
+                          /*  if(gamecount[2] >=50){
+                                mCustomerMarker[2].remove();
+                                gamethread[2].interrupt();
+                                stopTimer(2);
+                                Markertext[2].remove();
+                                textFlag[2]=false;
+                                gamecount[2] = 0;
+
+                            }*/
+                            gamethread[2].interrupt();
                         }
                     });
                     gamethread[2].start();
 
                 }
-            }, 1500, 200);
+            }, 1500, 500);
 
     }
     public void randomrate4(){
         Log.i("countervalue","count : sushil15 ");
-            timer = new Timer();
+        gamecount[3] = 0;
         textFlag[3]=true;
         game_max[3]=33;
         game_min[3]=15;
-            timer.schedule(new TimerTask() {
+        gametimer[3] = new Timer();
+
+        gametimer[3].schedule(new TimerTask() {
                 @Override
                 public void run() {
 
 
 
-                    gamethread[3]= new Thread(new Runnable() {
+                    gamethread[3] = new Thread(new Runnable() {
                             public void run() {
                                 if(textFlag[3]==true) {
+                                    gamecount[3] = gamecount[3] +1;
+                                    Log.i("countervalue","count "+gamecount[3] );
                                     Intent intent = new Intent(AppConstants.DRAWTEXT3);
                                     intent.putExtra("text4","true3");
                                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                                }else
-                                    gamethread[3].interrupt();
 
+
+                                }/*else
+                                gamethread[3].interrupt();
+                                Log.i(TAG,"thread name is "+gamethread[3]);*/
+                               /* if(gamecount[3] >=50){
+                                    mCustomerMarker[3].remove();
+                                    gamethread[3].interrupt();
+                                    stopTimer(3);
+                                    Markertext[3].remove();
+                                    textFlag[3]=false;
+                                    gamecount[3] =0;
+                                }*/
+                                gamethread[3].interrupt();
                             }
 
                     });
                     gamethread[3].start();
 
                 }
-            }, 1500, 200);
+            }, 1500, 500);
 
 
 
@@ -4155,22 +4325,39 @@ public void createTextView(){
     }
     public void randomrate5(){
         Log.i("countervalue","count : sushil16 ");
-            timer = new Timer();
+        gamecount[4] = 0;
         textFlag[4]=true;
         game_max[4]=56;
         game_min[4]=30;
-            timer.schedule(new TimerTask() {
+        gametimer[4] = new Timer();
+
+        gametimer[4].schedule(new TimerTask() {
                 @Override
                 public void run() {
                     gamethread[4]=   new Thread(new Runnable() {
                             public void run() {
+
+                           /*     if(gamecount[4] >=50){
+                                    stopTimer(4);
+                                    mCustomerMarker[4].remove();
+                                    gamethread[4].interrupt();
+
+                                    Markertext[4].remove();
+                                    textFlag[4]=false;
+                                    Log.i("countervalue","count 11"+gamecount[4] );
+                                    gamecount[4] =0;
+                                    Log.i("countervalue","count 12 "+gamecount[4] );
+//                                    gamethread[4].interrupt();
+                                }*/
                                 if(textFlag[4]==true) {
+                                    gamecount[4] = gamecount[4] +1;
+                                    Log.i("countervalue","count "+gamecount[4] );
                                     Intent intent = new Intent(AppConstants.DRAWTEXT4);
                                     intent.putExtra("text5","true4");
                                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                                }else
-                                    gamethread[0].interrupt();
 
+                                }
+                                gamethread[4].interrupt();
                             }
 
 
@@ -4179,7 +4366,7 @@ public void createTextView(){
 
 
                 }
-            }, 1500, 200);
+            }, 1500, 500);
 
 
 
@@ -4192,7 +4379,7 @@ public void createTextView(){
 
 
             try {
-                if (intent.getExtras().getString("text1").equalsIgnoreCase("true")) {
+                if (intent.getExtras().getString("text1").equalsIgnoreCase("true") && mposition==1) {
 
                     String rate;
                      rand[0] = randInt(game_min[0], game_max[0],0);
@@ -4217,16 +4404,40 @@ public void createTextView(){
                         Markertext[0].remove();
 
                     addIcon(iconFactory,rate+"k",cent[0],0);
-                    Log.i("countervalue","count : "+ rate);
+//                    Log.i("countervalue","count : "+ rate);
 
-                    if(game_max[0]<222 && game_min[0]>268)
+                    if(game_max[0]<50 && game_min[0]>74)
                     {
-                        game_max[0]=268;
-                        game_min[0]=222;
+                        game_max[0]=74;
+                        game_min[0]=50;
+                    }
+                    if(gamecount[0] >=60 ){
+
+                        if(!flag[0])
+                        {
+                        stopTimer(0);
+                        mCustomerMarker[0].remove();
+                        gamethread[0].interrupt();
+
+                        Markertext[0].remove();
+                        textFlag[0]=false;
+                        Log.i("countervalue","count 11"+gamecount[0] );
+                        gamecount[0] =0;
+                        Log.i("countervalue","count 12 "+gamecount[0] );
+                        mCustomerMarker[1]= map.addMarker(new MarkerOptions().position(loc[1]).icon(icon1));
+                        dropPinEffect(mCustomerMarker[1] );
+                        playSound();
+                        randomrate2();
+                        flag[1] = false;
+                        }
+                        else
+                            gamecount[0] =0;
                     }
 
 
-
+                }else {
+                    stopTimer(0);
+                    getPrice();
                 }
             } catch (Exception e) {}
         }
@@ -4240,7 +4451,7 @@ public void createTextView(){
 
 
             try {
-                if (intent.getExtras().getString("text2").equalsIgnoreCase("true1")) {
+                if (intent.getExtras().getString("text2").equalsIgnoreCase("true1")&& mposition==1) {
 
                     String rate;
                      rand[1] = randInt(game_min[1], game_max[1],1);
@@ -4252,15 +4463,38 @@ public void createTextView(){
                     rate = String.valueOf(rand[1]);
                     if(Markertext[1]!=null)
                         Markertext[1].remove();
-                    Log.i("countervalue","count : "+ rate);
+//                    Log.i("countervalue","count : "+ rate);
                     addIcon(iconFactory,rate+"k",cent[1],1);
-                    if(game_max[1]<146 && game_min[1]>187)
+                    if(game_max[1]<52 && game_min[1]>67)
                     {
-                        game_max[1]=187;
-                        game_min[1]=144+2;
+                        game_max[1]=67;
+                        game_min[1]=52;
                     }
+                    if(gamecount[1] >=50 ){
+                        if(!flag[1]){
+                        stopTimer(1);
+                        mCustomerMarker[1].remove();
+                        gamethread[1].interrupt();
 
+                        Markertext[1].remove();
+                        textFlag[1]=false;
+                        Log.i("countervalue","count 11"+gamecount[1] );
+                        gamecount[1] =0;
+                        Log.i("countervalue","count 12 "+gamecount[1] );
+                        mCustomerMarker[2]= map.addMarker(new MarkerOptions().position(loc[2]).icon(icon1));
+                        dropPinEffect(mCustomerMarker[2] );
+                        playSound();
+                        randomrate3();
+                        flag[2] = false;}
+                        else
+                            gamecount[1] =0;
+
+                    }
+                }else {
+                    stopTimer(1);
+                    getPrice();
                 }
+
             } catch (Exception e) {}
         }
 
@@ -4271,7 +4505,7 @@ public void createTextView(){
 
 
             try {
-                if (intent.getExtras().getString("text3").equalsIgnoreCase("true2")) {
+                if (intent.getExtras().getString("text3").equalsIgnoreCase("true2") && mposition==1) {
 
                     String rate;
 
@@ -4284,15 +4518,39 @@ public void createTextView(){
                     rate = String.valueOf(rand[2]);
                     if(Markertext[2]!=null)
                         Markertext[2].remove();
-                    Log.i("countervalue","count : "+ rate);
+//                    Log.i("countervalue","count : "+ rate);
                     addIcon(iconFactory,rate+"k",cent[2],2);
                     if(game_max[2]<45 && game_min[2]>84)
                     {
                         game_max[2]=84;
-                        game_min[2]=45+2;
+                        game_min[2]=45;
+                    }
+                    if(gamecount[2] >=60 ){
+                        if(!flag[2]){
+                        stopTimer(2);
+                        mCustomerMarker[2].remove();
+                        gamethread[2].interrupt();
+
+                        Markertext[2].remove();
+                        textFlag[2]=false;
+                        Log.i("countervalue","count 11"+gamecount[2] );
+                        gamecount[2] =0;
+                        Log.i("countervalue","count 12 "+gamecount[2] );
+                        mCustomerMarker[3]= map.addMarker(new MarkerOptions().position(loc[3]).icon(icon1));
+                        dropPinEffect(mCustomerMarker[3] );
+                        playSound();
+                        randomrate4();
+                        flag[3] = false;
+                        }else
+                            gamecount[2] =0;
+
                     }
 
+                }else {
+                    stopTimer(2);
+                    getPrice();
                 }
+
             } catch (Exception e) {}
         }
 
@@ -4303,7 +4561,7 @@ public void createTextView(){
 
 
             try {
-                if (intent.getExtras().getString("text4").equalsIgnoreCase("true3")) {
+                if (intent.getExtras().getString("text4").equalsIgnoreCase("true3") && mposition==1) {
 
                     String rate;
 
@@ -4316,13 +4574,37 @@ public void createTextView(){
                     rate = String.valueOf(rand[3]);
                     if(Markertext[3]!=null)
                         Markertext[3].remove();
-                    Log.i("countervalue","count : "+ rate);
+//                    Log.i("countervalue","count : "+ rate);
                     addIcon(iconFactory,rate+"k",cent[3],3);
-                    if(game_max[3]<15 && game_min[3]>33)
+                    if((game_max[3]<15 && game_min[3]>33))
                     {
                         game_max[3]=33;
-                        game_min[3]=15+2;
+                        game_min[3]=15;
                     }
+
+                    if(gamecount[3] >=50 ){
+                        if(!flag[3]) {
+                            stopTimer(3);
+                            mCustomerMarker[3].remove();
+                            gamethread[3].interrupt();
+
+                            Markertext[3].remove();
+                            textFlag[3] = false;
+                            Log.i("countervalue", "count 11" + gamecount[3]);
+                            gamecount[3] = 0;
+                            Log.i("countervalue", "count 12 " + gamecount[3]);
+                            mCustomerMarker[4] = map.addMarker(new MarkerOptions().position(loc[4]).icon(icon1));
+                            dropPinEffect(mCustomerMarker[4]);
+                            playSound();
+                            randomrate5();
+                            flag[4] = false;
+                        }else
+                            gamecount[3] = 0;
+
+                    }
+                }else {
+                    stopTimer(3);
+                    getPrice();
                 }
             } catch (Exception e) {}
         }
@@ -4334,7 +4616,8 @@ public void createTextView(){
 
 
             try {
-                if (intent.getExtras().getString("text5").equalsIgnoreCase("true4")) {
+                if (intent.getExtras().getString("text5").equalsIgnoreCase("true4") && mposition==1) {
+
 
                     String rate;
                      rand[4] = randInt(game_min[4], game_max[4],4);
@@ -4346,14 +4629,38 @@ public void createTextView(){
                     rate = String.valueOf(rand[4]);
                     if(Markertext[4]!=null)
                         Markertext[4].remove();
-                    Log.i("countervalue","count : "+ rate);
+//                    Log.i("countervalue","count : "+ rate);
                     addIcon(iconFactory,rate+"k",cent[4],4);
-                    if(game_max[4]<30 && game_min[4]>56)
+                    if((game_max[4]<30 && game_min[4]>56))
                     {
                         game_max[4]=56;
                         game_min[4]=30;
                     }
 
+                    if(gamecount[4] >=60 ){
+                        if(!flag[4]) {
+                            stopTimer(4);
+                            mCustomerMarker[4].remove();
+                            gamethread[4].interrupt();
+
+                            Markertext[4].remove();
+                            textFlag[4] = false;
+                            Log.i("countervalue", "count 11" + gamecount[4]);
+                            gamecount[4] = 0;
+                            Log.i("countervalue", "count 12 " + gamecount[4]);
+                            mCustomerMarker[0] = map.addMarker(new MarkerOptions().position(loc[0]).icon(icon1));
+                            dropPinEffect(mCustomerMarker[0]);
+                            playSound();
+                            randomrate1();
+                            flag[0] = false;
+                        }else
+                            gamecount[4] = 0;
+
+//                                    gamethread[4].interrupt();
+                    }
+                }else{
+                    stopTimer(4);
+                    getPrice();
                 }
             } catch (Exception e) {}
         }
@@ -4387,6 +4694,219 @@ public void createTextView(){
                 }
             }
         });
+    }
+
+    private void stopTimer(int index){
+        if(gametimer[index] != null){
+            gametimer[index].cancel();
+            gametimer[index].purge();
+        }
+    }
+
+
+
+
+    public void randomrate(final int index,int min,int max){
+        Log.i("countervalue","count : sushil12 ");
+        final int[] gamecount = {0};
+        gametimer[index] = new Timer();
+        textFlag[index]=true;
+        game_max[index]=min;
+        game_min[index]=max;
+        timer.schedule(new TimerTask() {
+
+            public void run() {
+                gamethread[index]=new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(textFlag[index]==true) {
+                            Intent intent = new Intent(AppConstants.DRAWTEXT);
+                            intent.putExtra("text1", "true");
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
+                        }
+                            /*else
+                                gamethread[0].interrupt();*/
+                        if(gamecount[0] >=50){
+                            Log.i("countervalue","count :  "+gamecount[0]);
+                            mCustomerMarker[index].remove();
+                            gamethread[index].interrupt();
+                            stopTimer(index);
+                            Markertext[index].remove();
+                            textFlag[index]=false;
+                            gamecount[index] = gamecount[0] +1;
+                        }
+                        gamethread[index].interrupt();
+                    }
+                });
+                gamethread[index].start();
+            }
+        }, 1500, 200);
+    }
+
+
+    public  void playSound() {
+
+            MediaPlayer mp = MediaPlayer.create(getContext(),R.raw.jump);
+            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    mp.reset();
+                    mp.release();
+                    mp = null;
+                }
+
+            });
+            mp.start();
+
+    }
+
+
+    public int randposition(int min,int max){
+
+
+        if(min<max){
+            min=min+1;
+            return min;
+        }else
+        {
+            max=max-1;
+            return max;
+        }
+        /*Random rand = new Random();
+        int randomNum = rand.nextInt((max - min) + 3) + min;
+        return randomNum;*/
+    }
+
+    public void metropolitandraw(int i){
+        game_min[i]=or_psf[i]-10;
+        game_max[i]=or_psf[i]+10;
+        iconFactory = new IconGenerator(getContext());
+        mCustomerMarker[i]= map.addMarker(new MarkerOptions().position(loc[i]).icon(icon1));
+        iconFactory.setStyle(IconGenerator.STYLE_GREEN);
+        addIcon(iconFactory,game_min[i]+"k",cent[i],i);
+        dropPinEffect(mCustomerMarker[i]);
+        dropPinEffect(Markertext[i]);
+        PropertyRateChange(i);
+        Thread t=new Thread(runnable);
+        t.start();
+
+    }
+
+
+
+    Runnable runnable=new Runnable() {
+
+
+
+        @Override
+        public void run() {
+            long future= System.currentTimeMillis()+10000;
+
+            /* while(System.currentTimeMillis()<future){
+            try {
+                    wait(future-System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                String rate;
+                rand[4] = randInt(game_min[4], game_max[4],4);
+                iconFactory = new IconGenerator(getContext());
+                if (game_min[4]<=game_max[4]) {
+                    iconFactory.setStyle(IconGenerator.STYLE_GREEN);
+                } else
+                    iconFactory.setStyle(IconGenerator.STYLE_RED);
+                rate = String.valueOf(rand[4]);
+                if(Markertext[4]!=null)
+                    Markertext[4].remove();
+                addIcon(iconFactory,rate+"k",cent[4],4);
+                if((game_max[4]<30 && game_min[4]>56))
+                {
+                    game_max[4]=56;
+                    game_min[4]=30;
+                }
+
+            }*/ Log.i("thread1","handler========1    ");
+
+            h.sendEmptyMessageDelayed(0,10000);
+        }
+    };
+
+    Handler h = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+           // super.handleMessage(msg);
+            Log.i("thread1","handler========    ");
+            if(mposition==1){
+
+                metropolitandraw(randposition(0,4));
+            }else
+                map.clear();
+        }
+
+    };
+
+
+
+
+
+
+
+public void PropertyRateChange(final int i) {
+
+  /*  long future = System.currentTimeMillis() + 200;
+    while (System.currentTimeMillis() < future) {
+        try {
+            wait(future - System.currentTimeMillis());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }*/
+//CancelAnimation();
+    Log.i("countervalue","count : "+timer1);
+    if (timer1 == null) {
+        timer1 = new Timer();
+        Log.i("countervalue","count : "+timer1);
+        timer1.schedule(new TimerTask() {
+                            public void run() {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        String rate;
+                                        rand[i] = randInt(game_min[i], game_max[i], i);
+                                        iconFactory = new IconGenerator(getContext());
+                                        if (game_min[i] <= game_max[i]) {
+                                            iconFactory.setStyle(IconGenerator.STYLE_GREEN);
+                                        } else
+                                            iconFactory.setStyle(IconGenerator.STYLE_RED);
+                                        rate = String.valueOf(rand[i]);
+                                        if (Markertext[i] != null)
+                                            Markertext[i].remove();
+                                        Log.i("countervalue", "count : " + rate);
+                                        addIcon(iconFactory, rate + "k", cent[i], i);
+                                    }
+                                });
+
+                            }
+        }, 100, 200);
+
+    }
+
+
+}
+
+
+
+    private  void Cancel_timer() {
+        try {
+            if (timer1 != null) {
+                timer1.cancel();
+                timer1 = null;
+            }
+        }catch(Exception e){}
     }
 
 

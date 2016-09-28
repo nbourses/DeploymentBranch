@@ -832,10 +832,48 @@ TextView rental,resale;
             //if (isNetworkAvailable())
 
             customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
+//            customMapFragment=  ((SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map));
+
 //            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
-            final View mMapView = getChildFragmentManager().findFragmentById(R.id.map).getView();
+
             // mapView =(MapView) rootView.findViewById(R.id.map);
-            map = customMapFragment.getMap();
+
+//           map= customMapFragment.getMapAsync(getContext());
+            customMapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+
+                    map = googleMap;
+
+                    final LocationManager Loc_manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+                    if (!isNetworkAvailable() || !(Loc_manager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
+
+                        double lat11 = 19.1269299;
+                        double lng11 = 72.8376545999999;
+                        Log.i("slsl", "location====================:1 ");
+                        LatLng currLatLong = new LatLng(lat11, lng11);
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 14));
+                    }
+
+                    enableMyLocation();
+                    Log.i("slsl", "location====================: ");
+                    getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+                    // map.setPadding(left, top, right, bottom);
+                    map.setPadding(0, -10, 0, 0);
+
+
+                }
+            });
+            final View mMapView = getChildFragmentManager().findFragmentById(R.id.map).getView();
+//            final View mMapView = customMapFragment.getView();
+
+           /* customMapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+                    map=googleMap;
+                }
+            });*/
 
             map.getUiSettings().setRotateGesturesEnabled(false);
             map.getUiSettings().setMyLocationButtonEnabled(true);
@@ -983,18 +1021,17 @@ TextView rental,resale;
             if (map != null) {
                 //if ((int) Build.VERSION.SDK_INT <= 23) {
 
-
+/*
                 customMapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {
 
                         map = googleMap;
 
-                        // map = googleMap;
                         final LocationManager Loc_manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
                         if (!isNetworkAvailable() || !(Loc_manager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
-                            map = googleMap;
+
                             double lat11 = 19.1269299;
                             double lng11 = 72.8376545999999;
                             Log.i("slsl", "location====================:1 ");
@@ -1010,7 +1047,7 @@ TextView rental,resale;
 
 
                     }
-                });
+                });*/
 
             }
 
@@ -1040,7 +1077,7 @@ TextView rental,resale;
                             txtFilterValue.setText(oyetext);
                             buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                             recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-                            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+                            map.getUiSettings().setAllGesturesEnabled(true);
                             mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
                             txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
                             UpdateRatePanel();
@@ -1172,9 +1209,9 @@ TextView rental,resale;
                         for (i = 0; i < 5; i++) {
                             if (marker.getId().equals(mCustomerMarker[i].getId())) {
                                 INDEX = i;
-                                Log.i(" sushil flag[i] ==  ", "===========================   :  " + marker.getId().toString() + " " + mCustomerMarker[i].getId().toString() + " " + flag[i]);
+                                Log.i("1sushil11", "===========================   :  " + marker.getId().toString() + " " + mCustomerMarker[i].getId().toString() + " " + flag[i]);
                                 if (flag[i] == false) {
-                                    Log.i("flag[i] == false ", "===========================");
+                                    Log.i("1sushil11", "===========================");
 
 
                                     ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
@@ -1689,7 +1726,7 @@ catch(Exception e){
 //            StartAnimation();
             if(clicked==false){
                 oyebuttonBackgrountColorGreenishblue();
-                customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+                map.getUiSettings().setAllGesturesEnabled(true);
                 mHelperView.setEnabled(true);
                 clicked=true;
             }
@@ -3638,11 +3675,11 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
         if (clicked == true) {
             oyebuttonBackgrountColorOrange();
             clicked = false;
-            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
+            map.getUiSettings().setAllGesturesEnabled(false);
             mHelperView.setEnabled(false);
         } else {
             oyebuttonBackgrountColorGreenishblue();
-            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
+            map.getUiSettings().setAllGesturesEnabled(true);
             mHelperView.setEnabled(true);
             clicked = true;
 
@@ -3700,7 +3737,7 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
         clicked = false;
         txtFilterValue.setEnabled(true);
         mVisits.setEnabled(true);
-        customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(false);
+        map.getUiSettings().setAllGesturesEnabled(false);
         mHelperView.setEnabled(false);
         horizontalPicker.setVisibility(View.GONE);
         tvRate.setVisibility(View.GONE);

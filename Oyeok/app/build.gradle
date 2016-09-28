@@ -3,6 +3,25 @@ apply plugin: 'io.fabric'
 //apply plugin: 'com.google.gms.google-services'
 
 
+
+
+buildscript {
+    repositories {
+        maven { url 'http://download.safedk.com/maven' }
+    }
+    dependencies {
+        classpath "com.safedk:SafeDKGradlePlugin:+"
+    }
+}
+
+apply plugin: 'safedk'
+safedk {
+    appId "853b7b9b0c0059c6e17bb8f5401006eb"
+    apiKey "c07e191e8bf8dcacf987ec37ac2212b2"
+}
+
+
+
 android {
     // added to solve duplicate files copied in apk (butterknife and realm)
     packagingOptions {
@@ -48,6 +67,16 @@ android {
         exclude 'META-INF/LICENSE-FIREBASE.txt'
         exclude 'META-INF/NOTICE'
     }
+
+
+
+
+
+
+
+
+
+
 
     productFlavors
             {
@@ -113,10 +142,10 @@ repositories {
 }
 
 //dependencies {
-//    compile 'com.google.android.gms:play-services-ads:9.0.1'n
+//    compile 'com.google.android.gms:play-services-ads:9.0.2'n
 //}
 //dependencies {
-//    compile 'com.google.android.gms:play-services-auth:9.0.1'
+//    compile 'com.google.android.gms:play-services-auth:9.0.2'
 //}
 dependencies {
     compile 'com.firebase:firebase-client-android:2.3.1'
@@ -125,7 +154,7 @@ dependencies {
     }
 }
 //dependencies {
-//    compile 'com.google.android.gms:play-services-gcm:9.0.1'
+//    compile 'com.google.android.gms:play-services-gcm:9.0.2'
 //}
 dependencies {
     compile 'com.github.deano2390:MaterialShowcaseView:1.1.0'
@@ -173,16 +202,28 @@ dependencies {
 dependencies {
     compile 'com.android.support:support-v4:23.+'
 }
-dependencies {
+/*dependencies {
     compile 'com.google.android.gms:play-services-ads:9.0.2'
 }
 dependencies {
     compile 'com.google.android.gms:play-services-auth:9.0.2'
-}
+}*/
 dependencies {
     compile 'com.firebase:firebase-client-android:2.3.1'
 }
+/*dependencies {
+    compile 'com.google.android.gms:play-services-gcm:9.0.2'
+}*/
+/*dependencies {
+    compile 'com.google.android.gms:play-services-ads:9.0.2'
+}
 dependencies {
+    compile 'com.google.android.gms:play-services-auth:9.0.2'
+}*/
+dependencies {
+    compile 'com.firebase:firebase-client-android:2.3.1'
+}
+/*dependencies {
     compile 'com.google.android.gms:play-services-gcm:9.0.2'
 }
 dependencies {
@@ -190,25 +231,13 @@ dependencies {
 }
 dependencies {
     compile 'com.google.android.gms:play-services-auth:9.0.2'
-}
+}*/
 dependencies {
     compile 'com.firebase:firebase-client-android:2.3.1'
 }
-dependencies {
+/*dependencies {
     compile 'com.google.android.gms:play-services-gcm:9.0.2'
-}
-dependencies {
-    compile 'com.google.android.gms:play-services-ads:9.0.2'
-}
-dependencies {
-    compile 'com.google.android.gms:play-services-auth:9.0.2'
-}
-dependencies {
-    compile 'com.firebase:firebase-client-android:2.3.1'
-}
-dependencies {
-    compile 'com.google.android.gms:play-services-gcm:9.0.2'
-}
+}*/
 dependencies {
     repositories {
         mavenCentral()
@@ -235,7 +264,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-ads:8.4.0'
     compile 'com.google.android.gms:play-services-identity:8.4.0'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
-    compile 'com.google.android.gms:play-services-auth:9.0.2'
+//    compile 'com.google.android.gms:play-services-auth:9.0.2'
 
     // expandeable floating action button by pritam
     //rangeseekbar test
@@ -329,9 +358,12 @@ dependencies {
     compile "com.github.tarek360:instacapture:0.44"
 
 ///Google Play Game services
-compile "com.google.android.gms:play-services-games:9.4.0"
+//compile "com.google.android.gms:play-services-games:9.0.2"
 
     compile project(':MPChartLib')
 
 
+//    compile 'com.google.android.gms:play-services-maps:9.4.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
+//    compile 'com.android.support:gridlayout-v7:23.4.0'
 }

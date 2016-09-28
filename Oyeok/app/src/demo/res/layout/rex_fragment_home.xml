@@ -44,33 +44,6 @@
             <!--</fragment>-->
 
 
-            <!--<LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="60dp"
-                android:id="@+id/myaccount"
-                android:layout_marginLeft="5dp"
-                android:gravity="center_horizontal|center_vertical"
-                android:background="@drawable/gradient_button_bg_with_border"
-                android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Money : "
-                android:layout_marginLeft="8dp"
-                android:id="@+id/balance"
-                android:textColor="@color/greenish_blue"
-                android:layout_gravity="center_horizontal|center_vertical" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2,00,000"
-                android:id="@+id/balance1"
-                android:layout_marginRight="8dp"
-                android:textColor="@color/greenish_blue"
-                android:layout_marginLeft="6dp"
-                android:layout_gravity="center_horizontal|center_vertical" />
-            </LinearLayout>-->
 
             <!-- Helper view to manage touches -->
             <View
@@ -117,7 +90,7 @@
                             android:text="@string/average_rate_this_locality"
                             android:id="@+id/tv_building"
                             android:textColor="@color/White"
-                            android:singleLine="true"
+                            android:maxLines="1"
                             android:layout_marginRight="40dp"
                             android:textSize="12sp"
                             android:visibility="visible"

@@ -151,7 +151,7 @@ public class CustomPhasedSeekBar extends View {
         mCurrentY = mPivotY = (getHeight()) / 2;
 
         //count of items in adapter
-        int count = 3;//getCount();
+        int count = getCount();
 
         //width of each item to occupy
         int widthBase = rect.width() / count;

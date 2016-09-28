@@ -1,0 +1,4 @@
+-keep class android.support.multidex.** { *; }
+-keep class android.support.v4.app.** { *; }
+-keep class com.google.android.gms.common.api.** { *; }
+-keep class io.fabric.sdk.android.** { *; }
