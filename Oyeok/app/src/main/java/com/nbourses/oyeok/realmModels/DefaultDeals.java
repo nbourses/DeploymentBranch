@@ -11,6 +11,7 @@ public class DefaultDeals extends RealmObject {
     private String ok_id;
     private String spec_code;
     private String locality;
+    private String lastSeen;
     public DefaultDeals() { }
 
     public String getOk_id() {
@@ -35,5 +36,13 @@ public class DefaultDeals extends RealmObject {
 
     public void setLocality(String locality) {
         this.locality = locality;
+    }
+
+    public String getLastSeen() {
+        return lastSeen;
+    }
+
+    public void setLastSeen(String lastSeen) {
+        this.lastSeen = lastSeen;
     }
 }

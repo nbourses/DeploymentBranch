@@ -779,6 +779,7 @@ public void signUp(){
         mHandler = new Handler();
 
         dbHelper.save(DatabaseConstants.userRole, "Client");
+        General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"client");
 
         //setup navigation drawer
         drawerFragment = (FragmentDrawer)

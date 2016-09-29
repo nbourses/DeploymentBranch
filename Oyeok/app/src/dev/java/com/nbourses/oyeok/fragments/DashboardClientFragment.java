@@ -102,6 +102,8 @@ import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.interfaces.OnOyeClick;
+import com.nbourses.oyeok.realmModels.Favourites;
+import com.nbourses.oyeok.realmModels.LatiLongi;
 import com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
@@ -132,6 +134,8 @@ import java.util.TimerTask;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -203,6 +207,7 @@ Button home,shop,industrial,office;
     private BitmapDescriptor icon2;
     private BitmapDescriptor iconHome;
     private BitmapDescriptor iconOffice;
+    private BitmapDescriptor iconOther;
     private Drawable sort_down_black,sort_down_red,sort_up_black,sort_up_green,comman_icon;
 
 
@@ -653,6 +658,7 @@ TextView rental,resale;
             sort_up_green = getContext().getResources().getDrawable(R.drawable.up);
             iconHome = BitmapDescriptorFactory.fromResource(R.drawable.favhome);
             iconOffice = BitmapDescriptorFactory.fromResource(R.drawable.favoffice);
+            iconOther = BitmapDescriptorFactory.fromResource(R.drawable.favother);
 
 
         }
@@ -805,6 +811,7 @@ TextView rental,resale;
 
         autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
         autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
+
         autoCompView.setOnItemClickListener(this);
 //        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 //        imm.hideSoftInputFromWindow(autoCompView.getWindowToken(), 0);
@@ -1744,7 +1751,8 @@ TextView rental,resale;
                     favOText.requestFocus();
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(favOText, InputMethodManager.SHOW_IMPLICIT);
-
+                    favTitle = "My Other";
+                    favIcon = iconOther;
                 }
             }
         });
@@ -2315,7 +2323,7 @@ catch(Exception e){
                             }catch(Exception e){
 
                             }
-
+                                showFavourites();
                             mVisits.setEnabled(true);
                                 txtFilterValue.setEnabled(true);
                                 horizontalPicker.setVisibility(View.VISIBLE);
@@ -4025,22 +4033,24 @@ if(buildingSelected)
 
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(new LatLng(Double.parseDouble(SharedPrefs.getString(getContext(),SharedPrefs.MY_LAT)), Double.parseDouble(SharedPrefs.getString(getContext(),SharedPrefs.MY_LNG))))
-                    .title("Home")
-                    .icon(iconHome));
+                    .title(favTitle)
+                    .icon(favIcon));
 
-            /*try {
+            try {
                 Realm myRealm = General.realmconfig(getContext());
-                favourites = new Favourites();
-                favourites.setFavTitle(favTitle);
-                latlon = new Latlng();
+                Favourites favourites = new Favourites();
+                favourites.setTitle(favTitle);
+                LatiLongi latlon = new LatiLongi();
                 latlon.setLat(Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT)));
-                latlon.setLon(Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
-                favourites.setLatLng(latlon);
+                latlon.setLng(Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
+                favourites.setLatiLongi(latlon);
 
                 Log.i(TAG,"fav2 3 latlng "+Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT))+" "+Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
                 Log.i(TAG,"fav2 latlng "+Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT))+" "+Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
+              if(myRealm.isInTransaction())
+                   myRealm.cancelTransaction();
                 myRealm.beginTransaction();
-                myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) favourites);
+                myRealm.copyToRealmOrUpdate(favourites);
                 myRealm.commitTransaction();
 
                RealmResults<Favourites> results1 =
@@ -4048,15 +4058,15 @@ if(buildingSelected)
 
                 for (Favourites c : results1) {
                     Log.i(TAG, "insiderr2 ");
-                    Log.i(TAG, "insiderr3 " + c.getFavTitle());
-                    Log.i(TAG, "insiderr4 " + c.getLatLng().getLat());
-                    Log.i(TAG, "insiderr4 " + c.getLatLng().getLon());
+                    Log.i(TAG, "insiderr3 " + c.getTitle());
+                    Log.i(TAG, "insiderr4 " + c.getLatiLongi().getLat());
+                    Log.i(TAG, "insiderr4 " + c.getLatiLongi().getLng());
                 }
 
             }
             catch(Exception e){
                 Log.i(TAG,"Caught in exception Favourites Realm "+e );
-            }*/
+            }
 
 
         }
@@ -4223,6 +4233,43 @@ if(buildingSelected)
         catch (Exception e){
             Log.e("TAG", "Caught in the the"+ e.getMessage());
         }
+
+    }
+
+
+    private void showFavourites(){
+
+        BitmapDescriptor favIcon;
+
+        try {
+           Realm myRealm = General.realmconfig(getContext());
+            RealmResults<Favourites> results1 =
+                    myRealm.where(Favourites.class).findAll();
+
+            for (Favourites c : results1) {
+                Log.i(TAG, "insiderr2 ");
+                Log.i(TAG, "insiderr3 " + c.getTitle());
+                Log.i(TAG, "insiderr4 " + c.getLatiLongi().getLat());
+                Log.i(TAG, "insiderr4 " + c.getLatiLongi().getLng());
+                if(c.getTitle().equalsIgnoreCase("My home"))
+                    favIcon = iconHome;
+                else if(c.getTitle().equalsIgnoreCase("My office"))
+                    favIcon = iconOffice;
+                else
+                    favIcon = iconOther;
+                Marker marker = map.addMarker(new MarkerOptions()
+                        .position(new LatLng(c.getLatiLongi().getLat(), c.getLatiLongi().getLng()))
+                        .title(c.getTitle())
+                        .snippet(c.getTitle())
+                        .icon(favIcon));
+                dropPinEffect(marker);
+            }
+
+        }
+        catch(Exception e){
+            Log.i(TAG,"Caught in exception Favourites Realm "+e );
+        }
+
 
     }
 

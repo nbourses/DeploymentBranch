@@ -1,17 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/parent">-->
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/list_item2"
+    android:layout_height="50dp"
+    android:id="@+id/list_item23"
     android:text="Andheri west"
     android:textColor="@color/Black"
-    android:layout_margin="@dimen/eight_dp"
-    android:background="@drawable/search_suggestion_border"
+        android:background="@drawable/search_suggestion_border"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
     android:fontFeatureSettings=""
-        android:paddingLeft="8dp" />
+        android:paddingLeft="8dp"
+        android:layout_marginRight="@dimen/eight_dp"
+        android:layout_marginTop="@dimen/eight_dp"
+        android:layout_marginBottom="@dimen/eight_dp"
+        android:layout_toEndOf="@+id/imageView4"
+        android:layout_toRightOf="@+id/imageView4" />
+
+    <!--<ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:srcCompat="@color/Grey"
+        android:layout_alignTop="@+id/list_item23"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/imageView4" />
+</RelativeLayout>-->
+
 

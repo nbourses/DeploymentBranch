@@ -17,6 +17,7 @@ public class HalfDeals extends RealmObject {
     private String otherStatus;
     private String oyeUserId;
     private String okUserId;
+    private String lastSeen;
     public HalfDeals() { }
 
     public String getOk_id() {
@@ -89,5 +90,14 @@ public class HalfDeals extends RealmObject {
 
     public void setOkUserId(String okUserId) {
         this.okUserId = okUserId;
+    }
+
+
+    public String getLastSeen() {
+        return lastSeen;
+    }
+
+    public void setLastSeen(String lastSeen) {
+        this.lastSeen = lastSeen;
     }
 }

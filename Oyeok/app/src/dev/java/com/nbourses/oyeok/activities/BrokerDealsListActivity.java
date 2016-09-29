@@ -1468,7 +1468,7 @@ if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgno
                 }
 
                 if (searchString.toLowerCase().contains(searchQuery.toLowerCase())) {
-                    BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(), true);
+                    BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(),c.getLastSeen(), true);
 
                     if (cachedDealsLL == null) {
                         cachedDealsLL = new ArrayList<BrokerDeals>();
@@ -1486,7 +1486,7 @@ if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgno
 
             } else if (searchQuery == null) {
 
-                BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(), true);
+                BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(),c.getLastSeen(), true);
 
                 if (cachedDealsLL == null) {
                     cachedDealsLL = new ArrayList<BrokerDeals>();

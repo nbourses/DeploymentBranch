@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -23,13 +25,13 @@ import com.nbourses.oyeok.realmModels.NotifCount;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import io.realm.Realm;
+
+import static com.nbourses.oyeok.R.id.wrapper;
 
 
 /**
@@ -116,6 +118,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                 holder.locality = (TextView) v.findViewById(R.id.locality);
                 holder.listing = (TextView) v.findViewById(R.id.listing);
                 holder.hdroomsCount = (TextView) v.findViewById(R.id.hdroomsCount);
+                holder.wrapper = (RelativeLayout) v.findViewById(wrapper);
 
                 v.setTag(holder);
             } else {
@@ -136,6 +139,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                     holder.hdroomsCount.setText(notifcount1.getNotif_count().toString());
                     holder.hdroomsCount.setVisibility(View.VISIBLE);
                     holder.hdroomsCount.setAnimation(bounce);
+                    holder.wrapper.setBackgroundColor(Color.parseColor("#000000"));
                 }
 
                 //Log.i(TAG, "notif count is the " + notifcount1.getNotif_count());
@@ -297,7 +301,8 @@ Log.i("TAG","description description "+description);
                 holder.txtDescription.setText(description);
 
                 // get time from shared if not available then assign random date from last few months
-                String time = fetchTime();
+               /* String time = fetchTime();
+
 
 
                 if (time != null) {
@@ -319,8 +324,13 @@ Log.i("TAG","description description "+description);
 
                     holder.txtTime.setText(SIMPLE_DATE_FORMAT.format(Long.parseLong(time)));
                 } else
-                    holder.txtTime.setText("Last month");
+                    holder.txtTime.setText("Last month");*/
                 // holder.txtTime.setText(dfDateTime.format(gc.getTime()));
+                Log.i("HDROOM locality", "locality is yo bro " + deal.getLastSeen()+"  "+SIMPLE_DATE_FORMAT.format(Long.parseLong(deal.getLastSeen())));
+                if(!deal.getLastSeen().equalsIgnoreCase("1464922983000"))
+                holder.txtTime.setText(SIMPLE_DATE_FORMAT.format(Long.parseLong(deal.getLastSeen())));
+                else
+                    holder.txtTime.setText("LAST WEEK");
 
                 Log.i("HDROOM locality", "locality is " + deal.getLocality());
                 try {
@@ -372,6 +382,7 @@ Log.i("TAG","description description "+description);
         public TextView locality;
         public TextView listing;
         public TextView hdroomsCount;
+        public RelativeLayout wrapper;
 
     }
 

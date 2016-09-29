@@ -70,6 +70,7 @@ import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -94,7 +95,7 @@ import retrofit.mime.TypedByteArray;
 
 
 
-public class ClientDealsListActivity extends AppCompatActivity implements CustomPhasedListener{
+public class ClientDealsListActivity extends AppCompatActivity implements CustomPhasedListener {
 
 
     private List<PublishLetsOye> publishLetsOyes;
@@ -123,7 +124,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     LinearLayout phaseSeekBar;
 
 
-
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -139,7 +139,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 //    @Bind(R.id.searchView)
 //    SearchView searchView;
-
 
 
     private boolean default_deal_flag;
@@ -202,8 +201,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     private String сolorString;
 
 
-
-
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -213,9 +210,22 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     private BroadcastReceiver badgeCountBroadcast = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.i("TAG", "narcos 1 ");
+
             //loadDefaultDeals();
             //loadBrokerDeals();
             //refreshview to show badges
+            try {
+                Log.i("TAG", "narcos " + intent.getStringExtra("channel_name"));
+                updateNewLastseen(intent.getStringExtra("channel_name"));
+            } catch (Exception e) {
+
+            }
+            Collections.sort(total_deals);
+            listAdapter.notifyDataSetChanged();
+
+
+
         }
     };
 
@@ -224,8 +234,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         super.onCreate(savedInstanceState);
         try {
             myRealm = General.realmconfig(this);
+        } catch (Exception e) {
         }
-        catch(Exception e){}
 
 
         IntentFilter filter = new IntentFilter("okeyed");
@@ -233,14 +243,13 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         setContentView(R.layout.activity_deals_list);
 
 
-
         listViewDeals = (SwipeMenuListView) findViewById(R.id.listViewDeals);
         supportChat = (LinearLayout) findViewById(R.id.supportChat);
-        fragment_container1 = (FrameLayout)findViewById(R.id.fragment_container1);
+        fragment_container1 = (FrameLayout) findViewById(R.id.fragment_container1);
         //  listViewDeals.setAdapter(new SearchingBrokersAdapter(this));
         signUpCard = (LinearLayout) findViewById(R.id.signUpCard);
         signUp = (Button) findViewById(R.id.signUp);
-        bgtxt=(TextView) findViewById(R.id.bgtxt1) ;
+        bgtxt = (TextView) findViewById(R.id.bgtxt1);
         /*bgtxtlayout = (LinearLayout) findViewById(R.id.bgtxtlayout);
         bgtxtlayout.setVisibility(View.VISIBLE);
         bgtxt.setText("Go Back &,\nBroadcast yours needs\nto create New DEALs\nwith more Brokers");*/
@@ -250,7 +259,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
         ButterKnife.bind(this);
 
-        Log.i("CHAT","in client deals list activity "+DateFormat.getDateTimeInstance().format(new Date()));
+        Log.i("CHAT", "in client deals list activity " + DateFormat.getDateTimeInstance().format(new Date()));
 
 
         init();
@@ -268,7 +277,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 MoreItem.setBackground(new ColorDrawable(getResources().getColor(R.color.grey)));
                 // set item width
                 MoreItem.setWidth(listAdapter.dp2px(90));
-                Log.i("TRACE1","dp"+" "+listAdapter.dp2px(90));
+                Log.i("TRACE1", "dp" + " " + listAdapter.dp2px(90));
                 // set item title
                 MoreItem.setIcon(R.drawable.more);
                 MoreItem.setTitle("More");
@@ -298,7 +307,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 menu.addMenuItem(MuteItem);*/
 
 
-
                 // create "delete" item
                 SwipeMenuItem deleteItem = new SwipeMenuItem(
                         getApplicationContext());
@@ -314,13 +322,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 deleteItem.setTitleColor(R.color.black);
                 // add to more
                 menu.addMenuItem(deleteItem);
-
-
-
-
-
-
-
 
 
             }
@@ -373,15 +374,13 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 }*/
 
 
-
-
                 switch (index) {
                     case 0:
-                        Log.i(TAG,"wadala default deals 2 you ");
-                        Log.i(TAG,"wadala default deals 2 you default_deals "+default_deals);
-                        Log.i(TAG,"wadala default deals 2 you default_deals "+listBrokerDeals_new);
-                        Log.i(TAG,"wadala default deals 2 you default_deals "+total_deals);
-                        if(General.isNetworkAvailable(ClientDealsListActivity.this)){
+                        Log.i(TAG, "wadala default deals 2 you ");
+                        Log.i(TAG, "wadala default deals 2 you default_deals " + default_deals);
+                        Log.i(TAG, "wadala default deals 2 you default_deals " + listBrokerDeals_new);
+                        Log.i(TAG, "wadala default deals 2 you default_deals " + total_deals);
+                        if (General.isNetworkAvailable(ClientDealsListActivity.this)) {
                             if (/*default_deals != null && !*/listBrokerDeals_new.contains(total_deals.get(position))) {
                                 Log.i(TAG, "tag me yo 2 " + total_deals.get(pos).getHDroomStatus().getSelfStatus());
                                 final String muteStatus = (total_deals.get(pos).getHDroomStatus().getSelfStatus().equalsIgnoreCase("active")) ? "mute" : "unmute";
@@ -462,7 +461,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                     }
                                 });
                                 builder.show();
-                            }else if (/*default_deals != null && !*/default_deals.contains(total_deals.get(position))){
+                            } else if (/*default_deals != null && !*/default_deals.contains(total_deals.get(position))) {
                                 SnackbarManager.show(
                                         Snackbar.with(ClientDealsListActivity.this)
                                                 .position(Snackbar.SnackbarPosition.TOP)
@@ -470,8 +469,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
-                            }}
-                        else{
+                            }
+                        } else {
                             SnackbarManager.show(
                                     Snackbar.with(ClientDealsListActivity.this)
                                             .position(Snackbar.SnackbarPosition.TOP)
@@ -482,12 +481,12 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                         break;
 
                     case 1:
-                        if(General.isNetworkAvailable(ClientDealsListActivity.this)){
+                        if (General.isNetworkAvailable(ClientDealsListActivity.this)) {
                             // Log.i("DELETEHDROOM","position "+position+"menu "+menu+"index "+index);
-                            Log.i(TAG,"wadala default deals 2 you ");
-                            Log.i(TAG,"wadala default deals 2 you default_deals "+default_deals);
-                            Log.i(TAG,"wadala default deals 2 you default_deals "+listBrokerDeals_new);
-                            Log.i(TAG,"wadala default deals 2 you default_deals "+total_deals);
+                            Log.i(TAG, "wadala default deals 2 you ");
+                            Log.i(TAG, "wadala default deals 2 you default_deals " + default_deals);
+                            Log.i(TAG, "wadala default deals 2 you default_deals " + listBrokerDeals_new);
+                            Log.i(TAG, "wadala default deals 2 you default_deals " + total_deals);
 
                             Log.i("deleteDR CALLED", "spec code " + total_deals.get(position).getSpecCode());
                             AlertDialog alertDialog = new AlertDialog.Builder(ClientDealsListActivity.this).create();
@@ -499,7 +498,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                             dialog.dismiss();
 
 
-                                            if (default_deals != null && default_deals.contains(total_deals.get(position))){
+                                            if (default_deals != null && default_deals.contains(total_deals.get(position))) {
 
                                                 Log.i("deleteDR CALLED", "Its default deal " + total_deals.get(position).getSpecCode());
 
@@ -526,18 +525,16 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                                     Log.i(TAG, "until defaultDeals ror 3 " + c.getLocality());
                                                 }
                                                 //deleteDealingroom("1",total_deals.get(position).getOkId(),total_deals.get(position).getSpecCode());
-                                                if(default_dealsLL.contains(total_deals.get(position)))
+                                                if (default_dealsLL.contains(total_deals.get(position)))
                                                     default_dealsLL.remove(total_deals.get(position));
-                                                else if(default_dealsOR.contains(total_deals.get(position)))
+                                                else if (default_dealsOR.contains(total_deals.get(position)))
                                                     default_dealsOR.remove(total_deals.get(position));
                                                 default_deals.remove(total_deals.get(position));
                                                 total_deals.remove(position);
                                                 listAdapter.notifyDataSetChanged();
 
 
-                                            }
-
-                                            else {
+                                            } else {
 
                                                 if (!listBrokerDeals_new.isEmpty() && listBrokerDeals_new.contains(total_deals.get(position))) {
 
@@ -587,8 +584,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                     });
                             alertDialog.show();
 
-                        }
-                        else{
+                        } else {
                             SnackbarManager.show(
                                     Snackbar.with(ClientDealsListActivity.this)
                                             .position(Snackbar.SnackbarPosition.TOP)
@@ -647,11 +643,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     }
 
 
-
-
-
-
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -681,7 +672,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchQuery = query.trim();
-                Log.i(TAG,"1111111111");
+                Log.i(TAG, "1111111111");
                 //search(searchQuery);
                 /*if(default_deals != null)
                     default_deals.clear();
@@ -697,16 +688,14 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             public boolean onQueryTextChange(String newText) {
                 searchQuery = newText.trim();
                 search(searchQuery);
-                Log.i(TAG,"newText "+searchQuery);
+                Log.i(TAG, "newText " + searchQuery);
 
 
                 return true;
             }
 
 
-
         });
-
 
 
         bounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
@@ -761,7 +750,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         });
 
         Log.i("Phaseseekbar", "oncreate value sign " + General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER));
-        if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")){
+        if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")) {
             signUpCard.setVisibility(View.VISIBLE);
         }
 
@@ -771,8 +760,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
         default_dealsLL = new ArrayList<BrokerDeals>();
         default_dealsOR = new ArrayList<BrokerDeals>();
-        if(General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
-        loadDefaultDealsNew();
+        if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+            loadDefaultDealsNew();
         loadCachedDeals();
         listBrokerDealsLL = new ArrayList<BrokerDeals>();
         listBrokerDealsOR = new ArrayList<BrokerDeals>();
@@ -783,11 +772,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
         // }
         setSupportActionBar(mToolbar);
-        if(!(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER)).equalsIgnoreCase("")) {
+        if (!(General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER)).equalsIgnoreCase("")) {
 
-            getSupportActionBar().setTitle(Html.fromHtml(String.format("DEALING ROOMs <font color=\"#%s\">(Rental)</font>",сolorString)));
+            getSupportActionBar().setTitle(Html.fromHtml(String.format("DEALING ROOMs <font color=\"#%s\">(Rental)</font>", сolorString)));
 
-        }else
+        } else
             getSupportActionBar().setTitle("DEALING ROOMs");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -804,7 +793,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                InputMethodManager imm = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
                 onBackPressed();
                 return true;
@@ -817,11 +806,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Override
     public void onBackPressed() {
 
-        if(signUpCardFlag){
-            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.fragment_container1)).commit();
+        if (signUpCardFlag) {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.fragment_container1)).commit();
             signUpCardFlag = false;
-        }
-        else {
+        } else {
 //        if(AppConstants.SIGNUP_FLAG){
 //            if(AppConstants.REGISTERING_FLAG){}else{
 //            getSupportFragmentManager().popBackStackImmediate();
@@ -831,11 +819,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 //            AppConstants.SIGNUP_FLAG=false;}
 //
 //        }else {
-            Log.i(TAG, "onback client deal");
+            Log.i(TAG, "onback client deal " + General.getSharedPreferences(this, AppConstants.ROLE_OF_USER));
             Intent intent;
-            if(General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                 intent = new Intent(this, BrokerMainActivity.class);
-            }     else {
+            } else {
                 intent = new Intent(this, ClientMainActivity.class);
             }
             intent.addFlags(
@@ -850,23 +838,21 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     }
 
 
-
-
-    private void deleteDealingroom(String deleteOyeId,String deleteOKId, final String specCode){
-        if(General.isNetworkAvailable(this)) {
+    private void deleteDealingroom(String deleteOyeId, String deleteOKId, final String specCode) {
+        if (General.isNetworkAvailable(this)) {
             General.slowInternet(this);
             deleteDroomDb(deleteOKId);
-            Log.i(TAG,"wadala default deals 3 "+deleteOKId);
+            Log.i(TAG, "wadala default deals 3 " + deleteOKId);
 
-            deleteHDroom deleteHDroom  = new deleteHDroom();
+            deleteHDroom deleteHDroom = new deleteHDroom();
             deleteHDroom.setOkId(deleteOKId);
             deleteHDroom.setDeleteOyeId(deleteOyeId);
-            if(!General.getSharedPreferences(ClientDealsListActivity.this,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase(""))
-                deleteHDroom.setUserId(General.getSharedPreferences(this,AppConstants.USER_ID));
+            if (!General.getSharedPreferences(ClientDealsListActivity.this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase(""))
+                deleteHDroom.setUserId(General.getSharedPreferences(this, AppConstants.USER_ID));
             else
-                deleteHDroom.setUserId(General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI));
+                deleteHDroom.setUserId(General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI));
             deleteHDroom.setPage("1");
-            deleteHDroom.setGcmId(General.getSharedPreferences(this,AppConstants.GCM_ID));
+            deleteHDroom.setGcmId(General.getSharedPreferences(this, AppConstants.GCM_ID));
 
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setEndpoint(AppConstants.SERVER_BASE_URL)
@@ -882,7 +868,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     public void success(JsonElement jsonElement, Response response) {
                         General.slowInternetFlag = false;
                         General.t.interrupt();
-                        Log.i("deleteDR CALLED","delete hdroom success");
+                        Log.i("deleteDR CALLED", "delete hdroom success");
 
                         SnackbarManager.show(
                                 Snackbar.with(ClientDealsListActivity.this)
@@ -894,24 +880,14 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                         JsonObject k = jsonElement.getAsJsonObject();
                         try {
                             JSONObject ne = new JSONObject(k.toString());
-                            Log.i("deleteDR CALLED","sdelete hdroom succes "+ne);
+                            Log.i("deleteDR CALLED", "sdelete hdroom succes " + ne);
                             String success = ne.getString("success");
 
 
-
-
-
-
-                        }
-
-
-
-                        catch (JSONException e) {
+                        } catch (JSONException e) {
                             Log.e(TAG, e.getMessage());
-                            Log.i("deleteDR CALLED","delete hdroom Failed "+e.getMessage());
+                            Log.i("deleteDR CALLED", "delete hdroom Failed " + e.getMessage());
                         }
-
-
 
 
                     }
@@ -922,20 +898,19 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                         General.t.interrupt();
                     }
                 });
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
             }
 
-        }else{
+        } else {
 
             General.internetConnectivityMsg(this);
         }
 
     }
 
-    private  void  loadDefaultDealsNew() {
-        Log.i(TAG,"load default deals called ");
+    private void loadDefaultDealsNew() {
+        Log.i(TAG, "load default deals called ");
 
         if (defaultOkIds != null)
             defaultOkIds.clear();
@@ -978,7 +953,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 defaultOkIds.add(c.getOk_id());
                 Log.i(TAG, "locality is the r " + c.getLocality());
 
-                BrokerDeals dealsa = new BrokerDeals(General.getSharedPreferences(this, AppConstants.NAME), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOk_id(), true);
+                BrokerDeals dealsa = new BrokerDeals(General.getSharedPreferences(this, AppConstants.NAME), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOk_id(), c.getLastSeen(), true);
                 Log.i(TAG, "happy " + c.getSpec_code().toLowerCase().contains("-ll"));
                 if (c.getSpec_code().toLowerCase().contains("-ll")) {
 
@@ -986,8 +961,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     default_dealsLL.add(dealsa);
 
 
-                }
-                else{
+                } else {
                     default_dealsOR.add(dealsa);
                 }
                 Log.i(TAG, "default deals are ro" + default_dealsLL);
@@ -999,6 +973,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
             total_deals.addAll(default_deals);
             showBgText();
+            Collections.sort(total_deals);
             listAdapter.notifyDataSetChanged();
 
 
@@ -1032,7 +1007,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             }*/
 
 
-
         } catch (Exception e) {
             Log.i(TAG, "Caught in the exception reading defaultdeals from realm " + e);
         } finally {
@@ -1042,14 +1016,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     }
 
 
-
-
-
-
     private void loadBrokerDeals() {
-        if(General.isNetworkAvailable(this)) {
+        if (General.isNetworkAvailable(this)) {
             General.slowInternet(this);
-            Log.i("TRACE", "in Load broker deals================= "+General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
+            Log.i("TRACE", "in Load broker deals================= " + General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
 
             // String defaultOK = "{\"for_oyes\":[{\"loc\":[72.8312300000001,19.1630000000001],\"ok_id\":\"szimjqcufrd784371\",\"time\":[\"2016\",\"4\",\"10\",\"8\",\"24\",\"28\"],\"oye_id\":\"3xd6amo1245617\",\"ok_user_id\":\"krve2cnz03rc1hfi06upjpnoh9hrrtsy\",\"name\":\"Shlok M\",\"mobile_no\":\"9769036234\",\"spec_code\":\"Searching for brokers\"}],\"for_oks\":[]}";
             // Log.i("TRACE","DefailtOK" +defaultOK);
@@ -1072,11 +1042,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             //params
 
             HdRooms hdRooms = new HdRooms();
-            if(General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equals("broker"))
+            if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equals("broker"))
                 hdRooms.setUserRole("broker");
             else
                 hdRooms.setUserRole("client");
-            if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equals(""))
+            if (!General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equals(""))
                 hdRooms.setUserId(General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
             else
                 hdRooms.setUserId(General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI));
@@ -1100,15 +1070,15 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     General.slowInternetFlag = false;
                     General.t.interrupt();
 
-                    Log.i("TRACE", "in successs "+General.getSharedPreferences(ClientDealsListActivity.this,AppConstants.TIME_STAMP_IN_MILLI));
+                    Log.i("TRACE", "in successs " + General.getSharedPreferences(ClientDealsListActivity.this, AppConstants.TIME_STAMP_IN_MILLI));
                     String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
-                    Log.i(TAG, "tidin tidin tindin 1 "+strResponse);
+                    Log.i(TAG, "tidin tidin tindin 1 " + strResponse);
                     try {
                         JSONObject jsonObjectServer = new JSONObject(strResponse);
-                        Log.i(TAG, "tidin tidin tindin 2"+jsonObjectServer);
+                        Log.i(TAG, "tidin tidin tindin 2" + jsonObjectServer);
                         if (jsonObjectServer.getBoolean("success")) {
                             JSONObject jsonObjectResponseData = new JSONObject(jsonObjectServer.getString("responseData"));
-                            Log.i(TAG, "tidin tidin tindin 3 "+jsonObjectResponseData);
+                            Log.i(TAG, "tidin tidin tindin 3 " + jsonObjectResponseData);
                             Log.i("TRACE", "jsonObjectResponseData" + jsonObjectResponseData);
                             Log.d("CHATTRACE", "default drooms" + jsonObjectResponseData);
 
@@ -1120,25 +1090,24 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 //                        }
 
 
-
                             Gson gsonForOks = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
                             ArrayList<BrokerDeals> listBrokerDeals;
-                            if(General.getSharedPreferences(ClientDealsListActivity.this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                            if (General.getSharedPreferences(ClientDealsListActivity.this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                                 listBrokerDeals = (ArrayList<BrokerDeals>)
                                         gsonForOks.fromJson(jsonObjectResponseData.getString("for_oks"),
                                                 new TypeToken<ArrayList<BrokerDeals>>() {
                                                 }.getType());
-                            }else
-                            {
+                            } else {
                                 listBrokerDeals = (ArrayList<BrokerDeals>)
                                         gsonForOks.fromJson(jsonObjectResponseData.getString("for_oyes"),
                                                 new TypeToken<ArrayList<BrokerDeals>>() {
                                                 }.getType());
                             }
-                            Log.i("TRACE", "list broker deals" + listBrokerDeals.isEmpty());
-                            if(!listBrokerDeals.isEmpty()){
-                                Iterator<BrokerDeals> it = listBrokerDeals.iterator();
 
+
+                            Log.i("TRACE", "list broker deals" + listBrokerDeals.isEmpty());
+                            if (!listBrokerDeals.isEmpty()) {
+                                Iterator<BrokerDeals> it = listBrokerDeals.iterator();
 
 
                                 myRealm = General.realmconfig(ClientDealsListActivity.this);
@@ -1147,15 +1116,18 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                 while (it.hasNext()) {
                                     BrokerDeals deals = it.next();
 
-                                    if(deals.getOkId() != null) {
-                                        Log.i("TRACE", "dhishoom timestamp 1 "+deals.getLastSeen());
-                                        Log.i("TRACE", "dhishoom hdroomstatus 22 "+deals.getOkId());
-                                        Log.i("TRACE", "dhishoom hdroomstatus 22 "+deals.getHDroomStatus().getSelfStatus());
-                                        Log.i("TRACE", "dhishoom hdroomstatus other "+deals.getHDroomStatus().getOtherStatus());
-                                        Log.i("TRACE", "dhishoom hdroomstatus other ok user id "+deals.getOkUserId());
-                                        Log.i("TRACE", "dhishoom hdroomstatus other ok user id 1 "+deals.getOkUserId());
+                                    if (deals.getOkId() != null) {
+                                        Log.i("TRACE", "dhishoom timestamp 1 " + deals.getLastSeen());
+                                        if (deals.getLastSeen().equalsIgnoreCase("default"))
+                                            deals.setLastSeen("1464922983000");
 
-                                        if(General.getSharedPreferences(ClientDealsListActivity.this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+                                        Log.i("TRACE", "dhishoom hdroomstatus 22 " + deals.getOkId());
+                                        Log.i("TRACE", "dhishoom hdroomstatus 22 " + deals.getHDroomStatus().getSelfStatus());
+                                        Log.i("TRACE", "dhishoom hdroomstatus other " + deals.getHDroomStatus().getOtherStatus());
+                                        Log.i("TRACE", "dhishoom hdroomstatus other ok user id " + deals.getOkUserId());
+                                        Log.i("TRACE", "dhishoom hdroomstatus other ok user id 1 " + deals.getOyeUserId());
+
+                                        if (General.getSharedPreferences(ClientDealsListActivity.this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
                                             if (defaultOkIds.contains(deals.getOkId())) {
                                                 if (matchedOkIds == null)
                                                     matchedOkIds = new ArrayList<String>();
@@ -1173,7 +1145,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                         halfDeals.setSpec_code(deals.getSpecCode());
                                         halfDeals.setSelfStatus(deals.getHDroomStatus().getSelfStatus());
                                         halfDeals.setOtherStatus(deals.getHDroomStatus().getOtherStatus());
-                                        halfDeals.setOkUserId(deals.getOkUserId());
+                                        if (General.getSharedPreferences(ClientDealsListActivity.this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                                            halfDeals.setOkUserId(deals.getOkUserId());
+                                        else
+                                            halfDeals.setOkUserId(deals.getOyeUserId());
+                                        halfDeals.setLastSeen(deals.getLastSeen());
                                         myRealm.copyToRealmOrUpdate(halfDeals);
 
                                         if (deals.getOyeId().contains("unverified_user")) {
@@ -1195,22 +1171,23 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                 }
                                 myRealm.commitTransaction();
 
-                                Log.i("TRACE", "dhishoom unverifiedOR "+unverifiedOR);
-                                if(General.getSharedPreferences(ClientDealsListActivity.this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+                                Log.i("TRACE", "dhishoom unverifiedOR " + unverifiedOR);
+                                if (General.getSharedPreferences(ClientDealsListActivity.this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
                                     if (matchedOkIds != null)
                                         deleteDefaultDeals();
                                 }
-                                Log.i("TRACE", "dhishoom "+unverifiedLL);
-                                Log.i("TRACE", "dhishoom "+listBrokerDealsLL);
-                                Log.i("TRACE", "dhishoom "+total_deals);
+                                Log.i("TRACE", "dhishoom unverifiedLL " + unverifiedLL);
+                                Log.i("TRACE", "dhishoom listBrokerDealsLL " + listBrokerDealsLL);
+                                Log.i("TRACE", "dhishoom total_deals " + total_deals);
                                 total_deals.removeAll(cachedDealsLL);
-                                /*total_deals.addAll(unverifiedLL);
-                                total_deals.addAll(listBrokerDealsLL);*/
+
                                 listBrokerDeals_new.addAll(unverifiedLL);
                                 listBrokerDeals_new.addAll(listBrokerDealsLL);
                                 total_deals.addAll(listBrokerDeals_new);
-                                Log.i(TAG,"listbrokerdeals loaded are "+listBrokerDeals_new);
+
+                                Log.i(TAG, "listbrokerdeals loaded are " + listBrokerDeals_new);
                                 showBgText();
+                                Collections.sort(total_deals);
                                 listAdapter.notifyDataSetChanged();
 
 
@@ -1265,10 +1242,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                 // }
 
 
-
-                            }}
+                            }
+                        }
                     } catch (Exception e) {
-                        Log.i("TRACE", "Caught in exception in loadbrokerdeals "+e);
+                        Log.i("TRACE", "Caught in exception in loadbrokerdeals " + e);
                     }
                 }
 
@@ -1277,11 +1254,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     General.slowInternetFlag = false;
                     General.t.interrupt();
 
-                    Log.i("TRACE", "in failure "+error);
+                    Log.i("TRACE", "in failure " + error);
                 }
             });
 
-        }else{
+        } else {
 
             General.internetConnectivityMsg(this);
         }
@@ -1292,28 +1269,26 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         deals = General.getDefaultDeals(this);
 
-        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+        }.getType();
         HashMap<String, String> deals1 = gson.fromJson(deals, type);
 
-        Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> iter = deals1.entrySet().iterator();
 
         while (iter.hasNext()) {
-            Map.Entry<String,String> entry = iter.next();
-            Log.d(TAG,"entry.getKey"+entry.getKey());
-            if(matchedOkIds.contains(entry.getKey())){
+            Map.Entry<String, String> entry = iter.next();
+            Log.d(TAG, "entry.getKey" + entry.getKey());
+            if (matchedOkIds.contains(entry.getKey())) {
                 iter.remove();
 
             }
         }
 
-        Log.i(TAG,"after deal "+deals1);
+        Log.i(TAG, "after deal " + deals1);
 
         Gson g = new Gson();
         String hashMapString = g.toJson(deals1);
         General.saveDefaultDeals(this, hashMapString);
-
-
-
 
 
         try {
@@ -1321,7 +1296,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 Realm myRealm = General.realmconfig(this);
                 myRealm.beginTransaction();
                 RealmResults<DefaultDeals> result = myRealm.where(DefaultDeals.class).equalTo(AppConstants.OK_ID, okId).findAll();
-
 
 
                 result.clear();
@@ -1333,28 +1307,28 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 while (it.hasNext()) {
                     BrokerDeals deals = it.next();
 
-                    Log.i("TRACE==","deals.are"+deals);
-                    Log.i("TRACE==","deals.ok_id"+deals.getOkId());
-                    Log.i(TAG,"default deals before delete "+default_deals);
-                    Log.i(TAG,"default deals before delete 3 "+okId);
-                    Log.i(TAG,"default deals before delete 4 "+deals.getOkId());
-                    if(deals.getOkId().equalsIgnoreCase(okId)) {
-                        Log.i(TAG,"default deals before delete 5 ");
+                    Log.i("TRACE==", "deals.are" + deals);
+                    Log.i("TRACE==", "deals.ok_id" + deals.getOkId());
+                    Log.i(TAG, "default deals before delete " + default_deals);
+                    Log.i(TAG, "default deals before delete 3 " + okId);
+                    Log.i(TAG, "default deals before delete 4 " + deals.getOkId());
+                    if (deals.getOkId().equalsIgnoreCase(okId)) {
+                        Log.i(TAG, "default deals before delete 5 ");
                         default_deals.remove(deals);
-                        if(default_dealsLL.contains(deals))
+                        if (default_dealsLL.contains(deals))
                             default_dealsLL.remove(deals);
                         else
                             default_dealsOR.remove(deals);
                         total_deals.remove(deals);
                         listAdapter.notifyDataSetChanged();
 
-                        Log.i(TAG,"default deals before delete 2 "+default_deals);
+                        Log.i(TAG, "default deals before delete 2 " + default_deals);
                     }
-                    }
+                }
 
             }
         } catch (Exception e) {
-            Log.i(TAG, "caught in exception deleting default droom "+e);
+            Log.i(TAG, "caught in exception deleting default droom " + e);
         }
 
     }
@@ -1384,12 +1358,12 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     public void onClickSignUp(View v) {
 
 
-
-
         SignUpFragment d = new SignUpFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("lastFragment", "clientDrawer");  //consider as direct signup so keep last fragment as clientDrawer
-
+        if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+            bundle.putString("lastFragment", "brokerDrawer");
+        else//consider as direct signup so keep last fragment as clientDrawer
+            bundle.putString("lastFragment", "clientDrawer");
         d.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -1409,7 +1383,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     public void onClickDealItemRoot(View v) {
 
 
-
         Log.i("USER_ID", " " + General.getSharedPreferences(this, AppConstants.USER_ID).isEmpty());
 
         // if(!General.getSharedPreferences(this ,AppConstants.USER_ID).isEmpty())  {
@@ -1423,7 +1396,6 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     }
 
 
-
     private final BroadcastReceiver handlePushNewMessage = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, final Intent intent) {
@@ -1432,9 +1404,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
             RefreshDrooms = intent.getExtras().getBoolean("RefreshDrooms");
 
-            Log.i("TRACE","refreshdrooms is set" +RefreshDrooms);
-            Log.i("Shine","RefreshDrooms is "+RefreshDrooms);
-            Log.i("Shine","1");
+            Log.i("TRACE", "refreshdrooms is set" + RefreshDrooms);
+            Log.i("Shine", "RefreshDrooms is " + RefreshDrooms);
+            Log.i("Shine", "1");
 
 
             //loadDefaultDeals();
@@ -1464,7 +1436,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Override
     public void onPositionSelected(int position, int count) {
 
-        if(position == 0) {
+        if (position == 0) {
 
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
             TT = "LL";
@@ -1473,12 +1445,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             default_deals.addAll(default_dealsLL);
             total_deals.addAll(default_deals);
 
-            if(listBrokerDeals_new.isEmpty()){
+            if (listBrokerDeals_new.isEmpty()) {
                 cachedDeals.clear();
                 cachedDeals.addAll(cachedDealsLL);
                 total_deals.addAll(cachedDeals);
-            }
-            else {
+            } else {
                 listBrokerDeals_new.clear();
                 listBrokerDeals_new.addAll(unverifiedLL);
                 listBrokerDeals_new.addAll(listBrokerDealsLL);
@@ -1486,23 +1457,20 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             }
 
 
-
-
-
             showBgText();
+            Collections.sort(total_deals);
             listAdapter.notifyDataSetChanged();
-            if(searchQuery != null)
+            if (searchQuery != null)
                 search(searchQuery);
 
 
-            getSupportActionBar().setTitle(Html.fromHtml(String.format("DEALING ROOMs <font color=\"#%s\">(Rental)</font>",сolorString)));
+            getSupportActionBar().setTitle(Html.fromHtml(String.format("DEALING ROOMs <font color=\"#%s\">(Rental)</font>", сolorString)));
             SnackbarManager.show(
                     Snackbar.with(this)
                             .text("Rental Deals Type set")
                             .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
-        }
-        else{
+        } else {
 
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RESALE);
             TT = "OR";
@@ -1511,20 +1479,19 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             default_deals.addAll(default_dealsOR);
             total_deals.addAll(default_deals);
 
-            if(listBrokerDeals_new.isEmpty()){
+            if (listBrokerDeals_new.isEmpty()) {
                 cachedDeals.clear();
                 cachedDeals.addAll(cachedDealsOR);
                 total_deals.addAll(cachedDeals);
-            }
-            else {
+            } else {
                 listBrokerDeals_new.clear();
                 listBrokerDeals_new.addAll(unverifiedOR);
                 listBrokerDeals_new.addAll(listBrokerDealsOR);
                 total_deals.addAll(listBrokerDeals_new);
             }
-
+            Collections.sort(total_deals);
             listAdapter.notifyDataSetChanged();
-            if(searchQuery != null)
+            if (searchQuery != null)
                 search(searchQuery);
 
             showBgText();
@@ -1533,19 +1500,19 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             .text("Buy/Sell Deal Type set")
                             .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
-            getSupportActionBar().setTitle(Html.fromHtml(String.format("DEALING ROOMs <font color=\"#%s\">(Buy/Sell)</font>",сolorString)));
+            getSupportActionBar().setTitle(Html.fromHtml(String.format("DEALING ROOMs <font color=\"#%s\">(Buy/Sell)</font>", сolorString)));
 
         }
 
 
         //General.setSharedPreferences(this, AppConstants.TT, TT);
 
-        Log.i(TAG, "PHASED seekbar current onPositionSelected" + position +" "+ " count "+count+" "+General.getSharedPreferences(this, "TT"));
-
+        Log.i(TAG, "PHASED seekbar current onPositionSelected" + position + " " + " count " + count + " " + General.getSharedPreferences(this, "TT"));
 
 
     }
-    private  void networkConnectivity(){
+
+    private void networkConnectivity() {
         SnackbarManager.show(
                 Snackbar.with(this)
                         .position(Snackbar.SnackbarPosition.TOP)
@@ -1554,22 +1521,19 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     }
 
 
-    private  void loadCachedDeals(){
+    private void loadCachedDeals() {
 
-        if(cachedDeals != null){
+        if (cachedDeals != null) {
             cachedDeals.clear();
-        }
-        else
+        } else
             cachedDeals = new ArrayList<BrokerDeals>();
-        if(cachedDealsLL != null){
+        if (cachedDealsLL != null) {
             cachedDealsLL.clear();
-        }
-        else
+        } else
             cachedDealsLL = new ArrayList<BrokerDeals>();
-        if(cachedDealsOR != null){
+        if (cachedDealsOR != null) {
             cachedDealsOR.clear();
-        }
-        else
+        } else
             cachedDealsOR = new ArrayList<BrokerDeals>();
 
         Realm myRealm = General.realmconfig(this);
@@ -1584,7 +1548,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             RealmResults<HalfDeals> results1 =
                     myRealm.where(HalfDeals.class).findAll();
 
-            Log.i(TAG, "until loadCachedDeals called 4 "+results1);
+            Log.i(TAG, "until loadCachedDeals called 4 " + results1);
 
             for (HalfDeals c : results1) {
                 Log.i(TAG, "until loadCachedDeals ");
@@ -1594,22 +1558,20 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 Log.i(TAG, "until loadCachedDeals " + c.getSelfStatus());
                 Log.i(TAG, "until loadCachedDeals " + c.getOtherStatus());
                 Log.i(TAG, "until loadCachedDeals " + c.getOkUserId());
+                Log.i(TAG, "until loadCachedDeals " + c.getLastSeen());
 
 
+                BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(), c.getSelfStatus(), c.getOtherStatus(), c.getOkUserId(), c.getLastSeen(), true);
 
-                BrokerDeals dealsa = new BrokerDeals(c.getName(), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOyeId(),c.getSelfStatus(),c.getOtherStatus(),c.getOkUserId(), true);
 
-
-                Log.i(TAG,"robosasa 1 "+dealsa);
-                if(c.getSpec_code().toLowerCase().contains("ll-") || c.getSpec_code().toLowerCase().contains("-ll")){
-                    Log.i(TAG,"robosasa "+dealsa.getSpecCode());
+                Log.i(TAG, "robosasa 1 " + dealsa);
+                if (c.getSpec_code().toLowerCase().contains("ll-") || c.getSpec_code().toLowerCase().contains("-ll")) {
+                    Log.i(TAG, "robosasa " + dealsa.getSpecCode());
                     cachedDealsLL.add(dealsa);
-                }
-                else if(c.getSpec_code().toLowerCase().contains("or-") || c.getSpec_code().toLowerCase().contains("-or")){
-                    Log.i(TAG,"robosasa "+dealsa.getSpecCode());
+                } else if (c.getSpec_code().toLowerCase().contains("or-") || c.getSpec_code().toLowerCase().contains("-or")) {
+                    Log.i(TAG, "robosasa " + dealsa.getSpecCode());
                     cachedDealsOR.add(dealsa);
                 }
-
 
 
             }
@@ -1617,74 +1579,72 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             cachedDeals.addAll(cachedDealsLL);
             total_deals.addAll(cachedDeals);
             showBgText();
+            Collections.sort(total_deals);
             listAdapter.notifyDataSetChanged();
             //setCachedDeals();
 
-        }catch(Exception e){
-            Log.i(TAG,"Caught in the exception reading cache from realm "+e);
-        }
-        finally {
+        } catch (Exception e) {
+            Log.i(TAG, "Caught in the exception reading cache from realm " + e);
+        } finally {
 
-            Log.i(TAG,"finally loadCachedDeals ");
+            Log.i(TAG, "finally loadCachedDeals ");
         }
     }
 
 
-
-
-    private void deleteDroomDb(String okId){
+    private void deleteDroomDb(String okId) {
 
         try {
             Realm myRealm = General.realmconfig(this);
 
             //clear cache
-            Log.i(TAG,"until 3 ");
+            Log.i(TAG, "until 3 ");
             myRealm.beginTransaction();
-            Log.i(TAG,"until 4 ");
-            RealmResults<HalfDeals> result = myRealm.where(HalfDeals.class).equalTo(AppConstants.OK_ID,okId).findAll();
-            Log.i(TAG,"until result to del is 6 "+result);
+            Log.i(TAG, "until 4 ");
+            RealmResults<HalfDeals> result = myRealm.where(HalfDeals.class).equalTo(AppConstants.OK_ID, okId).findAll();
+            Log.i(TAG, "until result to del is 6 " + result);
             result.clear();
 
-        }catch(Exception e){
-            Log.i(TAG,"Caught in the exception clearing cache "+e );
-        }
-        finally{
+        } catch (Exception e) {
+            Log.i(TAG, "Caught in the exception clearing cache " + e);
+        } finally {
             myRealm.commitTransaction();
         }
 
 
     }
 
-    private void showBgText(){
-        Log.i(TAG,"inside show bg text ");
-        if(total_deals.size() <3 && showbgtext == true && !General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")){
-            Log.i(TAG,"inside show bg text total_deals 5"+total_deals.size());
+    private void showBgText() {
+        Log.i(TAG, "inside show bg text ");
+        if (total_deals.size() < 3 && showbgtext == true && !General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")) {
+            Log.i(TAG, "inside show bg text total_deals 5" + total_deals.size());
 
             bgtxt.setVisibility(View.VISIBLE);
             bgtxt.setText("Go Back & Broadcast yours needs to create New DEALs with more Brokers");
-        }else{bgtxt.setVisibility(View.GONE);
-            Log.i(TAG,"inside show bg text total_deals else"+total_deals.size());
+        } else {
+            bgtxt.setVisibility(View.GONE);
+            Log.i(TAG, "inside show bg text total_deals else" + total_deals.size());
         }
     }
-    private void search(String searchQuery){
-        Log.i(TAG,"deals deals searchQuery "+searchQuery);
+
+    private void search(String searchQuery) {
+        Log.i(TAG, "deals deals searchQuery " + searchQuery);
 
         total_deals.clear();
-        if(TT.equalsIgnoreCase("LL")){
+        if (TT.equalsIgnoreCase("LL")) {
             total_deals.addAll(default_dealsLL);
             total_deals.addAll(listBrokerDealsLL);
-        }else{
+        } else {
             total_deals.addAll(default_dealsOR);
             total_deals.addAll(listBrokerDealsOR);
         }
 
 
-
-        if(searchQuery != null) {
+        if (searchQuery != null) {
 
             copy = new ArrayList<BrokerDeals>();
             copy.addAll(total_deals);
-            Log.i(TAG,"deals deals searchQuery copy "+copy);
+            Log.i(TAG, "deals deals searchQuery copy " + copy);
             Iterator<BrokerDeals> it = copy.iterator();
             while (it.hasNext()) {
                 BrokerDeals deals = it.next();
@@ -1707,22 +1667,57 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     if (!searchString.toLowerCase().contains(searchQuery.toLowerCase())) {
                         total_deals.remove(deals);
 
-                    }
-                    else{
-                        Log.i(TAG,"deals deals "+deals.getSpecCode());
+                    } else {
+                        Log.i(TAG, "deals deals " + deals.getSpecCode());
                     }
 
                 }
             }
             listAdapter.notifyDataSetChanged();
 
-        }
-        else{
+        } else {
             listAdapter.notifyDataSetChanged();
         }
     }
 
 
+    private void updateNewLastseen(String okId) {
+
+        if (!total_deals.isEmpty()) {
+            Iterator<BrokerDeals> it = total_deals.iterator();
+
+
+            myRealm = General.realmconfig(ClientDealsListActivity.this);
+            myRealm.beginTransaction();
+
+            while (it.hasNext()) {
+                BrokerDeals deals = it.next();
+
+                if (deals.getOkId().equalsIgnoreCase(okId)) {
+                    deals.setLastSeen(String.valueOf(System.currentTimeMillis()));
+                }
+
+
+            }
+        }
+
+        try{
+            if(myRealm.isInTransaction())
+                myRealm.cancelTransaction();
+            Realm myRealm = General.realmconfig(this);
+            HalfDeals deal = myRealm.where(HalfDeals.class).equalTo(AppConstants.OK_ID, okId).findFirst();
+            if(deal != null){
+
+                myRealm.beginTransaction();
+                deal.setLastSeen(String.valueOf(System.currentTimeMillis()));
+                myRealm.commitTransaction();
+
+            }
+
+        }
+        catch(Exception e){
+Log.i(TAG,"Caught in exception narcos "+e);
+        }
+    }
+
 }
-
-

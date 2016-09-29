@@ -69,6 +69,7 @@ import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.ChatMessage;
 import com.nbourses.oyeok.realmModels.DealStatus;
 import com.nbourses.oyeok.realmModels.DealTime;
+import com.nbourses.oyeok.realmModels.DefaultDeals;
 import com.nbourses.oyeok.realmModels.Message;
 import com.nbourses.oyeok.realmModels.NotifCount;
 import com.nispok.snackbar.Snackbar;
@@ -1207,7 +1208,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 }
 
-                Log.i(TAG, "until toro foro loro "+userType);
+                Log.i(TAG, "until toro foro loro "+c.getMessage()+" "+userType);
 
                 message = new ChatMessage();
                 message.setUserName(roleOfUser);
@@ -2362,10 +2363,34 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
 
     Log.i(TAG,"back clicked");
 
-        if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME))
+        if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME)) {
             channel_name = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
+        }else {
+            if(lastMessageTime != null) {
+                //check if default deal or not
+                try{
+                    Realm myRealm = General.realmconfig(this);
+                    DefaultDeals deal = myRealm.where(DefaultDeals.class).equalTo(AppConstants.OK_ID, channel_name).findFirst();
+                    if(deal != null){
+                        // update default deal time and return
+                        myRealm.beginTransaction();
+                        deal.setLastSeen(lastMessageTime);
+                        myRealm.commitTransaction();
+
+                    }
+                    else{
+                        // update server time
+                        General.setDealStatus(this, "default", channel_name, lastMessageTime, "");
+                    }
+
+                }
+                catch(Exception e){
+
+                }
 
 
+            }
+        }
         storeDealTime();
 
         loadFinalHistory();
