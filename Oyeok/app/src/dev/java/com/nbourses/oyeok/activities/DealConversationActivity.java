@@ -988,7 +988,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     userType = ChatMessageUserType.DEFAULT;
                 }
 
-                 if (msgStatus.equalsIgnoreCase("IMG")){
+                else if (msgStatus.equalsIgnoreCase("IMG")){
 
                     Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
 
@@ -1001,9 +1001,20 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Log.i("grrrr IMG IMAGE NAME"," "+imageName);
                     Log.i(TAG, "calipso" + userSubtype);
 
-                }
+                     if(userID.equalsIgnoreCase(FROM))
+                     {
 
-                 if (msgStatus.equalsIgnoreCase("LISTING")){
+                         userSubtype = ChatMessageUserSubtype.SELF;
+                     }
+                     else
+                     {
+                         userSubtype = ChatMessageUserSubtype.OTHER;
+                     }
+
+
+                 }
+
+                else if (msgStatus.equalsIgnoreCase("LISTING")){
 
                     Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
 
@@ -1012,23 +1023,13 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 }
 
-                String demoId = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
 
-                if(userID.equalsIgnoreCase(FROM) || demoId.equalsIgnoreCase(FROM))
-                {
-                    //userSubtype = ChatMessageUserSubtype.OTHER.SELF;
-                    userSubtype = ChatMessageUserSubtype.SELF;
-                }
-                else
-                {
-                    //userSubtype = ChatMessageUserSubtype.OTHER.OTHER;
-                    userSubtype = ChatMessageUserSubtype.OTHER;
-                }
 
-                if(msgStatus == null || userType == null)
-                {
+
+
+                else{
                     Log.i("MSGSTATUS","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%% tork "+userID+"  "+FROM);
-                    if(userID.equalsIgnoreCase(FROM) || demoId.equalsIgnoreCase(FROM))
+                    if(userID.equalsIgnoreCase(FROM) )
                     {
                         userType = ChatMessageUserType.SELF;
                     }
@@ -1052,6 +1053,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 Log.i(TAG, "calipso yo" + roleOfUser);
                 Log.i(TAG, "calipso yo" + userType);
                 Log.i(TAG,"calipso yo message "+body);
+
+                Log.i("TAG","narcos img   "+userSubtype+" "+body+" "+userType);
+
 
                 message.setUserName(roleOfUser);
                 message.setMessageStatus(ChatMessageStatus.SENT);
@@ -1158,7 +1162,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     userType = ChatMessageUserType.DEFAULT;
                 }
 
-                if (c.getStatus().equalsIgnoreCase("IMG")){
+                else if (c.getStatus().equalsIgnoreCase("IMG")){
 
                     Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
 
@@ -1171,9 +1175,19 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Log.i("grrrr IMG IMAGE NAME"," "+imageName);
                     Log.i(TAG, "calipso" + userSubtype);
 
+                    if(userID.equalsIgnoreCase(c.getFrom()))
+                    {
+
+                        userSubtype = ChatMessageUserSubtype.SELF;
+                    }
+                    else
+                    {
+                        userSubtype = ChatMessageUserSubtype.OTHER;
+                    }
+
                 }
 
-                if (c.getStatus().equalsIgnoreCase("LISTING")){
+               else if (c.getStatus().equalsIgnoreCase("LISTING")){
 
                     Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
 
@@ -1182,31 +1196,22 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
                 }
 
-                String demoId = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
+                else{
+                Log.i(TAG, "until toro foro loro "+userID+" "+c.getFrom());
 
-                if(userID.equalsIgnoreCase(c.getFrom()) || demoId.equalsIgnoreCase(c.getFrom()))
-                {
+                Log.i(TAG, "until toro foro loro boro "+userSubtype);
+                /*if(c.getStatus() == null || userType == null || c.getStatus() == "")
+                {*/
 
-                    userSubtype = ChatMessageUserSubtype.SELF;
-                }
-                else
-                {
-                    userSubtype = ChatMessageUserSubtype.OTHER;
-                }
-
-                if(c.getStatus() == null || userType == null)
-                {
-                    Log.i("MSGSTATUS","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%% toro "+userID+"  "+c.getFrom());
-                    if(userID.equalsIgnoreCase(c.getFrom()) || demoId.equalsIgnoreCase(c.getFrom()))
-                    {
+                    Log.i("MSGSTATUS", "narcos " + userID + "  " + c.getFrom());
+                    if (userID.equalsIgnoreCase(c.getFrom())) {
                         userType = ChatMessageUserType.SELF;
-                    }
-                    else
-                    {
+                    } else {
                         userType = ChatMessageUserType.OTHER;
                     }
-
                 }
+
+               /* }*/
 
                 Log.i(TAG, "until toro foro loro "+c.getMessage()+" "+userType);
 
