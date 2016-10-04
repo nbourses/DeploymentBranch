@@ -17,6 +17,7 @@ import com.twitter.sdk.android.core.TwitterCore;
 
 import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
+import io.intercom.android.sdk.Intercom;
 
 /**
  * Created by prathyush on 16/12/15.
@@ -62,7 +63,7 @@ public class MyApplication extends MultiDexApplication {
 
 
         Branch.getAutoInstance(this);
-
+        Intercom.initialize(this, "android_sdk-1848409f6329896229237973e1baf97af02b56df", "zs3wjecf");
         //initialize active android library to store data in db
 
 

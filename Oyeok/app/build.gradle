@@ -94,6 +94,7 @@ buildscript {
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    maven{url 'https://dl.bintray.com/intercom/intercom-maven'}
 }
 
 repositories {
@@ -340,6 +341,10 @@ dependencies {
     ///5785ef9
   //  compile 'com.zcw:togglebutton-library:1.0.0'
     compile 'com.kyleduo.switchbutton:library:1.4.4'
+
+    compile ('io.intercom.android:intercom-sdk:1.+@aar') {
+        transitive = true
+    }
 
 
     compile project(':MPChartLib')

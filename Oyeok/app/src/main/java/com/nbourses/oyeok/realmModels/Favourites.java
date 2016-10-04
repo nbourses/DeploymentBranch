@@ -10,6 +10,7 @@ public class Favourites extends RealmObject{
     @PrimaryKey
     private String title;
     private LatiLongi latiLongi;
+    private String address;
 
     public String getTitle() {
         return title;
@@ -25,5 +26,13 @@ public class Favourites extends RealmObject{
 
     public void setLatiLongi(LatiLongi latiLongi) {
         this.latiLongi = latiLongi;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

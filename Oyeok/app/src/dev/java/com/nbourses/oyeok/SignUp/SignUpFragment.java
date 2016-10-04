@@ -69,6 +69,8 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import butterknife.Bind;
+import io.intercom.android.sdk.Intercom;
+import io.intercom.android.sdk.identity.Registration;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import retrofit.Callback;
@@ -977,6 +979,11 @@ Log.i(TAG,"mobile number is the "+mobile_number);
                         General.setSharedPreferences(getActivity(), AppConstants.USER_ID, my_user_id);
                         General.setSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER, "yes");
                         General.setSharedPreferences(context, AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
+
+
+
+
+                            Intercom.client().registerIdentifiedUser(new Registration().withUserId(my_user_id));
 
 
                         //save in realm

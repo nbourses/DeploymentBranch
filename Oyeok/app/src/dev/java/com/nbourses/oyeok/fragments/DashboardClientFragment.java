@@ -33,6 +33,8 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.TelephonyManager;
@@ -311,6 +313,8 @@ TextView rental,resale;
 
     private String favTitle;
     private BitmapDescriptor favIcon;
+
+    private AutoCompletePlaces.GooglePlacesAutocompleteAdapter dataAdapter;
 //    @Bind(R.id.seekbar_linearlayout)
 //    LinearLayout seekbarLinearLayout;
 
@@ -358,6 +362,12 @@ TextView rental,resale;
 
     @Bind(R.id.favRG)
     RadioGroup favRG;
+
+    @Bind(R.id.addressBar)
+    TextView addressBar;
+
+    @Bind(R.id.addressPanel)
+    LinearLayout addressPanel;
 
 
 //    @Bind(R.id.hPicker)
@@ -441,6 +451,31 @@ TextView rental,resale;
                 }
 
             }
+        }
+    };
+
+    private BroadcastReceiver resetMap = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            //if(AppConstants.SEARCHFLAG) {
+                Log.i(TAG,"aalo re ");
+                AppConstants.SEARCHFLAG = false;
+                LatLng currentLocation = new LatLng(AppConstants.MY_LATITUDE,AppConstants.MY_LONGITUDE);
+                SharedPrefs.save(getContext(),SharedPrefs.MY_LAT,AppConstants.MY_LATITUDE+"");
+                SharedPrefs.save(getContext(),SharedPrefs.MY_LNG,AppConstants.MY_LONGITUDE+"");
+
+                // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,MAP_ZOOM));
+                getRegion();
+                 getPrice();
+                new LocationUpdater().execute();
+            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier);
+
+
+            //}
+
+
         }
     };
 
@@ -799,17 +834,26 @@ TextView rental,resale;
             }
         });*/
 
-        ic_search.setOnClickListener(new View.OnClickListener() {
+        /*ic_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInputFromInputMethod(autoCompView.getWindowToken(),1);*/
-                autoCompView.performClick();
+                *//*InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInputFromInputMethod(autoCompView.getWindowToken(),1);*//*
+                *//*autoCompView.performClick();*//*
+
+
+                searchFragment c = new searchFragment();
+                AppConstants.SEARCHFLAG = true;
+
+                loadFragmentAnimated(c, null, R.id.container_Signup, "Search");
             }
-        });
+        });*/
 
 
-        autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
+
+
+
+                autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
         autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
 
         autoCompView.setOnItemClickListener(this);
@@ -1557,8 +1601,6 @@ TextView rental,resale;
         }
 
 
-
-
         return rootView;
     }
 
@@ -2117,6 +2159,7 @@ catch(Exception e){
 
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(autoComplete, new IntentFilter(AppConstants.AUTOCOMPLETEFLAG1));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(phasedSeekBarClicked, new IntentFilter(AppConstants.PHASED_SEEKBAR_CLICKED));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(resetMap, new IntentFilter(AppConstants.RESETMAP));
 
 
     }
@@ -2128,6 +2171,7 @@ catch(Exception e){
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(closeOyeScreenSlide);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(autoComplete);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(phasedSeekBarClicked);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(resetMap);
 //        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oncheckWalkthrough);
         // LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oncheckbeacon);
 
@@ -2248,7 +2292,7 @@ catch(Exception e){
                         JSONObject jsonResponse = new JSONObject(strResponse);
                         JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
                         // horizontalPicker.stopScrolling();
-                        Log.i("TRACE", "Response" + jsonResponseData);
+                        Log.i("TRACE", "Response getprice" + jsonResponseData);
                         if (getPrice.getResponseData().getPrice().getLlMin() != null &&
                                 !getPrice.getResponseData().getPrice().getLlMin().equals("")) {
 
@@ -2911,6 +2955,7 @@ catch(Exception e){
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             autoCompView.setText(s);
+            addressBar.setText(s);
             favAdrs.setText(s);
             Log.i("", "");
             autoCompView.dismissDropDown();
@@ -4016,7 +4061,13 @@ if(buildingSelected)
 
     }
 
+@OnClick({R.id.addressPanel,R.id.ic_search})
+public void onOptionClickS(View v){
+    searchFragment c = new searchFragment();
+    AppConstants.SEARCHFLAG = true;
 
+    loadFragmentAnimated(c, null, R.id.container_Signup, "Search");
+}
 
 
     @OnClick({R.id.favSave, R.id.favCancel})
@@ -4040,6 +4091,7 @@ if(buildingSelected)
                 Realm myRealm = General.realmconfig(getContext());
                 Favourites favourites = new Favourites();
                 favourites.setTitle(favTitle);
+                favourites.setAddress(favAdrs.getText().toString());
                 LatiLongi latlon = new LatiLongi();
                 latlon.setLat(Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT)));
                 latlon.setLng(Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
@@ -4274,6 +4326,17 @@ if(buildingSelected)
     }
 
 
+    private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
 
 
 }

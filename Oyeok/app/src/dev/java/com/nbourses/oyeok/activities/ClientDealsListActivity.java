@@ -1383,16 +1383,16 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @OnClick(R.id.dealItemRoot)
     public void onClickDealItemRoot(View v) {
 
+        
 
-        Log.i("USER_ID", " " + General.getSharedPreferences(this, AppConstants.USER_ID).isEmpty());
+       /* Log.i("USER_ID", " " + General.getSharedPreferences(this, AppConstants.USER_ID).isEmpty());
 
-        // if(!General.getSharedPreferences(this ,AppConstants.USER_ID).isEmpty())  {
         AppConstants.CLIENT_DEAL_FLAG = true;
         Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
         intent.putExtra("userRole", "client");
-//        intent.putExtra("channel_name","my_channel");
+
         intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
-        startActivity(intent);
+        startActivity(intent);*/
 
     }
 

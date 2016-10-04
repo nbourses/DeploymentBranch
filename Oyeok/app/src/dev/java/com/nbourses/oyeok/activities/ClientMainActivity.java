@@ -1248,7 +1248,14 @@ public void signUp(){
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
-        if(AppConstants.cardNotif){
+        if(AppConstants.SEARCHFLAG){
+
+            AppConstants.SEARCHFLAG = false;
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
+
+        }
+
+        else if(AppConstants.cardNotif){
             Log.i(TAG,"flaga isa 1 ");
             AppConstants.cardNotif = false;
             AppConstants.optionspu1.dismiss();
