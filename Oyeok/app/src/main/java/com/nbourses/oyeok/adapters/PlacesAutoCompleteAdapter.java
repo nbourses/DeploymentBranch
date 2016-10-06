@@ -7,6 +7,7 @@ package com.nbourses.oyeok.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,7 +20,6 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -30,8 +30,11 @@ import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.realmModels.Favourites;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -138,8 +141,12 @@ public class PlacesAutoCompleteAdapter
             // Confirm that the query completed successfully, otherwise return null
             final Status status = autocompletePredictions.getStatus();
             if (!status.isSuccess()) {
-                Toast.makeText(mContext, "Error contacting API: " + status.toString(),
-                        Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, "Error contacting API: " + status.toString(),Toast.LENGTH_SHORT).show();
+                SnackbarManager.show(
+                        Snackbar.with(mContext)
+                                .text("Search failed! connectivity issue.")
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
                 Log.e("", "Error getting autocomplete prediction API call: " + status.toString());
                 autocompletePredictions.release();
                 return null;

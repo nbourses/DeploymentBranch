@@ -1,7 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.view.ViewPager
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/viewpager"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    >
+
+<LinearLayout
+    android:id="@+id/wrapper"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    />
+
+    android:visibility="visible"
+    tools:background="#20BF9F">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+    android:layout_weight="0.8"
+    android:layout_width="match_parent"
+    android:layout_height="0dp">
+
+
+</android.support.v4.view.ViewPager>
+    <android.support.design.widget.TabLayout
+        android:layout_width="match_parent"
+        android:id="@+id/tab_layout"
+        android:background="#20BF9F"
+        android:layout_height="wrap_content"
+        app:tabBackground="@drawable/tab_selector"
+        app:tabGravity="center"
+        app:tabIndicatorHeight="0dp"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:background="#20BF9F"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+            <Button
+                android:text="I am a Customer"
+                android:id="@+id/btnC"
+                android:layout_weight="0.5"
+                android:background="@drawable/rectangle_background_white"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:elevation="0dp"
+                android:paddingLeft="5dp"
+                android:layout_marginRight="5dp" />
+            <Button
+                android:text="I am a Broker"
+                android:id="@+id/btnB"
+                android:layout_weight="0.5"
+                android:background="@drawable/rectangle_background_white"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:paddingRight="5dp"
+                android:layout_marginLeft="5dp" />
+        </LinearLayout>
+
+        <TextView
+            android:text="Use Now &gt;&gt;"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/useNow"
+            android:layout_weight="0.36"
+
+            android:gravity="bottom|right"
+            android:textColor="@color/dark_white"
+            android:paddingRight="20dp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+
+        android:id="@+id/container_Signup1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+    </FrameLayout>
+</RelativeLayout>

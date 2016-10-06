@@ -6,7 +6,12 @@
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    android:background="@color/greenish_blue">
+    android:background="#CCc9c7c7"
+    >
+<!--
+android:background="#c9c7c7"
+    android:background="#2dc4b6"
+-->
 <RelativeLayout
     android:orientation="vertical"
     android:layout_width="match_parent"

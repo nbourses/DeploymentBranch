@@ -126,6 +126,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
+    @Bind(R.id.signUpCardText)
+    TextView signUpCardText;
 
 
    /* @Bind(R.id.search)
@@ -256,6 +258,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         listAdapter = new BrokerDealsListAdapter(default_deals, getApplicationContext());
         supportChat.setVisibility(View.VISIBLE);
         listViewDeals.setVisibility(View.VISIBLE);
+
 
         ButterKnife.bind(this);
 
@@ -753,6 +756,12 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         Log.i("Phaseseekbar", "oncreate value sign " + General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER));
         if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")) {
             signUpCard.setVisibility(View.VISIBLE);
+            if(General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+            signUpCardText.setText("Sign up to get more leads to create New DEALs with more Clients");
+            else
+                signUpCardText.setText("Sign up to broadcast your needs to create New DEALs with more Brokers");
+
+
         }
 
         //  if (!RefreshDrooms) {
@@ -1362,9 +1371,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         SignUpFragment d = new SignUpFragment();
         Bundle bundle = new Bundle();
         if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
-            bundle.putString("lastFragment", "brokerDrawer");
+            bundle.putString("lastFragment", "brokerDeal");
         else//consider as direct signup so keep last fragment as clientDrawer
-            bundle.putString("lastFragment", "clientDrawer");
+            bundle.putString("lastFragment", "clientDeal");
         d.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -1385,14 +1394,20 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
         
 
-       /* Log.i("USER_ID", " " + General.getSharedPreferences(this, AppConstants.USER_ID).isEmpty());
+        Log.i("USER_ID", " " + General.getSharedPreferences(this, AppConstants.USER_ID).isEmpty());
 
-        AppConstants.CLIENT_DEAL_FLAG = true;
+
         Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
-        intent.putExtra("userRole", "client");
+        if(General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            intent.putExtra("userRole", "client");
+            AppConstants.CLIENT_DEAL_FLAG = true;
+        }else{
+            intent.putExtra("userRole", "broker");
+            AppConstants.BROKER_DEAL_FLAG = true;
+        }
 
         intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
-        startActivity(intent);*/
+        startActivity(intent);
 
     }
 
@@ -1621,7 +1636,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             Log.i(TAG, "inside show bg text total_deals 5" + total_deals.size());
 
             bgtxt.setVisibility(View.VISIBLE);
-            bgtxt.setText("Go Back & Broadcast yours needs to create New DEALs with more Brokers");
+            if(General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+            bgtxt.setText("Go Back & Ok more leads to create New DEALs with more Clients");
+            else
+                bgtxt.setText("Go Back & Broadcast yours needs to create New DEALs with more Brokers");
         } else {
             bgtxt.setVisibility(View.GONE);
             Log.i(TAG, "inside show bg text total_deals else" + total_deals.size());

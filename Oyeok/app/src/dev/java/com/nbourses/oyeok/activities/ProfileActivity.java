@@ -1,15 +1,20 @@
 package com.nbourses.oyeok.activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.User.Profile;
+import com.nbourses.oyeok.helpers.AppConstants;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,6 +31,15 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
 
+
+        if(getIntent().getExtras().containsKey("msg")){
+            Log.i("TAG","dattu tappewala ");
+            SnackbarManager.show(
+                    Snackbar.with(this)
+                            .text("You must update profile to proceed.")
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+        }
         init();
     }
 

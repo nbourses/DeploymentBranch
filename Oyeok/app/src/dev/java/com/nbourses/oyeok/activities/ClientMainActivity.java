@@ -79,7 +79,6 @@ import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.helpers.NetworkInterface;
 import com.nbourses.oyeok.interfaces.OnOyeClick;
 import com.nbourses.oyeok.models.PublishLetsOye;
-import com.nbourses.oyeok.services.DeviceRegisterService;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -725,9 +724,9 @@ public void signUp(){
         //You need to set the Android context using Firebase.setAndroidContext() before using Firebase.
         Firebase.setAndroidContext(this);
 
-        //gcm implementation
+        /*//gcm implementation
         Intent intent = new Intent(this, DeviceRegisterService.class);
-        startService(intent);
+        startService(intent);*/
 
         //setup sliding layout
         slidingLayout.setTouchEnabled(false);

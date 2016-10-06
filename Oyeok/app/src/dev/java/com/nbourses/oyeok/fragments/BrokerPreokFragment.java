@@ -65,6 +65,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCusto
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
 import com.nbourses.oyeok.activities.ClientDealsListActivity;
+import com.nbourses.oyeok.activities.ProfileActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
@@ -1062,28 +1063,36 @@ if(count<=220) {
                         General.t.interrupt();
 
                         JsonObject k = jsonElement.getAsJsonObject();
+
                         try {
                             JSONObject ne = new JSONObject(k.toString());
-                            Log.i("PREOK CALLED", "ne is the" + ne);
-                            JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
+                            if(ne.getString("errors").equals("8")){
+                                 Intent openProfileActivity =  new Intent(getContext(), ProfileActivity.class);
+                                openProfileActivity.putExtra("msg","compulsary");
+                                startActivity(openProfileActivity);
 
-                            Log.i("PREOK CALLED", "neighbours" + neighbours);
+                            }
+                                else{
+                                Log.i("PREOK CALLED", "ne is the" + ne);
+                                JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
 
-                            jsonArrayReqLl = neighbours.getJSONArray("req_ll");
-                            ;//neighbours.getJSONArray("req_ll");
-                            jsonArrayAvlLl = neighbours.getJSONArray("avl_ll");//neighbours.getJSONArray("avl_ll");
+                                Log.i("PREOK CALLED", "neighbours" + neighbours);
 
-                            jsonArrayReqOr = neighbours.getJSONArray("req_or");//neighbours.getJSONArray("req_or");
-                            jsonArrayAvlOr = neighbours.getJSONArray("avl_or");//neighbours.getJSONArray("avl_or");
+                                jsonArrayReqLl = neighbours.getJSONArray("req_ll");
+                                ;//neighbours.getJSONArray("req_ll");
+                                jsonArrayAvlLl = neighbours.getJSONArray("avl_ll");//neighbours.getJSONArray("avl_ll");
 
-                            Log.i("PREOK CALLED", "jsonArrayReqLl" + jsonArrayReqLl);
-                            Log.i("PREOK CALLED", "jsonArrayAvlLl" + jsonArrayAvlLl);
-                            Log.i("PREOK CALLED", "jsonArrayReqOr" + jsonArrayReqOr);
-                            Log.i("PREOK CALLED", "jsonArrayAvlOr" + jsonArrayAvlOr);
+                                jsonArrayReqOr = neighbours.getJSONArray("req_or");//neighbours.getJSONArray("req_or");
+                                jsonArrayAvlOr = neighbours.getJSONArray("avl_or");//neighbours.getJSONArray("avl_or");
+
+                                Log.i("PREOK CALLED", "jsonArrayReqLl" + jsonArrayReqLl);
+                                Log.i("PREOK CALLED", "jsonArrayAvlLl" + jsonArrayAvlLl);
+                                Log.i("PREOK CALLED", "jsonArrayReqOr" + jsonArrayReqOr);
+                                Log.i("PREOK CALLED", "jsonArrayAvlOr" + jsonArrayAvlOr);
 
 
-                            // jsonArrayPreokRecent = neighbours.getJSONArray("recent");
-                            //if all values are empty then show from resent
+                                // jsonArrayPreokRecent = neighbours.getJSONArray("recent");
+                                //if all values are empty then show from resent
 //                        if (jsonArrayReqLl.length() == 0 && jsonArrayAvlLl.length() == 0 &&
 //                                jsonArrayReqOr.length() == 0 && jsonArrayAvlOr.length() == 0) {
 //                            jsonArrayReqLl = jsonArrayPreokRecent;
@@ -1093,7 +1102,8 @@ if(count<=220) {
 //                        }
 
 
-                            onPositionSelected(currentSeekbarPosition, currentCount);
+                                onPositionSelected(currentSeekbarPosition, currentCount);
+                            }
                         } catch (JSONException e) {
                             Log.i("PREOK CALLED", "caught in exception inside preok"+e);
                         }

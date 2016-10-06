@@ -154,9 +154,14 @@
     <string name="name">Name</string>
     <string name="email">Email</string>
     <string name="client_sign_up_content"><![CDATA[(Check locality rates,Check Building rates,\nResponse < 5 min from 50 Brokers,\nschedule site visit and close faster)]]></string>
+    <string name="client_sign_up_content_from_deals">(Broadcast your needs to create \nNew Deals with more Brokers)</string>
+    <string name="client_sign_up_content_from_intro">(Broadcast your needs to create \nNew Deals with more Brokers.)</string>
     <string name="client_sign_up_heading">You are registering as a Client</string>
     <string name="broker_sign_up_heading">You are registering as a Broker</string>
     <string name="broker_sign_up_content">(Get free leads,do site visits,chat with customer,\nsave time with automatic listing\nand close faster)</string>
+    <string name="broker_sign_up_content_from_deals">(Ok more leads to create \nNew Deals with more Clients)</string>
+    <string name="broker_sign_up_content_from_intro">(Ok more leads to create \nNew Deals with more Clients.)</string>
+
     <string name="client_log_in_heading">You are Logging in as a Client</string>
     <string name="broker_log_in_heading">You are Logging in as a Broker</string>
     <string name="facebook_app_id">273470946346289</string>

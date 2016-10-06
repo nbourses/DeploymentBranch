@@ -1,6 +1,6 @@
 package com.nbourses.oyeok.RPOT.ApiSupport.services;
 
-import com.nbourses.oyeok.RPOT.ApiSupport.models.GetPrice;
+import com.google.gson.JsonElement;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateProfile;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
@@ -83,7 +83,7 @@ import retrofit.http.POST;
         */
 
         @POST("/get/price")
-        void getPrice(@Body User user, Callback<GetPrice> callback);
+        void getPrice(@Body User user, Callback<JsonElement> callback);
 
         @POST("/1/user/existing")
         void existingUser(@Body User user, Callback<User> callback);
@@ -98,7 +98,7 @@ import retrofit.http.POST;
         void getUserRoleRating (@Body User user, Callback<User> callback);
 
 
-        @POST("/1.1/user/signup")
+        @POST("/user/signup")
         void userSignUp(@Body User user, Callback<SignUp> callback);
 
 

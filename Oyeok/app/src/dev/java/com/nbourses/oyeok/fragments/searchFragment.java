@@ -2,6 +2,7 @@ package com.nbourses.oyeok.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -14,10 +15,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -34,10 +35,10 @@ import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.listeners.RecyclerItemClickListener;
 import com.nbourses.oyeok.realmModels.Favourites;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import io.realm.Realm;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by ritesh on 30/09/16.
@@ -63,7 +64,7 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
         buildGoogleApiClient();
         View rootView = inflater.inflate(R.layout.fragment_search, container,
                 false);
-
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         mAutocompleteView = (EditText)rootView.findViewById(R.id.autocomplete_places);
 
         delete=(ImageView)rootView.findViewById(R.id.cross);
@@ -98,7 +99,12 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
                 if (!s.toString().equals("") && mGoogleApiClient.isConnected()) {
                     mAutoCompleteAdapter.getFilter().filter(s.toString());
                 }else if(!mGoogleApiClient.isConnected()){
-                    Toast.makeText(getApplicationContext(), AppConstants.API_NOT_CONNECTED,Toast.LENGTH_SHORT).show();
+                    SnackbarManager.show(
+                            Snackbar.with(getActivity())
+                                    .text("Connection failed")
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    //Toast.makeText(getApplicationContext(), AppConstants.API_NOT_CONNECTED,Toast.LENGTH_SHORT).show();
                     Log.e("PlacesTag",AppConstants.API_NOT_CONNECTED);
                 }else if(s.toString().equals("")){
                     mAutoCompleteAdapter.getFilter().filter("ritz369");
@@ -163,6 +169,7 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
                                     }
                                    // Toast.makeText(getContext(),AppConstants.SOMETHING_WENT_WRONG,Toast.LENGTH_SHORT).show();
                                 }
+
                                 getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.container_Signup)).commit();
                                 Intent intent = new Intent(AppConstants.RESETMAP);
                                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
@@ -226,7 +233,12 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.v("Google API Callback","Connection Failed");
         Log.v("Error Code", String.valueOf(connectionResult.getErrorCode()));
-        Toast.makeText(getContext(), AppConstants.API_NOT_CONNECTED,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), AppConstants.API_NOT_CONNECTED,Toast.LENGTH_SHORT).show();
+        SnackbarManager.show(
+                Snackbar.with(getActivity())
+                        .text("Connection failed.")
+                        .position(Snackbar.SnackbarPosition.TOP)
+                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
     }
 
     @Override
