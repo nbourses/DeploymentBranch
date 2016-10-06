@@ -3,9 +3,7 @@ apply plugin: 'io.fabric'
 //apply plugin: 'com.google.gms.google-services'
 
 
-
-
-buildscript {
+/*buildscript {
     repositories {
         maven { url 'http://download.safedk.com/maven' }
     }
@@ -18,7 +16,7 @@ apply plugin: 'safedk'
 safedk {
     appId "853b7b9b0c0059c6e17bb8f5401006eb"
     apiKey "c07e191e8bf8dcacf987ec37ac2212b2"
-}
+}*/
 
 
 
@@ -150,6 +148,13 @@ dependencies {
 //dependencies {
 //    compile 'com.google.android.gms:play-services-gcm:9.0.2'
 //}
+
+
+/*dependencies {
+    compile 'com.github.thorbenprimke:realm-recyclerview:0.9.23'
+}*/
+
+
 dependencies {
     compile 'com.github.deano2390:MaterialShowcaseView:1.1.0'
 }
@@ -196,85 +201,43 @@ dependencies {
 dependencies {
     compile 'com.android.support:support-v4:23.+'
 }
-/*dependencies {
-    compile 'com.google.android.gms:play-services-ads:9.0.2'
-}
-dependencies {
-    compile 'com.google.android.gms:play-services-auth:9.0.2'
-}*/
+
 dependencies {
     compile 'com.firebase:firebase-client-android:2.3.1'
 }
-/*dependencies {
-    compile 'com.google.android.gms:play-services-gcm:9.0.2'
-}*/
-/*dependencies {
-    compile 'com.google.android.gms:play-services-ads:9.0.2'
-}
-dependencies {
-    compile 'com.google.android.gms:play-services-auth:9.0.2'
-}*/
+
 dependencies {
     compile 'com.firebase:firebase-client-android:2.3.1'
 }
-/*dependencies {
-    compile 'com.google.android.gms:play-services-gcm:9.0.2'
-}
-dependencies {
-    compile 'com.google.android.gms:play-services-ads:9.0.2'
-}
-dependencies {
-    compile 'com.google.android.gms:play-services-auth:9.0.2'
-}*/
+
 dependencies {
     compile 'com.firebase:firebase-client-android:2.3.1'
 }
-/*dependencies {
-    compile 'com.google.android.gms:play-services-gcm:9.0.2'
-}*/
+
+dependencies {
+    compile 'com.android.support:support-v4:23.+'
+}
+dependencies {
+    compile 'com.android.support:support-v4:23.+'
+}
+dependencies {
+    compile 'com.android.support:support-v4:23.+'
+}
 dependencies {
     repositories {
         mavenCentral()
     }
-//    compile fileTree(dir: 'libs', include: ['*.jar'])
 
-//    compile file 'nineoldandroids-library-2.4.0.jar'
-//    compile files('libs/nineoldandroids-library-2.4.0.jar')
-
-    //compile file 'nineoldandroids-library-2.4.0.jar'
-    //compile files('libs/nineoldandroids-library-2.4.0.jar')
     compile 'com.nineoldandroids:library:2.4.0+'
 
     compile('com.android.support:cardview-v7:21.0.+') {
         exclude module: 'support-v4'
     }
-    //compile 'com.github.ademar111190:android-phased-seek-bar:0.1.1'
-    //compile 'com.jakewharton:butterknife:7.0.1'
-    //compile 'com.sothree.slidinguppanel:library:3.2.0'
-    //compile 'com.nineoldandroids:library:2.4.0'
-    //compile 'com.google.android.gms:play-services:4.3.23'
 
-//    compile 'com.nbourses.oyeok.'
     compile 'com.google.android.gms:play-services-ads:8.4.0'
     compile 'com.google.android.gms:play-services-identity:8.4.0'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
-//    compile 'com.google.android.gms:play-services-auth:9.0.2'
 
-    // expandeable floating action button by pritam
-    //rangeseekbar test
-    // floating action
-    // circular floating button more
-    //compile 'com.sothree.slidinguppanel:library:3.2.0'
-    //compile 'com.nineoldandroids:library:2.4.0'
-    //compile 'com.github.channguyen:rsv:1.0.1'
-    //    compile 'com.google.android.gms:play-services-ads:8.3.0'
-    //    compile 'com.google.android.gms:play-services-identity:8.3.0'
-    //    compile 'com.google.android.gms:play-services-gcm:8.3.0'
-    // expandeable floating action button by pritam
-    // Range seekbar
-    //rangeseekbar test
-    // floating action
-    // circular floating button more
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
@@ -287,18 +250,14 @@ dependencies {
         transitive = true;
     }
 
-
-
-    //compile 'com.firebase:firebase-client-android:2.4.1.+'
-    //compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:appcompat-v7:23.1.1'
 
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.google.code.gson:gson:2.3'
-    compile 'com.android.support:recyclerview-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:recyclerview-v7:23.2.1'
+    compile 'com.android.support:design:23.2.1'
     compile 'com.journeyapps:zxing-android-embedded:3.0.3@aar'
     compile 'com.google.zxing:core:3.2.0'
     compile 'com.google.android.gms:play-services:9.0.2'
@@ -325,7 +284,7 @@ dependencies {
     compile 'com.cleveroad:androidmanimation:0.9.0'
 
     configurations {
-        all*.exclude  module: 'com.facebook.rebound'
+        all*.exclude module: 'com.facebook.rebound'
     }
 
 
@@ -340,7 +299,6 @@ dependencies {
     compile 'io.realm:realm-android:0.84.1'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
 
-
     ///Amazon AWS S3
     compile 'com.amazonaws:aws-android-sdk-core:2.2.13'
     compile 'com.amazonaws:aws-android-sdk-cognito:2.2.13'
@@ -354,10 +312,9 @@ dependencies {
     compile "com.google.android.gms:play-services-location:9.0.2"
     compile "com.github.tarek360:instacapture:0.44"
 
-
     //compile 'com.zcw:togglebutton-library:1.0.0'
     ///5785ef9
-  //  compile 'com.zcw:togglebutton-library:1.0.0'
+    //  compile 'com.zcw:togglebutton-library:1.0.0'
     compile 'com.kyleduo.switchbutton:library:1.4.4'
 
 ///Google Play Game services
@@ -365,8 +322,11 @@ dependencies {
 
     compile project(':MPChartLib')
 
-
 //    compile 'com.google.android.gms:play-services-maps:9.4.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
 //    compile 'com.android.support:gridlayout-v7:23.4.0'
+
+//    compile 'com.github.thorbenprimke:realm-recycler-view:0.9.5'
+
+
 }

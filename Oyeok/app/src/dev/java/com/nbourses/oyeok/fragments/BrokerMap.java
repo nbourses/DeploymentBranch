@@ -184,6 +184,7 @@ try {
             customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.g_map));
 
 //        }
+        gmap= customMapFragment.getMap();
 //            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
         final View mMapView = getChildFragmentManager().findFragmentById(R.id.g_map).getView();
         // mapView =(MapView) rootView.findViewById(R.id.map);

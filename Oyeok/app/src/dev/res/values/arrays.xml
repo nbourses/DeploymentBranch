@@ -308,6 +308,7 @@
     <integer-array name="nav_drawer_labels_signup_broker_icon">
         <item>@drawable/profile</item>
         <!--<item>@string/brokerOk</item>-->
+        <item>@drawable/portfolio</item>
         <item>@drawable/notifications</item>
         <item>@drawable/shareapp</item>
         <!--  <item>@string/supportChat</item> -->
@@ -324,6 +325,7 @@
         <item>@drawable/profile</item>
         <item>@drawable/client</item>
         <!--<item>@string/brokerOk</item>-->
+        <item>@drawable/portfolio</item>
         <item>@drawable/notifications</item>
         <item>@drawable/shareapp</item>
         <!--  <item>@string/supportChat</item> -->
@@ -343,6 +345,7 @@
         <!--<item>@string/signup</item>-->
         <item>@drawable/profile</item>
         <item>@drawable/client</item>
+        <item>@drawable/portfolio</item>
         <item>@drawable/notifications</item>
         <item>@drawable/shareapp</item>
         <!--  <item>@string/supportChat</item> -->

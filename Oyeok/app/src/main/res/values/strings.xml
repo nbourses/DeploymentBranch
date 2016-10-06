@@ -88,6 +88,7 @@
         <item>@string/profile</item>
         <item>@string/useAsClient</item>
         <!--  <item>@string/supportChat</item> -->
+        <item>@string/MyPortfolio</item>
         <item>@string/notifications</item>
         <!--<item>@string/brokerOk</item>-->
         <item>@string/shareApp</item>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_my_portfolio"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.nbourses.oyeok.activities.MyPortfolioActivity">
+
+  <!--  <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:background="@color/greenish_blue"
+        android:elevation="6dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        />-->
+
+    <LinearLayout
+        android:id="@+id/container_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+    </LinearLayout>
+
+    <!--<EditText android:id="@+id/inputSearch1"
+              android:layout_width="fill_parent"
+              android:layout_height="50dip"
+              android:hint="Search Building.."
+              android:layout_margin="4dip"
+              android:paddingLeft="20dip"
+              android:layout_below="@+id/toolbar"
+              android:background="@drawable/greenishblue_border_grey_solid"
+              android:inputType="textVisiblePassword"/>-->
+
+<!--    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="470dp"
+        android:layout_below="@+id/toolbar"
+        />-->
+
+   <!-- <FrameLayout
+        android:id="@+id/container_portfolio"
+        android:layout_width="match_parent"
+        android:layout_height="470dip"
+        android:layout_below="@+id/toolbar"
+        />-->
+
+
+    <EditText android:id="@+id/inputSearch1"
+              android:layout_width="fill_parent"
+              android:layout_height="40dip"
+              android:hint="Search Building.."
+              android:gravity="center_horizontal|center_vertical"
+              android:background="@drawable/greenishblue_border_grey_solid"
+              android:layout_margin="4dip"
+              android:textColorHint="@color/gray"
+              android:layout_below="@+id/container_toolbar"
+              android:inputType="textVisiblePassword"/>
+
+
+    <ListView
+        android:layout_height="460dip"
+        android:layout_width="match_parent"
+        android:id="@+id/Rental_listview"
+        android:background="@android:color/background_light"
+        android:layout_above="@+id/seekbar_linearlayout"
+        android:layout_below="@+id/inputSearch1"
+        android:stateListAnimator="@anim/zoomout"
+        />
+
+    <LinearLayout
+        android:id="@+id/seekbar_linearlayout"
+        android:paddingTop="4dp"
+        android:gravity="bottom"
+        android:foregroundGravity="bottom"
+        android:background="@color/grey"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
+            android:id="@+id/phasedSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="70dip"
+            android:background="@color/grey"
+            android:layout_alignParentBottom="true"
+            />
+    </LinearLayout>
+</RelativeLayout>
+
+
