@@ -213,7 +213,7 @@
 
         <TextView
         android:id="@+id/texPstype"
-        android:visibility="visible"
+        android:visibility="gone"
         android:gravity="center"
         android:textSize="15sp"
         android:layout_width="match_parent"
@@ -224,11 +224,22 @@
             android:textColor="@color/Black"
             android:textStyle="bold" />
 
-
+        <TextView
+            android:id="@+id/pd"
+            android:visibility="gone"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:text=""
+            android:textColor="@color/Black"
+            android:textStyle="bold" />
 
     <TextView
         android:id="@+id/rentText"
-        android:visibility="visible"
+        android:visibility="gone"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

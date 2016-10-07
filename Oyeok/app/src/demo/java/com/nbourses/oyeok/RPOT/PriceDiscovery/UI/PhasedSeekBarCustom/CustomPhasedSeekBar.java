@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -12,6 +13,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyCharacterMap;
@@ -25,9 +27,6 @@ import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 
-/**
- * Created by prathyush on 03/12/15.
- */
 public class CustomPhasedSeekBar extends View {
 
     protected static final int[] STATE_NORMAL = new int[]{};
@@ -152,7 +151,7 @@ public class CustomPhasedSeekBar extends View {
         mCurrentY = mPivotY = (getHeight()) / 2;
 
         //count of items in adapter
-        int count = 2;//getCount();
+        int count = getCount();
 
         //width of each item to occupy
         int widthBase = rect.width() / count;
@@ -163,7 +162,7 @@ public class CustomPhasedSeekBar extends View {
         heightHalf = heightBase / 2;
 
         //Integer array for storing each and every items co-ordinates
-        mAnchors = new int[count][2];
+        mAnchors = new int[count][3];
         for (int i = 0, j = 1; i < count; i++, j++) {
             mAnchors[i][0] = widthBase * j - widthHalf + rect.left;
             mAnchors[i][1] = mPivotY;
@@ -200,7 +199,7 @@ public class CustomPhasedSeekBar extends View {
 
 //          Log.i("PHASEDSEEKBAR","getcount "+mAdapter.getCount());
 
-            return isInEditMode() ? 3 : mAdapter.getCount();
+            return isInEditMode() ? 2 : mAdapter.getCount();
 
 
     }
@@ -213,9 +212,11 @@ public class CustomPhasedSeekBar extends View {
             mListener.onPositionSelected(currentItem,getCount());
         }
 
+      //
 
-
-
+        Intent in = new Intent(AppConstants.PHASED_SEEKBAR_CLICKED);
+        in.putExtra("phaseseek", "clicked");
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
 
 
         mCurrentItem = currentItem;
@@ -228,13 +229,15 @@ public class CustomPhasedSeekBar extends View {
             TT = AppConstants.RESALE;
         }
 
-        Log.i(TAG, "PHASED seekbar current" + mCurrentItem +" "+General.getSharedPreferences(getContext(), "TT"));
+        Log.i(TAG, "PHASED  current" + mCurrentItem +" "+General.getSharedPreferences(getContext(), "TT"));
         General.setSharedPreferences(getContext(), AppConstants.TT, TT);
 
 
 
         //General.getSharedPreferences(getContext(), "TT");
     }
+
+
 
     public void setFirstDraw(boolean firstDraw) {
         mFirstDraw = firstDraw;
@@ -368,8 +371,8 @@ public class CustomPhasedSeekBar extends View {
                     10 * DPTOPX_SCALE, paint) ;*/
 
 
-            canvas.drawText(brokerName, mAnchors[i][0] - (30 * DPTOPX_SCALE / count),
-                    (60 * DPTOPX_SCALE), paint);
+            canvas.drawText(brokerName, mAnchors[i][0] - (50 * DPTOPX_SCALE / count),
+                    (62 * DPTOPX_SCALE), paint);
 
             /*canvas.drawText("Broker", mAnchors[i][0] - (45 * DPTOPX_SCALE / count),
                     2 * mAnchors[i][1] - 10 * DPTOPX_SCALE, paint);*/
@@ -433,6 +436,7 @@ public class CustomPhasedSeekBar extends View {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_UP:
+                Log.i("====","===========================");
                 return true;
         }
         return super.onTouchEvent(event);
@@ -446,6 +450,7 @@ public class CustomPhasedSeekBar extends View {
     public void setListener(CustomPhasedListener listener) {
         mListener = listener;
     }
+
 
 //    public void setListener(ClientDealsListActivity listener) {
 //        mListener1 = listener;

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_game"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="com.nbourses.oyeok.activities.Game">
+    <LinearLayout
+        android:id="@+id/container_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+    </LinearLayout>
+    <fragment
+        android:id="@+id/g_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"/>
+    <View
+        android:id="@+id/br_helperView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rectable_border_effect"
+        android:orientation="horizontal"
+        android:id="@+id/linearLayout5"
+        android:layout_marginTop="4dp">
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@color/white" />
+
+        <LinearLayout
+            android:layout_width="24dp"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="vertical"
+            android:weightSum="1"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="12dp"
+            android:id="@+id/linearLayout3"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_qrcode" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:weightSum="1"
+            android:id="@+id/linearLayout4"
+            android:nestedScrollingEnabled="false" >
+
+            <AutoCompleteTextView android:id="@+id/inputSearch"
+                                  android:inputType="textMultiLine|textPostalAddress"
+                                  android:layout_width="fill_parent"
+                                  android:layout_height="match_parent"
+                                  android:hint="Set your Region..."
+                                  android:background="@color/greenish_blue"
+                                  android:textColorHint="@color/white"
+                                  android:textColor="@color/white"
+                                  android:textCursorDrawable="@drawable/cursor"
+                                  android:drawableRight="@drawable/ic_search_24dp"
+                                  android:singleLine="false"
+                                  android:minLines="2"
+                                  android:lines="2"
+                                  android:scrollbars="none"
+                                  android:textAlignment="center"
+                                  android:textSize="15dp"
+                                  android:nestedScrollingEnabled="false"
+                                  android:foregroundGravity="center" />
+        </LinearLayout>
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@color/white" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_margin="@dimen/eight_dp"
+            android:clickable="false"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/location_button"
+                android:src="@drawable/ic_gps_fixed_24dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@color/tw__transparent"
+        android:id="@+id/iv_markerpin"
+        android:foregroundGravity="center_horizontal"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:src="@drawable/broker_marker"
+
+
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-30dp" />
+</FrameLayout>

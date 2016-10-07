@@ -12,6 +12,7 @@
     <string name="QrCode">QrCode</string>
     <string name="brokerOk">Self Register as Broker</string>
     <string name="useAsClient">See Property Rates</string>
+    <string name="MyPortfolio">My Portfolio</string>
     <string name="RegisterSignIn">Register/SignIn</string>
     <string name="signup">Signup</string>
     <string name="PayTM">PayTM</string>
@@ -42,15 +43,13 @@
     <string name="follow">Follow</string>
     <string name="tweet">Tweet</string>
 
-        <!--phasedseekbar String-->
+    <!--phasedseekbar String-->
     <string name="Resale">Buy/Sell</string>
     <string name="Rental">Rental</string>
 
     <string name="UnFurnished">Un-Furnished</string>
     <string name="SemiFurnished">Semi-Furnished</string>
     <string name="FullFurnished">Fully-Furnished</string>
-
-
 
 
     <string name="memberinfo">Member /n Info</string>
@@ -65,6 +64,7 @@
         <!--<item>@string/signup</item>-->
         <item>@string/RegisterSignIn</item>
         <item>@string/useAsClient</item>
+        <item>@string/MyPortfolio</item>
         <item>@string/notifications</item>
         <item>@string/shareApp</item>
         <!--  <item>@string/supportChat</item> -->
@@ -88,6 +88,8 @@
         <item>@string/profile</item>
         <item>@string/useAsClient</item>
         <!--  <item>@string/supportChat</item> -->
+        <item>@string/MyPortfolio</item>
+
         <item>@string/notifications</item>
         <!--<item>@string/brokerOk</item>-->
         <item>@string/shareApp</item>
@@ -115,7 +117,6 @@
         <!--<item>@string/shareNo</item>-->
         <!--   <item>@string/updateProfile</item> -->
     </string-array>
-
 
 
     <string name="title_messages">Messages</string>
@@ -154,8 +155,10 @@
     <string name="name">Name</string>
     <string name="email">Email</string>
     <string name="client_sign_up_content"><![CDATA[(Check locality rates,Check Building rates,\nResponse < 5 min from 50 Brokers,\nschedule site visit and close faster)]]></string>
+
     <string name="client_sign_up_content_from_deals">(Broadcast your needs to create \nNew Deals with more Brokers)</string>
     <string name="client_sign_up_content_from_intro">(Broadcast your needs to create \nNew Deals with more Brokers.)</string>
+
     <string name="client_sign_up_heading">You are registering as a Client</string>
     <string name="broker_sign_up_heading">You are registering as a Broker</string>
     <string name="broker_sign_up_content">(Get free leads,do site visits,chat with customer,\nsave time with automatic listing\nand close faster)</string>

@@ -81,9 +81,11 @@ public class AppConstants {
     //public static final String SERVER_BASE_URL_101 = "http://52.41.200.154:9000/1.01";
     //public static final String SERVER_BASE_URL_102 = "http://52.41.200.154:9000/1.02";
     public static final String SERVER_BASE_URL = "https://test.hailyo.com/1";
+
     public static final String SERVER_BASE_URL_11 = "https://test.hailyo.com/1.1";
 
    public static final String SERVER_BASE_URL_102 = "https://test.hailyo.com/1.02";
+
 
 
     public static final String OK_ID = "ok_id";
@@ -165,6 +167,12 @@ public class AppConstants {
     public static  String PHASED_SEEKBAR_CLICKED = "clicked";
     public static String NUMBER_OF_BROKER="19";
     public static String CUSTOMER_TYPE="Tenant";
+    public static String DRAWTEXT="true";
+    public static String DRAWTEXT1="true1";
+    public static String DRAWTEXT2="true2";
+    public static String DRAWTEXT3="true3";
+    public static String DRAWTEXT4="true4";
+
 
 
 }

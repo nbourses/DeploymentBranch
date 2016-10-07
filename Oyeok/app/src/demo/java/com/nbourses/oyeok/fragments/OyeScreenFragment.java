@@ -663,6 +663,7 @@ public class OyeScreenFragment extends Fragment {
 
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.add(Calendar.DATE,1);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
 
@@ -673,26 +674,32 @@ public class OyeScreenFragment extends Fragment {
     };
 
     private void updateLabel(){
-        String myFormat = "dd-MMM-yy"; //In which you need put here
+        String myFormat = "dd/MM/yyyy";
+        //In which you need put here
+        myCalendar.add(Calendar.DATE,1);
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         txtcalendar.setText(sdf.format(myCalendar.getTime()));
         PossessionDate=txtcalendar.getText().toString();
     }
 
     private void displayDatePicker(){
+        Calendar now= Calendar.getInstance();
+        Calendar now1= now;
+        now1.add(Calendar.DATE,1);
+        DatePickerDialog dpd = new DatePickerDialog(getContext(), date, now1
+                .get(Calendar.YEAR), now1.get(Calendar.MONTH),
+                now1.get(Calendar.DAY_OF_MONTH));
 
-        DatePickerDialog dpd = new DatePickerDialog(getContext(), date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH));
-
-        String myFormat = "dd/MM/yy"; //In which you need put here
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         Date d = null;
         try {
-            Calendar now= Calendar.getInstance();
-            d  = sdf.parse(sdf.format(now.getTime()));
+
+
+            d  = sdf.parse(sdf.format(now1.getTime()));
             now.add(Calendar.MONTH,6);
+           // now.add(Calendar.DATE,1);
 
             Date dd = sdf.parse(  now.get(Calendar.DATE)
                     + "/"+ (now.get(Calendar.MONTH) + 1)

@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="bottom"
+    android:clickable="true"
     android:background="@color/transparent"
     tools:context="com.nbourses.oyeok.fragments.OyeConfirmation"
     >
@@ -118,8 +119,9 @@
         android:textColor="@color/black"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="1dp"
+        android:textStyle="italic"
         android:background="@color/white"
-        android:textSize="12sp" />
+        android:textSize="10sp" />
 
 </LinearLayout>
 
@@ -140,18 +142,24 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="60dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/grey">
     <ImageView
-        android:layout_width="310dp"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
         android:id="@+id/addContact"
-        android:background="@drawable/addcontact"
+        android:background="@drawable/add_contact_button_border"
          />
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:id="@+id/proceed_to_oye"
-            android:background="@drawable/arrow_confirm"/>
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:id="@+id/proceed_to_oye"
+                android:layout_marginLeft="-10dp"
+                android:src="@drawable/arrow2"
+                />
+
+
     </LinearLayout>
 
 

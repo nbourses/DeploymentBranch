@@ -113,11 +113,6 @@
             android:textStyle="bold" />
     </RelativeLayout>
     -->
-    <!--<LinearLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:gravity="center_horizontal|center_vertical"-->
-        <!--android:orientation="horizontal">-->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -130,17 +125,16 @@
         android:id="@+id/cancel_btn"
         android:textSize="20sp"/>
     <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textColor="@color/white"
-    android:gravity="center_horizontal|center_vertical"
-    android:text=""
-        android:layout_marginLeft="40dp"
-    android:id="@+id/confirm_screen_title"
-    android:textStyle="bold"
-    android:textSize="18dp"
-    android:visibility="gone"/>
-    <!--</LinearLayout>-->
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:gravity="center_horizontal|center_vertical"
+        android:text=""
+        android:layout_marginLeft="30dp"
+        android:id="@+id/confirm_screen_title"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:layout_width="100dp"
@@ -164,11 +158,12 @@
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_gravity="right"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="10dp"
             android:layout_alignParentRight="true"
             android:text=""
-            android:textSize="18sp"
-            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="normal"
+            android:textColor="@color/greenish_blue"
             android:background="@drawable/asset_dealsbutton_v1" />
         </LinearLayout>
         <TextView
@@ -184,13 +179,47 @@
             android:gravity="center"
             android:textColor="#FFF"
             android:textSize="11sp"
+
             android:layout_alignParentRight="true"
             android:visibility="gone" />
            <!-- android:layout_above="@+id/btnMyDeals" -->
 
 
     </RelativeLayout>
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/myaccount"
+        android:layout_marginLeft="5dp"
+        android:visibility="visible"
+        android:gravity="center_horizontal|center_vertical"
+        android:background="@drawable/gradient_button_bg_with_border"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Money : "
+            android:layout_marginLeft="8dp"
+            android:id="@+id/balance"
+            android:textColor="@color/greenish_blue"
+            android:layout_gravity="center_horizontal|center_vertical" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="34"
+            android:id="@+id/balance1"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/greenish_blue"
+            android:layout_marginLeft="6dp"
+            android:layout_gravity="center_horizontal|center_vertical" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="k"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/greenish_blue"
+            android:layout_gravity="center_horizontal|center_vertical" />
+    </LinearLayout>
 <!-- <RelativeLayout
         android:layout_width="100dp"
         android:layout_height="wrap_content"

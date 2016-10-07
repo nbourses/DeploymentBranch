@@ -331,34 +331,34 @@
                 </RelativeLayout>
 
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="-70dp">
+                    <com.skyfishjy.library.RippleBackground
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/broker_content"
+                        app:rb_color="#ff0000"
+                        app:rb_radius="4dp"
+                        app:rb_rippleAmount="4"
+                        app:rb_duration="3000"
+                        app:rb_scale="6">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
 
+                            />
+                    </com.skyfishjy.library.RippleBackground>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginLeft="-70dp">
-                <com.skyfishjy.library.RippleBackground
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/broker_content"
-                    app:rb_color="#ff0000"
-                    app:rb_radius="4dp"
-                    app:rb_rippleAmount="4"
-                    app:rb_duration="3000"
-                    app:rb_scale="6">
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-
-                        />
-                </com.skyfishjy.library.RippleBackground>
+                </LinearLayout>
 
             </LinearLayout>
+
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -443,6 +443,16 @@
 
             </com.skyfishjy.library.RippleBackground>
           </LinearLayout>
+
+            <!--<TextView
+                android:layout_width="wrap_content"
+                android:layout_height="64dp"
+                android:text="35000"
+                android:id="@+id/price"
+                android:layout_gravity="center_horizontal|top"
+                android:textSize="40dp"
+                android:layout_marginTop="50dp"
+                android:visibility="gone" />-->
         </FrameLayout>
 
       <RelativeLayout
@@ -451,10 +461,9 @@
             android:paddingRight="@dimen/sixteen_dp"
             android:background="@color/dark_white"
             android:layout_width="fill_parent"
-            android:layout_height="80dp"
+            android:layout_height="65dp"
             android:orientation="vertical"
-            android:gravity="bottom"
-            android:baselineAligned="false"
+          android:baselineAligned="false"
             android:foregroundGravity="bottom"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="1dp"
@@ -462,20 +471,18 @@
                <LinearLayout
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
-                  android:id="@+id/phaseSeekbar">
-               <View
-                      android:layout_width="0dp"
-                      android:layout_height="0dp"
-                      android:layout_weight="1"
-                      android:visibility="gone" />
-
+                  android:id="@+id/phaseSeekbar"
+                   android:gravity="top"
+                   android:layout_marginTop="-10dp">
 
 
                    <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
                       android:id="@+id/phasedSeekBar"
                       android:layout_width="match_parent"
                       android:layout_height="match_parent"
-                      android:textAlignment="center" />
+                      android:textAlignment="center"
+                       android:layout_gravity="top"
+                       android:layout_marginTop="-10dp" />
 
             </LinearLayout>
 
@@ -499,7 +506,7 @@
                 android:id="@+id/box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="106dp"
+                android:paddingLeft="96dp"
                 android:visibility="visible">
                 <TextView
 
@@ -525,14 +532,15 @@
                 android:id="@+id/box1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="271dp">
+                android:paddingLeft="210dp"
+                android:visibility="visible">
 
                 <TextView
 
                     android:id="@+id/resaleCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/circle_badge2"
+                    android:background="@drawable/badge_navy1"
                     android:text="3"
 
                     android:layout_alignParentRight="true"
@@ -681,5 +689,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="right|bottom"
         android:visibility="gone"></RelativeLayout>
+
+
 
 </FrameLayout>

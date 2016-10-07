@@ -35,15 +35,14 @@ public class GcmIntentService extends IntentService {
     }
 
 
-
-    // remember changes after deleting file sushil
-    /*private void sendNotification(String msg) {
+   private void sendNotification(String msg) {
+ /*
         NotificationManager mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Log.i("Pubnub push","inside GSMIntentService sendNotification");
 
-       /* PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+       PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), 0);
 
         NotificationCompat.Builder mBuilder =
@@ -56,9 +55,8 @@ public class GcmIntentService extends IntentService {
 
         mBuilder.setContentIntent(contentIntent);
 
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
-    }*/
-
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());*/
+    }
 
 
 

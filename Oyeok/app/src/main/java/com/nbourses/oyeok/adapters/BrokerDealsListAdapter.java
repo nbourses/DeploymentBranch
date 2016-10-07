@@ -297,7 +297,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
 
 
                 //  holder.txtDescription.setText(deal.getMobileNo());
-Log.i("TAG","description description "+description);
+                Log.i("TAG","description description "+description);
                 holder.txtDescription.setText(description);
 
                 // get time from shared if not available then assign random date from last few months

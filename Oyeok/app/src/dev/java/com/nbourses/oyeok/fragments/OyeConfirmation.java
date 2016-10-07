@@ -29,10 +29,8 @@ import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -216,12 +214,13 @@ public class OyeConfirmation extends Fragment {
 
 
     private void updateLabel(){
+        myCalendar.add(Calendar.DATE,1);
         String myFormat = "dd/MM/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         display_date.setText(sdf.format(myCalendar.getTime()));
     }
 
-    private void displayDatePicker(){
+  /*  private void displayDatePicker(){
 
         DatePickerDialog dpd = new DatePickerDialog(getContext(), date, myCalendar
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
@@ -249,7 +248,7 @@ public class OyeConfirmation extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 
 

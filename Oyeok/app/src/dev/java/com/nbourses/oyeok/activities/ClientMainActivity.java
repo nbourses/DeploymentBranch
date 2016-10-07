@@ -73,7 +73,6 @@ import com.nbourses.oyeok.fragments.DFragment;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.fragments.OyeConfirmation;
 import com.nbourses.oyeok.fragments.OyeScreenFragment;
-import com.nbourses.oyeok.fragments.ShareOwnersNo;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.helpers.NetworkInterface;
@@ -160,7 +159,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
     @Bind(R.id.hdroomsCount)
     TextView hdroomsCount;
-    Boolean Owner_detail=false;
+    Boolean Owner_detail=false,Myportfolio=false;
 
     @Bind(R.id.cancel_btn)
     TextView cancel_btn;
@@ -1062,10 +1061,18 @@ public void signUp(){
 
         }
         else if(itemTitle.equals(getString(R.string.shareNo))){
-            Log.i(TAG,"itemTitle 1 "+itemTitle + R.string.shareNo);
+            /*Log.i(TAG,"itemTitle 1 "+itemTitle + R.string.shareNo);
             ShareOwnersNo shareOwnersNo = new ShareOwnersNo();
             loadFragment(shareOwnersNo, null, R.id.container_Signup, "");
-            Owner_detail=true;
+            Owner_detail=true;*/
+
+        }else if(itemTitle.equals(getString(R.string.MyPortfolio))){
+            Log.i(TAG,"itemTitle 1 "+itemTitle + R.string.MyPortfolio);
+            Intent intent =new Intent( this,MyPortfolioActivity.class );
+            startActivity(intent);
+            /*My_portfolio my_portfolio = new My_portfolio();
+            loadFragment(my_portfolio, null, R.id.container_Signup, "");
+            Myportfolio=true;*/
 
         }
 
@@ -1387,9 +1394,10 @@ public void signUp(){
             closeOyeScreen();
             backpress = 0;
 
-        }else if(Owner_detail==true){
-            super.onBackPressed();
-            Owner_detail=false;
+        }else if(Myportfolio==true){
+            Log.i("Myportfolio"," Myportfolio   : "+getFragmentManager().getBackStackEntryCount()+"   "+getSupportFragmentManager().getBackStackEntryCount());
+            getSupportFragmentManager().popBackStack();
+            Myportfolio=false;
             backpress = 0;
         } else{
 

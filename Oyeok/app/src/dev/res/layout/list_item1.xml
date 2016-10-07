@@ -16,6 +16,7 @@
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
     android:fontFeatureSettings=""
+
         android:paddingLeft="8dp"
         android:layout_marginRight="@dimen/eight_dp"
         android:layout_marginTop="@dimen/eight_dp"
