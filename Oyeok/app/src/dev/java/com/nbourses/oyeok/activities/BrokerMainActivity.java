@@ -399,6 +399,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
         dbHelper = new DBHelper(getBaseContext());
         dbHelper.save(DatabaseConstants.userRole,"Broker");
+        General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
 
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);

@@ -78,7 +78,6 @@ import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.helpers.NetworkInterface;
 import com.nbourses.oyeok.interfaces.OnOyeClick;
 import com.nbourses.oyeok.models.PublishLetsOye;
-import com.nbourses.oyeok.services.DeviceRegisterService;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -724,9 +723,9 @@ public void signUp(){
         //You need to set the Android context using Firebase.setAndroidContext() before using Firebase.
         Firebase.setAndroidContext(this);
 
-        //gcm implementation
+        /*//gcm implementation
         Intent intent = new Intent(this, DeviceRegisterService.class);
-        startService(intent);
+        startService(intent);*/
 
         //setup sliding layout
         slidingLayout.setTouchEnabled(false);
@@ -778,6 +777,7 @@ public void signUp(){
         mHandler = new Handler();
 
         dbHelper.save(DatabaseConstants.userRole, "Client");
+        General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"client");
 
         //setup navigation drawer
         drawerFragment = (FragmentDrawer)
@@ -1254,7 +1254,14 @@ public void signUp(){
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
-        if(AppConstants.cardNotif){
+        if(AppConstants.SEARCHFLAG){
+
+            AppConstants.SEARCHFLAG = false;
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
+
+        }
+
+        else if(AppConstants.cardNotif){
             Log.i(TAG,"flaga isa 1 ");
             AppConstants.cardNotif = false;
             AppConstants.optionspu1.dismiss();

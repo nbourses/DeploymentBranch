@@ -376,7 +376,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Sign up to broadcast yours needs to create New DEALs with more Brokers"
+            android:text="Oye more to broadcast yours needs to create New DEALs with more Brokers"
             android:id="@+id/bgtxt1"
             android:textSize="17sp"
             android:layout_weight="7"

@@ -1,7 +1,6 @@
 package com.nbourses.oyeok.animations;
 
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 
 import com.nbourses.oyeok.R;
@@ -65,13 +64,13 @@ public class IntroPageTransformer implements ViewPager.PageTransformer {
             // i.e. in the opposite direction of the rest of the
             // content while fading out
             View computer = page.findViewById(R.id.computer);
-            View b = page.findViewById(R.id.building);
+            /*View b = page.findViewById(R.id.building);
             View c = page.findViewById(R.id.building8);
             View d = page.findViewById(R.id.building9);
 
             View e = page.findViewById(R.id.building5);
             View f = page.findViewById(R.id.building6);
-            View g = page.findViewById(R.id.building7);
+            View g = page.findViewById(R.id.building7);*/
 
 
             // We're attempting to create an effect for a View
@@ -79,12 +78,12 @@ public class IntroPageTransformer implements ViewPager.PageTransformer {
             // In other words, we need to check that we're on
             // the correct page and that the View in question
             // isn't null.
-            if (pagePosition == 0 && computer != null) {
+            if (/*pagePosition == 0 && */computer != null) {
                 computer.setAlpha(1.0f - absPosition);
                 computer.setTranslationX(-pageWidthTimesPosition * 1.5f);
             }
 
-            if (pagePosition == 1 && b != null) {
+            /*if (pagePosition == 1 && b != null) {
                 b.setAlpha(1.0f - absPosition1);
                 b.setTranslationY(-pageHeightTimesPosition * 1.5f);
             }
@@ -115,7 +114,7 @@ public class IntroPageTransformer implements ViewPager.PageTransformer {
                 g.setAlpha(1.0f - absPosition1);
                 g.setTranslationY(-pageWidthTimesPosition * 1.5f);
             }
-
+*/
 
 
 

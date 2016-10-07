@@ -12,15 +12,26 @@ import com.nbourses.oyeok.models.PublishLetsOye;
  * Created by rohit on 09/02/16.
  */
 public class AppConstants {
+    public static final String API_NOT_CONNECTED = "Google API not connected";
+    public static final String SOMETHING_WENT_WRONG = "OOPs!!! Something went wrong...";
+    public static String PlacesTag = "Google Places Auto Complete";
     public static boolean cardNotif = false;
     public static  int minRent = 35000;
     public static  int maxRent = 60000;
-
+    public static Boolean SEARCHFLAG = false;
     public static  int minSale = 21500;
     public static  int maxSale = 27000;
 
     public static final int slowInternet = 5;
+
     public static int cardCounter = 4;
+    public static int favCounter = 0;
+
+
+    public static double MY_LATITUDE = 0.0;
+    public static double MY_LONGITUDE = 0.0;
+
+
 
     public static PopupWindow optionspu;
     public static PopupWindow optionspu1;
@@ -29,6 +40,7 @@ public class AppConstants {
     public static String MY_LNG = "myLong";
     public static String LOCALITY = "locality";
     public static final String DOSIGNUP = "doSignUp";
+    public static final String RESETMAP = "resetMap";
     public static final String AUTOCOMPLETEFLAG1 = "autoCompleteFlag1";
     public static final String AUTOCOMPLETEFLAG = "autoCompleteFlag";
     public static final String SIGNUPSUCCESSFLAG = "signupSuccessFlag";
@@ -69,9 +81,10 @@ public class AppConstants {
     //public static final String SERVER_BASE_URL_101 = "http://52.41.200.154:9000/1.01";
     //public static final String SERVER_BASE_URL_102 = "http://52.41.200.154:9000/1.02";
     public static final String SERVER_BASE_URL = "https://test.hailyo.com/1";
-    public static final String SERVER_BASE_URL_1_02 = "https://test.hailyo.com/1.02";
-    public static final String SERVER_BASE_URL_102 = "https://test.hailyo.com/1.02";
 
+    public static final String SERVER_BASE_URL_11 = "https://test.hailyo.com/1.1";
+
+   public static final String SERVER_BASE_URL_102 = "https://test.hailyo.com/1.02";
 
 
 

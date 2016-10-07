@@ -92,9 +92,7 @@ public class BrokerMap extends DashboardClientFragment {
     private static final int INITIAL_REQUEST = 133;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
     private final int MY_PERMISSION_FOR_CAMERA = 11;
-    // id_markerpin;
 
-    //TextView tv_change_region;
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "", locality = "";
 
     @Override
@@ -109,92 +107,29 @@ try {
         General.internetConnectivityMsg(getContext());
     }
 }catch(Exception e){}
-
-
         iv_markerpin = (ImageView) rootView.findViewById(R.id.iv_markerpin);
         mHelperView=(View) rootView.findViewById(R.id.br_helperView);
         location_button=(ImageView) rootView.findViewById(R.id.location_button);
-
-
-
-      /*  rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            public void onGlobalLayout() {
-                iv_markerpin.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-
-
-                int[] locations = new int[2];
-                iv_markerpin.getLocationOnScreen(locations);
-                x = locations[0] + 35;
-                y = locations[1] - 64;
-//                x = left - (right - left) / 2;
-//                y = bottom;
-                bottom = rootView.getBottom();
-                top = rootView.getTop();
-                left = rootView.getLeft();
-                right = rootView.getRight();
-                width = rootView.getMeasuredWidth();
-                height = rootView.getMeasuredHeight();
-                Log.i("t1", "Bottom" + rootView.getBottom() + "top" + top + "left" + left + "right" + right);
-                Log.i("t1", "width" + width + "height " + height);
-                point = new Point(x, y);
-
-                Log.i("t1", "co-ordinate" + x + " " + y);
-            }
-        });*/
-
-
         autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
         autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
         autoCompView.setOnItemClickListener(this);
-        //autoCompView.setOnItemClickListener(this);
         autoCompView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 autoCompView.clearListSelection();
                 autoCompView.setText("");
                 autoCompView.showDropDown();
-    //           new LocationUpdater().execute();
 
 
             }
         });
-        /*if (customMapFragment == null) {
-            customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.g_map));
-            customMapFragment.getMap();
-        }
-
-        customMapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                gmap = googleMap;
-//               double lat = 19.1269299;
-//              double  lng = 72.8376545999999;
-                    enableMyLocation();
-
-//                    LatLng center = new LatLng(lat, lng);
-//
-//                    gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 12));
-
-                getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
-            }
-        });*/
-
-
-//        if (customMapFragment == null) {
-            customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.g_map));
-
-//        }
+        customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.g_map));
         gmap= customMapFragment.getMap();
-//            customMapFragment.getMap().getUiSettings().setAllGesturesEnabled(true);
         final View mMapView = getChildFragmentManager().findFragmentById(R.id.g_map).getView();
-        // mapView =(MapView) rootView.findViewById(R.id.map);
         customMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-
                 gmap = googleMap;
-
-                // map = googleMap;
                 final LocationManager Loc_manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
                 if (!isNetworkAvailable() || !(Loc_manager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
@@ -226,12 +161,6 @@ try {
         gmap.getUiSettings().setScrollGesturesEnabled(true);
         gmap.getUiSettings().setZoomControlsEnabled(true);
 
-//            resetMyPositionButton();
-        // geoFence = new GeoFence();
-        //if (isNetworkAvailable()) {
-//        mHelperView = rootView.findViewById(R.id.helperView);
-
-
         mHelperView.setOnTouchListener(new View.OnTouchListener() {
             private float scaleFactor = 1f;
 
@@ -241,10 +170,8 @@ try {
                 if (simpleGestureDetector.onTouchEvent(motionEvent)) { // Double tap
                     gmap.animateCamera(CameraUpdateFactory.zoomIn()); // Fixed zoom in
                 } else if (motionEvent.getPointerCount() == 1) { // Single tap
-                    // horizontalPicker.keepScrolling();
                     onMapDrag(motionEvent);
                     mMapView.dispatchTouchEvent(motionEvent); // Propagate the event to the map (Pan)
-//                        onMapDrag(motionEvent);
                 } else if (scaleGestureDetector.onTouchEvent(motionEvent)) { // Pinch zoom
 
                     gmap.moveCamera(CameraUpdateFactory.zoomBy( // Zoom the map without panning it
@@ -347,19 +274,7 @@ try {
                     }
 
                     LatLng currentLocation = new LatLng(lat, lng);
-                    // LatLng currentLocation= new LatLng(lat, lng);
-
-
                     Log.i("bbt1","lat_long"+currentLocation);
-
-
-                    //Log.i("t1", "caught"+width+ " "+height);
-                    //broker_map.
-                   // gmap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("I am here!").icon(icon1));
-
-
-                    //broker_map.addMarker(new MarkerOptions().position(currentLocation).title("current Location"));
-                    // broker_map.animateCamera(CameraUpdateFactory.newLatLng(currentLocation));
                     gmap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
                     gmap.moveCamera(CameraUpdateFactory.zoomTo(15));
 
@@ -368,52 +283,6 @@ try {
                 }
             }
         };
-
-
-        /*try {
-            if (isNetworkAvailable()) {
-            customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
-                @Override
-                public void onDrag(MotionEvent motionEvent) {
-                    //Log.d("t1", String.format("ME: %s", motionEvent));
-
-                    if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-
-
-                    } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-
-
-                        //Remmember changes sushil start
-                        LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
-
-                        currentLocation1 = gmap.getProjection().fromScreenLocation(point);
-                        lat = currentLocation1.latitude;
-                        Log.i("t1", "lat" + " " + lat);
-                        lng = currentLocation1.longitude;
-                        Log.i("t1", "lng" + " " + lng);
-                        SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                        SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                        Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
-                        Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-                        getRegion();
-                        Log.i("t1", "latlong" + " " + currentLocation1);
-                       // gmap.addMarker(new MarkerOptions().position(currentLocation1));
-
-                            new LocationUpdater().execute();
-
-
-
-                    } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-
-
-                    }
-                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
-                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-                }
-            });
-            }
-        } catch (Exception e) {
-        }*/
 
 
         return rootView;
@@ -453,7 +322,6 @@ try {
                 is = entity.getContent();
 
             } catch (Exception e) {
-                // Log.e(TAG, "Error in http connection " + e.toString());
             }
 
             // convert response to string
@@ -470,7 +338,6 @@ try {
                 //Log.e(TAG, "Error converting result " + e.toString());
             }
 
-            // try parse the string to a JSON object
             try {
                 jObject = new JSONObject(result);
             } catch (JSONException e) {

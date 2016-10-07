@@ -639,6 +639,7 @@ while(slowInternetFlag) {
                             DefaultDeals defaultDeals = new DefaultDeals();
                             defaultDeals.setOk_id(General.getSharedPreferences(context, "OK_ID"));
                             defaultDeals.setSpec_code(speccode);
+                            defaultDeals.setLastSeen(String.valueOf(System.currentTimeMillis()));
                             Log.i("locality is thee ","locality is thee " +SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY));
                             defaultDeals.setLocality(SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY));
                             myRealm.beginTransaction();
@@ -660,6 +661,7 @@ while(slowInternetFlag) {
                                 Log.i(TAG, "insiderrou3 " + r.getOk_id());
                                 Log.i(TAG, "insiderrou4 " + r.getSpec_code());
                                 Log.i(TAG, "insiderrou5 " + r.getLocality());
+                                Log.i(TAG, "insiderrou6 " + r.getLastSeen());
                             }
 
                         }
@@ -963,6 +965,8 @@ while(slowInternetFlag) {
 
     public static void setDealStatus(Context c,String dealStatus, String okId, String lastseen,String blockBy){
 
+
+
         UpdateStatus updateStatus = new UpdateStatus();
 
 
@@ -997,7 +1001,7 @@ while(slowInternetFlag) {
 
 
                         JSONObject ne = new JSONObject(k.toString());
-                        Log.i("updateStatus","updateStatus success ne "+ne.getString("success"));
+                        Log.i("updateStatus","updateStatus success ne "+ne);
 
 
                     }
@@ -1013,7 +1017,7 @@ while(slowInternetFlag) {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Log.i("BROKER BUILDINGS CALLED","update status failed "+error);
+                    Log.i("BROKER BUILDINGS CALLED","updateStatus failed "+error);
                 }
             });
 

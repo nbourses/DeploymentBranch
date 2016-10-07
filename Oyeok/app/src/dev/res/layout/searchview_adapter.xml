@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/predictedRow"
+    android:layout_width="match_parent"
+    android:layout_height="65dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/edit_text_style"
+    android:layout_centerVertical="true"
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:src="@drawable/s_marker"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/image"
+        android:layout_toLeftOf="@+id/delete"
+        android:id="@+id/wrapper"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.4"
+            android:id="@+id/title"
+            android:maxLines="1"
+            android:textColor="#000"
+            android:textSize="15sp"
+            android:gravity="bottom" />
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.6"
+            android:maxLines="2"
+            android:textSize="15sp"
+            android:layout_toRightOf="@+id/title"
+
+            />
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/delete"
+        android:padding="15dp"
+        android:layout_width="50dp"
+        android:clickable="true"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/s_delete"
+
+
+        />
+
+</RelativeLayout>

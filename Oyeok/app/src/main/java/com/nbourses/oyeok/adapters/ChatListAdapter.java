@@ -194,7 +194,7 @@ private WebView i;
         else if (message.getUserType() == ChatMessageUserType.IMG) {
 
             Log.i("TEST","================================================== IMG");
-            Log.i("image adapter","image adapter "+message.getUserSubtype()+message.getUser_id());
+            Log.i("image adapter","image adapter narcos "+message.getUserSubtype()+message.getMessageText());
 
             Boolean stopDownloadImage = false;
             if (convertView == null) {
@@ -249,7 +249,8 @@ private WebView i;
             Log.i("IMGURL","image url is yo yo to "+message.getImageUrl());
             Log.i("IMGURL","image name is yo yo to "+message.getImageName());
 
-            imgName = message.getImageUrl().split("/")[4];
+          //  imgName = message.getImageUrl().split("/")[4];
+            imgName = message.getMessageText().split("/")[4];
             Log.i("IMGURL","image name is yo yo to po "+imgName);
 
 //Add image from local folder oyeok

@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by rohit on 16/02/16.
  */
 
-public class BrokerDeals {
+public class BrokerDeals implements Comparable<BrokerDeals>{
 
 
     @Expose
@@ -62,7 +62,7 @@ public class BrokerDeals {
 
 
 
-    public BrokerDeals(String name,String ok_id, String specs,String locality,String oyeId, Boolean default_deal)
+    public BrokerDeals(String name,String ok_id, String specs,String locality,String oyeId,String lastSeen, Boolean default_deal)
     { // Constructor for default deal
         //this.okId = "default_id";
 
@@ -72,13 +72,13 @@ public class BrokerDeals {
         this.specCode = specs;
         this.name = name;
         this.locality = locality;
-
+        this.lastSeen = lastSeen;
         this.defaultDeal = default_deal;
         this.oyeId = oyeId;
 
     }
 
-    public BrokerDeals(String name,String ok_id, String specs,String locality,String oyeId,String selfStatus,String otherStatus,String oyeUserId, Boolean default_deal)
+    public BrokerDeals(String name,String ok_id, String specs,String locality,String oyeId,String selfStatus,String otherStatus,String oyeUserId,String lastSeen, Boolean default_deal)
     { // Constructor for default deal
         //this.okId = "default_id";
 
@@ -88,7 +88,7 @@ public class BrokerDeals {
         this.specCode = specs;
         this.name = name;
         this.locality = locality;
-
+        this.lastSeen = lastSeen;
         this.defaultDeal = default_deal;
         this.oyeId = oyeId;
         //this.getHDroomStatus().selfStatus = selfStatus;
@@ -99,6 +99,8 @@ public class BrokerDeals {
         this.oyeUserId = oyeUserId;
 
     }
+
+
     public BrokerDeals(String name,String ok_id, String specs, Boolean default_deal)
     { // Constructor for default deal
         //this.okId = "default_id";
@@ -230,5 +232,23 @@ public class BrokerDeals {
     public void setLastSeen(String lastSeen) {
         this.lastSeen = lastSeen;
     }
+
+    public int compareTo(BrokerDeals compareFruit) {
+        Log.i("Adapter","spandan chukya called");
+
+        //Log.i("Adapter","spandan chukya"+compareFruit.getLastSeen()+" "+Integer.parseInt(compareFruit.getLastSeen()));
+
+        //int compareQuantity = Integer.parseInt(compareFruit.getLastSeen());
+        Long compareQuantity = Long.parseLong(compareFruit.getLastSeen());
+        Log.i("Adapter","spandan chukya called 1 "+compareQuantity);
+        //ascending order
+        Log.i("Adapter","spandan chukya called 2 "+Long.parseLong(this.lastSeen));
+        return (int) (compareQuantity - Long.parseLong(this.lastSeen));
+
+        //descending order
+       //return compareQuantity - this.quantity;
+
+    }
+
 
 }

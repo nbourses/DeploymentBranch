@@ -1,13 +1,20 @@
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <application>
-        <activity android:name="com.nbourses.oyeok.activities.MyPortfolioActivity"
-            android:label="@string/MyPortfolio"
-                  android:screenOrientation="portrait"
-                  android:theme="@style/AppTheme1"
-                  android:windowSoftInputMode="adjustNothing"
-                  >
+<application>
+    <activity android:name="com.nbourses.oyeok.activities.MyPortfolioActivity"
+              android:label="@string/MyPortfolio"
+              android:screenOrientation="portrait"
+              android:theme="@style/AppTheme1"
+              android:windowSoftInputMode="adjustNothing"
+    >
 
-        </activity>
-    </application>
+    </activity>
+    <activity android:name="com.nbourses.oyeok.activities.Game"
+    >
+    </activity>
+</application>
 </manifest>
+
+
+

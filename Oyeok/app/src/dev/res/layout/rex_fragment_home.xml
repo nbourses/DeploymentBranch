@@ -539,16 +539,60 @@
                 android:id="@+id/route"
                 android:nestedScrollingEnabled="false">
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="25dp"
-                    android:id="@+id/fav"
-                    android:src="@drawable/heart"
-                    android:visibility="visible"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp" />
 
-                 <AutoCompleteTextView android:id="@+id/inputSearch"
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="@dimen/eight_dp"
+                    android:clickable="false"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/heart"
+                        android:clickable="false"
+                        android:id="@+id/fav" />
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent"
+                    android:background="@color/white"
+                    android:visibility="visible"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:id="@+id/addressPanel"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:layout_marginRight="1dp">
+
+                    <TextView
+                        android:text="CHANGE LOCATION"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:id="@+id/textView6"
+                        android:gravity="bottom|center_horizontal" />
+
+                    <TextView
+                        android:text=" Fun Republic Rd, Industrial Area, Andheri"
+                        android:textSize="14sp"
+                        android:textColor="#FEFCFF"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top"
+                        android:paddingBottom="5dp"
+                        android:maxLines="2"
+                        android:id="@+id/addressBar"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <AutoCompleteTextView android:id="@+id/inputSearch"
                     android:inputType="textMultiLine|textPostalAddress"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -570,7 +614,8 @@
                     android:textSize="15dp"
                     android:nestedScrollingEnabled="false"
                     android:foregroundGravity="center"
-                     android:paddingLeft="5dp" />
+                     android:paddingLeft="5dp"
+                    android:visibility="gone"/>
 
                 <!--android:textCursorDrawable="@color/white"
                 android:textCursorDrawable="@color/white"-->
@@ -584,16 +629,15 @@
             </LinearLayout>
 
 
-            <RelativeLayout
+            <!--<RelativeLayout
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:orientation="vertical"
                 android:layout_marginLeft="-40dp"
 
-                android:visibility="visible">
+                android:visibility="visible">-->
 
-
-                <com.skyfishjy.library.RippleBackground
+            <!--<com.skyfishjy.library.RippleBackground
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
@@ -605,23 +649,68 @@
                     app:rb_duration="3000"
                     app:rb_scale="6">
 
-                    <!--<ImageView-->
-                    <!--android:layout_width="15dp"-->
-                    <!--android:layout_height="15dp"-->
-                    <!--android:id="@+id/beacons1"-->
-                    <!--android:visibility="invisible" />-->
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_search_24dp"
+                            android:clickable="false"
+                            android:id="@+id/ic_search" />
 
 
-                    </com.skyfishjy.library.RippleBackground>
+
+                    </com.skyfishjy.library.RippleBackground>-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_margin="@dimen/eight_dp"
+                android:clickable="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone">
+            <com.skyfishjy.library.RippleBackground
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/client_content2"
+                app:rb_color="#ff0000"
+                app:rb_radius="4dp"
+                app:rb_rippleAmount="4"
+                app:rb_duration="3000"
+                app:rb_scale="6">
+
+
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="25dp"
-                    android:id="@+id/ic_search"
-                    android:src="@drawable/ic_search_24dp"
-                    android:visibility="visible"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp" />
-            </RelativeLayout>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:id="@+id/forRipple" />
+
+        </com.skyfishjy.library.RippleBackground>
+            </LinearLayout>
+
+
+
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_margin="@dimen/eight_dp"
+                android:clickable="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="vertical">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_search_24dp"
+                            android:clickable="false"
+                            android:id="@+id/ic_search" />
+            </LinearLayout>
+
+            <!--</RelativeLayout>-->
+
 
 
             <ImageView
@@ -629,6 +718,7 @@
                 android:layout_height="fill_parent"
                 android:background="@color/white"
                 android:visibility="visible"/>
+
 
             <LinearLayout
                 android:layout_width="wrap_content"

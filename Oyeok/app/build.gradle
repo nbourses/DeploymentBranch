@@ -110,6 +110,7 @@ buildscript {
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    maven{url 'https://dl.bintray.com/intercom/intercom-maven'}
 }
 
 repositories {
@@ -122,8 +123,9 @@ repositories {
 }
 
 dependencies {
-//    compile 'com.baoyz.swipemenulistview:library:1.3.0'
+    //    compile 'com.baoyz.swipemenulistview:library:1.3.0'
     compile project(':SwipeTouchLibrary')
+    compile 'com.android.support:design:24.0.0'
 }
 
 //dependencies {
@@ -317,8 +319,14 @@ dependencies {
     //  compile 'com.zcw:togglebutton-library:1.0.0'
     compile 'com.kyleduo.switchbutton:library:1.4.4'
 
+
 ///Google Play Game services
 //compile "com.google.android.gms:play-services-games:9.0.2"
+
+    compile ('io.intercom.android:intercom-sdk:1.+@aar') {
+        transitive = true
+    }
+
 
     compile project(':MPChartLib')
 

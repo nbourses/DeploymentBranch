@@ -110,9 +110,11 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+
         android:id="@+id/container_Signup">
     </FrameLayout>
-
+    <!--android:visibility="gone"
+           android:background="@android:color/darker_gray"-->
 
     <FrameLayout
         android:layout_width="fill_parent"

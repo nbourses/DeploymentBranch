@@ -7,14 +7,13 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ritesh Warke"
+            android:text="Easy Comparisons"
             android:gravity="center"
-            android:textColor="@android:color/white"
+            android:textColor="@color/dark_white"
             android:layout_gravity="top|center"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -23,24 +22,24 @@
 
         <ImageView
             android:id="@+id/computer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_gravity="center"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/intro_image1_v1" />
 
         <TextView
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="The Great"
+            android:text='"1 CLICK to compare buildings \n or locality on live property rates"'
             android:gravity="center"
-            android:textColor="@android:color/white"
+            android:textColor="@color/dark_white"
             android:layout_gravity="bottom|center"
             android:maxEms="18"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginBottom="32dp"
-            android:textSize="20sp"/>
+            android:textSize="18sp"/>
 
     </FrameLayout>
 

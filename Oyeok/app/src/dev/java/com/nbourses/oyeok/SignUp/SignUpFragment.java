@@ -266,7 +266,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
 /*if(lastFragment.equalsIgnoreCase("clientDrawer") || lastFragment.equalsIgnoreCase("oyed"))
     okBroker = false;*/
-        if(lastFragment.equalsIgnoreCase("brokerDrawer")|| lastFragment.equalsIgnoreCase("okyed"))
+        if(lastFragment.equalsIgnoreCase("brokerDrawer")|| lastFragment.equalsIgnoreCase("okyed") || lastFragment.equalsIgnoreCase("brokerDeal") || lastFragment.equalsIgnoreCase("brokerIntro"))
     okBroker = true;
 
 
@@ -340,8 +340,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 //
 //      Log.i(TAG,"My number is "+number);
 
-   digitsButton = (DigitsAuthButton) view.findViewById(R.id.auth_button);
- digitsButton.setText("sign me up");
+       digitsButton = (DigitsAuthButton) view.findViewById(R.id.auth_button);
+       digitsButton.setText("sign me up");
      //   digitsButton.setAuthTheme(R.style.CustomDigitsTheme);
 //
 //
@@ -406,14 +406,26 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         tvcontent= (TextView) view.findViewById(R.id.tvcontent);
          editProfile_pic = (ImageView) view.findViewById(R.id.editProfile_pic);
 
-        if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
+      /*  if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client"))*/
+        Log.i(TAG,"last fragment narcos "+lastFragment);
+        if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")){
             tvheading.setText(R.string.client_sign_up_heading);
-            tvcontent.setText(R.string.client_sign_up_content);
+            if(lastFragment.equalsIgnoreCase("clientDeal"))
+            tvcontent.setText(R.string.client_sign_up_content_from_deals);
+            else if (lastFragment.equalsIgnoreCase("clientIntro"))
+                tvcontent.setText(R.string.client_sign_up_content_from_intro);
+            else
+                tvcontent.setText(R.string.client_sign_up_content);
         }
         else
         {
             tvheading.setText(R.string.broker_sign_up_heading);
-            tvcontent.setText(R.string.broker_sign_up_content);
+            if(lastFragment.equalsIgnoreCase("brokerDeal"))
+                tvcontent.setText(R.string.broker_sign_up_content_from_deals);
+            else if (lastFragment.equalsIgnoreCase("brokerIntro"))
+                tvcontent.setText(R.string.broker_sign_up_content_from_intro);
+            else
+                tvcontent.setText(R.string.broker_sign_up_content);
         }
 
         editProfile_pic.setOnClickListener(new View.OnClickListener() {
@@ -455,12 +467,22 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         submit.setText("LOGIN");
         if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
             tvheading.setText(R.string.client_log_in_heading);
-            tvcontent.setText(R.string.client_sign_up_content);
+            if(lastFragment.equalsIgnoreCase("clientDeal"))
+                tvcontent.setText(R.string.client_sign_up_content_from_deals);
+            else if (lastFragment.equalsIgnoreCase("clientIntro"))
+                tvcontent.setText(R.string.client_sign_up_content_from_intro);
+            else
+                tvcontent.setText(R.string.client_sign_up_content);
         }
         else
         {
             tvheading.setText(R.string.broker_log_in_heading);
-            tvcontent.setText(R.string.broker_sign_up_content);
+            if(lastFragment.equalsIgnoreCase("brokerDeal"))
+                tvcontent.setText(R.string.broker_sign_up_content_from_deals);
+            else if (lastFragment.equalsIgnoreCase("brokerIntro"))
+                tvcontent.setText(R.string.broker_sign_up_content_from_intro);
+            else
+                tvcontent.setText(R.string.broker_sign_up_content);
         }
     }
 });
@@ -478,12 +500,22 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
      if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
          tvheading.setText(R.string.client_sign_up_heading);
-         tvcontent.setText(R.string.client_sign_up_content);
+         if(lastFragment.equalsIgnoreCase("clientDeal"))
+             tvcontent.setText(R.string.client_sign_up_content_from_deals);
+         else if (lastFragment.equalsIgnoreCase("clientIntro"))
+             tvcontent.setText(R.string.client_sign_up_content_from_intro);
+         else
+             tvcontent.setText(R.string.client_sign_up_content);
      }
      else
      {
          tvheading.setText(R.string.broker_sign_up_heading);
-         tvcontent.setText(R.string.broker_sign_up_content);
+         if(lastFragment.equalsIgnoreCase("brokerDeal"))
+             tvcontent.setText(R.string.broker_sign_up_content_from_deals);
+         else if (lastFragment.equalsIgnoreCase("brokerIntro"))
+             tvcontent.setText(R.string.broker_sign_up_content_from_intro);
+         else
+             tvcontent.setText(R.string.broker_sign_up_content);
      }
 
 
@@ -720,7 +752,7 @@ if(newUser==true) {
 
         Log.i("inside","signup");
         //String API="http://ec2-52-25-136-179.us-west-2.compute.amazonaws.com:9000"
-        String API = DatabaseConstants.serverUrl;
+        String API = AppConstants.SERVER_BASE_URL_11;
         my_user_id = "icroi614g4su7pxts6p4w2nt7891jm4u";
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(API).setLogLevel(RestAdapter.LogLevel.FULL).build();
@@ -979,6 +1011,11 @@ Log.i(TAG,"mobile number is the "+mobile_number);
                         General.setSharedPreferences(context, AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
 
 
+
+
+                       //     Intercom.client().registerIdentifiedUser(new Registration().withUserId(my_user_id));
+
+
                         //save in realm
                         try {
                             userInfo.setUserId(my_user_id);
@@ -1082,7 +1119,7 @@ Log.i(TAG,"lastfragment "+lastFragment);
                             startActivity(intent);
                         }
 
-                       else if(lastFragment.equalsIgnoreCase("clientDrawer")){
+                       else if(lastFragment.equalsIgnoreCase("clientDrawer") || lastFragment.equalsIgnoreCase("clientDeal")||lastFragment.equalsIgnoreCase("clientIntro")){
                             Log.i(TAG,"lastfragment 1 "+lastFragment);
                             Intent intent = new Intent(getContext(),ClientMainActivity.class);
                             intent.putExtra("userRole", "client");
@@ -1093,10 +1130,10 @@ Log.i(TAG,"lastfragment "+lastFragment);
 
                             AppConstants.SIGNUP_FLAG =false;
                         }
-                        else if(lastFragment.equalsIgnoreCase("brokerDrawer")){
+                        else if(lastFragment.equalsIgnoreCase("brokerDrawer")|| lastFragment.equalsIgnoreCase("brokerDeal")||lastFragment.equalsIgnoreCase("brokerIntro")){
                             Log.i(TAG,"lastfragment 2 "+lastFragment);
                             Intent intent = new Intent(getContext(),BrokerMainActivity.class);
-                            intent.putExtra("userRole", "client");
+                            intent.putExtra("userRole", "broker");
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                     Intent.FLAG_ACTIVITY_NEW_TASK);

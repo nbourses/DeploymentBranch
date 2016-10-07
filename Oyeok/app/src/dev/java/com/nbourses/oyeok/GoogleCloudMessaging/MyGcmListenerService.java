@@ -474,7 +474,10 @@ public class MyGcmListenerService extends GcmListenerService {
                             myRealm.commitTransaction();
                         }
 
-                        Intent intent = new Intent(AppConstants.BADGE_COUNT_BROADCAST);  // (this is for dealslist) same used for badges in preok also
+
+
+                        Intent intent = new Intent(AppConstants.BADGE_COUNT_BROADCAST);// (this is for dealslist) same used for badges in preok also
+                       intent.putExtra("channel_name",data.getString("to"));
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
                         try {

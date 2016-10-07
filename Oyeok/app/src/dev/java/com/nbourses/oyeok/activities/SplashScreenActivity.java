@@ -13,6 +13,7 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.services.DeviceRegisterService;
 
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
@@ -42,13 +43,26 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                 Log.i("splash","is logged in yo man " +General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER));
                 Log.i("splash","is logged in yo man 3 " +General.getSharedPreferences(context, AppConstants.ROLE_OF_USER));
+               /* if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase(""))
+                Intercom.client().registerIdentifiedUser(new Registration().withUserId( General.getSharedPreferences(context, AppConstants.USER_ID)));
+*/
                 if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") &&
                         General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
   
                     intent = new Intent(context, BrokerMainActivity.class);
                 }
-                else {
+                /*else if(!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") &&
+                        General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")){
+                    intent = new Intent(context, ClientMainActivity.class);
+                }*/
+
+              else if(General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")&&General.getSharedPreferences(context, AppConstants.TIME_STAMP_IN_MILLI).equalsIgnoreCase("")) {
                     Log.i("splash","is logged in yo man 2 ");
+                    //intent = new Intent(context, ClientMainActivity.class);
+
+                    intent = new Intent(context, IntroActivity.class);
+                }
+                else{
                     intent = new Intent(context, ClientMainActivity.class);
                 }
 
@@ -58,6 +72,9 @@ public class SplashScreenActivity extends AppCompatActivity {
             }
 
         }, 2000);
+        //gcm implementation
+        Intent intent = new Intent(this, DeviceRegisterService.class);
+        startService(intent);
     }
 
 
