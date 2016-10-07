@@ -745,8 +745,11 @@ if(newUser==true) {
 
 
     void signup_success() {
-
-
+// Add timestamp if user is signing up directly from intro
+        if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
+            General.setSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI, String.valueOf(System.currentTimeMillis()));
+            Log.i("TIMESTAMP", "millis " + System.currentTimeMillis());
+        }
         /*TelephonyManager tm = (TelephonyManager) context.getSystemService();*/
        Log.i("TRACE","in SinSuc");
 

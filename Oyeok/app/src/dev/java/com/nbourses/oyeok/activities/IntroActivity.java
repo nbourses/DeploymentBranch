@@ -3,6 +3,8 @@ package com.nbourses.oyeok.activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -30,6 +32,10 @@ import com.nbourses.oyeok.fragments.GPSTracker;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * Created by ritesh on 22/08/16.
  */
@@ -45,6 +51,7 @@ public class IntroActivity extends ActionBarActivity {
     private GetCurrentLocation.CurrentLocationCallback mcallback;
     private GetCurrentLocation getLocationActivity;
     private  GPSTracker gps;
+    private Geocoder geocoder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +72,9 @@ public class IntroActivity extends ActionBarActivity {
            /* */
         else if(gps.canGetLocation()){ // gps enabled} // return boolean true/false
 
-            Log.i("Tag11","latlong : "+gps.getLatitude()+"  "+gps.getLongitude());
-            SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LAT, gps.getLatitude() +"");
-            SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LNG, gps.getLongitude() + "");
-            General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LAT,gps.getLatitude() + "");
-            General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LNG,gps.getLongitude() + "");
-//            gps.showSettingsAlert();
+
+            saveLatLongLoc(gps.getLatitude(), gps.getLongitude());
+
 
 
              }
@@ -206,12 +210,31 @@ btnC.setOnClickListener(new View.OnClickListener() {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED){
 
             Log.i("Tag11","latlong : "+gps.getLatitude()+"  "+gps.getLongitude());
-                SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LAT, gps.getLatitude() +"");
-                SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LNG, gps.getLongitude() + "");
-                General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LAT,gps.getLatitude() + "");
-                General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LNG,gps.getLongitude() + "");
+                saveLatLongLoc(gps.getLatitude(), gps.getLongitude());
+
             }
         }
 
+
+
+
+    }
+    private void saveLatLongLoc(Double lat, Double lng){
+        SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LAT, lat +"");
+        SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LNG, lng + "");
+        General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LAT,lat + "");
+        General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LNG,lng + "");
+        try {
+            geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = null;
+            addresses = geocoder.getFromLocation(lat,lng, 1);
+            String region = addresses.get(0).getSubLocality();
+            SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LOCALITY, region);
+            General.setSharedPreferences(getApplicationContext(),AppConstants.LOCALITY,region);
+
+            Log.i("Tag11","latlong : "+lat+"  "+lng+ ""+region);
+        } catch (IOException e) {
+            Log.i("TAG","Caught in exception in geocoding 1"+e);
+        }
     }
 }
