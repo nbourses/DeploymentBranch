@@ -2424,7 +2424,7 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
             Log.i(TAG,"dealconv 2");
 
             AppConstants.BROKER_DEAL_FLAG = false;
-            Intent back = new Intent(this, BrokerDealsListActivity.class); // to refresh adapter to display newly saved last message time
+            Intent back = new Intent(this, ClientDealsListActivity.class); // to refresh adapter to display newly saved last message time
             back.addFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(back);

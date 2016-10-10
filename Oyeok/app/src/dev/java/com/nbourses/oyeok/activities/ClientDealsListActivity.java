@@ -730,6 +730,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             total_deals.clear();
         }
 
+
         listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
         listViewDeals.setAdapter(listAdapter);
 
@@ -782,12 +783,13 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
         // }
         setSupportActionBar(mToolbar);
-        if (!(General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER)).equalsIgnoreCase("")) {
+       /* if (!(General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER)).equalsIgnoreCase("")) {
 
             getSupportActionBar().setTitle(Html.fromHtml(String.format("DEALING ROOMs <font color=\"#%s\">(Rental)</font>", сolorString)));
 
-        } else
-            getSupportActionBar().setTitle("DEALING ROOMs");
+        } else*/
+            getSupportActionBar().setTitle(Html.fromHtml(String.format("DEALING ROOMs <font color=\"#%s\">(Rental)</font>", сolorString)));
+
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -1117,11 +1119,14 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                             Log.i("TRACE", "list broker deals" + listBrokerDeals.isEmpty());
                             if (!listBrokerDeals.isEmpty()) {
+                                myRealm = General.realmconfig(ClientDealsListActivity.this);
+                                myRealm.beginTransaction();
+                                RealmResults<HalfDeals> h = myRealm.where(HalfDeals.class).findAll();
+                                 h.clear();
                                 Iterator<BrokerDeals> it = listBrokerDeals.iterator();
 
 
-                                myRealm = General.realmconfig(ClientDealsListActivity.this);
-                                myRealm.beginTransaction();
+
 
                                 while (it.hasNext()) {
                                     BrokerDeals deals = it.next();

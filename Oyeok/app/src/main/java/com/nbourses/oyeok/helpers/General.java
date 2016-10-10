@@ -1,19 +1,25 @@
 package com.nbourses.oyeok.helpers;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
@@ -38,6 +44,7 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateStatus;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.activities.DealConversationActivity;
+import com.nbourses.oyeok.fragments.GPSTracker;
 import com.nbourses.oyeok.models.PublishLetsOye;
 import com.nbourses.oyeok.realmModels.DefaultDeals;
 import com.nispok.snackbar.Snackbar;
@@ -60,6 +67,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
@@ -73,6 +81,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedByteArray;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by rohit on 09/02/16.
@@ -91,6 +101,45 @@ public class General extends BroadcastReceiver {
     private static Bitmap mIcon12 = null; // null image for test condition in download image
     private static ImageView img;
 
+
+
+    public static void showPermissionDialog(Context context,Activity activity) {
+        GPSTracker gps = new GPSTracker(context);
+        if (ContextCompat.checkSelfPermission(context,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+
+
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    AppConstants.LOCATION_PERMISSION_REQUEST_CODE);
+
+        } else {
+            if (gps.canGetLocation())
+                Log.i("TAG","ralph "+gps.getLatitude());
+            saveLatLongLoc(context, gps.getLatitude(), gps.getLongitude());
+        }
+    }
+
+    public static void saveLatLongLoc(Context context, Double lat, Double lng){
+        SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LAT, lat +"");
+        SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LNG, lng + "");
+        General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LAT,lat + "");
+        General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LNG,lng + "");
+        Log.i("Tag11","latlong 12 : "+lat+"  "+lng);
+        try {
+            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+            List<Address> addresses = null;
+            addresses = geocoder.getFromLocation(lat,lng, 1);
+            String region = addresses.get(0).getSubLocality();
+            SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LOCALITY, region);
+            General.setSharedPreferences(getApplicationContext(),AppConstants.LOCALITY,region);
+
+            Log.i("Tag11","latlong 13 : "+lat+"  "+lng+ ""+region);
+        } catch (IOException e) {
+            Log.i("TAG","Caught in exception in geocoding 1"+e);
+        }
+    }
 
     public static void slowInternet(Context context) {
        try {
@@ -1101,6 +1150,7 @@ while(slowInternetFlag) {
 
 
     }
+
 
 
 }
