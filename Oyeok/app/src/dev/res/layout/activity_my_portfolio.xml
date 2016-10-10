@@ -63,6 +63,7 @@
               android:background="@drawable/greenishblue_border_grey_solid"
               android:layout_margin="4dip"
               android:textColorHint="@color/gray"
+              android:textColor="@color/black"
               android:layout_below="@+id/container_toolbar"
               android:inputType="textVisiblePassword"/>
 

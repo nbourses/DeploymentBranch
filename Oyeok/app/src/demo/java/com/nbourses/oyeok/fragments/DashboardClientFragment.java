@@ -196,9 +196,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private BitmapDescriptor icon2;
     private Drawable sort_down_black,sort_down_red,sort_up_black,sort_up_green,comman_icon;
     int mposition=0;
-   static IconGenerator iconFactory;
+    int []rand=new int[5];
+
+
     long then;
     long now;
+    static IconGenerator iconFactory;
     int []game_min= new int[5],game_max=new int[5];
     MarkerOptions markerOptions;
     Marker []Markertext=new Marker[5];
@@ -262,7 +265,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private String filterValue;
     private String bhk;
     private int filterValueMultiplier = 950;
-    int []rand=new int[5];
 TextView rental,resale;
     RelativeLayout property_type_layout,hpicker;
     LinearLayout dispProperty;
@@ -278,7 +280,7 @@ TextView rental,resale;
     private FrameLayout hideOnSearch;
     private Boolean autoc = false;
     private Boolean autocomplete = false,MarkerClickEnable=true;
-    LatLng [] cent = new LatLng[5];
+
     private  static  View  rootView;
 
     private View v1;
@@ -313,9 +315,10 @@ TextView rental,resale;
     Thread [] gamethread=new Thread[5];
     boolean [] textFlag=new boolean[5];
     boolean locked;
+
     private Timer []gametimer=new Timer[5];
      int[] gamecount = new int[5];
-
+    LatLng [] cent = new LatLng[5];
 
 
 
@@ -2245,36 +2248,7 @@ catch(Exception e){
                                     flag[i] = false;
                                 }
                                 OnScreenCo_ordinateFromLatLng();
-=======
-    for (int i = 0; i < 5; i++) {
-        name = getPrice.getResponseData().getBuildings().get(i).getName();
-        Log.i("TRACE", "RESPONSEDATAr" + name);
 
-        or_psf[i] = Integer.parseInt(getPrice.getResponseData().getBuildings().get(i).getOrPsf());
-        Log.i("TRACE", "RESPONSEDATAr" + or_psf);
-        ll_pm[i] = Integer.parseInt(getPrice.getResponseData().getBuildings().get(i).getLlPm());
-
-        Log.i("TRACE", "RESPONSEDATAr" + ll_pm);
-        double lat = Double.parseDouble(getPrice.getResponseData().getBuildings().get(i).getLoc().get(1));
-        Log.i("TRACE", "RESPONSEDATAr" + lat);
-        double longi = Double.parseDouble(getPrice.getResponseData().getBuildings().get(i).getLoc().get(0));
-        Log.i("TRACE", "RESPONSEDATAr" + longi);
-        loc = new LatLng(lat, longi);
-        Log.i("TRACE", "RESPONSEDATAr" + loc);
-        Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
-
-        mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc).title(name).snippet("Rent:" + ll_pm[i] + " " + "Sale" + or_psf[i]).icon(icon1).flat(true));
-
-        Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
-        flag[i] = false;
-    }
-
-                                //mflag=true;
-
-                                // }
-                                // updateHorizontalPicker();
-
->>>>>>> 76036d8daec418e6635ad5345d9b8a889bd8e45b
                                 mVisits.setEnabled(true);
                                 txtFilterValue.setEnabled(true);
                                 horizontalPicker.setVisibility(View.VISIBLE);
@@ -3549,7 +3523,7 @@ public void oyebuttonBackgrountColorOrange(){
                             map.getUiSettings().setScrollGesturesEnabled(true);
                             Log.i("MotionEvent.ACTION_UP", "=========================" + clicked);
                         }
-//
+//final long now = SystemClock.uptimeMillis();
                         if (now - lastTouched > SCROLL_TIME && !(motionEvent.getPointerCount() > 1) && isNetworkAvailable()) {
                             Log.i("MotionEvent.ACTION_UP", "=========================22");
                             Log.i("setScroll", "=======================setScrollGesturesEnabled==");
@@ -4102,9 +4076,6 @@ public void createTextView(){
                 anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
 
         Markertext[marker_position]= map.addMarker(markerOptions);
-//        dropPinEffect( Markertext[marker_position]);
-//        Displaybuilding();
-//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-33.8696, 151.2094), 10));
     }
    /* private CharSequence makeCharSequence() {
         String prefix = "Mixing11 ";
@@ -4118,38 +4089,7 @@ public void createTextView(){
 
 
 
-    public void Displaybuilding() {
-        Log.i("countervalue","count : sushil11 ");
-       int i=0,count=0;
-        if(loc[0]==null)
-            loc[0]=new LatLng(19.1095416,72.8413011);
-        map.clear();
-//       mCustomerMarker[0]= map.addMarker(new MarkerOptions().position(loc[0]).icon(icon1));
-       mCustomerMarker[1]= map.addMarker(new MarkerOptions().position(loc[1]).icon(icon1));
-      // mCustomerMarker[2]= map.addMarker(new MarkerOptions().position(loc[2]).icon(icon1));
-       //mCustomerMarker[3]= map.addMarker(new MarkerOptions().position(loc[3]).icon(icon1));
-       mCustomerMarker[4]= map.addMarker(new MarkerOptions().position(loc[4]).icon(icon1));
 
-
-
-
-
-
-
-//        dropPinEffect(mCustomerMarker[0] );
-        dropPinEffect(mCustomerMarker[1] );
-        /*dropPinEffect(mCustomerMarker[2] );
-        dropPinEffect(mCustomerMarker[3] );*/
-        dropPinEffect(mCustomerMarker[4] );
-        playSound();
-//        randomrate1();
-        randomrate2();
-       /* randomrate3();
-        randomrate4();*/
-        randomrate5();
-
-
-    }
 
 
 
@@ -4179,6 +4119,40 @@ public void createTextView(){
             }
         }, 1500, 200);
     }*/
+
+
+    public void Displaybuilding() {
+        Log.i("countervalue","count : sushil11 ");
+        int i=0,count=0;
+        if(loc[0]==null)
+            loc[0]=new LatLng(19.1095416,72.8413011);
+        map.clear();
+//       mCustomerMarker[0]= map.addMarker(new MarkerOptions().position(loc[0]).icon(icon1));
+        mCustomerMarker[1]= map.addMarker(new MarkerOptions().position(loc[1]).icon(icon1));
+        // mCustomerMarker[2]= map.addMarker(new MarkerOptions().position(loc[2]).icon(icon1));
+        //mCustomerMarker[3]= map.addMarker(new MarkerOptions().position(loc[3]).icon(icon1));
+        mCustomerMarker[4]= map.addMarker(new MarkerOptions().position(loc[4]).icon(icon1));
+
+
+
+
+
+
+
+//        dropPinEffect(mCustomerMarker[0] );
+        dropPinEffect(mCustomerMarker[1] );
+        /*dropPinEffect(mCustomerMarker[2] );
+        dropPinEffect(mCustomerMarker[3] );*/
+        dropPinEffect(mCustomerMarker[4] );
+        playSound();
+//        randomrate1();
+        randomrate2();
+       /* randomrate3();
+        randomrate4();*/
+        randomrate5();
+
+
+    }
 
     public void randomrate1(){
         Log.i("countervalue","count : sushil12 ");
@@ -4368,18 +4342,6 @@ public void createTextView(){
                     gamethread[4]=   new Thread(new Runnable() {
                             public void run() {
 
-                           /*     if(gamecount[4] >=50){
-                                    stopTimer(4);
-                                    mCustomerMarker[4].remove();
-                                    gamethread[4].interrupt();
-
-                                    Markertext[4].remove();
-                                    textFlag[4]=false;
-                                    Log.i("countervalue","count 11"+gamecount[4] );
-                                    gamecount[4] =0;
-                                    Log.i("countervalue","count 12 "+gamecount[4] );
-//                                    gamethread[4].interrupt();
-                                }*/
                                 if(textFlag[4]==true) {
                                     gamecount[4] = gamecount[4] +1;
                                     Log.i("countervalue","count "+gamecount[4] );

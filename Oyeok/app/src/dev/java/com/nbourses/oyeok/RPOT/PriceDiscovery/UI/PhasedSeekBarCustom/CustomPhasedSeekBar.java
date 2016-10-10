@@ -148,14 +148,18 @@ public class CustomPhasedSeekBar extends View {
                 (int) (getHeight() - mBackgroundPaddingRect.bottom));
 
 
-        //initially current and center elements cordinates are same
 
-        mCurrentX = mPivotX = getWidth() / 2;
-        mCurrentY = mPivotY = (getHeight()) / 2;
 
         //count of items in adapter
-        int count = 2;//getCount();
+        int count = getCount();//getCount();
 
+
+        //initially current and center elements cordinates are same
+
+         mPivotX = getWidth() / 2;
+         mPivotY = (getHeight()) / 2;
+        mCurrentX = getWidth() / count;
+        mCurrentY =(getHeight()) / count;
         //width of each item to occupy
         int widthBase = rect.width() / count;
 

@@ -100,6 +100,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.activities.ClientMainActivity;
+import com.nbourses.oyeok.activities.Game;
 import com.nbourses.oyeok.activities.ProfileActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -236,7 +237,7 @@ Button home,shop,industrial,office;
     private final int MY_PERMISSION_FOR_CAMERA = 11;
     private CustomPhasedSeekBar mPhasedSeekBar;
     Drawable marker = null;
-    Marker[] mCustomerMarker = new Marker[5];
+
     String brokerType;
     private Geocoder geocoder;
     private GetCurrentLocation.CurrentLocationCallback mcallback;
@@ -269,7 +270,9 @@ Button home,shop,industrial,office;
     private int llMin=35, llMax=60, orMin=21000, orMax=27000;
     private String  text;
     private String[] config=new String[5],rate_growth =new String[5],name = new String[5],listing =new String[5],portal= new String[5],transaction=new String[5],id=new String[5],distance=new String[5];
-
+    Marker[] mCustomerMarker = new Marker[5];
+    private int[] or_psf = new int[5], ll_pm = new int[5];
+    private LatLng []loc=new LatLng[5];
     private static int count = 0;
     private static final String ischeck = "true";
     private String filterValue;
@@ -279,8 +282,7 @@ Button home,shop,industrial,office;
     RelativeLayout property_type_layout;
     LinearLayout dispProperty;
     private int countertut;
-    private int[] or_psf = new int[5], ll_pm = new int[5];
-    private LatLng []loc=new LatLng[5];
+
     private ImageView myLoc,ic_search;
     LinearLayout recordWorkout;
     boolean clicked = true;
@@ -648,7 +650,7 @@ Button home,shop,industrial,office;
         Button CallButton=(Button) rootView.findViewById(R.id.CallButton);
 
         buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
-        onPositionSelected(0, 2);
+        onPositionSelected(0, 3);
 
         horizontalPicker = (HorizontalPicker) rootView.findViewById(R.id.picker);
         horizontalPicker.setMpicker(this);
@@ -703,7 +705,7 @@ Button home,shop,industrial,office;
 
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
         if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")) {
-            mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), getContext().getResources().getString(R.string.Resale)}));
+            mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector,R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40","15"}, new String[]{getContext().getResources().getString(R.string.Rental),"Game", getContext().getResources().getString(R.string.Resale)}));
 
         } else {
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
@@ -2441,7 +2443,7 @@ catch(Exception e){
     @Override
     public void onPositionSelected(int position, int count) {
 
-        if (count == 2) {
+        if (count == 3) {
             if (position == 0) {
 
 
@@ -2494,6 +2496,10 @@ catch(Exception e){
 
 
             } else if (position == 1) {
+               Intent intent=new Intent(getContext(),Game.class);
+                startActivity(intent);
+
+            }else if (position == 2) {
 
 
                 marquee(500, 100);
