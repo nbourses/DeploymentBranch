@@ -494,9 +494,18 @@ else if(!localitySet){
 }
                 else{
     //getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.container_Signup)).commit();
-    getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
 
-    autoOk();
+                    if(General.isNetworkAvailable(getContext())) {
+                        getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+                        autoOk();
+                    }else{
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text("No internet Connectivity.")
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }
+
 
 
 }

@@ -30,16 +30,18 @@ public class ProfileActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
-
-
-        if(getIntent().getExtras().containsKey("msg")){
-            Log.i("TAG","dattu tappewala ");
+try {
+    if (getIntent().getExtras() != null) {
+        if (getIntent().getExtras().containsKey("msg")) {
+            Log.i("TAG", "dattu tappewala ");
             SnackbarManager.show(
                     Snackbar.with(this)
                             .text("You must update profile to proceed.")
                             .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
         }
+    }
+}catch(Exception e){}
         init();
     }
 

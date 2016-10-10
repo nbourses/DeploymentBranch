@@ -347,7 +347,8 @@ private String Walkthrough,beacon;
         init();
 
         if(SharedPrefs.getString(getContext(),SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
-            beacon = "true";
+           // beacon = "true";
+            beacon = "false";  // beacon disabled
             SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
         }
         else {

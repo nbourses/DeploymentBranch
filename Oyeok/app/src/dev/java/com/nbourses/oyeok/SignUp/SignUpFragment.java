@@ -465,7 +465,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
 
         submit.setText("LOGIN");
-        if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
+        Log.i(TAG,"last fragment narcos 2 "+okBroker);
+        if(okBroker==false && General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
             tvheading.setText(R.string.client_log_in_heading);
             if(lastFragment.equalsIgnoreCase("clientDeal"))
                 tvcontent.setText(R.string.client_sign_up_content_from_deals);
@@ -498,7 +499,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
      new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
      submit.setText("REGISTER");
 
-     if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client")) {
+     if(okBroker==false && General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
          tvheading.setText(R.string.client_sign_up_heading);
          if(lastFragment.equalsIgnoreCase("clientDeal"))
              tvcontent.setText(R.string.client_sign_up_content_from_deals);
@@ -745,8 +746,11 @@ if(newUser==true) {
 
 
     void signup_success() {
-
-
+// Add timestamp if user is signing up directly from intro
+        if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
+            General.setSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI, String.valueOf(System.currentTimeMillis()));
+            Log.i("TIMESTAMP", "millis " + System.currentTimeMillis());
+        }
         /*TelephonyManager tm = (TelephonyManager) context.getSystemService();*/
        Log.i("TRACE","in SinSuc");
 

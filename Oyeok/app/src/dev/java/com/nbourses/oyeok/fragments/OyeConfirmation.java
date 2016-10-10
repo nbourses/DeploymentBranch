@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
@@ -53,7 +54,7 @@ public class OyeConfirmation extends Fragment {
     Animation slide_arrow;
     private Timer timer;
     private OnFragmentInteractionListener mListener;
-
+    private long mLastClickTime = SystemClock.elapsedRealtime();
     public OyeConfirmation() {
         // Required empty public constructor
     }
@@ -171,7 +172,6 @@ public class OyeConfirmation extends Fragment {
         addContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
               proceed_to_oye.performClick();
 
             }
@@ -182,6 +182,12 @@ public class OyeConfirmation extends Fragment {
         proceed_to_oye.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 2000) {
+                    return;
+                }
+                mLastClickTime = SystemClock.elapsedRealtime();
+                Log.i("TAG","oye oye 2");
 
                 if (General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
                     getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
@@ -207,6 +213,12 @@ public class OyeConfirmation extends Fragment {
 //                ((ClientMainActivity)getActivity()).closeOyeConfirmation();
 
                 ((ClientMainActivity)getActivity()).EditOyeDetails();
+               /* FragmentManager fm = getFragmentManager();
+                DashboardClientFragment fragm = (DashboardClientFragment) fm.findFragmentById(R.id.container_map);
+                fragm.disablepanel(true);*/
+               // ((DashboardClientFragment)getActivity().getSupportFragmentManager().findFragmentById(R.id.container_map)).disablepanel(true);
+               // fragm.disable();
+                ///(DashboardClientFragment)disablepanel(true);
             }
         });
 

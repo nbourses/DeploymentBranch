@@ -1914,6 +1914,7 @@ Log.i(TAG,"Image is the "+out);
 
     public  void EditOyeDetails(){
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).OnOyeClick1();
+        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).disablepanel(true);
         if(oyeconfirm_flag==true) {
             for(int i=1;i<getSupportFragmentManager().getBackStackEntryCount();i++)
                 getSupportFragmentManager().popBackStackImmediate();
@@ -1992,7 +1993,7 @@ Log.i(TAG,"Image is the "+out);
 
     public  void closeOyeConfirmation(){
         Log.i("backstack count","   : "+oyeconfirm_flag+"  "+getSupportFragmentManager().getBackStackEntryCount());
-
+        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).disablepanel(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         cancel_btn.setVisibility(View.GONE);

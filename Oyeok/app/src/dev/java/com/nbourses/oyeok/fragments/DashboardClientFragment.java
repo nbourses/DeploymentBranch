@@ -308,7 +308,7 @@ Button home,shop,industrial,office;
     Animation bounce;
     Animation slideUp;
     Animation slideDown;
-    private String favTitle;
+    private String favTitle = "My Home";
     private BitmapDescriptor favIcon;
 
 
@@ -367,6 +367,9 @@ Button home,shop,industrial,office;
 
     @Bind(R.id.addressPanel)
     LinearLayout addressPanel;
+
+    @Bind(R.id.buildingIcon)
+    ImageView buildingIcon;
 
 
 //    @Bind(R.id.hPicker)
@@ -579,7 +582,18 @@ Button home,shop,industrial,office;
 
 // Permission Request
 
-        if (SharedPrefs.getString(getContext(), SharedPrefs.PERMISSION).equalsIgnoreCase("")) {
+       // General.showPermissionDialog(getContext(),getActivity());
+        Log.i(TAG,"perma "+SharedPrefs.getString(getContext(), SharedPrefs.PERMISSION));
+
+
+        if (ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    AppConstants.LOCATION_PERMISSION_REQUEST_CODE);
+        }
+
+        /*if (SharedPrefs.getString(getContext(), SharedPrefs.PERMISSION).equalsIgnoreCase("")) {
 
             requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
             permission = "true";
@@ -597,7 +611,7 @@ Button home,shop,industrial,office;
             requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
             SharedPrefs.save(getContext(), SharedPrefs.PERMISSION, "false");
         }
-
+*/
 
         droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl, getActivity());
         mVisits = (TextView) rootView.findViewById(R.id.newVisits);
@@ -627,6 +641,8 @@ Button home,shop,industrial,office;
             iconHome = BitmapDescriptorFactory.fromResource(R.drawable.favhome);
             iconOffice = BitmapDescriptorFactory.fromResource(R.drawable.favoffice);
             iconOther = BitmapDescriptorFactory.fromResource(R.drawable.favother);
+
+            favIcon = iconHome;
 
 
         }
@@ -1007,6 +1023,8 @@ Button home,shop,industrial,office;
                             txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
                             UpdateRatePanel();
                             search_building_icon.setVisibility(View.GONE);
+                            buildingIcon.setVisibility(View.GONE);
+                            fav.setVisibility(View.VISIBLE);
                         }
 
                         public void onFinish() {
@@ -1151,6 +1169,8 @@ Button home,shop,industrial,office;
                                 mCustomerMarker[i].remove();
                                 mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).snippet(m.getSnippet()).icon(icon2));
                                 search_building_icon.setVisibility(View.VISIBLE);*/
+                                    buildingIcon.setVisibility(View.VISIBLE);
+                                    fav.setVisibility(View.GONE);
                                     mCustomerMarker[i].showInfoWindow();
                                     horizontalPicker.setVisibility(View.GONE);
                                     tvFetchingrates.setVisibility(View.VISIBLE);
@@ -1242,6 +1262,8 @@ Button home,shop,industrial,office;
 
 //                                mCustomerMarker[i].setIcon(icon1);
                                     search_building_icon.setVisibility(View.GONE);
+                                    buildingIcon.setVisibility(View.GONE);
+                                    fav.setVisibility(View.VISIBLE);
                                     flag[i] = false;
                                     horizontalPicker.setVisibility(View.VISIBLE);
                                     tvFetchingrates.setVisibility(View.GONE);
@@ -2070,6 +2092,7 @@ catch(Exception e){
 
             MarkerClickEnable=true;
         mVisits.setEnabled(false);
+            disablepanel(false);
         txtFilterValue.setEnabled(false);
         CancelAnimation();
             User user = new User();
@@ -2083,7 +2106,10 @@ catch(Exception e){
             user.setProperty_type("home");
             user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
             Log.i("t1", "My_lng" + "  " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-            user.setLocality("Andheri west");
+            if(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) == "")
+                user.setLocality("mumbai");
+            else
+            user.setLocality(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
             Log.i("t1", "My_lat" + "  " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
             user.setPlatform("android");
             Log.i("my_locality", SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
@@ -2123,6 +2149,20 @@ catch(Exception e){
 //                        Log.e(TAG, "RETROFIT SUCCESS " + getPrice.getResponseData().getPrice().getLlMin().toString());
                         JSONObject jsonResponse = new JSONObject(strResponse);
                         String errors = jsonResponse.getString("errors");
+                        String msg = "";
+                        try{
+                           msg = jsonResponse.getJSONObject("responseData").getJSONObject("price").getString("message");
+                        }catch(Exception e){
+
+                        }
+                        try{
+                            msg = jsonResponse.getJSONObject("responseData").getString("message");
+                        }catch(Exception e){
+
+                        }
+
+                        Log.i("Chaman","ho ghe "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG)+" "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT)+" "+jsonResponse);
+
                         if(errors.equals("8")) {
                             Log.i(TAG, "error code is 2 ");
                             Log.i(TAG, "error code is 1 " + jsonResponse.toString());
@@ -2137,6 +2177,10 @@ catch(Exception e){
                             openProfileActivity.putExtra("msg","compulsary");
                             startActivity(openProfileActivity);
                         }
+                        else if(msg.equalsIgnoreCase("We dont cater here yet") || msg.equalsIgnoreCase("missing Fields in get price")){
+                            tvFetchingrates.setText("We only cater in Mumbai");
+                        }
+
                         else {
                             JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
                             // horizontalPicker.stopScrolling();
@@ -2188,6 +2232,8 @@ catch(Exception e){
                                     mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
                                     txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
                                     search_building_icon.setVisibility(View.GONE);
+                                    buildingIcon.setVisibility(View.GONE);
+                                    fav.setVisibility(View.VISIBLE);
                                     StartOyeButtonAnimation();
                                     try {
                                         for (int i = 0; i < 5; i++) {
@@ -2228,6 +2274,7 @@ catch(Exception e){
                                     showFavourites();
                                     mVisits.setEnabled(true);
                                     txtFilterValue.setEnabled(true);
+                                    disablepanel(true);
                                     horizontalPicker.setVisibility(View.VISIBLE);
                                     tv_building.setVisibility(View.VISIBLE);
                                     tvRate.setVisibility(View.VISIBLE);
@@ -2397,7 +2444,10 @@ catch(Exception e){
                         });
                         //getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
 
-                    } else {
+                    }
+
+
+                    else {
                         // permission denied, boo! Disable the
                         // functionality that depends on this permission.
                     }
@@ -3486,6 +3536,8 @@ public void oyebuttonBackgrountColorOrange(){
                             Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
                             getRegion();
                             search_building_icon.setVisibility(View.GONE);
+                            buildingIcon.setVisibility(View.GONE);
+                            fav.setVisibility(View.VISIBLE);
                             horizontalPicker.stopScrolling();
                             missingArea.setVisibility(View.GONE);
                             getPrice();
@@ -3684,6 +3736,8 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
         rupeesymbol.setVisibility(View.GONE);
         txtFilterValue.setEnabled(false);
         mVisits.setEnabled(false);
+        disablepanel(false);
+
         map.getUiSettings().setAllGesturesEnabled(false);
 
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
@@ -3736,6 +3790,8 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
                 buildingSelected = true;
                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
                 search_building_icon.setVisibility(View.GONE);
+                buildingIcon.setVisibility(View.GONE);
+                fav.setVisibility(View.VISIBLE);
                 flag[i] = false;
                 horizontalPicker.setVisibility(View.VISIBLE);
                 tvFetchingrates.setVisibility(View.GONE);
@@ -3796,7 +3852,8 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
 
  public void walkBeaconStatus(){
     if (SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
-        beacon = "true";
+       // beacon = "true";
+        beacon = "false";  // beacon disabled
         SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
     } else {
         beacon = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON);
@@ -3919,12 +3976,32 @@ if(buildingSelected)
 
     }
 
+    public void disablepanel(Boolean x){
+        ll_marker.setEnabled(x);
+        mMarkerminmax.setEnabled(x);
+        horizontalPicker.setEnabled(x);
+        tv_building.setEnabled(x);
+        tvRate.setEnabled(x);
+        rupeesymbol.setEnabled(x);
+        tvFetchingrates.setEnabled(x);
+
+    }
+
 @OnClick({R.id.addressPanel,R.id.ic_search})
 public void onOptionClickS(View v){
     searchFragment c = new searchFragment();
     AppConstants.SEARCHFLAG = true;
 
     loadFragmentAnimated(c, null, R.id.container_Signup, "Search");
+    ((ClientMainActivity)getActivity()).closeOyeConfirmation();
+    ((ClientMainActivity)getActivity()).closeOyeScreen();
+
+    Intent in = new Intent(AppConstants.MARKERSELECTED);
+    in.putExtra("markerClicked", "false");
+    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+    ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+    onMapclicked();
+
 }
 
 
