@@ -20,8 +20,6 @@ import java.util.ArrayList;
 
 import io.realm.Realm;
 
-import static com.nbourses.oyeok.R.layout.rental_listview_row;
-
 /**
  * Created by sushil on 29/09/16.
  */
@@ -80,7 +78,7 @@ public  class myPortfolioAdapter extends realmAdapter<MyPortfolioModel,myPortfol
 
     @Override
     public myPortfolioAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new myPortfolioAdapter.ViewHolder(inflater.inflate(rental_listview_row, parent, false));
+        return new myPortfolioAdapter.ViewHolder(inflater.inflate(R.layout.rental_listview_row, parent, false));
     }
 
     @Override
@@ -138,8 +136,12 @@ public void setIcon(MyPortfolioModel item, myPortfolioAdapter.ViewHolder holder)
    for(int i=0;i<ids.size();i++) {
        try {
            MyPortfolioModel results = myRealm
-                   .where( MyPortfolioModel.class ).equalTo( "id", ids.get( i ) )
+                   .where( MyPortfolioModel.class )
+                   .equalTo( "id", ids.get( i ) )
+                   //.notEqualTo( "" )
+
                    .findFirst();
+
            myRealm.beginTransaction();
            results.removeFromRealm();
            myRealm.commitTransaction();

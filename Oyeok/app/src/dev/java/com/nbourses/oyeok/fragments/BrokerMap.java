@@ -72,6 +72,7 @@ public class BrokerMap extends DashboardClientFragment {
     private BitmapDescriptor icon1;
     private GetCurrentLocation.CurrentLocationCallback mcallback;
     // private ChangeLocation locationName;
+    Double lat, lng;
     private Point point;
     //SharedPreferences.OnSharedPreferenceChangeListener listener;
     private static final String[] LOCATION_PERMS = {
@@ -150,12 +151,6 @@ try {
 
             }
         });
-        /*customMapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                gmap=googleMap;
-            }
-        });*/
         gmap.getUiSettings().setRotateGesturesEnabled(false);
         gmap.getUiSettings().setMyLocationButtonEnabled(true);
         gmap.getUiSettings().setScrollGesturesEnabled(true);
@@ -205,41 +200,6 @@ try {
 
         });
 
-
-
-      //  if (gmap != null) {
-            //if ((int) Build.VERSION.SDK_INT <= 23) {
-
-
-           /* customMapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-
-                    gmap = googleMap;
-
-                    // map = googleMap;
-                    final LocationManager Loc_manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-                    if (!isNetworkAvailable() || !(Loc_manager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
-                        gmap = googleMap;
-                        double lat11 = 19.1269299;
-                        double lng11 = 72.8376545999999;
-                        Log.i("slsl", "location====================:1 ");
-                        LatLng currLatLong = new LatLng(lat11, lng11);
-                        gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 15));
-                    }
-
-                    enableMyLocation();
-                    Log.i("slsl", "location====================: ");
-                    getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
-                    // map.setPadding(left, top, right, bottom);
-                    gmap.setPadding(0, 100, 0, 0);
-
-
-                }
-            });*/
-
-      //  }
 
         location_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -438,13 +398,8 @@ try {
 
         Geocoder coder = new Geocoder(getActivity());
         List<Address> address;
-        //GeoPoint p1 = null;
-
         try {
             address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                //return null;
-            }
             Address location = address.get(0);
             lat = location.getLatitude();
             lng = location.getLongitude();
@@ -453,19 +408,7 @@ try {
             Log.i("t1", "lng" + " " + lng);
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
             SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
-            //gmap.addMarker(new MarkerOptions().position(l).title("marker"));
-
-            //Marker marker = broker_map.addMarker(new MarkerOptions()
-            //     .position(l)
-            //  .title("Title")
-            //.snippet("Description")
-            //.icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(getContext(), Mmarker))));
-
-           // Marker m = gmap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("I am here!").icon(icon1));
-            // broker_map.animateCamera(CameraUpdateFactory.newLatLng(l));
             gmap.moveCamera(CameraUpdateFactory.newLatLng(l));
-            // broker_map.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -484,13 +427,10 @@ try {
                     // If request is cancelled, the result arrays are empty.
                     if (grantResults.length > 0
                             && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    IntentIntegrator.forSupportFragment(DashboardClientFragment.this).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES).setCaptureActivity(CaptureActivityAnyOrientation.class).setOrientationLocked(false).initiateScan();
-                        // permission was granted, y-------------ay! Do the
-                        // contacts-related task you need to do.
+
 
                     } else {
-                        // permission denied, boo! Disable the
-                        // functionality that depends on this permission.
+
                     }
                 }
                 case LOCATION_REQUEST:
@@ -523,33 +463,7 @@ try {
                 // other 'case' lines to check for other
                 // permissions this app might request
             }
-       /*     if (canAccessLocation()) {
-                new GetCurrentLocation(getActivity(), new GetCurrentLocation.CurrentLocationCallback() {
-                    @Override
-                    public void onComplete(Location location) {
-                        if (location != null) {
-                            lat = location.getLatitude();
-                            lng = location.getLongitude();
-                            LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                            Log.i("t1", "lat_long_getcurrentlocation" + " " + currentLocation);
-                            //  broker_map.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title("I am here!").icon(icon1).anchor(x,y));
-                            //   broker_map.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title("I am here!"));
-                            // point= map.getProjection().toScreenLocation(currentLocation);
-                            gmap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-                            gmap.animateCamera(CameraUpdateFactory.zoomTo(12));
 
-                        }
-                    }
-                });
-                getLocationActivity = new GetCurrentLocation(getActivity(),mcallback);
-                //Log.i("t1","mcallback"+""+mcallback);
-            }
-            else {
-                //Intent intent = new Intent(this, MainActivity.class);
-                // startActivity(intent);
-               // Toast.makeText(getContext(), "Offline Mode", Toast.LENGTH_LONG);
-                //((DashboardActivity) getActivity()).showToastMessage("Offline Mode");
-            }*/
 
         }catch (Exception e){}
 
@@ -562,54 +476,35 @@ try {
         if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
 
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-//
                 if (isNetworkAvailable()) {
-
-
                         LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
                         Log.i("map", "============ map:" + " " + gmap);
-//                            currentLocation1 = map.getProjection().fromScreenLocation(point);
 
                         VisibleRegion visibleRegion = gmap.getProjection()
                                 .getVisibleRegion();
-
                         Point x1 = gmap.getProjection().toScreenLocation(visibleRegion.farRight);
-
                         Point y1 = gmap.getProjection().toScreenLocation(visibleRegion.nearLeft);
-
-
                         Point centerPoint = new Point(x1.x / 2, y1.y / 2);
-
                         LatLng centerFromPoint = gmap.getProjection().fromScreenLocation(
                                 centerPoint);
                         currentLocation1=centerFromPoint;
                         lat = currentLocation1.latitude;
                         Log.i("t1", "lat" + " " + lat);
                         lng = currentLocation1.longitude;
-//                    gmap.addMarker(new MarkerOptions().title("hey").position(currentLocation1));
                         SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                         SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
                         General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
                         General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");
                         getRegion();
-//
-                    getRegion();
                         new LocationUpdater().execute();
-//                }
 
                 } else {
-//
                     General.internetConnectivityMsg(getContext());
-//
                 }
 
-//            }
-//            spanning=false;
 
         } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-//            lastTouched = SystemClock.uptimeMillis();
-//            map.getUiSettings().setScrollGesturesEnabled(true);
-            //LatLng currentLocation11;
+
             Log.i("MotionEvent.ACTION_DOWN", "=========================");
 
 

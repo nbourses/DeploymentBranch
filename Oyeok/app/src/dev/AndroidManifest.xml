@@ -11,6 +11,8 @@
 
     </activity>
     <activity android:name="com.nbourses.oyeok.activities.Game"
+              android:screenOrientation="portrait"
+              android:theme="@style/AppTheme1"
     >
     </activity>
 </application>
