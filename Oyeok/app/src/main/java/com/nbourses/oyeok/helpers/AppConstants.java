@@ -16,6 +16,7 @@ public class AppConstants {
     public static final String SOMETHING_WENT_WRONG = "OOPs!!! Something went wrong...";
     public static String PlacesTag = "Google Places Auto Complete";
     public static boolean cardNotif = false;
+    public static boolean SETLOCATION = false;
     public static  int minRent = 35000;
     public static  int maxRent = 60000;
     public static Boolean SEARCHFLAG = false;
@@ -62,6 +63,7 @@ public class AppConstants {
     public static final String BROADCAST_MIN_MAX_VAL = "broadcastMinMaxValue";
 
     public static final String IS_LOGGED_IN_USER = "isLoggedInUser";
+    public static final String SETLOCN = "setLocation";
 
     public static final String USER_ID = "userId";
 
@@ -174,6 +176,11 @@ public class AppConstants {
     public static String DRAWTEXT2="true2";
     public static String DRAWTEXT3="true3";
     public static String DRAWTEXT4="true4";
+
+    //Global variables for cardFragment
+    public static String Card_TT="LL";
+    public static String Card_REQ_AVL="REQ";
+
 
 
 

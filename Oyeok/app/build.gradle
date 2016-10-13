@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 //apply plugin: 'com.google.gms.google-services'
 
-
 /*buildscript {
     repositories {
         maven { url 'http://download.safedk.com/maven' }
@@ -110,7 +109,7 @@ buildscript {
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
-    maven{url 'https://dl.bintray.com/intercom/intercom-maven'}
+    maven { url 'https://dl.bintray.com/intercom/intercom-maven' }
 }
 
 repositories {
@@ -150,7 +149,6 @@ dependencies {
 //dependencies {
 //    compile 'com.google.android.gms:play-services-gcm:9.0.2'
 //}
-
 
 /*dependencies {
     compile 'com.github.thorbenprimke:realm-recyclerview:0.9.23'
@@ -216,6 +214,9 @@ dependencies {
     compile 'com.firebase:firebase-client-android:2.3.1'
 }
 
+dependencies {
+    compile 'com.android.support:support-v4:23.+'
+}
 dependencies {
     compile 'com.android.support:support-v4:23.+'
 }
@@ -319,11 +320,10 @@ dependencies {
     //  compile 'com.zcw:togglebutton-library:1.0.0'
     compile 'com.kyleduo.switchbutton:library:1.4.4'
 
-
 ///Google Play Game services
 //compile "com.google.android.gms:play-services-games:9.0.2"
 
-    compile ('io.intercom.android:intercom-sdk:1.+@aar') {
+    compile('io.intercom.android:intercom-sdk:1.+@aar') {
         transitive = true
     }
 

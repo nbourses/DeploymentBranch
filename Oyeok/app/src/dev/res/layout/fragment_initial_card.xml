@@ -1,0 +1,445 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="com.nbourses.oyeok.fragments.InitialCard">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/rectangle_border_transparent"
+        android:layout_margin="5dp">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="3"
+    android:orientation="vertical"
+    android:background="@color/greenish_blue">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            app:srcCompat="@drawable/ic_launcher"
+            android:id="@+id/imageView3" />
+
+        <TextView
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="3 Clicks Away"
+            android:textColor="@color/black"
+            android:layout_width="match_parent"
+
+            android:id="@+id/textView4"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:gravity="center" />
+
+        <TextView
+            android:text="I want to Search"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:textColor="@color/dark_white"
+            android:id="@+id/tagline"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:gravity="center" />
+</LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:orientation="vertical"
+    android:layout_weight="2"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="8dp">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Rental"
+                android:id="@+id/rental"
+                android:layout_gravity="center"
+                android:textColor="@color/greenish_blue"
+                android:textAlignment="center" />
+            <!--android:layout_gravity="center"
+            android:textAlignment="center"-->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center">
+                    <!--<LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="50dp"
+                        android:layout_height="20dp"
+                    android:background="@color/aliceblue">-->
+    ¸
+
+                    <com.kyleduo.switchbutton.SwitchButton
+                        android:id="@+id/toggleBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        app:kswThumbColor="@color/greenish_blue" />
+                     <!--</LinearLayout>-->
+                    <!--app:kswTintColor="#B13254"-->
+                </RelativeLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Buy/Sell"
+                android:id="@+id/buySell"
+                android:layout_gravity="center"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:weightSum="1"
+            android:id="@+id/rentalPanel">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="0.5">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tenant"
+                    android:id="@+id/tenant" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="0.5"
+                android:id="@+id/sh2n">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Owner"
+                    android:id="@+id/owner"
+                    android:checked="false" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:weightSum="1"
+            android:visibility="gone"
+            android:layout_weight="1"
+            android:id="@+id/resalePanel">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="0.5">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Buyer"
+                    android:id="@+id/buyer" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="0.5"
+                android:id="@+id/sh2no">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Seller"
+                    android:id="@+id/seller"
+                    android:checked="false" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/tenantQ"
+            android:layout_weight="3.5"
+            android:orientation="vertical"
+            android:layout_margin="10dp"
+            android:background="@drawable/rectangle_border_transparent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Have fixed budget, Suggest me locations"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="@color/dark_white" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+
+                android:background="?android:attr/listDivider"
+                android:visibility="visible"
+               />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Have a fixed budget in a given Locality"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="@color/dark_white" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+
+                android:background="?android:attr/listDivider"
+                android:visibility="visible"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Want to save travel time"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="@color/dark_white" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/ownerQ"
+            android:layout_weight="3.5"
+            android:orientation="vertical"
+            android:layout_margin="10dp"
+            android:background="@drawable/rectangle_border_transparent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Compare ongoing rent in building with my expectation"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="@color/dark_white" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+
+                android:background="?android:attr/listDivider"
+                android:visibility="visible"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Post details for free to local brokers &amp; get response on app"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="@color/dark_white" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+
+                android:background="?android:attr/listDivider"
+                android:visibility="visible"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Create Portfolio of my rental properties &amp; track rates"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="@color/dark_white" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/buyerQ"
+            android:layout_weight="3.5"
+            android:orientation="vertical"
+            android:layout_margin="10dp"
+            android:background="@drawable/rectangle_border_transparent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="See live property rates for old &amp; new buildings"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="@color/dark_white" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+
+                android:background="?android:attr/listDivider"
+                android:visibility="visible"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="See new projects with a budget &amp; EMI"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="@color/dark_white" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+
+                android:background="?android:attr/listDivider"
+                android:visibility="visible"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Save time, hire local brokers' services"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="@color/dark_white" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/sellerQ"
+            android:layout_weight="3.5"
+            android:orientation="vertical"
+            android:layout_margin="10dp"
+            android:background="@drawable/rectangle_border_transparent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Compare market rates vs with my sale price"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="@color/dark_white" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+
+                android:background="?android:attr/listDivider"
+                android:visibility="visible"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Hot investments to reinvest"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="@color/dark_white" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+
+                android:background="?android:attr/listDivider"
+                android:visibility="visible"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Want to sell, hire local brokers to market, find buyers"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="@color/dark_white" />
+
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/call"
+                android:text="Call OyeOk"
+                android:textSize="20sp"
+                android:padding="3sp"
+                android:gravity="center"
+                android:elevation="12dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</FrameLayout>

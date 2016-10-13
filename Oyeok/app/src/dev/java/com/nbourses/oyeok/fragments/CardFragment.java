@@ -7,8 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -166,6 +164,7 @@ public class CardFragment  extends Fragment{
         DBHelper dbHelper = new DBHelper(getContext());
 
         toggleBtn.toggle();
+
        /* toggleBtn.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(boolean on) {
@@ -426,10 +425,23 @@ public class CardFragment  extends Fragment{
                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
                 }else {
+                    getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
 
+                    Intent intent = new Intent(AppConstants.SETLOCN);
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+
+                    if(rent)
+                        AppConstants.Card_TT = "LL";
+                    else
+                        AppConstants.Card_TT = "OR";
+
+                    if(tenant.isChecked() || buyer.isChecked())
+                        AppConstants.Card_REQ_AVL = "req";
+                    else
+                        AppConstants.Card_REQ_AVL = "avl";
                     //  BrokerMap brokerMap=new BrokerMap();
                     //set arguments
-                    BrokerMap brokerMap = new BrokerMap();
+                   /* BrokerMap brokerMap = new BrokerMap();
 
 
                     //loadFragment(d,null,R.id.container_Signup,"");
@@ -442,9 +454,9 @@ public class CardFragment  extends Fragment{
                     fragmentTransaction.replace(R.id.y, brokerMap);
                     fragmentTransaction.commitAllowingStateLoss();
                     localitySet = true;
+                }*/
+                    //loadFragment(brokerMap,null,R.id.container_Signup,"");
                 }
-                //loadFragment(brokerMap,null,R.id.container_Signup,"");
-
 
             }
         });
@@ -468,16 +480,30 @@ public class CardFragment  extends Fragment{
             @Override
             public void onClick(View v) {
 
-/*if(!(rental.isChecked() || buysell.isChecked())) {
-    SnackbarManager.show(
-            Snackbar.with(getContext())
-                    .position(Snackbar.SnackbarPosition.TOP)
-                    .text("Please select transaction type: Rental or BuySell.")
-                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-
-}
- */
                 if(!(tenant.isChecked() || owner.isChecked() || buyer.isChecked() || seller.isChecked())) {
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Please select transaction subtype.")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+                }else {
+                    getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+
+                    Intent intent = new Intent(AppConstants.SETLOCN);
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+
+                    if (rent)
+                        AppConstants.Card_TT = "LL";
+                    else
+                        AppConstants.Card_TT = "OR";
+
+                    if (tenant.isChecked() || buyer.isChecked())
+                        AppConstants.Card_REQ_AVL = "req";
+                    else
+                        AppConstants.Card_REQ_AVL = "avl";
+                }
+               /* if(!(tenant.isChecked() || owner.isChecked() || buyer.isChecked() || seller.isChecked())) {
                     SnackbarManager.show(
                             Snackbar.with(getContext())
                                     .position(Snackbar.SnackbarPosition.TOP)
@@ -493,7 +519,6 @@ else if(!localitySet){
                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 }
                 else{
-    //getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.container_Signup)).commit();
 
                     if(General.isNetworkAvailable(getContext())) {
                         getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
@@ -508,7 +533,7 @@ else if(!localitySet){
 
 
 
-}
+}*/
             }
         });
 

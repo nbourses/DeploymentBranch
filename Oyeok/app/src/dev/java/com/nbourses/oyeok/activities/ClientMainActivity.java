@@ -25,6 +25,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -1135,25 +1136,30 @@ public void signUp(){
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (!AppConstants.SETLOCATION) {
 
-        if(drawerFragment.handle(item))
-        {
-            return true;
-        }
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                //Do stuff
-                //Toast.makeText(this,"getscalled",Toast.LENGTH_LONG).show();
-                if(dbHelper.getValue(DatabaseConstants.user).equals("Broker"))
-                {
-//                    changeFragment(new Ok_Broker_MainScreen(), null, "MarkerPanel");
-                }else {
-//                    changeFragment(new RexMarkerPanelScreen(), null, "MarkerPanel");
-                }
+            if (drawerFragment.handle(item)) {
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            }
+            switch (item.getItemId()) {
+
+                case android.R.id.home:
+                    //Do stuff
+                    //Toast.makeText(this,"getscalled",Toast.LENGTH_LONG).show();
+                    if (dbHelper.getValue(DatabaseConstants.user).equals("Broker")) {
+//                    changeFragment(new Ok_Broker_MainScreen(), null, "MarkerPanel");
+                    } else {
+//                    changeFragment(new RexMarkerPanelScreen(), null, "MarkerPanel");
+                    }
+
+                    return true;
+
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        }
+        else{
+            return false;
         }
     }
 
@@ -1254,11 +1260,21 @@ public void signUp(){
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
+
         if(AppConstants.SEARCHFLAG){
 
             AppConstants.SEARCHFLAG = false;
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
 
+        }
+        else if(AppConstants.SETLOCATION){
+        intent = new Intent(this, ClientMainActivity.class);
+        intent.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
         }
 
         else if(AppConstants.cardNotif){
@@ -1886,8 +1902,8 @@ Log.i(TAG,"Image is the "+out);
                 /*fragmentTransaction.addToBackStack("card");
                 fragmentTransaction.replace(R.id.container_Signup, d);
                 fragmentTransaction.commitAllowingStateLoss();*/
-
-                        CardFragment c = new CardFragment();
+                      //InitialCard c = new InitialCard();
+                       CardFragment c = new CardFragment();
                         //loadFragment(d,null,R.id.container_Signup,"");
                         c.setArguments(null);
 //                FragmentManager fragmentManager = getSupportFragmentManager();
@@ -2038,6 +2054,19 @@ Log.i(TAG,"Image is the "+out);
         }else{
             emailTxt.setVisibility(View.INVISIBLE);
         }
+
+    }
+
+    public void disEnDealsbtn(Boolean x){
+        btnMyDeals.setEnabled(x);
+        btnMyDeals.setVisibility(View.GONE);
+        containerSignup.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent));
+        mToolbar.setClickable(x);
+        containerSignup.setClickable(false);
+        card.setClickable(false);
+        getSupportActionBar().setTitle("Set Location!");
+
+
 
     }
 
