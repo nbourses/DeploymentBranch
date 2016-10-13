@@ -103,7 +103,7 @@ public class GetCurrentLocation extends Activity implements LocationListener, Go
     @Override
     public void onConnected(Bundle bundle) {
         if(!canAccessLocation()) {
-            //requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
+//            requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
             Log.i("Debug","prompt");
         }
         Log.i("TAG","connectionResult bundle "+bundle);

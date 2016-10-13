@@ -89,6 +89,7 @@ import com.nbourses.oyeok.Firebase.ChatList;
 import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.GooglePlacesApiServices.GooglePlacesReadTask;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.AutoOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateStatus;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
@@ -111,6 +112,7 @@ import com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.sdsmdg.tastytoast.TastyToast;
 import com.skyfishjy.library.RippleBackground;
 
 import org.apache.http.HttpEntity;
@@ -148,6 +150,7 @@ import retrofit.mime.TypedByteArray;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
+import static com.nbourses.oyeok.R.id.parent;
 import static java.lang.Math.log10;
 
 
@@ -308,7 +311,7 @@ Button home,shop,industrial,office;
     Animation slideDown;
     private String favTitle = "My Home";
     private BitmapDescriptor favIcon;
-
+private Button CallButton;
 
     private AutoCompletePlaces.GooglePlacesAutocompleteAdapter dataAdapter;
 //    @Bind(R.id.seekbar_linearlayout)
@@ -370,6 +373,8 @@ Button home,shop,industrial,office;
     ImageView buildingIcon;
 
 
+
+
 //    @Bind(R.id.hPicker)
 //    LinearLayout hPicker;
 
@@ -402,6 +407,7 @@ Button home,shop,industrial,office;
     private BroadcastReceiver phasedSeekBarClicked = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            if(!AppConstants.SETLOCATION){
             if (intent.getExtras().getString("phaseseek") != null) {
                 if ((intent.getExtras().getString("phaseseek").equalsIgnoreCase("clicked"))) {
                     try {
@@ -415,13 +421,12 @@ Button home,shop,industrial,office;
                         }
 
                         PropertyButtonSlideAnimation();
-                    }
-                    catch(Exception e){
+                    } catch (Exception e) {
 
                     }
 
                 }
-
+            }
             }
         }
     };
@@ -442,11 +447,24 @@ Button home,shop,industrial,office;
                 getRegion();
                  getPrice();
                 new LocationUpdater().execute();
-            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier);
-
+            if(!AppConstants.SETLOCATION) {
+                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+            }
 
             //}
 
+
+        }
+    };
+
+    private BroadcastReceiver setLocation = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ((ClientMainActivity)getActivity()).disEnDealsbtn(false);
+            showHidepanel(false);
+            AppConstants.SETLOCATION = true;
+            map.clear();
+            txtFilterValue.setText("OYE");
 
         }
     };
@@ -563,7 +581,7 @@ Button home,shop,industrial,office;
         topView = (RelativeLayout) rootView.findViewById(R.id.top);
 
         parentbottom=(RelativeLayout) rootView.findViewById(R.id.top);
-        parenttop=(RelativeLayout) rootView.findViewById(R.id.parent);
+        parenttop=(RelativeLayout) rootView.findViewById(parent);
 
         if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
             General.setSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI, String.valueOf(System.currentTimeMillis()));
@@ -586,30 +604,33 @@ Button home,shop,industrial,office;
 
         if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(),
+            /*ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    AppConstants.LOCATION_PERMISSION_REQUEST_CODE);
+                    AppConstants.LOCATION_PERMISSION_REQUEST_CODE);*/
+
+
+            if (SharedPrefs.getString(getContext(), SharedPrefs.PERMISSION).equalsIgnoreCase("")) {
+
+                requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
+                permission = "true";
+
+                SharedPrefs.save(getContext(), SharedPrefs.PERMISSION, "false");
+                Log.i("checked", "permission" + permission);
+
+            } else {
+                permission = SharedPrefs.getString(getContext(), SharedPrefs.PERMISSION);
+
+                Log.i("checked", "permission" + permission);
+            }
+
+            if (permission.equalsIgnoreCase("true")) {
+                requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
+                SharedPrefs.save(getContext(), SharedPrefs.PERMISSION, "false");
+            }
+
+
         }
 
-        /*if (SharedPrefs.getString(getContext(), SharedPrefs.PERMISSION).equalsIgnoreCase("")) {
-
-            requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
-            permission = "true";
-
-            SharedPrefs.save(getContext(), SharedPrefs.PERMISSION, "false");
-            Log.i("checked", "permission" + permission);
-
-        } else {
-            permission = SharedPrefs.getString(getContext(), SharedPrefs.PERMISSION);
-
-            Log.i("checked", "permission" + permission);
-        }
-
-        if (permission.equalsIgnoreCase("true")) {
-            requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
-            SharedPrefs.save(getContext(), SharedPrefs.PERMISSION, "false");
-        }
-*/
 
         droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl, getActivity());
         mVisits = (TextView) rootView.findViewById(R.id.newVisits);
@@ -661,7 +682,7 @@ Button home,shop,industrial,office;
         tvRate = (TextView) rootView.findViewById(R.id.tvRate);
         tvFetchingrates = (TextView) rootView.findViewById(R.id.tvFetchingRates);
         tv_building = (TextView) rootView.findViewById(R.id.tv_building);
-        Button CallButton=(Button) rootView.findViewById(R.id.CallButton);
+       CallButton=(Button) rootView.findViewById(R.id.CallButton);
 
         buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
         onPositionSelected(0, 2);
@@ -823,7 +844,6 @@ Button home,shop,industrial,office;
         mVisits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 OnOyeClick();
 
             }
@@ -1003,37 +1023,40 @@ Button home,shop,industrial,office;
                     Log.i(TAG, "my Loc clicked ");
 
 
-                    new CountDownTimer(200, 50) {
+                        new CountDownTimer(200, 50) {
 
-                        public void onTick(long millisUntilFinished) {
-                            Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                            public void onTick(long millisUntilFinished) {
+                                if (!AppConstants.SETLOCATION) {
+                                    Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
 //                            ( (ClientMainActivity)getActivity()).closeOyeScreen();
-                            ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
-                            ( (ClientMainActivity)getActivity()).closeOyeConfirmation();
-                            txtFilterValue.setTextSize(13);
-                            txtFilterValue.setTextColor(Color.parseColor("white"));
-                            txtFilterValue.setText(oyetext);
-                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
-                            recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-                            map.getUiSettings().setAllGesturesEnabled(true);
-                            mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
-                            txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
-                            UpdateRatePanel();
-                            search_building_icon.setVisibility(View.GONE);
-                            buildingIcon.setVisibility(View.GONE);
-                            fav.setVisibility(View.VISIBLE);
-                        }
+                                    ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+                                    ((ClientMainActivity) getActivity()).closeOyeConfirmation();
+                                    txtFilterValue.setTextSize(13);
+                                    txtFilterValue.setTextColor(Color.parseColor("white"));
+                                    txtFilterValue.setText(oyetext);
+                                    buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                                    recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                                    map.getUiSettings().setAllGesturesEnabled(true);
+                                    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
+                                    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
+                                    UpdateRatePanel();
+                                    search_building_icon.setVisibility(View.GONE);
+                                    buildingIcon.setVisibility(View.GONE);
+                                    fav.setVisibility(View.VISIBLE);
+                                }
+                            }
 
-                        public void onFinish() {
+                            public void onFinish() {
 
-                            getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
+                                getLocationActivity = new GetCurrentLocation(getActivity(), mcallback);
 
 
-                        }
-                    }.start();
+                            }
+                        }.start();
 
-                    return false;
+                        return false;
+
 
                 }
             });
@@ -1125,11 +1148,12 @@ Button home,shop,industrial,office;
             map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
-
                     Log.i("MA999999 ", "MAP CLICK=========");
-                    tvRate.setVisibility(View.VISIBLE);
-                    rupeesymbol.setVisibility(View.VISIBLE);
-                    onMapclicked();
+if(!AppConstants.SETLOCATION) {
+    tvRate.setVisibility(View.VISIBLE);
+    rupeesymbol.setVisibility(View.VISIBLE);
+    onMapclicked();
+}
 
 
                 }
@@ -1342,7 +1366,9 @@ Button home,shop,industrial,office;
                     if (isNetworkAvailable()) {
                         try {
                             getRegion();
-                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY),filterValueMultiplier);
+                            if (!AppConstants.SETLOCATION) {
+                                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                            }
                             new LocationUpdater().execute();
 
                         } catch (Exception e) {
@@ -1362,6 +1388,7 @@ Button home,shop,industrial,office;
                         try {
 
                             Log.i("Network available","%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+
                             getPrice();
                         } catch (Exception e) {}
                     }
@@ -2009,6 +2036,7 @@ catch(Exception e){
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(autoComplete, new IntentFilter(AppConstants.AUTOCOMPLETEFLAG1));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(phasedSeekBarClicked, new IntentFilter(AppConstants.PHASED_SEEKBAR_CLICKED));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(resetMap, new IntentFilter(AppConstants.RESETMAP));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(setLocation, new IntentFilter(AppConstants.SETLOCN));
 
 
     }
@@ -2021,6 +2049,7 @@ catch(Exception e){
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(autoComplete);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(phasedSeekBarClicked);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(resetMap);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(setLocation);
 //        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oncheckWalkthrough);
         // LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oncheckbeacon);
 
@@ -2086,15 +2115,16 @@ catch(Exception e){
         //getRegion();
 
         if(General.isNetworkAvailable(getContext())) {
+            if (!AppConstants.SETLOCATION) {
             General.slowInternet(getContext());
 
-            MarkerClickEnable=true;
-        mVisits.setEnabled(false);
+            MarkerClickEnable = true;
+            mVisits.setEnabled(false);
             disablepanel(false);
-        txtFilterValue.setEnabled(false);
-        CancelAnimation();
+            txtFilterValue.setEnabled(false);
+            CancelAnimation();
             User user = new User();
-            Log.i(TAG,"get price prepaaration locality "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+            Log.i(TAG, "get price prepaaration locality " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
 
             user.setDeviceId(General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
             Log.i("PREOK", "getcontext " + General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
@@ -2104,10 +2134,10 @@ catch(Exception e){
             user.setProperty_type("home");
             user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
             Log.i("t1", "My_lng" + "  " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-            if(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) == "")
+            if (SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) == "")
                 user.setLocality("mumbai");
             else
-            user.setLocality(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+                user.setLocality(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
             Log.i("t1", "My_lat" + "  " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
             user.setPlatform("android");
             Log.i("my_locality", SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
@@ -2148,20 +2178,20 @@ catch(Exception e){
                         JSONObject jsonResponse = new JSONObject(strResponse);
                         String errors = jsonResponse.getString("errors");
                         String msg = "";
-                        try{
-                           msg = jsonResponse.getJSONObject("responseData").getJSONObject("price").getString("message");
-                        }catch(Exception e){
+                        try {
+                            msg = jsonResponse.getJSONObject("responseData").getJSONObject("price").getString("message");
+                        } catch (Exception e) {
 
                         }
-                        try{
+                        try {
                             msg = jsonResponse.getJSONObject("responseData").getString("message");
-                        }catch(Exception e){
+                        } catch (Exception e) {
 
                         }
 
-                        Log.i("Chaman","ho ghe "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY)+" "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG)+" "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT)+" "+jsonResponse);
+                        Log.i("Chaman", "ho ghe " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) + " " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG) + " " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT) + " " + jsonResponse);
 
-                        if(errors.equals("8")) {
+                        if (errors.equals("8")) {
                             Log.i(TAG, "error code is 2 ");
                             Log.i(TAG, "error code is 1 " + jsonResponse.toString());
                             Log.i(TAG, "error code is " + errors);
@@ -2171,15 +2201,12 @@ catch(Exception e){
                                             .text("You must update profile to proceed.")
                                             .position(Snackbar.SnackbarPosition.TOP)
                                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
-                            Intent openProfileActivity =  new Intent(getContext(), ProfileActivity.class);
-                            openProfileActivity.putExtra("msg","compulsary");
+                            Intent openProfileActivity = new Intent(getContext(), ProfileActivity.class);
+                            openProfileActivity.putExtra("msg", "compulsary");
                             startActivity(openProfileActivity);
-                        }
-                        else if(msg.equalsIgnoreCase("We dont cater here yet") || msg.equalsIgnoreCase("missing Fields in get price")){
+                        } else if (msg.equalsIgnoreCase("We dont cater here yet") || msg.equalsIgnoreCase("missing Fields in get price")) {
                             tvFetchingrates.setText("We only cater in Mumbai");
-                        }
-
-                        else {
+                        } else {
                             JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
                             // horizontalPicker.stopScrolling();
                             Log.i("TRACE", "Response getprice buildings jsonResponseData" + jsonResponseData);
@@ -2195,8 +2222,7 @@ catch(Exception e){
                             Log.i("TRACE", "Response getprice buildings yo" + price.getString("ll_min"));
 
 
-
-                            if(!price.getString("ll_min").equalsIgnoreCase("")){
+                            if (!price.getString("ll_min").equalsIgnoreCase("")) {
                                 if (!price.getString("ll_min").equalsIgnoreCase("0")) {
                                     Log.i("tt", "I am here" + 2);
                                     Log.i("TRACE", "RESPONSEDATAr" + response);
@@ -2238,7 +2264,7 @@ catch(Exception e){
                                             JSONObject j = new JSONObject(buildings.get(i).toString());
                                             config[i] = j.getString("config");
                                             Log.i("TRACE", "RESPONSEDATAr" + name);
-                                            name [i]= j.getString("name");
+                                            name[i] = j.getString("name");
                                             Log.i("TRACE", "RESPONSEDATAr" + name[i]);
                                             rate_growth[i] = j.getString("rate_growth");
                                             Log.i("TRACE", "RESPONSEDATAr" + rate_growth[i]);
@@ -2251,10 +2277,10 @@ catch(Exception e){
                                             Log.i("TRACE", "RESPONSEDATAr" + lat);
                                             double longi = Double.parseDouble(j.getJSONArray("loc").get(0).toString());
                                             Log.i("TRACE", "RESPONSEDATAr" + longi);
-                                            loc [i]= new LatLng(lat, longi);
+                                            loc[i] = new LatLng(lat, longi);
                                             Log.i("TRACE", "RESPONSEDATAr" + loc);
                                             Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
-                                            String customSnippet=rate_growth[i];
+                                            String customSnippet = rate_growth[i];
                                             mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc[i]).title(name[i]).snippet(customSnippet).icon(icon1).flat(true));
                                             Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
                                             flag[i] = false;
@@ -2266,7 +2292,7 @@ catch(Exception e){
                                                         .text("Displaying 5 buildings out of 12,000.")
                                                         .position(Snackbar.SnackbarPosition.TOP)
                                                         .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
-                                    }catch(Exception e){
+                                    } catch (Exception e) {
 
                                     }
                                     showFavourites();
@@ -2311,11 +2337,10 @@ catch(Exception e){
                                 Log.i("GETPRICE", "Else mode ====== ");
 
 
-
-
                             }
 
-                        } } catch (Exception e) {
+                        }
+                    } catch (Exception e) {
                         General.slowInternetFlag = false;
                         General.t.interrupt();
 
@@ -2345,7 +2370,7 @@ catch(Exception e){
                 }
             });
 
-        }
+        } }
         else{
             General.internetConnectivityMsg(getContext());
 
@@ -2448,6 +2473,10 @@ catch(Exception e){
                     else {
                         // permission denied, boo! Disable the
                         // functionality that depends on this permission.
+                        lat=Double.parseDouble(SharedPrefs.getString(getContext(),SharedPrefs.MY_LAT));
+                        lng=Double.parseDouble(SharedPrefs.getString(getContext(),SharedPrefs.MY_LNG));
+                        LatLng latlng=new LatLng(lat,lng);
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng,13));
                     }
                     break;
                 // other 'case' lines to check for other
@@ -2490,7 +2519,7 @@ catch(Exception e){
 
     @Override
     public void onPositionSelected(int position, int count) {
-
+        if(!AppConstants.SETLOCATION) {
         if (count == 2) {
             if (position == 0) {
 
@@ -2599,7 +2628,7 @@ catch(Exception e){
 
             }
         }
-    }
+    }}
 
 
     @Override
@@ -3454,18 +3483,23 @@ public void oyebuttonBackgrountColorOrange(){
 
     private void onMapDrag(final MotionEvent motionEvent) {
 
-                if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+
+
+            if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                if(!AppConstants.SETLOCATION) {
                     tvRate.setVisibility(View.INVISIBLE);
                     rupeesymbol.setVisibility(View.INVISIBLE);
 
                     horizontalPicker.keepScrolling();
                     horizontalPicker.stopScrolling();
-                    Log.i("MotionEvent.ACTION_MOVE", "=========================");
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                }
+                Log.i("MotionEvent.ACTION_MOVE", "=========================");
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 //                    horizontalPicker.stopScrolling();
 //                    marquee(500,100);
-                    updateHorizontalPicker();
-                            if(!spanning) {
+
+                updateHorizontalPicker();
+                if (!spanning) {
                     if (isNetworkAvailable()) {
                         Log.i("MotionEvent.ACTION_UP", "=========================");
                         final long now = SystemClock.uptimeMillis();
@@ -3477,27 +3511,29 @@ public void oyebuttonBackgrountColorOrange(){
                         if (now - lastTouched > SCROLL_TIME && !(motionEvent.getPointerCount() > 1) && isNetworkAvailable()) {
                             Log.i("MotionEvent.ACTION_UP", "=========================22");
                             Log.i("setScroll", "=======================setScrollGesturesEnabled==");
-                            txtFilterValue.setTextSize(13);
-                            txtFilterValue.setTextColor(Color.parseColor("white"));
-                            txtFilterValue.setText(oyetext);
-                            ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
-                            Intent in = new Intent(AppConstants.MARKERSELECTED);
-                            in.putExtra("markerClicked", "false");
-                            buildingSelected = true;
+                            if(!AppConstants.SETLOCATION) {
+                                txtFilterValue.setTextSize(13);
+                                txtFilterValue.setTextColor(Color.parseColor("white"));
+                                txtFilterValue.setText(oyetext);
+                                ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+                                Intent in = new Intent(AppConstants.MARKERSELECTED);
+                                in.putExtra("markerClicked", "false");
+                                buildingSelected = true;
 
-                            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+                                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
 //                            txtFilterValue.setTextColor(Color.parseColor("white"));
-                            txtFilterValue.setText(oyetext);
+                                txtFilterValue.setText(oyetext);
 
-                            tvFetchingrates.setVisibility(View.VISIBLE);
-                            mMarkerminmax.setVisibility(View.VISIBLE);
-                            tvRate.setVisibility(View.VISIBLE);
-                            rupeesymbol.setVisibility(View.VISIBLE);
-                            tvFetchingrates.setVisibility(View.VISIBLE);
-                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                                tvFetchingrates.setVisibility(View.VISIBLE);
+                                mMarkerminmax.setVisibility(View.VISIBLE);
+                                tvRate.setVisibility(View.VISIBLE);
+                                rupeesymbol.setVisibility(View.VISIBLE);
+                                tvFetchingrates.setVisibility(View.VISIBLE);
+                                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
 
-                            tv_building.setVisibility(View.VISIBLE);
-                            recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                                tv_building.setVisibility(View.VISIBLE);
+                                recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                            }
 
                             LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
                             Log.i("map", "============ map:" + " " + map);
@@ -3515,7 +3551,7 @@ public void oyebuttonBackgrountColorOrange(){
 
                             LatLng centerFromPoint = map.getProjection().fromScreenLocation(
                                     centerPoint);
-                            currentLocation1=centerFromPoint;
+                            currentLocation1 = centerFromPoint;
                             lat = currentLocation1.latitude;
                             Log.i("t1", "lat" + " " + lat);
                             lng = currentLocation1.longitude;
@@ -3529,12 +3565,14 @@ public void oyebuttonBackgrountColorOrange(){
                             Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
                             Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
                             getRegion();
-                            search_building_icon.setVisibility(View.GONE);
-                            buildingIcon.setVisibility(View.GONE);
-                            fav.setVisibility(View.VISIBLE);
-                            horizontalPicker.stopScrolling();
-                            missingArea.setVisibility(View.GONE);
-                            getPrice();
+                            if(!AppConstants.SETLOCATION) {
+                                search_building_icon.setVisibility(View.GONE);
+                                buildingIcon.setVisibility(View.GONE);
+                                fav.setVisibility(View.VISIBLE);
+                                horizontalPicker.stopScrolling();
+                                missingArea.setVisibility(View.GONE);
+                                getPrice();
+                            }
                             new LocationUpdater().execute();
                         }
 
@@ -3556,17 +3594,17 @@ public void oyebuttonBackgrountColorOrange(){
 //                        }
                     }
 
-                    }
-                            spanning=false;
+                }
+                spanning = false;
 
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                if(!AppConstants.SETLOCATION) {
                     lastTouched = SystemClock.uptimeMillis();
                     map.getUiSettings().setScrollGesturesEnabled(true);
                     //LatLng currentLocation11;
                     Log.i("MotionEvent.ACTION_DOWN", "=========================");
-
-
                 }
+            }
         }
 
 
@@ -3813,6 +3851,13 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
     }
 
     public void OnOyeClick(){
+        if(AppConstants.SETLOCATION)
+        {
+            autoOk();
+        }else {
+
+
+
         openOyeScreen();
         CancelAnimation();
 
@@ -3842,6 +3887,7 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
             RatePanel = true;
 //            tvFetchingrates.setVisibility(View.VISIBLE);
         }
+    }
     }
 
  public void walkBeaconStatus(){
@@ -3981,21 +4027,51 @@ if(buildingSelected)
 
     }
 
+    public void showHidepanel(Boolean x){
+        if(x){
+            /*ll_marker.setVisibility(View.VISIBLE);
+            mMarkerminmax.setVisibility(View.VISIBLE);*/
+            horizontalPicker.setVisibility(View.VISIBLE);
+            tv_building.setVisibility(View.GONE);
+            tvRate.setVisibility(View.VISIBLE);
+            rupeesymbol.setVisibility(View.VISIBLE);
+            tvFetchingrates.setVisibility(View.GONE);
+            CallButton.setClickable(true);
+            fav.setClickable(true);
+        }else{
+            /*ll_marker.setVisibility(View.GONE);
+            mMarkerminmax.setVisibility(View.GONE);*/
+            horizontalPicker.setVisibility(View.GONE);
+            tv_building.setVisibility(View.VISIBLE);
+            tvRate.setVisibility(View.GONE);
+            rupeesymbol.setVisibility(View.GONE);
+            tvFetchingrates.setVisibility(View.VISIBLE);
+            tv_building.setText("search or drag on map to set location");
+            tvFetchingrates.setText("Click OYE to reach brokers");
+            CallButton.setClickable(false);
+            fav.setClickable(false);
+            CallButton.setVisibility(View.GONE);
+
+        }
+
+    }
+
 @OnClick({R.id.addressPanel,R.id.ic_search})
 public void onOptionClickS(View v){
     searchFragment c = new searchFragment();
     AppConstants.SEARCHFLAG = true;
 
     loadFragmentAnimated(c, null, R.id.container_Signup, "Search");
-    ((ClientMainActivity)getActivity()).closeOyeConfirmation();
-    ((ClientMainActivity)getActivity()).closeOyeScreen();
+    if(!AppConstants.SETLOCATION) {
+        ((ClientMainActivity) getActivity()).closeOyeConfirmation();
+        ((ClientMainActivity) getActivity()).closeOyeScreen();
 
-    Intent in = new Intent(AppConstants.MARKERSELECTED);
-    in.putExtra("markerClicked", "false");
-    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
-    ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
-    onMapclicked();
-
+        Intent in = new Intent(AppConstants.MARKERSELECTED);
+        in.putExtra("markerClicked", "false");
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+        ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+        onMapclicked();
+    }
 }
 
 
@@ -4214,6 +4290,123 @@ public void onOptionClickS(View v){
         catch (Exception e){
             Log.e("TAG", "Caught in the the"+ e.getMessage());
         }
+
+    }
+
+    private void autoOk(){
+        Log.i("AUTO OK CALLED","autook 1 is "+General.getSharedPreferences(getContext(),AppConstants.MY_LAT)+" "+General.getSharedPreferences(getContext(),AppConstants.MY_LNG)+" "+General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
+
+        AutoOk autoOk = new AutoOk();
+        autoOk.setGcm_id(General.getSharedPreferences(getContext(),AppConstants.GCM_ID));
+        autoOk.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
+        autoOk.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
+        autoOk.setUser_id(General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
+        autoOk.setPlatform("android");
+        autoOk.setLocality(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
+        autoOk.setEmail("ritesh@nexchanges1.com");
+        autoOk.setReq_avl(AppConstants.Card_REQ_AVL);
+        autoOk.setTt(AppConstants.Card_TT);
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(AppConstants.SERVER_BASE_URL)
+                .build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+
+
+        try {
+            oyeokApiService.autoOk(autoOk, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+
+                    Log.i("AUTO OK CALLED","autook success "+General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
+
+
+
+                    JsonObject k = jsonElement.getAsJsonObject();
+                    try {
+
+                        Log.i("AUTOOK CALLED","autook success response 23 "+response);
+
+                        JSONObject ne = new JSONObject(k.toString());
+//                        JSONObject neo = ne.getJSONObject("responseData");
+//                        Log.i("AUTOOK CALLED","autook response "+neo);
+                        Log.i("AUTOOK CALLED","autook response "+ne);
+
+
+                        if(ne.getString("success").equalsIgnoreCase("true")){
+                            JSONArray ne1 = ne.getJSONObject("responseData").getJSONArray("ok_ids");
+                            Log.i("AUTOOK CALLED","autook response 24 "+ne1);
+
+                            General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT,ne1.length());
+                            //Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getString("message"));
+                            //  Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getJSONArray("ok_ids"));
+                            // Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getJSONArray("ok_ids").toJSONArray());
+
+                            TastyToast.makeText(getContext(), "We have connected you with "+ne1.length()+" brokers in your area.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                            TastyToast.makeText(getContext(), "Sign up to connect with "+(10 - ne1.length())+" more brokers waiting for you.", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+
+
+                        /*Log.i("BROKER BUILDINGS CALLED","success ne "+ne);
+                        Log.i("BROKER BUILDINGS CALLED","success ne "+ne.getJSONObject("responseData"));
+
+
+
+                        Log.i("BROKER BUILDINGS CALLED","success ne "+ne.getJSONObject("responseData").getString("coupon"));
+                        coupon.setText(ne.getJSONObject("responseData").getString("coupon"));*/
+                            // getFragmentManager().popBackStack();
+
+
+
+                            General.setSharedPreferences(getContext(),AppConstants.STOP_CARD,"yes");
+
+                            Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                            inten.addFlags(
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                            Intent.FLAG_ACTIVITY_NEW_TASK);
+                            AppConstants.SETLOCATION = false;
+                            startActivity(inten);
+
+                        }
+
+
+                    }
+                    catch (JSONException e) {
+                        Log.e("TAG","Something went wrong "+e.getMessage());
+                        TastyToast.makeText(getContext(), "Something went wrong.", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
+//                        TastyToast.makeText(getContext(), "Please signup to get connected with 10 brokers waiting for you", TastyToast.LENGTH_LONG, TastyToast.INFO);
+                        Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                        inten.addFlags(
+                                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                        Intent.FLAG_ACTIVITY_NEW_TASK);
+                        AppConstants.SETLOCATION = false;
+                        startActivity(inten);
+                        Log.i("BROKER AUTOOK CALLED ","autook Failed "+e.getMessage());
+                    }
+
+
+
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.i("AUTOOK CALLED","coupon fail "+error);
+
+                }
+            });
+
+
+        }
+        catch (Exception e){
+            Log.e("AUTO OK CALLED", e.getMessage());
+        }
+
+
+
 
     }
 

@@ -150,7 +150,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.crashlytics.sdk.android/crashlytics/2.5.5/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.diegocarloslima/fgelv/0.1.2/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.digits.sdk.android/digits/1.10.2/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.16.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.16.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.clans/fab/1.6.2/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.deano2390/MaterialShowcaseView/1.1.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.tarek360/instacapture/0.44/jars" />
@@ -294,8 +294,8 @@
     <orderEntry type="library" exported="" name="crashlytics-2.5.5" level="project" />
     <orderEntry type="library" exported="" name="play-services-iid-9.0.2" level="project" />
     <orderEntry type="library" exported="" name="instacapture-0.44" level="project" />
-    <orderEntry type="library" exported="" name="facebook-android-sdk-4.16.0" level="project" />
     <orderEntry type="library" exported="" name="crashlytics-core-2.3.8" level="project" />
+    <orderEntry type="library" exported="" name="facebook-android-sdk-4.16.1" level="project" />
     <orderEntry type="library" exported="" name="jackson-core-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="jackson-databind-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
