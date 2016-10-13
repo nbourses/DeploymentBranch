@@ -1902,8 +1902,8 @@ Log.i(TAG,"Image is the "+out);
                 /*fragmentTransaction.addToBackStack("card");
                 fragmentTransaction.replace(R.id.container_Signup, d);
                 fragmentTransaction.commitAllowingStateLoss();*/
-                      //InitialCard c = new InitialCard();
-                       CardFragment c = new CardFragment();
+                     // InitialCard c = new InitialCard();
+                      CardFragment c = new CardFragment();
                         //loadFragment(d,null,R.id.container_Signup,"");
                         c.setArguments(null);
 //                FragmentManager fragmentManager = getSupportFragmentManager();

@@ -2221,7 +2221,6 @@ catch(Exception e){
                             JSONObject k = new JSONObject(buildings.get(1).toString());
                             Log.i("TRACE", "Response getprice buildings yo" + price.getString("ll_min"));
 
-
                             if (!price.getString("ll_min").equalsIgnoreCase("")) {
                                 if (!price.getString("ll_min").equalsIgnoreCase("0")) {
                                     Log.i("tt", "I am here" + 2);
