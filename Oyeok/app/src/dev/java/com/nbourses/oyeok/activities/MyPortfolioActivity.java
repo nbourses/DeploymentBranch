@@ -202,7 +202,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
             Log.i( "portfolio","position : "+position );
            adapter = new myPortfolioAdapter(this,1);
             rental_list.setAdapter(adapter);
-            adapter.setResults(realm.where(MyPortfolioModel.class).greaterThan("ll_pm", 0).findAll());
+            adapter.setResults(realm.where(MyPortfolioModel.class).notEqualTo("ll_pm", 0).findAll());
 
         }
         else{
@@ -211,7 +211,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
             Log.i( "portfolio","position : "+position );
             adapter = new myPortfolioAdapter(this,2);
             rental_list.setAdapter(adapter);
-            adapter.setResults(realm.where(MyPortfolioModel.class).greaterThan("or_psf", 0).findAll());
+            adapter.setResults(realm.where(MyPortfolioModel.class).notEqualTo("or_psf", 0).findAll());
         }
 
     }

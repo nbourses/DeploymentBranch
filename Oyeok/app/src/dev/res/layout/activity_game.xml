@@ -33,6 +33,9 @@
         android:id="@+id/br_helperView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <ImageView
         android:layout_width="30dp"
         android:layout_height="30dp"
@@ -41,13 +44,26 @@
         android:layout_marginTop="60dp"
         android:layout_marginLeft="10dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:layout_marginLeft="20dp"
+       android:id="@+id/clocktick1"
+        android:text="3"
+        android:visibility="gone"
+        android:textColor="@color/red"
+        android:textSize="40dip"/>
+    </FrameLayout>
+
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rectable_border_effect"
         android:orientation="horizontal"
-        android:id="@+id/linearLayout5"
+        android:id="@+id/searchbar"
+        android:visibility="gone"
         android:layout_marginTop="4dp">
 
     <ImageView
@@ -130,17 +146,65 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:background="@color/tw__transparent"
-        android:id="@+id/iv_markerpin"
+        android:id="@+id/pin"
+        android:visibility="gone"
         android:foregroundGravity="center_horizontal"
         android:layout_gravity="center_horizontal|center_vertical"
-        android:src="@drawable/broker_marker"
+        android:src="@drawable/pin"
 
 
         android:layout_centerHorizontal="true"
         android:layout_marginTop="-30dp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:gravity="right"
+        android:layout_marginRight="10dip"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dip"
+            android:textColor="@color/black"
+            android:id="@+id/week"
+            android:text="0"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dip"
+            android:textColor="@color/black"
+            android:text=": Week"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dip"
+            android:id="@+id/month"
+            android:textColor="@color/black"
+            android:text="0"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dip"
+            android:textColor="@color/black"
+            android:text=": Months"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dip"
+            android:textColor="@color/black"
+            android:id="@+id/year"
+            android:text="0"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dip"
+            android:textColor="@color/black"
+            android:text=": Years"/>
+    </LinearLayout>
 </FrameLayout>
 
 </LinearLayout>

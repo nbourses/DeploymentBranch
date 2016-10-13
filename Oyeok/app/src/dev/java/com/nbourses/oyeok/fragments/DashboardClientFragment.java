@@ -2494,7 +2494,113 @@ catch(Exception e){
     public void onPositionSelected(int position, int count) {
 
         if (count == 3) {
-            if (position == 0) {
+
+
+            switch (position) {
+                case 0:
+                    int index = ((ViewGroup) property_type_layout.getParent()).indexOfChild( property_type_layout );
+                    Log.i( "indexxx", "index of layout : " + index );
+                    if (index == 2) {
+                        property_type_layout.clearAnimation();
+                        parenttop.removeView( property_type_layout );
+                        parentbottom.addView( property_type_layout, 5 );
+                    }
+
+                    PropertyButtonSlideAnimation();
+
+
+                    marquee( 500, 100 );
+
+                    SnackbarManager.show(
+                            Snackbar.with( getContext() )
+                                    .text( "Rental Property Type set" )
+                                    .position( Snackbar.SnackbarPosition.TOP )
+                                    .color( Color.parseColor( AppConstants.DEFAULT_SNACKBAR_COLOR ) ) );
+
+                    tvRate.setText( "/ month" );
+                    brokerType = "rent";
+                    AppConstants.CURRENT_DEAL_TYPE = "rent";
+                    dbHelper.save( DatabaseConstants.brokerType, "LL" );
+                    dbHelper.save( "brokerType", "On Rent" );
+                    recordWorkout.setBackgroundColor( Color.parseColor( "#2dc4b6" ) );
+                    if (Property_type.equalsIgnoreCase( "" )) {
+                        rental.setText( "Home" );
+                        rental.setVisibility( View.VISIBLE );
+                        resale.setVisibility( View.INVISIBLE );
+                        property_type_layout.setVisibility( View.VISIBLE );
+
+                    } else {
+                        rental.setVisibility( View.VISIBLE );
+                        resale.setVisibility( View.INVISIBLE );
+                        rental.setText( Property_type );
+                        property_type_layout.setVisibility( View.VISIBLE );
+                    }
+
+
+                    if (flag[INDEX] == true) {
+
+                        tv_building.setVisibility( View.VISIBLE );
+                        tv_building.setText( "Average Rate in last 1 WEEK" );
+                        String text = "<font color=#ffffff>" + name[INDEX] + "</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat( String.valueOf( ll_pm[INDEX] ) ).substring( 2, General.currencyFormat( String.valueOf( ll_pm[INDEX] ) ).length() ) + "</font><b><font color=#ff9f1c><sub>/m</sub></font>";
+                        tvFetchingrates.setText( Html.fromHtml( text ) );
+
+                    }
+                    break;
+                case 1:
+                    Intent intent = new Intent( getContext(), Game.class );
+                    startActivity( intent );
+                    break;
+
+                case 2:
+                    marquee( 500, 100 );
+
+                    int index1 = ((ViewGroup) property_type_layout.getParent()).indexOfChild( property_type_layout );
+                    Log.i( "indexxx", "index of layout : " + index1 );
+                    if (index1 == 2) {
+                        Log.i( "indexx", "inside if stmt" );
+                        property_type_layout.clearAnimation();
+                        parenttop.removeView( property_type_layout );
+                        parentbottom.addView( property_type_layout, 5 );
+                    }
+
+                    PropertyButtonSlideAnimation();
+                    SnackbarManager.show(
+                            Snackbar.with( getContext() )
+                                    .text( "Buy/Sell Property Type set" )
+                                    .position( Snackbar.SnackbarPosition.TOP )
+                                    .color( Color.parseColor( AppConstants.DEFAULT_SNACKBAR_COLOR ) ) );
+
+                    updateHorizontalPicker();
+                    tvRate.setText( "/ sq.ft" );
+                    brokerType = "resale";
+                    AppConstants.CURRENT_DEAL_TYPE = "resale";
+                    dbHelper.save( DatabaseConstants.brokerType, "OR" );
+                    dbHelper.save( "brokerType", "For Sale" );
+
+                    if (Property_type.equalsIgnoreCase( "" )) {
+                        rental.setText( "Home" );
+                        resale.setVisibility( View.VISIBLE );
+                        rental.setVisibility( View.INVISIBLE );
+                        property_type_layout.setVisibility( View.VISIBLE );
+
+                    } else {
+                        resale.setText( Property_type );
+                        resale.setVisibility( View.VISIBLE );
+                        rental.setVisibility( View.INVISIBLE );
+                        property_type_layout.setVisibility( View.VISIBLE );
+
+                    }
+
+                    if (flag[INDEX] == true) {
+                        tv_building.setVisibility( View.VISIBLE );
+                        tv_building.setText( "Average Rate in last 1 WEEK" );
+                        String text = "<font color=#ffffff>" + name[INDEX] + "</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat( String.valueOf( or_psf[INDEX] ) ).substring( 2, General.currencyFormat( String.valueOf( or_psf[INDEX] ) ).length() ) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font>";
+                        tvFetchingrates.setText( Html.fromHtml( text ) );
+                    }
+
+
+            }
+           /* if (position == 0) {
 
 
                 int index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
@@ -2545,9 +2651,7 @@ catch(Exception e){
                 }
 
 
-            } else if (position == 1) {
-               Intent intent=new Intent(getContext(),Game.class);
-                startActivity(intent);
+
 
             }else if (position == 2) {
 
@@ -2604,6 +2708,11 @@ catch(Exception e){
 //                }catch (Exception e){}
 
             }
+        } else if (position == 1) {
+            Intent intent=new Intent(getContext(),Game.class);
+            startActivity(intent);
+
+        }*/
         }
     }
 
@@ -4267,8 +4376,6 @@ public void onOptionClickS(View v){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-
-
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -4280,13 +4387,22 @@ public void onOptionClickS(View v){
 
             Realm myRealm = General.realmconfig( getContext() );
             MyPortfolioModel myPortfolioModel = new MyPortfolioModel();
-            myPortfolioModel.setId( id[INDEX] );
+
             myPortfolioModel.setName( name[INDEX] );
             myPortfolioModel.setConfig( config[INDEX] );
             myPortfolioModel.setLat( loc[INDEX].latitude + "" );
             myPortfolioModel.setLng( loc[INDEX].longitude + "" );
 
-        if(brokerType=="rent" && or_psf[INDEX]!=0) {
+
+        if(brokerType=="rent") {
+            myPortfolioModel.setId( id[INDEX] );
+            myPortfolioModel.setLl_pm( ll_pm[INDEX] );
+
+        }else{
+            myPortfolioModel.setId( id[INDEX]+"1" );
+            myPortfolioModel.setOr_psf( or_psf[INDEX] );
+        }
+        /*if(brokerType=="rent" && or_psf[INDEX]!=0) {
             myPortfolioModel.setLl_pm( ll_pm[INDEX] );
             myPortfolioModel.setOr_psf( or_psf[INDEX] );
             //myPortfolioModel.setOr_psf( 0 );
@@ -4299,9 +4415,7 @@ public void onOptionClickS(View v){
         }else if(brokerType=="resale" && ll_pm[INDEX]==0){
             myPortfolioModel.setOr_psf( or_psf[INDEX] );
             myPortfolioModel.setLl_pm(0);
-        }
-
-
+        }*/
             myPortfolioModel.setPortals( portal[INDEX] );
             myPortfolioModel.setListing( listing[INDEX] );
             myPortfolioModel.setRate_growth( rate_growth[INDEX] );

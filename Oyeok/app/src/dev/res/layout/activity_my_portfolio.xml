@@ -67,7 +67,11 @@
               android:layout_below="@+id/container_toolbar"
               android:inputType="textVisiblePassword"/>
 
-
+<!--<View
+    android:layout_width="match_parent"
+    android:layout_height="3dip"
+    android:background="@color/grey"
+    android:layout_marginTop="105dip"/>-->
     <ListView
         android:layout_height="460dip"
         android:layout_width="match_parent"
@@ -75,6 +79,9 @@
         android:background="@android:color/background_light"
         android:layout_above="@+id/seekbar_linearlayout"
         android:layout_below="@+id/inputSearch1"
+        android:divider="@color/grey"
+        android:layout_marginTop="4dp"
+        android:dividerHeight="4px"
         android:stateListAnimator="@anim/zoomout"
         />
 
