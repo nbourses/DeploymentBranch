@@ -14,178 +14,301 @@
         android:layout_height="match_parent"
         android:background="@drawable/rectangle_border_transparent"
         android:layout_margin="5dp">
-<LinearLayout
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.6">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom|center_horizontal">
+                        <!--<LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="50dp"
+                            android:layout_height="20dp"
+                        android:background="@color/aliceblue">-->
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/toggleBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            app:kswThumbColor="@color/greenish_blue"
+                            app:kswTintColor="@color/black"/>
+                        <!--</LinearLayout>-->
+                        <!--app:kswTintColor="#B13254"-->
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:text="RENT"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/userType"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:layout_weight="0.4"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/rentalPanel">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:layout_weight="0.5">
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tenant"
+                        android:id="@+id/tenant" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:layout_weight="0.5">
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Owner"
+                        android:id="@+id/owner" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/resalePanel"
+                android:visibility="gone">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:layout_weight="0.5">
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Buyer"
+                        android:id="@+id/buyer" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:layout_weight="0.5">
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Seller"
+                        android:id="@+id/seller" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_weight="2"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Rental"
+                        android:id="@+id/rental"
+                        android:layout_gravity="center"
+                        android:textColor="@color/greenish_blue"
+                        android:textAlignment="center" />
+                    <!--android:layout_gravity="center"
+                    android:textAlignment="center"-->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center">
+                            <!--<LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="50dp"
+                                android:layout_height="20dp"
+                            android:background="@color/aliceblue">-->
+                            <com.kyleduo.switchbutton.SwitchButton
+                                android:id="@+id/toggleBtn1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                app:kswThumbColor="@color/greenish_blue" />
+                             <!--</LinearLayout>-->
+                            <!--app:kswTintColor="#B13254"-->
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Buy/Sell"
+                        android:id="@+id/buySell"
+                        android:layout_gravity="center"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:weightSum="1"
+                    android:id="@+id/rentalPanel1">
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_weight="0.5">
+                        <CheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tenant"
+                            android:id="@+id/tenant1" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_weight="0.5"
+                        android:id="@+id/sh2n">
+                        <CheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Owner"
+                            android:id="@+id/owner1"
+                            android:checked="false" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:weightSum="1"
+                    android:visibility="gone"
+                    android:layout_weight="1"
+                    android:id="@+id/resalePanel1">
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_weight="0.5">
+                        <CheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Buyer"
+                            android:id="@+id/buyer1" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_weight="0.5"
+                        android:id="@+id/sh2no">
+                        <CheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Seller"
+                            android:id="@+id/seller1"
+                            android:checked="false" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="3"
     android:orientation="vertical"
     android:background="@color/greenish_blue">
+            <TextView
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Tenant you are 3 clicks away"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+
+                android:id="@+id/tagline1"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center" />
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
-            app:srcCompat="@drawable/ic_launcher"
-            android:id="@+id/imageView3" />
+            app:srcCompat="@drawable/asset_rent_dealtype_icon_v1"
+            android:id="@+id/icon" />
+
+
 
         <TextView
+            android:text="I am Searching Property..."
+            android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:textStyle="bold"
             android:layout_weight="1"
-            android:text="3 Clicks Away"
             android:textColor="@color/black"
-            android:layout_width="match_parent"
-
-            android:id="@+id/textView4"
-            android:textAlignment="center"
-            android:textSize="14sp"
-            android:gravity="center" />
-
-        <TextView
-            android:text="I want to Search"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:textColor="@color/dark_white"
             android:id="@+id/tagline"
             android:textAlignment="center"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:gravity="center" />
 </LinearLayout>
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:orientation="vertical"
-    android:layout_weight="2"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
-    android:paddingTop="8dp">
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Rental"
-                android:id="@+id/rental"
-                android:layout_gravity="center"
-                android:textColor="@color/greenish_blue"
-                android:textAlignment="center" />
-            <!--android:layout_gravity="center"
-            android:textAlignment="center"-->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center">
-                    <!--<LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="50dp"
-                        android:layout_height="20dp"
-                    android:background="@color/aliceblue">-->
-    ¸
-
-                    <com.kyleduo.switchbutton.SwitchButton
-                        android:id="@+id/toggleBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        app:kswThumbColor="@color/greenish_blue" />
-                     <!--</LinearLayout>-->
-                    <!--app:kswTintColor="#B13254"-->
-                </RelativeLayout>
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Buy/Sell"
-                android:id="@+id/buySell"
-                android:layout_gravity="center"
-                android:textAlignment="center" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:weightSum="1"
-            android:id="@+id/rentalPanel">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_weight="0.5">
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tenant"
-                    android:id="@+id/tenant" />
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_weight="0.5"
-                android:id="@+id/sh2n">
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Owner"
-                    android:id="@+id/owner"
-                    android:checked="false" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:weightSum="1"
-            android:visibility="gone"
-            android:layout_weight="1"
-            android:id="@+id/resalePanel">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_weight="0.5">
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Buyer"
-                    android:id="@+id/buyer" />
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_weight="0.5"
-                android:id="@+id/sh2no">
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Seller"
-                    android:id="@+id/seller"
-                    android:checked="false" />
-            </LinearLayout>
-        </LinearLayout>
-
-    </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -203,9 +326,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:text="Have fixed budget, Suggest me locations"
+                android:text="@string/tenant_card_question1"
                 android:textAlignment="center"
-                android:textSize="14sp"
+                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:textStyle="italic"
+                android:id="@+id/q1"
                 android:gravity="center"
                 android:background="@color/dark_white" />
             <View
@@ -219,10 +345,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:text="Have a fixed budget in a given Locality"
+                android:text="@string/tenant_card_question2"
                 android:textAlignment="center"
-                android:textSize="14sp"
+                android:textSize="12sp"
+                android:textStyle="italic"
                 android:gravity="center"
+                android:textColor="@color/black"
+                android:id="@+id/q2"
                 android:background="@color/dark_white" />
             <View
                 android:layout_width="match_parent"
@@ -235,10 +364,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:text="Want to save travel time"
+                android:id="@+id/q3"
+                android:textStyle="italic"
+                android:text="@string/tenant_card_question3"
                 android:textAlignment="center"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:gravity="center"
+                android:textColor="@color/black"
                 android:background="@color/dark_white" />
 
 
@@ -427,9 +559,21 @@
             android:orientation="horizontal">
 
             <TextView
+                android:text="OR"
+                android:layout_width="wrap_content"
+                android:textColor="@color/black"
+                android:layout_height="match_parent"
+                android:id="@+id/textView4"
+                android:gravity="center_vertical"
+                android:textSize="20sp"
+                android:layout_toLeftOf="@+id/textView8"
+                 />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:drawableLeft="@drawable/call"
+                android:id="@+id/textView8"
                 android:text="Call OyeOk"
                 android:textSize="20sp"
                 android:padding="3sp"

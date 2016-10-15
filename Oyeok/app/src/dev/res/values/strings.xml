@@ -168,4 +168,21 @@
     <string name="client_log_in_heading">You are Logging in as a Client</string>
     <string name="broker_log_in_heading">You are Logging in as a Broker</string>
     <string name="facebook_app_id">273470946346289</string>
+    <string name="tenant_card_question1">with fixed Budget, Suggest me locations</string>
+    <string name="tenant_card_question2">fixed Budget &amp; fixed Locality</string>
+    <string name="tenant_card_question3">to save Travel Time</string>
+
+    <string name="owner_card_question1">compare with neigbouring Building</string>
+    <string name="owner_card_question2">create Portfolio of all rental Properties</string>
+    <string name="owner_card_question3">hire local Brokers, advertise as listing</string>
+
+    <string name="buyer_card_question1">Rates of old vs new Buildings</string>
+    <string name="buyer_card_question2">new Projects in Budget &amp; EMI</string>
+    <string name="buyer_card_question3">best investment locations</string>
+
+    <string name="seller_card_question1">compare with Live Market Rates</string>
+    <string name="seller_card_question2">track to sell at right time &amp; price</string>
+    <string name="seller_card_question3">broadcast to hire Local Brokers</string>
+
+
 </resources>
