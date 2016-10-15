@@ -12,7 +12,7 @@
     <string name="QrCode">QrCode</string>
     <string name="brokerOk">Self Register as Broker</string>
     <string name="useAsClient">See Property Rates</string>
-    <string name="MyPortfolio">My Portfolio</string>
+    <string name="MyPortfolio">My WatchList</string>
     <string name="RegisterSignIn">Register/SignIn</string>
     <string name="signup">Signup</string>
     <string name="PayTM">PayTM</string>
