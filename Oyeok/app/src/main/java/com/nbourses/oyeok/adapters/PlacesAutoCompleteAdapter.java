@@ -252,8 +252,8 @@ public class PlacesAutoCompleteAdapter
                         v.getParent().requestDisallowInterceptTouchEvent(true);
                         final AlertDialog.Builder alert = new AlertDialog.Builder(
                                 mContext);
-                        alert.setTitle("Alert!!");
-                        alert.setMessage("Are you sure to delete record");
+                        alert.setTitle("Delete!!");
+                        alert.setMessage("Are you sure to delete favourite?");
                         alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
                             @Override

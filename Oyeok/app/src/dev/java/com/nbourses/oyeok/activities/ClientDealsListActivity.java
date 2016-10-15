@@ -129,6 +129,13 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Bind(R.id.signUpCardText)
     TextView signUpCardText;
 
+    @Bind(R.id.rentalCount)
+    TextView rentalCount;
+
+    @Bind(R.id.resaleCount)
+    TextView resaleCount;
+
+
 
    /* @Bind(R.id.search)
     Button search;
@@ -671,6 +678,20 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         searchView = (SearchView) findViewById(R.id.searchView);
         searchView.setIconified(false);
         searchView.clearFocus();
+
+        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) <= 0) {
+            rentalCount.setVisibility(View.GONE);
+            resaleCount.setVisibility(View.GONE);
+        } else {
+            if(General.getSharedPreferences(this,AppConstants.Card_TT).equalsIgnoreCase("LL")) {
+                rentalCount.setVisibility(View.VISIBLE);
+                rentalCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)));
+            }else{
+                resaleCount.setVisibility(View.VISIBLE);
+                resaleCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)));
+            }
+        }
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -1466,7 +1487,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             default_deals.addAll(default_dealsLL);
             total_deals.addAll(default_deals);
 
-            if (listBrokerDeals_new.isEmpty()) {
+            if (listBrokerDeals_new.isEmpty() && unverifiedLL.isEmpty()) {
                 cachedDeals.clear();
                 cachedDeals.addAll(cachedDealsLL);
                 total_deals.addAll(cachedDeals);
@@ -1491,7 +1512,14 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             .text("Rental Deals Type set")
                             .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
+            if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) > 0) {
+                if(General.getSharedPreferences(this,AppConstants.Card_TT).equalsIgnoreCase("LL")) {
+                    General.setBadgeCount(this, AppConstants.HDROOMS_COUNT, 0);
+                    rentalCount.setVisibility(View.GONE);
+                }}
+
         } else {
+
 
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RESALE);
             TT = "OR";
@@ -1500,7 +1528,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             default_deals.addAll(default_dealsOR);
             total_deals.addAll(default_deals);
 
-            if (listBrokerDeals_new.isEmpty()) {
+            if (listBrokerDeals_new.isEmpty() && unverifiedOR.isEmpty() ) { //
                 cachedDeals.clear();
                 cachedDeals.addAll(cachedDealsOR);
                 total_deals.addAll(cachedDeals);
@@ -1523,6 +1551,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
             getSupportActionBar().setTitle(Html.fromHtml(String.format("DEALING ROOMs <font color=\"#%s\">(Buy/Sell)</font>", сolorString)));
 
+            if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) > 0) {
+                if(General.getSharedPreferences(this,AppConstants.Card_TT).equalsIgnoreCase("OR")) {
+                    General.setBadgeCount(this, AppConstants.HDROOMS_COUNT, 0);
+                    resaleCount.setVisibility(View.GONE);
+                }}
         }
 
 
@@ -1657,9 +1690,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         total_deals.clear();
         if (TT.equalsIgnoreCase("LL")) {
             total_deals.addAll(default_dealsLL);
+            total_deals.addAll(unverifiedLL);
             total_deals.addAll(listBrokerDealsLL);
         } else {
             total_deals.addAll(default_dealsOR);
+            total_deals.addAll(unverifiedOR);
             total_deals.addAll(listBrokerDealsOR);
         }
 

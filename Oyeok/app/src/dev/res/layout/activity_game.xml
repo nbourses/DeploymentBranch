@@ -47,13 +47,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="55dp"
-        android:layout_marginLeft="20dp"
-       android:id="@+id/clocktick1"
+        android:layout_marginTop="68dp"
+        android:layout_marginLeft="23dp"
+        android:id="@+id/clocktick1"
         android:text="3"
         android:visibility="gone"
         android:textColor="@color/red"
-        android:textSize="40dip"/>
+        android:textSize="20dip"/>
     </FrameLayout>
 
 

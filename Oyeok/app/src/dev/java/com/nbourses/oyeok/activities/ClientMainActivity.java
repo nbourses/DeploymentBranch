@@ -1447,10 +1447,7 @@ if(AppConstants.FAV) {
 
     @OnClick(R.id.btnMyDeals)
     public void onBtnMyDealsClick(View v) {
-        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) > 0) {
-            General.setBadgeCount(this, AppConstants.HDROOMS_COUNT,0);
-            hdroomsCount.setVisibility(View.GONE);
-        }
+
        if(btnMyDeals.getText().toString().equalsIgnoreCase("share")) {
 
            int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);

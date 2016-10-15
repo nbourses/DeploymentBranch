@@ -374,6 +374,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     @Bind(R.id.buildingIcon)
     ImageView buildingIcon;
 
+    @Bind(R.id.favWrapper)
+    LinearLayout favWrapper;
+
 
 
 
@@ -1615,6 +1618,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     txtFilterValue.setTextColor(Color.parseColor("white"));
                     txtFilterValue.setText(oyetext);
                 }
+                favHome.setChecked(true);
                 favboard.setVisibility(View.VISIBLE);
                 favboard.setAnimation(bounce);
                 /*favboard.animate()
@@ -1652,7 +1656,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     favOText.requestFocus();
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(favOText, InputMethodManager.SHOW_IMPLICIT);
-                    favTitle = "My Other";
+                    favTitle = "Other";
                     favIcon = iconOther;
                 }
             }
@@ -4093,6 +4097,7 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
             CallButton.setClickable(false);
             fav.setClickable(false);
             CallButton.setVisibility(View.GONE);
+            favWrapper.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.grey));
 
         }
 
@@ -4119,55 +4124,69 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
 
     @OnClick({R.id.favSave, R.id.favCancel})
     public void onOptionClick(View v) {
+        Log.i(TAG, "fav2 save"+favOText.getText().toString());
 
-        Log.i(TAG,"fav2 yo");
         if (v.getId() == favSave.getId()) {
+if(favTitle.equalsIgnoreCase("other")) {
+    if (favOText.getText().toString().equals("")) {
+        SnackbarManager.show(
+                Snackbar.with(getActivity())
+                        .text("Please name your favourite.")
+                        .position(Snackbar.SnackbarPosition.TOP)
+                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+        return;
+    }else{
+        favTitle = favOText.getText().toString();
+    }
+}
+           /* if(favOText.getText().equals(" ")) {*/
+                /*favTitle
+favOText.getText()*/
+                Log.i(TAG, "fav2 save"+favOText.getText().toString());
+                favboard.clearAnimation();
+                favboard.setVisibility(View.GONE);
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(favboard.getWindowToken(), 0);
 
-            Log.i(TAG,"fav2 save");
-            favboard.clearAnimation();
-            favboard.setVisibility(View.GONE);
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(favboard.getWindowToken(), 0);
+                Marker marker = map.addMarker(new MarkerOptions()
+                        .position(new LatLng(Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT)), Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG))))
+                        .title(favTitle)
+                        .icon(favIcon));
 
-            Marker marker = map.addMarker(new MarkerOptions()
-                    .position(new LatLng(Double.parseDouble(SharedPrefs.getString(getContext(),SharedPrefs.MY_LAT)), Double.parseDouble(SharedPrefs.getString(getContext(),SharedPrefs.MY_LNG))))
-                    .title(favTitle)
-                    .icon(favIcon));
+                try {
+                    Realm myRealm = General.realmconfig(getContext());
+                    Favourites favourites = new Favourites();
+                    favourites.setTitle(favTitle);
+                    favourites.setAddress(favAdrs.getText().toString());
+                    LatiLongi latlon = new LatiLongi();
+                    latlon.setLat(Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT)));
+                    latlon.setLng(Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
+                    favourites.setLatiLongi(latlon);
 
-            try {
-                Realm myRealm = General.realmconfig(getContext());
-                Favourites favourites = new Favourites();
-                favourites.setTitle(favTitle);
-                favourites.setAddress(favAdrs.getText().toString());
-                LatiLongi latlon = new LatiLongi();
-                latlon.setLat(Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT)));
-                latlon.setLng(Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
-                favourites.setLatiLongi(latlon);
+                    Log.i(TAG, "fav2 3 latlng " + Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT)) + " " + Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
+                    Log.i(TAG, "fav2 latlng " + Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT)) + " " + Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
+                    if (myRealm.isInTransaction())
+                        myRealm.cancelTransaction();
+                    myRealm.beginTransaction();
+                    myRealm.copyToRealmOrUpdate(favourites);
+                    myRealm.commitTransaction();
 
-                Log.i(TAG,"fav2 3 latlng "+Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT))+" "+Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
-                Log.i(TAG,"fav2 latlng "+Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT))+" "+Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG)));
-                if(myRealm.isInTransaction())
-                    myRealm.cancelTransaction();
-                myRealm.beginTransaction();
-                myRealm.copyToRealmOrUpdate(favourites);
-                myRealm.commitTransaction();
+                    RealmResults<Favourites> results1 =
+                            myRealm.where(Favourites.class).findAll();
 
-                RealmResults<Favourites> results1 =
-                        myRealm.where(Favourites.class).findAll();
+                    for (Favourites c : results1) {
+                        Log.i(TAG, "insiderr2 ");
+                        Log.i(TAG, "insiderr3 " + c.getTitle());
+                        Log.i(TAG, "insiderr4 " + c.getLatiLongi().getLat());
+                        Log.i(TAG, "insiderr4 " + c.getLatiLongi().getLng());
+                    }
 
-                for (Favourites c : results1) {
-                    Log.i(TAG, "insiderr2 ");
-                    Log.i(TAG, "insiderr3 " + c.getTitle());
-                    Log.i(TAG, "insiderr4 " + c.getLatiLongi().getLat());
-                    Log.i(TAG, "insiderr4 " + c.getLatiLongi().getLng());
+                } catch (Exception e) {
+                    Log.i(TAG, "Caught in exception Favourites Realm " + e);
                 }
 
-            }
-            catch(Exception e){
-                Log.i(TAG,"Caught in exception Favourites Realm "+e );
-            }
-
-
+            favTitle = "My Home";
+            favOText.getText().clear();
         }
         else if (v.getId() == favCancel.getId()) {
 
@@ -4176,7 +4195,7 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
             favboard.setVisibility(View.GONE);
             InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(favboard.getWindowToken(), 0);
-
+            favTitle = "My Home";
         }
 
 
@@ -4382,6 +4401,13 @@ Log.i(TAG,"imageFileimageFile "+imageFile);
                             Log.i("AUTOOK CALLED","autook response 24 "+ne1);
 
                             General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT,ne1.length());
+                            if(AppConstants.Card_TT.equalsIgnoreCase("LL"))
+                                General.setSharedPreferences(getContext(),AppConstants.Card_TT,"LL");
+                            else
+                                General.setSharedPreferences(getContext(),AppConstants.Card_TT,"OR");
+
+
+
                             //Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getString("message"));
                             //  Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getJSONArray("ok_ids"));
                             // Log.i("AUTOOK CALLED","autook responser "+ne.getJSONObject("responseData").getJSONArray("ok_ids").toJSONArray());
