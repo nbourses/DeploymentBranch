@@ -49,20 +49,24 @@
 
             <Button
                 android:text="I am a Customer"
+                android:textAllCaps="false"
                 android:id="@+id/btnC"
                 android:layout_weight="0.5"
-                android:background="@drawable/rectangle_background_white"
+                android:background="@color/dark_white"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:elevation="0dp"
+                android:textSize="12sp"
                 android:paddingLeft="5dp"
                 android:layout_marginRight="5dp" />
             <Button
                 android:text="I am a Broker"
+                android:textAllCaps="false"
                 android:id="@+id/btnB"
                 android:layout_weight="0.5"
-                android:background="@drawable/rectangle_background_white"
+                android:background="@color/dark_white"
                 android:layout_width="0dp"
+                android:textSize="12sp"
                 android:layout_height="35dp"
                 android:paddingRight="5dp"
                 android:layout_marginLeft="5dp" />

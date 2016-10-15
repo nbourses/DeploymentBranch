@@ -696,7 +696,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Log.i("SETUPPUBNUB","OKYED ============= channel_name "+channel_name);
 
                     okyed = false;
-                    displayCardView();
+                   // displayCardView();
                     loadHistoryFromPubnub(channel_name);
 
 

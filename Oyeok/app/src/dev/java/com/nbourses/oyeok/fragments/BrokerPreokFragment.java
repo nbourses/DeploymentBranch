@@ -26,7 +26,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -343,7 +342,7 @@ private String Walkthrough,beacon;
         final RippleBackground rippleBackground2=(RippleBackground)v.findViewById(R.id.content1);
         rippleBackground1.startRippleAnimation();*/
 
-       chart = (BarChart) v.findViewById(R.id.chart);
+      //chart removed// chart = (BarChart) v.findViewById(R.id.chart);
         init();
 
         if(SharedPrefs.getString(getContext(),SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
@@ -432,7 +431,7 @@ private String Walkthrough,beacon;
         }catch(Exception e){
             Log.i(TAG,"Caught in exception reading GCM id from shared "+e);
         }
-try {
+/* //chart removed//try {
     if (General.clearChart) {
         buildingPriceLL.clear();
         buildingPriceOR.clear();
@@ -465,7 +464,7 @@ try {
 
         brokerbuildings(buildingsPage);
 
-
+*/
 
         zoomin.setAnimationListener(new Animation.AnimationListener() {
 
@@ -1133,6 +1132,157 @@ if(count<=220) {
             }
         }
     }
+
+
+    @OnClick({R.id.okButton, R.id.deal})
+    public void onButtonsClick(View v) {
+        if (okButton.getId() == v.getId()) {
+            long now = SystemClock.elapsedRealtime();
+            if (now - lastClickMillis > THRESHOLD_MILLIS) {
+                listings = new HashMap<String, Float>();
+                listings.put("building1", 1f);
+                listings.put("building2", 2f);
+                listings.put("building3", 3f);
+
+                Log.i("GRAPH", "jsonObjectArray is " + jsonObjectArray);
+
+
+                if (jsonObjectArray == null) {
+
+
+                    SnackbarManager.show(
+                            com.nispok.snackbar.Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.BOTTOM)
+                                    .text("Please select a Lead and then press OK.")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+//                if (buildingSlider.getVisibility() == View.GONE) {
+//                    TranslateAnimation animate = new TranslateAnimation(0, 0, 0 , buildingSlider.getHeight());
+//                    animate.setDuration(2000);
+//                    animate.setFillAfter(true);
+//                    buildingSlider.startAnimation(animate);
+//                    buildingSlider.setVisibility(View.VISIBLE);
+//                }
+
+
+                } else {
+
+
+                    if (!General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes")) {
+
+                        dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
+                        General.setSharedPreferences(getContext(), AppConstants.ROLE_OF_USER, "broker");
+                        //show sign up screen if broker is not registered
+                        Bundle bundle = new Bundle();
+                        //bundle.putString("lastFragment", "BrokerPreokFragment");
+                        bundle.putString("JsonArray", jsonObjectArray.toString());
+                        bundle.putInt("Position", selectedItemPosition);
+
+
+                        String[] bNames = new String[]{"building1", "building2", "building3"};
+                        int[] bPrice = new int[]{1, 2, 3};
+
+
+                        bundle.putIntArray("bPrice", bPrice);
+                        bundle.putStringArray("bNames", bNames);
+                        bundle.putString("lastFragment", "okyed");
+
+
+                        bundle.putSerializable("listings", listings);
+                        Fragment fragment = null;
+                        fragment = new SignUpFragment();
+                        fragment.setArguments(bundle);
+
+                        FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+                        fragmentTransaction.replace(R.id.container_sign, fragment);
+                        // fragmentTransaction.replace(R.id.container_map, fragment);
+                        fragmentTransaction.commit();
+                        AppConstants.SIGNUP_FLAG = true;
+
+                    } else {
+                        //here broker is registered
+
+
+                        AcceptOkCall a = new AcceptOkCall();
+                        a.setmCallBack(BrokerPreokFragment.this);
+                        a.acceptOk(listings, jsonObjectArray, selectedItemPosition, dbHelper, getActivity());
+
+                        General.setBadgeCount(getContext(), AppConstants.RENTAL_COUNT, 0);
+                        General.setBadgeCount(getContext(), AppConstants.RESALE_COUNT, 0);
+                        General.setBadgeCount(getContext(), AppConstants.TENANTS_COUNT, 0);
+                        General.setBadgeCount(getContext(), AppConstants.OWNERS_COUNT, 0);
+                        General.setBadgeCount(getContext(), AppConstants.BUYER_COUNT, 0);
+                        General.setBadgeCount(getContext(), AppConstants.SELLER_COUNT, 0);
+
+
+                    }
+
+
+                    //show buildings
+
+
+                /*//buildings removed// buildingSlider.startAnimation(slide_up);
+                buildingSlider.setVisibility(View.VISIBLE);
+                buildingSliderflag = true;
+                float fr = buildingNames.size() * 0.33f;
+               //chart.fitScreen();
+               chart.zoomAndCenterAnimated(fr,1f,0,0, YAxis.AxisDependency.LEFT ,2000);
+                Log.i("brokerpreok","buildingSliderflag "+buildingSliderflag);
+                Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
+                intent.putExtra("buildingSliderFlag",buildingSliderflag);
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                /////okBtn.setEnabled(false);
+                //okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
+                okBtn.setText("Choose 3 Buildings");*/
+
+
+                }
+//            else {
+//                if (!General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+//                    dbHelper.save(DatabaseConstants.userRole, "Broker");
+//                    //show sign up screen if broker is not registered
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("lastFragment", "BrokerPreokFragment");
+//                    bundle.putString("JsonArray", jsonObjectArray.toString());
+//                    bundle.putInt("Position", selectedItemPosition);
+//                    Fragment fragment = null;
+//                    fragment = new SignUpFragment();
+//                    fragment.setArguments(bundle);
+//
+//                    FragmentManager fragmentManager = getFragmentManager();
+//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                    fragmentTransaction.replace(R.id.container_map, fragment);
+//                    fragmentTransaction.commit();
+//                } else {
+//                    //here broker is registered  show buildings
+//
+//                    buildingSlider.startAnimation(slide_up);
+//                    buildingSlider.setVisibility(View.VISIBLE);
+//
+//                }
+//            }
+                lastClickMillis = now;
+            }
+            }
+        else if (deal.getId() == v.getId()) {
+            if (General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT) > 0) {
+                General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT,0);
+                hdroomsCount.setVisibility(View.GONE);
+            }
+
+            //open deals listing
+            Intent openDealsListing = new Intent(getActivity(), ClientDealsListActivity.class);
+            /*openDealsListing.addFlags(
+                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);*/
+            startActivity(openDealsListing);
+        }
+//        else if (pickContact.getId() == v.getId()) {
+//            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+//            getActivity().startActivityFromFragment(this, intent, REQUEST_CODE_TO_SELECT_CLIENT);
+//        }
+    }
+
 
     @OnClick(R.id.okBtn)
     public void onOptionClickok(View v) {
@@ -1938,93 +2088,7 @@ Log.i("Diamond","diamond "+possession_date);
     }
 
     //   @OnClick({R.id.okButton, R.id.deal, R.id.pickContact})
-    @OnClick({R.id.okButton, R.id.deal})
-    public void onButtonsClick(View v) {
-        if (okButton.getId() == v.getId()) {
 
-            Log.i("GRAPH","jsonObjectArray is "+jsonObjectArray);
-
-
-            if (jsonObjectArray == null) {
-
-
-                SnackbarManager.show(
-                        com.nispok.snackbar.Snackbar.with(getContext())
-                                .position(Snackbar.SnackbarPosition.BOTTOM)
-                                .text("Please select a Lead and then press OK.")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-//                if (buildingSlider.getVisibility() == View.GONE) {
-//                    TranslateAnimation animate = new TranslateAnimation(0, 0, 0 , buildingSlider.getHeight());
-//                    animate.setDuration(2000);
-//                    animate.setFillAfter(true);
-//                    buildingSlider.startAnimation(animate);
-//                    buildingSlider.setVisibility(View.VISIBLE);
-//                }
-
-
-
-            }
-            else {
-                //show buildings
-
-
-                buildingSlider.startAnimation(slide_up);
-                buildingSlider.setVisibility(View.VISIBLE);
-                buildingSliderflag = true;
-                float fr = buildingNames.size() * 0.33f;
-               //chart.fitScreen();
-               chart.zoomAndCenterAnimated(fr,1f,0,0, YAxis.AxisDependency.LEFT ,2000);
-                Log.i("brokerpreok","buildingSliderflag "+buildingSliderflag);
-                Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
-                intent.putExtra("buildingSliderFlag",buildingSliderflag);
-                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                /////okBtn.setEnabled(false);
-                //okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
-                okBtn.setText("Choose 3 Buildings");
-
-            }
-//            else {
-//                if (!General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-//                    dbHelper.save(DatabaseConstants.userRole, "Broker");
-//                    //show sign up screen if broker is not registered
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("lastFragment", "BrokerPreokFragment");
-//                    bundle.putString("JsonArray", jsonObjectArray.toString());
-//                    bundle.putInt("Position", selectedItemPosition);
-//                    Fragment fragment = null;
-//                    fragment = new SignUpFragment();
-//                    fragment.setArguments(bundle);
-//
-//                    FragmentManager fragmentManager = getFragmentManager();
-//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                    fragmentTransaction.replace(R.id.container_map, fragment);
-//                    fragmentTransaction.commit();
-//                } else {
-//                    //here broker is registered  show buildings
-//
-//                    buildingSlider.startAnimation(slide_up);
-//                    buildingSlider.setVisibility(View.VISIBLE);
-//
-//                }
-//            }
-        }
-        else if (deal.getId() == v.getId()) {
-            if (General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT) > 0) {
-                General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT,0);
-                hdroomsCount.setVisibility(View.GONE);
-            }
-
-            //open deals listing
-            Intent openDealsListing = new Intent(getActivity(), ClientDealsListActivity.class);
-            /*openDealsListing.addFlags(
-                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);*/
-            startActivity(openDealsListing);
-        }
-//        else if (pickContact.getId() == v.getId()) {
-//            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-//            getActivity().startActivityFromFragment(this, intent, REQUEST_CODE_TO_SELECT_CLIENT);
-//        }
-    }
 
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {

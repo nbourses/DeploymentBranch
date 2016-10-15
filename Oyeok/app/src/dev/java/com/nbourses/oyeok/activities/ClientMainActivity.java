@@ -1259,9 +1259,13 @@ public void signUp(){
 
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+/*
+if(AppConstants.FAV) {
+    dashboardClientFragment.hideFav();
+}
+*/
 
-
-        if(AppConstants.SEARCHFLAG){
+         if(AppConstants.SEARCHFLAG){
 
             AppConstants.SEARCHFLAG = false;
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();

@@ -14,6 +14,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -71,6 +75,26 @@ public class IntroActivity extends ActionBarActivity {
         btnC = (Button) findViewById(R.id.btnC);
         btnB = (Button) findViewById(R.id.btnB);
         useNow = (TextView) findViewById(R.id.useNow);
+
+        String s =null;
+        SpannableString ss1;
+        StyleSpan iss;
+        s= "I am a Customer";
+        ss1=  new SpannableString(s);
+        ss1.setSpan(new RelativeSizeSpan(1.5f), 7,s.length(), 0); // set size
+        iss = new StyleSpan(android.graphics.Typeface.ITALIC);
+        ss1.setSpan(iss, 0, 6, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        btnC.setText(ss1);
+
+
+        s= "I am a Broker";
+        ss1=  new SpannableString(s);
+        ss1.setSpan(new RelativeSizeSpan(1.5f), 7,s.length(), 0); // set size
+        iss = new StyleSpan(android.graphics.Typeface.ITALIC);
+        ss1.setSpan(iss, 0, 6, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        btnB.setText(ss1);
+
+
 btnC.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {

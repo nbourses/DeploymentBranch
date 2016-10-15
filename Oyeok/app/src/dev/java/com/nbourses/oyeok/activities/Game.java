@@ -680,6 +680,8 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
 
     @Override
     public void onBackPressed() {
+        CancelDisplayBuildingTimer();
+        HideBuildingsTimer();
         Intent intent=new Intent( this,ClientMainActivity.class );
         intent.addFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TOP |

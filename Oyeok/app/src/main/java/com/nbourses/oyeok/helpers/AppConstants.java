@@ -17,6 +17,7 @@ public class AppConstants {
     public static String PlacesTag = "Google Places Auto Complete";
     public static boolean cardNotif = false;
     public static boolean SETLOCATION = false;
+    public static boolean FAV = false;
     public static  int minRent = 35000;
     public static  int maxRent = 60000;
     public static Boolean SEARCHFLAG = false;
