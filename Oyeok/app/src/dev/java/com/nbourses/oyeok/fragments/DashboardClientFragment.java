@@ -284,7 +284,7 @@ Button home,shop,industrial,office;
     TextView rental,resale;
     RelativeLayout property_type_layout;
     LinearLayout dispProperty;
-    private int countertut;
+    private int countertut,p;
 
     private ImageView myLoc,ic_search;
     LinearLayout recordWorkout;
@@ -1088,15 +1088,12 @@ private Button CallButton;
                     if (Integer.parseInt(rate) < 0){
                         comman_icon=sort_down_red;
                         rate_change_value.setTextColor(Color.parseColor("#ffb91422"));// FFA64139 red
-
-
                         rate_change_img.setBackground(comman_icon);
                         rate_change_value.setText(rate.subSequence(1, rate.length())+" %");
                     }
                     else if(Integer.parseInt(rate) > 0){
                         comman_icon = sort_up_green;
                         rate_change_value.setTextColor(Color.parseColor("#2dc4b6"));// FF377C39 green FF2CA621   FFB91422
-
                         rate_change_img.setBackground(comman_icon);
                         rate_change_value.setText(Integer.parseInt(rate)+" %");
                     }
@@ -1183,9 +1180,10 @@ if(!AppConstants.SETLOCATION) {
 
 
                                     ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
-                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation();
+                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(listing[i],transaction[i],portal[i]);
                                     mCustomerMarker[i].setIcon(icon2);
                                     SaveBuildingDataToRealm();
+//                                    sendDataToOyeConfirmation(i);
                                 /*m=mCustomerMarker[i];
 
 
@@ -1252,13 +1250,12 @@ if(!AppConstants.SETLOCATION) {
                                     txtFilterValue.setEnabled(false);
 //                                txtFilterValue.setTextColor(Color.parseColor("green"));
                                     CancelAnimation();
-                                     Intent in = new Intent(AppConstants.MARKERSELECTED);
-                                    in.putExtra("markerClicked", "true");
                                     buildingSelected = false;
+                                    Intent in = new Intent(AppConstants.MARKERSELECTED);
+                                    in.putExtra("markerClicked", "true");
                                     LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
-//                                Log.i("coming soon", "coming soon :" + marker.getTitle().toString());
+//                                  Log.i("coming soon", "coming soon :" + marker.getTitle().toString());
                                     tv_building.setVisibility(View.VISIBLE);
-
                                     tvFetchingrates.setTypeface(null, Typeface.BOLD);
                                     lng = mCustomerMarker[i].getPosition().longitude;
                                     lat = mCustomerMarker[i].getPosition().latitude;
@@ -1267,7 +1264,7 @@ if(!AppConstants.SETLOCATION) {
                                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
                                     General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
                                     General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");//*/
-//                                mCustomerMarker[i].showInfoWindow();
+//                                  mCustomerMarker[i].showInfoWindow();
                                     new LocationUpdater().execute();
                                     flag[i] = true;
 
@@ -2052,6 +2049,7 @@ catch(Exception e){
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(phasedSeekBarClicked);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(resetMap);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(setLocation);
+
 //        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oncheckWalkthrough);
         // LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oncheckbeacon);
 
@@ -2173,8 +2171,6 @@ catch(Exception e){
                     try {
                         General.slowInternetFlag = false;
                         General.t.interrupt();
-
-
                         String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
 //                        Log.e(TAG, "RETROFIT SUCCESS " + getPrice.getResponseData().getPrice().getLlMin().toString());
                         JSONObject jsonResponse = new JSONObject(strResponse);
@@ -2213,16 +2209,12 @@ catch(Exception e){
                             // horizontalPicker.stopScrolling();
                             Log.i("TRACE", "Response getprice buildings jsonResponseData" + jsonResponseData);
                             JSONObject price = new JSONObject(jsonResponseData.getString("price"));
-
                             Log.i("TRACE", "Response getprice buildings pricer ");
                             Log.i("TRACE", "Response getprice buildings price " + price);
-
                             JSONArray buildings = new JSONArray(jsonResponseData.getString("buildings"));
-
                             Log.i("TRACE", "Response getprice buildings" + buildings);
                             JSONObject k = new JSONObject(buildings.get(1).toString());
                             Log.i("TRACE", "Response getprice buildings yo" + price.getString("ll_min"));
-
                             if (!price.getString("ll_min").equalsIgnoreCase("")) {
                                 if (!price.getString("ll_min").equalsIgnoreCase("0")) {
                                     Log.i("tt", "I am here" + 2);
@@ -2235,7 +2227,6 @@ catch(Exception e){
                                     llMax = 5 * (Math.round(llMax / 5));
                                     Log.i("TRACE", "RESPONSEDATAr" + llMin);
                                     Log.i("TRACE", "RESPONSEDATAr" + llMax);
-
                                     orMin = Integer.parseInt(price.getString("or_min"));
                                     orMax = Integer.parseInt(price.getString("or_max"));
                                     Log.i("TRACE", "RESPONSEDATArr" + orMin);
@@ -2244,53 +2235,56 @@ catch(Exception e){
                                     orMax = 500 * (Math.round(orMax / 500));
                                     Log.i("TRACE", "RESPONSEDATAr" + orMin);
                                     Log.i("TRACE", "RESPONSEDATAr" + orMax);
-
                                     BroadCastMinMaxValue(llMin, llMax, orMin, orMax);
-
                                     updateHorizontalPicker();
-
                                     marquee(500, 100);
                                     map.clear();
                                     buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                                     recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-
                                     mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
                                     txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
                                     search_building_icon.setVisibility(View.GONE);
                                     buildingIcon.setVisibility(View.GONE);
                                     fav.setVisibility(View.VISIBLE);
                                     StartOyeButtonAnimation();
+
                                     try {
                                         for (int i = 0; i < 5; i++) {
                                             JSONObject j = new JSONObject(buildings.get(i).toString());
                                             config[i] = j.getString("config");
-                                            Log.i("TRACE", "RESPONSEDATAr" + name);
+                                            Log.i("Buildingdata", "config" + config[i]);
                                             name[i] = j.getString("name");
-                                            Log.i("TRACE", "RESPONSEDATAr" + name[i]);
+                                            Log.i("Buildingdata", "name" + name[i]);
                                             rate_growth[i] = j.getString("rate_growth");
-                                            Log.i("TRACE", "RESPONSEDATAr" + rate_growth[i]);
+                                            Log.i("Buildingdata", "rate_growth" + rate_growth[i]);
                                             or_psf[i] = Integer.parseInt(j.getString("or_psf"));
-                                            Log.i("TRACE", "RESPONSEDATAr" + or_psf);
+                                            Log.i("Buildingdata", "or_psf" + or_psf);
                                             ll_pm[i] = Integer.parseInt(j.getString("ll_pm"));
                                             id[i] = j.getString("id");
-                                            Log.i("TRACE", "RESPONSEDATAr" + ll_pm);
+                                            Log.i("Buildingdata", "ll_pm" + ll_pm);
                                             double lat = Double.parseDouble(j.getJSONArray("loc").get(1).toString());
-                                            Log.i("TRACE", "RESPONSEDATAr" + lat);
+                                            Log.i("Buildingdata", "lat " + lat);
                                             double longi = Double.parseDouble(j.getJSONArray("loc").get(0).toString());
-                                            Log.i("TRACE", "RESPONSEDATAr" + longi);
+                                            Log.i("Buildingdata", "longi" + longi);
                                             loc[i] = new LatLng(lat, longi);
-                                            Log.i("TRACE", "RESPONSEDATAr" + loc);
-                                            Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
+                                            Log.i("Buildingdata", "loc " + loc);
+                                            Log.i("Buildingdata", "mCustomerMarker " + mCustomerMarker[i]);
+                                            listing[i] = j.getString("listings");
+                                            transaction[i] = j.getString("transactions");
+                                            portal[i]=j.getString( "portals" );
+                                            Log.i("Buildingdata", "listing transaction portal" +listing[i]+" "+transaction[i]+" "+ portal[i]);
                                             String customSnippet = rate_growth[i];
                                             mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc[i]).title(name[i]).snippet(customSnippet).icon(icon1).flat(true));
-                                            Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
+                                            Log.i("TRACE", "mCustomerMarker after :" + mCustomerMarker[i]);
                                             flag[i] = false;
                                             dropPinEffect(mCustomerMarker[i]);
 
                                         }
+                                        String building_count = jsonResponseData.getString("building_count");
+                                        Log.i("Buildingdata", "loc " + building_count);
                                         SnackbarManager.show(
                                                 Snackbar.with(getActivity())
-                                                        .text("Displaying 5 buildings out of 12,000.")
+                                                        .text("Displaying 5 buildings out of "+building_count)
                                                         .position(Snackbar.SnackbarPosition.TOP)
                                                         .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
                                     } catch (Exception e) {
@@ -2520,7 +2514,7 @@ catch(Exception e){
 
     @Override
     public void onPositionSelected(int position, int count) {
-
+        p=position;
         if(!AppConstants.SETLOCATION) {
         if (count == 3) {
 
@@ -2576,8 +2570,24 @@ catch(Exception e){
                     }
                     break;
                 case 1:
-                    Intent intent = new Intent( getContext(), Game.class );
-                    startActivity( intent );
+                    try {
+                                new CountDownTimer( 1000, 500 ) {
+
+                                    public void onTick(long millisUntilFinished) {
+
+                                    }
+
+                                    public void onFinish() {
+                                        if(p==1) {
+                                            Intent intent = new Intent( getContext(), Game.class );
+                                            startActivity( intent );
+                                        }
+                                    }
+                                }.start();
+
+                    } catch (Exception e) {
+                    }
+
                     break;
 
                 case 2:
@@ -4179,12 +4189,10 @@ if(buildingSelected)
 public void onOptionClickS(View v){
     searchFragment c = new searchFragment();
     AppConstants.SEARCHFLAG = true;
-
     loadFragmentAnimated(c, null, R.id.container_Signup, "Search");
     if(!AppConstants.SETLOCATION) {
         ((ClientMainActivity) getActivity()).closeOyeConfirmation();
         ((ClientMainActivity) getActivity()).closeOyeScreen();
-
         Intent in = new Intent(AppConstants.MARKERSELECTED);
         in.putExtra("markerClicked", "false");
         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
@@ -4628,7 +4636,15 @@ public void onOptionClickS(View v){
     }
 
 
-
+    /*public void sendDataToOyeConfirmation(int i){
+        Log.i( "sendDataToOye" ,"sendDataToOyeConfirmation"+i);
+        Intent in = new Intent(AppConstants.SEND_LISTING  );
+        in.putExtra("listing", listing[i]);
+        in.putExtra("portal", portal[i]);
+        in.putExtra("transaction", transaction[i]);
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+        Log.i( "sendDataToOye" ,"sendDataToOyeConfirmation"+listing[i]+ " "+portal[i]+" "+transaction[i]);
+    }*/
 
 
 }

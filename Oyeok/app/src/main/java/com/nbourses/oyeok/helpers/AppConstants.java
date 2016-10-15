@@ -129,6 +129,8 @@ public class AppConstants {
     public static final String RENTAL_COUNT = "rentalCount";
     public static final String RESALE_COUNT = "resaleCount";
 
+    public static final String SEND_LISTING = "sendListing";
+
     public static final String GCM_ID = "gcm_id";
     public static final String TT = "TT";
     public static final String RENTAL ="RENTAL";

@@ -1179,7 +1179,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
 
     public void buySound() {
 
-        MediaPlayer mp = MediaPlayer.create( this, R.raw.cycle_bell );
+        MediaPlayer mp = MediaPlayer.create( this, R.raw.jump );
         mp.setOnCompletionListener( new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {

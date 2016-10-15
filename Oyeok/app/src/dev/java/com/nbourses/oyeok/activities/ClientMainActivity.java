@@ -1947,9 +1947,12 @@ Log.i(TAG,"Image is the "+out);
 
     }
 
-    public  void OpenBuildingOyeConfirmation(){
+    public  void OpenBuildingOyeConfirmation(String listing,String transaction,String portal){
         buidingInfoFlag=true;
-
+        Bundle args = new Bundle();
+        args.putString("listing", listing);
+        args.putString("transaction", transaction);
+        args.putString("portal", portal);
         confirm_screen_title.setVisibility(View.VISIBLE);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -1968,7 +1971,7 @@ Log.i(TAG,"Image is the "+out);
 
         }
         BuildingOyeConfirmation buildingOyeConfirmation = new BuildingOyeConfirmation();
-        loadFragment(buildingOyeConfirmation, null, R.id.container_OyeConfirmation, "");
+        loadFragment(buildingOyeConfirmation, args, R.id.container_OyeConfirmation, "");
     }
 
 
