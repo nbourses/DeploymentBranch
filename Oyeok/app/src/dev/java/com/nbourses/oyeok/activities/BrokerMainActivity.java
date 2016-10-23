@@ -40,8 +40,10 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.GoogleCloudMessaging.MyGcmListenerService;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
+import com.nbourses.oyeok.fragments.AddBuilding;
+import com.nbourses.oyeok.fragments.AddListing;
+import com.nbourses.oyeok.fragments.AddListingFinalCard;
 import com.nbourses.oyeok.fragments.AppSetting;
-import com.nbourses.oyeok.fragments.BrokerMap;
 import com.nbourses.oyeok.fragments.BrokerPreokFragment;
 import com.nbourses.oyeok.fragments.ShareOwnersNo;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -418,15 +420,22 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         openmaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BrokerMap brokerMap=new BrokerMap();
+
+                Intent intent = new Intent(getBaseContext(),ClientMainActivity.class);
+                intent.putExtra("role","broker");
+                startActivity(intent);
+
+               /*BrokerMap brokerMap=new BrokerMap();
+                DashboardClientFragment dashboardClientFragment=new DashboardClientFragment();
 //                brokerMap.setChangeLoction(this);
                 getSupportActionBar().setDisplayShowHomeEnabled(false);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                loadFragment(brokerMap,null,R.id.container_map,"");
+//                loadFragment(brokerMap,null,R.id.container_map,"");
+                loadFragment(dashboardClientFragment,null,R.id.container_map,"");
                 doneButton.setVisibility(View.VISIBLE);
                 gmap=true;
 
-                tv_change_region.setVisibility(View.VISIBLE);
+                tv_change_region.setVisibility(View.VISIBLE);*/
              //   tv_change_region.setText(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
 
                 //tv_change_region.setVisibility(View.VISIBLE);
@@ -442,7 +451,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         });
 //
 
-        doneButton.setOnClickListener(new View.OnClickListener() {
+        /*doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -462,7 +471,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 
 
             }
-        });
+        });*/
 
 
         Bundle bundle = getIntent().getExtras();
@@ -950,7 +959,22 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
     }
 
 
+    public void openAddListing(){
+        AddListing addBuildingCardView = new AddListing();
+        loadFragmentAnimated(addBuildingCardView, null, R.id.container_map, "");
+    }
 
+    public void openAddBuilding(){
+        AddBuilding addBuilding= new AddBuilding();
+        loadFragmentAnimated(addBuilding, null, R.id.container_map, "");
+
+    }
+
+    public void openAddListingFinalCard(){
+        AddListingFinalCard addListingFinalCard= new AddListingFinalCard();
+        loadFragmentAnimated(addListingFinalCard, null, R.id.container_map, "");
+
+    }
 
 
 

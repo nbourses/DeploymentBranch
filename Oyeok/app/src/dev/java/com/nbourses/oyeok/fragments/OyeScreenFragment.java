@@ -151,9 +151,10 @@ public class OyeScreenFragment extends Fragment {
         satView.setVisibility(View.VISIBLE);
         bundle = getArguments();
       tv_fd_bank=(TextView)rootView.findViewById(R.id.tv_fd_bank);
-        txtcalendar=(TextView)rootView.findViewById(R.id.txtcalendar);
+
 //        tv_dealinfo=(TextView)rootView.findViewById(R.id.tv_dealinfo);
         AppConstants.CUSTOMER_TYPE="Tenant";
+        txtcalendar=(TextView)rootView.findViewById(R.id.txtcalendar);
         updateLabel();
         txtcalendar.setOnClickListener(new View.OnClickListener() {
             @Override

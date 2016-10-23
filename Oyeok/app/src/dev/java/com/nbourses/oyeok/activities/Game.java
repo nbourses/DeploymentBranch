@@ -131,40 +131,40 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     private Double lat, lng;
 
     static IconGenerator iconFactory;
-    int[] game_min = new int[5], game_max = new int[5];
+    int[] game_min = new int[10], game_max = new int[10];
     MarkerOptions markerOptions;
-    Marker[] Markertext = new Marker[5];
+    Marker[] Markertext = new Marker[10];
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "", locality = "";
 
-    private String[] config = new String[5], rate_growth = new String[5], name = new String[5], listing = new String[5], portal = new String[5], transaction = new String[5], id = new String[5], distance = new String[5];
-    private Marker[] mCustomerMarker = new Marker[5];
+    private String[] config = new String[10], rate_growth = new String[10], name = new String[10], listing = new String[10], portal = new String[10], transaction = new String[10], id = new String[10], distance = new String[5];
+    private Marker[] mCustomerMarker = new Marker[10];
     private int llMin = 35, llMax = 60, orMin = 21000, orMax = 27000, c = 0;
-    private int[] or_psf = new int[5], ll_pm = new int[5];
-    private LatLng[] loc = new LatLng[5];
-    private boolean flag[] = new boolean[5];
+    private int[] or_psf = new int[10], ll_pm = new int[10];
+    private LatLng[] loc = new LatLng[10];
+    private boolean flag[] = new boolean[10];
     Integer balance;
-    Thread[] gamethread = new Thread[5];
-    boolean[] textFlag = new boolean[5];
-    private Timer[] gametimer = new Timer[5];
-    private Timer[] timer1 = new Timer[5];
+    Thread[] gamethread = new Thread[10];
+    boolean[] textFlag = new boolean[10];
+    private Timer[] gametimer = new Timer[10];
+    private Timer[] timer1 = new Timer[10];
     private Timer timer, DisplayBuildingTimer, HideBuildingsTimer;
-    private int[] SellorBuyPrice = new int[5], rand = new int[5];
+    private int[] SellorBuyPrice = new int[10], rand = new int[10];
     private int mposition = 0;
     private int INDEX;
-    LatLng[] cent = new LatLng[5];
-    private Point[] buildingPosition = new Point[5];
+    LatLng[] cent = new LatLng[10];
+    private Point[] buildingPosition = new Point[10];
     LinearLayout recordWorkout, searchbar;
 
     boolean locked, gameflag = false;
     private long lastTouched = 0, start = 0;
     private static final long SCROLL_TIME = 200L;
-    private int[] status = new int[5];
+    private int[] status = new int[10];
 
     private TextView week, month, year, clocktick;
     private int w = 0, m = 0, y = 0;
     int tickcount = 3, buildingcount = 0, TimeInMillis = 4000;
-    Animation shake;
-
+    private Animation shake;
+    private Timer clockTickTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,7 +191,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
         month = (TextView) findViewById( R.id.month );
         year = (TextView) findViewById( R.id.year );
         clocktick = (TextView) findViewById( R.id.clocktick1 );
-        if (!SharedPrefs.getString( this, SharedPrefs.My_BALANCE ).equals( null )) {
+        if (!SharedPrefs.getString( this, SharedPrefs.My_BALANCE ).equals( "" )) {
             Log.i( "balance", "balance 11:" + SharedPrefs.getString( this, SharedPrefs.My_BALANCE ) );
             balance = Integer.parseInt( SharedPrefs.getString( this, SharedPrefs.My_BALANCE ) );
             balance1.setText( String.valueOf( balance ) );
@@ -458,6 +458,9 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                     lock.setBackground( getResources().getDrawable( R.drawable.locked ) );
                     clocktick.setVisibility( View.GONE );
 //                    tickcount=3;
+                    if(clockTickTimer!=null){
+                        clockTickTimer.cancel();
+                    }
                     locked = false;
                 } else {
 
@@ -469,6 +472,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                     locked = true;
 //                    clocktick();
                     clocktick.setVisibility( View.VISIBLE );
+                    StopAllThread();
                     lockedTimer ();
                 }
 
@@ -682,14 +686,18 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        /*CancelDisplayBuildingTimer();
+        HideBuildingsTimer();
+        clockTickTimer.cancel();*/
         onBackPressed();
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        CancelDisplayBuildingTimer();
-        HideBuildingsTimer();
+        if(clockTickTimer!=null)
+            clockTickTimer.cancel();
+        StopAllThread();
         SharedPrefs.save( this, SharedPrefs.My_BALANCE, balance + "" );
         Intent intent = new Intent( this, ClientMainActivity.class );
         intent.addFlags(
@@ -701,6 +709,16 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
         //super.onBackPressed();
     }
 
+    public void StopAllThread(){
+        CancelDisplayBuildingTimer();
+        HideBuildingsTimer();
+
+        for(int i=0;i<buildingcount;i++){
+            if(timer1[i]!=null){
+                Cancel_timer(i);
+            }
+        }
+    }
 
     private void onMapDrag(final MotionEvent motionEvent) {
 
@@ -1432,7 +1450,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                                     iconFactory.setStyle( IconGenerator.STYLE_GREEN );
                                 } else
                                     iconFactory.setStyle( IconGenerator.STYLE_RED );
-//                                Log.i("countervalue11", "count new : " + rate+" "+((or_psf[i]/1000)-10)+" "+((or_psf[i]/1000)+10)+" "+game_min[i]+" "+game_max[i]);
+                                Log.i("countervalue11", "count new : " + rate+" "+((or_psf[i]/1000)-10)+" "+((or_psf[i]/1000)+10)+" "+game_min[i]+" "+game_max[i]);
                                 addIcon( iconFactory, rate + "k", cent[i], i );
 //                                c=1300;
                                 if (game_max[i] < ((or_psf[i] / 1000) - 10) && game_min[i] >= ((or_psf[i] / 1000) + 10)) {
@@ -1595,9 +1613,11 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
 
 
     private void lockedTimer() {
+        if(clockTickTimer!=null){
+            clockTickTimer.cancel();
+        }
 
-
-      final  Timer clockTickTimer = new Timer();
+      clockTickTimer = new Timer();
         clockTickTimer.schedule(new TimerTask() {
                @Override
                public void run () {
@@ -1702,7 +1722,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                         runOnUiThread( new Runnable() {
                             @Override
                             public void run() {
-
+                        Log.i( "startgame","startgame : " );
                                 try {
                                     radomizedBuildingDisplay();
                                 } catch (Exception e) {

@@ -113,6 +113,30 @@
             android:textStyle="bold" />
     </RelativeLayout>
     -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:textColor="@color/greenish_blue"
+        android:background="@color/transparent"
+        android:gravity="left"
+        android:layout_gravity="left"
+        android:visibility="gone"
+        android:id="@+id/back_btn"
+        android:textSize="20sp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textColor="@color/greenish_blue"
+        android:background="@color/transparent"
+        android:gravity="right"
+        android:layout_gravity="right"
+        android:visibility="gone"
+        android:layout_marginRight="10dp"
+        android:id="@+id/btncancel"
+        android:textSize="20sp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -134,7 +158,7 @@
         android:id="@+id/confirm_screen_title"
         android:textStyle="bold"
         android:textSize="18dp"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <RelativeLayout
         android:layout_width="100dp"

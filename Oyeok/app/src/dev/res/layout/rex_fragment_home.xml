@@ -104,7 +104,7 @@
                             android:layout_marginRight="50dp"
                             android:layout_marginTop="1dp"
                             android:textColor="@android:color/white"
-                            android:background="@color/Black"
+
                             android:textSize="16sp"
                             android:ellipsize="marquee"
                             android:textStyle="bold"
@@ -463,7 +463,17 @@
                 android:layout_marginBottom="40dp"
                 android:layout_marginTop="10dp" />
 
-
+            <Button
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:id="@+id/addbuilding"
+                android:layout_gravity="right|bottom"
+                android:background="@drawable/gradient_edit_profile_pic"
+                android:text="+"
+                android:textSize="30dip"
+                android:layout_marginRight="10dip"
+                android:layout_marginBottom="40dp"
+                android:layout_marginTop="-10dp" />
 
         </FrameLayout>
 
@@ -745,6 +755,24 @@
 
         </LinearLayout>
 
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dip"
+            android:layout_marginTop="60dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="Find Building on Map &amp; Save"
+            android:gravity="center"
+            android:background="@color/grey"
+            android:textColor="@color/greenish_blue"
+            android:textSize="14sp"
+            android:id="@+id/txt_info"
+            android:visibility="gone"
+            android:textStyle="bold"/>
+
+
+
         <LinearLayout
             android:layout_width="500dp"
             android:layout_height="wrap_content"
@@ -916,7 +944,7 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="45dp"
-                android:gravity="bottom"
+                android:gravity="center"
 
                 android:layout_alignParentBottom="true"
                 android:orientation="horizontal">

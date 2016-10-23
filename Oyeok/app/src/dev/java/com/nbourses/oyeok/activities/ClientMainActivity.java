@@ -66,6 +66,9 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
+import com.nbourses.oyeok.fragments.AddBuilding;
+import com.nbourses.oyeok.fragments.AddListing;
+import com.nbourses.oyeok.fragments.AddListingFinalCard;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.BrokerMap;
 import com.nbourses.oyeok.fragments.BuildingOyeConfirmation;
@@ -122,6 +125,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
+
   private   int   backpress=0;
    boolean setting=false;
     TextView tv_client_heading;
@@ -129,6 +133,11 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.btnMyDeals)
     Button btnMyDeals;
 
+    @Bind(R.id.back_btn)
+    TextView btn_back;
+
+    @Bind(R.id.btncancel)
+    TextView btn_cancel;
 
     @Bind(R.id.profile_image_main)
     ImageView profileImage;
@@ -199,7 +208,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
 private String description;
     private String heading;
-
+   private String  BrokerRole="";
 private Boolean cardFlag = false;
     private WebView webView;
     private  Boolean autocomplete = false,oyeconfirm_flag=false;
@@ -511,7 +520,37 @@ public void signUp(){
 
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
-        AppConstants.CURRENT_USER_ROLE ="client";
+
+
+        setSupportActionBar(mToolbar);
+
+        //      mToolbar.setNavigationIcon(R.drawable.home);
+        getSupportActionBar().setTitle("Live Region Rates");
+
+
+        //TODO: need to validate this functionality
+        dbHelper = new DBHelper(getBaseContext());
+        mHandler = new Handler();
+
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+             BrokerRole = extras.getString("role");
+            dbHelper.save(DatabaseConstants.userRole, BrokerRole);
+            General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,BrokerRole);
+            AppConstants.CURRENT_USER_ROLE =BrokerRole;
+            //The key argument here must match that used in the other activity
+        }else {
+            dbHelper.save(DatabaseConstants.userRole, "Client");
+            General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"client");
+            AppConstants.CURRENT_USER_ROLE = "client";
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+
+
+
         ShortcutBadger.removeCount(this);
         Log.i(TAG,"popup window shown 1 ");
         Log.i(TAG,"popup window shown 5 ");
@@ -766,19 +805,7 @@ public void signUp(){
 
         //  RelativeLayout re = (RelativeLayout) findViewById(R.id.badge);
         //setup toolbar
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //      mToolbar.setNavigationIcon(R.drawable.home);
-        getSupportActionBar().setTitle("Live Region Rates");
 
-
-        //TODO: need to validate this functionality
-        dbHelper = new DBHelper(getBaseContext());
-        mHandler = new Handler();
-
-        dbHelper.save(DatabaseConstants.userRole, "Client");
-        General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"client");
 
         //setup navigation drawer
         drawerFragment = (FragmentDrawer)
@@ -1418,17 +1445,22 @@ public void signUp(){
         } else{
 
             Log.i("SIGNUP_FLAG"," closing app =================== 3"+getFragmentManager().getBackStackEntryCount());
-            if(backpress <1) {
-                backpress = (backpress + 1);
-                for(int i=0;i<getFragmentManager().getBackStackEntryCount();i++){
-                    getFragmentManager().popBackStackImmediate();
-                }
-
-                TastyToast.makeText(this, "Press Back again to Exit!", TastyToast.LENGTH_LONG, TastyToast.INFO);
-                //Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
-            }else if (backpress>=1) {
+            if(BrokerRole.equalsIgnoreCase("broker")){
                 backpress = 0;
                 this.finish();
+            }else {
+                if (backpress < 1) {
+                    backpress = (backpress + 1);
+                    for (int i = 0; i < getFragmentManager().getBackStackEntryCount(); i++) {
+                        getFragmentManager().popBackStackImmediate();
+                    }
+
+                    TastyToast.makeText(this, "Press Back again to Exit!", TastyToast.LENGTH_LONG, TastyToast.INFO);
+                    //Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+                } else if (backpress >= 1) {
+                    backpress = 0;
+                    this.finish();
+                }
             }
 
         }
@@ -1439,6 +1471,18 @@ public void signUp(){
 
     }
 
+
+
+    @OnClick(R.id.back_btn)
+    public void Onbtn_BackClick1(View v) {
+        Reset();
+        openAddBuilding();
+    }
+
+    @OnClick(R.id.btncancel)
+    public void Onbtn_cancelClick1(View v) {
+        Reset();
+    }
 
 
     @OnClick(R.id.btnMyDeals)
@@ -2072,6 +2116,100 @@ Log.i(TAG,"Image is the "+out);
 
 
     }
+
+public void openAddListing(){
+
+    AddListing addBuildingCardView = new AddListing();
+    FragmentManager fragmentManager = getSupportFragmentManager();
+    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+    card.setClickable(true);
+    fragmentTransaction.addToBackStack("card");
+    fragmentTransaction.replace(R.id.card, addBuildingCardView);
+    fragmentTransaction.commitAllowingStateLoss();
+//    loadFragmentAnimated(addBuildingCardView, null, R.id.card, "");
+}
+
+    public void openAddBuilding(){
+
+        containerSignup.setBackgroundColor(Color.parseColor("#CC000000"));
+        containerSignup.setClickable(true);
+
+        AddBuilding addBuilding= new AddBuilding();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        card.setClickable(true);
+        fragmentTransaction.addToBackStack("card");
+        fragmentTransaction.replace(R.id.card, addBuilding);
+        fragmentTransaction.commitAllowingStateLoss();
+//        loadFragmentAnimated(addBuilding, null, R.id.card, "");
+
+    }
+
+    public void openAddListingFinalCard(){
+
+        containerSignup.setBackgroundColor(Color.parseColor("#CC000000"));
+        containerSignup.setClickable(true);
+        AddListingFinalCard addListingFinalCard= new AddListingFinalCard();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        card.setClickable(true);
+        fragmentTransaction.addToBackStack("card");
+        fragmentTransaction.replace(R.id.card, addListingFinalCard);
+        fragmentTransaction.commitAllowingStateLoss();
+//        loadFragmentAnimated(addListingFinalCard, null, R.id.card, "");
+
+    }
+
+
+    public void closeAddListing(){
+getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+        containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
+        containerSignup.setClickable(false);
+        card.setClickable(false);
+//        getFragmentManager().popBackStackImmediate();
+    }
+
+    public void closeAddBuilding(){
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+        containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
+        containerSignup.setClickable(false);
+        card.setClickable(false);
+   /*     getFragmentManager().popBackStackImmediate();
+//        getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.container_Signup)).commit();
+*/
+    }
+
+
+    public  void setlocation(String b_name){
+        btnMyDeals.setVisibility(View.GONE);
+        btn_back.setVisibility(View.VISIBLE);
+        btn_cancel.setVisibility(View.VISIBLE);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        confirm_screen_title.setText(b_name);
+        getSupportActionBar().setTitle("");
+        closeAddBuilding();
+        containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
+        containerSignup.setClickable(false);
+        card.setClickable(false);
+        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).saveBuiding(b_name);
+
+    }
+
+    public void Reset(){
+        btnMyDeals.setVisibility(View.VISIBLE);
+        btn_back.setVisibility(View.GONE);
+        btn_cancel.setVisibility(View.GONE);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        confirm_screen_title.setVisibility(View.GONE);
+        getSupportActionBar().setTitle("Live Region Rates");
+        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).ResetChanges();
+    }
+
 
 
 

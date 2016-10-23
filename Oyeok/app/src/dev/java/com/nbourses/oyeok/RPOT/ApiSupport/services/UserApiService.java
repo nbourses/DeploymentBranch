@@ -82,6 +82,10 @@ import retrofit.http.POST;
         if user_id is "anonymous" then the user signing up is new user if user_id is "a value" then it's an existing user
         */
 
+
+
+       /* @POST("/get/demo/price")
+        void getPrice(@Body User user, Callback<JsonElement> callback);*/
         @POST("/get/price")
         void getPrice(@Body User user, Callback<JsonElement> callback);
 
@@ -97,11 +101,8 @@ import retrofit.http.POST;
         @POST("/1/give/rating")
         void getUserRoleRating (@Body User user, Callback<User> callback);
 
-
         @POST("/user/signup")
         void userSignUp(@Body User user, Callback<SignUp> callback);
-
-
 
         @POST("/update/profile")
         void userUpdateProfile(@Body User user, Callback<UpdateProfile> callback);

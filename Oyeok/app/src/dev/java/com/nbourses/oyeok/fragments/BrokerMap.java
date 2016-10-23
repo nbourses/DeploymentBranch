@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,6 +36,7 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
+import com.nbourses.oyeok.activities.BrokerMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 
@@ -74,6 +76,9 @@ public class BrokerMap extends DashboardClientFragment {
     // private ChangeLocation locationName;
     Double lat, lng;
     private Point point;
+
+    Button addbuilding;
+
     //SharedPreferences.OnSharedPreferenceChangeListener listener;
     private static final String[] LOCATION_PERMS = {
             android.Manifest.permission.ACCESS_FINE_LOCATION,
@@ -112,6 +117,10 @@ try {
         mHelperView=(View) rootView.findViewById(R.id.br_helperView);
         location_button=(ImageView) rootView.findViewById(R.id.location_button);
         autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
+        addbuilding=(Button)rootView.findViewById(R.id.addbuilding);
+
+
+
         autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
         autoCompView.setOnItemClickListener(this);
         autoCompView.setOnClickListener(new View.OnClickListener() {
@@ -208,7 +217,12 @@ try {
             }
         });
 
-
+        addbuilding.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((BrokerMainActivity)getActivity()).openAddListing();
+            }
+        } );
 
 
         mcallback = new GetCurrentLocation.CurrentLocationCallback() {

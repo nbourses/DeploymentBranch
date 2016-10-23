@@ -4,11 +4,7 @@
     android:layout_height="fill_parent"
     android:paddingTop="0dp">
 
-    <!--<FrameLayout-->
-        <!--android:id="@+id/br_map"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--&gt;-->
+
     <fragment
         android:id="@+id/g_map"
         android:layout_width="match_parent"
@@ -103,11 +99,142 @@
         </LinearLayout>
     </LinearLayout>
 
+
+
+
+
+
+
+
+
+
+
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:id="@+id/ll_marker"
+        android:visibility="visible"
+        android:layout_width="fill_parent"
+        android:layout_height="65dp"
+        android:layout_marginLeft="@dimen/sixteen_dp"
+        android:layout_marginRight="@dimen/sixteen_dp"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:gravity="center"
+        android:layout_marginTop="220dip"
+        android:background="@drawable/maker_bg">
+
+
+        <RelativeLayout
+            android:id="@+id/markerpanelminmax"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:clickable="true"
+            android:visibility="visible">
+
+
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/average_rate_this_locality"
+                android:id="@+id/tv_building"
+                android:textColor="@color/White"
+                android:singleLine="true"
+                android:layout_marginRight="40dp"
+                android:textSize="12sp"
+                android:visibility="visible"
+                android:gravity="top"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="25dp"
+                android:textStyle="bold|italic"
+                android:clickable="false" />
+
+
+            <TextView
+                android:layout_width="255dp"
+                android:layout_height="40dp"
+                android:id="@+id/tvFetchingRates"
+                android:textColor="@color/White"
+                android:visibility="gone"
+                android:foregroundGravity="center_horizontal|center_vertical"
+                android:layout_marginTop="15dp"
+                android:paddingTop="-15dp"
+                android:paddingBottom="10dp"
+                android:text=""
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+
+
+            <LinearLayout
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true">
+
+                <TextView
+                    android:id="@+id/newVisits"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+
+
+                    android:gravity="center_horizontal|center_vertical"
+                    android:paddingLeft="1dp"
+                    android:paddingRight="1dp"
+                    android:layout_marginBottom="-6dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginLeft="8dp"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:layout_alignParentRight="true"
+                    />
+
+                <TextView
+                    android:id="@+id/txtFilterValue"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:text="Home"
+                    android:textStyle="bold|italic"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:paddingLeft="1dp"
+                    android:paddingRight="1dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginLeft="-45dp"
+                    android:layout_marginTop="3dp"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:visibility="visible"
+                    android:layout_alignParentRight="true" />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
 
     </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+    <Button
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:id="@+id/addbuilding"
+        android:layout_gravity="right|bottom"
+        android:background="@drawable/gradient_edit_profile_pic"
+        android:text="Add B"
+        android:layout_marginLeft="-10dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginTop="-10dp"
+        android:elevation="5dp"
+        android:layout_marginRight="30dip"/>
 
     <ImageView
         android:layout_width="60dp"
@@ -116,7 +243,7 @@
         android:id="@+id/iv_markerpin"
         android:foregroundGravity="center_horizontal"
         android:layout_gravity="center_horizontal|center_vertical"
-        android:src="@drawable/broker_marker"
+        android:src="@drawable/ic_markerpin"
 
 
         android:layout_centerHorizontal="true"

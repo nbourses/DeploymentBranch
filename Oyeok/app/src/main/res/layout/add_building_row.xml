@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="50dip"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="4dp"
+        android:id="@+id/building_img"
+        android:background="@drawable/buildingiconbeforeclick"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+        android:layout_marginLeft="10dip"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:id="@+id/b_name"
+        android:textColor="@color/black"
+        android:textSize="20dip"
+        android:text="Akash Jyoti"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text=","
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Kalina"
+            android:textStyle="bold"
+            android:id="@+id/locality"
+            android:textColor="@color/gray"
+            android:gravity="center"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -10,6 +10,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.ShareOwnersNoM;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateStatus;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.deleteHDroom;
+import com.nbourses.oyeok.models.AddBuildingModel;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.PublishLetsOye;
 
@@ -71,6 +72,10 @@ public interface OyeokApiService {
 
     @POST("/check/token")
     void updateStatus2(@Body UpdateStatus updateStatus, Callback<JsonElement> callback);
+
+
+    @POST("/add/building")
+    void addBuilding(@Body AddBuildingModel addBuildingModel, Callback<JsonElement> callback);
 
 }
 

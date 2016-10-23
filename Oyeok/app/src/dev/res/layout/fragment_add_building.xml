@@ -1,0 +1,135 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/white"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             tools:context="com.nbourses.oyeok.fragments.AddBuilding">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dip"
+        android:background="@color/greenish_blue"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:textColor="@color/black"
+            android:layout_marginLeft="15dip"
+            android:gravity="center"
+            android:id="@+id/back"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose Building"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dip"
+            android:gravity="center"
+            android:textSize="20dip"
+            android:textStyle="bold"
+            android:id="@+id/textView7"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dip"
+            android:gravity="center"
+            android:id="@+id/Cancel"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"/>
+    </LinearLayout>
+        <EditText android:id="@+id/inputSearch1"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:hint="Search Building.."
+            android:gravity="center_horizontal|center_vertical"
+            android:background="@drawable/greenishblue_border_grey_solid"
+            android:layout_margin="4dip"
+            android:textColorHint="@color/gray"
+            android:textColor="@color/black"
+            android:layout_below="@+id/container_toolbar"
+            android:inputType="textVisiblePassword"/>
+       <!-- <SearchView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:animateLayoutChanges="true"
+            android:showDividers="beginning"
+            android:focusableInTouchMode="true"
+            ></SearchView>-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="40dip"
+                android:layout_height="40dip"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:id="@+id/add"
+                android:layout_margin="5dip"
+                android:src="@drawable/add"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                android:layout_marginLeft="10dip"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="14dp"
+                android:textColor="@color/black"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="14dp"
+                android:textColor="@color/black"
+                android:text="'Himalayan Heights CHS'"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+        <ListView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:background="@color/white"
+            android:layout_weight="1"
+            android:id="@+id/listView1"/>
+        <com.nbourses.oyeok.fragments.SideBar
+
+            android:layout_width="40dip"
+            android:layout_height="fill_parent"
+            android:id="@+id/sideIndex"
+            >
+
+        </com.nbourses.oyeok.fragments.SideBar>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</FrameLayout>
+    <!--android:orientation="vertical"
+    android:background="#FFF"
+
+    android:gravity="center_horizontal"-->

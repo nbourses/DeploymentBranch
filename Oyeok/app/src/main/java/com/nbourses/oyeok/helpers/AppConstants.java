@@ -63,6 +63,7 @@ public class AppConstants {
     public static final String BROADCAST_MIN_MAX_VAL = "broadcastMinMaxValue";
 
     public static final String IS_LOGGED_IN_USER = "isLoggedInUser";
+
     public static final String SETLOCN = "setLocation";
 
     public static final String USER_ID = "userId";
@@ -89,6 +90,7 @@ public class AppConstants {
     public static final String SERVER_BASE_URL_11 = "https://ssl.hailyo.com/1.1";
 
    public static final String SERVER_BASE_URL_102 = "https://ssl.hailyo.com/1.02";
+    public static final String SERVER_BASE_URL_103 = "https://test.hailyo.com/1";
 
 
 
