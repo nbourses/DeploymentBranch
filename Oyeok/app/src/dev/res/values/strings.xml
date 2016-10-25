@@ -60,11 +60,27 @@
     </string-array>
 
     <!-- navigation drawer item labels  -->
-    <string-array name="nav_drawer_labels_no_signup">
+    <string-array name="nav_drawer_labels_no_signup_client">
         <!--<item>@string/signup</item>-->
         <item>@string/RegisterSignIn</item>
         <item>@string/useAsClient</item>
         <item>@string/MyPortfolio</item>
+        <item>@string/notifications</item>
+        <item>@string/shareApp</item>
+        <!--  <item>@string/supportChat</item> -->
+
+        <item>@string/likeOnFb</item>
+        <item>@string/aboutUs</item>
+        <item>@string/brokerOk</item>
+        <item>@string/settings</item>
+        <!--   <item>@string/updateProfile</item> -->
+
+    </string-array>
+
+    <string-array name="nav_drawer_labels_no_signup_broker">
+        <!--<item>@string/signup</item>-->
+        <item>@string/RegisterSignIn</item>
+        <item>@string/useAsClient</item>
         <item>@string/notifications</item>
         <item>@string/shareApp</item>
         <!--  <item>@string/supportChat</item> -->
@@ -183,6 +199,10 @@
     <string name="seller_card_question1">compare with Live Market Rates</string>
     <string name="seller_card_question2">track to sell at right time &amp; price</string>
     <string name="seller_card_question3">broadcast to hire Local Brokers</string>
+
+    <string name="app_name1">SimpleKeyboard</string>
+    <string name="oyeok_keyboard">Oyeok Keyboard</string>
+    <string name="subtype_en_US">English (US)</string>
 
 
 </resources>

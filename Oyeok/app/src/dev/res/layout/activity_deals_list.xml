@@ -338,7 +338,7 @@
             android:orientation="vertical"
             android:id="@+id/bgtxtlayout"
             android:gravity="center_horizontal|bottom"
-            android:layout_above="@+id/phaseSeekbar"
+            android:layout_above="@+id/phaseSeekbar1"
             android:weightSum="1"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="320dp"

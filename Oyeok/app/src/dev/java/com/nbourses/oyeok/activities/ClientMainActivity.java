@@ -992,6 +992,9 @@ public void signUp(){
             startActivity(openProfileActivity);
         }
         else if (itemTitle.equals(getString(R.string.brokerOk))) {
+            dbHelper = new DBHelper(getBaseContext());
+            dbHelper.save(DatabaseConstants.userRole,"Broker");
+            General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
             Intent openDashboardActivity =  new Intent(this, BrokerMainActivity.class);
             startActivity(openDashboardActivity);
         }
@@ -1001,7 +1004,7 @@ public void signUp(){
                 // signUpFragment.getView().bringToFront();
                 Bundle bundle = new Bundle();
                 bundle.putStringArray("Chat", null);
-                bundle.putString("lastFragment", "drawer");
+                bundle.putString("lastFragment", "clientDrawer");
                 loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
             }
             else
@@ -1903,7 +1906,7 @@ Log.i(TAG,"Image is the "+out);
                 /*fragmentTransaction.addToBackStack("card");
                 fragmentTransaction.replace(R.id.container_Signup, d);
                 fragmentTransaction.commitAllowingStateLoss();*/
-                     // InitialCard c = new InitialCard();
+                     //InitialCard c = new InitialCard();
                       CardFragment c = new CardFragment();
                         //loadFragment(d,null,R.id.container_Signup,"");
                         c.setArguments(null);
@@ -1948,9 +1951,12 @@ Log.i(TAG,"Image is the "+out);
 
     }
 
-    public  void OpenBuildingOyeConfirmation(){
+    public  void OpenBuildingOyeConfirmation(String listing,String transaction,String portal){
         buidingInfoFlag=true;
-
+        Bundle args = new Bundle();
+        args.putString("listing", listing);
+        args.putString("transaction", transaction);
+        args.putString("portal", portal);
         confirm_screen_title.setVisibility(View.VISIBLE);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -1969,7 +1975,7 @@ Log.i(TAG,"Image is the "+out);
 
         }
         BuildingOyeConfirmation buildingOyeConfirmation = new BuildingOyeConfirmation();
-        loadFragment(buildingOyeConfirmation, null, R.id.container_OyeConfirmation, "");
+        loadFragment(buildingOyeConfirmation, args, R.id.container_OyeConfirmation, "");
     }
 
 

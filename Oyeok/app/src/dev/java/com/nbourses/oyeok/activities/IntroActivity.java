@@ -21,7 +21,6 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
@@ -50,7 +49,8 @@ public class IntroActivity extends ActionBarActivity {
     private TabLayout tabLayout;
     private Button btnC;
     private Button btnB;
-    private TextView useNow;
+    private Button useNow;
+    private Button skip;
     private int permissionCheckForLocation;
     //private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GetCurrentLocation.CurrentLocationCallback mcallback;
@@ -69,12 +69,18 @@ public class IntroActivity extends ActionBarActivity {
 
         gps = new GPSTracker(this);
         //showPermissionDialog();
-        General.showPermissionDialog(this, this);
 
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            General.showPermissionDialog(this, this);
+        }
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
+
+        mViewPager.setBackgroundResource(R.drawable.intro_bg);
         btnC = (Button) findViewById(R.id.btnC);
         btnB = (Button) findViewById(R.id.btnB);
-        useNow = (TextView) findViewById(R.id.useNow);
+        useNow = (Button) findViewById(R.id.useNow);
+        skip = (Button) findViewById(R.id.skip);
 
         String s =null;
         SpannableString ss1;
@@ -127,6 +133,20 @@ btnC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("TG","ithe tithe 3");
+                useNow.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                Intent intent = new Intent(getApplicationContext(), ClientMainActivity.class);
+                intent.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 useNow.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
                 Intent intent = new Intent(getApplicationContext(), ClientMainActivity.class);
                 intent.addFlags(

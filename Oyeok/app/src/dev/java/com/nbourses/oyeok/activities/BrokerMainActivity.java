@@ -37,7 +37,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
-import com.nbourses.oyeok.GoogleCloudMessaging.MyGcmListenerService;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AppSetting;
@@ -189,11 +188,12 @@ GoogleMap map;
         setContentView(R.layout.activity_agent_main);
         AppConstants.CURRENT_USER_ROLE ="broker";
 
+        dbHelper = new DBHelper(getBaseContext());
+        dbHelper.save(DatabaseConstants.userRole,"Broker");
+        General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
 
+        Log.i("uas","yo man 96");
 
-
-
-Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class));
 
 
 
@@ -397,9 +397,7 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        dbHelper = new DBHelper(getBaseContext());
-        dbHelper.save(DatabaseConstants.userRole,"Broker");
-        General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
+
 
         drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
@@ -576,6 +574,9 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
         String title = getString(R.string.app_name);
 
         if (itemTitle.equals(getString(R.string.useAsClient))) {
+            dbHelper = new DBHelper(getBaseContext());
+            dbHelper.save(DatabaseConstants.userRole,"client");
+            General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"client");
             Intent openDashboardActivity =  new Intent(this, ClientMainActivity.class);
             startActivity(openDashboardActivity);
         }
@@ -592,8 +593,8 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
                 // signUpFragment.getView().bringToFront();
                 Bundle bundle = new Bundle();
                 bundle.putStringArray("Chat", null);
-                bundle.putString("lastFragment", "drawer");
-                loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
+                bundle.putString("lastFragment", "brokerDrawer");
+                loadFragment(signUpFragment, bundle, R.id.container_sign, "");
             }
             else
                 shareReferralLink();
@@ -863,6 +864,9 @@ Log.i("broker","service running "+isMyServiceRunning(MyGcmListenerService.class)
 //                backpress = 0;
                 /*this.finish();*/
 //            }
+            dbHelper = new DBHelper(getBaseContext());
+            dbHelper.save(DatabaseConstants.userRole,"client");
+            General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"client");
             Intent inten = new Intent(this, ClientMainActivity.class);
             inten.addFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |

@@ -99,12 +99,20 @@ public class FragmentDrawer extends Fragment {
         Log.d(TAG, "ROLE_OF_USER "+General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER));
 
         if(General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-            titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_no_signup);
-            icons = getActivity().getResources().obtainTypedArray(R.array.nav_drawer_labels_no_signup_icon);
+            if (General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                Log.i(TAG,"yo man 98");
+                titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_no_signup_broker);
+                icons = getActivity().getResources().obtainTypedArray(R.array.nav_drawer_labels_no_signup_icon_broker);
+            }else{
+                Log.i(TAG,"yo man 99");
+                titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_no_signup_client);
+                icons = getActivity().getResources().obtainTypedArray(R.array.nav_drawer_labels_no_signup_icon_client);
+            }
 
         }
         else {
             if (General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+
                 titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_signup_broker);
                 icons = getActivity().getResources().obtainTypedArray(R.array.nav_drawer_labels_signup_broker_icon);
             }

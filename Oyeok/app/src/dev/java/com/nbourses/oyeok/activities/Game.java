@@ -191,7 +191,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
         month = (TextView) findViewById( R.id.month );
         year = (TextView) findViewById( R.id.year );
         clocktick = (TextView) findViewById( R.id.clocktick1 );
-        if (!SharedPrefs.getString( this, SharedPrefs.My_BALANCE ).equals( null )) {
+        if (!SharedPrefs.getString( this, SharedPrefs.My_BALANCE ).equals("")) {
             Log.i( "balance", "balance 11:" + SharedPrefs.getString( this, SharedPrefs.My_BALANCE ) );
             balance = Integer.parseInt( SharedPrefs.getString( this, SharedPrefs.My_BALANCE ) );
             balance1.setText( String.valueOf( balance ) );
@@ -1181,7 +1181,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
 
     public void buySound() {
 
-        MediaPlayer mp = MediaPlayer.create( this, R.raw.cycle_bell );
+        MediaPlayer mp = MediaPlayer.create( this, R.raw.jump );
         mp.setOnCompletionListener( new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {

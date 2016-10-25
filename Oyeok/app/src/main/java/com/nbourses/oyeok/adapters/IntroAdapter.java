@@ -20,15 +20,15 @@ public class IntroAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return IntroFragment.newInstance(Color.parseColor("#20BF9F"), position); // blue
+                return IntroFragment.newInstance(Color.parseColor("#80000000"), position); // blue
             case 1:
-                return IntroFragment.newInstance(Color.parseColor("#20BF9F"), position); // orange
+                return IntroFragment.newInstance(Color.parseColor("#80000000"), position); // orange
             case 2:
-                return IntroFragment.newInstance(Color.parseColor("#20BF9F"), position);
+                return IntroFragment.newInstance(Color.parseColor("#80000000"), position);
             case 3:
-                return IntroFragment.newInstance(Color.parseColor("#20BF9F"), position);
+                return IntroFragment.newInstance(Color.parseColor("#80000000"), position);
             default:
-                return IntroFragment.newInstance(Color.parseColor("#20BF9F"), position); // green
+                return IntroFragment.newInstance(Color.parseColor("#80000000"), position); // green
         }
     }
 

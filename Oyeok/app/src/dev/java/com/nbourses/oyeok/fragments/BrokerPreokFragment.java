@@ -122,6 +122,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     @Bind(R.id.pd)
     TextView pd;
 
+
 //    @Bind(R.id.price)
 //    TextView price;
 
@@ -245,7 +246,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     //lead description variables
 
-    private String lookingSeeking = "Tenant is looking";
+    private String lookingSeeking1 = "Tenant ( ";
+    private String lookingSeeking2 = ") is looking";
+    private String lookingSeeking = "";
     private String atFor = "at";
 
     private long mSampleDurationTime = 5; // 5 msec
@@ -1514,12 +1517,17 @@ if(count<=220) {
             Log.i("PREOK CALLED11","jetcool"+currentOptionSelectedString);
 
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("rental")){
-                lookingSeeking = "Tenant is looking for";
+
+                lookingSeeking1 = "Tenant (";
+                        lookingSeeking2 = ") looking for";
+                //lookingSeeking = "Tenant is looking for";
                 //texPtype.setText("Tenant is looking for");
                 Log.i("PREOK CALLED", "tototo" + lookingSeeking);
             }
             else if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("resale")){
-                lookingSeeking = "Buyer is looking for";
+                lookingSeeking1 = "Buyer (";
+                lookingSeeking2 = ") is looking for";
+               // lookingSeeking = "Buyer is looking for";
                // texPtype.setText("Buyer is looking for");
                 Log.i("PREOK CALLED", "tototo" + lookingSeeking);
             }
@@ -1560,12 +1568,16 @@ if(count<=220) {
             Log.i("PREOK CALLED11","yoyoyoy2 "+General.getSharedPreferences(getContext(),AppConstants.TT));
             Log.i("PREOK CALLED11","jetcool"+currentOptionSelectedString);
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("rental")){
-                lookingSeeking = "Owner is having";
+                lookingSeeking1 = "Owner (";
+                lookingSeeking2 = ") is having";
+                //lookingSeeking = "Owner is having";
                 //texPtype.setText("Owner is having");
                 Log.i("PREOK CALLED", "tototo" + lookingSeeking + " "+ txtOption2.getText().toString());
             }
             else if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("resale")){
-                lookingSeeking = "Seller is having";
+               // lookingSeeking = "Seller is having";
+                lookingSeeking = "Seller (";
+                lookingSeeking = ") is having";
                // texPtype.setText("Seller is having");
                 Log.i("PREOK CALLED", "tototo" + lookingSeeking);
             }
@@ -1717,12 +1729,16 @@ catch (Exception e){
 
             if (currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
                 currentOptionSelectedString = strTenants;
-                lookingSeeking = "Tenant is looking for";
+                lookingSeeking1 = "Tenant (";
+                lookingSeeking2 = ") looking for";
+                //lookingSeeking = "Tenant is looking for";
                 Log.i("PREOK CALLED10", "currentOptionSelectedString1" + currentOptionSelectedString);
             }
             if (currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
                 currentOptionSelectedString = strOwners;
-                lookingSeeking = "Owner is having";
+                lookingSeeking = "Owner (";
+                lookingSeeking = ") is having";
+               // lookingSeeking = "Owner is having";
                 Log.i("PREOK CALLED13", "currentOptionSelectedString1" + currentOptionSelectedString);
             }
 
@@ -1852,12 +1868,16 @@ catch (Exception e){
 
             if (currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
                 currentOptionSelectedString = strSeekers;
-                lookingSeeking = "Buyer is looking for";
+                lookingSeeking = "Buyer (";
+                lookingSeeking = ") is looking for";
+               // lookingSeeking = "Buyer is looking for";
                 Log.i("PREOK CALLED16", "currentOptionSelectedString2" + currentOptionSelectedString);
             }
             if (currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 currentOptionSelectedString = strSeller;
-                lookingSeeking = "Seller is having";
+                lookingSeeking = "Seller (";
+                lookingSeeking = ") is having";
+               // lookingSeeking = "Seller is having";
                 Log.i("PREOK CALLED19", "currentOptionSelectedString2" + currentOptionSelectedString);
             }
 
@@ -1942,6 +1962,7 @@ catch (Exception e){
             selectedItemPosition = position;
             String ptype = null;
             String pstype;
+            String name;
             String furnishing = "Semi-Furnished";
             String possession_date = "";
             if(jsonObjectArray.getJSONObject(position).getString("possession_date") != ""){
@@ -1976,11 +1997,12 @@ catch (Exception e){
                     Log.i(TAG,"furnishing "+jsonObjectArray.getJSONObject(position).getString("furnishing"));
 
             ptype = jsonObjectArray.getJSONObject(position).getString("property_type");
-
+name = jsonObjectArray.getJSONObject(position).getString("name");
             Log.i(TAG,"property_type "+ptype);
             Log.i(TAG, "property_subtype " + pstype);
            // texPtype.setText("Property type: "+ptype);
-            texPtype.setText(lookingSeeking);
+            //texPtype.setText(lookingSeeking);
+            texPtype.setText(lookingSeeking1+name+lookingSeeking2);
            // texPstype.setText("Property subtype: "+pstype);
 if(ptype.equalsIgnoreCase("home")) {
     texPstype.setText(furnishing + " " + ptype.substring(0, 1).toUpperCase() + ptype.substring(1));
@@ -2620,6 +2642,7 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
             selectedItemPosition = position;
             String ptype = null;
             String pstype;
+            String name;
             pstype = jsonObjectArray.getJSONObject(position).getString("property_subtype");
             Log.i("debug circ","inside onclick");
             Log.i("debug circ","inside onclick m "+jsonObjectArray);
@@ -2640,10 +2663,12 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
             */
 
             ptype = jsonObjectArray.getJSONObject(position).getString("property_type");
+            name = jsonObjectArray.getJSONObject(position).getString("name");
 
             Log.i(TAG,"property_type "+ptype);
             Log.i(TAG, "property_subtype " + pstype);
-            texPtype.setText(lookingSeeking);
+            texPtype.setText(lookingSeeking1+name+lookingSeeking2);
+            //texPtype.setText(lookingSeeking);
             //texPtype.setText("Property Type: "+ptype);
             texPstype.setText(ptype.substring(0, 1).toUpperCase() + ptype.substring(1)+" ("+pstype+")");
             //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));

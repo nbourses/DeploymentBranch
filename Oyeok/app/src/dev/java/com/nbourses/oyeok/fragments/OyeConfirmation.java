@@ -283,16 +283,21 @@ public class OyeConfirmation extends Fragment {
         }
     };
 
+
+
+
     @Override
     public void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(SetPropertyDetails1,new IntentFilter((AppConstants.RECEIVE_PROPERTY_DETAILS)));
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(SetPropertyDetails1);
+
     }
 
 
