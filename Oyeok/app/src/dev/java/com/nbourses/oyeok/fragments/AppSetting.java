@@ -11,6 +11,8 @@ import android.widget.CompoundButton;
 
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 
 
 public class AppSetting extends Fragment {
@@ -22,7 +24,7 @@ public class AppSetting extends Fragment {
     }
 
     CheckBox checkBoxWalkthrough;
-    CheckBox checkBoxBeacon;
+    CheckBox checkBoxBeacon,enable_confirmation_call;
     String walkthrough,beacon;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,6 +35,9 @@ public class AppSetting extends Fragment {
          checkBoxBeacon=  (CheckBox) v.findViewById(R.id.check_beacon);
 
        checkBoxWalkthrough=  (CheckBox) v.findViewById(R.id.check_walkthrough);
+
+        enable_confirmation_call=(CheckBox) v.findViewById(R.id.enable_confirmation_call);
+
         walkthrough= SharedPrefs.getString(getContext(),SharedPrefs.CHECK_WALKTHROUGH);
         Log.i("ischecked","ischecked1"+walkthrough);
         if(walkthrough.equalsIgnoreCase("true")) {
@@ -46,6 +51,11 @@ public class AppSetting extends Fragment {
             checkBoxBeacon.setChecked(true);
         }
 //
+        if(General.getSharedPreferences(getContext(),AppConstants.NO_CALL).equalsIgnoreCase("0"))
+            enable_confirmation_call.setChecked(true);
+        /*else
+            enable_confirmation_call.setChecked(false);*/
+
         checkBoxWalkthrough.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -74,7 +84,7 @@ public class AppSetting extends Fragment {
         checkBoxBeacon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked==true){
+                if(isChecked){
                     SharedPrefs.save(getContext(),SharedPrefs.CHECK_BEACON,isChecked+"");
 //                    Intent intent = new Intent(AppConstants.CHECK_BEACON);
 //                    intent.putExtra("checkBeacon", isChecked);
@@ -89,7 +99,21 @@ public class AppSetting extends Fragment {
         });
 
 
+        enable_confirmation_call.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    Log.i("NO_CALL", "0 " );
 
+                    General.setSharedPreferences(getContext(),AppConstants.NO_CALL,"0");
+                }else{
+                    Log.i("NO_CALL", "1 " );
+
+                    General.setSharedPreferences(getContext(),AppConstants.NO_CALL,"1");
+
+                }
+            }
+        });
 
 
 

@@ -282,13 +282,13 @@ Button home,shop,industrial,office;
     private String filterValue;
     private String bhk;
     private int filterValueMultiplier = 950;
-    TextView rental,resale;
+    TextView rental,resale,btn_add_building,btn_add_listing;
     RelativeLayout property_type_layout;
     LinearLayout dispProperty;
     private int countertut,p;
 
     private ImageView myLoc,ic_search;
-    LinearLayout recordWorkout;
+    LinearLayout recordWorkout,addlistinglayout;
     boolean clicked = true;
     private String address;
     private LinearLayout seekbar_linearlayout;
@@ -590,6 +590,9 @@ private Button CallButton,addbuilding;
         parentbottom=(RelativeLayout) rootView.findViewById(R.id.top);
         parenttop=(RelativeLayout) rootView.findViewById(parent);
         txt_info=(TextView) rootView.findViewById(R.id.txt_info);
+        addlistinglayout=(LinearLayout) rootView.findViewById(R.id.addlistinglayout);
+        btn_add_building=(TextView) rootView.findViewById(R.id.btn_add_building);
+        btn_add_listing=(TextView) rootView.findViewById(R.id.btn_add_listing);
 
         if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
             General.setSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI, String.valueOf(System.currentTimeMillis()));
@@ -761,6 +764,13 @@ private Button CallButton,addbuilding;
 
 
         }
+
+
+
+
+
+
+
        /* if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null")) {
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector,R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40","15"}, new String[]{getContext().getResources().getString(R.string.Rental),"Game", getContext().getResources().getString(R.string.Resale)}));
 
@@ -873,6 +883,9 @@ private Button CallButton,addbuilding;
                     txtFilterValue.setText("done");
                     txt_info.setText("Is this Location Correct ? press Done");
                 }else if(txtFilterValue.getText().toString().equalsIgnoreCase("done")){
+                    if(AppConstants.ROLE_OF_USER.equalsIgnoreCase("broker")) {
+                        addlistinglayout.setVisibility(View.VISIBLE);
+                    }
                     Addbuilding();
                     ((ClientMainActivity)getActivity()).Reset();
                 }
@@ -1231,7 +1244,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                     mCustomerMarker[i].showInfoWindow();
                                     horizontalPicker.setVisibility(View.GONE);
                                     tvFetchingrates.setVisibility(View.VISIBLE);
-                                   tvRate.setVisibility(View.GONE);
+                                    tvRate.setVisibility(View.GONE);
                                     rupeesymbol.setVisibility(View.GONE);
                                     recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
 
@@ -1316,7 +1329,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                     updateHorizontalPicker();
                                     Log.i("mm_mithai", "marker draw");
 
-//                                mCustomerMarker[i].setIcon(icon1);
+//                                  mCustomerMarker[i].setIcon(icon1);
                                     search_building_icon.setVisibility(View.GONE);
                                     buildingIcon.setVisibility(View.GONE);
                                     fav.setVisibility(View.VISIBLE);
@@ -2301,7 +2314,7 @@ catch(Exception e){
                                             mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc[i]).title(name[i]).snippet(customSnippet).icon(icon1).flat(true));
                                             Log.i("TRACE", "mCustomerMarker after :" + mCustomerMarker[i]);
                                             flag[i] = false;
-                                            dropPinEffect(mCustomerMarker[i]);
+//                                            dropPinEffect(mCustomerMarker[i]);
 
                                         }
                                         String building_count = jsonResponseData.getString("building_count");
@@ -4561,9 +4574,6 @@ if(buildingSelected)
 
     public void SaveBuildingDataToRealm(){
 
-
-
-
             Realm myRealm = General.realmconfig( getContext() );
             MyPortfolioModel myPortfolioModel = new MyPortfolioModel();
 
@@ -4581,20 +4591,6 @@ if(buildingSelected)
             myPortfolioModel.setId( id[INDEX]+"1" );
             myPortfolioModel.setOr_psf( or_psf[INDEX] );
         }
-        /*if(brokerType=="rent" && or_psf[INDEX]!=0) {
-            myPortfolioModel.setLl_pm( ll_pm[INDEX] );
-            myPortfolioModel.setOr_psf( or_psf[INDEX] );
-            //myPortfolioModel.setOr_psf( 0 );
-        }else if(brokerType=="rent" && or_psf[INDEX]==0){
-            myPortfolioModel.setLl_pm( ll_pm[INDEX] );
-            myPortfolioModel.setOr_psf(0);
-        }else if(brokerType=="resale" && ll_pm[INDEX]!=0) {
-            myPortfolioModel.setLl_pm( ll_pm[INDEX] );
-            myPortfolioModel.setOr_psf( or_psf[INDEX] );
-        }else if(brokerType=="resale" && ll_pm[INDEX]==0){
-            myPortfolioModel.setOr_psf( or_psf[INDEX] );
-            myPortfolioModel.setLl_pm(0);
-        }*/
             myPortfolioModel.setPortals( portal[INDEX] );
             myPortfolioModel.setListing( listing[INDEX] );
             myPortfolioModel.setRate_growth( rate_growth[INDEX] );
@@ -4627,6 +4623,9 @@ if(buildingSelected)
         txt_info.setVisibility(View.VISIBLE);
         CallButton.setVisibility(View.GONE);
         addbuilding.setVisibility(View.GONE);
+        mPhasedSeekBar.setVisibility(View.GONE);
+        dispProperty.setVisibility(View.GONE);
+
         String txt;
         txt="<font color=#2dc4b6><big>Drag & Save Building Location</big></font>";
         tvFetchingrates.setText(Html.fromHtml(txt));
@@ -4643,6 +4642,9 @@ if(buildingSelected)
       addbuilding.setVisibility(View.VISIBLE);
       txtFilterValue.setText("2BHK");
       AppConstants.PROPERTY="Home";
+        dispProperty.setVisibility(View.VISIBLE);
+        mPhasedSeekBar.setVisibility(View.VISIBLE);
+        addlistinglayout.setVisibility(View.GONE);
       /*txtFilterValue.setText("SAVE");
       tv_building.setText("hey sushil");*/
 

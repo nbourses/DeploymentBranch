@@ -72,6 +72,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/add_b"
             android:orientation="horizontal">
             <ImageView
                 android:layout_width="40dip"
@@ -98,9 +99,11 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:textStyle="bold"
+                android:id="@+id/usertext"
                 android:textSize="14dp"
+                android:hint="'Your Building'"
                 android:textColor="@color/black"
-                android:text="'Himalayan Heights CHS'"/>
+                android:text=""/>
 
         </LinearLayout>
 

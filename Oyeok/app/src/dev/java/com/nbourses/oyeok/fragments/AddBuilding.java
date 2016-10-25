@@ -1,15 +1,21 @@
 package com.nbourses.oyeok.fragments;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,7 +38,7 @@ public class AddBuilding extends Fragment {
         // Required empty public constructor
     }
 
-private TextView Cancel,back;
+private TextView Cancel,back,usertext;
     private View v;
     ListView listView1;
     EditText inputSearch1;
@@ -41,6 +47,7 @@ private TextView Cancel,back;
     ImageView add;
     String name;
     private TextView dialog;
+    LinearLayout add_b;
     private SideBar sideBar;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,22 +60,19 @@ private TextView Cancel,back;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v=inflater.inflate( R.layout.fragment_add_building, container, false );
 
+        v=inflater.inflate( R.layout.fragment_add_building, container, false );
         Cancel=(TextView)v.findViewById(R.id.Cancel);
         back=(TextView)v.findViewById(R.id.back);
         listView1=(ListView) v.findViewById(R.id.listView1);
         inputSearch1=(EditText)v.findViewById(R.id.inputSearch1);
         add=(ImageView) v.findViewById(R.id.add);
-
         adapter = new addBuildingAdapter(getContext(),1);
         listView1.setAdapter(adapter);
         realm = General.realmconfig(getContext());
         adapter.setResults(realm.where(addBuilding.class).findAll());
-
-
-
-
+        add_b=(LinearLayout)v.findViewById(R.id.add_b);
+        usertext=(TextView)v.findViewById(R.id.usertext);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +96,8 @@ private TextView Cancel,back;
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
 //                if(TT=="LL"){
                     Log.i( "portfolio","onTextChanged  LL : "+cs );
+
+                    usertext.setText("'"+cs+"'");
                     adapter.setResults( realm.where(addBuilding.class) //implicit AND
                             .beginGroup()
                             .contains("Building_name", cs.toString(),false)
@@ -125,12 +131,34 @@ private TextView Cancel,back;
             }
         });
 
-        add.setOnClickListener(new View.OnClickListener() {
+        add_b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                ((ClientMainActivity)getActivity()).closeAddBuilding();
+                if(inputSearch1.getText().toString().equalsIgnoreCase("")) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Empty Text")
+                            .setMessage("Please Type Your Building Name.")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // continue with delete
 
-                ((ClientMainActivity)getActivity()).setlocation(name);
+                                }
+                            })
+
+                        /*.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })*/
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                }else {
+                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
+                    ((ClientMainActivity) getActivity()).setlocation(name);
+                }
 
             }
         });
@@ -139,7 +167,7 @@ private TextView Cancel,back;
 
 
         sideBar = (SideBar) v.findViewById(R.id.sideIndex);
-        dialog = (TextView) v.findViewById(R.id.dialog);
+//        dialog = (TextView) v.findViewById(R.id.dialog);
         sideBar.setTextView(dialog);
 
         //Set the right touch monitor
@@ -157,9 +185,22 @@ private TextView Cancel,back;
         });
 
 
-
+         init();
 
         return v;
+    }
+
+
+
+
+
+  private void  init(){
+      listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+          @Override
+          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+          }
+      });
     }
 
   /*

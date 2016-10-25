@@ -86,6 +86,20 @@ public class PublishLetsOye //extends Model {
 
 
 
+    @Expose
+    @SerializedName("no_call")
+    @Column(name = "no_call")
+
+    public String no_call;
+
+
+    public String getNo_call() {
+        return no_call;
+    }
+
+    public void setNo_call(String no_call) {
+        this.no_call = no_call;
+    }
 
 
     public String getFurnishing() {

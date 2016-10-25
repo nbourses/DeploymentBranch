@@ -552,16 +552,12 @@ while(slowInternetFlag) {
                     }
                 AppConstants.letsOye.setFurnishing(furnishingStatus);
 
-                Log.i("TRACE", "Get Furnishing from model " + AppConstants.letsOye.getFurnishing());
+                AppConstants.letsOye.setNo_call(General.getSharedPreferences(context,AppConstants.NO_CALL));
+                Log.i("NO_CALL", "Get Furnishing from model " + General.getSharedPreferences(context,AppConstants.NO_CALL));
                 Log.i("TRACE", "Get Possession Date from model " + AppConstants.letsOye.getPossession_date());
-
-
                 Log.i("TRACE", "GCM id is" + SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
-
                 Log.i("TRACE", "Get user Id from model " + AppConstants.letsOye.getUserId());
                 Log.i("TRACE", "Get user Id from model " + AppConstants.letsOye.getGcmId());
-
-
                 Log.i("TRACE", "AppConstants.letsOye direct" + AppConstants.letsOye);
                 final Gson gsona = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
                 String jsona = gsona.toJson(AppConstants.letsOye);

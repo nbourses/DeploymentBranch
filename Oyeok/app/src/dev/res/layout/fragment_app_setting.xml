@@ -15,14 +15,15 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="SETTING"
         android:id="@+id/setting"
+        android:layout_marginTop="5dip"
         android:layout_gravity="center_horizontal"
-        android:textColor="@color/greenish_blue" />
+        android:textColor="@color/black" />
 
     <LinearLayout
     android:layout_width="fill_parent"
     android:orientation="vertical"
     android:layout_height="wrap_content"
-        android:background="@color/grey"
+        android:background="@color/gray"
         android:layout_margin="10dp">
 
         <CheckBox
@@ -31,20 +32,21 @@
         android:id="@+id/check_beacon"
             android:layout_marginRight="10dp"
         android:text="BEACONS"
+            android:textColor="@color/greenish_blue"
             android:layout_gravity="left" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="BEACONS"
-            android:textColor="@color/Black"
+            android:textColor="@color/white"
             android:layout_margin="10dp" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="fill_parent"
         android:orientation="vertical"
         android:layout_height="wrap_content"
-        android:background="@color/grey"
+        android:background="@color/gray"
         android:layout_margin="10dp">
 
         <CheckBox
@@ -53,13 +55,37 @@
             android:id="@+id/check_walkthrough"
             android:layout_marginRight="10dp"
             android:text="WALKTHROUGH"
+            android:textColor="@color/greenish_blue"
             android:layout_gravity="left" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="WALK-THROUGH"
-            android:textColor="@color/Black"
+            android:textColor="@color/white"
+            android:layout_margin="10dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:background="@color/gray"
+        android:layout_margin="10dp">
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/greenish_blue"
+            android:layout_marginRight="10dp"
+            android:text="OyeOk Confirmation call"
+            android:id="@+id/enable_confirmation_call"
+            android:layout_gravity="left" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OyeOk calls you after every Broardcast"
+            android:textColor="@color/white"
             android:layout_margin="10dp" />
     </LinearLayout>
 

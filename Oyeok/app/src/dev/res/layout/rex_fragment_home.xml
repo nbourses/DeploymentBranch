@@ -1149,6 +1149,43 @@
             android:gravity="center_horizontal|center_vertical"
             android:text="Home"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:id="@+id/addlistinglayout"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="60dip"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="@color/grey"
+            android:gravity="center"
+            android:id="@+id/btn_add_building"
+            android:text="Done"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="60dip"
+            android:textColor="@color/black"
+            android:layout_margin="4dip"
+            android:textStyle="bold"
+            android:background="@color/orange"
+            android:layout_weight="1"
+            android:id="@+id/btn_add_listing"
+            android:visibility="visible"
+            android:gravity="center"
+            android:text="Continue to listing"/>
+    </LinearLayout>
+
     <!--////rem changes sushil-->
 
     <!--<RelativeLayout

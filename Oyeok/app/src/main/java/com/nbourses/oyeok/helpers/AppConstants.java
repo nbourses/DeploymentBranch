@@ -184,6 +184,7 @@ public class AppConstants {
     //Global variables for cardFragment
     public static String Card_TT="LL";
     public static String Card_REQ_AVL="REQ";
+    public static String NO_CALL = "no_call";
 
 
 

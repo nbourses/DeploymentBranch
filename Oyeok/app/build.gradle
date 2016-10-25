@@ -346,4 +346,5 @@ dependencies {
 //    compile 'com.github.thorbenprimke:realm-recycler-view:0.9.5'
 
 
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
 }
