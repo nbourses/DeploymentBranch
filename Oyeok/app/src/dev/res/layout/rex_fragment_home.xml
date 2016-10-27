@@ -58,7 +58,7 @@
                 android:id="@+id/hPicker"
 
                 android:clickable="true">
-               
+
 
                 <LinearLayout
                     android:id="@+id/ll_marker"
@@ -214,10 +214,8 @@
                             android:layout_width="265dp"
                             android:layout_height="fill_parent"
                             android:orientation="vertical"
-
                             android:layout_below="@+id/tv_building"
                             android:layout_alignBottom="@+id/tvRate">
-
                             <com.skyfishjy.library.RippleBackground
                                 xmlns:android="http://schemas.android.com/apk/res/android"
                                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -229,7 +227,6 @@
                                 app:rb_rippleAmount="4"
                                 app:rb_duration="3000"
                                 app:rb_scale="6">
-
                             <TextView
                                 android:layout_width="255dp"
                                 android:layout_height="match_parent"
@@ -240,60 +237,46 @@
                                 android:layout_marginTop="-5dp"
                                 android:gravity="center"
                                 android:textSize="12sp"
-
                                 android:textStyle="bold" />
                             </com.skyfishjy.library.RippleBackground>
-
                         </LinearLayout>-->
 
 
 
 
 
-                         <!--<RelativeLayout
-                             android:layout_width="60dp"
-                             android:layout_height="wrap_content"
-                             android:layout_alignParentRight="true"
-
-                             >
-
-
-
-
-                        <TextView
-                            android:id="@+id/newVisits"
-                            android:layout_width="61dp"
-                            android:layout_height="61dp"
-
-                            android:textStyle="bold"
-                            android:layout_marginBottom="2dp"
-                            android:gravity="center_horizontal|center_vertical"
-                            android:paddingLeft="1dp"
-                            android:paddingRight="1dp"
-
-                            android:textColor="@color/white"
-                            android:textSize="20sp"
+                        <!--<RelativeLayout
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_margin="5dp" />
-
-
-                        <TextView
-                            android:id="@+id/txtFilterValue"
-                            android:layout_width="61dp"
-                            android:layout_height="61dp"
-
-                            android:text="Home"
-                            android:textStyle="bold|italic"
-                            android:gravity="center_horizontal|center_vertical"
-                            android:paddingLeft="1dp"
-                            android:paddingRight="1dp"
-                            android:textColor="@color/white"
-                            android:textSize="13sp"
-                            android:visibility="visible"
-                            android:layout_alignParentRight="true" />
-
-
-                        </RelativeLayout>-->
+                            >
+                       <TextView
+                           android:id="@+id/newVisits"
+                           android:layout_width="61dp"
+                           android:layout_height="61dp"
+                           android:textStyle="bold"
+                           android:layout_marginBottom="2dp"
+                           android:gravity="center_horizontal|center_vertical"
+                           android:paddingLeft="1dp"
+                           android:paddingRight="1dp"
+                           android:textColor="@color/white"
+                           android:textSize="20sp"
+                           android:layout_alignParentRight="true"
+                           android:layout_margin="5dp" />
+                       <TextView
+                           android:id="@+id/txtFilterValue"
+                           android:layout_width="61dp"
+                           android:layout_height="61dp"
+                           android:text="Home"
+                           android:textStyle="bold|italic"
+                           android:gravity="center_horizontal|center_vertical"
+                           android:paddingLeft="1dp"
+                           android:paddingRight="1dp"
+                           android:textColor="@color/white"
+                           android:textSize="13sp"
+                           android:visibility="visible"
+                           android:layout_alignParentRight="true" />
+                       </RelativeLayout>-->
 
                         <LinearLayout
                             android:layout_width="60dp"
@@ -346,28 +329,28 @@
                             android:layout_marginTop="-10dp"
                             android:layout_marginRight="-10dp"
                             android:orientation="vertical">
-                        <com.skyfishjy.library.RippleBackground
-                            xmlns:android="http://schemas.android.com/apk/res/android"
-                            xmlns:app="http://schemas.android.com/apk/res-auto"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:id="@+id/client_content"
-                            app:rb_color="#ff0000"
-                            app:rb_radius="4dp"
-                            app:rb_rippleAmount="4"
-                            app:rb_duration="3000"
-                            app:rb_scale="6"
-                            android:layout_alignParentRight="true">
+                            <com.skyfishjy.library.RippleBackground
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:id="@+id/client_content"
+                                app:rb_color="#ff0000"
+                                app:rb_radius="4dp"
+                                app:rb_rippleAmount="4"
+                                app:rb_duration="3000"
+                                app:rb_scale="6"
+                                android:layout_alignParentRight="true">
 
-                            <ImageView
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:id="@+id/beacons3"
-                                android:layout_alignParentTop="true"
-                                android:layout_marginLeft="300dp"
-                                android:layout_marginStart="300dp" />
+                                <ImageView
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:id="@+id/beacons3"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_marginLeft="300dp"
+                                    android:layout_marginStart="300dp" />
 
-                        </com.skyfishjy.library.RippleBackground>
+                            </com.skyfishjy.library.RippleBackground>
 
                         </LinearLayout>
                     </RelativeLayout>
@@ -439,7 +422,6 @@
                 android:layout_gravity="bottom"
                 android:layout_width="match_parent"
                 android:layout_height="25dp">
-
                 <TextView
                     android:id="@+id/errorText"
                     android:text="ss"
@@ -447,7 +429,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:gravity="center_horizontal"/>
-
             </RelativeLayout>-->
 
 
@@ -455,7 +436,7 @@
                 android:layout_width="65dp"
                 android:layout_height="65dp"
 
-                  android:id="@+id/CallButton"
+                android:id="@+id/CallButton"
                 android:layout_gravity="left|bottom"
                 android:background="@drawable/gradient_call_button_border"
                 android:layout_marginLeft="10dp"
@@ -494,11 +475,11 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
 
             android:orientation="horizontal"
             android:id="@+id/recordWorkout"
-            android:background="@android:color/transparent"
+            android:background="@color/greenish_blue"
 
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
@@ -542,7 +523,7 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:weightSum="1"
@@ -553,8 +534,9 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:layout_margin="@dimen/eight_dp"
-                    android:clickable="false"
+                    android:padding="@dimen/eight_dp"
+                    android:clickable="true"
+                    android:id="@+id/favWrapper"
                     android:gravity="center_vertical|center_horizontal"
                     android:orientation="vertical">
                     <ImageView
@@ -573,7 +555,7 @@
                 </LinearLayout>
                 <ImageView
                     android:layout_width="1dp"
-                    android:layout_height="fill_parent"
+                    android:layout_height="match_parent"
                     android:background="@color/white"
                     android:visibility="visible"/>
 
@@ -581,7 +563,7 @@
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
                     android:id="@+id/addressPanel"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:paddingLeft="5dp"
                     android:layout_marginRight="1dp">
 
@@ -617,21 +599,21 @@
 
                     android:background="@android:color/transparent"
                     android:textColorHint="@color/white"
-                     android:clickable="true"
-                     android:textColor="@color/white"
-                     android:textCursorDrawable="@drawable/cursor"
-                     android:layout_marginRight="50dp"
+                    android:clickable="true"
+                    android:textColor="@color/white"
+                    android:textCursorDrawable="@drawable/cursor"
+                    android:layout_marginRight="50dp"
                     android:cursorVisible="false"
                     android:singleLine="false"
                     android:minLines="2"
                     android:maxLines="2"
                     android:scrollbars="none"
                     android:textAlignment="textStart"
-                     android:layout_gravity="start"
+                    android:layout_gravity="start"
                     android:textSize="15dp"
                     android:nestedScrollingEnabled="false"
                     android:foregroundGravity="center"
-                     android:paddingLeft="5dp"
+                    android:paddingLeft="5dp"
                     android:visibility="gone"/>
 
                 <!--android:textCursorDrawable="@color/white"
@@ -651,7 +633,6 @@
                 android:layout_height="40dp"
                 android:orientation="vertical"
                 android:layout_marginLeft="-40dp"
-
                 android:visibility="visible">-->
 
             <!--<com.skyfishjy.library.RippleBackground
@@ -665,17 +646,12 @@
                     app:rb_rippleAmount="4"
                     app:rb_duration="3000"
                     app:rb_scale="6">
-
-
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_search_24dp"
                             android:clickable="false"
                             android:id="@+id/ic_search" />
-
-
-
                     </com.skyfishjy.library.RippleBackground>-->
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -685,26 +661,26 @@
                 android:gravity="center_vertical|center_horizontal"
                 android:orientation="vertical"
                 android:visibility="gone">
-            <com.skyfishjy.library.RippleBackground
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/client_content2"
-                app:rb_color="#ff0000"
-                app:rb_radius="4dp"
-                app:rb_rippleAmount="4"
-                app:rb_duration="3000"
-                app:rb_scale="6">
+                <com.skyfishjy.library.RippleBackground
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/client_content2"
+                    app:rb_color="#ff0000"
+                    app:rb_radius="4dp"
+                    app:rb_rippleAmount="4"
+                    app:rb_duration="3000"
+                    app:rb_scale="6">
 
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:id="@+id/forRipple" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:id="@+id/forRipple" />
 
-        </com.skyfishjy.library.RippleBackground>
+                </com.skyfishjy.library.RippleBackground>
             </LinearLayout>
 
 
@@ -718,12 +694,12 @@
                 android:clickable="false"
                 android:gravity="center_vertical|center_horizontal"
                 android:orientation="vertical">
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_search_24dp"
-                            android:clickable="false"
-                            android:id="@+id/ic_search" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_search_24dp"
+                    android:clickable="false"
+                    android:id="@+id/ic_search" />
             </LinearLayout>
 
             <!--</RelativeLayout>-->
@@ -788,12 +764,12 @@
 
 
 
-                <RadioGroup
+            <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                android:orientation="horizontal"
                 android:id="@+id/favRG"
-                    android:visibility="visible"
+                android:visibility="visible"
                 android:checkedButton="@+id/favHome" >
 
 
@@ -821,7 +797,7 @@
                     android:layout_weight="1"
                     android:checked="false" />
 
-                </RadioGroup>
+            </RadioGroup>
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -918,7 +894,6 @@
             android:paddingTop="6dp"
             android:paddingLeft="@dimen/eight_dp"
             android:paddingRight="@dimen/eight_dp"
-
             android:background="@color/dark_white"
             android:layout_width="match_parent"
             android:layout_height="70dp"
@@ -1030,29 +1005,29 @@
 
             <!--android:paddingTop="@dimen/eight_dp"-->
             <!--android:paddingBottom="@dimen/eight_dp"-->
-<!--<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-            &lt;!&ndash;<TextView&ndash;&gt;
-                &lt;!&ndash;android:layout_width="100dp"&ndash;&gt;
-                &lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;
-                &lt;!&ndash;android:id="@+id/rental"&ndash;&gt;
-                &lt;!&ndash;android:textColor="@color/greenish_blue"&ndash;&gt;
-                &lt;!&ndash;android:textStyle="bold"&ndash;&gt;
-                &lt;!&ndash;android:visibility="visible"&ndash;&gt;
-                &lt;!&ndash;android:gravity="center_horizontal|center_vertical"&ndash;&gt;
-                &lt;!&ndash;android:text="home"/>&ndash;&gt;
-            &lt;!&ndash;<TextView&ndash;&gt;
-                &lt;!&ndash;android:layout_width="100dp"&ndash;&gt;
-                &lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;
-                &lt;!&ndash;android:id="@+id/sale"&ndash;&gt;
-                &lt;!&ndash;android:textColor="@color/greenish_blue"&ndash;&gt;
-                &lt;!&ndash;android:layout_marginLeft="130dp"&ndash;&gt;
-                &lt;!&ndash;android:textStyle="bold"&ndash;&gt;
-                &lt;!&ndash;android:visibility="visible"&ndash;&gt;
-                &lt;!&ndash;android:gravity="center_horizontal|center_vertical"&ndash;&gt;
-                &lt;!&ndash;android:text="home"/>&ndash;&gt;
-</RelativeLayout>-->
+            <!--<RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                        &lt;!&ndash;<TextView&ndash;&gt;
+                            &lt;!&ndash;android:layout_width="100dp"&ndash;&gt;
+                            &lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;
+                            &lt;!&ndash;android:id="@+id/rental"&ndash;&gt;
+                            &lt;!&ndash;android:textColor="@color/greenish_blue"&ndash;&gt;
+                            &lt;!&ndash;android:textStyle="bold"&ndash;&gt;
+                            &lt;!&ndash;android:visibility="visible"&ndash;&gt;
+                            &lt;!&ndash;android:gravity="center_horizontal|center_vertical"&ndash;&gt;
+                            &lt;!&ndash;android:text="home"/>&ndash;&gt;
+                        &lt;!&ndash;<TextView&ndash;&gt;
+                            &lt;!&ndash;android:layout_width="100dp"&ndash;&gt;
+                            &lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;
+                            &lt;!&ndash;android:id="@+id/sale"&ndash;&gt;
+                            &lt;!&ndash;android:textColor="@color/greenish_blue"&ndash;&gt;
+                            &lt;!&ndash;android:layout_marginLeft="130dp"&ndash;&gt;
+                            &lt;!&ndash;android:textStyle="bold"&ndash;&gt;
+                            &lt;!&ndash;android:visibility="visible"&ndash;&gt;
+                            &lt;!&ndash;android:gravity="center_horizontal|center_vertical"&ndash;&gt;
+                            &lt;!&ndash;android:text="home"/>&ndash;&gt;
+            </RelativeLayout>-->
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -1194,7 +1169,6 @@
         android:gravity="bottom"
         android:layout_marginBottom="75dp"
         android:foregroundGravity="bottom"
-
         android:layout_alignParentBottom="true"
         android:layout_height="50dp">
         <LinearLayout
@@ -1203,7 +1177,6 @@
             android:gravity="bottom"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal">
-
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -1211,7 +1184,6 @@
                 android:textColor="@color/greenish_blue"
                 android:background="@drawable/gradient_button_bg_with_border"
                 android:id="@+id/home"
-
                 android:layout_marginLeft="2dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginRight="2dp"
@@ -1253,41 +1225,39 @@
                 android:layout_marginRight="2dp"
                 android:layout_marginBottom="1dp"
                 />
-
-
         </LinearLayout>
     </RelativeLayout>-->
 
-<!--////rem changes sushil-->
+    <!--////rem changes sushil-->
 
-  <!--  <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom"
-        android:orientation="horizontal"
-        android:id="@+id/property_type_layout"
-        android:layout_marginBottom="55dp"
-        android:layout_marginLeft="40dp"
-        android:layout_alignParentBottom="true"
-        >
-        <TextView
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/rental"
-            android:textColor="@color/greenish_blue"
-            android:textStyle="bold"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="home"/>
-        <TextView
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/sale"
-            android:textColor="@color/greenish_blue"
-            android:layout_marginLeft="80dp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="Home"/>
-    </LinearLayout>-->
+    <!--  <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="bottom"
+          android:orientation="horizontal"
+          android:id="@+id/property_type_layout"
+          android:layout_marginBottom="55dp"
+          android:layout_marginLeft="40dp"
+          android:layout_alignParentBottom="true"
+          >
+          <TextView
+              android:layout_width="100dp"
+              android:layout_height="wrap_content"
+              android:id="@+id/rental"
+              android:textColor="@color/greenish_blue"
+              android:textStyle="bold"
+              android:gravity="center_horizontal|center_vertical"
+              android:text="home"/>
+          <TextView
+              android:layout_width="100dp"
+              android:layout_height="wrap_content"
+              android:id="@+id/sale"
+              android:textColor="@color/greenish_blue"
+              android:layout_marginLeft="80dp"
+              android:textStyle="bold"
+              android:visibility="gone"
+              android:gravity="center_horizontal|center_vertical"
+              android:text="Home"/>
+      </LinearLayout>-->
 
 </RelativeLayout>

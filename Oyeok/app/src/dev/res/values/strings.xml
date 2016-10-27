@@ -60,11 +60,27 @@
     </string-array>
 
     <!-- navigation drawer item labels  -->
-    <string-array name="nav_drawer_labels_no_signup">
+    <string-array name="nav_drawer_labels_no_signup_client">
         <!--<item>@string/signup</item>-->
         <item>@string/RegisterSignIn</item>
         <item>@string/useAsClient</item>
         <item>@string/MyPortfolio</item>
+        <item>@string/notifications</item>
+        <item>@string/shareApp</item>
+        <!--  <item>@string/supportChat</item> -->
+
+        <item>@string/likeOnFb</item>
+        <item>@string/aboutUs</item>
+        <item>@string/brokerOk</item>
+        <item>@string/settings</item>
+        <!--   <item>@string/updateProfile</item> -->
+
+    </string-array>
+
+    <string-array name="nav_drawer_labels_no_signup_broker">
+        <!--<item>@string/signup</item>-->
+        <item>@string/RegisterSignIn</item>
+        <item>@string/useAsClient</item>
         <item>@string/notifications</item>
         <item>@string/shareApp</item>
         <!--  <item>@string/supportChat</item> -->
@@ -159,11 +175,11 @@
     <string name="client_sign_up_content_from_deals">(Broadcast your needs to create \nNew Deals with more Brokers)</string>
     <string name="client_sign_up_content_from_intro">(Broadcast your needs to create \nNew Deals with more Brokers.)</string>
 
-    <string name="client_sign_up_heading">You are registering as a Client</string>
+    <string name="client_sign_up_heading">You are registering as a Customer</string>
     <string name="broker_sign_up_heading">You are registering as a Broker</string>
     <string name="broker_sign_up_content">(Get free leads,do site visits,chat with customer,\nsave time with automatic listing\nand close faster)</string>
-    <string name="broker_sign_up_content_from_deals">(Ok more leads to create \nNew Deals with more Clients)</string>
-    <string name="broker_sign_up_content_from_intro">(Ok more leads to create \nNew Deals with more Clients.)</string>
+    <string name="broker_sign_up_content_from_deals">(Ok more leads to create \nNew Deals with more Customer)</string>
+    <string name="broker_sign_up_content_from_intro">(Ok more leads to create \nNew Deals with more Customer.)</string>
 
     <string name="client_log_in_heading">You are Logging in as a Client</string>
     <string name="broker_log_in_heading">You are Logging in as a Broker</string>
@@ -183,6 +199,10 @@
     <string name="seller_card_question1">compare with Live Market Rates</string>
     <string name="seller_card_question2">track to sell at right time &amp; price</string>
     <string name="seller_card_question3">broadcast to hire Local Brokers</string>
+
+    <string name="app_name1">SimpleKeyboard</string>
+    <string name="oyeok_keyboard">Oyeok Keyboard</string>
+    <string name="subtype_en_US">English (US)</string>
 
 
 </resources>

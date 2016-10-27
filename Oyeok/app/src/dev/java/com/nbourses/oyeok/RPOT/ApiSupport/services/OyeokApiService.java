@@ -11,8 +11,10 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateStatus;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.deleteHDroom;
 import com.nbourses.oyeok.models.AddBuildingModel;
+import com.nbourses.oyeok.models.AddListingBorker;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.PublishLetsOye;
+import com.nbourses.oyeok.models.SearchBuildingModel;
 
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -76,6 +78,12 @@ public interface OyeokApiService {
 
     @POST("/add/building")
     void addBuilding(@Body AddBuildingModel addBuildingModel, Callback<JsonElement> callback);
+
+    @POST("/shortlist/building")
+    void SearchBuilding(@Body SearchBuildingModel searchBuildingModel, Callback<JsonElement> callback);
+
+    @POST("/add/listings")
+    void addListing(@Body AddListingBorker addListingBorker, Callback<JsonElement> callback);
 
 }
 

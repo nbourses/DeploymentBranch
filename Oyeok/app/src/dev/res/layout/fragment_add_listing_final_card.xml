@@ -18,22 +18,25 @@
             android:orientation="horizontal"
             android:background="@color/greenish_blue">
      <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Listing Details"
         android:textColor="@color/black"
         android:textStyle="bold"
+         android:layout_weight="1"
         android:textSize="16dp"
-        android:layout_marginLeft="100dp"
-        android:layout_gravity="center"/>
+        android:layout_marginLeft="50dp"
+        android:layout_gravity="center_vertical"/>
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Cancel"
                 android:textColor="@color/black"
                 android:textStyle="bold|italic"
+                android:id="@+id/Cancel_final_card"
                 android:textSize="14dp"
-                android:layout_marginLeft="60dp"
+                android:layout_weight="0.5"
+                android:layout_marginLeft="20dp"
                 android:layout_gravity="center_vertical|right"/>
         </LinearLayout>
 
@@ -96,6 +99,7 @@
                         android:layout_height="wrap_content"
                         android:text="Himalayan Heights CHS"
                         android:textStyle="bold"
+                        android:id="@+id/building_name"
                         android:textColor="@color/black"
                         android:textSize="18dip"/>
                     <TextView
@@ -103,6 +107,7 @@
                         android:layout_height="50dip"
                         android:layout_marginTop="2dip"
                         android:textColor="@color/gray"
+                        android:id="@+id/building_locality"
                         android:text="My Address"/>
                 </LinearLayout>
 
@@ -188,20 +193,22 @@
             android:layout_marginTop="5dp">
 
             <TextView
-                android:layout_width="160dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Furnishing status"
                 android:gravity="center_horizontal|center_vertical"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
+                android:layout_weight="1"
                 android:textSize="14sp"
                 android:textColor="@color/gray"
                 android:textStyle="bold"/>
             <TextView
-                android:layout_width="160dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Possession Date"
                 android:layout_marginTop="4dp"
+                android:layout_weight="1"
                 android:textSize="14sp"
                 android:textColor="@color/gray"
                 android:gravity="center_horizontal|center_vertical"
@@ -215,24 +222,26 @@
             android:orientation="horizontal">
 
             <Spinner
-                android:layout_width="150dp"
+                android:layout_width="0dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="5dp"
-                android:paddingLeft="-5dp"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1.1"
+                android:layout_marginLeft="2dp"
+                android:paddingRight="3dp"
                 android:id="@+id/spinner"
                 style="@style/spinner_style1"
                 />
 
             <TextView
-                android:layout_width="140dp"
+                android:layout_width="0dp"
                 android:layout_height="30dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginRight="5dp"
                 android:id="@+id/txtcalendar1"
-                android:paddingRight="10dp"
-                android:textSize="16dp"
+                android:paddingRight="20dp"
+                android:textSize="14dp"
                 android:gravity="center_horizontal|center_vertical"
                 android:background="@drawable/calendar_bg"
                 android:text="28-7-2016"
@@ -244,7 +253,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dip"
+            android:layout_margin="10dip"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -254,29 +263,36 @@
                 android:layout_marginRight="10dip">
 
                 <TextView
-                    android:layout_width="100dip"
+                    android:layout_width="0dip"
                     android:layout_height="match_parent"
                     android:text="20,000"
+                    android:layout_weight="1"
                     android:gravity="left"
                     android:layout_marginLeft="1dp"
                     android:id="@+id/min"
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
                 <TextView
-                    android:layout_width="100dip"
+                    android:layout_width="0dip"
                     android:layout_height="match_parent"
                     android:textColor="@color/black"
+                    android:layout_weight="1"
                     android:layout_marginLeft="50dip"
                     android:id="@+id/max"
                     android:gravity="right"
                     android:textStyle="bold"
                     android:text="20,000"/>
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
         <SeekBar
-            android:layout_width="250dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dip"
+            android:layout_weight="1"
             android:id="@+id/seekBar" />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -285,19 +301,21 @@
                 android:layout_marginRight="10dip">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="min"
                     android:layout_marginLeft="2dp"
                     android:textColor="@color/black"
                     android:layout_marginTop="-5dip"
+                    android:layout_weight="1"
                     android:textStyle="bold"/>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:layout_marginLeft="200dip"
                     android:layout_marginTop="-5dip"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|right"
                     android:textStyle="bold"
                     android:text="max"/>
             </LinearLayout>
@@ -307,8 +325,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_margin="10dp">
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="-4dp"
+            android:gravity="center">
 
 
             <TextView
@@ -330,7 +349,7 @@
                 android:textColor="@color/black"
                 android:textSize="14dip"
                 android:text="/month"
-                android:id="@+id/textView16"
+                android:id="@+id/tv_rate"
                 android:layout_alignBottom="@+id/selected_rate"
                 android:layout_toRightOf="@+id/selected_rate"
                 android:layout_toEndOf="@+id/selected_rate" />
@@ -358,7 +377,8 @@
             android:orientation="horizontal"
             android:layout_gravity="bottom"
             android:gravity="center"
-            android:layout_margin="5dp"
+            android:layout_margin="3dp"
+            android:id="@+id/submit_listing"
             android:background="@color/greenish_blue">
             <TextView
                 android:layout_width="wrap_content"

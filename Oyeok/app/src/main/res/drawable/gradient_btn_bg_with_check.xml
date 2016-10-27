@@ -9,7 +9,7 @@
 
             <corners android:radius="10dp" />
 
-            <padding android:bottom="3dp" android:left="3dp" android:right="0dp" android:top="3dp" />
+            <padding android:bottom="3dp" android:left="3dp" android:right="2dp" android:top="3dp" />
         </shape></item>
         <item ><bitmap android:gravity="right|center_vertical" android:src="@drawable/checkmark"  >
 

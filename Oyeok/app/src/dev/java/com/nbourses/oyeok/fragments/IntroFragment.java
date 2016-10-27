@@ -48,6 +48,7 @@ public class IntroFragment extends Fragment {
         switch (mPage) {
             case 0:
                 layoutResId = R.layout.intro_fragment_layout_1;
+                
                 break;
             case 1:
                 layoutResId = R.layout.intro_fragment_layout_2;

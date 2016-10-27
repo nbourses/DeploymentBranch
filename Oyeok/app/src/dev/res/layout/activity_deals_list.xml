@@ -338,7 +338,7 @@
             android:orientation="vertical"
             android:id="@+id/bgtxtlayout"
             android:gravity="center_horizontal|bottom"
-            android:layout_above="@+id/phaseSeekbar"
+            android:layout_above="@+id/phaseSeekbar1"
             android:weightSum="1"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="320dp"
@@ -367,7 +367,7 @@
             android:layout_width="match_parent"
 
             android:layout_height="wrap_content"
-            android:layout_above="@+id/phaseSeekbar"
+            android:layout_above="@+id/phaseSeekbar1"
             android:layout_below="@+id/view"
             android:background="@color/dark_white"
             android:dividerHeight="1dp"/>
@@ -393,7 +393,14 @@
             android:gravity="center"
             android:padding="5dp" />
 
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="75dp"
+    android:layout_gravity="bottom"
+    android:layout_alignParentEnd="false"
+    android:layout_alignParentBottom="true"
+    android:id="@+id/phaseSeekbar1"
+    android:gravity="bottom">
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -407,6 +414,7 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="3dp">
 
+
             <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
                 android:id="@+id/phasedSeekBar"
                 android:layout_width="match_parent"
@@ -417,7 +425,57 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="92dp"
+            android:visibility="visible">
+            <TextView
 
+                android:id="@+id/rentalCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle_badge2"
+                android:text="123"
+
+                android:layout_alignParentRight="true"
+                android:paddingEnd="8dp"
+                android:paddingRight="8dp"
+                android:paddingLeft="8dp"
+                android:gravity="center"
+                android:textColor="#FFF"
+                android:textSize="11sp"
+                android:visibility="gone" />
+
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/box1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="240dp"
+        android:visibility="visible">
+
+        <TextView
+
+            android:id="@+id/resaleCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle_badge2"
+            android:text="3"
+
+            android:layout_alignParentRight="true"
+            android:paddingEnd="8dp"
+            android:paddingRight="8dp"
+            android:paddingLeft="8dp"
+            android:gravity="center"
+            android:textColor="#FFF"
+            android:textSize="11sp"
+            android:visibility="gone" />
+    </LinearLayout>
+</RelativeLayout>
 
         <!--<TextView
             android:id="@+id/txtNoActiveDeal"

@@ -565,7 +565,7 @@ while(slowInternetFlag) {
                 Log.i(TAG, "AppConstants.letsOye parsed " + jsona);
                 RestAdapter restAdapter = new RestAdapter
                         .Builder()
-                        .setEndpoint(AppConstants.SERVER_BASE_URL)
+                        .setEndpoint(AppConstants.SERVER_BASE_URL_11)
                         .setConverter(new GsonConverter(gson))
                         .build();
 

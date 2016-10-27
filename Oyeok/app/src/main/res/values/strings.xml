@@ -61,7 +61,23 @@
     </string-array>
 
     <!-- navigation drawer item labels  -->
-    <string-array name="nav_drawer_labels_no_signup">
+    <string-array name="nav_drawer_labels_no_signup_client">
+        <!--<item>@string/signup</item>-->
+        <item>@string/RegisterSignIn</item>
+        <item>@string/useAsClient</item>
+        <item>@string/notifications</item>
+        <item>@string/shareApp</item>
+        <!--  <item>@string/supportChat</item> -->
+
+        <item>@string/likeOnFb</item>
+        <item>@string/aboutUs</item>
+        <item>@string/brokerOk</item>
+        <item>@string/settings</item>
+        <!--   <item>@string/updateProfile</item> -->
+
+    </string-array>
+
+    <string-array name="nav_drawer_labels_no_signup_broker">
         <!--<item>@string/signup</item>-->
         <item>@string/RegisterSignIn</item>
         <item>@string/useAsClient</item>

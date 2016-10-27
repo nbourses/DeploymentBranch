@@ -11,7 +11,7 @@ public class AddListingBorker {
 
     @Expose
     @SerializedName("building")
-    private String name;
+    private String building_name;
 
     @Expose
     @SerializedName("lat")
@@ -86,13 +86,12 @@ public class AddListingBorker {
     @SerializedName("property_type")
     private String property_type;
 
-
-    public String getName() {
-        return name;
+    public String getBuilding_name() {
+        return building_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBuilding_name(String building_name) {
+        this.building_name = building_name;
     }
 
     public String getLat() {

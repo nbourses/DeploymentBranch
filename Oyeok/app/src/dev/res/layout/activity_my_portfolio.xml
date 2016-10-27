@@ -71,7 +71,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/add_b"
+        android:id="@+id/add_build"
         android:orientation="horizontal"
         android:layout_below="@+id/inputSearch1"
         android:layout_marginTop="3dp">
@@ -102,7 +102,8 @@
             android:textStyle="bold"
             android:id="@+id/usertext"
             android:textSize="14dp"
-            android:hint="'Your Building'"
+            android:hint="' Your Building '"
+            android:textColorHint="@color/gray"
             android:textColor="@color/black"
             android:text=""/>
 
@@ -119,7 +120,7 @@
         android:id="@+id/Rental_listview"
         android:background="@android:color/background_light"
         android:layout_above="@+id/seekbar_linearlayout"
-        android:layout_below="@+id/add_b"
+        android:layout_below="@+id/add_build"
         android:divider="@color/grey"
         android:layout_marginTop="4dp"
         android:dividerHeight="4px"

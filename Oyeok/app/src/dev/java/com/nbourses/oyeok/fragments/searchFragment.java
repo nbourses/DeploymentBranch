@@ -185,9 +185,11 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
         mAutocompleteView.requestFocus();
         InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        /*imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-  */
-        imgr.showSoftInput(mAutocompleteView, InputMethodManager.SHOW_IMPLICIT);}
+        imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+       // imgr.showSoftInput(mAutocompleteView, InputMethodManager.SHOW_IMPLICIT);
+
+    }
 
 
 

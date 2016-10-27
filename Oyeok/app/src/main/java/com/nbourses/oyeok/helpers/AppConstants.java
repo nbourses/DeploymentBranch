@@ -17,6 +17,7 @@ public class AppConstants {
     public static String PlacesTag = "Google Places Auto Complete";
     public static boolean cardNotif = false;
     public static boolean SETLOCATION = false;
+    public static boolean FAV = false;
     public static  int minRent = 35000;
     public static  int maxRent = 60000;
     public static Boolean SEARCHFLAG = false;
@@ -91,6 +92,7 @@ public class AppConstants {
 
    public static final String SERVER_BASE_URL_102 = "https://ssl.hailyo.com/1.02";
     public static final String SERVER_BASE_URL_103 = "https://test.hailyo.com/1";
+    public static final String SERVER_BASE_URL_TEST = "https://test.hailyo.com/1";
 
 
 
@@ -181,10 +183,17 @@ public class AppConstants {
     public static String DRAWTEXT3="true3";
     public static String DRAWTEXT4="true4";
 
+
     //Global variables for cardFragment
     public static String Card_TT="LL";
     public static String Card_REQ_AVL="REQ";
     public static String NO_CALL = "no_call";
+
+
+//listing card view variables
+    public static String APPROX_AREA="approx_area";
+    public static String BUILDING_NAME="building_name";
+    public static String BUILDING_LOCALITY="building_locality";
 
 
 

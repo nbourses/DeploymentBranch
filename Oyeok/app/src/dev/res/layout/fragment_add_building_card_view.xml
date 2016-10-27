@@ -61,7 +61,8 @@
             android:layout_height="160dip"
             android:background="@color/greenish_blue"
             android:gravity="center_horizontal"
-            android:layout_margin="4dip"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:orientation="vertical">
 
 
@@ -92,7 +93,7 @@
                 android:layout_toRightOf="@+id/textView9"
                 android:gravity="center"
                 android:layout_toEndOf="@+id/textView9"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="1dp"
                 android:layout_marginStart="12dp"
                 android:id="@+id/b_type"
                 android:layout_alignBottom="@+id/textView9"/>
@@ -129,7 +130,7 @@
                     android:id="@+id/btn_home"
                     android:paddingRight="5dp"
                     android:textColor="@color/greenish_blue"
-                    android:background="@drawable/gradient_button_bg_with_border"
+                    android:background="@drawable/gradient_btn_bg_with_check"
                     android:text="Home"
                     />
                 <TextView
@@ -438,7 +439,7 @@
             android:layout_height="40dp"
             android:gravity="center"
             android:background="@color/greenish_blue"
-            android:layout_margin="4dp"
+            android:layout_margin="6dp"
            >
             <TextView
                 android:layout_width="match_parent"

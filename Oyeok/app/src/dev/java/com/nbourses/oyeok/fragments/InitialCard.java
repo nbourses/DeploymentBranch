@@ -209,10 +209,11 @@ private SwitchButton toggleBtn;
                                                       ownerQ.setVisibility(View.GONE);
                                                       buyerQ.setVisibility(View.GONE);
                                                       sellerQ.setVisibility(View.GONE);*/
-                                                      q1.setText(Html.fromHtml(getString(R.string.tenant_card_question1)));
+                                                     /* q1.setText(Html.fromHtml(getString(R.string.tenant_card_question1)));
                                                       q2.setText(Html.fromHtml(getString(R.string.tenant_card_question2)));
-                                                      q3.setText(Html.fromHtml(getString(R.string.tenant_card_question3)));
+                                                      q3.setText(Html.fromHtml(getString(R.string.tenant_card_question3)));*/
                                                       //* rental.setChecked(true);
+                                                      setTenant();
 
                                                   }
 

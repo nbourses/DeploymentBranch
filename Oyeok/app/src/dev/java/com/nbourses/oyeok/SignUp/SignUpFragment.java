@@ -464,10 +464,11 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         already_registered_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
         new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
 
-        submit.setText("LOGIN");
+
         Log.i(TAG,"last fragment narcos 2 "+okBroker);
         if(okBroker==false && General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
             tvheading.setText(R.string.client_log_in_heading);
+            submit.setText("LOGIN as Customer");
             if(lastFragment.equalsIgnoreCase("clientDeal"))
                 tvcontent.setText(R.string.client_sign_up_content_from_deals);
             else if (lastFragment.equalsIgnoreCase("clientIntro"))
@@ -477,6 +478,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         }
         else
         {
+            submit.setText("LOGIN as Broker");
             tvheading.setText(R.string.broker_log_in_heading);
             if(lastFragment.equalsIgnoreCase("brokerDeal"))
                 tvcontent.setText(R.string.broker_sign_up_content_from_deals);
@@ -497,9 +499,10 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
      email.setVisibility(View.VISIBLE);
      already_registered_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
      new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
-     submit.setText("REGISTER");
+
 
      if(okBroker==false && General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+         submit.setText("REGISTER AS CUSTOMER");
          tvheading.setText(R.string.client_sign_up_heading);
          if(lastFragment.equalsIgnoreCase("clientDeal"))
              tvcontent.setText(R.string.client_sign_up_content_from_deals);
@@ -510,6 +513,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
      }
      else
      {
+         Log.i("broker121","broker site ");
+         submit.setText("REGISTER AS BROKER");
          tvheading.setText(R.string.broker_sign_up_heading);
          if(lastFragment.equalsIgnoreCase("brokerDeal"))
              tvcontent.setText(R.string.broker_sign_up_content_from_deals);
@@ -518,7 +523,6 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
          else
              tvcontent.setText(R.string.broker_sign_up_content);
      }
-
 
 
             }
