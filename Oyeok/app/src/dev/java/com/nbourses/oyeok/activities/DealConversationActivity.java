@@ -696,7 +696,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Log.i("SETUPPUBNUB","OKYED ============= channel_name "+channel_name);
 
                     okyed = false;
-                    displayCardView();
+                   // displayCardView();
                     loadHistoryFromPubnub(channel_name);
 
 
@@ -913,7 +913,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
 
     private void displayMessage(JSONObject jsonMsg) {
-        Log.i(TAG,"displayMessage called inside displaymessge =====  jsonMSG "+jsonMsg);
+        Log.i(TAG,"displayMessage called inside displaymessge toro =====  jsonMSG "+jsonMsg);
         try{
 
             if(jsonMsg.has("pn_gcm")) {

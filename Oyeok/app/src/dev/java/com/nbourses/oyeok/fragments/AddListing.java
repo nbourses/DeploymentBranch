@@ -32,6 +32,7 @@ public class AddListing extends Fragment {
     TextView selected_config,home,office,shop,industry,next,Cancel_add_building,b_type,area;
     private String Property;
     HorizontalScrollView hsl;
+    String approx_area;
 
     public AddListing() {
         // Required empty public constructor
@@ -61,6 +62,7 @@ public class AddListing extends Fragment {
         bhk5_5=(Button) v.findViewById( R.id.bhk5_5 );
         bhk6=(Button) v.findViewById( R.id.bhk6 );
 
+        b_type=(TextView)v.findViewById(R.id.b_type);
 
         radioGroup1 = (RadioGroup) v.findViewById(R.id.radioGroup1);
 
@@ -81,10 +83,10 @@ public class AddListing extends Fragment {
             public void onClick(View v) {
                 Property="home" ;
                 b_type.setText("Home");
+                home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_btn_bg_with_check));
                 industry.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 shop.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 office.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
-                home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_btn_bg_with_check));
 
             }
         } );
@@ -125,15 +127,30 @@ public class AddListing extends Fragment {
 
             }
         } );
+        home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_btn_bg_with_check));
+//        home.setPressed(true);
 
 
         next=(TextView) v.findViewById(R.id.next);
         Cancel_add_building=(TextView) v.findViewById(R.id.Cancel_add_building);
-        b_type=(TextView)v.findViewById(R.id.b_type);
+
+
+
         Display display = ((Activity )getContext()).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         final int width = size.x;
+
+        int center = (width - rk1.getWidth())/2;
+        Property="home" ;
+        b_type.setText("Home");
+        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2 BHK");
+
+        selected_config.setText( "2 BHK" );
+        hsl.scrollTo(bhk2.getLeft() - center/2, bhk2.getTop());
+        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2 BHK");
+        area.setText("950 sq.ft.");
+        approx_area="950";
 
         // Checked change Listener for RadioGroup 1
         radioGroup1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
@@ -149,19 +166,21 @@ public class AddListing extends Fragment {
                         hsl.scrollTo(rk1.getLeft() - center/2, rk1.getTop());
                         General.setSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG,"1 RK");
                         area.setText("300 sq.ft.");
+                        approx_area="300";
                         break;
                     case R.id.bhk1:
                         selected_config.setText( "1 BHK" );
                         hsl.scrollTo(bhk1.getLeft() - center/2, bhk1.getTop());
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1 BHK");
                         area.setText("600 sq.ft.");
-
+                        approx_area="600";
                         break;
                     case R.id.bhk1_5:
                         selected_config.setText( "1.5 BHK" );
                         hsl.scrollTo(bhk1_5.getLeft() - center/2, bhk1_5.getTop());
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1.5 BHK");
                         area.setText("800 sq.ft.");
+                        approx_area="800";
 
                         break;
                     case R.id.bhk2:
@@ -169,6 +188,7 @@ public class AddListing extends Fragment {
                         hsl.scrollTo(bhk2.getLeft() - center/2, bhk2.getTop());
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2 BHK");
                         area.setText("950 sq.ft.");
+                        approx_area="950";
 
                         break;
                     case R.id.bhk2_5:
@@ -177,6 +197,7 @@ public class AddListing extends Fragment {
                         hsl.scrollTo(bhk2_5.getLeft() - center/2, bhk2_5.getTop());
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2.5 BHK");
                         area.setText("1300 sq.ft.");
+                        approx_area="1300";
 
                         break;
                     case R.id.bhk3:
@@ -184,6 +205,7 @@ public class AddListing extends Fragment {
                         hsl.scrollTo(bhk3.getLeft() - center/2, bhk3.getTop());
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"3 BHK");
                         area.setText("1600 sq.ft.");
+                        approx_area="1600";
 
                         break;
                     case R.id.bhk3_5:
@@ -191,12 +213,14 @@ public class AddListing extends Fragment {
                         hsl.scrollTo(bhk3_5.getLeft() - center/2, bhk3_5.getTop());
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"3.5 BHK");
                         area.setText("1800 sq.ft.");
+                        approx_area="1800";
 
                         break;
                     case R.id.bhk4:
                         selected_config.setText( "4 BHK" );
                         hsl.scrollTo(bhk4.getLeft() - center/2, bhk4.getTop());
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"4 BHK");
+                        approx_area="2100";
                         area.setText("2100 sq.ft.");
 
                         break;
@@ -205,6 +229,7 @@ public class AddListing extends Fragment {
                         hsl.scrollTo(bhk4_5.getLeft() - center/2, bhk4_5.getTop());
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"4.5 BHK");
                         area.setText("2300 sq.ft.");
+                        approx_area="2300";
 
                         break;
                     case R.id.bhk5:
@@ -212,6 +237,7 @@ public class AddListing extends Fragment {
                         hsl.scrollTo(bhk5.getLeft() - center/2, bhk5.getTop());
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"5 BHK");
                         area.setText("2500 sq.ft.");
+                        approx_area="2500";
 
                         break;
                     case R.id.bhk5_5:
@@ -219,6 +245,7 @@ public class AddListing extends Fragment {
                         hsl.scrollTo(bhk5_5.getLeft() - center/2, bhk5_5.getTop());
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"5.5 BHK");
                         area.setText("2700 sq.ft.");
+                        approx_area="2700";
 
                         break;
                     case R.id.bhk6:
@@ -226,6 +253,7 @@ public class AddListing extends Fragment {
                         hsl.scrollTo(bhk6.getLeft() - center/2, bhk6.getTop());
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"6 BHK");
                         area.setText("2900 sq.ft.");
+                        approx_area="2900";
 
                         break;
                     default:
@@ -247,6 +275,9 @@ public class AddListing extends Fragment {
             @Override
             public void onClick(View v) {
                 AppConstants.PROPERTY=Property;
+                General.setSharedPreferences(getContext(),AppConstants.PROPERTY,Property);
+                General.setSharedPreferences(getContext(),AppConstants.APPROX_AREA,approx_area);
+
                 ((ClientMainActivity)getActivity()).closeAddListing();
                 ((ClientMainActivity)getActivity()).openAddBuilding();
             }

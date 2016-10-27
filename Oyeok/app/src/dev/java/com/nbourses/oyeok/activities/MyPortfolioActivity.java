@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.activities;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.nbourses.oyeok.R;
@@ -52,6 +54,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
     RealmResults<MyPortfolioModel> results1;
     EditText inputSearch;
     private String TT = "LL";
+    LinearLayout add_build;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,18 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         mPhasedSeekBar.setListener((this));
         rental_list=(ListView) findViewById(R.id.Rental_listview);
         inputSearch=(EditText) findViewById( R.id.inputSearch1);
+
+        add_build=(LinearLayout)findViewById(R.id.add_build);
+        add_build.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in =new Intent(getBaseContext(),ClientMainActivity.class);
+                in.putExtra("add","portfolio");
+                startActivity(in);
+
+            }
+        });
+
         adapter = new myPortfolioAdapter(this,1);
         rental_list.setAdapter(adapter);
         rental_list.setOnItemClickListener( new AdapterView.OnItemClickListener() {
@@ -278,3 +293,5 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
 
             }
         });*/
+
+

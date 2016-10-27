@@ -17,7 +17,10 @@ public class IntroPageTransformer implements ViewPager.PageTransformer {
         // it possible to know which page index you're
         // currently transforming - and that can be used
         // to make some important performance improvements.
-        int pagePosition = (int) page.getTag();
+
+
+//        int pagePosition = (int) page.getTag();
+
 
         // Here you can do all kinds of stuff, like get the
         // width of the page and perform calculations based
@@ -26,9 +29,9 @@ public class IntroPageTransformer implements ViewPager.PageTransformer {
         float pageWidthTimesPosition = pageWidth * position;
         float absPosition = Math.abs(position);
 
-        int pageHeight = page.getHeight();
+        /*int pageHeight = page.getHeight();
         float pageHeightTimesPosition = pageHeight * position;
-        float absPosition1 = Math.abs(position);
+        float absPosition1 = Math.abs(position);*/
 
         // Now it's time for the effects
         if (position <= -1.0f || position >= 1.0f) {
@@ -50,15 +53,17 @@ public class IntroPageTransformer implements ViewPager.PageTransformer {
 
             // Let's start by animating the title.
             // We want it to fade as it scrolls out
-            View title = page.findViewById(R.id.title);
-            title.setAlpha(1.0f - absPosition);
+
+/*            View title = page.findViewById(R.id.title);
+            title.setAlpha(1.0f - absPosition);*/
 
             // Now the description. We also want this one to
             // fade, but the animation should also slowly move
             // down and out of the screen
-            View description = page.findViewById(R.id.description);
+
+           /* View description = page.findViewById(R.id.description);
             description.setTranslationY(-pageWidthTimesPosition / 2f);
-            description.setAlpha(1.0f - absPosition);
+            description.setAlpha(1.0f - absPosition);*/
 
             // Now, we want the image to move to the right,
             // i.e. in the opposite direction of the rest of the

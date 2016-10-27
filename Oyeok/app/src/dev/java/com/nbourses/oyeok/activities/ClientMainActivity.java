@@ -534,7 +534,7 @@ public void signUp(){
 
 
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
+        if (extras != null&& extras.getString("role").equalsIgnoreCase("broker")) {
              BrokerRole = extras.getString("role");
             dbHelper.save(DatabaseConstants.userRole, BrokerRole);
             General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,BrokerRole);
@@ -548,7 +548,12 @@ public void signUp(){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-
+        Bundle extras1 = getIntent().getExtras();
+        if (extras1 != null && extras1.getString("add")!=null) {
+//            String value = extras.getString("add");
+            openAddListing();
+            //The key argument here must match that used in the other activity
+        }
 
 
         ShortcutBadger.removeCount(this);
@@ -1019,6 +1024,9 @@ public void signUp(){
             startActivity(openProfileActivity);
         }
         else if (itemTitle.equals(getString(R.string.brokerOk))) {
+            dbHelper = new DBHelper(getBaseContext());
+            dbHelper.save(DatabaseConstants.userRole,"Broker");
+            General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
             Intent openDashboardActivity =  new Intent(this, BrokerMainActivity.class);
             startActivity(openDashboardActivity);
         }
@@ -1028,7 +1036,7 @@ public void signUp(){
                 // signUpFragment.getView().bringToFront();
                 Bundle bundle = new Bundle();
                 bundle.putStringArray("Chat", null);
-                bundle.putString("lastFragment", "drawer");
+                bundle.putString("lastFragment", "clientDrawer");
                 loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
             }
             else
@@ -1286,9 +1294,13 @@ public void signUp(){
 
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+/*
+if(AppConstants.FAV) {
+    dashboardClientFragment.hideFav();
+}
+*/
 
-
-        if(AppConstants.SEARCHFLAG){
+         if(AppConstants.SEARCHFLAG){
 
             AppConstants.SEARCHFLAG = false;
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
@@ -1445,7 +1457,7 @@ public void signUp(){
         } else{
 
             Log.i("SIGNUP_FLAG"," closing app =================== 3"+getFragmentManager().getBackStackEntryCount());
-            if(BrokerRole.equalsIgnoreCase("broker")){
+            if(BrokerRole.equalsIgnoreCase("broker")&&BrokerRole!=null){
                 backpress = 0;
                 this.finish();
             }else {
@@ -1487,10 +1499,7 @@ public void signUp(){
 
     @OnClick(R.id.btnMyDeals)
     public void onBtnMyDealsClick(View v) {
-        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) > 0) {
-            General.setBadgeCount(this, AppConstants.HDROOMS_COUNT,0);
-            hdroomsCount.setVisibility(View.GONE);
-        }
+
        if(btnMyDeals.getText().toString().equalsIgnoreCase("share")) {
 
            int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -1946,7 +1955,7 @@ Log.i(TAG,"Image is the "+out);
                 /*fragmentTransaction.addToBackStack("card");
                 fragmentTransaction.replace(R.id.container_Signup, d);
                 fragmentTransaction.commitAllowingStateLoss();*/
-                     // InitialCard c = new InitialCard();
+                     //InitialCard c = new InitialCard();
                       CardFragment c = new CardFragment();
                         //loadFragment(d,null,R.id.container_Signup,"");
                         c.setArguments(null);
@@ -2118,7 +2127,8 @@ Log.i(TAG,"Image is the "+out);
     }
 
 public void openAddListing(){
-
+    containerSignup.setBackgroundColor(Color.parseColor("#CC000000"));
+    containerSignup.setClickable(true);
     AddListing addBuildingCardView = new AddListing();
     FragmentManager fragmentManager = getSupportFragmentManager();
     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -2165,7 +2175,7 @@ public void openAddListing(){
 
 
     public void closeAddListing(){
-getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
         containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
         containerSignup.setClickable(false);
         card.setClickable(false);

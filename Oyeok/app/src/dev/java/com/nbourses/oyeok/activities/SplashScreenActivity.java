@@ -9,6 +9,8 @@ import android.util.Log;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.nbourses.oyeok.Database.DBHelper;
+import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -24,7 +26,7 @@ import io.branch.referral.util.LinkProperties;
 public class SplashScreenActivity extends AppCompatActivity {
 
     Context context;
-
+    DBHelper dbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +65,9 @@ public class SplashScreenActivity extends AppCompatActivity {
                     intent = new Intent(context, IntroActivity.class);
                 }
                 else{
+                    dbHelper = new DBHelper(getBaseContext());
+                    dbHelper.save(DatabaseConstants.userRole,"client");
+                    General.setSharedPreferences(context,AppConstants.ROLE_OF_USER,"client");
                     intent = new Intent(context, ClientMainActivity.class);
                 }
 

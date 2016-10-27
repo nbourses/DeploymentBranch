@@ -26,7 +26,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -122,6 +121,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     @Bind(R.id.pd)
     TextView pd;
+
 
 //    @Bind(R.id.price)
 //    TextView price;
@@ -246,7 +246,9 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     //lead description variables
 
-    private String lookingSeeking = "Tenant is looking";
+    private String lookingSeeking1 = "Tenant ( ";
+    private String lookingSeeking2 = ") is looking";
+    private String lookingSeeking = "";
     private String atFor = "at";
 
     private long mSampleDurationTime = 5; // 5 msec
@@ -343,7 +345,7 @@ private String Walkthrough,beacon;
         final RippleBackground rippleBackground2=(RippleBackground)v.findViewById(R.id.content1);
         rippleBackground1.startRippleAnimation();*/
 
-       chart = (BarChart) v.findViewById(R.id.chart);
+      //chart removed// chart = (BarChart) v.findViewById(R.id.chart);
         init();
 
         if(SharedPrefs.getString(getContext(),SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
@@ -432,7 +434,7 @@ private String Walkthrough,beacon;
         }catch(Exception e){
             Log.i(TAG,"Caught in exception reading GCM id from shared "+e);
         }
-try {
+/* //chart removed//try {
     if (General.clearChart) {
         buildingPriceLL.clear();
         buildingPriceOR.clear();
@@ -465,7 +467,7 @@ try {
 
         brokerbuildings(buildingsPage);
 
-
+*/
 
         zoomin.setAnimationListener(new Animation.AnimationListener() {
 
@@ -1134,6 +1136,157 @@ if(count<=220) {
         }
     }
 
+
+    @OnClick({R.id.okButton, R.id.deal})
+    public void onButtonsClick(View v) {
+        if (okButton.getId() == v.getId()) {
+            long now = SystemClock.elapsedRealtime();
+            if (now - lastClickMillis > THRESHOLD_MILLIS) {
+                listings = new HashMap<String, Float>();
+                listings.put("building1", 1f);
+                listings.put("building2", 2f);
+                listings.put("building3", 3f);
+
+                Log.i("GRAPH", "jsonObjectArray is " + jsonObjectArray);
+
+
+                if (jsonObjectArray == null) {
+
+
+                    SnackbarManager.show(
+                            com.nispok.snackbar.Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.BOTTOM)
+                                    .text("Please select a Lead and then press OK.")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+//                if (buildingSlider.getVisibility() == View.GONE) {
+//                    TranslateAnimation animate = new TranslateAnimation(0, 0, 0 , buildingSlider.getHeight());
+//                    animate.setDuration(2000);
+//                    animate.setFillAfter(true);
+//                    buildingSlider.startAnimation(animate);
+//                    buildingSlider.setVisibility(View.VISIBLE);
+//                }
+
+
+                } else {
+
+
+                    if (!General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes")) {
+
+                        dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
+                        General.setSharedPreferences(getContext(), AppConstants.ROLE_OF_USER, "broker");
+                        //show sign up screen if broker is not registered
+                        Bundle bundle = new Bundle();
+                        //bundle.putString("lastFragment", "BrokerPreokFragment");
+                        bundle.putString("JsonArray", jsonObjectArray.toString());
+                        bundle.putInt("Position", selectedItemPosition);
+
+
+                        String[] bNames = new String[]{"building1", "building2", "building3"};
+                        int[] bPrice = new int[]{1, 2, 3};
+
+
+                        bundle.putIntArray("bPrice", bPrice);
+                        bundle.putStringArray("bNames", bNames);
+                        bundle.putString("lastFragment", "okyed");
+
+
+                        bundle.putSerializable("listings", listings);
+                        Fragment fragment = null;
+                        fragment = new SignUpFragment();
+                        fragment.setArguments(bundle);
+
+                        FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+                        fragmentTransaction.replace(R.id.container_sign, fragment);
+                        // fragmentTransaction.replace(R.id.container_map, fragment);
+                        fragmentTransaction.commit();
+                        AppConstants.SIGNUP_FLAG = true;
+
+                    } else {
+                        //here broker is registered
+
+
+                        AcceptOkCall a = new AcceptOkCall();
+                        a.setmCallBack(BrokerPreokFragment.this);
+                        a.acceptOk(listings, jsonObjectArray, selectedItemPosition, dbHelper, getActivity());
+
+                        General.setBadgeCount(getContext(), AppConstants.RENTAL_COUNT, 0);
+                        General.setBadgeCount(getContext(), AppConstants.RESALE_COUNT, 0);
+                        General.setBadgeCount(getContext(), AppConstants.TENANTS_COUNT, 0);
+                        General.setBadgeCount(getContext(), AppConstants.OWNERS_COUNT, 0);
+                        General.setBadgeCount(getContext(), AppConstants.BUYER_COUNT, 0);
+                        General.setBadgeCount(getContext(), AppConstants.SELLER_COUNT, 0);
+
+
+                    }
+
+
+                    //show buildings
+
+
+                /*//buildings removed// buildingSlider.startAnimation(slide_up);
+                buildingSlider.setVisibility(View.VISIBLE);
+                buildingSliderflag = true;
+                float fr = buildingNames.size() * 0.33f;
+               //chart.fitScreen();
+               chart.zoomAndCenterAnimated(fr,1f,0,0, YAxis.AxisDependency.LEFT ,2000);
+                Log.i("brokerpreok","buildingSliderflag "+buildingSliderflag);
+                Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
+                intent.putExtra("buildingSliderFlag",buildingSliderflag);
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                /////okBtn.setEnabled(false);
+                //okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
+                okBtn.setText("Choose 3 Buildings");*/
+
+
+                }
+//            else {
+//                if (!General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+//                    dbHelper.save(DatabaseConstants.userRole, "Broker");
+//                    //show sign up screen if broker is not registered
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("lastFragment", "BrokerPreokFragment");
+//                    bundle.putString("JsonArray", jsonObjectArray.toString());
+//                    bundle.putInt("Position", selectedItemPosition);
+//                    Fragment fragment = null;
+//                    fragment = new SignUpFragment();
+//                    fragment.setArguments(bundle);
+//
+//                    FragmentManager fragmentManager = getFragmentManager();
+//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                    fragmentTransaction.replace(R.id.container_map, fragment);
+//                    fragmentTransaction.commit();
+//                } else {
+//                    //here broker is registered  show buildings
+//
+//                    buildingSlider.startAnimation(slide_up);
+//                    buildingSlider.setVisibility(View.VISIBLE);
+//
+//                }
+//            }
+                lastClickMillis = now;
+            }
+            }
+        else if (deal.getId() == v.getId()) {
+            if (General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT) > 0) {
+                General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT,0);
+                hdroomsCount.setVisibility(View.GONE);
+            }
+
+            //open deals listing
+            Intent openDealsListing = new Intent(getActivity(), ClientDealsListActivity.class);
+            /*openDealsListing.addFlags(
+                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);*/
+            startActivity(openDealsListing);
+        }
+//        else if (pickContact.getId() == v.getId()) {
+//            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+//            getActivity().startActivityFromFragment(this, intent, REQUEST_CODE_TO_SELECT_CLIENT);
+//        }
+    }
+
+
     @OnClick(R.id.okBtn)
     public void onOptionClickok(View v) {
         long now = SystemClock.elapsedRealtime();
@@ -1364,12 +1517,17 @@ if(count<=220) {
             Log.i("PREOK CALLED11","jetcool"+currentOptionSelectedString);
 
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("rental")){
-                lookingSeeking = "Tenant is looking for";
+
+                lookingSeeking1 = "Tenant (";
+                        lookingSeeking2 = ") looking for";
+                //lookingSeeking = "Tenant is looking for";
                 //texPtype.setText("Tenant is looking for");
                 Log.i("PREOK CALLED", "tototo" + lookingSeeking);
             }
             else if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("resale")){
-                lookingSeeking = "Buyer is looking for";
+                lookingSeeking1 = "Buyer (";
+                lookingSeeking2 = ") is looking for";
+               // lookingSeeking = "Buyer is looking for";
                // texPtype.setText("Buyer is looking for");
                 Log.i("PREOK CALLED", "tototo" + lookingSeeking);
             }
@@ -1410,12 +1568,16 @@ if(count<=220) {
             Log.i("PREOK CALLED11","yoyoyoy2 "+General.getSharedPreferences(getContext(),AppConstants.TT));
             Log.i("PREOK CALLED11","jetcool"+currentOptionSelectedString);
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("rental")){
-                lookingSeeking = "Owner is having";
+                lookingSeeking1 = "Owner (";
+                lookingSeeking2 = ") is having";
+                //lookingSeeking = "Owner is having";
                 //texPtype.setText("Owner is having");
                 Log.i("PREOK CALLED", "tototo" + lookingSeeking + " "+ txtOption2.getText().toString());
             }
             else if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("resale")){
-                lookingSeeking = "Seller is having";
+               // lookingSeeking = "Seller is having";
+                lookingSeeking = "Seller (";
+                lookingSeeking = ") is having";
                // texPtype.setText("Seller is having");
                 Log.i("PREOK CALLED", "tototo" + lookingSeeking);
             }
@@ -1567,12 +1729,16 @@ catch (Exception e){
 
             if (currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
                 currentOptionSelectedString = strTenants;
-                lookingSeeking = "Tenant is looking for";
+                lookingSeeking1 = "Tenant (";
+                lookingSeeking2 = ") looking for";
+                //lookingSeeking = "Tenant is looking for";
                 Log.i("PREOK CALLED10", "currentOptionSelectedString1" + currentOptionSelectedString);
             }
             if (currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
                 currentOptionSelectedString = strOwners;
-                lookingSeeking = "Owner is having";
+                lookingSeeking = "Owner (";
+                lookingSeeking = ") is having";
+               // lookingSeeking = "Owner is having";
                 Log.i("PREOK CALLED13", "currentOptionSelectedString1" + currentOptionSelectedString);
             }
 
@@ -1702,12 +1868,16 @@ catch (Exception e){
 
             if (currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
                 currentOptionSelectedString = strSeekers;
-                lookingSeeking = "Buyer is looking for";
+                lookingSeeking = "Buyer (";
+                lookingSeeking = ") is looking for";
+               // lookingSeeking = "Buyer is looking for";
                 Log.i("PREOK CALLED16", "currentOptionSelectedString2" + currentOptionSelectedString);
             }
             if (currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 currentOptionSelectedString = strSeller;
-                lookingSeeking = "Seller is having";
+                lookingSeeking = "Seller (";
+                lookingSeeking = ") is having";
+               // lookingSeeking = "Seller is having";
                 Log.i("PREOK CALLED19", "currentOptionSelectedString2" + currentOptionSelectedString);
             }
 
@@ -1792,6 +1962,7 @@ catch (Exception e){
             selectedItemPosition = position;
             String ptype = null;
             String pstype;
+            String name;
             String furnishing = "Semi-Furnished";
             String possession_date = "";
             if(jsonObjectArray.getJSONObject(position).getString("possession_date") != ""){
@@ -1826,11 +1997,12 @@ catch (Exception e){
                     Log.i(TAG,"furnishing "+jsonObjectArray.getJSONObject(position).getString("furnishing"));
 
             ptype = jsonObjectArray.getJSONObject(position).getString("property_type");
-
+name = jsonObjectArray.getJSONObject(position).getString("name");
             Log.i(TAG,"property_type "+ptype);
             Log.i(TAG, "property_subtype " + pstype);
            // texPtype.setText("Property type: "+ptype);
-            texPtype.setText(lookingSeeking);
+            //texPtype.setText(lookingSeeking);
+            texPtype.setText(lookingSeeking1+name+lookingSeeking2);
            // texPstype.setText("Property subtype: "+pstype);
 if(ptype.equalsIgnoreCase("home")) {
     texPstype.setText(furnishing + " " + ptype.substring(0, 1).toUpperCase() + ptype.substring(1));
@@ -1938,93 +2110,7 @@ Log.i("Diamond","diamond "+possession_date);
     }
 
     //   @OnClick({R.id.okButton, R.id.deal, R.id.pickContact})
-    @OnClick({R.id.okButton, R.id.deal})
-    public void onButtonsClick(View v) {
-        if (okButton.getId() == v.getId()) {
 
-            Log.i("GRAPH","jsonObjectArray is "+jsonObjectArray);
-
-
-            if (jsonObjectArray == null) {
-
-
-                SnackbarManager.show(
-                        com.nispok.snackbar.Snackbar.with(getContext())
-                                .position(Snackbar.SnackbarPosition.BOTTOM)
-                                .text("Please select a Lead and then press OK.")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-//                if (buildingSlider.getVisibility() == View.GONE) {
-//                    TranslateAnimation animate = new TranslateAnimation(0, 0, 0 , buildingSlider.getHeight());
-//                    animate.setDuration(2000);
-//                    animate.setFillAfter(true);
-//                    buildingSlider.startAnimation(animate);
-//                    buildingSlider.setVisibility(View.VISIBLE);
-//                }
-
-
-
-            }
-            else {
-                //show buildings
-
-
-                buildingSlider.startAnimation(slide_up);
-                buildingSlider.setVisibility(View.VISIBLE);
-                buildingSliderflag = true;
-                float fr = buildingNames.size() * 0.33f;
-               //chart.fitScreen();
-               chart.zoomAndCenterAnimated(fr,1f,0,0, YAxis.AxisDependency.LEFT ,2000);
-                Log.i("brokerpreok","buildingSliderflag "+buildingSliderflag);
-                Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
-                intent.putExtra("buildingSliderFlag",buildingSliderflag);
-                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                /////okBtn.setEnabled(false);
-                //okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
-                okBtn.setText("Choose 3 Buildings");
-
-            }
-//            else {
-//                if (!General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-//                    dbHelper.save(DatabaseConstants.userRole, "Broker");
-//                    //show sign up screen if broker is not registered
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("lastFragment", "BrokerPreokFragment");
-//                    bundle.putString("JsonArray", jsonObjectArray.toString());
-//                    bundle.putInt("Position", selectedItemPosition);
-//                    Fragment fragment = null;
-//                    fragment = new SignUpFragment();
-//                    fragment.setArguments(bundle);
-//
-//                    FragmentManager fragmentManager = getFragmentManager();
-//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                    fragmentTransaction.replace(R.id.container_map, fragment);
-//                    fragmentTransaction.commit();
-//                } else {
-//                    //here broker is registered  show buildings
-//
-//                    buildingSlider.startAnimation(slide_up);
-//                    buildingSlider.setVisibility(View.VISIBLE);
-//
-//                }
-//            }
-        }
-        else if (deal.getId() == v.getId()) {
-            if (General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT) > 0) {
-                General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT,0);
-                hdroomsCount.setVisibility(View.GONE);
-            }
-
-            //open deals listing
-            Intent openDealsListing = new Intent(getActivity(), ClientDealsListActivity.class);
-            /*openDealsListing.addFlags(
-                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);*/
-            startActivity(openDealsListing);
-        }
-//        else if (pickContact.getId() == v.getId()) {
-//            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-//            getActivity().startActivityFromFragment(this, intent, REQUEST_CODE_TO_SELECT_CLIENT);
-//        }
-    }
 
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
@@ -2556,6 +2642,7 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
             selectedItemPosition = position;
             String ptype = null;
             String pstype;
+            String name;
             pstype = jsonObjectArray.getJSONObject(position).getString("property_subtype");
             Log.i("debug circ","inside onclick");
             Log.i("debug circ","inside onclick m "+jsonObjectArray);
@@ -2576,10 +2663,12 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
             */
 
             ptype = jsonObjectArray.getJSONObject(position).getString("property_type");
+            name = jsonObjectArray.getJSONObject(position).getString("name");
 
             Log.i(TAG,"property_type "+ptype);
             Log.i(TAG, "property_subtype " + pstype);
-            texPtype.setText(lookingSeeking);
+            texPtype.setText(lookingSeeking1+name+lookingSeeking2);
+            //texPtype.setText(lookingSeeking);
             //texPtype.setText("Property Type: "+ptype);
             texPstype.setText(ptype.substring(0, 1).toUpperCase() + ptype.substring(1)+" ("+pstype+")");
             //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));

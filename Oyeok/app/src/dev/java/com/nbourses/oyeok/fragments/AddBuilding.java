@@ -19,14 +19,29 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.adapters.addBuildingAdapter;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.models.SearchBuildingModel;
 import com.nbourses.oyeok.realmModels.addBuilding;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 import io.realm.Realm;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 
 
 public class AddBuilding extends Fragment {
@@ -49,6 +64,9 @@ private TextView Cancel,back,usertext;
     private TextView dialog;
     LinearLayout add_b;
     private SideBar sideBar;
+    private Timer clockTickTimer;
+    int count=3;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -103,6 +121,7 @@ private TextView Cancel,back,usertext;
                             .contains("Building_name", cs.toString(),false)
                             .endGroup()
                             .findAll() );
+                count=3;
                /* }else{
 
                     adapter.setResults( realm.where(MyPortfolioModel.class)
@@ -121,6 +140,8 @@ private TextView Cancel,back,usertext;
             public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
                                           int arg3) {
                 // TODO Auto-generated method stub
+                Log.i("magic","beforeTextChanged  : ");
+
 
             }
 
@@ -128,6 +149,10 @@ private TextView Cancel,back,usertext;
             public void afterTextChanged(Editable arg0) {
                 // TODO Auto-generated method stub
                 name=String.valueOf(arg0);
+//                if(count==3)
+//                lockedTimer();
+                SearchBuilding();
+
             }
         });
 
@@ -194,14 +219,136 @@ private TextView Cancel,back,usertext;
 
 
 
-  private void  init(){
+   private void  init(){
       listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
           @Override
           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+             if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
 
+                 General.setSharedPreferences(getContext(),AppConstants.BUILDING_NAME,adapter.getItem(position).getBuilding_name());
+                 General.setSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY,adapter.getItem(position).getLocality());
+                 General.setSharedPreferences(getContext(),AppConstants.MY_LAT,adapter.getItem(position).getLat());
+                 General.setSharedPreferences(getContext(),AppConstants.MY_LNG,adapter.getItem(position).getLng());
+//                 General.setSharedPreferences(getContext(),AppConstants.PROPERTY,adapter.getItem(position).getProperty_type());
+
+
+
+                 ((ClientMainActivity)getActivity()).openAddListingFinalCard();
+             }
           }
       });
+   }
+
+    public void SearchBuilding()
+    {
+        Log.i("updateStatus CALLED","updateStatus success called ");
+        SearchBuildingModel searchBuildingModel = new SearchBuildingModel();
+        searchBuildingModel.setBuilding("Krishna");
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_TEST).build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+//        UserApiService userApiService = restAdapter.create(UserApiService.class);
+
+
+        /*userApiService.addBuilding(AddBuildingModel, new retrofit.Callback<JsonElement>() {*/
+
+
+
+
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+
+
+        try {
+            oyeokApiService.SearchBuilding(searchBuildingModel, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+
+                    Log.i("magic1","addBuilding success ");
+
+
+
+
+                    JsonObject k = jsonElement.getAsJsonObject();
+
+
+                    try {
+                        String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+//                        Log.e(TAG, "RETROFIT SUCCESS " + getPrice.getResponseData().getPrice().getLlMin().toString());
+
+                         JSONObject jsonResponse = new JSONObject(strResponse);
+
+                        JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
+
+                        Log.i("magic","addBuilding success response "+response);
+                        Log.i("magic","addBuilding success jsonResponse "+jsonResponse);
+
+                        JSONObject ne = new JSONObject(k.toString());
+//                        General.setSharedPreferences(getContext(),AppConstants.token,ne.getString("token"));
+//                        setDealStatus3(getContext());
+//                        Log.i("magic","addBuilding success ne "+ne);
+//                        JSONObject re = new JSONObject(jsonResponse.getString("responseData"));
+                        /*Log.i("magic","addBuilding success re data "+re);
+                        Log.i("magic","addBuilding success re "+re.length());*/
+
+
+
+                    }
+                    catch (JSONException e) {
+                        Log.e("TAG", e.getMessage());
+                        Log.i("magic","addBuilding Failed1 "+e.getMessage());
+                    }
+
+
+
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.i("magic","addBuilding failed "+error);
+                }
+            });
+
+
+        }
+        catch (Exception e){
+            Log.e("TAG", "Caught in the the"+ e.getMessage());
+        }
+
     }
+
+
+
+    private void lockedTimer() {
+        if(clockTickTimer!=null){
+            clockTickTimer.cancel();
+            count = 3;
+        }
+        clockTickTimer = new Timer();
+        clockTickTimer.schedule(new TimerTask() {
+            @Override
+            public void run () {
+
+                new Thread( new Runnable() {
+                    @Override
+                    public void run() {
+                        if(count==0){
+                            SearchBuilding();
+                            count = 3;
+
+                            clockTickTimer.cancel();
+                        }else{
+                            --count;
+                        }
+                    }
+                });
+
+            }
+        },0,100);
+
+    }
+
+
 
   /*
     public void onButtonPressed(Uri uri) {

@@ -14,10 +14,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
@@ -46,13 +50,15 @@ public class IntroActivity extends ActionBarActivity {
     private TabLayout tabLayout;
     private Button btnC;
     private Button btnB;
-    private TextView useNow;
+    private Button useNow;
+    private Button skip;
     private int permissionCheckForLocation;
     //private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GetCurrentLocation.CurrentLocationCallback mcallback;
     private GetCurrentLocation getLocationActivity;
     private  GPSTracker gps;
     private Geocoder geocoder;
+    ImageView img1,img2,img3,img4,img5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +71,46 @@ public class IntroActivity extends ActionBarActivity {
 
         gps = new GPSTracker(this);
         //showPermissionDialog();
-        General.showPermissionDialog(this, this);
 
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            General.showPermissionDialog(this, this);
+        }
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
+
+        mViewPager.setBackgroundResource(R.drawable.intro_bg);
         btnC = (Button) findViewById(R.id.btnC);
         btnB = (Button) findViewById(R.id.btnB);
-        useNow = (TextView) findViewById(R.id.useNow);
+        useNow = (Button) findViewById(R.id.useNow);
+        skip = (Button) findViewById(R.id.skip);
+
+        img1=(ImageView)findViewById(R.id.img1);
+        img2=(ImageView)findViewById(R.id.img2);
+
+        img3=(ImageView)findViewById(R.id.img3);
+
+        img4=(ImageView)findViewById(R.id.img4);
+        img5=(ImageView)findViewById(R.id.img5);
+
+        String s =null;
+        SpannableString ss1;
+        StyleSpan iss;
+        s= "I am a Customer";
+        ss1=  new SpannableString(s);
+        ss1.setSpan(new RelativeSizeSpan(1.5f), 7,s.length(), 0); // set size
+        iss = new StyleSpan(android.graphics.Typeface.ITALIC);
+        ss1.setSpan(iss, 0, 6, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        btnC.setText(ss1);
+
+
+        s= "I am a Broker";
+        ss1=  new SpannableString(s);
+        ss1.setSpan(new RelativeSizeSpan(1.5f), 7,s.length(), 0); // set size
+        iss = new StyleSpan(android.graphics.Typeface.ITALIC);
+        ss1.setSpan(iss, 0, 6, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        btnB.setText(ss1);
+
+
 btnC.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
@@ -114,14 +154,88 @@ btnC.setOnClickListener(new View.OnClickListener() {
             }
         });
 
+        skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                useNow.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                Intent intent = new Intent(getApplicationContext(), ClientMainActivity.class);
+                intent.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         // Set an Adapter on the ViewPager
         mViewPager.setAdapter(new IntroAdapter(getSupportFragmentManager()));
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        img1.setImageResource(R.drawable.selected_dot1);
+                        img2.setImageResource(R.drawable.selected_dot);
+                        img3.setImageResource(R.drawable.selected_dot);
+                        img4.setImageResource(R.drawable.selected_dot);
+                        img5.setImageResource(R.drawable.selected_dot);
+                        break;
+
+                    case 1:
+                        img1.setImageResource(R.drawable.selected_dot);
+                        img2.setImageResource(R.drawable.selected_dot1);
+                        img3.setImageResource(R.drawable.selected_dot);
+                        img4.setImageResource(R.drawable.selected_dot);
+                        img5.setImageResource(R.drawable.selected_dot);
+                        break;
+
+                    case 2:
+                        img1.setImageResource(R.drawable.selected_dot);
+                        img2.setImageResource(R.drawable.selected_dot);
+                        img3.setImageResource(R.drawable.selected_dot1);
+                        img4.setImageResource(R.drawable.selected_dot);
+                        img5.setImageResource(R.drawable.selected_dot);
+                        break;
+
+                    case 3:
+                        img1.setImageResource(R.drawable.selected_dot);
+                        img2.setImageResource(R.drawable.selected_dot);
+                        img3.setImageResource(R.drawable.selected_dot);
+                        img4.setImageResource(R.drawable.selected_dot1);
+                        img5.setImageResource(R.drawable.selected_dot);
+                        break;
+                    case 4:
+                        img1.setImageResource(R.drawable.selected_dot);
+                        img2.setImageResource(R.drawable.selected_dot);
+                        img3.setImageResource(R.drawable.selected_dot);
+                        img4.setImageResource(R.drawable.selected_dot);
+                        img5.setImageResource(R.drawable.selected_dot1);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         // Set a PageTransformer
         mViewPager.setPageTransformer(false, new IntroPageTransformer());
+
+
 
     }
     private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)

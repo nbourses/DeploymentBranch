@@ -192,6 +192,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
         year = (TextView) findViewById( R.id.year );
         clocktick = (TextView) findViewById( R.id.clocktick1 );
         if (!SharedPrefs.getString( this, SharedPrefs.My_BALANCE ).equals( "" )) {
+
             Log.i( "balance", "balance 11:" + SharedPrefs.getString( this, SharedPrefs.My_BALANCE ) );
             balance = Integer.parseInt( SharedPrefs.getString( this, SharedPrefs.My_BALANCE ) );
             balance1.setText( String.valueOf( balance ) );
@@ -695,11 +696,14 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
 
     @Override
     public void onBackPressed() {
+
         if(clockTickTimer!=null)
             clockTickTimer.cancel();
         StopAllThread();
+
         SharedPrefs.save( this, SharedPrefs.My_BALANCE, balance + "" );
         Intent intent = new Intent( this, ClientMainActivity.class );
+
         intent.addFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TOP |
                         Intent.FLAG_ACTIVITY_CLEAR_TASK |
