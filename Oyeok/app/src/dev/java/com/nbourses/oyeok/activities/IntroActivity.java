@@ -50,7 +50,7 @@ public class IntroActivity extends ActionBarActivity {
     private TabLayout tabLayout;
     private Button btnC;
     private Button btnB;
-    private Button useNow;
+    private Button playgame;
     private Button skip;
     private int permissionCheckForLocation;
     //private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -81,7 +81,7 @@ public class IntroActivity extends ActionBarActivity {
         mViewPager.setBackgroundResource(R.drawable.intro_bg);
         btnC = (Button) findViewById(R.id.btnC);
         btnB = (Button) findViewById(R.id.btnB);
-        useNow = (Button) findViewById(R.id.useNow);
+        playgame = (Button) findViewById(R.id.playgame);
         skip = (Button) findViewById(R.id.skip);
 
         img1=(ImageView)findViewById(R.id.img1);
@@ -139,12 +139,16 @@ btnC.setOnClickListener(new View.OnClickListener() {
                 loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup1, "");
             }
         });
-        useNow.setOnClickListener(new View.OnClickListener() {
+        playgame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("TG","ithe tithe 3");
-                useNow.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
-                Intent intent = new Intent(getApplicationContext(), ClientMainActivity.class);
+                playgame.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                General.setSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER, "client");
+                General.setSharedPreferences(getBaseContext(),AppConstants.ROLE_GAMER,"gamer");
+                Intent intent = new Intent(getBaseContext(), ClientMainActivity.class);
+                intent.putExtra("data","game");
+                intent.putExtra("role","");
                 intent.addFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                 Intent.FLAG_ACTIVITY_CLEAR_TASK |
@@ -157,7 +161,7 @@ btnC.setOnClickListener(new View.OnClickListener() {
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                useNow.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                playgame.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
                 Intent intent = new Intent(getApplicationContext(), ClientMainActivity.class);
                 intent.addFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP |

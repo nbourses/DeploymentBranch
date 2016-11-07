@@ -66,7 +66,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("My Portfolio");
+        getSupportActionBar().setTitle("My WatchList");
         mPhasedSeekBar = (CustomPhasedSeekBar) findViewById(R.id.phasedSeekBar);
         mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(this.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{this.getResources().getString(R.string.Rental), this.getResources().getString(R.string.Resale)}));
         mPhasedSeekBar.setListener((this));
@@ -77,8 +77,10 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         add_build.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"PC");
                 Intent in =new Intent(getBaseContext(),ClientMainActivity.class);
-                in.putExtra("add","portfolio");
+                /*in.putExtra("data","portfolio");
+                in.putExtra("role","");*/
                 startActivity(in);
 
             }

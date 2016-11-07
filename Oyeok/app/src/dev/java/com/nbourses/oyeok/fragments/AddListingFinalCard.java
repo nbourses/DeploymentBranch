@@ -15,7 +15,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -35,6 +34,7 @@ import com.nbourses.oyeok.models.AddListingBorker;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,7 +69,7 @@ public class AddListingFinalCard extends Fragment {
     private View v;
     private SwitchButton toggleBtn1;
     CheckBox Req,Avail;
-    SeekBar seekBar;
+    DiscreteSeekBar seekBar;
     private int minvalue=20000,maxvalue=120000;
     TextView Cancel_final_card;
     String Furnishing,status,tt;
@@ -106,7 +106,7 @@ public class AddListingFinalCard extends Fragment {
         Avail=(CheckBox) v.findViewById(R.id.availability);
         approx_area=(TextView)v.findViewById(R.id.approx_area);
         config=(TextView) v.findViewById(R.id.config);
-        seekBar=(SeekBar) v.findViewById(R.id.seekBar);
+        seekBar=(DiscreteSeekBar) v.findViewById(R.id.seekBar);
         min=(TextView) v.findViewById(R.id.min);
         max = (TextView) v.findViewById(R.id.max);
         selected_rate=(TextView) v.findViewById(R.id.selected_rate);
@@ -123,21 +123,21 @@ public class AddListingFinalCard extends Fragment {
         building_name.setText(General.getSharedPreferences(getContext(), AppConstants.BUILDING_NAME).toString());
         building_locality.setText(General.getSharedPreferences(getContext(), AppConstants.BUILDING_LOCALITY).toString());
          area=Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.APPROX_AREA));
+        seekBar.setMax(maxvalue);
         getprice();
 
+        //deafault values
         toggleBtn1.toggle();
         Req.setChecked(true);
         tt="rental";
+
+        seekBar.setProgress(1000);
+
         Spinner spinner = (Spinner) v.findViewById(R.id.spinner);
-// Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.Property_Furnishing_Condition, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
         spinner.setAdapter(adapter);
-
-
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -164,33 +164,79 @@ public class AddListingFinalCard extends Fragment {
                     transaction_type.setText("RESALE");
                     tt="resale";
                     tv_rate.setText("/sq.ft");
-                    min.setText(String.valueOf(orMin*area));
-                    max.setText(String.valueOf(orMax*area));
+                    minvalue=orMin*area;
+                    maxvalue=orMax*area;
+                    minvalue=minvalue/1000;
+                    minvalue=minvalue*1000;
+                    maxvalue=maxvalue/1000;
+                    maxvalue=maxvalue*1000;
+                    min.setText(String.valueOf(General.currencyFormat((minvalue)+"")));
+                    max.setText(String.valueOf(General.currencyFormat((maxvalue)+"")));
+//                    selected_rate.setText(String.valueOf(General.currencyFormat((orMin*area)+"")));
+                    selected_rate.setText(General.currencyFormat(String.valueOf(minvalue)).substring(2, General.currencyFormat(String.valueOf(minvalue)).length()));
+                    seekBar.setMax(maxvalue);
+                    seekBar.setMin(minvalue);
                 }
                 else{
                     transaction_type.setText("RENT");
                     tt="rental";
                     tv_rate.setText("/month");
-                    min.setText(String.valueOf(llMin*area));
-                    max.setText(String.valueOf(llMax*area));
+                    int price =llMin*area;
+                    minvalue=llMin*area;
+                    maxvalue=llMax*area;
+                    minvalue=minvalue/1000;
+                    minvalue=minvalue*1000;
+                    maxvalue=maxvalue/1000;
+                    maxvalue=maxvalue*1000;
+                    min.setText(String.valueOf(General.currencyFormat((minvalue)+"")));
+                    max.setText(String.valueOf(General.currencyFormat((maxvalue)+"")));
+//                    selected_rate.setText(String.valueOf(General.currencyFormat((llMin*area)+"")));
+                    selected_rate.setText(General.currencyFormat(String.valueOf(minvalue)).substring(2, General.currencyFormat(String.valueOf(minvalue)).length()));
+                    seekBar.setMax(maxvalue);
+                    seekBar.setMin(minvalue);
                 }
             }
         });
 
-        seekBar.setMax(maxvalue);
+        seekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+            @Override
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
 
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                value=value/1000;
+                value=value*1000;
+                String val=String.valueOf(value);
+                numberAsString = String.valueOf(val);
+                selected_rate.setText(General.currencyFormat(String.valueOf(numberAsString)).substring(2, General.currencyFormat(String.valueOf(numberAsString)).length()));
 
-
+            }
 
             @Override
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+        });
+        /*seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+
+            int  p=0;
+            @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(progress <= minvalue){
-                    progress = minvalue + progress;
-                }
+                Log.i("onProgress","onProgressChanged"+progress);
+
+                Log.i("onProgress","onProgressChanged 1"+progress);
+
                 progress=progress/1000;
                 progress=progress*1000;
-                numberAsString = String.valueOf(progress);
+                Log.i("onProgress","onProgressChanged 2"+progress);
+                if(progress <= minvalue){
+                   p= minvalue + progress;
+                }
+                numberAsString = String.valueOf(p);
                 selected_rate.setText(General.currencyFormat(String.valueOf(numberAsString)).substring(2, General.currencyFormat(String.valueOf(numberAsString)).length()));
             }
 
@@ -203,7 +249,7 @@ public class AddListingFinalCard extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
-        });
+        });*/
 
 
 
@@ -555,12 +601,22 @@ private  void getprice()
                                 orMax = Integer.parseInt(price.getString("or_max"));
                                 Log.i("getprice", "orMin" + orMin);
                                 Log.i("getprice", "orMax" + orMax);
-                                orMin = 500 * (Math.round(orMin / 500));
-                                orMax = 500 * (Math.round(orMax / 500));
+                                orMin = 1000 * (Math.round(orMin / 1000));
+                                orMax = 1000 * (Math.round(orMax / 1000));
                                 Log.i("getprice", "orMin" + orMin);
                                 Log.i("getprice", "orMax" + orMax);
-                                min.setText(String.valueOf(General.currencyFormat((llMin*area)+"")));
-                                max.setText(String.valueOf(General.currencyFormat((llMax*area)+"")));
+
+                                minvalue=llMin*area;
+                                maxvalue=llMax*area;
+                                minvalue=minvalue/1000;
+                                minvalue=minvalue*1000;
+                                maxvalue=maxvalue/1000;
+                                maxvalue=maxvalue*1000;
+                                min.setText(String.valueOf(General.currencyFormat((minvalue)+"")));
+                                max.setText(String.valueOf(General.currencyFormat((maxvalue)+"")));
+                                selected_rate.setText(String.valueOf(General.currencyFormat((minvalue)+"")));
+                                seekBar.setMax(maxvalue);
+                                seekBar.setMin(minvalue);
                             }
                         }
                     }

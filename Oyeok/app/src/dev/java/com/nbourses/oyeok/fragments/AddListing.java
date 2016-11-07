@@ -2,6 +2,7 @@ package com.nbourses.oyeok.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 
 public class AddListing extends Fragment {
@@ -93,37 +96,58 @@ public class AddListing extends Fragment {
         office.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Property="office";
+
+                SnackbarManager.show(
+                        Snackbar.with(getActivity())
+                                .text("Comming Soon..")
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+                /*Property="office";
                 b_type.setText("Office");
 
                 industry.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 shop.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 office.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_btn_bg_with_check));
-                home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
+                home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));*/
             }
         } );
         shop.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Property="shop";
+
+                SnackbarManager.show(
+                        Snackbar.with(getActivity())
+                                .text("Comming Soon..")
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
+                /*Property="shop";
                 b_type.setText("Shop");
 
                 industry.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 shop.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_btn_bg_with_check));
                 office.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
-                home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
+                home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));*/
             }
         } );
 
         industry.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Property="industries";
+
+
+                SnackbarManager.show(
+                        Snackbar.with(getActivity())
+                                .text("Comming Soon..")
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
+
+                /*Property="industries";
                 b_type.setText("INDUSTRIES");
                 industry.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_btn_bg_with_check));
                 shop.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 office.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
-                home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
+                home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));*/
 
             }
         } );

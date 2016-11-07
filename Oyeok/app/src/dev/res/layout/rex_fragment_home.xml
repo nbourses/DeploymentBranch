@@ -448,13 +448,14 @@
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:id="@+id/addbuilding"
-                android:layout_gravity="right|bottom"
-                android:background="@drawable/gradient_edit_profile_pic"
-                android:text="+"
+                android:layout_gravity="left|bottom"
+                android:background="@drawable/asset_add_listing"
+                android:text=""
                 android:textSize="30dip"
-                android:layout_marginRight="10dip"
+                android:layout_marginLeft="10dp"
+                android:visibility="gone"
                 android:layout_marginBottom="40dp"
-                android:layout_marginTop="-10dp" />
+                android:layout_marginTop="10dp"  />
 
         </FrameLayout>
 

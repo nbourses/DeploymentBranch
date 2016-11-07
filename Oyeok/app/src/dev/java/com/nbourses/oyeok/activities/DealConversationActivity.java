@@ -698,8 +698,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     okyed = false;
                    // displayCardView();
                     loadHistoryFromPubnub(channel_name);
-
-
                     //chatMessages.clear();
 
                 }

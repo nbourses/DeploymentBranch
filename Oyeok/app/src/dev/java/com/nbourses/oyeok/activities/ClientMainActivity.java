@@ -77,6 +77,7 @@ import com.nbourses.oyeok.fragments.DFragment;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.fragments.OyeConfirmation;
 import com.nbourses.oyeok.fragments.OyeScreenFragment;
+import com.nbourses.oyeok.fragments.gameCardView;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.helpers.NetworkInterface;
@@ -108,7 +109,7 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class ClientMainActivity extends AppCompatActivity implements NetworkInterface, FragmentDrawer.FragmentDrawerListener, OnOyeClick, CustomPhasedListener,  GoogleMap.SnapshotReadyCallback {
 
-    boolean isShowing = false;
+    boolean isShowing = false,firstLaunch=false;
     private static final String TAG = "DashboardActivity";
     final float anchorPoint = 0.4f;
 
@@ -531,30 +532,101 @@ public void signUp(){
         //TODO: need to validate this functionality
         dbHelper = new DBHelper(getBaseContext());
         mHandler = new Handler();
-
-
+        Log.i("Game123", "outside     ==================: "+General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_GAMER));
         Bundle extras = getIntent().getExtras();
-        if (extras != null&& extras.getString("role").equalsIgnoreCase("broker")) {
-             BrokerRole = extras.getString("role");
+try {
+        if (extras!=null && extras.getString("data").equalsIgnoreCase("game")) {
+            Log.i("Game123", "network Game : " + extras.getString("data"));
+
+                firstLaunch = true;
+                SharedPrefs.save(getBaseContext(), SharedPrefs.CHECK_WALKTHROUGH, "false");
+                openGameCard();
+
+
+        }
+
+    }catch (Exception e){}
+
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("BC")){
+            Log.i("Game123", "network role broker 1: ");
+            BrokerRole = "broker";
+            btnMyDeals.setVisibility(View.GONE);
             dbHelper.save(DatabaseConstants.userRole, BrokerRole);
-            General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,BrokerRole);
-            AppConstants.CURRENT_USER_ROLE =BrokerRole;
-            //The key argument here must match that used in the other activity
-        }else {
+            General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, BrokerRole);
+            AppConstants.CURRENT_USER_ROLE = BrokerRole;
+            General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"");
+        }
+        else if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("PC")){
+            if (General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+
+//                    General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
+                SignUpFragment signUpFragment = new SignUpFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("lastFragment", "clientDrawer");
+                loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup, "");
+                AppConstants.SIGNUP_FLAG = true;
+
+            }else {
+                General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
+                openAddListing();
+            }
+        }else{
             dbHelper.save(DatabaseConstants.userRole, "Client");
-            General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"client");
+            General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
             AppConstants.CURRENT_USER_ROLE = "client";
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        Bundle extras1 = getIntent().getExtras();
-        if (extras1 != null && extras1.getString("add")!=null) {
-//            String value = extras.getString("add");
-            openAddListing();
-            //The key argument here must match that used in the other activity
-        }
 
+
+
+       /* if(extras!=null) {
+            if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_GAMER).equalsIgnoreCase("gamer")) {
+                dbHelper.save(DatabaseConstants.userRole, "Client");
+                General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
+                AppConstants.CURRENT_USER_ROLE = "client";
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            } else {
+                if (!extras.getString("role").equalsIgnoreCase("broker")) {
+                    dbHelper.save(DatabaseConstants.userRole, "Client");
+                    General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
+                    AppConstants.CURRENT_USER_ROLE = "client";
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        Log.i("Game123", "network role client 2: "+extras.getString("role"));
+                    //The key argument here must match that used in the other activity
+                } else {
+
+                    Log.i("Game123", "network role broker 1: " + extras.getString("role"));
+                    BrokerRole = extras.getString("role");
+                    btnMyDeals.setVisibility(View.GONE);
+           dbHelper.save(DatabaseConstants.userRole, BrokerRole);
+                    General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, BrokerRole);
+                    AppConstants.CURRENT_USER_ROLE = BrokerRole;
+                }
+            }
+//        Bundle extras1 = getIntent().getExtras();
+
+            if (extras != null) {
+                if (extras.getString("data").equalsIgnoreCase("portfolio")) {
+//            String value = extras.getString("add");
+                    Log.i("Game123", "openAddListing Game 1: " + extras.getString("game"));
+                    openAddListing();
+                    //The key argument here must match that used in the other activity
+                }
+
+//    Bundle extra = getIntent().getExtras();
+                else if (extras.getString("data").equalsIgnoreCase("game")) {
+                    Log.i("Game123", "network Game : " + extras.getString("data"));
+
+                    SharedPrefs.save(getBaseContext(), SharedPrefs.CHECK_WALKTHROUGH, "false");
+                    openGameCard();
+                }
+            }
+        }*/
+//}catch (Exception e){}
 
         ShortcutBadger.removeCount(this);
         Log.i(TAG,"popup window shown 1 ");
@@ -1020,7 +1092,9 @@ public void signUp(){
             //don't do anything
         }
         else if (itemTitle.equals(getString(R.string.profile))) {
+
             Intent openProfileActivity =  new Intent(this, ProfileActivity.class);
+
             startActivity(openProfileActivity);
         }
         else if (itemTitle.equals(getString(R.string.brokerOk))) {
@@ -1314,6 +1388,7 @@ if(AppConstants.FAV) {
                         Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
+             AppConstants.SETLOCATION=false;
         }
 
         else if(AppConstants.cardNotif){
@@ -1928,8 +2003,8 @@ Log.i(TAG,"Image is the "+out);
 
 
     public void showCard() {
-       if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("")) {
-
+       if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("")&& !firstLaunch) {
+           firstLaunch=false;
             if (AppConstants.cardCounter >3) {
 
                 final Handler handler = new Handler();
@@ -2193,6 +2268,14 @@ public void openAddListing(){
     }
 
 
+
+    public void closeCardContainer(){
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+        containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
+        containerSignup.setClickable(false);
+        card.setClickable(false);
+    }
+
     public  void setlocation(String b_name){
         btnMyDeals.setVisibility(View.GONE);
         btn_back.setVisibility(View.VISIBLE);
@@ -2220,7 +2303,21 @@ public void openAddListing(){
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).ResetChanges();
     }
 
+    public void openGameCard(){
 
+        containerSignup.setBackgroundColor(Color.parseColor("#CC000000"));
+        containerSignup.setClickable(true);
+        gameCardView gamecardview= new gameCardView();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        card.setClickable(true);
+        fragmentTransaction.addToBackStack("card");
+        fragmentTransaction.replace(R.id.card, gamecardview);
+        fragmentTransaction.commitAllowingStateLoss();
+//        loadFragmentAnimated(addListingFinalCard, null, R.id.card, "");
+
+    }
 
 
 }

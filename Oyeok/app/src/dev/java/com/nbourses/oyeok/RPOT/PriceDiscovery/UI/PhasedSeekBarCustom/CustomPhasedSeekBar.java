@@ -233,8 +233,10 @@ public class CustomPhasedSeekBar extends View {
         if(mCurrentItem == 0) {
             TT = AppConstants.RENTAL;
         }
-        else{
+        else if(mCurrentItem == 2){
             TT = AppConstants.RESALE;
+        }else{
+            TT = AppConstants.RENTAL;
         }
 
         Log.i(TAG, "PHASED  current" + mCurrentItem +" "+General.getSharedPreferences(getContext(), "TT"));
@@ -286,8 +288,12 @@ public class CustomPhasedSeekBar extends View {
             //get the latest drawable state(differs for unselected,selected and focused)
             Log.i("PHASED","minIndex "+minIndex);
             Log.i("PHASED","mAdapter "+mAdapter);
-            Log.i("PHASED","mAdapter.getItem(minIndex) "+mAdapter.getItem(minIndex));
+//            Log.i("PHASED","mAdapter.getItem(minIndex) "+mAdapter.getItem(minIndex));
+            Log.i("PHASED","mAdapter.getItem(minIndex) 19");
+
             stateListDrawable = mAdapter.getItem(minIndex);
+            Log.i("PHASED","mAdapter.getItem(minIndex) 20");
+
         } else {
             //If not dragging change currentx and current y to current items coordinates stored in integer array
             mUpdateFromPosition = false;
@@ -295,9 +301,12 @@ public class CustomPhasedSeekBar extends View {
             mCurrentY = mAnchors[mCurrentItem][1];
             stateListDrawable = mAdapter.getItem(mCurrentItem);
         }
+        Log.i("PHASED","mAdapter.getItem(minIndex) 21");
+
         stateListDrawable.setState(mState);
         itemOn = stateListDrawable.getCurrent();
 
+        Log.i("PHASED","mAdapter.getItem(minIndex) 23");
 
 
         for (int i = 0; i < count; i++) {

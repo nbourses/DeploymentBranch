@@ -181,7 +181,7 @@
     <string name="broker_sign_up_content_from_deals">(Ok more leads to create \nNew Deals with more Customer)</string>
     <string name="broker_sign_up_content_from_intro">(Ok more leads to create \nNew Deals with more Customer.)</string>
 
-    <string name="client_log_in_heading">You are Logging in as a Client</string>
+    <string name="client_log_in_heading">You are Logging in as a Customer</string>
     <string name="broker_log_in_heading">You are Logging in as a Broker</string>
     <string name="facebook_app_id">273470946346289</string>
     <string name="tenant_card_question1">with fixed Budget, Suggest me locations</string>

@@ -14,19 +14,20 @@
         >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dip"
+            android:layout_height="0dip"
+            android:layout_weight="0.5"
             android:orientation="horizontal"
             android:background="@color/greenish_blue">
-     <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Listing Details"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-         android:layout_weight="1"
-        android:textSize="16dp"
-        android:layout_marginLeft="50dp"
-        android:layout_gravity="center_vertical"/>
+            <TextView
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:text="Listing Details"
+               android:textColor="@color/black"
+               android:textStyle="bold"
+                android:layout_weight="1"
+               android:textSize="16dp"
+               android:layout_marginLeft="50dp"
+               android:layout_gravity="center_vertical"/>
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -43,8 +44,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dip"
-                android:layout_margin="5dip"
+                android:layout_height="0dip"
+                android:layout_weight="0.5"
+                android:layout_margin="2dip"
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="wrap_content"
@@ -81,7 +83,8 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dip"
+                android:layout_weight="1"
                 android:orientation="horizontal">
                 <ImageView
                     android:layout_width="30dp"
@@ -120,7 +123,8 @@
             android:layout_marginTop="4dip"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dip"
+            android:layout_weight="1"
             android:layout_margin="10dp"
             android:gravity="center"
             android:orientation="horizontal">
@@ -188,9 +192,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dip"
+            android:layout_weight="0.5"
             android:orientation="horizontal"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="2dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -217,7 +222,8 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dip"
+            android:layout_weight="0.5"
             android:layout_margin="1dp"
             android:orientation="horizontal">
 
@@ -252,7 +258,8 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dip"
+            android:layout_weight="1"
             android:layout_margin="10dip"
             android:orientation="vertical">
             <LinearLayout
@@ -284,49 +291,57 @@
                     android:text="20,000"/>
             </LinearLayout>
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-        <SeekBar
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dip"
-            android:layout_weight="1"
-            android:id="@+id/seekBar" />
-            </LinearLayout>
+            android:orientation="vertical">
+
+
+                <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                    android:id="@+id/seekBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="4dp"
+                    android:layout_marginLeft="8dp"
+                    android:paddingBottom="8dp"
+                    app:dsb_indicatorPopupEnabled="false"
+                    app:dsb_max="100000000"
+                    app:dsb_min="40000"
+                    app:dsb_progressColor="@color/greenish_blue"/>
+             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginLeft="10dip"
+                android:layout_marginTop="-5dip"
                 android:layout_marginRight="10dip">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="min"
+                    android:text="Min"
                     android:layout_marginLeft="2dp"
                     android:textColor="@color/black"
-                    android:layout_marginTop="-5dip"
+
                     android:layout_weight="1"
                     android:textStyle="bold"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:layout_marginTop="-5dip"
                     android:layout_weight="1"
                     android:gravity="center_vertical|right"
                     android:textStyle="bold"
-                    android:text="max"/>
+                    android:text="Max"/>
             </LinearLayout>
 
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="-4dp"
+            android:layout_height="0dip"
+            android:layout_weight="0.75"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="-8dp"
             android:gravity="center">
 
 
@@ -373,7 +388,8 @@
         </RelativeLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dip"
+            android:layout_height="0dip"
+            android:layout_weight="0.5"
             android:orientation="horizontal"
             android:layout_gravity="bottom"
             android:gravity="center"

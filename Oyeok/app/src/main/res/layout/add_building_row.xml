@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="4dp"
         android:id="@+id/building_img"
-        android:src="@drawable/buildingiconbeforeclick"/>
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -26,12 +26,12 @@
         android:textStyle="bold"
         android:id="@+id/b_name"
         android:textColor="@color/black"
-        android:textSize="20dip"
+        android:textSize="14dip"
         android:text="Akash Jyoti"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text=","
+            android:text=""
             android:textStyle="bold"
             android:textColor="@color/black"
             android:gravity="center"/>

@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.GridLayout;
@@ -27,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.kyleduo.switchbutton.SwitchButton;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -86,8 +86,13 @@ public class OyeScreenFragment extends Fragment {
     @Bind(R.id.txtSelected)
     TextView txtSelected;
 
-    @Bind(R.id.checkBox)
-    CheckBox satView;
+    /*@Bind(R.id.checkBox)
+    CheckBox satView;*/
+    @Bind(R.id.toggleBtn1)
+    SwitchButton toggleswitch;
+
+    @Bind(R.id.tv_security_dep)
+    TextView tv_security_dep;
 
     @Bind(R.id.requestType)
     TextView requestType;
@@ -147,10 +152,11 @@ public class OyeScreenFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
 //        View rootView1 = inflater.inflate(R.layout.activity_dashboard, container, false);
-      satView = (CheckBox) rootView.findViewById(R.id.checkBox);
-        satView.setVisibility(View.VISIBLE);
+      /*satView = (CheckBox) rootView.findViewById(R.id.checkBox);
+        satView.setVisibility(View.VISIBLE);*/
         bundle = getArguments();
-      tv_fd_bank=(TextView)rootView.findViewById(R.id.tv_fd_bank);
+        tv_fd_bank=(TextView)rootView.findViewById(R.id.tv_fd_bank);
+        tv_security_dep=(TextView)rootView.findViewById(R.id.tv_security_dep);
 
 //        tv_dealinfo=(TextView)rootView.findViewById(R.id.tv_dealinfo);
         AppConstants.CUSTOMER_TYPE="Tenant";
@@ -164,7 +170,24 @@ public class OyeScreenFragment extends Fragment {
         });
             init();
 
-        satView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        tv_fd_bank.setTextColor(getResources().getColor(R.color.greenish_blue));
+        tv_security_dep.setTextColor(getResources().getColor(R.color.common_plus_signin_btn_text_light_focused));
+        toggleswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    tv_fd_bank.setTextColor(getResources().getColor(R.color.common_plus_signin_btn_text_light_focused));
+                    tv_security_dep.setTextColor(getResources().getColor(R.color.greenish_blue));
+
+                }
+                else{
+                    tv_fd_bank.setTextColor(getResources().getColor(R.color.greenish_blue));
+                    tv_security_dep.setTextColor(getResources().getColor(R.color.common_plus_signin_btn_text_light_focused));
+                }
+            }
+        });
+
+        /*satView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (buttonView.isChecked()) {
@@ -180,7 +203,7 @@ public class OyeScreenFragment extends Fragment {
                 }
 
             }
-        });
+        });*/
 
 
 
@@ -384,13 +407,13 @@ public class OyeScreenFragment extends Fragment {
             txtOptionSee.setBackgroundResource(R.color.greenish_blue);
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")){
             tv_fd_bank.setText("I like to pay my \n SECURITY DEPOSIT");
-            satView.setText("Apply for finance \n SECURITY DEPOSIT");
+                tv_security_dep.setText("Apply for finance \n SECURITY DEPOSIT");
                 budgetText.setText("My Rent Budget");
 //                txtfixedString.setText("CONNECT NOW | FIND @ ");
             }
             else{
                 tv_fd_bank.setText("I don't \n want loan");
-                satView.setText("I want LOAN \n to buy");
+                tv_security_dep.setText("I want LOAN \n to buy");
                 budgetText.setText("My Budget");
 //                txtfixedString.setText("CONNECT NOW | FIND @ ");
 
@@ -403,13 +426,13 @@ public class OyeScreenFragment extends Fragment {
             AppConstants.CUSTOMER_TYPE="Owner";
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")){
             tv_fd_bank.setText("I like Monthly RENT CHEQUE(s)");
-            satView.setText("Apply for finance FULL ADVANCE RENT");
+                tv_security_dep.setText("Apply for finance FULL ADVANCE RENT");
                 budgetText.setText("My Asking Rent");
 //                txtfixedString.setText("CONNECT NOW | LIST @ ");
             }
             else{
                 tv_fd_bank.setText("No Loan On \n Property");
-                satView.setText("I have Loan On \n Propery");
+                tv_security_dep.setText("I have Loan On \n Propery");
                 budgetText.setText("Sale Price");
 //                txtfixedString.setText("CONNECT NOW | LIST @ ");
 
@@ -549,14 +572,14 @@ public class OyeScreenFragment extends Fragment {
 
         if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")){
             tv_fd_bank.setText("I like to pay my \n SECURITY DEPOSIT");
-            satView.setText("Apply for finance \n SECURITY DEPOSIT");
+            tv_security_dep.setText("Apply for finance \n SECURITY DEPOSIT");
             budgetText.setText("My Rent Budget");
 
 
         }
         else{
             tv_fd_bank.setText("I don't \n want loan");
-            satView.setText("I want LOAN \n to buy");
+            tv_security_dep.setText("I want LOAN \n to buy");
             budgetText.setText("My Budget");
 
 

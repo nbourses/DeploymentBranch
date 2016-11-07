@@ -60,6 +60,8 @@ import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
+import static com.nbourses.oyeok.R.array.intent;
+
 public class BrokerMainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener{
 
 @Bind(R.id.toolbar)
@@ -418,9 +420,10 @@ GoogleMap map;
         openmaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"BC");
                 Intent intent = new Intent(getBaseContext(),ClientMainActivity.class);
-                intent.putExtra("role","broker");
+//                intent.putExtra("role","broker");
+//                intent.putExtra("data","");
                 startActivity(intent);
 
                /*BrokerMap brokerMap=new BrokerMap();
@@ -587,6 +590,10 @@ GoogleMap map;
             dbHelper.save(DatabaseConstants.userRole,"client");
             General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"client");
             Intent openDashboardActivity =  new Intent(this, ClientMainActivity.class);
+            openDashboardActivity.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(openDashboardActivity);
         }
         else if (itemTitle.equals(getString(R.string.profile))) {

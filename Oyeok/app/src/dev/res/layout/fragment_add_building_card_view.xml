@@ -13,8 +13,9 @@
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dip"
+            android:layout_height="0dip"
             android:gravity="center"
+            android:layout_weight=".25"
             android:background="@color/greenish_blue">
 
             <TextView
@@ -43,12 +44,13 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
             android:gravity="center">
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="110dip"
-                android:src="@drawable/buildingiconbeforeclick"
+                android:src="@drawable/locked_building_icon"
                 android:layout_marginLeft="5dip"
                 android:layout_marginRight="5dip"
                 android:layout_marginTop="5dip"/>
@@ -58,7 +60,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="160dip"
+            android:layout_height="0dip"
+            android:layout_weight="0.75"
             android:background="@color/greenish_blue"
             android:gravity="center_horizontal"
             android:layout_marginTop="4dp"
@@ -108,11 +111,6 @@
                 android:id="@+id/textView13"
                 android:layout_marginLeft="64dp"
                 android:layout_marginStart="94dp"/>
-
-
-
-
-
 
 
             <LinearLayout
@@ -208,7 +206,8 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="140dip"
+            android:layout_height="0dip"
+            android:layout_weight="0.5"
             android:gravity="center_horizontal"
             android:layout_margin="4dp"
             android:orientation="vertical">
@@ -241,7 +240,8 @@
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="0dp"
+                android:layout_weight="0.25"
                 android:background="@color/white"
                 android:layout_below="@+id/linearLayout9"
                 android:layout_centerHorizontal="true"
@@ -249,7 +249,7 @@
                 android:id="@+id/horizontalScrollView">
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dip"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:foregroundGravity="center"
                     android:orientation="horizontal">
@@ -410,7 +410,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dip"
+                android:layout_height="0dip"
+                android:layout_weight="0.25"
                 android:orientation="horizontal"
                 android:gravity="center"
                 android:layout_margin="2dp"
@@ -436,7 +437,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.25"
             android:gravity="center"
             android:background="@color/greenish_blue"
             android:layout_margin="6dp"

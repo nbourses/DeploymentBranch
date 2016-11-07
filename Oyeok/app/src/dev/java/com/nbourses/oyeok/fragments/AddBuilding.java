@@ -24,15 +24,17 @@ import com.google.gson.JsonObject;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.activities.ClientMainActivity;
-import com.nbourses.oyeok.adapters.addBuildingAdapter;
+import com.nbourses.oyeok.adapters.searchBuilding;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.SearchBuildingModel;
-import com.nbourses.oyeok.realmModels.addBuilding;
+import com.nbourses.oyeok.models.loadBuildingDataModel;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,6 +44,8 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class AddBuilding extends Fragment {
@@ -57,7 +61,7 @@ private TextView Cancel,back,usertext;
     private View v;
     ListView listView1;
     EditText inputSearch1;
-    addBuildingAdapter adapter;
+    searchBuilding adapter;
     private Realm realm;
     ImageView add;
     String name;
@@ -66,6 +70,8 @@ private TextView Cancel,back,usertext;
     private SideBar sideBar;
     private Timer clockTickTimer;
     int count=3;
+//    String name;
+    ArrayList<loadBuildingDataModel> building_names;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,13 +91,13 @@ private TextView Cancel,back,usertext;
         listView1=(ListView) v.findViewById(R.id.listView1);
         inputSearch1=(EditText)v.findViewById(R.id.inputSearch1);
         add=(ImageView) v.findViewById(R.id.add);
-        adapter = new addBuildingAdapter(getContext(),1);
-        listView1.setAdapter(adapter);
+//        adapter = new addBuildingAdapter(getContext(),1);
+        /*listView1.setAdapter(adapter);
         realm = General.realmconfig(getContext());
-        adapter.setResults(realm.where(addBuilding.class).findAll());
+        adapter.setResults(realm.where(addBuilding.class).findAll());*/
         add_b=(LinearLayout)v.findViewById(R.id.add_b);
         usertext=(TextView)v.findViewById(R.id.usertext);
-
+        building_names= new ArrayList<>();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,11 +122,11 @@ private TextView Cancel,back,usertext;
                     Log.i( "portfolio","onTextChanged  LL : "+cs );
 
                     usertext.setText("'"+cs+"'");
-                    adapter.setResults( realm.where(addBuilding.class) //implicit AND
+                    /*adapter.setResults( realm.where(addBuilding.class) //implicit AND
                             .beginGroup()
                             .contains("Building_name", cs.toString(),false)
                             .endGroup()
-                            .findAll() );
+                            .findAll() );*/
                 count=3;
                /* }else{
 
@@ -170,7 +176,6 @@ private TextView Cancel,back,usertext;
 
                                 }
                             })
-
                         /*.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // do nothing
@@ -185,13 +190,14 @@ private TextView Cancel,back,usertext;
                     ((ClientMainActivity) getActivity()).setlocation(name);
                 }
 
+                General.setSharedPreferences(getContext(), AppConstants.BUILDING_NAME,name);
             }
         });
 
 
 
 
-        sideBar = (SideBar) v.findViewById(R.id.sideIndex);
+ /*       sideBar = (SideBar) v.findViewById(R.id.sideIndex);
 //        dialog = (TextView) v.findViewById(R.id.dialog);
         sideBar.setTextView(dialog);
 
@@ -201,13 +207,13 @@ private TextView Cancel,back,usertext;
             @Override
             public void onTouchingLetterChanged(String s) {
                 //The position of the first occurrence of the letter
-                /*int position = adapter.getPositionForSection(s.charAt(0));
+                *//*int position = adapter.getPositionForSection(s.charAt(0));
                 if(position != -1){
                     sortListView.setSelection(position);
-                }*/
+                }*//*
 
             }
-        });
+        });*/
 
 
          init();
@@ -220,15 +226,15 @@ private TextView Cancel,back,usertext;
 
 
    private void  init(){
-      listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+     /* listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
           @Override
           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
              if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
 
-                 General.setSharedPreferences(getContext(),AppConstants.BUILDING_NAME,adapter.getItem(position).getBuilding_name());
+                *//* General.setSharedPreferences(getContext(),AppConstants.BUILDING_NAME,adapter.getItem(position).getBuilding_name());
                  General.setSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY,adapter.getItem(position).getLocality());
                  General.setSharedPreferences(getContext(),AppConstants.MY_LAT,adapter.getItem(position).getLat());
-                 General.setSharedPreferences(getContext(),AppConstants.MY_LNG,adapter.getItem(position).getLng());
+                 General.setSharedPreferences(getContext(),AppConstants.MY_LNG,adapter.getItem(position).getLng());*//*
 //                 General.setSharedPreferences(getContext(),AppConstants.PROPERTY,adapter.getItem(position).getProperty_type());
 
 
@@ -236,14 +242,14 @@ private TextView Cancel,back,usertext;
                  ((ClientMainActivity)getActivity()).openAddListingFinalCard();
              }
           }
-      });
+      });*/
    }
 
     public void SearchBuilding()
     {
         Log.i("updateStatus CALLED","updateStatus success called ");
         SearchBuildingModel searchBuildingModel = new SearchBuildingModel();
-        searchBuildingModel.setBuilding("Krishna");
+        searchBuildingModel.setBuilding(name);
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_TEST).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
@@ -277,15 +283,51 @@ private TextView Cancel,back,usertext;
 
                          JSONObject jsonResponse = new JSONObject(strResponse);
 
-                        JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
-
+//                        JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
+                        String errors = jsonResponse.getString("errors");
                         Log.i("magic","addBuilding success response "+response);
                         Log.i("magic","addBuilding success jsonResponse "+jsonResponse);
-
+                        JSONArray buildings = new JSONArray(jsonResponse.getString("responseData"));
                         JSONObject ne = new JSONObject(k.toString());
 //                        General.setSharedPreferences(getContext(),AppConstants.token,ne.getString("token"));
 //                        setDealStatus3(getContext());
-//                        Log.i("magic","addBuilding success ne "+ne);
+                        int size= buildings.length();
+                        Log.i("magic","addBuilding success ne "+ne);
+                        Log.i("magic","addBuilding success buildings "+size+"  "+buildings);
+                        building_names.clear();
+//                        List<String> building_names = new ArrayList<String>();
+                        for(int i=0;i<size;i++){
+                            JSONObject j = new JSONObject(buildings.get(i).toString());
+                            double lat = Double.parseDouble(j.getJSONArray("loc").get(1).toString());
+
+                            double longi = Double.parseDouble(j.getJSONArray("loc").get(0).toString());
+                            Log.i("Buildingdata", "lat " + lat+"longi:  "+longi+"id:  "+j.getString("id")+"name: "+j.getString("name"));
+                            building_names.add(new loadBuildingDataModel(j.getString("name"),lat,longi,j.getString("id")));
+
+                        }
+                        adapter= new searchBuilding(building_names,getApplicationContext());
+                        listView1.setAdapter(adapter);
+                        listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                                    loadBuildingDataModel dataModel= building_names.get(position);
+                                    General.setSharedPreferences(getContext(),AppConstants.BUILDING_NAME,adapter.getItem(position).getName());
+                                    General.setSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY,"");
+                                    General.setSharedPreferences(getContext(),AppConstants.MY_LAT,adapter.getItem(position).getLat()+"");
+                                    General.setSharedPreferences(getContext(),AppConstants.MY_LNG,adapter.getItem(position).getLng()+"");
+//                 General.setSharedPreferences(getContext(),AppConstants.PROPERTY,adapter.getItem(position).getProperty_type());
+                                    ((ClientMainActivity)getActivity()).openAddListingFinalCard();
+                                }
+
+                            }
+                        });
+
+                        /*ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                                getContext(),
+                                android.R.layout.simple_list_item_1, building_names );*/
+
+//                        listView1.setAdapter(arrayAdapter);
 //                        JSONObject re = new JSONObject(jsonResponse.getString("responseData"));
                         /*Log.i("magic","addBuilding success re data "+re);
                         Log.i("magic","addBuilding success re "+re.length());*/
@@ -305,14 +347,14 @@ private TextView Cancel,back,usertext;
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Log.i("magic","addBuilding failed "+error);
+                    Log.i("magic","addBuilding failed 2: "+error);
                 }
             });
 
 
         }
         catch (Exception e){
-            Log.e("TAG", "Caught in the the"+ e.getMessage());
+            Log.e("TAG", "Caught in the the : "+ e.getMessage());
         }
 
     }

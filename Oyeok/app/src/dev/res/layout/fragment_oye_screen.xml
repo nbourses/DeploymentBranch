@@ -463,9 +463,7 @@
                 android:text="I like to pay my\nSECURITY DEPOSIT"
                 android:id="@+id/tv_fd_bank"
                 android:layout_marginTop="3dp"
-
                 android:textColor="@color/abc_secondary_text_material_light"
-                android:layout_alignBottom="@+id/checkBox"
                 android:gravity="center_horizontal"
                 android:textSize="13dp"
                 android:textStyle="bold|italic"
@@ -474,8 +472,32 @@
                 android:paddingLeft="20dp"
                  />
 
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/toggleBtn1"
+                android:layout_width="54dp"
+                android:layout_height="27dp"
+                android:checked="false"
+                app:kswThumbColor="@color/greenish_blue"
+                android:layout_gravity="center"/>
 
-            <CheckBox
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Apply for finance\nSECURITY DEPOSIT"
+                android:id="@+id/tv_security_dep"
+                android:layout_marginTop="3dp"
+
+                android:textColor="@color/abc_secondary_text_material_light"
+
+                android:gravity="center_horizontal"
+                android:textSize="13dp"
+                android:textStyle="bold|italic"
+                android:layout_weight="0.5"
+                android:foregroundGravity="center_horizontal"
+                android:paddingLeft="20dp"
+                />
+            <!--<CheckBox
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -489,7 +511,7 @@
                 android:textColor="@color/greenish_blue"
                 android:textSize="13dp"
                 android:textStyle="bold|italic"
-                android:layout_weight="0.6" />
+                android:layout_weight="0.6" />-->
 
 
         </LinearLayout>

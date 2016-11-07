@@ -830,7 +830,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
             } else {
                 user.setUserId( General.getSharedPreferences( this, AppConstants.USER_ID ) );
             }
-            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint( AppConstants.SERVER_BASE_URL_102 ).build();
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint( AppConstants.SERVER_BASE_URL_TEST_102 ).build();
             restAdapter.setLogLevel( RestAdapter.LogLevel.FULL );
 
             UserApiService userApiService = restAdapter.create( UserApiService.class );
@@ -934,12 +934,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                                             Log.i( "metropolitandraw", "long  : " + longi );
                                             loc[i] = new LatLng( lat, longi );
                                             Log.i( "metropolitandraw", "loc :  " + loc );
-//                                            Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
-//                                            String customSnippet=rate_growth[i];
-//                                            mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc[i]).title(name[i]).icon(icon1));
-//                                            Log.i("TRACE", "RESPONSEDATAr" + mCustomerMarker[i]);
-//                                            flag[i] = false;
-//                                            dropPinEffect(mCustomerMarker[i]);
+
                                             if (status[i] == 2 || status[i] == 1) {
                                                 Cancel_timer( i );
                                             }
@@ -1184,7 +1179,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
 
     public void playSound() {
 
-        MediaPlayer mp = MediaPlayer.create( this, R.raw.fold );
+        MediaPlayer mp = MediaPlayer.create( this, R.raw.building_visible );
         mp.setOnCompletionListener( new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -1316,7 +1311,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
         }
         for (int i = 0; i < 5; i++) {
 
-            p = new Point( buildingPosition[i].x, buildingPosition[i].y - 55 );
+            p = new Point( buildingPosition[i].x, buildingPosition[i].y - 65 );
             cent[i] = map.getProjection().fromScreenLocation( p );
             Log.i( "OnScreen", "OnScreenCo_ordinateFromLatLng  : " + buildingPosition[i] );
         }

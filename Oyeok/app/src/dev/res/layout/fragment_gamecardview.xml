@@ -1,0 +1,152 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.nbourses.oyeok.fragments.gameCardView"
+    android:orientation="vertical"
+    android:background="@color/black">
+
+    <!-- TODO: Update blank fragment layout -->
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="9">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView3"
+        app:srcCompat="@drawable/game_splash" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="right"
+        android:textColor="@color/black"
+        android:id="@+id/btn_exit"
+        android:text="Exit"/>
+</FrameLayout>
+
+
+
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="0dp"
+      android:layout_weight="1"
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="5dp"
+    android:orientation="horizontal">
+    <TextView
+        android:text="Play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:id="@+id/textView10"
+        android:textSize="22sp"
+        android:textColor="@color/greenish_blue" />
+
+    <TextView
+        android:text="OYEOK"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteY="322dp"
+        android:id="@+id/textView15"
+        android:textSize="22sp"
+        android:layout_marginLeft="5dp"
+        android:textStyle="normal|bold"
+        tools:layout_editor_absoluteX="124dp"
+        android:textColor="@color/greenish_blue" />
+
+</LinearLayout>
+
+    <TextView
+        android:text="Build Bank Balance...."
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:layout_editor_absoluteY="348dp"
+        android:id="@+id/textView16"
+        android:textSize="22sp"
+        android:layout_marginLeft="5dp"
+        tools:layout_editor_absoluteX="71dp"
+        android:textColor="@color/greenish_blue" />
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:layout_marginTop="22dp"
+    android:layout_marginLeft="5dp"
+    android:orientation="horizontal">
+    <TextView
+        android:text="Trade on"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView17"
+        android:layout_weight="1"
+        android:textSize="22sp"
+        android:textColor="@color/greenish_blue" />
+
+    <TextView
+        android:text="REAL"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView18"
+        android:textSize="24sp"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="1"
+        android:textStyle="normal|bold"
+        android:textColor="@color/greenish_blue" />
+
+</LinearLayout>
+
+    <TextView
+        android:text="Live Property Rates"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/textView19"
+        android:textColor="@color/greenish_blue"
+        android:textSize="24sp"
+        android:layout_marginLeft="5dp"
+        android:textStyle="normal|bold" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@color/grey"
+        android:id="@+id/startgame">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/mr_ic_play_light"
+            android:id="@+id/imageView5"
+            android:layout_gravity="right"
+            android:paddingLeft="0dp"
+            android:paddingRight="-40dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:layout_weight="1.02" />
+
+        <TextView
+            android:text="Start Game"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/textView20"
+            android:textColor="@color/black"
+            android:gravity="center_vertical|left"
+            android:layout_weight="0.58"
+            android:textStyle="normal|bold"
+            android:textSize="28sp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
