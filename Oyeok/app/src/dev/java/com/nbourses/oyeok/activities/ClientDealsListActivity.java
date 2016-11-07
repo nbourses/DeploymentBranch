@@ -679,16 +679,16 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         searchView.setIconified(false);
         searchView.clearFocus();
 
-        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) <= 0) {
+        if ((General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) <= 0) || General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
             rentalCount.setVisibility(View.GONE);
             resaleCount.setVisibility(View.GONE);
         } else {
             if(General.getSharedPreferences(this,AppConstants.Card_TT).equalsIgnoreCase("LL")) {
                 rentalCount.setVisibility(View.VISIBLE);
-                rentalCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)));
+                rentalCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV)));
             }else{
                 resaleCount.setVisibility(View.VISIBLE);
-                resaleCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)));
+                resaleCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV)));
             }
         }
 
@@ -1512,9 +1512,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             .text("Rental Deals Type set")
                             .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
-            if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) > 0) {
+            if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0) {
                 if(General.getSharedPreferences(this,AppConstants.Card_TT).equalsIgnoreCase("LL")) {
-                    General.setBadgeCount(this, AppConstants.HDROOMS_COUNT, 0);
+                    General.setBadgeCount(this, AppConstants.HDROOMS_COUNT_UV, 0);
                     rentalCount.setVisibility(View.GONE);
                 }}
 
@@ -1551,9 +1551,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
             getSupportActionBar().setTitle(Html.fromHtml(String.format("DEALING ROOMs <font color=\"#%s\">(Buy/Sell)</font>", сolorString)));
 
-            if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) > 0) {
+            if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0) {
                 if(General.getSharedPreferences(this,AppConstants.Card_TT).equalsIgnoreCase("OR")) {
-                    General.setBadgeCount(this, AppConstants.HDROOMS_COUNT, 0);
+                    General.setBadgeCount(this, AppConstants.HDROOMS_COUNT_UV, 0);
                     resaleCount.setVisibility(View.GONE);
                 }}
         }

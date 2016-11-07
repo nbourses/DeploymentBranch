@@ -4496,7 +4496,7 @@ favOText.getText()*/
                             JSONArray ne1 = ne.getJSONObject("responseData").getJSONArray("ok_ids");
                             Log.i("AUTOOK CALLED","autook response 24 "+ne1);
 
-                            General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT,ne1.length());
+                            General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT_UV,ne1.length());
                             if(AppConstants.Card_TT.equalsIgnoreCase("LL"))
                                 General.setSharedPreferences(getContext(),AppConstants.Card_TT,"LL");
                             else
@@ -4812,7 +4812,10 @@ favOText.getText()*/
 
     }
 
+public void resetSeekBar(){
+    mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), "Game", getContext().getResources().getString(R.string.Resale)}));
 
+}
 
 
 

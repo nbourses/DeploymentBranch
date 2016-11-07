@@ -557,7 +557,7 @@ try {
             General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"");
         }
         else if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("PC")){
-            if (General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+           /* if (General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
 
 //                    General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
                 SignUpFragment signUpFragment = new SignUpFragment();
@@ -566,10 +566,10 @@ try {
                 loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup, "");
                 AppConstants.SIGNUP_FLAG = true;
 
-            }else {
+            }else {*/
                 General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
                 openAddListing();
-            }
+          //  }
         }else{
             dbHelper.save(DatabaseConstants.userRole, "Client");
             General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
@@ -796,14 +796,29 @@ try {
 ////            Log.i(TAG,"insider4 "+c.getEmailId());
 //        }
 
-        Toast.makeText(this,String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)),Toast.LENGTH_LONG);
+        // Toast.makeText(this,String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)),Toast.LENGTH_LONG);
 
-        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) <= 0)
+        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0){
+            hdroomsCount.setVisibility(View.VISIBLE);
+        hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV)));
+        }
+        else if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) > 0) {
+            hdroomsCount.setVisibility(View.VISIBLE);
+            hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)));
+        }
+        else{
+            hdroomsCount.setVisibility(View.GONE);
+        }
+
+
+
+
+        /*if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) <= 0)
             hdroomsCount.setVisibility(View.GONE);
         else {
             hdroomsCount.setVisibility(View.VISIBLE);
             hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)));
-        }
+        }*/
 
 
         try {
@@ -1588,6 +1603,7 @@ if(AppConstants.FAV) {
            }
        }
         else {
+
            Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
            openDealsListing.putExtra("defaul_deal_flag", "false");
            startActivity(openDealsListing);
@@ -2270,10 +2286,12 @@ public void openAddListing(){
 
 
     public void closeCardContainer(){
+
         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
         containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
         containerSignup.setClickable(false);
         card.setClickable(false);
+        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
     }
 
     public  void setlocation(String b_name){
@@ -2289,6 +2307,7 @@ public void openAddListing(){
         containerSignup.setClickable(false);
         card.setClickable(false);
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).saveBuiding(b_name);
+        hdroomsCount.setVisibility(View.GONE);
 
     }
 
@@ -2301,6 +2320,10 @@ public void openAddListing(){
         confirm_screen_title.setVisibility(View.GONE);
         getSupportActionBar().setTitle("Live Region Rates");
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).ResetChanges();
+        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0){
+            hdroomsCount.setVisibility(View.VISIBLE);
+            hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV)));
+        }
     }
 
     public void openGameCard(){

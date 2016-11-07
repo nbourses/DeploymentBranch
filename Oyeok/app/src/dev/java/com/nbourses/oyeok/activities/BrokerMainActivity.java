@@ -60,8 +60,6 @@ import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
-import static com.nbourses.oyeok.R.array.intent;
-
 public class BrokerMainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener{
 
 @Bind(R.id.toolbar)
