@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.General;
-import com.nbourses.oyeok.realmModels.addBuilding;
+import com.nbourses.oyeok.realmModels.addBuildingRealm;
 
 import java.util.ArrayList;
 
@@ -23,7 +23,7 @@ import io.realm.Realm;
  * Created by sushil on 20/10/16.
  */
 
-public  class addBuildingAdapter extends realmAdapter<addBuilding,addBuildingAdapter.ViewHolder> implements View.OnLongClickListener{
+public  class addBuildingAdapter extends realmAdapter<addBuildingRealm,addBuildingAdapter.ViewHolder> implements View.OnLongClickListener{
     @Override
     public boolean onLongClick(View v) {
         return false;
@@ -57,7 +57,7 @@ public  class addBuildingAdapter extends realmAdapter<addBuilding,addBuildingAda
 
 
     public static interface OnItemClickListener {
-        public void onItemClick(addBuilding addBuilding);
+        public void onItemClick(addBuildingRealm addBuilding);
     }
 
 
@@ -82,7 +82,7 @@ public  class addBuildingAdapter extends realmAdapter<addBuilding,addBuildingAda
 
     @Override
     public   void onBindViewHolder(final addBuildingAdapter.ViewHolder holder, final int position) {
-        final addBuilding item = getItem(position);
+        final addBuildingRealm item = getItem(position);
 
         holder.building_img.setImageResource(R.drawable.buildingiconbeforeclick);
         holder.locality.setText(item.getLocality());
@@ -113,7 +113,7 @@ public  class addBuildingAdapter extends realmAdapter<addBuilding,addBuildingAda
 
     }
 
-   /* public void setIcon(addBuilding item, addBuildingAdapter.ViewHolder holder) {
+   /* public void setIcon(addBuildingRealm item, addBuildingAdapter.ViewHolder holder) {
         if (Integer.parseInt( item.getRate_growth() ) < 0) {
 
             holder.RateIndicator.setImageResource( R.drawable.sort_down_red );
@@ -137,8 +137,8 @@ public  class addBuildingAdapter extends realmAdapter<addBuilding,addBuildingAda
         Realm myRealm= General.realmconfig( context );
         for(int i=0;i<ids.size();i++) {
             try {
-                addBuilding results = myRealm
-                        .where( addBuilding.class )
+                addBuildingRealm results = myRealm
+                        .where( addBuildingRealm.class )
                         .equalTo( "id", ids.get( i ) )
                         //.notEqualTo( "" )
 

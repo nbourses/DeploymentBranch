@@ -557,19 +557,10 @@ try {
             General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"");
         }
         else if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("PC")){
-            if (General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
 
-//                    General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
-                SignUpFragment signUpFragment = new SignUpFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("lastFragment", "clientDrawer");
-                loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup, "");
-                AppConstants.SIGNUP_FLAG = true;
-
-            }else {
                 General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
                 openAddListing();
-            }
+//            }
         }else{
             dbHelper.save(DatabaseConstants.userRole, "Client");
             General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
@@ -796,7 +787,7 @@ try {
 ////            Log.i(TAG,"insider4 "+c.getEmailId());
 //        }
 
-        Toast.makeText(this,String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)),Toast.LENGTH_LONG);
+       // Toast.makeText(this,String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)),Toast.LENGTH_LONG);
 
         if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) <= 0)
             hdroomsCount.setVisibility(View.GONE);
@@ -2228,7 +2219,7 @@ public void openAddListing(){
         fragmentTransaction.addToBackStack("card");
         fragmentTransaction.replace(R.id.card, addBuilding);
         fragmentTransaction.commitAllowingStateLoss();
-//        loadFragmentAnimated(addBuilding, null, R.id.card, "");
+//        loadFragmentAnimated(addBuildingRealm, null, R.id.card, "");
 
     }
 
@@ -2289,7 +2280,7 @@ public void openAddListing(){
         containerSignup.setClickable(false);
         card.setClickable(false);
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).saveBuiding(b_name);
-
+        hdroomsCount.setVisibility(View.GONE);
     }
 
     public void Reset(){

@@ -94,7 +94,7 @@ private TextView Cancel,back,usertext;
 //        adapter = new addBuildingAdapter(getContext(),1);
         /*listView1.setAdapter(adapter);
         realm = General.realmconfig(getContext());
-        adapter.setResults(realm.where(addBuilding.class).findAll());*/
+        adapter.setResults(realm.where(addBuildingRealm.class).findAll());*/
         add_b=(LinearLayout)v.findViewById(R.id.add_b);
         usertext=(TextView)v.findViewById(R.id.usertext);
         building_names= new ArrayList<>();
@@ -122,7 +122,7 @@ private TextView Cancel,back,usertext;
                     Log.i( "portfolio","onTextChanged  LL : "+cs );
 
                     usertext.setText("'"+cs+"'");
-                    /*adapter.setResults( realm.where(addBuilding.class) //implicit AND
+                    /*adapter.setResults( realm.where(addBuildingRealm.class) //implicit AND
                             .beginGroup()
                             .contains("Building_name", cs.toString(),false)
                             .endGroup()
@@ -256,7 +256,7 @@ private TextView Cancel,back,usertext;
 //        UserApiService userApiService = restAdapter.create(UserApiService.class);
 
 
-        /*userApiService.addBuilding(AddBuildingModel, new retrofit.Callback<JsonElement>() {*/
+        /*userApiService.addBuildingRealm(AddBuildingModel, new retrofit.Callback<JsonElement>() {*/
 
 
 
@@ -269,7 +269,7 @@ private TextView Cancel,back,usertext;
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
 
-                    Log.i("magic1","addBuilding success ");
+                    Log.i("magic1","addBuildingRealm success ");
 
 
 
@@ -285,15 +285,15 @@ private TextView Cancel,back,usertext;
 
 //                        JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
                         String errors = jsonResponse.getString("errors");
-                        Log.i("magic","addBuilding success response "+response);
-                        Log.i("magic","addBuilding success jsonResponse "+jsonResponse);
+                        Log.i("magic","addBuildingRealm success response "+response);
+                        Log.i("magic","addBuildingRealm success jsonResponse "+jsonResponse);
                         JSONArray buildings = new JSONArray(jsonResponse.getString("responseData"));
                         JSONObject ne = new JSONObject(k.toString());
 //                        General.setSharedPreferences(getContext(),AppConstants.token,ne.getString("token"));
 //                        setDealStatus3(getContext());
                         int size= buildings.length();
-                        Log.i("magic","addBuilding success ne "+ne);
-                        Log.i("magic","addBuilding success buildings "+size+"  "+buildings);
+                        Log.i("magic","addBuildingRealm success ne "+ne);
+                        Log.i("magic","addBuildingRealm success buildings "+size+"  "+buildings);
                         building_names.clear();
 //                        List<String> building_names = new ArrayList<String>();
                         for(int i=0;i<size;i++){
@@ -329,15 +329,15 @@ private TextView Cancel,back,usertext;
 
 //                        listView1.setAdapter(arrayAdapter);
 //                        JSONObject re = new JSONObject(jsonResponse.getString("responseData"));
-                        /*Log.i("magic","addBuilding success re data "+re);
-                        Log.i("magic","addBuilding success re "+re.length());*/
+                        /*Log.i("magic","addBuildingRealm success re data "+re);
+                        Log.i("magic","addBuildingRealm success re "+re.length());*/
 
 
 
                     }
                     catch (JSONException e) {
                         Log.e("TAG", e.getMessage());
-                        Log.i("magic","addBuilding Failed1 "+e.getMessage());
+                        Log.i("magic","addBuildingRealm Failed1 "+e.getMessage());
                     }
 
 
@@ -347,7 +347,7 @@ private TextView Cancel,back,usertext;
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Log.i("magic","addBuilding failed 2: "+error);
+                    Log.i("magic","addBuildingRealm failed 2: "+error);
                 }
             });
 

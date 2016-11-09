@@ -19,7 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
@@ -27,16 +26,17 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.activities.ClientMainActivity;
+import com.nbourses.oyeok.activities.MyPortfolioActivity;
 import com.nbourses.oyeok.activities.ProfileActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.AddListingBorker;
+import com.nbourses.oyeok.realmModels.addBuildingRealm;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -45,6 +45,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import io.realm.Realm;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -389,13 +390,13 @@ private void init(){
        addListingBorker.setProperty_type(General.getSharedPreferences(getContext(),AppConstants.PROPERTY));
        addListingBorker.setConfig(General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
        addListingBorker.setListing_date(myCalendar+"");
-       Log.i("AddListingBorker","myCalendar current date"+myCalendar);
+       Log.i("AddListingBorker","myCalendar current date"+General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
        addListingBorker.setLocality("mumbai");
        addListingBorker.setBuilding_name(General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
        addListingBorker.setPossession_date(txtcalendar.getText().toString());
        addListingBorker.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
        addListingBorker.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
-       addListingBorker.setUser_name("sushil");
+       addListingBorker.setUser_name(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
        Log.i("magic","username   : "+ General.getSharedPreferences(getContext(),AppConstants.NAME)+"  "+General.getSharedPreferences(getContext(),AppConstants.MOBILE_NUMBER));
        addListingBorker.setTt(tt);
 
@@ -417,8 +418,10 @@ private void init(){
 
            addListingBorker.setOr_psf(numberAsString);
        }
-
-       addListingBorker.setSublocality(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
+       if(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY) == "")
+       addListingBorker.setSublocality("Andheri west");
+       else
+           addListingBorker.setSublocality(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
        addListingBorker.setMobile("+918655201886");
 
 
@@ -431,41 +434,23 @@ private void init(){
            oyeokApiService.addListing(addListingBorker, new Callback<JsonElement>() {
                @Override
                public void success(JsonElement jsonElement, Response response) {
-
-                   Log.i("magic1","addBuilding success ");
-
-
-
-
-                   JsonObject k = jsonElement.getAsJsonObject();
-
-
                    try {
-                       /*String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
-//                        Log.e(TAG, "RETROFIT SUCCESS " + getPrice.getResponseData().getPrice().getLlMin().toString());
-
+                       String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                        JSONObject jsonResponse = new JSONObject(strResponse);
 
-                       JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
-
-                       Log.i("magic","addBuilding success response "+response);
-                       Log.i("magic","addBuilding success jsonResponse "+jsonResponse);*/
-
-                       JSONObject ne = new JSONObject(k.toString());
-//                        General.setSharedPreferences(getContext(),AppConstants.token,ne.getString("token"));
-//                        setDealStatus3(getContext());
-                        Log.i("magic","addBuilding success ne "+ne);
-//                        JSONObject re = new JSONObject(jsonResponse.getString("responseData"));
-                        /*Log.i("magic","addBuilding success re data "+re);
-                        Log.i("magic","addBuilding success re "+re.length());*/
-
-
+                       Log.i("magic","addBuildingRealm success "+jsonResponse.getJSONObject("responseData").getString("id"));
+                       AddBuildingDataToRealm(jsonResponse.getJSONObject("responseData").getString("id"));
+                   } catch (Exception e) {
 
                    }
-                   catch (JSONException e) {
-                       Log.e("TAG", e.getMessage());
-                       Log.i("magic","addBuilding Failed1 "+e.getMessage());
-                   }
+
+
+
+
+
+
+
+
 
 
 
@@ -474,7 +459,7 @@ private void init(){
 
                @Override
                public void failure(RetrofitError error) {
-                   Log.i("magic","addBuilding failed "+error);
+                   Log.i("magic","addBuildingRealm failed "+error);
                }
            });
 
@@ -494,6 +479,56 @@ private void init(){
 
 
 
+    public void AddBuildingDataToRealm(String id) {
+
+        Realm myRealm = General.realmconfig(getContext());
+        addBuildingRealm add_Building = new addBuildingRealm();
+        add_Building.setTimestamp(String.valueOf(System.currentTimeMillis()));
+        add_Building.setBuilding_name(General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
+        add_Building.setConfig(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG));
+        add_Building.setProperty_type(AppConstants.PROPERTY);
+        add_Building.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
+        add_Building.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
+        add_Building.setId(id);
+
+        if(tt.equalsIgnoreCase("rental")){
+            add_Building.setLl_pm(Integer.parseInt(numberAsString));
+
+            add_Building.setOr_psf(0);
+
+        }else{
+            add_Building.setLl_pm(0);
+
+            add_Building.setOr_psf(Integer.parseInt(numberAsString));
+        }
+
+        if(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY).equalsIgnoreCase(""))
+        {
+            Log.i("AddListingBorker","myCalendar current date  12"+General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
+
+            add_Building.setSublocality("Mumbai");
+
+        }
+        else {
+            Log.i("AddListingBorker","myCalendar current date  22 :"+General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
+
+            add_Building.setSublocality(General.getSharedPreferences(getContext(), AppConstants.BUILDING_LOCALITY));
+        }
+        Log.i("AddListingBorker","myCalendar current date"+add_Building.getSublocality());
+
+        myRealm.beginTransaction();
+        myRealm.copyToRealmOrUpdate(add_Building);
+//        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
+        myRealm.commitTransaction();
+
+        Intent in= new Intent(getContext(), MyPortfolioActivity.class);
+        in.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(in);
+
+    }
 
 private  void getprice()
  {

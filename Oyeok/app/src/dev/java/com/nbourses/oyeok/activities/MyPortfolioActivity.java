@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,10 +25,13 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
-import com.nbourses.oyeok.adapters.myPortfolioAdapter;
+import com.nbourses.oyeok.SignUp.SignUpFragment;
+import com.nbourses.oyeok.adapters.porfolioAdapter;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.models.portListingModel;
 import com.nbourses.oyeok.realmModels.MyPortfolioModel;
+import com.nbourses.oyeok.realmModels.addBuildingRealm;
 
 import java.util.ArrayList;
 
@@ -49,9 +51,21 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
     ViewPager viewPager;
     private Realm realm;
     ListView rental_list;
-    myPortfolioAdapter adapter;
+    MyPortfolioModel results;
+//    myPortfolioAdapter adapter;
+     porfolioAdapter adapter;
     ArrayList<String> ids =new ArrayList<>(  );
+    private static ArrayList<portListingModel> myPortfolioOR=new ArrayList<>();
+//    private static ArrayList<addBuildingRealm> addBuildingLL=new ArrayList<>();
+    private static ArrayList<portListingModel> myPortfolioLL=new ArrayList<>();
+    private static ArrayList<portListingModel> portListing=new ArrayList<>();
+    private static ArrayList<portListingModel> portListingCopy=new ArrayList<>();
+    private static ArrayList<portListingModel> addbuildingLL=new ArrayList<>();
+    private static ArrayList<portListingModel> addbuildingOR=new ArrayList<>();
+    private static ArrayList<portListingModel> deletelist=new ArrayList<>();
+
     RealmResults<MyPortfolioModel> results1;
+    RealmResults<addBuildingRealm> results2;
     EditText inputSearch;
     private String TT = "LL";
     LinearLayout add_build;
@@ -61,6 +75,23 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_my_portfolio );
 
+        if(portListing != null)
+            portListing.clear();
+        if(myPortfolioLL != null)
+            myPortfolioLL.clear();
+        if(myPortfolioOR != null)
+            myPortfolioOR.clear();
+        /*if(addbuildingLL != null)
+            addbuildingLL.clear();
+        if(addbuildingOR != null)
+            addbuildingOR.clear();*/
+        if(portListingCopy != null)
+            portListingCopy.clear();
+
+Log.i("port","portListing "+portListing);
+        Log.i("port","portListing "+portListing);
+        Log.i("port","myPortfolioLL "+myPortfolioLL);
+        Log.i("port","addbuildingLL "+addbuildingLL);
        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setActionBar(toolbar); only for above 21 API
         setSupportActionBar(toolbar);
@@ -77,16 +108,85 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         add_build.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"PC");
-                Intent in =new Intent(getBaseContext(),ClientMainActivity.class);
+                if (General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+
+//                    General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
+                    SignUpFragment signUpFragment = new SignUpFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("lastFragment", "clientDrawer");
+                    loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup1, "");
+                    AppConstants.SIGNUP_FLAG = true;
+
+                }else {
+                    General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
+                    Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
                 /*in.putExtra("data","portfolio");
                 in.putExtra("role","");*/
-                startActivity(in);
+                    startActivity(in);
+              }
 
             }
         });
 
-        adapter = new myPortfolioAdapter(this,1);
+         realm= General.realmconfig( getBaseContext() );
+         adapter=new porfolioAdapter(getBaseContext(),portListing);
+        rental_list.setAdapter(adapter);
+        RealmResults<MyPortfolioModel> results= realm.where(MyPortfolioModel.class).notEqualTo("ll_pm", 0).findAllSorted("timestamp",false);
+
+        for(MyPortfolioModel c :results){
+
+
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),null,c.getTransactions(),c.getConfig());
+
+            myPortfolioLL.add(portListingModel);
+
+
+        }
+
+
+        RealmResults<MyPortfolioModel> results1= realm.where(MyPortfolioModel.class).notEqualTo("or_psf", 0).findAllSorted("timestamp",false);
+        for(MyPortfolioModel c :results1){
+
+
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),null,c.getTransactions(),c.getConfig());
+
+            myPortfolioOR.add(portListingModel);
+
+
+        }
+
+        RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).findAllSorted("timestamp",false);
+        for(addBuildingRealm c :result1){
+
+Log.i("getLocality","getLocality   : "+c.getLocality());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),null,c.getLl_pm(),0,null,null,c.getConfig());
+
+            addbuildingLL.add(portListingModel);
+
+
+        }
+
+        RealmResults<addBuildingRealm> result2= realm.where(addBuildingRealm.class).findAllSorted("timestamp",false);
+        for(addBuildingRealm c :result2){
+
+
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),null,0,c.getOr_psf(),null,null,c.getConfig());
+
+            addbuildingOR.add(portListingModel);
+
+
+        }
+
+        Log.i("dataritesh","myPortfolioLL"+myPortfolioLL);
+        portListing.addAll(addbuildingLL);
+        portListing.addAll(myPortfolioLL);
+        portListingCopy.addAll(portListing);
+
+        adapter.notifyDataSetChanged();
+        Log.i("dataritesh","myPortfolioLL"+portListing);
+//        portListing.addAll(myPortfolioLL);
+
+       /* adapter = new myPortfolioAdapter(this,1);
         rental_list.setAdapter(adapter);
         rental_list.setOnItemClickListener( new AdapterView.OnItemClickListener() {
             @Override
@@ -94,7 +194,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
                 Log.i( "portfolio1","onItemClick   : "+parent+" "+position+" "+id);
 
             }
-        } );
+        } );*/
 
                 rental_list.setChoiceMode( ListView.CHOICE_MODE_MULTIPLE_MODAL);
                    rental_list.setMultiChoiceModeListener( new AbsListView.MultiChoiceModeListener() {
@@ -104,8 +204,11 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
                         mode.setTitle(rental_list.getCheckedItemCount() + " Selected");
 
 
-                        Log.i( "portfolio1","onItemCheckedStateChanged   : "+position+" "+id);
-                        ids.add(adapter.getItem(position).getId());
+                        Log.i( "portfolio1","onItemCheckedStateChanged   : "+position+" "+id+" "+portListing.contains(adapter.getItem(position)));
+//                        portListing.contains(adapter.getItem(position));
+//                        ids.add(adapter.getItem(position));
+
+                        deletelist.add((portListingModel) adapter.getItem(position));
 
                     }
 
@@ -124,7 +227,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
 
                     @Override
                     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                        if (item.getItemId() == R.id.delete){
+                        /*if (item.getItemId() == R.id.delete){
                                 adapter.removeSelection(ids);
                             ids.clear();
                             mode.finish();
@@ -133,6 +236,63 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
                               for (int i=0;i<adapter.getCount();i++) {
                                   ids.add( adapter.getItem( position ).getId() );
                               }
+
+                        }*/
+                        if (item.getItemId() == R.id.delete){
+
+                            for (final portListingModel d : deletelist) {
+                                // Here your room is available
+                                Log.i("portfolio1","deletelist"+portListing.contains(d)+" "+d.getName());
+                                Log.i("addbuildingOR","addbuildingOR 1"+addbuildingOR.contains(d));
+                                portListing.remove(d);
+                                myPortfolioLL.remove(d);
+                                myPortfolioOR.remove(d);
+                                addbuildingOR.remove(d);
+                                addbuildingLL.remove(d);
+
+                                Log.i("addbuildingOR","addbuildingOR 2"+addbuildingOR);
+
+
+                                try {
+                                    Realm myRealm = General.realmconfig(MyPortfolioActivity.this);
+                                    MyPortfolioModel result = myRealm.where(MyPortfolioModel.class).equalTo("id", d.getId()).findFirst();
+                                    if(myRealm.isInTransaction())
+                                        myRealm.cancelTransaction();
+                                    myRealm.beginTransaction();
+                                    result.removeFromRealm();
+                                    myRealm.commitTransaction();
+                                } catch (Exception e) {
+                                    Log.i("TAG", "caught in exception deleting default droom 21 "+e);
+                                }
+                                try {
+                                    Realm myRealm = General.realmconfig(MyPortfolioActivity.this);
+                                    addBuildingRealm result = myRealm.where(addBuildingRealm.class).equalTo("id", d.getId()).findFirst();
+                               if(myRealm.isInTransaction())
+                                myRealm.cancelTransaction();
+                                    myRealm.beginTransaction();
+                                    result.removeFromRealm();
+                                    myRealm.commitTransaction();
+                                } catch (Exception e) {
+                                    Log.i("TAG", "caught in exception deleting default droom 31 "+e);
+                                }
+
+
+
+
+                            }
+                            mode.finish();
+                            adapter.notifyDataSetChanged();
+                            return true;
+
+                            /*for(deletelist.size()
+                            adapter.removeSelection(ids);
+                            ids.clear();
+                            mode.finish();
+                            return true;
+                        }else{
+                            for (int i=0;i<adapter.getCount();i++) {
+                                ids.add( adapter.getItem( position ).getId() );
+                            }*/
 
                         }
 
@@ -146,11 +306,12 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
        });
 
 
-        realm = General.realmconfig(this);
+
+
+        /*realm = General.realmconfig(this);
         adapter.setResults(realm.where(MyPortfolioModel.class).greaterThan( "ll_pm",0 ).findAll());
 
-
-        inputSearch.addTextChangedListener(new TextWatcher() {
+  inputSearch.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
@@ -190,6 +351,82 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         });
 
 
+        inputSearch.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                if(TT=="LL"){
+                    Log.i( "portfolio","onTextChanged  LL : "+cs );
+                adapter.setResults( realm.where(MyPortfolioModel.class)
+                        .greaterThan("ll_pm", 0)  //implicit AND
+                        .beginGroup()
+                        .contains("name", cs.toString(),false)
+                        .endGroup()
+                        .findAll() );
+                }else{
+
+                    adapter.setResults( realm.where(MyPortfolioModel.class)
+                            .greaterThan("or_psf", 0)  //implicit AND
+                            .beginGroup()
+                            .contains("name", cs.toString(),false)
+                            .endGroup()
+                            .findAll() );
+                    Log.i( "portfolio","onTextChanged  LL : ");
+
+                }
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                          int arg3) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // TODO Auto-generated method stub
+            }
+        });*/
+
+inputSearch.addTextChangedListener(new TextWatcher() {
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        String searchQuery = s.toString().trim();
+        Log.i("searcho","s "+searchQuery.length());
+        Log.i("searcho","sb "+portListingCopy);
+       if(portListing != null)
+           portListing.clear();
+        portListing.addAll(portListingCopy);
+        for(portListingModel c :portListingCopy){
+            if(!c.getName().toLowerCase().contains(searchQuery.toLowerCase())){
+                portListing.remove(c);
+            }
+            adapter.notifyDataSetChanged();
+
+
+
+
+
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+          /*if(portListing != null)
+              portListing.clear();
+              portListing.addAll(portListingCopy);*/
+    }
+});
+
 
 }
 
@@ -204,6 +441,14 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
 
     @Override
     public void onBackPressed() {
+       if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+           Intent in = new Intent(getBaseContext(),BrokerMainActivity.class);
+           in.addFlags(
+                   Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                           Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                           Intent.FLAG_ACTIVITY_NEW_TASK);
+           startActivity(in);
+       } else
         super.onBackPressed();
     }
 
@@ -212,7 +457,24 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
 
     @Override
     public void onPositionSelected(int position, int count) {
-        if(position == 0) {
+        inputSearch.setText("");
+        if(position==0){
+            portListing.clear();
+            portListing.addAll(addbuildingLL);
+            portListing.addAll(myPortfolioLL);
+            adapter.notifyDataSetChanged();
+        }else{
+            Log.i("addbuildingOR","addbuildingOR 3"+addbuildingOR);
+            portListing.clear();
+            portListing.addAll(addbuildingOR);
+            portListing.addAll(myPortfolioOR);
+            adapter.notifyDataSetChanged();
+        }
+
+
+
+
+       /* if(position == 0) {
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
             TT = "LL";
 
@@ -229,14 +491,14 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
             adapter = new myPortfolioAdapter(this,2);
             rental_list.setAdapter(adapter);
             adapter.setResults(realm.where(MyPortfolioModel.class).notEqualTo("or_psf", 0).findAll());
-        }
+        }*/
 
     }
 
 
 
 
-    private void loadFragment(Fragment fragment, Bundle args, int containerId, String title)
+    /*private void loadFragment(Fragment fragment, Bundle args, int containerId, String title)
     {
         fragment.setArguments(args);
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -245,7 +507,20 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  loadFragment client "+getFragmentManager().getBackStackEntryCount());
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
+    }*/
+
+    private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
     }
+
+
+
 
 }
 

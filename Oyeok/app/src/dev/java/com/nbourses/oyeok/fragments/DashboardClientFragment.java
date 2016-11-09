@@ -100,6 +100,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
+import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.activities.MyPortfolioActivity;
 import com.nbourses.oyeok.activities.ProfileActivity;
@@ -110,7 +111,7 @@ import com.nbourses.oyeok.models.AddBuildingModel;
 import com.nbourses.oyeok.realmModels.Favourites;
 import com.nbourses.oyeok.realmModels.LatiLongi;
 import com.nbourses.oyeok.realmModels.MyPortfolioModel;
-import com.nbourses.oyeok.realmModels.addBuilding;
+import com.nbourses.oyeok.realmModels.addBuildingRealm;
 import com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
@@ -881,7 +882,17 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         addbuilding.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ClientMainActivity)getActivity()).openAddListing();
+                if (General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+//                    General.setSharedPreferences(getContext(), AppConstants.ROLE_OF_USER, "client");
+                    SignUpFragment signUpFragment = new SignUpFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("lastFragment", "clientDrawer");
+                    loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup, "");
+                    AppConstants.SIGNUP_FLAG = true;
+
+                }else {
+                    ((ClientMainActivity)getActivity()).openAddListing();
+                }
             }
         } );
         if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
@@ -4642,6 +4653,7 @@ favOText.getText()*/
             myPortfolioModel.setRate_growth( rate_growth[INDEX] );
             myPortfolioModel.setTransactions( transaction[INDEX] );
             myPortfolioModel.setLocality( SharedPrefs.getString( getContext(), SharedPrefs.MY_LOCALITY ) );
+            myPortfolioModel.setTimestamp(String.valueOf(System.currentTimeMillis()));
             myRealm.beginTransaction();
             myRealm.copyToRealmOrUpdate( myPortfolioModel );
 //        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
@@ -4704,17 +4716,18 @@ favOText.getText()*/
     }
 
 
-    public void AddBuildingDataToRealm(){
+    public void AddBuildingDataToRealm(String id){
 
         Realm myRealm = General.realmconfig( getContext());
-        addBuilding add_Building = new addBuilding();
+        addBuildingRealm add_Building = new addBuildingRealm();
         add_Building.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
         add_Building.setBuilding_name(B_name);
         add_Building.setConfig(General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
         add_Building.setProperty_type(AppConstants.PROPERTY);
         add_Building.setLat( lat + "" );
         add_Building.setLng( lng + "" );
-        add_Building.setLocality( SharedPrefs.getString( getContext(), SharedPrefs.MY_LOCALITY ) );
+        add_Building.setId(id);
+        add_Building.setSublocality( SharedPrefs.getString( getContext(), SharedPrefs.MY_LOCALITY ) );
         myRealm.beginTransaction();
         myRealm.copyToRealmOrUpdate(add_Building);
 //        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
@@ -4751,13 +4764,14 @@ favOText.getText()*/
         addBuildingModel.setLng(lng+"");
         addBuildingModel.setLocality(SharedPrefs.getString( getContext(), SharedPrefs.MY_LOCALITY ));
         addBuildingModel.setUser_role(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
+        addBuildingModel.setUser_id("sushil");
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_103).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
 //        UserApiService userApiService = restAdapter.create(UserApiService.class);
 
 
-        /*userApiService.addBuilding(AddBuildingModel, new retrofit.Callback<JsonElement>() {*/
+        /*userApiService.addBuildingRealm(AddBuildingModel, new retrofit.Callback<JsonElement>() {*/
 
 
 
@@ -4770,27 +4784,35 @@ favOText.getText()*/
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
 
-                    Log.i("magic","addBuilding success ");
+                    Log.i("magic","addBuildingRealm success ");
 
 
+                    try {
+                    String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+                    JSONObject jsonResponse = new JSONObject(strResponse);
 
-                    JsonObject k = jsonElement.getAsJsonObject();
-                    AddBuildingDataToRealm();
+                        Log.i("magic","addBuildingRealm success "+jsonResponse.getJSONObject("responseData").getString("id"));
+                        AddBuildingDataToRealm(jsonResponse.getJSONObject("responseData").getString("id"));
+                    } catch (Exception e) {
+
+                    }
+
                    /* try {
 
-                        Log.i("magic","addBuilding success response "+response);
+                        Log.i("magic","addBuildingRealm success response "+response);
 
+                    Log.i("magic","addBuildingRealm success ");
 
                         JSONObject ne = new JSONObject(k.toString());
                         General.setSharedPreferences(getContext(),AppConstants.token,ne.getString("token"));
                         setDealStatus3(getContext());
-                        Log.i("magic","addBuilding success ne "+ne);
+                        Log.i("magic","addBuildingRealm success ne "+ne);
 
 
                     }
                     catch (JSONException e) {
                         Log.e("TAG", e.getMessage());
-                        Log.i("magic","addBuilding Failed "+e.getMessage());
+                        Log.i("magic","addBuildingRealm Failed "+e.getMessage());
                     }*/
 
 
@@ -4800,7 +4822,7 @@ favOText.getText()*/
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Log.i("magic","addBuilding failed "+error);
+                    Log.i("magic","addBuildingRealm failed "+error);
                 }
             });
 

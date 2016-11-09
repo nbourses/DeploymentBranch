@@ -23,6 +23,16 @@ public class MyPortfolioModel extends RealmObject {
     private  String rate_growth;
     private  String listing;
     private  String portals;
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    private  String timestamp;
     private  String transactions;
     private String  locality;
 
@@ -74,8 +84,6 @@ public class MyPortfolioModel extends RealmObject {
         this.config = config;
     }
 
-
-
     public String getLat() {
         return lat;
     }
@@ -103,7 +111,6 @@ public class MyPortfolioModel extends RealmObject {
     public String getListing() {
         return listing;
     }
-
     public void setListing(String listing) {
         this.listing = listing;
     }
@@ -127,3 +134,42 @@ public class MyPortfolioModel extends RealmObject {
 
 
 
+
+
+   /* private String Timestamp;
+    private String property_type;
+    private String config;
+    private String Building_name;
+    private String locality;
+    private String lat;
+    private String lng;
+
+    private String sublocality;
+    private String listing_date;
+    private String tt;
+    private String ll_pm;
+    private String or_psf;
+    private String possession_date;*/
+
+
+/*
+
+1.      Building
+        2.      Lat
+        3.      Long
+        4.      Locality
+        5.      sublocality,
+        6.      config,
+        7.      listing_date
+        8.     listing_by
+        9.     req_avl
+        10.  tt
+        11.  ll_pm
+        12.  or_psf
+        13.    possession_date
+        14.  google_place_id
+        15.  user_name
+        16.  mobile
+        17.  price_per_sqft
+        18.  price_per_req
+        19.  property_type*/
