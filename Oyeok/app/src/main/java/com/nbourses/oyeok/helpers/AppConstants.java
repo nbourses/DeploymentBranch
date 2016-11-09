@@ -199,6 +199,9 @@ public class AppConstants {
 
     public static final String ROLE_GAMER = "game";
     public static final String CALLING_ACTIVITY = "calling_activity";
+    public static  String BROKER_BASE_REGION = "false";
+    public static final String MY_BASE_LOCATION = "";
+
 
 
 }

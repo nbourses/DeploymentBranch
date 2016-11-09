@@ -197,9 +197,6 @@ GoogleMap map;
         Log.i("uas","yo man 96");
 
 
-
-
-
         ButterKnife.bind(this);
 
         tv_change_region=(TextView) findViewById(R.id.tv_change_region);
@@ -207,7 +204,12 @@ GoogleMap map;
 
         tv_change_region.setVisibility(View.VISIBLE);
         try {
+            if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
             tv_change_region.setText(SharedPrefs.getString(this, SharedPrefs.MY_LOCALITY));
+            else {
+                AppConstants.BROKER_BASE_REGION="true";
+                tv_change_region.setText(General.getSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LOCATION));
+            }
         }catch(Exception e){
 
         }
@@ -291,7 +293,8 @@ GoogleMap map;
 
                     if (key.equals(AppConstants.EMAIL)) {
                         emailTxt.setText(General.getSharedPreferences(BrokerMainActivity.this,AppConstants.EMAIL));
-                    }
+                    }else if (key.equals(AppConstants.MY_BASE_LOCATION)) {
+                        tv_change_region.setText(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION));                    }
                 }
 
 
@@ -421,8 +424,12 @@ GoogleMap map;
                 General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"BC");
                 Intent intent = new Intent(getBaseContext(),ClientMainActivity.class);
 //                intent.putExtra("role","broker");
-//                intent.putExtra("data","");
+                /*if(AppConstants.BROKER_BASE_REGION.equalsIgnoreCase("false"))
+                intent.putExtra("setBaseRegion","true");*/
+
                 startActivity(intent);
+                /*Intent intent1 = new Intent(AppConstants.SETLOCN);
+                LocalBroadcastManager.getInstance(BrokerMainActivity.this).sendBroadcast(intent1);*/
 
                /*BrokerMap brokerMap=new BrokerMap();
                 DashboardClientFragment dashboardClientFragment=new DashboardClientFragment();

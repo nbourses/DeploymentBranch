@@ -217,6 +217,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private BitmapDescriptor iconOther;
     private Drawable sort_down_black,sort_down_red,sort_up_black,sort_up_green,comman_icon;
 
+    private String setBaseRegion;
 
     long then;
     long now;
@@ -477,6 +478,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private BroadcastReceiver setLocation = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.i(TAG,"broadcast reciever here ");
             AppConstants.SETLOCATION = true;
             ((ClientMainActivity)getActivity()).disEnDealsbtn(false);
             showHidepanel(false);
@@ -588,6 +590,10 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
+        try {
+            setBaseRegion = getArguments().getString("setBaseRegion");
+            Log.i(TAG,"setBaseRegion "+setBaseRegion);
+        }catch(Exception e){}
 
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
@@ -1772,6 +1778,28 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
             }
         });*/
 
+
+/*if(setBaseRegion == "true"){
+
+
+    new CountDownTimer(200, 50) {
+
+        public void onTick(long millisUntilFinished) {
+
+
+        }
+
+        public void onFinish() {
+
+            setLocation11();
+
+
+        }
+    }.start();
+
+}*/
+
+
     }
 
 
@@ -1992,8 +2020,14 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
         }else if(txtFilterValue.getText().toString().equalsIgnoreCase("done")){
             Log.i("user_role","role of user");
             if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-                addlistinglayout.setVisibility(View.VISIBLE);
-                txtFilterValue.setText(General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
+                if(AppConstants.BROKER_BASE_REGION.equalsIgnoreCase("false")) {
+                   General.setSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION,SharedPrefs.getString(getContext(),SharedPrefs.MY_LOCALITY));
+                    AppConstants.BROKER_BASE_REGION="true";
+                    ((ClientMainActivity) getActivity()).Reset();
+                }else {
+                    addlistinglayout.setVisibility(View.VISIBLE);
+                    txtFilterValue.setText(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG));
+                }
             }else {
                 Addbuilding();
                 ((ClientMainActivity) getActivity()).Reset();
@@ -2191,13 +2225,10 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
 
 
     public void getPrice() {
-
         //getRegion();
-
         if(General.isNetworkAvailable(getContext())) {
            if (!AppConstants.SETLOCATION && !savebuilding) {
             General.slowInternet(getContext());
-
             MarkerClickEnable = true;
             mVisits.setEnabled(false);
             disablepanel(false);
@@ -2205,7 +2236,6 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
             CancelAnimation();
             User user = new User();
             Log.i(TAG, "get price prepaaration locality " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
-
             user.setDeviceId(General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
             Log.i("PREOK", "getcontext " + General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
             user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
@@ -2224,13 +2254,10 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
             user.setPincode("400058");
             if (General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
                 user.setUserId(General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
-
             } else {
                 user.setUserId(General.getSharedPreferences(getContext(), AppConstants.USER_ID));
                 Log.i(TAG, "user_id " + General.getSharedPreferences(getContext(), AppConstants.USER_ID));
             }
-
-
                 tv_building.setVisibility(View.INVISIBLE);
                 horizontalPicker.setVisibility(View.GONE);
                 tvRate.setVisibility(View.GONE);
@@ -2240,18 +2267,12 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 tvFetchingrates.setTextSize(15);
                 RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_TEST_102).build();
                 restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-
                 UserApiService userApiService = restAdapter.create(UserApiService.class);
-
-
                 userApiService.getPrice(user, new retrofit.Callback<JsonElement>() {
-
                     @Override
                     public void success(JsonElement jsonElement, Response response) {
-                        if (!AppConstants.SETLOCATION) {
-
+                        if (!AppConstants.SETLOCATION||!savebuilding) {
                             try {
-
                                 General.slowInternetFlag = false;
                                 General.t.interrupt();
                                 String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
@@ -2456,6 +2477,9 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
 
         }
     }
+
+
+
 
     // map.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener));
 
@@ -4817,6 +4841,30 @@ public void resetSeekBar(){
 
 }
 
+    public void setLocation11(){
+        Log.i(TAG,"set base region 7");
+
+        savebuilding=true;
+//        AppConstants.SETLOCATION=true;
+        map.clear();
+        new LocationUpdater().execute();
+        horizontalPicker.setVisibility(View.GONE);
+        rupeesymbol.setVisibility(View.GONE);
+        tvRate.setVisibility(View.GONE);
+        txtFilterValue.setText("SAVE");
+        txt_info.setText("Find Your Location on Map & Save");
+        tv_building.setText(fullAddress);
+        tvFetchingrates.setVisibility(View.VISIBLE);
+        txt_info.setVisibility(View.VISIBLE);
+        CallButton.setVisibility(View.GONE);
+        addbuilding.setVisibility(View.GONE);
+        mPhasedSeekBar.setVisibility(View.GONE);
+        dispProperty.setVisibility(View.GONE);
+
+        String txt;
+        txt="<font color=#2dc4b6><big>Drag & Save Base Location</big></font>";
+        tvFetchingrates.setText(Html.fromHtml(txt));
+    }
 
 
 
