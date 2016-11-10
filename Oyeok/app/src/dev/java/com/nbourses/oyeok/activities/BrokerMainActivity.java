@@ -675,6 +675,14 @@ GoogleMap map;
 
             loadFragment(shareOwnersNo, null, R.id.container_sign, "");
             Owner_detail=true;
+        }else if(itemTitle.equals(getString(R.string.MyPortfolio))){
+            Log.i("myWatchList","itemTitle 1 "+itemTitle + R.string.MyPortfolio);
+            Intent intent =new Intent( this,MyPortfolioActivity.class );
+            startActivity(intent);
+            /*My_portfolio my_portfolio = new My_portfolio();
+            loadFragment(my_portfolio, null, R.id.container_Signup, "");
+            Myportfolio=true;*/
+
         }
 
 

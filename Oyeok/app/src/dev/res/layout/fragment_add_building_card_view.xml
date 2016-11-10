@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -25,7 +26,7 @@
                 android:textStyle="bold"
                 android:textSize="20dip"
                 android:layout_marginLeft="10dp"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:foregroundGravity="center_horizontal|center_vertical"
                 android:gravity="center"
                 android:id="@+id/CardTitle"/>
@@ -67,11 +68,27 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:orientation="vertical">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="Step 1 : "/>
+    <ImageView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_gravity="center"
+        android:src="@drawable/check_mark_black" />
 
+</LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dip"
+                android:layout_height="35dip"
                 android:orientation="horizontal"
                 android:gravity="center_horizontal"
                 android:id="@+id/linearLayout7">
@@ -209,13 +226,28 @@
             android:layout_height="0dip"
             android:layout_weight="0.5"
             android:gravity="center_horizontal"
-            android:layout_margin="4dp"
             android:orientation="vertical">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dip"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:text="Step 2:  "/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:text="Set your BHK type. "/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
                 android:id="@+id/linearLayout9">
@@ -442,13 +474,33 @@
             android:gravity="center"
             android:background="@color/greenish_blue"
             android:layout_margin="6dp"
+            android:id="@+id/next"
+            android:orientation="horizontal"
            >
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:id="@+id/next"
-                android:text="Next"/>
+                android:id="@+id/prop"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:text="Home "/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:id="@+id/conf"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:text="(2BHK) "/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:id="@+id/next1"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:text="Next >>"/>
 
 
         </LinearLayout>

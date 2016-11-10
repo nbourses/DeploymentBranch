@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -32,8 +33,9 @@ public class AddListing extends Fragment {
     View v;
     private Button rk1,bhk1,bhk1_5,bhk2,bhk2_5,bhk3,bhk3_5,bhk4,bhk4_5,bhk5,bhk5_5,bhk6;
     private RadioGroup radioGroup1;
-    TextView selected_config,home,office,shop,industry,next,Cancel_add_building,b_type,area;
+    TextView selected_config,home,office,shop,industry,next1,Cancel_add_building,b_type,area,conf;
     private String Property;
+    LinearLayout next;
     HorizontalScrollView hsl;
     String approx_area;
 
@@ -64,7 +66,7 @@ public class AddListing extends Fragment {
         bhk5=(Button) v.findViewById( R.id.bhk5 );
         bhk5_5=(Button) v.findViewById( R.id.bhk5_5 );
         bhk6=(Button) v.findViewById( R.id.bhk6 );
-
+        conf=(TextView)v.findViewById(R.id.conf);
         b_type=(TextView)v.findViewById(R.id.b_type);
 
         radioGroup1 = (RadioGroup) v.findViewById(R.id.radioGroup1);
@@ -155,7 +157,7 @@ public class AddListing extends Fragment {
 //        home.setPressed(true);
 
 
-        next=(TextView) v.findViewById(R.id.next);
+        next=(LinearLayout) v.findViewById(R.id.next);
         Cancel_add_building=(TextView) v.findViewById(R.id.Cancel_add_building);
 
 
@@ -191,6 +193,8 @@ public class AddListing extends Fragment {
                         General.setSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG,"1 RK");
                         area.setText("300 sq.ft.");
                         approx_area="300";
+                        conf.setText(selected_config.getText());
+
                         break;
                     case R.id.bhk1:
                         selected_config.setText( "1 BHK" );
@@ -198,6 +202,8 @@ public class AddListing extends Fragment {
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1 BHK");
                         area.setText("600 sq.ft.");
                         approx_area="600";
+                        conf.setText(selected_config.getText());
+
                         break;
                     case R.id.bhk1_5:
                         selected_config.setText( "1.5 BHK" );
@@ -205,6 +211,8 @@ public class AddListing extends Fragment {
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1.5 BHK");
                         area.setText("800 sq.ft.");
                         approx_area="800";
+                        conf.setText(selected_config.getText());
+
 
                         break;
                     case R.id.bhk2:
@@ -213,6 +221,7 @@ public class AddListing extends Fragment {
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2 BHK");
                         area.setText("950 sq.ft.");
                         approx_area="950";
+                        conf.setText(selected_config.getText());
 
                         break;
                     case R.id.bhk2_5:
@@ -222,6 +231,7 @@ public class AddListing extends Fragment {
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2.5 BHK");
                         area.setText("1300 sq.ft.");
                         approx_area="1300";
+                        conf.setText(selected_config.getText());
 
                         break;
                     case R.id.bhk3:
@@ -230,6 +240,7 @@ public class AddListing extends Fragment {
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"3 BHK");
                         area.setText("1600 sq.ft.");
                         approx_area="1600";
+                        conf.setText(selected_config.getText());
 
                         break;
                     case R.id.bhk3_5:
@@ -238,6 +249,8 @@ public class AddListing extends Fragment {
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"3.5 BHK");
                         area.setText("1800 sq.ft.");
                         approx_area="1800";
+                        conf.setText(selected_config.getText());
+
 
                         break;
                     case R.id.bhk4:
@@ -246,6 +259,7 @@ public class AddListing extends Fragment {
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"4 BHK");
                         approx_area="2100";
                         area.setText("2100 sq.ft.");
+                        conf.setText(selected_config.getText());
 
                         break;
                     case R.id.bhk4_5:
@@ -254,6 +268,7 @@ public class AddListing extends Fragment {
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"4.5 BHK");
                         area.setText("2300 sq.ft.");
                         approx_area="2300";
+                        conf.setText(selected_config.getText());
 
                         break;
                     case R.id.bhk5:
@@ -262,6 +277,7 @@ public class AddListing extends Fragment {
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"5 BHK");
                         area.setText("2500 sq.ft.");
                         approx_area="2500";
+                        conf.setText(selected_config.getText());
 
                         break;
                     case R.id.bhk5_5:
@@ -270,6 +286,7 @@ public class AddListing extends Fragment {
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"5.5 BHK");
                         area.setText("2700 sq.ft.");
                         approx_area="2700";
+                        conf.setText(selected_config.getText());
 
                         break;
                     case R.id.bhk6:
@@ -278,6 +295,7 @@ public class AddListing extends Fragment {
                         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"6 BHK");
                         area.setText("2900 sq.ft.");
                         approx_area="2900";
+                        conf.setText(selected_config.getText());
 
                         break;
                     default:

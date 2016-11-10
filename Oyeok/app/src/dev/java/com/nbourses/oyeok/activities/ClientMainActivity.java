@@ -588,7 +588,7 @@ try {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
+        Log.i("kabali","kabali role : "+General.getSharedPreferences(this, AppConstants.ROLE_OF_USER));
         ShortcutBadger.removeCount(this);
         Log.i(TAG,"popup window shown 1 ");
         Log.i(TAG,"popup window shown 5 ");
@@ -738,6 +738,7 @@ try {
 //        }
 
 
+        Log.i("kabali","kabali HDROOMS_COUNT_UV :  "+General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV)+"     "+General.getBadgeCount(this, AppConstants.HDROOMS_COUNT));
 
         if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0){
             hdroomsCount.setVisibility(View.VISIBLE);

@@ -81,6 +81,7 @@
         <!--<item>@string/signup</item>-->
         <item>@string/RegisterSignIn</item>
         <item>@string/useAsClient</item>
+        <item>@string/MyPortfolio</item>
         <item>@string/notifications</item>
         <item>@string/shareApp</item>
         <!--  <item>@string/supportChat</item> -->
@@ -123,7 +124,7 @@
     <string-array name="nav_drawer_labels_signup_broker">
         <item>@string/profile</item>
         <!--<item>@string/brokerOk</item>-->
-
+        <item>@string/MyPortfolio</item>
         <!--  <item>@string/supportChat</item> -->
         <item>@string/notifications</item>
         <item>@string/shareApp</item>

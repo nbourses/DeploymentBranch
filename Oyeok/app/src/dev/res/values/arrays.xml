@@ -309,6 +309,7 @@
         <item>@drawable/profile</item>
         <!--<item>@string/brokerOk</item>-->
         <!--<item>@drawable/portfolio</item>-->
+        <item>@drawable/portfolio</item>
         <item>@drawable/notifications</item>
         <item>@drawable/shareapp</item>
         <!--  <item>@string/supportChat</item> -->
@@ -316,7 +317,7 @@
         <item>@drawable/facebook</item>
         <item>@drawable/aboutus</item>
         <item>@drawable/setting1</item>
-        <item>@drawable/client</item>
+        <!--<item>@drawable/client</item>-->
         <!--   <item>@string/updateProfile</item> -->
     </integer-array>
 
@@ -333,7 +334,7 @@
         <item>@drawable/facebook</item>
         <item>@drawable/aboutus</item>
         <item>@drawable/setting1</item>
-        <item>@drawable/client</item>
+        <!--<item>@drawable/client</item>-->
 
         <!--   <item>@string/updateProfile</item> -->
 
@@ -362,6 +363,7 @@
         <!--<item>@string/signup</item>-->
         <item>@drawable/profile</item>
         <item>@drawable/client</item>
+        <item>@drawable/portfolio</item>
         <item>@drawable/notifications</item>
         <item>@drawable/shareapp</item>
         <!--  <item>@string/supportChat</item> -->

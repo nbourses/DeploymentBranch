@@ -1512,6 +1512,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             .text("Rental Deals Type set")
                             .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
+            Log.i("kabali","kabali role bata : "+General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER));
             if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0) {
                 if(General.getSharedPreferences(this,AppConstants.Card_TT).equalsIgnoreCase("LL")) {
                     General.setBadgeCount(this, AppConstants.HDROOMS_COUNT_UV, 0);

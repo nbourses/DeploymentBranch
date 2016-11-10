@@ -1570,7 +1570,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
         slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
         slideDown = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down);
         bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
-        bounce.setAnimationListener(new Animation.AnimationListener() {
+        /*bounce.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
@@ -1586,7 +1586,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
             public void onAnimationRepeat(Animation animation) {
 
             }
-        });
+        });*/
         home = (Button) rootView.findViewById(R.id.home);
         shop = (Button) rootView.findViewById(R.id.shop);
         industrial = (Button) rootView.findViewById(R.id.industrial);
@@ -2025,7 +2025,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
             OnOyeClick();
         }
         if(txtFilterValue.getText().toString().equalsIgnoreCase("save")){
-            map.addMarker(new MarkerOptions().icon(iconHome).position(new LatLng(lat,lng)));
+            map.addMarker(new MarkerOptions().icon(iconOffice).position(new LatLng(lat,lng)));
             txtFilterValue.setText("done");
             txt_info.setText("Is this Location Correct ? press Done");
         }else if(txtFilterValue.getText().toString().equalsIgnoreCase("done")){
@@ -4626,7 +4626,7 @@ favOText.getText()*/
                 else if(c.getTitle().equalsIgnoreCase("My office"))
                     favIcon = iconOffice;
                 else
-                    favIcon = iconOther;
+                    favIcon = iconOffice;
                 Marker marker = map.addMarker(new MarkerOptions()
                         .position(new LatLng(c.getLatiLongi().getLat(), c.getLatiLongi().getLng()))
                         .title(c.getTitle())
@@ -4760,7 +4760,7 @@ favOText.getText()*/
 
 //        Realm myRealm = General.realmconfig(getContext());
         Favourites favourites = new Favourites();
-        favourites.setTitle("My home");
+        favourites.setTitle(B_name);
         favourites.setAddress(favAdrs.getText().toString());
         LatiLongi latlon = new LatiLongi();
         latlon.setLat(Double.parseDouble(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT)));
