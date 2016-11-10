@@ -45,8 +45,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 
 public class AddBuilding extends Fragment {
 
@@ -305,7 +303,7 @@ private TextView Cancel,back,usertext;
                             building_names.add(new loadBuildingDataModel(j.getString("name"),lat,longi,j.getString("id")));
 
                         }
-                        adapter= new searchBuilding(building_names,getApplicationContext());
+                        adapter= new searchBuilding(building_names,getContext());
                         listView1.setAdapter(adapter);
                         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
