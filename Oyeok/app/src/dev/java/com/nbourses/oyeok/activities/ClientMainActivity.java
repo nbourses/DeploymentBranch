@@ -738,8 +738,8 @@ try {
 //        }
 
 
-
-        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0){
+Log.i(TAG,"rolewa "+BrokerRole + " "+General.getSharedPreferences(this,AppConstants.ROLE_OF_USER));
+        if (!General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker") && (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0)){
             hdroomsCount.setVisibility(View.VISIBLE);
         hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV)));
         }
@@ -1945,6 +1945,7 @@ Log.i(TAG,"Image is the "+out);
     }
 
     public  void OpenBuildingOyeConfirmation(String listing,String transaction,String portal){
+        hdroomsCount.setVisibility(View.GONE);
         buidingInfoFlag=true;
         Bundle args = new Bundle();
         args.putString("listing", listing);
@@ -1973,6 +1974,20 @@ Log.i(TAG,"Image is the "+out);
 
 
     public  void CloseBuildingOyeComfirmation(){
+
+        if (!General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker") && (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0)){
+            hdroomsCount.setVisibility(View.VISIBLE);
+            hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV)));
+        }
+        else if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) > 0) {
+            hdroomsCount.setVisibility(View.VISIBLE);
+            hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)));
+        }
+        else{
+            hdroomsCount.setVisibility(View.GONE);
+        }
+
+
         Intent in = new Intent(AppConstants.MARKERSELECTED);
         in.putExtra("markerClicked", "false");
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);
@@ -2185,6 +2200,7 @@ public void openAddListing(){
     }
 
     public void Reset(){
+        Log.i(TAG,"rolewa 2 ");
         btnMyDeals.setVisibility(View.VISIBLE);
         btn_back.setVisibility(View.GONE);
         btn_cancel.setVisibility(View.GONE);
@@ -2193,7 +2209,7 @@ public void openAddListing(){
         confirm_screen_title.setVisibility(View.GONE);
         getSupportActionBar().setTitle("Live Region Rates");
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).ResetChanges();
-        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0){
+        if (!General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker") && (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0)){
             hdroomsCount.setVisibility(View.VISIBLE);
             hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV)));
         }

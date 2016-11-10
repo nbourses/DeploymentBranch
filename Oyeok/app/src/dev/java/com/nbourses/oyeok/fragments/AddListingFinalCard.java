@@ -426,7 +426,7 @@ private void init(){
 
 
 
-       RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_TEST).build();
+       RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
 
@@ -443,14 +443,6 @@ private void init(){
                    } catch (Exception e) {
 
                    }
-
-
-
-
-
-
-
-
 
 
 

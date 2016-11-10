@@ -1477,7 +1477,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     /// phase seekbar
     @Override
     public void onPositionSelected(int position, int count) {
-
+Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE_OF_USER));
         if (position == 0) {
 
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
@@ -1512,7 +1512,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             .text("Rental Deals Type set")
                             .position(Snackbar.SnackbarPosition.TOP)
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
-            if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0) {
+            if (General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") && (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0)) {
                 if(General.getSharedPreferences(this,AppConstants.Card_TT).equalsIgnoreCase("LL")) {
                     General.setBadgeCount(this, AppConstants.HDROOMS_COUNT_UV, 0);
                     rentalCount.setVisibility(View.GONE);
@@ -1551,7 +1551,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), this);
             getSupportActionBar().setTitle(Html.fromHtml(String.format("DEALING ROOMs <font color=\"#%s\">(Buy/Sell)</font>", сolorString)));
 
-            if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0) {
+            if (General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") && (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0)) {
                 if(General.getSharedPreferences(this,AppConstants.Card_TT).equalsIgnoreCase("OR")) {
                     General.setBadgeCount(this, AppConstants.HDROOMS_COUNT_UV, 0);
                     resaleCount.setVisibility(View.GONE);

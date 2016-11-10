@@ -250,7 +250,7 @@ private TextView Cancel,back,usertext;
         Log.i("updateStatus CALLED","updateStatus success called ");
         SearchBuildingModel searchBuildingModel = new SearchBuildingModel();
         searchBuildingModel.setBuilding(name);
-        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_TEST).build();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
 //        UserApiService userApiService = restAdapter.create(UserApiService.class);
