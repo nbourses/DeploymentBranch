@@ -91,9 +91,9 @@ public class AppConstants {
     public static final String SERVER_BASE_URL_11 = "https://ssl.hailyo.com/1.1";
 
    public static final String SERVER_BASE_URL_102 = "https://ssl.hailyo.com/1.02";
-    public static final String SERVER_BASE_URL_103 = "https://test.hailyo.com/1";
+    /*public static final String SERVER_BASE_URL_103 = "https://test.hailyo.com/1";
     public static final String SERVER_BASE_URL_TEST = "https://test.hailyo.com/1";
-    public static final String SERVER_BASE_URL_TEST_102 = "https://test.hailyo.com/1.02";
+    public static final String SERVER_BASE_URL_TEST_102 = "https://test.hailyo.com/1.02";*/
 
 
 

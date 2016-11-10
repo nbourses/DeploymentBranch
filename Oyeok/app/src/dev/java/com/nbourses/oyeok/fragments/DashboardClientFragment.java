@@ -321,7 +321,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     boolean savebuilding=false;
     private Button CallButton,addbuilding;
     private Point centerPoint;
-
+    private long mLastClickTime = SystemClock.elapsedRealtime();
 
     private AutoCompletePlaces.GooglePlacesAutocompleteAdapter dataAdapter;
 //    @Bind(R.id.seekbar_linearlayout)
@@ -2276,7 +2276,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 tvFetchingrates.setVisibility(View.VISIBLE);
                 tvFetchingrates.setText("Fetching Rates....");
                 tvFetchingrates.setTextSize(15);
-                RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_TEST_102).build();
+                RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_102).build();
                 restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
                 UserApiService userApiService = restAdapter.create(UserApiService.class);
                 userApiService.getPrice(user, new retrofit.Callback<JsonElement>() {
@@ -4789,7 +4789,7 @@ favOText.getText()*/
         addBuildingModel.setLocality(SharedPrefs.getString( getContext(), SharedPrefs.MY_LOCALITY ));
         addBuildingModel.setUser_role(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
         addBuildingModel.setUser_id("sushil");
-        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_103).build();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
 //        UserApiService userApiService = restAdapter.create(UserApiService.class);
@@ -4882,7 +4882,8 @@ public void resetSeekBar(){
         addbuilding.setVisibility(View.GONE);
         mPhasedSeekBar.setVisibility(View.GONE);
         dispProperty.setVisibility(View.GONE);
-
+        property_type_layout.clearAnimation();
+        property_type_layout.setVisibility(View.GONE);
         String txt;
         txt="<font color=#2dc4b6><big>Drag & Save Base Location</big></font>";
         tvFetchingrates.setText(Html.fromHtml(txt));

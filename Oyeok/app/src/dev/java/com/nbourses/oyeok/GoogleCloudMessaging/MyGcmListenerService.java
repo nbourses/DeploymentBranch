@@ -323,6 +323,7 @@ public class MyGcmListenerService extends GcmListenerService {
                             RefreshDrooms = true;
                         }
                     }
+
                     Log.i(TAG, "after deal " + deals1);
                     Log.i("Default deals in shared", "I am here2");
                     Gson g = new Gson();

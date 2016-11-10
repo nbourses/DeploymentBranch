@@ -830,7 +830,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
             } else {
                 user.setUserId( General.getSharedPreferences( this, AppConstants.USER_ID ) );
             }
-            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint( AppConstants.SERVER_BASE_URL_TEST_102 ).build();
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint( AppConstants.SERVER_BASE_URL_102 ).build();
             restAdapter.setLogLevel( RestAdapter.LogLevel.FULL );
 
             UserApiService userApiService = restAdapter.create( UserApiService.class );
@@ -1553,8 +1553,9 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                 }
 
                 public void onFinish() {
-
-                    m.setIcon( icon1 );
+try {
+    m.setIcon(icon1);
+}catch (Exception e){}
 
                 }
             }.start();

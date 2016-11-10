@@ -76,6 +76,10 @@ public class IntroActivity extends ActionBarActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             General.showPermissionDialog(this, this);
         }
+        else{
+            General.saveLatLongLoc(IntroActivity.this,gps.getLatitude(), gps.getLongitude());
+        }
+        Log.i("latlongi","latlongi 76 "+General.getSharedPreferences(this,AppConstants.MY_LAT));
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
 
         mViewPager.setBackgroundResource(R.drawable.intro_bg);
@@ -122,6 +126,7 @@ btnC.setOnClickListener(new View.OnClickListener() {
         DBHelper dbHelper = new DBHelper(getBaseContext());
         dbHelper.save(DatabaseConstants.userRole, "client");
         General.setSharedPreferences(getApplicationContext(),AppConstants.ROLE_OF_USER,"client");
+        skip.setVisibility(View.GONE);
         loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup1, "");
          }
 });
@@ -136,6 +141,7 @@ btnC.setOnClickListener(new View.OnClickListener() {
                 DBHelper dbHelper = new DBHelper(getBaseContext());
                 dbHelper.save(DatabaseConstants.userRole, "broker");
                 General.setSharedPreferences(getApplicationContext(),AppConstants.ROLE_OF_USER,"broker");
+                skip.setVisibility(View.GONE);
                 loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup1, "");
             }
         });
@@ -259,6 +265,7 @@ btnC.setOnClickListener(new View.OnClickListener() {
         if (AppConstants.SIGNUP_FLAG) {
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
             AppConstants.SIGNUP_FLAG = false;
+            skip.setVisibility(View.VISIBLE);
         } else {
             super.onBackPressed();
         }
