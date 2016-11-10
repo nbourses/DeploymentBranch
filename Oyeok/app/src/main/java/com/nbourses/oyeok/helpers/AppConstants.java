@@ -127,6 +127,7 @@ public class AppConstants {
     public static final String BADGE_COUNT = "badgeCount";
     public static final String SUPPORT_COUNT = "supportCount";
     public static final String HDROOMS_COUNT = "hdRoomsCount";
+    public static final String HDROOMS_COUNT_UV = "hdRoomsCountUv";
     public static final String TENANTS_COUNT = "tenantsCount";
     public static final String OWNERS_COUNT = "ownersCount";
     public static final String BUYER_COUNT = "buyerCount";
@@ -198,6 +199,9 @@ public class AppConstants {
 
     public static final String ROLE_GAMER = "game";
     public static final String CALLING_ACTIVITY = "calling_activity";
+    public static  String BROKER_BASE_REGION = "false";
+    public static final String MY_BASE_LOCATION = "";
+
 
 
 }

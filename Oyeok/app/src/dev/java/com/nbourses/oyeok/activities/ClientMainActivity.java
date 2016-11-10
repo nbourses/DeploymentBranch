@@ -17,6 +17,7 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -189,7 +190,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
 
 
-
+    private Bundle extras;
 
 
     // screen shot
@@ -533,7 +534,7 @@ public void signUp(){
         dbHelper = new DBHelper(getBaseContext());
         mHandler = new Handler();
         Log.i("Game123", "outside     ==================: "+General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_GAMER));
-        Bundle extras = getIntent().getExtras();
+         extras = getIntent().getExtras();
 try {
         if (extras!=null && extras.getString("data").equalsIgnoreCase("game")) {
             Log.i("Game123", "network Game : " + extras.getString("data"));
@@ -547,6 +548,9 @@ try {
 
     }catch (Exception e){}
 
+
+
+
         if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("BC")){
             Log.i("Game123", "network role broker 1: ");
             BrokerRole = "broker";
@@ -555,12 +559,28 @@ try {
             General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, BrokerRole);
             AppConstants.CURRENT_USER_ROLE = BrokerRole;
             General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"");
+
+            new CountDownTimer(300, 300) {
+
+                public void onTick(long millisUntilFinished) {
+
+
+                }
+
+                public void onFinish() {
+                    if(AppConstants.BROKER_BASE_REGION=="false")
+                    setBaseRegion();
+
+
+                }
+            }.start();
+
         }
         else if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("PC")){
 
                 General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
                 openAddListing();
-//            }
+
         }else{
             dbHelper.save(DatabaseConstants.userRole, "Client");
             General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
@@ -568,56 +588,6 @@ try {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
-
-
-
-       /* if(extras!=null) {
-            if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_GAMER).equalsIgnoreCase("gamer")) {
-                dbHelper.save(DatabaseConstants.userRole, "Client");
-                General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
-                AppConstants.CURRENT_USER_ROLE = "client";
-                getSupportActionBar().setDisplayShowHomeEnabled(true);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            } else {
-                if (!extras.getString("role").equalsIgnoreCase("broker")) {
-                    dbHelper.save(DatabaseConstants.userRole, "Client");
-                    General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
-                    AppConstants.CURRENT_USER_ROLE = "client";
-                    getSupportActionBar().setDisplayShowHomeEnabled(true);
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        Log.i("Game123", "network role client 2: "+extras.getString("role"));
-                    //The key argument here must match that used in the other activity
-                } else {
-
-                    Log.i("Game123", "network role broker 1: " + extras.getString("role"));
-                    BrokerRole = extras.getString("role");
-                    btnMyDeals.setVisibility(View.GONE);
-           dbHelper.save(DatabaseConstants.userRole, BrokerRole);
-                    General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, BrokerRole);
-                    AppConstants.CURRENT_USER_ROLE = BrokerRole;
-                }
-            }
-//        Bundle extras1 = getIntent().getExtras();
-
-            if (extras != null) {
-                if (extras.getString("data").equalsIgnoreCase("portfolio")) {
-//            String value = extras.getString("add");
-                    Log.i("Game123", "openAddListing Game 1: " + extras.getString("game"));
-                    openAddListing();
-                    //The key argument here must match that used in the other activity
-                }
-
-//    Bundle extra = getIntent().getExtras();
-                else if (extras.getString("data").equalsIgnoreCase("game")) {
-                    Log.i("Game123", "network Game : " + extras.getString("data"));
-
-                    SharedPrefs.save(getBaseContext(), SharedPrefs.CHECK_WALKTHROUGH, "false");
-                    openGameCard();
-                }
-            }
-        }*/
-//}catch (Exception e){}
 
         ShortcutBadger.removeCount(this);
         Log.i(TAG,"popup window shown 1 ");
@@ -652,6 +622,8 @@ try {
         init();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        if(BrokerRole.equalsIgnoreCase("broker"))
+        hdroomsCount.setVisibility(View.GONE);
     }
 
     @Override
@@ -692,28 +664,6 @@ try {
      */
     private void init() {
 
-       /* Intent inten = new Intent(this, IntroActivity.class);
-        startActivity(inten);*/
-
-        /*try {
-            SharedPreferences prefs1 =
-                    PreferenceManager.getDefaultSharedPreferences(this);
-            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                    if (key.equals(AppConstants.EMAIL)) {
-                        emailTxt.setText(General.getSharedPreferences(ClientMainActivity.this,AppConstants.EMAIL));
-                    }
-
-                }
-
-
-            };
-            prefs1.registerOnSharedPreferenceChangeListener(listener);
-
-        }
-        catch (Exception e){
-            Log.e(TAG,"listener shared 2 "+e.getMessage());
-        }*/
 //        RealmConfiguration config = new RealmConfiguration
 //                .Builder(this)
 //                .deleteRealmIfMigrationNeeded()
@@ -787,13 +737,18 @@ try {
 ////            Log.i(TAG,"insider4 "+c.getEmailId());
 //        }
 
-       // Toast.makeText(this,String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)),Toast.LENGTH_LONG);
 
-        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) <= 0)
-            hdroomsCount.setVisibility(View.GONE);
-        else {
+
+        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0){
+            hdroomsCount.setVisibility(View.VISIBLE);
+        hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV)));
+        }
+        else if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) > 0) {
             hdroomsCount.setVisibility(View.VISIBLE);
             hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)));
+        }
+        else{
+            hdroomsCount.setVisibility(View.GONE);
         }
 
 
@@ -887,24 +842,29 @@ try {
 //
 //        }
 
-        /*if (!General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-            //if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
-            if (!General.getSharedPreferences(this,AppConstants.EMAIL).equalsIgnoreCase("null")) {
-                emailTxt.setVisibility(View.VISIBLE);
-                emailTxt.setText(General.getSharedPreferences(this,AppConstants.EMAIL));
-                Log.i(TAG,"emailsa "+General.getSharedPreferences(this,AppConstants.EMAIL));
-
-            }
-        }else{
-            emailTxt.setVisibility(View.INVISIBLE);
-        }*/
         updateEmail();
 
 
         //by default load broker_map view
         dashboardClientFragment = new DashboardClientFragment();
         dashboardClientFragment.setOyeButtonClickListener(this);
-        loadFragment(dashboardClientFragment, null, R.id.container_map, "Client Dashboard");
+
+        Bundle bundle1 = new Bundle();
+        try {
+            if (extras != null && extras.getString("setBaseRegion").equalsIgnoreCase("true")) {
+                bundle1.putString("setBaseRegion", "true");
+                BrokerRole="broker";
+                Log.i(TAG, "set base region ");
+                //setBaseRegion();
+
+
+            }
+        }
+        catch(Exception e){}
+
+        loadFragment(dashboardClientFragment, bundle1, R.id.container_map, "Client Dashboard");
+
+
 
         Bundle bundle = getIntent().getExtras();
 
@@ -924,7 +884,6 @@ try {
             Log.i("TAG","porter 1 "+General.getSharedPreferences(ClientMainActivity.this,AppConstants.PROMO_IMAGE_URL));
             new DownloadImageTask().execute(General.getSharedPreferences(ClientMainActivity.this, AppConstants.PROMO_IMAGE_URL));
         }*/
-
 
     }
 
@@ -1290,68 +1249,6 @@ try {
 
 
 
-    /*@OnClick(R.id.btnOnOyeClick)
-    public void submitOyeOk(View v) {
-        Log.i("TRACE", "oyebutton");
-        Boolean s = General.retriveBoolean(this, "propertySubtypeFlag");
-
-        if (General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-            Log.i("TRACE", "clicked oyebutton if");
-            //show ƒlo up screen
-            Bundle bundle = new Bundle();
-            bundle.putStringArray("propertySpecification", null);
-            bundle.putString("lastFragment", "OyeIntentSpecs");
-
-            if(s.equals(false)){
-                SnackbarManager.show(
-                        Snackbar.with(this)
-                                .position(Snackbar.SnackbarPosition.TOP)
-                                .text("Please select property subtype")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-            }else {
-
-                    SignUpFragment signUpFragment = new SignUpFragment();
-                    loadFragment(signUpFragment, bundle, R.id.container_oye, "");
-                    Log.i("Signup called =", "Sign up");
-                    btnOnOyeClick.setVisibility(View.GONE);
-            }
-        }
-        else {
-            Log.i("already", "Signed up");
-            if(s.equals(false)){
-                SnackbarManager.show(
-                        Snackbar.with(this)
-                                .position(Snackbar.SnackbarPosition.TOP)
-                                .text("Please select property subtype")
-                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-
-            }else {
-                //create new deal
-
-                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Dou you want to publish this oye?")
-                        .setCancelable(true)
-                        .setPositiveButton("Publish", new DialogInterface.OnClickListener() {
-                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                                General.publishOye(getApplicationContext());
-                                closeOyeScreen();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                                dialog.cancel();
-                            }
-                        });
-                final AlertDialog alert = builder.create();
-                alert.show();
-
-
-
-
-            }
-        }
-    }*/
-
     @Override
     public void onBackPressed() {
 
@@ -1366,12 +1263,14 @@ if(AppConstants.FAV) {
 */
 
          if(AppConstants.SEARCHFLAG){
+             Log.i("sushil123","SEARCHFLAG ");
 
             AppConstants.SEARCHFLAG = false;
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
 
         }
         else if(AppConstants.SETLOCATION){
+
         intent = new Intent(this, ClientMainActivity.class);
         intent.addFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -1383,7 +1282,7 @@ if(AppConstants.FAV) {
         }
 
         else if(AppConstants.cardNotif){
-            Log.i(TAG,"flaga isa 1 ");
+            Log.i("sushil123","flaga isa 1 ");
             AppConstants.cardNotif = false;
             AppConstants.optionspu1.dismiss();
             AppConstants.optionspu.dismiss();
@@ -1391,7 +1290,7 @@ if(AppConstants.FAV) {
 
         else if(buidingInfoFlag==true)
         {
-            Log.i(TAG,"flaga isa 2 ");
+            Log.i("sushil123","flaga isa 2 ");
             Intent in = new Intent(AppConstants.MARKERSELECTED);
               in.putExtra("markerClicked", "false");
             LocalBroadcastManager.getInstance(this).sendBroadcast(in);
@@ -1402,52 +1301,30 @@ if(AppConstants.FAV) {
 
         }else  if(cardFlag){
             Log.i(TAG,"flaga isa 3 ");
-            Log.i(TAG,"card back ");
+            Log.i("sushil123","card back ");
            // getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.card)).commit();
          //getSupportFragmentManager().popBackStack();
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
             //getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_up, R.animator.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
-            //  getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
             cardFlag = false;
             containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
             containerSignup.setClickable(false);
             card.setClickable(false);
-        }
-
-
-
-
-             else if(AppConstants.SIGNUP_FLAG){
+        }else if(AppConstants.SIGNUP_FLAG){
             Log.i(TAG,"flaga isa 6 ");
-
-
-/*            if(dbHelper.getValue(DatabaseConstants.userRole).equalsIgnoreCase("broker")){
-            Intent back = new Intent(this, BrokerMainActivity.class);
-            startActivity(back);
-            }
-            else{
-                Intent back = new Intent(this, ClientMainActivity.class);
-                startActivity(back);
-            }
-            finish();*/
 
             if(AppConstants.REGISTERING_FLAG){}else{
            // getSupportFragmentManager().popBackStack();
                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
-
-
                 AppConstants.SIGNUP_FLAG=false;
             backpress = 0;}
-            Log.i("SIGNUP_FLAG"," main activity =================== SIGNUP_FLAGffffffff");
+            Log.i("sushil123"," main activity =================== SIGNUP_FLAGffffffff");
 
         }
         else if(oyeconfirm_flag==true){
             Log.i(TAG,"flaga isa 5 ");
-//                super.onBackPressed();
-            Log.i("SIGNUP_FLAG","Poke Poke Pokemon......: "+getSupportFragmentManager().getBackStackEntryCount());
-//            getSupportFragmentManager().popBackStack();
+            Log.i("sushil123","Poke Poke Pokemon......oyeconfirm_flag: "+getSupportFragmentManager().getBackStackEntryCount());
             closeOyeConfirmation();
-//            oyeconfirm_flag=false;
             backpress = 0;
 
         }
@@ -1455,7 +1332,7 @@ if(AppConstants.FAV) {
 
        else if(autocomplete){
 
-            Log.i("BACK PRESSED","  autocomplete"+autocomplete);
+            Log.i("sushil123","  autocomplete"+autocomplete);
 //
             Intent intentt = new Intent(AppConstants.AUTOCOMPLETEFLAG1);
             intentt.putExtra("autocomplete",true);
@@ -1468,7 +1345,7 @@ if(AppConstants.FAV) {
        else if(setting==true){
 
 
-            Log.i("BACK PRESSED"," =================== setting"+setting);
+            Log.i("sushil123"," =================== setting"+setting);
             if(SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") || SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")){
                 Intent inten = new Intent(this, ClientMainActivity.class);
                 inten.addFlags(
@@ -1479,7 +1356,7 @@ if(AppConstants.FAV) {
                 finish();
                 super.onBackPressed();
                 finish();
-                Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
+                Log.i("sushil123", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
                 backpress = 0;
 
@@ -1488,7 +1365,7 @@ if(AppConstants.FAV) {
             else {
 
                 super.onBackPressed();
-                Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
+                Log.i("sushil123", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
                 backpress = 0;
 
@@ -1501,7 +1378,7 @@ if(AppConstants.FAV) {
                 webView.goBack();
             }else {
 
-                Log.i("SIGNUP_FLAG", " webView =================== 3");
+                Log.i("sushil123", " webView =================== 3");
                 Intent inten = new Intent(this, ClientMainActivity.class);
                 inten.addFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -1516,13 +1393,13 @@ if(AppConstants.FAV) {
             backpress = 0;
 
         }else if(Myportfolio==true){
-            Log.i("Myportfolio"," Myportfolio   : "+getFragmentManager().getBackStackEntryCount()+"   "+getSupportFragmentManager().getBackStackEntryCount());
+            Log.i("sushil123"," Myportfolio   : "+getFragmentManager().getBackStackEntryCount()+"   "+getSupportFragmentManager().getBackStackEntryCount());
             getSupportFragmentManager().popBackStack();
             Myportfolio=false;
             backpress = 0;
         } else{
 
-            Log.i("SIGNUP_FLAG"," closing app =================== 3"+getFragmentManager().getBackStackEntryCount());
+            Log.i("sushil123"," closing app =================== 3"+getFragmentManager().getBackStackEntryCount()+"  "+BrokerRole);
             if(BrokerRole.equalsIgnoreCase("broker")&&BrokerRole!=null){
                 backpress = 0;
                 this.finish();
@@ -1579,6 +1456,7 @@ if(AppConstants.FAV) {
            }
        }
         else {
+
            Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
            openDealsListing.putExtra("defaul_deal_flag", "false");
            startActivity(openDealsListing);
@@ -2261,10 +2139,12 @@ public void openAddListing(){
 
 
     public void closeCardContainer(){
+
         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
         containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
         containerSignup.setClickable(false);
         card.setClickable(false);
+        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
     }
 
     public  void setlocation(String b_name){
@@ -2281,6 +2161,27 @@ public void openAddListing(){
         card.setClickable(false);
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).saveBuiding(b_name);
         hdroomsCount.setVisibility(View.GONE);
+
+    }
+
+    public  void setBaseRegion(){
+        btnMyDeals.setVisibility(View.GONE);
+        /*btn_back.setVisibility(View.VISIBLE);
+        btn_cancel.setVisibility(View.VISIBLE);*/
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        confirm_screen_title.setText("Set Base Region");
+        getSupportActionBar().setTitle("");
+        hdroomsCount.setVisibility(View.GONE);
+
+//        closeAddBuilding();
+      /*  containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
+        containerSignup.setClickable(false);
+        card.setClickable(false);*/
+        Log.i(TAG,"set base region 5");
+        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).setLocation11();
+        Log.i(TAG,"set base region 6");
+
     }
 
     public void Reset(){
@@ -2292,6 +2193,10 @@ public void openAddListing(){
         confirm_screen_title.setVisibility(View.GONE);
         getSupportActionBar().setTitle("Live Region Rates");
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).ResetChanges();
+        if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0){
+            hdroomsCount.setVisibility(View.VISIBLE);
+            hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV)));
+        }
     }
 
     public void openGameCard(){
