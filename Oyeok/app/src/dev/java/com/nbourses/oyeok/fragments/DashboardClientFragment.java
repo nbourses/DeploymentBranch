@@ -4240,8 +4240,10 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
     public void onOptionClickS(View v){
       searchFragment c = new searchFragment();
       AppConstants.SEARCHFLAG = true;
+        Log.i(TAG,"searchwa 1234");
       loadFragmentAnimated(c, null, R.id.container_Signup, "Search");
       if(!AppConstants.SETLOCATION && !savebuilding) {
+          Log.i(TAG,"searchwa 123");
         ((ClientMainActivity) getActivity()).closeOyeConfirmation();
         ((ClientMainActivity) getActivity()).closeOyeScreen();
         Intent in = new Intent(AppConstants.MARKERSELECTED);
@@ -4633,6 +4635,23 @@ favOText.getText()*/
                         .snippet(c.getTitle())
                         .icon(favIcon));
 //                dropPinEffect(marker);
+
+            /*Realm myRealm = General.realmconfig(getContext());
+            RealmResults<addBuildingRealm> results1 =
+                    myRealm.where(addBuildingRealm.class).findAll();
+
+            for (addBuildingRealm c : results1) {
+                Log.i(TAG, "insiderr2 ");
+                Log.i(TAG, "insiderr3 " + c.getBuilding_name());
+                Log.i(TAG, "insiderr4 " + c.getLat());
+                Log.i(TAG, "insiderr4 " + c.getLng());
+
+                    favIcon = iconOffice;
+                Marker marker = map.addMarker(new MarkerOptions()
+                        .position(new LatLng(Double.parseDouble(c.getLat()), Double.parseDouble(c.getLng())))
+                        .title(c.getBuilding_name())
+                        .snippet(c.getBuilding_name())
+                        .icon(favIcon));*/
             }
 
         }
@@ -4678,12 +4697,12 @@ favOText.getText()*/
             myPortfolioModel.setTransactions( transaction[INDEX] );
             myPortfolioModel.setLocality( SharedPrefs.getString( getContext(), SharedPrefs.MY_LOCALITY ) );
             myPortfolioModel.setTimestamp(String.valueOf(System.currentTimeMillis()));
+           if(myRealm.isInTransaction())
+                   myRealm.cancelTransaction();
             myRealm.beginTransaction();
             myRealm.copyToRealmOrUpdate( myPortfolioModel );
 //        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
         myRealm.commitTransaction();
-
-
 
     }
 
@@ -4759,7 +4778,7 @@ favOText.getText()*/
 
 
 //        Realm myRealm = General.realmconfig(getContext());
-        Favourites favourites = new Favourites();
+        /*Favourites favourites = new Favourites();
         favourites.setTitle(B_name);
         favourites.setAddress(favAdrs.getText().toString());
         LatiLongi latlon = new LatiLongi();
@@ -4773,7 +4792,7 @@ favOText.getText()*/
             myRealm.cancelTransaction();
         myRealm.beginTransaction();
         myRealm.copyToRealmOrUpdate(favourites);
-        myRealm.commitTransaction();
+        myRealm.commitTransaction();*/
 
 
     }

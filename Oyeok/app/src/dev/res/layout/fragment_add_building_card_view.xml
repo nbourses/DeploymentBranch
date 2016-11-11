@@ -50,11 +50,11 @@
             android:gravity="center">
             <ImageView
                 android:layout_width="50dp"
-                android:layout_height="110dip"
+                android:layout_height="match_parent"
                 android:src="@drawable/locked_building_icon"
                 android:layout_marginLeft="5dip"
                 android:layout_marginRight="5dip"
-                android:layout_marginTop="5dip"/>
+                />
 
         </LinearLayout>
 
@@ -70,12 +70,14 @@
             android:orientation="vertical">
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="0dp"
+    android:layout_weight="0.15"
     android:orientation="horizontal">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
+        android:layout_marginLeft="2dp"
         android:textColor="@color/black"
         android:text="Step 1 : "/>
     <ImageView
@@ -88,9 +90,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="35dip"
+                android:layout_height="0dp"
+                android:layout_weight="0.20"
                 android:orientation="horizontal"
-                android:gravity="center_horizontal"
+                android:gravity="center"
                 android:id="@+id/linearLayout7">
             <TextView
                 android:layout_width="wrap_content"
@@ -122,7 +125,8 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.13"
                 android:text="coming soon"
                 android:textColor="@color/black"
                 android:id="@+id/textView13"
@@ -132,7 +136,8 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.25"
                 android:gravity="center"
                 android:id="@+id/linearLayout2"
                 >
@@ -164,7 +169,10 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="0dp"
+                android:layout_weight="0.13"
+                android:orientation="horizontal"
+                >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -186,7 +194,8 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.25"
                 android:gravity="center"
                 android:layout_marginBottom="5dp"
                 android:orientation="horizontal">
@@ -224,17 +233,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dip"
-            android:layout_weight="0.5"
+            android:layout_weight="0.6"
             android:gravity="center_horizontal"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.15"
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
+                    android:layout_marginLeft="2dp"
                     android:textColor="@color/black"
                     android:text="Step 2:  "/>
                 <TextView
@@ -247,7 +258,8 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.2"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
                 android:id="@+id/linearLayout9">
@@ -281,7 +293,7 @@
                 android:id="@+id/horizontalScrollView">
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:gravity="center"
                     android:foregroundGravity="center"
                     android:orientation="horizontal">
@@ -443,7 +455,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dip"
-                android:layout_weight="0.25"
+                android:layout_weight="0.2"
                 android:orientation="horizontal"
                 android:gravity="center"
                 android:layout_margin="2dp"

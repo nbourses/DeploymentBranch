@@ -145,6 +145,7 @@ public class porfolioAdapter extends BaseAdapter {
 
 //               holder.ActualPrice.setText("Rates will be updated soon.");
 //               holder.ActualPrice.setTextColor(Color.parseColor("#000000"));
+               holder.ActualPrice.setTextColor(Color.parseColor("#000000"));
                holder.percentChange.setText("");
            }
        }catch (Exception e){}

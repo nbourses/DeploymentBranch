@@ -1267,7 +1267,7 @@ if(AppConstants.FAV) {
 */
 
          if(AppConstants.SEARCHFLAG){
-             Log.i("sushil123","SEARCHFLAG ");
+             Log.i("sushil123","SEARCHFLAG 123 ");
 
             AppConstants.SEARCHFLAG = false;
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();

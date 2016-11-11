@@ -69,6 +69,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
     EditText inputSearch;
     private String TT = "LL";
     LinearLayout add_build;
+    private String matchedId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +82,10 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
             myPortfolioLL.clear();
         if(myPortfolioOR != null)
             myPortfolioOR.clear();
-        /*if(addbuildingLL != null)
+        if(addbuildingLL != null)
             addbuildingLL.clear();
         if(addbuildingOR != null)
-            addbuildingOR.clear();*/
+            addbuildingOR.clear();
         if(portListingCopy != null)
             portListingCopy.clear();
 
@@ -241,14 +242,49 @@ Log.i("getLocality","getLocality   : "+c.getLocality());
                         if (item.getItemId() == R.id.delete){
 
                             for (final portListingModel d : deletelist) {
+
                                 // Here your room is available
                                 Log.i("portfolio1","deletelist"+portListing.contains(d)+" "+d.getName());
                                 Log.i("addbuildingOR","addbuildingOR 1"+addbuildingOR.contains(d));
                                 portListing.remove(d);
                                 myPortfolioLL.remove(d);
                                 myPortfolioOR.remove(d);
-                                addbuildingOR.remove(d);
-                                addbuildingLL.remove(d);
+                                if(addbuildingLL.contains(d)){
+                                    addbuildingLL.remove(d);
+                                    matchedId = d.getId();
+                                    Log.i("portfolio1","deletelist 23 "+matchedId);
+
+
+                                    for (final portListingModel l : addbuildingOR) {
+                                        Log.i("portfolio1","deletelist 25 "+l.getId());
+                                        if(l.getId().equalsIgnoreCase(matchedId)){
+                                            addbuildingOR.remove(l);
+                                            break;
+                                        }
+                                    }
+
+
+
+                                }
+
+                                if(addbuildingOR.contains(d)){
+                                    addbuildingOR.remove(d);
+                                    matchedId = d.getId();
+                                    Log.i("portfolio1","deletelist 33 "+matchedId);
+
+
+                                    for (final portListingModel l : addbuildingLL) {
+                                        Log.i("portfolio1","deletelist 35 "+l.getId());
+                                        if(l.getId().equalsIgnoreCase(matchedId)){
+                                            addbuildingLL.remove(l);
+                                            break;
+                                        }
+                                    }
+
+
+
+                                }
+
 
                                 Log.i("addbuildingOR","addbuildingOR 2"+addbuildingOR);
 
