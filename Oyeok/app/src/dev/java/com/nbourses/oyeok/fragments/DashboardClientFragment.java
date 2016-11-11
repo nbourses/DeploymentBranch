@@ -2328,9 +2328,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                     JSONObject price = new JSONObject(jsonResponseData.getString("price"));
                                     Log.i("TRACE", "Response getprice buildings pricer ");
                                     Log.i("TRACE", "Response getprice buildings price " + price);
-                                    JSONArray buildings = new JSONArray(jsonResponseData.getString("buildings"));
-                                    Log.i("TRACE", "Response getprice buildings" + buildings);
-                                    JSONObject k = new JSONObject(buildings.get(1).toString());
+
                                     Log.i("TRACE", "Response getprice buildings yo" + price.getString("ll_min"));
                                     if (!price.getString("ll_min").equalsIgnoreCase("")) {
                                         if (!price.getString("ll_min").equalsIgnoreCase("0")) {
@@ -2366,6 +2364,9 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                             StartOyeButtonAnimation();
 
                                             try {
+                                                JSONArray buildings = new JSONArray(jsonResponseData.getString("buildings"));
+                                                Log.i("TRACE", "Response getprice buildings" + buildings);
+                                                JSONObject k = new JSONObject(buildings.get(1).toString());
                                                 for (int i = 0; i < 5; i++) {
                                                     JSONObject j = new JSONObject(buildings.get(i).toString());
                                                     config[i] = j.getString("config");
@@ -2406,7 +2407,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                                                 .position(Snackbar.SnackbarPosition.TOP)
                                                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
                                             } catch (Exception e) {
-
+                                                Log.i("Price Error", "Caught in exception Building plot success" + e.getMessage());
                                             }
                                             showFavourites();
                                             mVisits.setEnabled(true);
