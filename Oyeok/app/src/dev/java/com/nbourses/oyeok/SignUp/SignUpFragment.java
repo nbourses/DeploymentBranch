@@ -1013,6 +1013,20 @@ Log.i(TAG,"mobile number is the "+mobile_number);
 */
                         }
 
+                        try {
+                            Realm myRealm = General.realmconfig(getContext());
+                            if (myRealm.isInTransaction()) {
+                                myRealm.cancelTransaction();
+                            }
+                            myRealm.beginTransaction();
+                            RealmResults<HalfDeals> results1 =
+                                    myRealm.where(HalfDeals.class).findAll();
+                            results1.clear();
+                            myRealm.commitTransaction();
+                        }
+                        catch(Exception e){
+                            Log.i(TAG,"Caught in exception deleting cached deals after signup");
+                        }
                         Log.i("TRACE", "Userid" +my_user_id);
 
                         //store user_id in shared preferences

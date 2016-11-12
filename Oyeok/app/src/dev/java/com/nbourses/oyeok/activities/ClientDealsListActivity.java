@@ -792,15 +792,20 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
         default_dealsLL = new ArrayList<BrokerDeals>();
         default_dealsOR = new ArrayList<BrokerDeals>();
-        if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
-            loadDefaultDealsNew();
-        loadCachedDeals();
         listBrokerDealsLL = new ArrayList<BrokerDeals>();
         listBrokerDealsOR = new ArrayList<BrokerDeals>();
         listBrokerDeals_new = new ArrayList<BrokerDeals>();
         unverifiedLL = new ArrayList<BrokerDeals>();
         unverifiedOR = new ArrayList<BrokerDeals>();
-        loadBrokerDeals();
+        if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+            loadDefaultDealsNew();
+        if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker") && General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")){
+
+        }
+        else {
+            loadCachedDeals();
+            loadBrokerDeals();
+        }
 
         // }
         setSupportActionBar(mToolbar);
@@ -1483,28 +1488,33 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
 
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RENTAL);
             TT = "LL";
-            total_deals.clear();
-            default_deals.clear();
-            default_deals.addAll(default_dealsLL);
-            total_deals.addAll(default_deals);
+            if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker") && General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")){
+                Log.i("this","this is role 234 "+General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase(""));
+            }else {
+                total_deals.clear();
+                default_deals.clear();
+                default_deals.addAll(default_dealsLL);
+                total_deals.addAll(default_deals);
 
-            if (listBrokerDeals_new.isEmpty() && unverifiedLL.isEmpty()) {
-                cachedDeals.clear();
-                cachedDeals.addAll(cachedDealsLL);
-                total_deals.addAll(cachedDeals);
-            } else {
-                listBrokerDeals_new.clear();
-                listBrokerDeals_new.addAll(unverifiedLL);
-                listBrokerDeals_new.addAll(listBrokerDealsLL);
-                total_deals.addAll(listBrokerDeals_new);
+                if (listBrokerDeals_new.isEmpty() && unverifiedLL.isEmpty()) {
+                    cachedDeals.clear();
+                    cachedDeals.addAll(cachedDealsLL);
+                    total_deals.addAll(cachedDeals);
+                } else {
+                    listBrokerDeals_new.clear();
+                    listBrokerDeals_new.addAll(unverifiedLL);
+                    listBrokerDeals_new.addAll(listBrokerDealsLL);
+                    total_deals.addAll(listBrokerDeals_new);
+                }
+                Collections.sort(total_deals);
+                listAdapter.notifyDataSetChanged();
+                if (searchQuery != null)
+                    search(searchQuery);
             }
 
 
             showBgText();
-            Collections.sort(total_deals);
-            listAdapter.notifyDataSetChanged();
-            if (searchQuery != null)
-                search(searchQuery);
+
 
 
             getSupportActionBar().setTitle(Html.fromHtml(String.format("DEALING ROOMs <font color=\"#%s\">(Rental)</font>", сolorString)));
@@ -1527,25 +1537,35 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
 
             General.setSharedPreferences(this, AppConstants.TT, AppConstants.RESALE);
             TT = "OR";
-            total_deals.clear();
-            default_deals.clear();
-            default_deals.addAll(default_dealsOR);
-            total_deals.addAll(default_deals);
+            if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker") && General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")){
+                Log.i("this","this is role 234 "+General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase(""));
 
-            if (listBrokerDeals_new.isEmpty() && unverifiedOR.isEmpty() ) { //
-                cachedDeals.clear();
-                cachedDeals.addAll(cachedDealsOR);
-                total_deals.addAll(cachedDeals);
-            } else {
-                listBrokerDeals_new.clear();
-                listBrokerDeals_new.addAll(unverifiedOR);
-                listBrokerDeals_new.addAll(listBrokerDealsOR);
-                total_deals.addAll(listBrokerDeals_new);
+
+            }else {
+                total_deals.clear();
+                default_deals.clear();
+                default_deals.addAll(default_dealsOR);
+                total_deals.addAll(default_deals);
+
+                if (listBrokerDeals_new.isEmpty() && unverifiedOR.isEmpty()) { //
+                    cachedDeals.clear();
+                    cachedDeals.addAll(cachedDealsOR);
+                    total_deals.addAll(cachedDeals);
+                } else {
+                    listBrokerDeals_new.clear();
+                    listBrokerDeals_new.addAll(unverifiedOR);
+                    listBrokerDeals_new.addAll(listBrokerDealsOR);
+                    total_deals.addAll(listBrokerDeals_new);
+                }
+                Collections.sort(total_deals);
+                listAdapter.notifyDataSetChanged();
+                if (searchQuery != null)
+                    search(searchQuery);
             }
-            Collections.sort(total_deals);
-            listAdapter.notifyDataSetChanged();
-            if (searchQuery != null)
-                search(searchQuery);
+
+
+                showBgText();
+
 
             showBgText();
             SnackbarManager.show(
