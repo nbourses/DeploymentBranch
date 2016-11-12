@@ -566,8 +566,10 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         llsignup = (LinearLayout)view.findViewById(R.id.llsignup);
         llotp = (LinearLayout)view.findViewById(R.id.llotp);
         //llotp.setVisibility(View.GONE);
+//        role_of_user = dbHelper.getValue(DatabaseConstants.userRole);
+        role_of_user=General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER);
 
-        role_of_user = dbHelper.getValue(DatabaseConstants.userRole);
+        Log.i("signupstatus","General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER)   "+General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER)+ "   "+role_of_user);
 
 //        ((DashboardActivity) getActivity()).showToastMessage("Signing up as " + role_of_user);
 

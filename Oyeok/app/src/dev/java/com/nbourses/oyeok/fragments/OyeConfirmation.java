@@ -185,23 +185,26 @@ public class OyeConfirmation extends Fragment {
 
                 if (SystemClock.elapsedRealtime() - mLastClickTime < 2000) {
                     return;
+                }else{
+                    mLastClickTime = SystemClock.elapsedRealtime();
+                    if (General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                        getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
+                        ((ClientMainActivity)getActivity()).signUp();
+                        ((ClientMainActivity) getActivity()).closeOyeConfirmation();
+
+                        // General.publishOye(getContext());
+
+
+
+                    }else {
+                        General.publishOye(getContext());
+//                    ((ClientMainActivity) getActivity()).closeOyeConfirmation();
+                    }
                 }
-                mLastClickTime = SystemClock.elapsedRealtime();
+//                mLastClickTime = SystemClock.elapsedRealtime();
                 Log.i("TAG","oye oye 2");
 
-                if (General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-                    getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
-                    ((ClientMainActivity)getActivity()).signUp();
-                    ((ClientMainActivity) getActivity()).closeOyeConfirmation();
 
-                    // General.publishOye(getContext());
-
-
-
-                }else {
-                    General.publishOye(getContext());
-//                    ((ClientMainActivity) getActivity()).closeOyeConfirmation();
-                }
 
             }
         });

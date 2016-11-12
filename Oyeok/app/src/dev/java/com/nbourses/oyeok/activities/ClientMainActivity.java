@@ -555,7 +555,7 @@ try {
             Log.i("Game123", "network role broker 1: ");
             BrokerRole = "broker";
             btnMyDeals.setVisibility(View.GONE);
-            dbHelper.save(DatabaseConstants.userRole, BrokerRole);
+            dbHelper.save(DatabaseConstants.userRole, "broker");
             General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, BrokerRole);
             AppConstants.CURRENT_USER_ROLE = BrokerRole;
             General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"");
@@ -1258,8 +1258,12 @@ try {
 
         Log.i(TAG,"flaga isa "+AppConstants.SIGNUP_FLAG);
 
-        Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+        if(!BrokerRole.equalsIgnoreCase("broker")){
+            Log.i("sushil123"," closing app CLOSE_OYE_SCREEN_SLIDE =================== "+getFragmentManager().getBackStackEntryCount()+"  "+BrokerRole);
+            Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        }
 /*
 if(AppConstants.FAV) {
     dashboardClientFragment.hideFav();
@@ -1275,7 +1279,7 @@ if(AppConstants.FAV) {
         }
         else if(AppConstants.SETLOCATION){
 
-        intent = new Intent(this, ClientMainActivity.class);
+       Intent intent = new Intent(this, ClientMainActivity.class);
         intent.addFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TOP |
                         Intent.FLAG_ACTIVITY_CLEAR_TASK |
@@ -1405,6 +1409,7 @@ if(AppConstants.FAV) {
 
             Log.i("sushil123"," closing app =================== 3"+getFragmentManager().getBackStackEntryCount()+"  "+BrokerRole);
             if(BrokerRole.equalsIgnoreCase("broker")&&BrokerRole!=null){
+                Log.i("sushil123"," closing app BrokerRole =================== "+getFragmentManager().getBackStackEntryCount()+"  "+BrokerRole);
                 backpress = 0;
                 this.finish();
             }else {
@@ -1876,7 +1881,7 @@ Log.i(TAG,"Image is the "+out);
 
 
     public void showCard() {
-       if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("")&& !firstLaunch) {
+       if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("")&& !firstLaunch &&  !General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
            firstLaunch=false;
             if (AppConstants.cardCounter >3) {
 
@@ -1996,8 +2001,10 @@ Log.i(TAG,"Image is the "+out);
         in.putExtra("markerClicked", "false");
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);
         confirm_screen_title.setVisibility(View.GONE);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(BrokerRole=="client") {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         cancel_btn.setVisibility(View.GONE);
         getSupportActionBar().setTitle("Live Building Rates");
 
@@ -2208,8 +2215,10 @@ public void openAddListing(){
         btnMyDeals.setVisibility(View.VISIBLE);
         btn_back.setVisibility(View.GONE);
         btn_cancel.setVisibility(View.GONE);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(BrokerRole.equalsIgnoreCase("broker")) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         confirm_screen_title.setVisibility(View.GONE);
         getSupportActionBar().setTitle("Live Region Rates");
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).ResetChanges();

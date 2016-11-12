@@ -888,11 +888,14 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         addbuilding.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Log.i("signupstatus","General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER)   "+General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER));
+
                 if (General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
 //                    General.setSharedPreferences(getContext(), AppConstants.ROLE_OF_USER, "client");
                     SignUpFragment signUpFragment = new SignUpFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putString("lastFragment", "clientDrawer");
+                    bundle.putString("lastFragment", "brokerDrawer");
                     loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup, "");
                     AppConstants.SIGNUP_FLAG = true;
 
@@ -1114,12 +1117,15 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                             public void onTick(long millisUntilFinished) {
                                 if (!AppConstants.SETLOCATION && !savebuilding) {
-                                    Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
 
 //                            ( (ClientMainActivity)getActivity()).closeOyeScreen();
                                 ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
-                                ((ClientMainActivity) getActivity()).closeOyeConfirmation();
+                                    if(!General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                                        Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+                                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                                            ((ClientMainActivity) getActivity()).closeOyeConfirmation();
+                                        }
                                 txtFilterValue.setTextSize(13);
                                 txtFilterValue.setTextColor(Color.parseColor("white"));
                                 txtFilterValue.setText(oyetext);
@@ -1532,28 +1538,26 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
 //}
 
 
+        if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            if (Walkthrough.equalsIgnoreCase("true")) {
+                Log.i("ischecked", "walkthrough3dashboard1111111" + Walkthrough);
+                tutorialAlert(rootView);
 
-        if(Walkthrough.equalsIgnoreCase("true")) {
-            Log.i("ischecked","walkthrough3dashboard1111111"+Walkthrough);
-            tutorialAlert(rootView);
+                Walkthrough = "false";
 
-            Walkthrough="false";
+            } else if (beacon.equalsIgnoreCase("true")) {
+                Log.i("ischecked", "walkthrough3dashboard1111111beacon" + beacon);
+                try {
+                    beaconAlert(rootView);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-        }
 
-        else if(beacon.equalsIgnoreCase("true") ) {
-            Log.i("ischecked","walkthrough3dashboard1111111beacon"+beacon);
-            try {
-                beaconAlert(rootView);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                beacon = "false";
+
             }
-
-
-            beacon="false";
-
         }
-
 
         return rootView;
     }
@@ -2019,11 +2023,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
     public void onTxtFilterValueClick(View v) {
         Log.i("user_role","auto ok ...OnOyeClick1"+savebuilding);
 
-        if(!savebuilding) {
-            Log.i("user_role","auto ok ...1");
 
-            OnOyeClick();
-        }
         if(txtFilterValue.getText().toString().equalsIgnoreCase("save")){
             map.addMarker(new MarkerOptions().icon(iconOffice).position(new LatLng(lat,lng)));
             txtFilterValue.setText("done");
@@ -2043,6 +2043,15 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 Addbuilding();
                 ((ClientMainActivity) getActivity()).Reset();
             }
+        }
+        if(!savebuilding) {
+            Log.i("user_role","auto ok ...1");
+            /*if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
+                return;
+            }else {
+                mLastClickTime = SystemClock.elapsedRealtime();
+                OnOyeClick();
+            }*/
         }
         /*if(txtFilterValue.getText().toString().equalsIgnoreCase("save")){
             map.addMarker(new MarkerOptions().icon(iconHome).position(new LatLng(lat,lng)));
@@ -4187,8 +4196,14 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
     @OnClick({R.id.ll_marker, R.id.markerpanelminmax, R.id.picker, R.id.tv_building, R.id.tvRate, R.id.rupeesymbol, R.id.tvFetchingRates})
     public void onOptionClickM(View v) {
         Log.i(TAG,"I am clicked "+v +" "+buildingSelected);
-        if(buildingSelected)
-            OnOyeClick();
+//        if(buildingSelected){
+            if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
+                return;
+            }else {
+                mLastClickTime = SystemClock.elapsedRealtime();
+                OnOyeClick();
+            }
+//        }
 
     }
 
@@ -4245,11 +4260,14 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
       loadFragmentAnimated(c, null, R.id.container_Signup, "Search");
       if(!AppConstants.SETLOCATION && !savebuilding) {
           Log.i(TAG,"searchwa 123");
-        ((ClientMainActivity) getActivity()).closeOyeConfirmation();
-        ((ClientMainActivity) getActivity()).closeOyeScreen();
+
         Intent in = new Intent(AppConstants.MARKERSELECTED);
         in.putExtra("markerClicked", "false");
         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+          if(!General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+              ((ClientMainActivity) getActivity()).closeOyeConfirmation();
+              ((ClientMainActivity) getActivity()).closeOyeScreen();
+          }
         ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
         onMapclicked();
       }
@@ -4615,7 +4633,7 @@ favOText.getText()*/
         BitmapDescriptor favIcon;
 
         try {
-            Realm myRealm = General.realmconfig(getContext());
+            /*Realm myRealm = General.realmconfig(getContext());
             RealmResults<Favourites> results1 =
                     myRealm.where(Favourites.class).findAll();
 
@@ -4634,12 +4652,12 @@ favOText.getText()*/
                         .position(new LatLng(c.getLatiLongi().getLat(), c.getLatiLongi().getLng()))
                         .title(c.getTitle())
                         .snippet(c.getTitle())
-                        .icon(favIcon));
+                        .icon(favIcon));*/
 //                dropPinEffect(marker);
 
-            /*Realm myRealm = General.realmconfig(getContext());
+            Realm myRealm = General.realmconfig(getContext());
             RealmResults<addBuildingRealm> results1 =
-                    myRealm.where(addBuildingRealm.class).findAll();
+                    myRealm.where(addBuildingRealm.class).equalTo("type","ADD").findAll();
 
             for (addBuildingRealm c : results1) {
                 Log.i(TAG, "insiderr2 ");
@@ -4652,7 +4670,7 @@ favOText.getText()*/
                         .position(new LatLng(Double.parseDouble(c.getLat()), Double.parseDouble(c.getLng())))
                         .title(c.getBuilding_name())
                         .snippet(c.getBuilding_name())
-                        .icon(favIcon));*/
+                        .icon(favIcon));
             }
 
         }
@@ -4766,6 +4784,8 @@ favOText.getText()*/
         addBuildingRealm add_Building = new addBuildingRealm();
         add_Building.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
         add_Building.setBuilding_name(B_name);
+        add_Building.setType("ADD");
+        add_Building.setAddress(fullAddress);
         add_Building.setConfig(General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
         add_Building.setProperty_type(AppConstants.PROPERTY);
         add_Building.setLat( lat + "" );

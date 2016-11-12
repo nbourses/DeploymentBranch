@@ -34,7 +34,7 @@ import com.nbourses.oyeok.adapters.PlacesAutoCompleteAdapter;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.listeners.RecyclerItemClickListener;
-import com.nbourses.oyeok.realmModels.Favourites;
+import com.nbourses.oyeok.realmModels.addBuildingRealm;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
@@ -155,11 +155,11 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
                                 }else {
                                     try {
                                         Realm myRealm = General.realmconfig(getContext());
-                                        Favourites results1 =
-                                                myRealm.where(Favourites.class).equalTo("title", placeId).findFirst();
+                                        addBuildingRealm results1 =
+                                                myRealm.where(addBuildingRealm.class).equalTo("id", placeId).findFirst();
 
-                                        AppConstants.MY_LATITUDE=results1.getLatiLongi().getLat();
-                                        AppConstants.MY_LONGITUDE=results1.getLatiLongi().getLng();
+                                        AppConstants.MY_LATITUDE= Double.parseDouble(results1.getLat());
+                                        AppConstants.MY_LONGITUDE= Double.parseDouble(results1.getLng());
 
 
 

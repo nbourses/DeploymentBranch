@@ -1188,7 +1188,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                         halfDeals.setLastSeen(deals.getLastSeen());
                                         myRealm.copyToRealmOrUpdate(halfDeals);
 
-                                        if (deals.getOyeId().contains("unverified_user")) {
+                                        Log.i("kabali","unverified_user"+General.getSharedPreferences(ClientDealsListActivity.this, AppConstants.ROLE_OF_USER));
+                                        if (deals.getOyeId().contains("unverified_user") ) {
 
                                             if (deals.getSpecCode().toLowerCase().contains("-ll"))
                                                 unverifiedLL.add(deals);
@@ -1634,6 +1635,7 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
             }
 
             cachedDeals.addAll(cachedDealsLL);
+
             total_deals.addAll(cachedDeals);
             showBgText();
             Collections.sort(total_deals);

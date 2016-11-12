@@ -482,6 +482,7 @@ private void init(){
         add_Building.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
         add_Building.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
         add_Building.setId(id);
+        add_Building.setType("LIST");
 
         if(tt.equalsIgnoreCase("rental")){
             add_Building.setLl_pm(Integer.parseInt(numberAsString));

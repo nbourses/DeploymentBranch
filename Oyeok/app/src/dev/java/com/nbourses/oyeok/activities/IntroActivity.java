@@ -71,6 +71,7 @@ public class IntroActivity extends ActionBarActivity {
 
         gps = new GPSTracker(this);
         //showPermissionDialog();
+        General.setSharedPreferences(getBaseContext(),AppConstants.NO_CALL,"0");
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

@@ -506,42 +506,27 @@ while(slowInternetFlag) {
             Log.i("TRACE", "Get user Id from model " + AppConstants.letsOye.getUserId());
 
             Log.i("TRACE", "AppConstants.letsOye from model " + json);
-
             JSONObject jsonObj = new JSONObject(json);
-
             intend = jsonObj.getString("req_avl");
-
             tt = jsonObj.getString("tt");
             ptype = jsonObj.getString("property_type");
             pstype = jsonObj.getString("property_subtype");
             price = jsonObj.getString("price");
             speccode = intend.toUpperCase() + "-" + tt + "-" +ptype+ "-" + pstype + "-" + price;
-
             Log.i("TRACE", "speccode is" + speccode);
-
-
             General.setSharedPreferences(context, "MY_SPEC_CODE", speccode);
             General.getSharedPreferences(context, "MY_SPEC_CODE");
             Log.i("TRACE", "Spec code got from shared prefs" + General.getSharedPreferences(context, "MY_SPEC_CODE"));
-
-
-
-            //set = new HashSet<String>();
+                //set = new HashSet<String>();
             Log.i("TRACE", "speccode:" + speccode);
             //set = new HashSet<String>(Arrays.asList("speccode"));
-
-
             //  Log.i("TRACE","Okid from shared prefs is " +General.getSharedPreferences(context, "OK_ID"));
-
-
                 Log.i("TRACE", "is networking available" + General.getSharedPreferences(context, AppConstants.USER_ID));
-
                 //set userId
                 AppConstants.letsOye.setUserId(General.getSharedPreferences(context, AppConstants.USER_ID));
                 //set gcmId
                 AppConstants.letsOye.setGcmId(SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
                 AppConstants.letsOye.setPossession_date(General.getSharedPreferences(context,AppConstants.POSSESSION_DATE));
-
                 String furnishingStatus="sf",furnishing=General.getSharedPreferences(context,AppConstants.FURNISHING);
                     if (furnishing.equalsIgnoreCase("Fully-Furnished")){
                         furnishingStatus="ff";
@@ -551,7 +536,6 @@ while(slowInternetFlag) {
                         furnishingStatus="sf";
                     }
                 AppConstants.letsOye.setFurnishing(furnishingStatus);
-
                 AppConstants.letsOye.setNo_call(General.getSharedPreferences(context,AppConstants.NO_CALL));
                 Log.i("NO_CALL", "Get Furnishing from model " + General.getSharedPreferences(context,AppConstants.NO_CALL));
                 Log.i("TRACE", "Get Possession Date from model " + AppConstants.letsOye.getPossession_date());
@@ -561,14 +545,12 @@ while(slowInternetFlag) {
                 Log.i("TRACE", "AppConstants.letsOye direct" + AppConstants.letsOye);
                 final Gson gsona = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
                 String jsona = gsona.toJson(AppConstants.letsOye);
-
                 Log.i(TAG, "AppConstants.letsOye parsed " + jsona);
                 RestAdapter restAdapter = new RestAdapter
                         .Builder()
                         .setEndpoint(AppConstants.SERVER_BASE_URL_11)
                         .setConverter(new GsonConverter(gson))
                         .build();
-
                 restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
                 OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
                 oyeokApiService.publishOye(AppConstants.letsOye, new Callback<PublishLetsOye>() {
