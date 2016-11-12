@@ -23,18 +23,11 @@ public class AppConstants {
     public static Boolean SEARCHFLAG = false;
     public static  int minSale = 21500;
     public static  int maxSale = 27000;
-
     public static final int slowInternet = 5;
-
     public static int cardCounter = 4;
     public static int favCounter = 0;
-
-
     public static double MY_LATITUDE = 0.0;
     public static double MY_LONGITUDE = 0.0;
-
-
-
     public static PopupWindow optionspu;
     public static PopupWindow optionspu1;
     public static final String PROMO_IMAGE_URL = "promoImageUrl";
@@ -52,33 +45,21 @@ public class AppConstants {
     public static final String CLOSE_OYE_SCREEN_SLIDE = "closeOyeScreenSlide";
     public static final String OYE_BUTTON_DATA = "oyeButtonData";
     public static final String token = "Token";
-
     public static final String BADGE_COUNT_BROADCAST = "badgeCountBroadcast";
     public static final String CHECK_BEACON = "checkBeacon";
     public static final String CHECK_WALKTHROUGH = "checkWalkthrough";
     public static final String CHAT_OPEN_OK_ID = "chatMessageReceived";
     public static final String CHAT_MESSAGE_RECIEVED = "chatMessageReceived";
     public static final String LOCALITY_BROADCAST = "localityBroadcast";
-
     public static final String ON_FILTER_VALUE_UPDATE = "onFilterValueUpdate";
     public static final String BROADCAST_MIN_MAX_VAL = "broadcastMinMaxValue";
-
     public static final String IS_LOGGED_IN_USER = "isLoggedInUser";
-
     public static final String SETLOCN = "setLocation";
-
     public static final String USER_ID = "userId";
-
     public static final String NAME = "name";
-
     public static final String EMAIL = "email";
-
     public static final String CLIENT_HEADING = "client_heading";
-
     public static final String MARKERSELECTED = "markerSelected";
-
-
-
     public static PublishLetsOye letsOye = new PublishLetsOye();
 
     //public static final String SERVER_BASE_URL = "http://52.41.200.154:9000/1";
@@ -87,10 +68,8 @@ public class AppConstants {
 
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     public static final String SERVER_BASE_URL = "https://ssl.hailyo.com/1";
-
     public static final String SERVER_BASE_URL_11 = "https://ssl.hailyo.com/1.1";
-
-   public static final String SERVER_BASE_URL_102 = "https://ssl.hailyo.com/1.02";
+    public static final String SERVER_BASE_URL_102 = "https://ssl.hailyo.com/1.02";
     /*public static final String SERVER_BASE_URL_103 = "https://test.hailyo.com/1";
     public static final String SERVER_BASE_URL_TEST = "https://test.hailyo.com/1";
     public static final String SERVER_BASE_URL_TEST_102 = "https://test.hailyo.com/1.02";*/
@@ -98,10 +77,7 @@ public class AppConstants {
 
 
     public static final String OK_ID = "ok_id";
-
     public static final String OYE_ID = "oye_id";
-
-
 
     public static final String ROLE_OF_USER = "role_of_user";
 
@@ -179,11 +155,7 @@ public class AppConstants {
     public static  String PHASED_SEEKBAR_CLICKED = "clicked";
     public static String NUMBER_OF_BROKER="19";
     public static String CUSTOMER_TYPE="Tenant";
-    public static String DRAWTEXT="true";
-    public static String DRAWTEXT1="true1";
-    public static String DRAWTEXT2="true2";
-    public static String DRAWTEXT3="true3";
-    public static String DRAWTEXT4="true4";
+
 
 
     //Global variables for cardFragment

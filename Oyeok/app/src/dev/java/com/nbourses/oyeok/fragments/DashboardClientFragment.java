@@ -322,7 +322,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private Button CallButton,addbuilding;
     private Point centerPoint;
     private long mLastClickTime = SystemClock.elapsedRealtime();
-
+    private Timer clockTickTimer;
     private AutoCompletePlaces.GooglePlacesAutocompleteAdapter dataAdapter;
 //    @Bind(R.id.seekbar_linearlayout)
 //    LinearLayout seekbarLinearLayout;
@@ -3679,6 +3679,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
 
 
         if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+
+
             if (!AppConstants.SETLOCATION && !savebuilding) {
                 tvRate.setVisibility(View.GONE);
                 rupeesymbol.setVisibility(View.GONE);
@@ -3688,23 +3690,29 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 horizontalPicker.stopScrolling();
             }
             Log.i("MotionEvent.ACTION_MOVE", "=========================");
+
+
+
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+
+
+
 //                    horizontalPicker.stopScrolling();
 //                    marquee(500,100);
             Log.i("MotionEvent.ACTION_UP", "========================="+savebuilding+" "+AppConstants.SETLOCATION+" "+spanning);
 
-            updateHorizontalPicker();
+           updateHorizontalPicker();
             if (!spanning) {
                 if (isNetworkAvailable()) {
                     Log.i("MotionEvent.ACTION_UP", "========================="+savebuilding+" "+AppConstants.SETLOCATION);
                     final long now = SystemClock.uptimeMillis();
-                   /* if (clicked == true) {
-                        map.getUiSettings().setScrollGesturesEnabled(true);
-                        Log.i("MotionEvent.ACTION_UP", "=========================" + clicked);
-                    }*/
-//
+
 
                     if (now - lastTouched > SCROLL_TIME) {
+
+                        /*getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {*/
 
                         if (!AppConstants.SETLOCATION && !savebuilding) {
                             txtFilterValue.setTextSize(13);
@@ -3753,7 +3761,11 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                             fav.setVisibility(View.VISIBLE);
                             horizontalPicker.stopScrolling();
                             missingArea.setVisibility(View.GONE);
+
                             getPrice();
+
+
+
                         }
 
                         new LocationUpdater().execute();
@@ -3763,6 +3775,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                             map.clear();
                         }
 
+                    /*}
+                });*/
                     }
                     new LocationUpdater().execute();
 
@@ -3788,7 +3802,11 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                     spanning = false;
                 }
             }
+
             }else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+
+
+
                 if (!AppConstants.SETLOCATION && !savebuilding) {
                     lastTouched = SystemClock.uptimeMillis();
                     map.getUiSettings().setScrollGesturesEnabled(true);
@@ -3797,7 +3815,9 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
 
                 }
 
-        }
+
+
+}
     }
 
     private boolean isTelephonyEnabled(){
@@ -4936,6 +4956,7 @@ public void resetSeekBar(){
         txt="<font color=#2dc4b6><big>Drag & Save Base Location</big></font>";
         tvFetchingrates.setText(Html.fromHtml(txt));
     }
+
 
 
 
