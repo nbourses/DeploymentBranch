@@ -207,7 +207,7 @@ GoogleMap map;
             if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
             tv_change_region.setText(SharedPrefs.getString(this, SharedPrefs.MY_LOCALITY));
             else {
-                AppConstants.BROKER_BASE_REGION="true";
+//                AppConstants.BROKER_BASE_REGION="true";
                 tv_change_region.setText(General.getSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LOCATION));
             }
         }catch(Exception e){
