@@ -420,12 +420,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private BroadcastReceiver phasedSeekBarClicked = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            Log.i( "prassanababaiasm", "index of layoutsusussjcdnck : " + AppConstants.SETLOCATION+"  "+ savebuilding +"  "+intent.getExtras().getString("phaseseek")+ "  "+p);
             if(!AppConstants.SETLOCATION && !savebuilding){
             if (intent.getExtras().getString("phaseseek") != null) {
                 if ((intent.getExtras().getString("phaseseek").equalsIgnoreCase("clicked"))) {
                     try {
-                        if(p!=1) {
+                        if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")||p!=1) {
                             Log.i( "indexxx", "index of layoutsusussjcdnck : " );
                             int index = ((ViewGroup) property_type_layout.getParent()).indexOfChild( property_type_layout );
                             Log.i( "indexxx", "index of layoutsusussjcdnck : " + index );
@@ -735,7 +735,10 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         CallButton=(Button) rootView.findViewById(R.id.CallButton);
 
         buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
-        onPositionSelected(0, 3);
+        if((General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")&&!General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))||General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+        {
+            onPositionSelected(0, 3);
+        }
         horizontalPicker = (HorizontalPicker) rootView.findViewById(R.id.picker);
         horizontalPicker.setMpicker(this);
         horizontalPicker.setTvRate(tvRate, rupeesymbol);
@@ -2031,9 +2034,11 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
         }else if(txtFilterValue.getText().toString().equalsIgnoreCase("done")){
             Log.i("user_role","role of user");
             if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-                if(AppConstants.BROKER_BASE_REGION.equalsIgnoreCase("false")) {
+                if(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase("")) {
+                    General.setSharedPreferences(getContext(),AppConstants.MY_BASE_LAT,SharedPrefs.getString(getContext(),SharedPrefs.MY_LAT));
+                    General.setSharedPreferences(getContext(),AppConstants.MY_BASE_LNG,SharedPrefs.getString(getContext(),SharedPrefs.MY_LNG));
                    General.setSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION,SharedPrefs.getString(getContext(),SharedPrefs.MY_LOCALITY));
-                    AppConstants.BROKER_BASE_REGION="true";
+//                    AppConstants.BROKER_BASE_REGION="true";
                     ((ClientMainActivity) getActivity()).Reset();
                 }else {
                     addlistinglayout.setVisibility(View.VISIBLE);
@@ -2044,15 +2049,15 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 ((ClientMainActivity) getActivity()).Reset();
             }
         }
-        if(!savebuilding) {
+      /*  if(!savebuilding) {
             Log.i("user_role","auto ok ...1");
-            /*if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
+            *//*if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
                 return;
             }else {
                 mLastClickTime = SystemClock.elapsedRealtime();
                 OnOyeClick();
-            }*/
-        }
+            }*//*
+        }*/
         /*if(txtFilterValue.getText().toString().equalsIgnoreCase("save")){
             map.addMarker(new MarkerOptions().icon(iconHome).position(new LatLng(lat,lng)));
             txtFilterValue.setText("done");
@@ -2644,6 +2649,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
     @Override
     public void onPositionSelected(int position, int count) {
         p=position;
+        Log.i("rolecheck","check the role"+savebuilding);
         if(!AppConstants.SETLOCATION && !savebuilding) {
 
 
@@ -4213,17 +4219,19 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
         });
     }
 
-    @OnClick({R.id.ll_marker, R.id.markerpanelminmax, R.id.picker, R.id.tv_building, R.id.tvRate, R.id.rupeesymbol, R.id.tvFetchingRates})
+    @OnClick({R.id.ll_marker, R.id.markerpanelminmax, R.id.picker, R.id.tv_building, R.id.tvRate, R.id.rupeesymbol, R.id.tvFetchingRates,R.id.txtFilterValue})
     public void onOptionClickM(View v) {
         Log.i(TAG,"I am clicked "+v +" "+buildingSelected);
 //        if(buildingSelected){
-            if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
+            if(!savebuilding) {
+//        }
+            if (SystemClock.elapsedRealtime() - mLastClickTime < 300) {
                 return;
             }else {
                 mLastClickTime = SystemClock.elapsedRealtime();
                 OnOyeClick();
             }
-//        }
+        }
 
     }
 
@@ -4553,7 +4561,7 @@ favOText.getText()*/
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
 
-                    Log.i("AUTO OK CALLED","autook success "+General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
+//                    Log.i("AUTO OK CALLED","autook success "+General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
 
 
 

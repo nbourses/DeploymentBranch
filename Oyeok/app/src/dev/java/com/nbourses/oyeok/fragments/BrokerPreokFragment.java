@@ -1033,10 +1033,20 @@ if(count<=220) {
 
             preok.setUserRole("broker");
             preok.setEmail("");
-            preok.setLocality("Mumbai");
             preok.setGcmId(SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
-            preok.setLong(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
-            preok.setLat(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
+            Log.i("baseLoc","Base location case "+General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION));
+
+            if(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase("")) {
+                Log.i("baseLoc","Base location case 1"+General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION));
+                preok.setLocality("Mumbai");
+                preok.setLong(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
+                preok.setLat(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
+            }else{
+                Log.i("baseLoc","Base location case 2"+General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION));
+                preok.setLocality(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION));
+                preok.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LAT));
+                preok.setLong(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LNG));
+            }
             preok.setPlatform("android");
 
             Log.i("PREOK", "user_id1 " + General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER));

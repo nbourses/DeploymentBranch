@@ -568,10 +568,8 @@ try {
                 }
 
                 public void onFinish() {
-                    if(AppConstants.BROKER_BASE_REGION=="false")
+                    if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
                     setBaseRegion();
-
-
                 }
             }.start();
 
@@ -2215,7 +2213,9 @@ public void openAddListing(){
         btnMyDeals.setVisibility(View.VISIBLE);
         btn_back.setVisibility(View.GONE);
         btn_cancel.setVisibility(View.GONE);
-        if(BrokerRole.equalsIgnoreCase("broker")) {
+        if(BrokerRole.equalsIgnoreCase("client")) {
+
+//            Log.i(TAG,"rolewa 2 22");
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
