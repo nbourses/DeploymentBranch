@@ -591,10 +591,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
-        try {
-            setBaseRegion = getArguments().getString("setBaseRegion");
-            Log.i(TAG,"setBaseRegion "+setBaseRegion);
-        }catch(Exception e){}
+
 
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
@@ -800,12 +797,28 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         new String[]{getContext().getResources().getString(R.string.Rental), getContext().getResources().getString(R.string.Resale)
                         }));
             }
-
-
         }
 
 
+        try {
+            setBaseRegion = getArguments().getString("setBaseRegion");
+            Log.i(TAG,"setBaseRegion "+setBaseRegion);
+            if(setBaseRegion.equalsIgnoreCase("true") && General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                savebuilding = true;
+                new CountDownTimer(500, 500) {
 
+                    public void onTick(long millisUntilFinished) {
+
+
+                    }
+
+                    public void onFinish() {
+                        if(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
+                            ((ClientMainActivity)getActivity()).setBaseRegion();
+                    }
+                }.start();
+            }
+        }catch(Exception e){}
 
 
 
@@ -893,7 +906,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             public void onClick(View v) {
 
                 Log.i("signupstatus","General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER)   "+General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER));
-
+//                ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+                onMapclicked();
                 if (General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
 //                    General.setSharedPreferences(getContext(), AppConstants.ROLE_OF_USER, "client");
                     SignUpFragment signUpFragment = new SignUpFragment();
@@ -2039,6 +2053,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                     General.setSharedPreferences(getContext(),AppConstants.MY_BASE_LNG,SharedPrefs.getString(getContext(),SharedPrefs.MY_LNG));
                    General.setSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION,SharedPrefs.getString(getContext(),SharedPrefs.MY_LOCALITY));
 //                    AppConstants.BROKER_BASE_REGION="true";
+                    brokerType="rent";
                     ((ClientMainActivity) getActivity()).Reset();
                 }else {
                     addlistinglayout.setVisibility(View.VISIBLE);
@@ -3679,41 +3694,26 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
 
 
         if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-
-
             if (!AppConstants.SETLOCATION && !savebuilding) {
                 tvRate.setVisibility(View.GONE);
                 rupeesymbol.setVisibility(View.GONE);
-
-
                 horizontalPicker.keepScrolling();
                 horizontalPicker.stopScrolling();
             }
-            Log.i("MotionEvent.ACTION_MOVE", "=========================");
-
-
-
+//            Log.i("MotionEvent.ACTION_MOVE", "=========================");
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-
-
-
 //                    horizontalPicker.stopScrolling();
 //                    marquee(500,100);
             Log.i("MotionEvent.ACTION_UP", "========================="+savebuilding+" "+AppConstants.SETLOCATION+" "+spanning);
-
            updateHorizontalPicker();
             if (!spanning) {
                 if (isNetworkAvailable()) {
-                    Log.i("MotionEvent.ACTION_UP", "========================="+savebuilding+" "+AppConstants.SETLOCATION);
+                    Log.i("MotionEvent.ACTION_UP", "=========================" + savebuilding + " " + AppConstants.SETLOCATION);
                     final long now = SystemClock.uptimeMillis();
-
-
                     if (now - lastTouched > SCROLL_TIME) {
-
                         /*getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {*/
-
                         if (!AppConstants.SETLOCATION && !savebuilding) {
                             txtFilterValue.setTextSize(13);
                             txtFilterValue.setTextColor(Color.parseColor("white"));
@@ -3722,7 +3722,6 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                             Intent in = new Intent(AppConstants.MARKERSELECTED);
                             in.putExtra("markerClicked", "false");
                             buildingSelected = true;
-
                             LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
 //                            txtFilterValue.setTextColor(Color.parseColor("white"));
                             txtFilterValue.setText(oyetext);
@@ -3735,7 +3734,6 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                             tv_building.setVisibility(View.VISIBLE);
                             recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
                         }
-
                         LatLng currentLocation1; //= new LatLng(location.getLatitude(), location.getLongitude());
                         Log.i("map", "============ map:" + " " + map);
 //                            currentLocation1 = map.getProjection().fromScreenLocation(point);
@@ -3754,20 +3752,14 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                         Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
                         Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
                         getRegion();
-
                         if (!AppConstants.SETLOCATION && !savebuilding) {
                             search_building_icon.setVisibility(View.GONE);
                             buildingIcon.setVisibility(View.GONE);
                             fav.setVisibility(View.VISIBLE);
                             horizontalPicker.stopScrolling();
                             missingArea.setVisibility(View.GONE);
-
                             getPrice();
-
-
-
                         }
-
                         new LocationUpdater().execute();
                         if (txtFilterValue.getText().toString().equalsIgnoreCase("done")) {
                             txtFilterValue.setText("SAVE");
@@ -3778,7 +3770,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                     /*}
                 });*/
                     }
-                    new LocationUpdater().execute();
+//                    new LocationUpdater().execute();
 
                 } else {
                     tvFetchingrates.setVisibility(View.VISIBLE);
@@ -3788,25 +3780,11 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                     tv_building.setVisibility(View.GONE);
                     tvFetchingrates.setText("No Internet Connection..");
                     General.internetConnectivityMsg(getContext());
-//                        try {
-//                            SnackbarManager.show(
-//                                    Snackbar.with(getContext())
-//                                            .text("Seems like you dont have Internet Connection,Check your internet connection and try again.. ")
-//                                            .position(Snackbar.SnackbarPosition.TOP)
-//                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-//                        } catch (Exception e) {
-//                        }
 
-
-                    //}
-                    spanning = false;
                 }
-            }
+            }else{spanning = false;}
 
             }else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-
-
-
                 if (!AppConstants.SETLOCATION && !savebuilding) {
                     lastTouched = SystemClock.uptimeMillis();
                     map.getUiSettings().setScrollGesturesEnabled(true);
@@ -3817,8 +3795,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
 
 
 
-}
-    }
+            }
+        }
 
     private boolean isTelephonyEnabled(){
         TelephonyManager tm = (TelephonyManager)getContext().getSystemService(Context.TELEPHONY_SERVICE);
@@ -4222,14 +4200,16 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
     @OnClick({R.id.ll_marker, R.id.markerpanelminmax, R.id.picker, R.id.tv_building, R.id.tvRate, R.id.rupeesymbol, R.id.tvFetchingRates,R.id.txtFilterValue})
     public void onOptionClickM(View v) {
         Log.i(TAG,"I am clicked "+v +" "+buildingSelected);
-//        if(buildingSelected){
+//
             if(!savebuilding) {
-//        }
+//
             if (SystemClock.elapsedRealtime() - mLastClickTime < 300) {
                 return;
             }else {
                 mLastClickTime = SystemClock.elapsedRealtime();
+                if(buildingSelected){
                 OnOyeClick();
+                }
             }
         }
 
@@ -4934,7 +4914,7 @@ public void resetSeekBar(){
     public void setLocation11(){
         Log.i(TAG,"set base region 7");
 
-        savebuilding=true;
+//        savebuilding=true;
 //        AppConstants.SETLOCATION=true;
         map.clear();
         new LocationUpdater().execute();
