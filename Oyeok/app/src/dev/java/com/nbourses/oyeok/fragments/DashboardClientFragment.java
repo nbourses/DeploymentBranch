@@ -3008,6 +3008,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
             return jObject;
         }
 
+
         @Override
         protected String doInBackground(Double[] objects) {
 
@@ -3147,6 +3148,12 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
+                        SharedPrefs.save(getContext(), SharedPrefs.MY_LAT, "19.1230339");
+                        SharedPrefs.save(getContext(), SharedPrefs.MY_LNG, "72.8350437");
+                        General.setSharedPreferences(getContext(),AppConstants.MY_LAT,"19.1230339");
+                        General.setSharedPreferences(getContext(),AppConstants.MY_LNG,"72.8350437");
+                        SharedPrefs.save(getContext(), SharedPrefs.MY_LOCALITY, "Andheri West");
+                        General.setSharedPreferences(getContext(),AppConstants.LOCALITY,"Andheri West");
                     }
                 });
         final AlertDialog alert = builder.create();

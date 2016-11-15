@@ -439,18 +439,31 @@ inputSearch.addTextChangedListener(new TextWatcher() {
         String searchQuery = s.toString().trim();
         Log.i("searcho","s "+searchQuery.length());
         Log.i("searcho","sb "+portListingCopy);
+
        if(portListing != null)
            portListing.clear();
         portListing.addAll(portListingCopy);
+        Log.i("searcho","sc "+portListing);
         for(portListingModel c :portListingCopy){
+            Log.i("searcho", "sd " + c.getLl_pm() + " "+ c.getOr_psf() +" ");
             if(!c.getName().toLowerCase().contains(searchQuery.toLowerCase())){
                 portListing.remove(c);
+            } else if(c.getLl_pm() != 0 && c.getOr_psf() != 0) {
+                if (TT.equalsIgnoreCase("LL")) {
+                    if (c.getLl_pm() == 0) {
+                        portListing.remove(c);
+                    }
+                } else if (TT.equalsIgnoreCase("OR")) {
+                    if (c.getOr_psf() == 0) {
+                        portListing.remove(c);
+                    }
+                }
+
+
+
             }
+            Log.i("searcho", "sd " + portListing);
             adapter.notifyDataSetChanged();
-
-
-
-
 
         }
     }
@@ -495,15 +508,21 @@ inputSearch.addTextChangedListener(new TextWatcher() {
     public void onPositionSelected(int position, int count) {
         inputSearch.setText("");
         if(position==0){
+            TT = "LL";
             portListing.clear();
             portListing.addAll(addbuildingLL);
             portListing.addAll(myPortfolioLL);
+            portListingCopy.clear();
+            portListingCopy.addAll(portListing);
             adapter.notifyDataSetChanged();
         }else{
+            TT = "OR";
             Log.i("addbuildingOR","addbuildingOR 3"+addbuildingOR);
             portListing.clear();
             portListing.addAll(addbuildingOR);
             portListing.addAll(myPortfolioOR);
+            portListingCopy.clear();
+            portListingCopy.addAll(portListing);
             adapter.notifyDataSetChanged();
         }
 
