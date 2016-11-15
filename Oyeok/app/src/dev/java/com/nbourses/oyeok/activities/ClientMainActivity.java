@@ -17,7 +17,6 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -560,7 +559,7 @@ try {
             AppConstants.CURRENT_USER_ROLE = BrokerRole;
             General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"");
 
-            new CountDownTimer(300, 300) {
+           /* new CountDownTimer(500, 500) {
 
                 public void onTick(long millisUntilFinished) {
 
@@ -571,7 +570,7 @@ try {
                     if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
                     setBaseRegion();
                 }
-            }.start();
+            }.start();*/
 
         }
         else if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("PC")){
@@ -590,12 +589,6 @@ try {
         ShortcutBadger.removeCount(this);
         Log.i(TAG,"popup window shown 1 ");
         Log.i(TAG,"popup window shown 5 ");
-//        lintent=getIntent();
-//        String txt=lintent.getStringExtra("client_heading");
-      //  getSupportActionBar().setTitle(txt);
-
-       //
-       // recIntent.getStringExtra("key");
         if (General.isNetworkAvailable(getApplicationContext())) {
 
             Log.i("TRACE", "network available");
@@ -609,14 +602,6 @@ try {
                             .text("No internet connectivity.")
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
         }
-
-        //Hardcode user login in shared prefs
-        //General.settSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER, yes);
-//       General.setSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER, "yes");
-
-
-
-
         init();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -853,14 +838,19 @@ try {
 
         Bundle bundle1 = new Bundle();
         try {
-            if (extras != null && extras.getString("setBaseRegion").equalsIgnoreCase("true")) {
+            /*if (extras != null && extras.getString("setBaseRegion").equalsIgnoreCase("true")) {
                 bundle1.putString("setBaseRegion", "true");
                 BrokerRole="broker";
                 Log.i(TAG, "set base region ");
                 //setBaseRegion();
 
 
-            }
+            }*/
+            if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
+                bundle1.putString("setBaseRegion", "true");
+            else
+                bundle1.putString("setBaseRegion", "false");
+
         }
         catch(Exception e){}
 
@@ -1995,11 +1985,14 @@ Log.i(TAG,"Image is the "+out);
         }
 
 
+
+        confirm_screen_title.setVisibility(View.GONE);
         Intent in = new Intent(AppConstants.MARKERSELECTED);
         in.putExtra("markerClicked", "false");
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);
-        confirm_screen_title.setVisibility(View.GONE);
-        if(BrokerRole=="client") {
+
+        if(!BrokerRole.equalsIgnoreCase("broker")) {
+
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -2213,7 +2206,7 @@ public void openAddListing(){
         btnMyDeals.setVisibility(View.VISIBLE);
         btn_back.setVisibility(View.GONE);
         btn_cancel.setVisibility(View.GONE);
-        if(BrokerRole.equalsIgnoreCase("client")) {
+        if(!General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
 
 //            Log.i(TAG,"rolewa 2 22");
             getSupportActionBar().setDisplayShowHomeEnabled(true);
