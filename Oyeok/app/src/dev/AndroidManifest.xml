@@ -1,4 +1,4 @@
-<<<<<<< Original
+
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -10,14 +10,12 @@
     </activity>
     <activity android:name="com.nbourses.oyeok.activities.Game" android:screenOrientation="portrait"
         android:theme="@style/AppTheme1"></activity>
+
+
+    <activity android:name="com.nbourses.oyeok.activities.BrokerMap" android:label="@string/title_activity_broker_map"
+        android:theme="@style/MyMaterialTheme"></activity>
 </application>
 </manifest>
 
 
-    =======<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-<application>
-    <activity android:name="com.nbourses.oyeok.activities.BrokerMap" android:label="@string/title_activity_broker_map"
-        android:theme="@style/MyMaterialTheme"></activity>
-</application>
-</manifest>>>>>>>> Added

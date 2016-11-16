@@ -2311,6 +2311,19 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 userApiService.getPrice(user, new retrofit.Callback<JsonElement>() {
                     @Override
                     public void success(JsonElement jsonElement, Response response) {
+
+// START   reset building selection(Click immediately old building after drag)
+                        txtFilterValue.setTextSize(13);
+                        txtFilterValue.setTextColor(Color.parseColor("white"));
+                        txtFilterValue.setText(oyetext);
+                        txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
+                        ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+                        Intent in = new Intent(AppConstants.MARKERSELECTED);
+                        in.putExtra("markerClicked", "false");
+                        buildingSelected = true;
+                        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+//  END
+
                         if (!AppConstants.SETLOCATION||!savebuilding) {
                             try {
                                 General.slowInternetFlag = false;
@@ -4030,7 +4043,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 txtFilterValue.setText(oyetext);
                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
 //                txtFilterValue.setTextColor(Color.parseColor("white"));
-                txtFilterValue.setText(oyetext);
+               // txtFilterValue.setText(oyetext);
 //                txtFilterValue.setText("sushil");
                 Log.i("onMapclicked","Inside onMapclicked 909099099099  "+oyetext);
                 ll_marker.setEnabled(true);

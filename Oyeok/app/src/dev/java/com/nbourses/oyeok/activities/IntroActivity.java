@@ -316,6 +316,20 @@ btnC.setOnClickListener(new View.OnClickListener() {
             buildAlertMessageNoGps();
         }else{
             Log.i("TAG", "ralpher re1 ");
+            if (ContextCompat.checkSelfPermission(IntroActivity.this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // General.showPermissionDialog(this, this);
+                ActivityCompat.requestPermissions(IntroActivity.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        AppConstants.LOCATION_PERMISSION_REQUEST_CODE);
+
+            }
+            else{
+
+                Log.i("TAG", "ralpher 24 ");
+                getLocationActivity = new GetCurrentLocation(IntroActivity.this, mcallback);
+
+            }
         }
         super.onResume();
 
