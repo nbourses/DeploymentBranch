@@ -2311,6 +2311,19 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 userApiService.getPrice(user, new retrofit.Callback<JsonElement>() {
                     @Override
                     public void success(JsonElement jsonElement, Response response) {
+
+// START   reset building selection(Click immediately old building after drag)
+                        txtFilterValue.setTextSize(13);
+                        txtFilterValue.setTextColor(Color.parseColor("white"));
+                        txtFilterValue.setText(oyetext);
+                        txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
+                        ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+                        Intent in = new Intent(AppConstants.MARKERSELECTED);
+                        in.putExtra("markerClicked", "false");
+                        buildingSelected = true;
+                        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+//  END
+
                         if (!AppConstants.SETLOCATION||!savebuilding) {
                             try {
                                 General.slowInternetFlag = false;
@@ -3023,6 +3036,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
             return jObject;
         }
 
+
         @Override
         protected String doInBackground(Double[] objects) {
 
@@ -3162,6 +3176,12 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
+                        SharedPrefs.save(getContext(), SharedPrefs.MY_LAT, "19.1230339");
+                        SharedPrefs.save(getContext(), SharedPrefs.MY_LNG, "72.8350437");
+                        General.setSharedPreferences(getContext(),AppConstants.MY_LAT,"19.1230339");
+                        General.setSharedPreferences(getContext(),AppConstants.MY_LNG,"72.8350437");
+                        SharedPrefs.save(getContext(), SharedPrefs.MY_LOCALITY, "Andheri West");
+                        General.setSharedPreferences(getContext(),AppConstants.LOCALITY,"Andheri West");
                     }
                 });
         final AlertDialog alert = builder.create();
@@ -4023,7 +4043,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 txtFilterValue.setText(oyetext);
                 txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
 //                txtFilterValue.setTextColor(Color.parseColor("white"));
-                txtFilterValue.setText(oyetext);
+               // txtFilterValue.setText(oyetext);
 //                txtFilterValue.setText("sushil");
                 Log.i("onMapclicked","Inside onMapclicked 909099099099  "+oyetext);
                 ll_marker.setEnabled(true);

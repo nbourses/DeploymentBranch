@@ -115,9 +115,17 @@ public class General extends BroadcastReceiver {
                     AppConstants.LOCATION_PERMISSION_REQUEST_CODE);
 
         } else {
-            if (gps.canGetLocation())
-                Log.i("TAG","ralph "+gps.getLatitude());
-            saveLatLongLoc(context, gps.getLatitude(), gps.getLongitude());
+            if (gps.canGetLocation()) {
+
+               saveLatLongLoc(context, gps.getLatitude(), gps.getLongitude());
+            }else{
+                SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LAT, "19.1230339");
+                SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LNG, "72.8350437");
+                General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LAT,"19.1230339");
+                General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LNG,"72.8350437");
+                SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LOCALITY, "Andheri West");
+                General.setSharedPreferences(getApplicationContext(),AppConstants.LOCALITY,"Andheri West");
+            }
         }
     }
 

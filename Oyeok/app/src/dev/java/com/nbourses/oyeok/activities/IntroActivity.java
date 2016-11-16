@@ -1,10 +1,14 @@
 package com.nbourses.oyeok.activities;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -14,6 +18,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AlertDialog;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
@@ -59,6 +64,9 @@ public class IntroActivity extends ActionBarActivity {
     private  GPSTracker gps;
     private Geocoder geocoder;
     ImageView img1,img2,img3,img4,img5;
+    private boolean GPSIntent;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,18 +76,48 @@ public class IntroActivity extends ActionBarActivity {
       /*  ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
 */
+        mcallback = new GetCurrentLocation.CurrentLocationCallback() {
+            @Override
+            public void onComplete(Location location) {
+                Log.i("TAG", "ralpher 26 ");
 
-        gps = new GPSTracker(this);
+                if(location != null){
+                    Log.i("Exception11", "inside mcallback tra "+location.getLatitude()+"  "+location.getLongitude());
+                    General.saveLatLongLoc(IntroActivity.this, location.getLatitude(), location.getLongitude());
+                }
+                else{
+
+                        SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LAT, "19.1230339");
+                        SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LNG, "72.8350437");
+                        General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LAT,"19.1230339");
+                        General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LNG,"72.8350437");
+                        SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LOCALITY, "Andheri West");
+                        General.setSharedPreferences(getApplicationContext(),AppConstants.LOCALITY,"Andheri West");
+
+                }
+
+            }
+        };
+
+
+
+
+
+
+
+      /*  mcallback = new GetCurrentLocation.CurrentLocationCallback() {
+            @Override
+            public void onComplete(Location location) {F
+                Log.i("TAG", "ralpher 26 ");
+                Log.i("Exception11", "inside mcallback tra "+location);
+            }
+        };*/
+
+       ///// gps = new GPSTracker(this);
         //showPermissionDialog();
         General.setSharedPreferences(getBaseContext(),AppConstants.NO_CALL,"0");
 
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            General.showPermissionDialog(this, this);
-        }
-        else{
-            General.saveLatLongLoc(IntroActivity.this,gps.getLatitude(), gps.getLongitude());
-        }
+
         Log.i("latlongi","latlongi 76 "+General.getSharedPreferences(this,AppConstants.MY_LAT));
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
 
@@ -179,6 +217,8 @@ btnC.setOnClickListener(new View.OnClickListener() {
             }
         });
 
+
+
         // Set an Adapter on the ViewPager
         mViewPager.setAdapter(new IntroAdapter(getSupportFragmentManager()));
 
@@ -249,6 +289,52 @@ btnC.setOnClickListener(new View.OnClickListener() {
 
 
     }
+
+    public void onResume() {
+        Log.i("yessp","yesspo "+GPSIntent);
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if(GPSIntent && manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            if (ContextCompat.checkSelfPermission(IntroActivity.this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // General.showPermissionDialog(this, this);
+                ActivityCompat.requestPermissions(IntroActivity.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        AppConstants.LOCATION_PERMISSION_REQUEST_CODE);
+
+            }
+            else{
+
+                Log.i("TAG", "ralpher 24 ");
+                getLocationActivity = new GetCurrentLocation(IntroActivity.this, mcallback);
+
+            }
+        }
+
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Log.i("TAG", "ralpher re  ");
+            buildAlertMessageNoGps();
+        }else{
+            Log.i("TAG", "ralpher re1 ");
+            if (ContextCompat.checkSelfPermission(IntroActivity.this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // General.showPermissionDialog(this, this);
+                ActivityCompat.requestPermissions(IntroActivity.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        AppConstants.LOCATION_PERMISSION_REQUEST_CODE);
+
+            }
+            else{
+
+                Log.i("TAG", "ralpher 24 ");
+                getLocationActivity = new GetCurrentLocation(IntroActivity.this, mcallback);
+
+            }
+        }
+        super.onResume();
+
+
+    }
     private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
     {
         fragment.setArguments(args);
@@ -263,11 +349,13 @@ btnC.setOnClickListener(new View.OnClickListener() {
 
     @Override
     public void onBackPressed() {
+        Log.i("yessp","yessp "+GPSIntent);
         if (AppConstants.SIGNUP_FLAG) {
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
             AppConstants.SIGNUP_FLAG = false;
             skip.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else{
             super.onBackPressed();
         }
     }
@@ -310,6 +398,33 @@ btnC.setOnClickListener(new View.OnClickListener() {
 
 
     }*/
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        GPSIntent = true;
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LAT, "19.1230339");
+                        SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LNG, "72.8350437");
+                        General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LAT,"19.1230339");
+                        General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LNG,"72.8350437");
+                        SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LOCALITY, "Andheri West");
+                        General.setSharedPreferences(getApplicationContext(),AppConstants.LOCALITY,"Andheri West");
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     private void saveLatLongLoc(Double lat, Double lng){
         SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LAT, lat +"");
         SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LNG, lng + "");
@@ -350,6 +465,8 @@ btnC.setOnClickListener(new View.OnClickListener() {
     }
 
 
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -361,14 +478,21 @@ btnC.setOnClickListener(new View.OnClickListener() {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.i("TAG","ralphorp "+requestCode+" "+permissions+ " "+grantResults);
                     SharedPrefs.save(this, SharedPrefs.PERMISSION, "false");
-                    gps = new GPSTracker(this);
+                  /////  gps = new GPSTracker(this);
                     //Log.i("TAG","ralph 3 "+ gps.canGetLocation()+" "+gps.getLatitude());
-                  General.saveLatLongLoc(IntroActivity.this,gps.getLatitude(), gps.getLongitude());
+                   /////gps.canGetLocation()) {
+                        Log.i("TAG", "ralpher 25 ");
+                        getLocationActivity = new GetCurrentLocation(IntroActivity.this, mcallback);
+                           // General.saveLatLongLoc(IntroActivity.this, gps.getLatitude(), gps.getLongitude());
+
+
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
 
+
+
                 } else {
-                    Log.i("TAG","ralphorptrf "+requestCode+" "+permissions+ " "+grantResults);
+
                     SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LAT, "19.1230339");
                     SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LNG, "72.8350437");
                     General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LAT,"19.1230339");
@@ -385,6 +509,7 @@ btnC.setOnClickListener(new View.OnClickListener() {
             // permissions this app might request
         }
     }
+
 
 
 
