@@ -8,14 +8,14 @@
     tools:context="com.nbourses.oyeok.fragments.BuildingOyeConfirmation">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="40dip"
         android:background="@color/grey"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:text="Available Size:"
+            android:layout_height="match_parent"
+            android:text="Available Size : "
             android:textStyle="bold"
             android:gravity="center_horizontal|center_vertical"
             android:foregroundGravity="center_horizontal"
@@ -23,7 +23,184 @@
             android:textColor="@color/black"
             android:textSize="14sp"
             />
-        <LinearLayout
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/linearLayout9"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="2dp"
+            android:id="@+id/horizontalScrollView">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:foregroundGravity="center"
+                android:orientation="horizontal">
+                <!-- <ListView
+                     android:layout_width="match_parent"
+                     android:layout_height="100dp"
+                     android:divider="@color/white"
+                     android:dividerHeight="4dp">
+
+                 </ListView>-->
+                <RadioGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/radioGroup1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:layout_width="80dip"
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"
+                        android:text="1 Rk"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:padding="5dp"
+                        android:checked="true"
+                        android:background="@drawable/rbtn_selector"
+                        android:textColor="@drawable/rbtn_txtcolor_selector"
+                        android:id="@+id/rk1"/>
+                    <RadioButton
+                        android:layout_width="80dip"
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:button="@null"
+                        android:padding="5dp"
+                        android:visibility="gone"
+                        android:checked="false"
+                        android:background="@drawable/rbtn_selector"
+                        android:textColor="@drawable/rbtn_txtcolor_selector"
+                        android:id="@+id/bhk1"
+                        android:text="1 BHK"/>
+                    <RadioButton
+                        android:layout_width="80dip"
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:id="@+id/bhk1_5"
+                        android:visibility="gone"
+                        android:button="@null"
+                        android:padding="5dp"
+                        android:checked="false"
+                        android:background="@drawable/rbtn_selector"
+                        android:textColor="@drawable/rbtn_txtcolor_selector"
+                        android:text="1.5 BHK"/>
+                    <RadioButton
+                        android:layout_width="80dip"
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:button="@null"
+                        android:visibility="gone"
+                        android:padding="5dp"
+                        android:checked="false"
+                        android:background="@drawable/rbtn_selector"
+                        android:textColor="@drawable/rbtn_txtcolor_selector"
+                        android:id="@+id/bhk2"
+                        android:text="2 BHK"/>
+                    <RadioButton
+                        android:layout_width="80dip"
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:button="@null"
+                        android:visibility="gone"
+                        android:padding="5dp"
+                        android:checked="false"
+                        android:background="@drawable/rbtn_selector"
+                        android:textColor="@drawable/rbtn_txtcolor_selector"
+                        android:id="@+id/bhk2_5"
+                        android:text="2.5 BHK"/>
+                    <RadioButton
+                        android:layout_width="80dip"
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:button="@null"
+                        android:visibility="gone"
+                        android:padding="5dp"
+                        android:checked="false"
+                        android:background="@drawable/rbtn_selector"
+                        android:textColor="@drawable/rbtn_txtcolor_selector"
+                        android:id="@+id/bhk3"
+                        android:text="3 BHK"/>
+                    <RadioButton
+                        android:layout_width="80dip"
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:button="@null"
+                        android:padding="5dp"
+                        android:checked="false"
+                        android:visibility="gone"
+                        android:background="@drawable/rbtn_selector"
+                        android:textColor="@drawable/rbtn_txtcolor_selector"
+                        android:id="@+id/bhk3_5"
+                        android:text="3.5 BHK"/>
+                    <RadioButton
+                        android:layout_width="80dip"
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:button="@null"
+                        android:padding="5dp"
+                        android:checked="false"
+                        android:visibility="gone"
+                        android:background="@drawable/rbtn_selector"
+                        android:textColor="@drawable/rbtn_txtcolor_selector"
+                        android:id="@+id/bhk4"
+                        android:text="4 BHK"/>
+                    <RadioButton
+                        android:layout_width="80dip"
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:button="@null"
+                        android:padding="5dp"
+                        android:visibility="gone"
+                        android:checked="false"
+                        android:background="@drawable/rbtn_selector"
+                        android:textColor="@drawable/rbtn_txtcolor_selector"
+                        android:id="@+id/bhk4_5"
+                        android:text="4.5 BHK"/>
+                    <RadioButton
+                        android:layout_width="80dip"
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:button="@null"
+                        android:padding="5dp"
+                        android:checked="false"
+                        android:visibility="gone"
+                        android:background="@drawable/rbtn_selector"
+                        android:textColor="@drawable/rbtn_txtcolor_selector"
+                        android:id="@+id/bhk5"
+                        android:text="5 BHK"/>
+                    <RadioButton
+                        android:layout_width="80dip"
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:button="@null"
+                        android:padding="5dp"
+                        android:checked="false"
+                        android:visibility="gone"
+                        android:background="@drawable/rbtn_selector"
+                        android:textColor="@drawable/rbtn_txtcolor_selector"
+                        android:id="@+id/bhk5_5"
+                        android:text="5.5 BHK"/>
+                    <RadioButton
+                        android:layout_width="80dip"
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:button="@null"
+                        android:padding="5dp"
+                        android:checked="false"
+                        android:visibility="gone"
+                        android:background="@drawable/rbtn_selector"
+                        android:textColor="@drawable/rbtn_txtcolor_selector"
+                        android:id="@+id/bhk6"
+                        android:text="6 BHK"/>
+
+                </RadioGroup>
+            </LinearLayout>
+
+        </HorizontalScrollView>
+        <!--<LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
@@ -102,7 +279,7 @@
                 android:textStyle="bold"
                 />
 
-        </LinearLayout>
+        </LinearLayout>-->
 
     </LinearLayout>
 

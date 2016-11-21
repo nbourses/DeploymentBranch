@@ -13,9 +13,9 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -31,7 +31,7 @@ public class AddListing extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     View v;
-    private Button rk1,bhk1,bhk1_5,bhk2,bhk2_5,bhk3,bhk3_5,bhk4,bhk4_5,bhk5,bhk5_5,bhk6;
+    private RadioButton rk1,bhk1,bhk1_5,bhk2,bhk2_5,bhk3,bhk3_5,bhk4,bhk4_5,bhk5,bhk5_5,bhk6;
     private RadioGroup radioGroup1;
     TextView selected_config,home,office,shop,industry,next1,Cancel_add_building,b_type,area,conf;
     private String Property;
@@ -54,18 +54,18 @@ public class AddListing extends Fragment {
                              Bundle savedInstanceState) {
        v  =  inflater.inflate(R.layout.fragment_add_building_card_view, container, false);
 
-        rk1=(Button) v.findViewById( R.id.rk1 );
-        bhk1=(Button) v.findViewById( R.id.bhk1 );
-        bhk1_5=(Button) v.findViewById( R.id.bhk1_5 );
-        bhk2=(Button) v.findViewById( R.id.bhk2 );
-        bhk2_5=(Button) v.findViewById( R.id.bhk2_5 );
-        bhk3=(Button) v.findViewById( R.id.bhk3 );
-        bhk3_5=(Button) v.findViewById( R.id.bhk3_5 );
-        bhk4=(Button) v.findViewById( R.id.bhk4 );
-        bhk4_5=(Button) v.findViewById( R.id.bhk4_5 );
-        bhk5=(Button) v.findViewById( R.id.bhk5 );
-        bhk5_5=(Button) v.findViewById( R.id.bhk5_5 );
-        bhk6=(Button) v.findViewById( R.id.bhk6 );
+        rk1=(RadioButton) v.findViewById( R.id.rk1 );
+        bhk1=(RadioButton) v.findViewById( R.id.bhk1 );
+        bhk1_5=(RadioButton) v.findViewById( R.id.bhk1_5 );
+        bhk2=(RadioButton) v.findViewById( R.id.bhk2 );
+        bhk2_5=(RadioButton) v.findViewById( R.id.bhk2_5 );
+        bhk3=(RadioButton) v.findViewById( R.id.bhk3 );
+        bhk3_5=(RadioButton) v.findViewById( R.id.bhk3_5 );
+        bhk4=(RadioButton) v.findViewById( R.id.bhk4 );
+        bhk4_5=(RadioButton) v.findViewById( R.id.bhk4_5 );
+        bhk5=(RadioButton) v.findViewById( R.id.bhk5 );
+        bhk5_5=(RadioButton) v.findViewById( R.id.bhk5_5 );
+        bhk6=(RadioButton) v.findViewById( R.id.bhk6 );
         conf=(TextView)v.findViewById(R.id.conf);
         b_type=(TextView)v.findViewById(R.id.b_type);
 

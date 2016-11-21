@@ -483,6 +483,7 @@ private void init(){
         add_Building.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
         add_Building.setId(id);
         add_Building.setType("LIST");
+        add_Building.setDisplay_type(null);
 
         if(tt.equalsIgnoreCase("rental")){
             add_Building.setLl_pm(Integer.parseInt(numberAsString));

@@ -156,7 +156,7 @@ Log.i("port","portListing "+portListing);
         for(MyPortfolioModel c :results){
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),null,c.getTransactions(),c.getConfig());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),c.getTimestamp(),c.getTransactions(),c.getConfig(),null);
 
             myPortfolioLL.add(portListingModel);
 
@@ -168,29 +168,54 @@ Log.i("port","portListing "+portListing);
         for(MyPortfolioModel c :results1){
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),null,c.getTransactions(),c.getConfig());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),c.getTimestamp(),c.getTransactions(),c.getConfig(),null);
 
             myPortfolioOR.add(portListingModel);
 
 
         }
 
-        RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).findAllSorted("timestamp",false);
-        for(addBuildingRealm c :result1){
 
-Log.i("getLocality","getLocality   : "+c.getLocality());
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),null,c.getLl_pm(),0,null,null,c.getConfig());
+        RealmResults<addBuildingRealm> result11= realm.where(addBuildingRealm.class).equalTo("display_type","both").findAllSorted("timestamp",false);
+        for(addBuildingRealm c :result11){
+
+            Log.i("getLocality","getLocality   : "+c.getLocality());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type());
 
             addbuildingLL.add(portListingModel);
 
 
         }
 
-        RealmResults<addBuildingRealm> result2= realm.where(addBuildingRealm.class).findAllSorted("timestamp",false);
+        RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).notEqualTo("ll_pm", 0).findAllSorted("timestamp",false);
+        for(addBuildingRealm c :result1){
+
+            Log.i("getLocality","getLocality   : "+c.getLocality());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type());
+
+            addbuildingLL.add(portListingModel);
+
+
+        }
+
+
+
+//    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config) {
+        RealmResults<addBuildingRealm> result22= realm.where(addBuildingRealm.class).equalTo("display_type", "both").findAllSorted("timestamp",false);
+        for(addBuildingRealm c :result22){
+
+
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type());
+
+            addbuildingOR.add(portListingModel);
+
+
+        }
+        RealmResults<addBuildingRealm> result2= realm.where(addBuildingRealm.class).notEqualTo("or_psf", 0).findAllSorted("timestamp",false);
         for(addBuildingRealm c :result2){
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),null,0,c.getOr_psf(),null,null,c.getConfig());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type());
 
             addbuildingOR.add(portListingModel);
 

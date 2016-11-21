@@ -1936,13 +1936,14 @@ if(AppConstants.FAV) {
 
     }
 
-    public  void OpenBuildingOyeConfirmation(String listing,String transaction,String portal){
+    public  void OpenBuildingOyeConfirmation(String listing,String transaction,String portal,String Config){
         hdroomsCount.setVisibility(View.GONE);
         buidingInfoFlag=true;
         Bundle args = new Bundle();
         args.putString("listing", listing);
         args.putString("transaction", transaction);
         args.putString("portal", portal);
+        args.putString("config", Config);
         confirm_screen_title.setVisibility(View.VISIBLE);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);

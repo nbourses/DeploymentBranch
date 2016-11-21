@@ -61,15 +61,26 @@ public class porfolioAdapter extends BaseAdapter {
         } else {
             holder = (Holder) v.getTag();
         }
-        if(listing.getLl_pm()!=0){
+        if(listing.getLl_pm()!=0&&listing.getDisplay_type()==null){
         holder.heading.setText(listing.getName()+" ("+listing.getConfig()+")");
             holder.ActualPrice.setText(General.currencyFormat(listing.getLl_pm()+"")+"/month");
-        holder.B_image.setImageResource(R.drawable.buildingiconbeforeclick);
+            if(listing.getTransaction()==null) {
+                holder.B_image.setImageResource(R.drawable.asset_add_listing);
+                holder.B_image.setBackground(null);
+
+            }
+            else
+                holder.B_image.setImageResource(R.drawable.buildingiconbeforeclick);
         holder.description.setText(listing.getLocality());
         setIcon(listing, holder);
-        }else if(listing.getOr_psf()!=0){
+        }else if(listing.getOr_psf()!=0 && listing.getDisplay_type()==null){
             holder.ActualPrice.setText(General.currencyFormat(listing.getOr_psf()+"") + "/sq-ft" );
             holder.heading.setText(listing.getName()+" ("+listing.getConfig()+")");
+            if(listing.getTransaction()==null) {
+                holder.B_image.setImageResource(R.drawable.asset_add_listing);
+                holder.B_image.setBackground(null);
+            }
+            else
             holder.B_image.setImageResource(R.drawable.buildingiconbeforeclick);
             holder.description.setText(listing.getLocality());
             setIcon(listing, holder);
