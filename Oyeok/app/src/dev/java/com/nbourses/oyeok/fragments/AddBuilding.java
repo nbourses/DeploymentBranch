@@ -2,7 +2,9 @@ package com.nbourses.oyeok.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -24,11 +26,13 @@ import com.google.gson.JsonObject;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.activities.ClientMainActivity;
+import com.nbourses.oyeok.activities.MyPortfolioActivity;
 import com.nbourses.oyeok.adapters.searchBuilding;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.SearchBuildingModel;
 import com.nbourses.oyeok.models.loadBuildingDataModel;
+import com.nbourses.oyeok.realmModels.addBuildingRealm;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -300,7 +304,7 @@ private TextView Cancel,back,usertext;
 
                             double longi = Double.parseDouble(j.getJSONArray("loc").get(0).toString());
                             Log.i("Buildingdata", "lat " + lat+"longi:  "+longi+"id:  "+j.getString("id")+"name: "+j.getString("name"));
-                            building_names.add(new loadBuildingDataModel(j.getString("name"),lat,longi,j.getString("id")));
+                            building_names.add(new loadBuildingDataModel(j.getString("name"),lat,longi,j.getString("id"),j.getString("locality")));
 
                         }
                         adapter= new searchBuilding(building_names,getContext());
@@ -311,11 +315,32 @@ private TextView Cancel,back,usertext;
                                 if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                                     loadBuildingDataModel dataModel= building_names.get(position);
                                     General.setSharedPreferences(getContext(),AppConstants.BUILDING_NAME,adapter.getItem(position).getName());
-                                    General.setSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY,"");
+                                    General.setSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY,adapter.getItem(position).getLocality()+"");
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LAT,adapter.getItem(position).getLat()+"");
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LNG,adapter.getItem(position).getLng()+"");
 //                 General.setSharedPreferences(getContext(),AppConstants.PROPERTY,adapter.getItem(position).getProperty_type());
                                     ((ClientMainActivity)getActivity()).openAddListingFinalCard();
+                                }else{
+                                    Realm myRealm = General.realmconfig(getContext());
+                                    addBuildingRealm add_Building = new addBuildingRealm();
+                                    add_Building.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+                                    add_Building.setBuilding_name(adapter.getItem(position).getName());
+                                    add_Building.setType("ADD");
+                                    add_Building.setAddress(" Mumbai");
+                                    add_Building.setConfig(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG));
+                                    add_Building.setProperty_type(AppConstants.PROPERTY);
+                                    add_Building.setLat(adapter.getItem(position).getLat() + "");
+                                    add_Building.setLng(adapter.getItem(position).getLng() + "");
+                                    add_Building.setId(adapter.getItem(position).getId()+"");
+                                    add_Building.setSublocality(adapter.getItem(position).getLocality());
+                                    myRealm.beginTransaction();
+                                    myRealm.copyToRealmOrUpdate(add_Building);
+//        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
+                                    myRealm.commitTransaction();
+                                    AppConstants.PROPERTY="Home";
+                                    ((ClientMainActivity)getActivity()).closeAddBuilding();
+                                    Intent in = new Intent(getContext(), MyPortfolioActivity.class);
+                                    startActivity(in);
                                 }
 
                             }
@@ -357,6 +382,27 @@ private TextView Cancel,back,usertext;
 
     }
 
+
+
+    /*public void AddBuildingDataToRealm(String id) {
+
+        Realm myRealm = General.realmconfig(getContext());
+        addBuildingRealm add_Building = new addBuildingRealm();
+        add_Building.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+        add_Building.setBuilding_name(B_name);
+        add_Building.setType("ADD");
+        add_Building.setAddress(fullAddress);
+        add_Building.setConfig(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG));
+        add_Building.setProperty_type(AppConstants.PROPERTY);
+        add_Building.setLat(lat + "");
+        add_Building.setLng(lng + "");
+        add_Building.setId(id);
+        add_Building.setSublocality(SharedPrefs.getString(getContext(), SharedPrefs.MY_LOCALITY));
+        myRealm.beginTransaction();
+        myRealm.copyToRealmOrUpdate(add_Building);
+//        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
+        myRealm.commitTransaction();
+    }*/
 
 
     private void lockedTimer() {

@@ -1855,7 +1855,7 @@ if(AppConstants.FAV) {
                             Environment.getExternalStorageDirectory()
                                     + "/MapScreenShot"
                                     + System.currentTimeMillis() + ".png");
-Log.i(TAG,"Image is the "+out);
+                    Log.i(TAG,"Image is the "+out);
                     bmOverlay.compress(Bitmap.CompressFormat.PNG, 90, out);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1917,11 +1917,6 @@ Log.i(TAG,"Image is the "+out);
         }
     }
 
-
-
-
-
-
     public  void EditOyeDetails(){
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).OnOyeClick1();
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).disablepanel(true);
@@ -1952,16 +1947,12 @@ Log.i(TAG,"Image is the "+out);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         cancel_btn.setVisibility(View.VISIBLE);
+        cancel_btn.setText("Back");
         getSupportActionBar().setTitle("");
         if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")){
-
             confirm_screen_title.setText("Live Building Rates \n(Rent)");
-
-
         }else
         {
-
-
             confirm_screen_title.setText("Live Building Rates \n" + "(Buy/Sell)");
 
         }

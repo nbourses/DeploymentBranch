@@ -10,12 +10,14 @@ public class loadBuildingDataModel {
     double lat;
     double lng;
     String id;
+    String locality;
 
-    public loadBuildingDataModel(String name, double lat, double lng, String id ) {
+    public loadBuildingDataModel(String name, double lat, double lng, String id,String locality ) {
         this.name=name;
         this.lat=lat;
         this.lng=lng;
         this.id=id;
+        this.locality=locality;
 
     }
 
@@ -34,4 +36,10 @@ public class loadBuildingDataModel {
     public String getId() {
         return id;
     }
+
+    public String getLocality() {
+        return locality;
+    }
+
+
 }

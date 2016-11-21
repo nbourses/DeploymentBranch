@@ -847,6 +847,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         if (signUpCardFlag) {
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.fragment_container1)).commit();
             signUpCardFlag = false;
+            AppConstants.SIGNUP_FLAG = false;
         } else {
 //        if(AppConstants.SIGNUP_FLAG){
 //            if(AppConstants.REGISTERING_FLAG){}else{

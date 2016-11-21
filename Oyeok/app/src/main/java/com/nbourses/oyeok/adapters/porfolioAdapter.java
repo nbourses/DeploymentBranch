@@ -76,7 +76,8 @@ public class porfolioAdapter extends BaseAdapter {
         }else{
             holder.heading.setText(listing.getName()+" ("+listing.getConfig()+")");
             holder.ActualPrice.setText("Rates will be updated soon.");
-            holder.B_image.setImageResource(R.drawable.buildingiconbeforeclick);
+            holder.B_image.setImageResource(R.drawable.asset_add_listing);
+            holder.B_image.setBackground(null);
             holder.description.setText(listing.getLocality());
             setIcon(listing, holder);
         }
