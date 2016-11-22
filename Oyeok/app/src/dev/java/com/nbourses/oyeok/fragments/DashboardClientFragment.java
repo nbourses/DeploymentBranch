@@ -108,6 +108,8 @@ import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.interfaces.OnOyeClick;
 import com.nbourses.oyeok.models.AddBuildingModel;
+import com.nbourses.oyeok.models.buildingCacheModel;
+import com.nbourses.oyeok.realmModels.BuildingCacheRealm;
 import com.nbourses.oyeok.realmModels.Favourites;
 import com.nbourses.oyeok.realmModels.LatiLongi;
 import com.nbourses.oyeok.realmModels.MyPortfolioModel;
@@ -134,6 +136,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -324,6 +327,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private long mLastClickTime = SystemClock.elapsedRealtime();
     private Timer clockTickTimer;
     private AutoCompletePlaces.GooglePlacesAutocompleteAdapter dataAdapter;
+
+    ArrayList<buildingCacheModel> buildingCacheModels=new ArrayList<>();
+
+
+
+
 //    @Bind(R.id.seekbar_linearlayout)
 //    LinearLayout seekbarLinearLayout;
 
@@ -4613,6 +4622,35 @@ public void resetSeekBar(){
         Intent intent=new Intent(AppConstants.DISPLAY_BUILDING_CONF);
         intent.putExtra("getconf",config);
     }
+
+
+
+    private void CacheBuildings(String name,String lat,String longi,String locality,int ll_pm,int or_psf,String id,String conf,String listing,String portal,String rate_growth,String transaction){
+        Realm myRealm = General.realmconfig( getContext());
+        BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
+        buildingCacheRealm.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+        buildingCacheRealm.setName(name);
+        buildingCacheRealm.setLat(lat);
+        buildingCacheRealm.setLng(longi);
+        buildingCacheRealm.setLocality(locality);
+        buildingCacheRealm.setLl_pm(ll_pm);
+        buildingCacheRealm.setOr_psf(or_psf);
+        buildingCacheRealm.setId(id);
+        buildingCacheRealm.setConfig(conf);
+        buildingCacheRealm.setListing(listing);
+        buildingCacheRealm.setPortals(portal);
+        buildingCacheRealm.setRate_growth(rate_growth);
+        buildingCacheRealm.setTransactions(transaction);
+
+        if(myRealm.isInTransaction())
+            myRealm.cancelTransaction();
+        myRealm.beginTransaction();
+        myRealm.copyToRealmOrUpdate( buildingCacheRealm );
+//        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
+        myRealm.commitTransaction();
+    }
+
+
 
 
 
