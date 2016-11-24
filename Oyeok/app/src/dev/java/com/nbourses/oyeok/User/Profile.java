@@ -54,7 +54,7 @@ public class Profile extends Fragment {
      String name;
     TextView tx;
     String email ;
-    String namePattern = "[a-zA-Z]+[a-zA-Z0-9._-]+";
+    String namePattern = "^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$";
     String emailPattern = "[a-z]+[a-zA-Z0-9._-]+@[a-z]+\\.+(in|com|org|net)";
     String emailPattern1 ="[a-z]+[a-zA-Z0-9._-]+@[a-z]+\\.+[ac]+\\.+[in]";
 

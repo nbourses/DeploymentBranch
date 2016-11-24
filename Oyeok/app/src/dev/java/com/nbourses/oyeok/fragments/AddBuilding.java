@@ -320,6 +320,8 @@ private TextView Cancel,back,usertext;
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LAT,adapter.getItem(position).getLat()+"");
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LNG,adapter.getItem(position).getLng()+"");
 //                 General.setSharedPreferences(getContext(),AppConstants.PROPERTY,adapter.getItem(position).getProperty_type());
+                                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
                                     ((ClientMainActivity)getActivity()).openAddListingFinalCard();
                                 }else{
 
