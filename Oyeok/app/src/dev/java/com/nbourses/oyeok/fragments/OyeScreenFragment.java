@@ -532,11 +532,12 @@ public class OyeScreenFragment extends Fragment {
         if (bundle != null) {
 
          //   requestType.setText(bundle.getString("brokerType").toUpperCase());
-//            Log.i("value"," data"+bundle.getString("brokerType").toUpperCase());
+            Log.i("valuedata"," data     :   "+bundle.getString("brokerType").toUpperCase()+"     "+AppConstants.CURRENT_DEAL_TYPE);
             DecimalFormat formatter = new DecimalFormat();
 
 
-            if (bundle.getString("brokerType").equalsIgnoreCase("rent")) {
+            if (AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")) {
+               // if (bundle.getString("brokerType").equalsIgnoreCase("rent")) {
                 requestType.setText("Rental");
                 budgetSeekBar.setMin(AppConstants.minRent);
                 budgetSeekBar.setMax(AppConstants.maxRent);

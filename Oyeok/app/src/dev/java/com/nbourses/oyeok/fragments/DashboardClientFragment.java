@@ -321,7 +321,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private String favTitle = "My Home",B_name="";
     private BitmapDescriptor favIcon;
 
-    boolean savebuilding=false;
+    boolean savebuilding=false,pc=false;
     private Button CallButton,addbuilding;
     private Point centerPoint;
     private long mLastClickTime = SystemClock.elapsedRealtime();
@@ -1264,8 +1264,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     Log.i("MA999999 ", "MAP CLICK=========");
 if(!AppConstants.SETLOCATION && !savebuilding) {
 
-        tvRate.setVisibility(View.VISIBLE);
-        rupeesymbol.setVisibility(View.VISIBLE);
+        /*tvRate.setVisibility(View.VISIBLE);
+        rupeesymbol.setVisibility(View.VISIBLE);*/
     onMapclicked();
 }
 
@@ -1565,10 +1565,11 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
 
 //}
 
-
-        if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+        Log.i("ischecked", "savebuilding:    1 1 " + Walkthrough+"    "+savebuilding);
+        if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")&& !((ClientMainActivity)getActivity()).PCaddBuilding()) {
             if (Walkthrough.equalsIgnoreCase("true")) {
                 Log.i("ischecked", "walkthrough3dashboard1111111" + Walkthrough);
+
                 tutorialAlert(rootView);
 
                 Walkthrough = "false";
@@ -2121,7 +2122,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
 
 
 //        if(android.os.Build.VERSION.SDK_INT >18) {
-//            Log.i("FLipanimator paused", "fipanimator paused");
+            Log.i("FLipanimator paused", "fipanimator paused"+AppConstants.CURRENT_DEAL_TYPE+"  bt:   "+brokerType);
 //            mFlipAnimator.end();
 //        }
 

@@ -69,8 +69,11 @@ public class porfolioAdapter extends BaseAdapter {
                 holder.B_image.setBackground(null);
 
             }
-            else
+            else{
                 holder.B_image.setImageResource(R.drawable.buildingiconbeforeclick);
+                holder.B_image.setBackground(context.getResources().getDrawable(R.drawable.custom_img_bg));
+
+            }
         holder.description.setText(listing.getLocality());
         setIcon(listing, holder);
         }else if(listing.getOr_psf()!=0 && listing.getDisplay_type()==null){
@@ -80,8 +83,11 @@ public class porfolioAdapter extends BaseAdapter {
                 holder.B_image.setImageResource(R.drawable.asset_add_listing);
                 holder.B_image.setBackground(null);
             }
-            else
-            holder.B_image.setImageResource(R.drawable.buildingiconbeforeclick);
+            else{
+                holder.B_image.setImageResource(R.drawable.buildingiconbeforeclick);
+                holder.B_image.setBackground(context.getResources().getDrawable(R.drawable.custom_img_bg));
+
+            }
             holder.description.setText(listing.getLocality());
             setIcon(listing, holder);
         }else{

@@ -93,7 +93,7 @@ public class OyeConfirmation extends Fragment {
         slide_arrow=(AnimationUtils.loadAnimation(getContext(), R.anim.sliding_arrow));
         StartOyeButtonAnimation();
         updateLabel();
-
+        proceed_to_oye.setEnabled(true);
         init();
         SetPropertyDetail();
         return view;
@@ -183,10 +183,11 @@ public class OyeConfirmation extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 2000) {
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 3000) {
                     return;
                 }else{
                     mLastClickTime = SystemClock.elapsedRealtime();
+                    proceed_to_oye.setEnabled(false);
                     if (General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
                         getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
                         ((ClientMainActivity)getActivity()).signUp();

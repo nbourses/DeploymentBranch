@@ -293,6 +293,7 @@ Log.i("port","portListing "+portListing);
                                 portListing.remove(d);
                                 myPortfolioLL.remove(d);
                                 myPortfolioOR.remove(d);
+                                portListingCopy.remove(d);
                                 if(addbuildingLL.contains(d)){
                                     addbuildingLL.remove(d);
                                     matchedId = d.getId();

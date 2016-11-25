@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -280,6 +281,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 already_registered_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
                 new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
                 Log.i(TAG,"last fragment narcos 2 "+okBroker);
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(name.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(email.getWindowToken(), 0);
                 if(okBroker==false && General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
                     tvheading.setText(R.string.client_log_in_heading);
                     submit.setText("LOGIN as a Customer");
