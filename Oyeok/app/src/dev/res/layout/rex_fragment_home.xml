@@ -57,7 +57,7 @@
                 android:layout_gravity="center_horizontal"
 
                 />
-            <!--<TextView
+           <!-- <TextView
                 android:id="@+id/oye_arrow"
                 android:layout_width="35dp"
                 android:layout_height="45dp"
