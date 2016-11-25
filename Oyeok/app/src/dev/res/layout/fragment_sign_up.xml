@@ -272,7 +272,7 @@
                     android:textColor="@android:color/white"
                     android:layout_alignParentBottom="true"
 
-                    android:text="Register as Customer" />
+                    android:text="Register as a Customer" />
             </LinearLayout>
 
         </LinearLayout>

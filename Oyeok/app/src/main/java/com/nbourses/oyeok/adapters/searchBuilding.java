@@ -89,11 +89,11 @@ public class searchBuilding extends ArrayAdapter<loadBuildingDataModel> implemen
             lastPosition = position;
 
             viewHolder.txtName.setText(dataModel.getName());
-            viewHolder.txtlocality.setText("");
+            viewHolder.txtlocality.setText(dataModel.getLocality());
 //            viewHolder.txtVersion.setText(dataModel.getVersion_number());
             /*viewHolder.info.setOnClickListener(this);*/
             viewHolder.info.setTag(position);
-            viewHolder.info.setBackground(getContext().getResources().getDrawable(R.drawable.buildingiconbeforeclick));
+            viewHolder.info.setBackground(getContext().getResources().getDrawable(R.drawable.asset_add_listing));
             // Return the completed view to render on screen
             return convertView;
         }

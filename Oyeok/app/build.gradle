@@ -42,12 +42,13 @@ android {
         minSdkVersion 16
         multiDexEnabled true
         targetSdkVersion 23
-        versionCode 33
+        versionCode 37
         versionName "1.0"
         manifestPlaceholders = [manifestApplicationId          : "${applicationId}",
                                 onesignal_app_id               : "9e2ab2be-54c5-4981-b15f-fb8dc78b81ee",
                                 onesignal_google_project_number: "463092685367"]
 
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         debug {
@@ -350,4 +351,7 @@ dependencies {
 
 
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
 }

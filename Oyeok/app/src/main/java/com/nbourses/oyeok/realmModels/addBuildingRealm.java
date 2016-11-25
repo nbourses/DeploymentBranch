@@ -26,6 +26,24 @@ public class addBuildingRealm extends RealmObject{
     private String possession_date;
     private String type;
     private String address;
+    private String growth_rate;
+    private String display_type;
+
+    public String getDisplay_type() {
+        return display_type;
+    }
+
+    public void setDisplay_type(String display_type) {
+        this.display_type = display_type;
+    }
+
+    public String getGrowth_rate() {
+        return growth_rate;
+    }
+
+    public void setGrowth_rate(String growth_rate) {
+        this.growth_rate = growth_rate;
+    }
 
     public String getType() {
         return type;

@@ -206,11 +206,11 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     /*private PopupWindow optionspu;
     private PopupWindow optionspu1;*/
     // screen shot
-
-private String description;
+    private boolean pc=false;
+    private String description;
     private String heading;
-   private String  BrokerRole="";
-private Boolean cardFlag = false;
+    private String  BrokerRole="";
+    private Boolean cardFlag = false;
     private WebView webView;
     private  Boolean autocomplete = false,oyeconfirm_flag=false;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
@@ -274,9 +274,9 @@ private Boolean cardFlag = false;
                 {
 
                     if (AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner"))
-                        confirm_screen_title.setText("Posting Confirmation\n(I am Owner)");
+                        confirm_screen_title.setText("Posting Confirmation\n(I am Seller)");
                     else
-                        confirm_screen_title.setText("Posting Confirmation\n(I am Tenant)");
+                        confirm_screen_title.setText("Posting Confirmation\n(I am Buyer)");
                 }
                 loadFragment(oyeConfirmation1, null, R.id.container_OyeConfirmation, "");
                 dealsWrapper.setVisibility(View.GONE);
@@ -1855,7 +1855,7 @@ if(AppConstants.FAV) {
                             Environment.getExternalStorageDirectory()
                                     + "/MapScreenShot"
                                     + System.currentTimeMillis() + ".png");
-Log.i(TAG,"Image is the "+out);
+                    Log.i(TAG,"Image is the "+out);
                     bmOverlay.compress(Bitmap.CompressFormat.PNG, 90, out);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1917,11 +1917,6 @@ Log.i(TAG,"Image is the "+out);
         }
     }
 
-
-
-
-
-
     public  void EditOyeDetails(){
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).OnOyeClick1();
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).disablepanel(true);
@@ -1941,27 +1936,26 @@ Log.i(TAG,"Image is the "+out);
 
     }
 
-    public  void OpenBuildingOyeConfirmation(String listing,String transaction,String portal){
+    public  void OpenBuildingOyeConfirmation(String listing,String transaction,String portal,String Config){
         hdroomsCount.setVisibility(View.GONE);
+        drawerFragment.setMenuVisibility(false);
         buidingInfoFlag=true;
         Bundle args = new Bundle();
         args.putString("listing", listing);
         args.putString("transaction", transaction);
         args.putString("portal", portal);
+        args.putString("config", Config);
         confirm_screen_title.setVisibility(View.VISIBLE);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         cancel_btn.setVisibility(View.VISIBLE);
+        cancel_btn.setText("Back");
+
         getSupportActionBar().setTitle("");
         if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")){
-
             confirm_screen_title.setText("Live Building Rates \n(Rent)");
-
-
         }else
         {
-
-
             confirm_screen_title.setText("Live Building Rates \n" + "(Buy/Sell)");
 
         }
@@ -2098,8 +2092,16 @@ public void openAddListing(){
     fragmentTransaction.addToBackStack("card");
     fragmentTransaction.replace(R.id.card, addBuildingCardView);
     fragmentTransaction.commitAllowingStateLoss();
+    pc=true;
 //    loadFragmentAnimated(addBuildingCardView, null, R.id.card, "");
 }
+
+    public boolean PCaddBuilding(){
+        if(pc==true){
+                return true;}
+        else{
+        return false;}
+    }
 
     public void openAddBuilding(){
 
@@ -2170,6 +2172,7 @@ public void openAddListing(){
         btn_cancel.setVisibility(View.VISIBLE);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        confirm_screen_title.setVisibility(View.VISIBLE);
         confirm_screen_title.setText(b_name);
         getSupportActionBar().setTitle("");
         closeAddBuilding();
@@ -2212,6 +2215,7 @@ public void openAddListing(){
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        pc=false;
         confirm_screen_title.setVisibility(View.GONE);
         getSupportActionBar().setTitle("Live Region Rates");
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).ResetChanges();

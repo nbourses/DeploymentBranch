@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -35,6 +36,8 @@ import com.nbourses.oyeok.realmModels.addBuildingRealm;
 
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -71,11 +74,16 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
     LinearLayout add_build;
     private String matchedId;
 
+    @Bind(R.id.container_Signup1)
+    FrameLayout container_Signup1;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_my_portfolio );
-
+        ButterKnife.bind(this);
         if(portListing != null)
             portListing.clear();
         if(myPortfolioLL != null)
@@ -112,11 +120,22 @@ Log.i("port","portListing "+portListing);
                 if (General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
 
 //                    General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
-                    SignUpFragment signUpFragment = new SignUpFragment();
+                    SignUpFragment d = new SignUpFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("lastFragment", "clientDrawer");
-                    loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup1, "");
-                    AppConstants.SIGNUP_FLAG = true;
+//                    loadFragment(signUpFragment, bundle, R.id.container_Signup1, "");
+//                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
+                    d.setArguments(bundle);
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+                    fragmentTransaction.addToBackStack("cardSignUp1");
+                    container_Signup1.setVisibility(View.VISIBLE);
+                    fragmentTransaction.replace(R.id.container_Signup1, d);
+//                    signUpCardFlag = true;
+                    fragmentTransaction.commitAllowingStateLoss();
+//                    AppConstants.SIGNUP_FLAG = true;
 
                 }else {
                     General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
@@ -137,7 +156,7 @@ Log.i("port","portListing "+portListing);
         for(MyPortfolioModel c :results){
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),null,c.getTransactions(),c.getConfig());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),c.getTimestamp(),c.getTransactions(),c.getConfig(),null);
 
             myPortfolioLL.add(portListingModel);
 
@@ -149,29 +168,54 @@ Log.i("port","portListing "+portListing);
         for(MyPortfolioModel c :results1){
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),null,c.getTransactions(),c.getConfig());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),c.getTimestamp(),c.getTransactions(),c.getConfig(),null);
 
             myPortfolioOR.add(portListingModel);
 
 
         }
 
-        RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).findAllSorted("timestamp",false);
-        for(addBuildingRealm c :result1){
 
-Log.i("getLocality","getLocality   : "+c.getLocality());
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),null,c.getLl_pm(),0,null,null,c.getConfig());
+        RealmResults<addBuildingRealm> result11= realm.where(addBuildingRealm.class).equalTo("display_type","both").findAllSorted("timestamp",false);
+        for(addBuildingRealm c :result11){
+
+            Log.i("getLocality","getLocality   : "+c.getLocality());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type());
 
             addbuildingLL.add(portListingModel);
 
 
         }
 
-        RealmResults<addBuildingRealm> result2= realm.where(addBuildingRealm.class).findAllSorted("timestamp",false);
+        RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).notEqualTo("ll_pm", 0).findAllSorted("timestamp",false);
+        for(addBuildingRealm c :result1){
+
+            Log.i("getLocality","getLocality   : "+c.getLocality());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type());
+
+            addbuildingLL.add(portListingModel);
+
+
+        }
+
+
+
+//    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config) {
+        RealmResults<addBuildingRealm> result22= realm.where(addBuildingRealm.class).equalTo("display_type", "both").findAllSorted("timestamp",false);
+        for(addBuildingRealm c :result22){
+
+
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type());
+
+            addbuildingOR.add(portListingModel);
+
+
+        }
+        RealmResults<addBuildingRealm> result2= realm.where(addBuildingRealm.class).notEqualTo("or_psf", 0).findAllSorted("timestamp",false);
         for(addBuildingRealm c :result2){
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),null,0,c.getOr_psf(),null,null,c.getConfig());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type());
 
             addbuildingOR.add(portListingModel);
 
@@ -249,6 +293,7 @@ Log.i("getLocality","getLocality   : "+c.getLocality());
                                 portListing.remove(d);
                                 myPortfolioLL.remove(d);
                                 myPortfolioOR.remove(d);
+                                portListingCopy.remove(d);
                                 if(addbuildingLL.contains(d)){
                                     addbuildingLL.remove(d);
                                     matchedId = d.getId();
@@ -490,6 +535,18 @@ inputSearch.addTextChangedListener(new TextWatcher() {
 
     @Override
     public void onBackPressed() {
+        if(AppConstants.SIGNUP_FLAG){
+            //Log.i(TAG,"flaga isa 6 ");
+
+            if(AppConstants.REGISTERING_FLAG){}else{
+                // getSupportFragmentManager().popBackStack();
+//                getSupportFragmentManager().
+                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
+                AppConstants.SIGNUP_FLAG=false;
+                }
+            Log.i("sushil123"," main activity =================== SIGNUP_FLAGffffffff");
+
+        }else
        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
            Intent in = new Intent(getBaseContext(),BrokerMainActivity.class);
            in.addFlags(
@@ -564,7 +621,7 @@ inputSearch.addTextChangedListener(new TextWatcher() {
         fragmentTransaction.commitAllowingStateLoss();
     }*/
 
-    private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
+    private void loadFragment(Fragment fragment, Bundle args, int containerId, String title)
     {
         fragment.setArguments(args);
         FragmentManager fragmentManager = getSupportFragmentManager();

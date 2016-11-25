@@ -2,7 +2,9 @@ package com.nbourses.oyeok.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -24,11 +26,14 @@ import com.google.gson.JsonObject;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.activities.ClientMainActivity;
+import com.nbourses.oyeok.activities.MyPortfolioActivity;
 import com.nbourses.oyeok.adapters.searchBuilding;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.SearchBuildingModel;
+import com.nbourses.oyeok.models.UpdateBuildingRateModel;
 import com.nbourses.oyeok.models.loadBuildingDataModel;
+import com.nbourses.oyeok.realmModels.addBuildingRealm;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -300,7 +305,7 @@ private TextView Cancel,back,usertext;
 
                             double longi = Double.parseDouble(j.getJSONArray("loc").get(0).toString());
                             Log.i("Buildingdata", "lat " + lat+"longi:  "+longi+"id:  "+j.getString("id")+"name: "+j.getString("name"));
-                            building_names.add(new loadBuildingDataModel(j.getString("name"),lat,longi,j.getString("id")));
+                            building_names.add(new loadBuildingDataModel(j.getString("name"),lat,longi,j.getString("id"),j.getString("locality")));
 
                         }
                         adapter= new searchBuilding(building_names,getContext());
@@ -311,11 +316,21 @@ private TextView Cancel,back,usertext;
                                 if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                                     loadBuildingDataModel dataModel= building_names.get(position);
                                     General.setSharedPreferences(getContext(),AppConstants.BUILDING_NAME,adapter.getItem(position).getName());
-                                    General.setSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY,"");
+                                    General.setSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY,adapter.getItem(position).getLocality()+"");
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LAT,adapter.getItem(position).getLat()+"");
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LNG,adapter.getItem(position).getLng()+"");
 //                 General.setSharedPreferences(getContext(),AppConstants.PROPERTY,adapter.getItem(position).getProperty_type());
+                                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
                                     ((ClientMainActivity)getActivity()).openAddListingFinalCard();
+                                }else{
+
+
+
+                                    AddbuildingAPICall(adapter.getItem(position).getName(),adapter.getItem(position).getLat() + "",adapter.getItem(position).getLng() + "",adapter.getItem(position).getId()+"",adapter.getItem(position).getLocality());
+
+
+
                                 }
 
                             }
@@ -359,6 +374,106 @@ private TextView Cancel,back,usertext;
 
 
 
+    /*public void AddBuildingDataToRealm(String id) {
+
+        Realm myRealm = General.realmconfig(getContext());
+        addBuildingRealm add_Building = new addBuildingRealm();
+        add_Building.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+        add_Building.setBuilding_name(B_name);
+        add_Building.setType("ADD");
+        add_Building.setAddress(fullAddress);
+        add_Building.setConfig(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG));
+        add_Building.setProperty_type(AppConstants.PROPERTY);
+        add_Building.setLat(lat + "");
+        add_Building.setLng(lng + "");
+        add_Building.setId(id);
+        add_Building.setSublocality(SharedPrefs.getString(getContext(), SharedPrefs.MY_LOCALITY));
+        myRealm.beginTransaction();
+        myRealm.copyToRealmOrUpdate(add_Building);
+//        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
+        myRealm.commitTransaction();
+    }*/
+
+
+
+    public void AddbuildingAPICall(final String name,final String lat,final String longi,final String b_id,final String locality) {
+
+        Log.i("updateStatus CALLED", "updateStatus success called ");
+        UpdateBuildingRateModel updateBuildingRateModel =new UpdateBuildingRateModel();
+        updateBuildingRateModel.setBuilding(name);
+        updateBuildingRateModel.setLat(lat);
+        updateBuildingRateModel.setLongiute(longi);
+        updateBuildingRateModel.setBuilding_id(b_id);
+        updateBuildingRateModel.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+        updateBuildingRateModel.setUser_role(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
+        updateBuildingRateModel.setLocality(locality);
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+        try {
+            oyeokApiService.updateBuildingData(updateBuildingRateModel, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+
+                        String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+                        try {
+                            JSONObject jsonResponse = new JSONObject(strResponse);
+                            Log.i("magic1","addBuildingRealm success response "+response+"\n"+jsonResponse);
+                            JSONObject building = new JSONObject(jsonResponse.getString("responseData"));
+                            Log.i("magic1","addBuildingRealm success response "+building);
+//                            Log.i("magic1","addBuildingRealm success response "+building.getString("rate_growth")+" 2."+building.getString("or_psf")+" 2."+building.getString("ll_pm"));
+
+                            for(int i=0;i<2;i++) {
+                                Realm myRealm = General.realmconfig(getContext());
+                                addBuildingRealm add_Building = new addBuildingRealm();
+                                add_Building.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+                                add_Building.setBuilding_name(name);
+                                add_Building.setType("ADD");
+
+                                add_Building.setAddress(" Mumbai");
+                                add_Building.setConfig(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG));
+                                add_Building.setProperty_type(AppConstants.PROPERTY);
+                                add_Building.setLat(lat);
+                                add_Building.setLng(longi);
+                                add_Building.setSublocality(locality);
+                                add_Building.setGrowth_rate(building.getString("rate_growth"));
+                                add_Building.setDisplay_type(null);
+
+                                if(i==0){
+                                    add_Building.setId(b_id);
+                                    add_Building.setLl_pm(price(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG),Integer.parseInt(building.getString("ll_pm"))));
+                                    add_Building.setOr_psf(0);
+                                }else{
+                                    add_Building.setId(b_id+"1");
+                                    add_Building.setLl_pm(0);
+                                    add_Building.setOr_psf(Integer.parseInt(building.getString("or_psf")));
+                                }
+                                myRealm.beginTransaction();
+                                myRealm.copyToRealmOrUpdate(add_Building);
+                                myRealm.commitTransaction();
+                            }
+                            AppConstants.PROPERTY="Home";
+                            ((ClientMainActivity)getActivity()).closeAddBuilding();
+                            Intent in = new Intent(getContext(), MyPortfolioActivity.class);
+                            startActivity(in);
+                        } catch (JSONException e) {e.printStackTrace();}
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+
+        }catch (Exception e){}
+
+    }
+
+
+
+
+
     private void lockedTimer() {
         if(clockTickTimer!=null){
             clockTickTimer.cancel();
@@ -388,44 +503,49 @@ private TextView Cancel,back,usertext;
 
     }
 
-
-
-  /*
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction( uri );
-        }
-    }*/
-
-/*    @Override
-    public void onAttach(Context context) {
-        super.onAttach( context );
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException( context.toString()
-                    + " must implement OnFragmentInteractionListener" );
-        }
+ public int price(String conf,int rate){
+    Log.i("conf case","conf  : "+conf+"  "+rate);
+    int price=rate*950;
+    switch(conf) {
+        case "1rk":
+            price = rate * 300;
+            break;
+        case "1bhk":
+            price = rate * 600;
+            break;
+        case "1.5bhk":
+            price = rate * 800;
+            break;
+        case "2bhk":
+            price = rate * 950;
+            break;
+        case "2.5bhk":
+            price = rate * 1300;
+            break;
+        case "3bhk":
+            price = rate * 1600;
+            break;
+        case "3.5bhk":
+            price = rate * 1800;
+            break;
+        case "4bhk":
+            price = rate * 2100;
+            break;
+        case "4.5bhk":
+            price = rate * 2300;
+            break;
+        case "5bhk":
+            price = rate * 2500;
+            break;
+        case "5.5bhk":
+            price = rate * 2700;
+            break;
+        case "6bhk":
+            price = rate * 2900;
+            break;
     }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }*/
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    /*public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }*/
+    price=price/500;
+    price=price*500;
+    return price;
+ }
 }

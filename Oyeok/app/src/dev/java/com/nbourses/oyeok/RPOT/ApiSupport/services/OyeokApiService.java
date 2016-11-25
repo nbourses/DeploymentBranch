@@ -15,6 +15,7 @@ import com.nbourses.oyeok.models.AddListingBorker;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.PublishLetsOye;
 import com.nbourses.oyeok.models.SearchBuildingModel;
+import com.nbourses.oyeok.models.UpdateBuildingRateModel;
 
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -84,6 +85,9 @@ public interface OyeokApiService {
 
     @POST("/add/listings")
     void addListing(@Body AddListingBorker addListingBorker, Callback<JsonElement> callback);
+
+    @POST("/add/building")
+    void updateBuildingData(@Body UpdateBuildingRateModel updateBuildingRateModel, Callback<JsonElement> callback);
 
 }
 

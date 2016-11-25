@@ -48,7 +48,25 @@
                 android:id="@+id/helperView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+            <TextView
+                android:id="@+id/walk"
+                android:layout_width="75dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="160dp"
+                android:layout_marginLeft="-21dp"
+                android:layout_gravity="center_horizontal"
 
+                />
+            <!--<TextView
+                android:id="@+id/oye_arrow"
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:background="@drawable/oye_arrow"
+                android:layout_marginTop="160dp"
+                android:layout_marginLeft="335dp"
+                android:gravity="right"
+
+                />-->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -166,16 +184,16 @@
 
                         <TextView
                             android:layout_width="255dp"
-                            android:layout_height="40dp"
+                            android:layout_height="50dip"
                             android:id="@+id/tvFetchingRates"
                             android:textColor="@color/White"
-                            android:visibility="gone"
+                            android:visibility="visible"
                             android:foregroundGravity="center_horizontal|center_vertical"
                             android:layout_marginTop="15dp"
-                            android:paddingTop="-15dp"
-                            android:paddingBottom="10dp"
+
+                            android:paddingBottom="1dp"
                             android:text=""
-                            android:gravity="center_horizontal|center_vertical"
+                            android:gravity="top|center_horizontal"
                             android:textSize="12sp"
                             android:textStyle="bold" />
                         <LinearLayout
@@ -282,6 +300,7 @@
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_alignParentRight="true"
+                            android:layout_marginRight="-1dp"
 
                             >
 
@@ -731,14 +750,22 @@
             </LinearLayout>
 
         </LinearLayout>
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="65dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white"
+            android:visibility="visible"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="40dip"
-            android:layout_marginTop="60dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
             android:text="Find Building on Map &amp; Save"
             android:gravity="center"
             android:background="@color/grey"
@@ -747,8 +774,7 @@
             android:id="@+id/txt_info"
             android:visibility="gone"
             android:textStyle="bold"/>
-
-
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="500dp"

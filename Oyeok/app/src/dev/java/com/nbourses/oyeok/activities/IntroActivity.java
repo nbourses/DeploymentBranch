@@ -76,6 +76,11 @@ public class IntroActivity extends ActionBarActivity {
       /*  ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
 */
+        if (General.getSharedPreferences(getBaseContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
+            General.setSharedPreferences(getBaseContext(), AppConstants.TIME_STAMP_IN_MILLI, String.valueOf(System.currentTimeMillis()));
+            Log.i("TIMESTAMP", "millis " + System.currentTimeMillis());
+        }
+
         mcallback = new GetCurrentLocation.CurrentLocationCallback() {
             @Override
             public void onComplete(Location location) {

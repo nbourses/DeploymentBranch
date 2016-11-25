@@ -1139,6 +1139,54 @@ while(slowInternetFlag) {
 
 
 
+    public int getprice(String conf,int rate){
+        Log.i("conf case","conf  : "+conf+"  "+rate);
+        int price=rate*950;
+        switch(conf) {
+            case "1rk":
+                price = rate * 300;
+                break;
+            case "1bhk":
+                price = rate * 600;
+                break;
+            case "1.5bhk":
+                price = rate * 800;
+                break;
+            case "2bhk":
+                price = rate * 950;
+                break;
+            case "2.5bhk":
+                price = rate * 1300;
+                break;
+            case "3bhk":
+                price = rate * 1600;
+                break;
+            case "3.5bhk":
+                price = rate * 1800;
+                break;
+            case "4bhk":
+                price = rate * 2100;
+                break;
+            case "4.5bhk":
+                price = rate * 2300;
+                break;
+            case "5bhk":
+                price = rate * 2500;
+                break;
+            case "5.5bhk":
+                price = rate * 2700;
+                break;
+            case "6bhk":
+                price = rate * 2900;
+                break;
+        }
+        price=price/500;
+        price=price*500;
+        return price;
+    }
+
+
+
 }
 
    // private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;

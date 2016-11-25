@@ -164,7 +164,7 @@ public class AppConstants {
     public static String NO_CALL = "no_call";
 
 
-//listing card view variables
+    //listing card view variables
     public static String APPROX_AREA="approx_area";
     public static String BUILDING_NAME="building_name";
     public static String BUILDING_LOCALITY="building_locality";
@@ -175,6 +175,12 @@ public class AppConstants {
     public static final String MY_BASE_LOCATION = "myBaseLocation";
     public static  String MY_BASE_LAT = "myBaseLat";
     public static  String MY_BASE_LNG = "myBaseLng";
+
+    //  display config on building confirmation
+
+    public static final String DISPLAY_BUILDING_CONF="displayBuildingConf";
+    public static final String DISPLAY_CONFIG_BASED_PRICE="displayConfigBasedPrice";
+
 
 
 }
