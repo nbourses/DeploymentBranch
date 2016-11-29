@@ -57,16 +57,16 @@
                 android:layout_gravity="center_horizontal"
 
                 />
-            <!--<TextView
+            <TextView
                 android:id="@+id/oye_arrow"
                 android:layout_width="35dp"
                 android:layout_height="45dp"
                 android:background="@drawable/oye_arrow"
-                android:layout_marginTop="160dp"
+                android:layout_marginTop="164dp"
                 android:layout_marginLeft="335dp"
                 android:gravity="right"
 
-                />-->
+                />
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -300,16 +300,13 @@
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_alignParentRight="true"
-                            android:layout_marginRight="-1dp"
-
+                            android:layout_marginRight="-4dp"
                             >
 
                             <TextView
                                 android:id="@+id/newVisits"
                                 android:layout_width="45dp"
                                 android:layout_height="45dp"
-
-
                                 android:gravity="center_horizontal|center_vertical"
                                 android:paddingLeft="1dp"
                                 android:paddingRight="1dp"
@@ -967,6 +964,18 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:text="Office"
+                    android:textColor="@color/greenish_blue"
+                    android:background="@drawable/gradient_button_bg_with_border"
+                    android:id="@+id/office"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="1dp"
+                    />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:text="Shop"
                     android:textColor="@color/greenish_blue"
                     android:background="@drawable/gradient_button_bg_with_border"
@@ -988,18 +997,7 @@
                     android:layout_marginRight="2dp"
                     android:layout_marginBottom="1dp"
                     />
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Office"
-                    android:textColor="@color/greenish_blue"
-                    android:background="@drawable/gradient_button_bg_with_border"
-                    android:id="@+id/office"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginRight="2dp"
-                    android:layout_marginBottom="1dp"
-                    />
+
 
 
             </LinearLayout>

@@ -1139,7 +1139,7 @@ while(slowInternetFlag) {
 
 
 
-    public int getprice(String conf,int rate){
+    /*public int getprice(String conf,int rate){
         Log.i("conf case","conf  : "+conf+"  "+rate);
         int price=rate*950;
         switch(conf) {
@@ -1183,7 +1183,7 @@ while(slowInternetFlag) {
         price=price/500;
         price=price*500;
         return price;
-    }
+    }*/
 
 
 

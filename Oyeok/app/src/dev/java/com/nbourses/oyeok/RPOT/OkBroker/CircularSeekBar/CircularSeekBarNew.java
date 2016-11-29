@@ -993,112 +993,48 @@ public class CircularSeekBarNew extends View {
     String numToVal(int no){
         Log.i("TRACE","no is" +no);
         String str = "",v = "";
-
         int twoWord = 0,val = 1;
-
         int c = (no == 0 ? 1 : (int)(log10(no)+1));
-
         if (c > 8) {
-
             c = 8;
         }
         if (c%2 == 1){
-
             c--;
         }
-
         c--;
         //   int q = Int(pow(Double(10),Double(c)))
         switch(c)
         {
             case 7:
-
-               /* val=no;
-
-
-                Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
-                str=format1.format(val);
-                String strWithoutSymbol2 = "";
-
-                strWithoutSymbol2 = str.substring(0,str.length());
-                str= strWithoutSymbol2;*/
-            //if(propertyType)
-               /* val = no/10000000;
-//            else
-//                val = no/100000;
-
-                v = val+"";
-               // str = v+"CR";
-                str = v;
-                no = no%10000000;
-                Log.i("TRACE","s");
-                int s2=Integer.parseInt(str);
-                Log.i("TRACE","s2"+s2);
-                s2=s2*10000000;*/
                 val=no;
                 Format format = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
                 str=format.format(val);
                 Log.i("TRACE","Str before truncation"+str);
                 String strWithoutSymbol = "";
-
                 strWithoutSymbol = str.substring(2,str.length()-3);
                 str= strWithoutSymbol;
                 twoWord++;
                 twoWord++;
 
             case 5:
-               /* Format format2 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
-                if (val != 0){
-                    str=format2.format(val);
-                    String strWithoutSymbol1 = "";
-
-                    strWithoutSymbol1 = str.substring(0,str.length());
-                    str= strWithoutSymbol1;
-                    //str = str+v+"L ";
-                    twoWord++;
-                }*/
-               /* val = no/100000;
-
-                v = val+"";
-                no = no%100000;*/
                 val= no;
                 if (val != 0) {
-                    //str = str+v+"L ";
-                   /* str = str+v;
-                    int s=Integer.parseInt(str);
-                    s=s*100000;*/
                     Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
                     str=format1.format(val);
                     String strWithoutSymbol1 = "";
-
                     strWithoutSymbol1 = str.substring(2,str.length()-3);
                     str= "₹"+strWithoutSymbol1;
                     twoWord++;
                 }
-
-
                 if (twoWord == 2){
                     break;}
 
             case 3:
-               // val = no/1000;
-                //v = val+"";
-               /* Format format = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
-                str=format.format(val);
-                String strWithoutSymbol = "";
-
-                strWithoutSymbol = str.substring(0,str.length());
-                str= strWithoutSymbol;*/
                 val=no;
                 if (val != 0) {
-                   //str = str+v+"K";
-                   // str = str+v;
-                 /* int s1=  Integer.parseInt(str);
-                      s1=s1*1000;*/
                     Format format2 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
                     str=format2.format(val);
                     String strWithoutSymbol2 = "";
-
                     strWithoutSymbol2 = str.substring(2,str.length()-3);
                     str= "₹"+strWithoutSymbol2;
                 }
@@ -1109,11 +1045,7 @@ public class CircularSeekBarNew extends View {
         }
         Log.i("TRACE","str is "+str);
         return str;
-
     }
-
-
-
 
 
     public  void onTabclick(){
@@ -1121,16 +1053,12 @@ public class CircularSeekBarNew extends View {
         float y = 50.0f;
         int x_c = (int)x;
         int y_c = (int)y;
-
         for(int i=0;i<imagesRect.size();i++)
         {
             Rect m = imagesRect.get(i);
             if(m.contains(x_c,y_c))
             {
-
-
                 Log.i("Debug Circ","index is" +index);
-
                 Log.i("Debug Circ","mImageAction " +mImageAction);
                 if(i == index)
                 {
@@ -1143,38 +1071,12 @@ public class CircularSeekBarNew extends View {
                 }else
                 {
                     index = i;
-//                           // user role is no more part of preok so was catching in exception, leading hiding of property description and double touch on property icon problem
-//
-//                            try {
-//
-//                                if(values.getJSONObject(i).getString("user_role").equalsIgnoreCase("client")) {
-//                                    mImageAction.onclick(i, values, "showHalf",x_c,y_c);
-//                                    Log.i("BrokerPreokFragment", "showHalf passed");
-//                                    //remember changes
-//
-//                                }else
-//                                {//remember changes
                     mImageAction.onclick(i, values, "show",x_c,y_c);
                     Log.i("BrokerPreokFragment", "show passed");
-                    // sushil comment
-//                                    if(mImageAction != null)
-//                                     {
-//                                        mImageAction.onclick(i,values,"hide", x_c, y_c);
-//                                    }
                     invalidate();
-
-//                                }
-//
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
                 }
-                //pw = new PopupWindow(, 300, 470, true);
-                // display the popup in the center
-                //pw.showAtLocation(R.id.circularseekbar, Gravity.CENTER, 0, 0);
                 invalidate();
                 break;
-
             }else
             {
                 index = -1;
@@ -1185,12 +1087,7 @@ public class CircularSeekBarNew extends View {
                 invalidate();
             }
         }
-
     }
-
-
-
-
 
 
 }

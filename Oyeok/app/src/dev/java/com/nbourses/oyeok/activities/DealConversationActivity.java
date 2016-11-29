@@ -290,7 +290,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         i("WHERENOW", "UUID lotto " + UUID);
 
-        pubnub = new Pubnub(AppConstants.PUBNUB_PUBLISH_KEY, AppConstants.PUBNUB_SUBSCRIBE_KEY);
+        pubnub = new Pubnub(AppConstants.PUBNUB_PUBLISH_KEY, AppConstants.PUBNUB_SUBSCRIBE_KEY,true);
 
         init();
     }

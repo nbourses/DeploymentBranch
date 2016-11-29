@@ -220,7 +220,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private BitmapDescriptor iconOffice;
     private BitmapDescriptor iconOther;
     private Drawable sort_down_black,sort_down_red,sort_up_black,sort_up_green,comman_icon;
-
+    private Realm realm;
     private String setBaseRegion;
 
     long then;
@@ -307,7 +307,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private View v1;
     private Boolean spanning = false,autoIsClicked=false,pro_click=false;
     RelativeLayout parenttop,parentbottom;
-    Animation zoomout_right, slide_up, zoomout_left, ani, zoomin_zoomout,slide_up1;
+    Animation zoomout_right, slide_up, zoomout_left, ani, zoomin_zoomout,slide_up1,slide_left;
 //    Intent intent ;
 
     private RelativeLayout topView;
@@ -330,7 +330,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     ArrayList<buildingCacheModel> buildingCacheModels=new ArrayList<>();
 
-
+    ArrayList<Marker> customMarker=new ArrayList<>();
 
 
 //    @Bind(R.id.seekbar_linearlayout)
@@ -461,8 +461,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         @Override
         public void onReceive(Context context, Intent intent) {
             String area= intent.getExtras().getString("area1");
-            int price = Integer.parseInt(area)*ll_pm[INDEX];
-            String text = "<font color=#ffffff ><small>" + name[INDEX] + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price)).substring(2, General.currencyFormat(String.valueOf(price)).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+            int price = Integer.parseInt(area)*buildingCacheModels.get(INDEX).getLl_pm();
+            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price)).substring(2, General.currencyFormat(String.valueOf(price)).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
             tvFetchingrates.setText(Html.fromHtml(text));
 
 
@@ -618,7 +618,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         addlistinglayout=(LinearLayout) rootView.findViewById(R.id.addlistinglayout);
         btn_add_building=(TextView) rootView.findViewById(R.id.btn_add_building);
         btn_add_listing=(TextView) rootView.findViewById(R.id.btn_add_listing);
-       /* oye_arrow=(TextView) rootView.findViewById(R.id.oye_arrow);*/
+        oye_arrow=(TextView) rootView.findViewById(R.id.oye_arrow);
         btn_add_building.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1193,10 +1193,10 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     ImageView rate_change_img = (ImageView) v1.findViewById(R.id.rate_change_img);
                     TextView rate_change_value = (TextView) v1.findViewById(R.id.rate_change_value);
                     String rate="0";
-                    for(int i=0;i<5;i++) {
-                        if (arg0.getId().equals(mCustomerMarker[i].getId())) {
-                            if (flag[i] == false)
-                                rate = rate_growth[i];
+                    for(int i=0;i<customMarker.size();i++) {
+                        if (arg0.getId().equals(customMarker.get(i).getId())) {
+                            if (buildingCacheModels.get(i).getFlag() == false)
+                                rate = buildingCacheModels.get(i).getRate_growth();
                         }
                     }
 
@@ -1287,17 +1287,19 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                     int i;
                     Log.i(" sushil flag[i] ==  ", "===========================  Entry to marker listner :  "+marker.getId().toString()+" "+ horizontalPicker.getValues());
                     if(MarkerClickEnable) {
-                        for (i = 0; i < 5; i++) {
-                            if (marker.getId().equals(mCustomerMarker[i].getId())) {
+                        for (i = 0; i < customMarker.size(); i++) {
+                            if (marker.getId().equals(customMarker.get(i).getId())) {
                                 INDEX = i;
-                                Log.i("1sushil11", "===========================   :  " + marker.getId().toString() + " " + mCustomerMarker[i].getId().toString() + " " + flag[i]);
-                                if (flag[i] == false) {
+                                Log.i("1sushil11", "===========================   :  " + marker.getId().toString() + " " + customMarker.get(i).getId().toString() + " " + buildingCacheModels.get(i).getFlag());
+                                if (buildingCacheModels.get(i).getFlag() == false) {
                                     Log.i("1sushil11", "===========================");
 
 
                                     ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
-                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(listing[i],transaction[i],portal[i],config[i]);
-                                    mCustomerMarker[i].setIcon(icon2);
+//                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(listing[i],transaction[i],portal[i],config[i]);
+                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig());
+//                                    mCustomerMarker[i].setIcon(icon2);buildingCacheModels
+                                    customMarker.get(i).setIcon(icon2);
                                     SaveBuildingDataToRealm();
 //                                    SendConfigData(config[i]);
 //                                    sendDataToOyeConfirmation(i);
@@ -1307,7 +1309,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                 search_building_icon.setVisibility(View.VISIBLE);*/
                                     buildingIcon.setVisibility(View.VISIBLE);
                                     fav.setVisibility(View.GONE);
-                                    mCustomerMarker[i].showInfoWindow();
+//                                    mCustomerMarker[i].showInfoWindow();
+                                    customMarker.get(i).showInfoWindow();
                                     horizontalPicker.setVisibility(View.GONE);
                                     tvFetchingrates.setVisibility(View.VISIBLE);
                                     tvRate.setVisibility(View.GONE);
@@ -1318,37 +1321,37 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                     txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_bg_color_white));
                                     String text1;//="<font color=#ffffff size=20> "+rate_growth[i] + " %</font>";
 
-                                    text1 = "<font color=#ffffff>Observed </font><font color=#ff9f1c> "+listing[i]+" </font> <font color=#ffffff>online listing in last 1 WEEK</font>";
+                                    text1 = "<font color=#ffffff>Observed </font><font color=#ff9f1c> "+buildingCacheModels.get(i).getListing()+" </font> <font color=#ffffff>online listing in last 1 WEEK</font>";
                                     tv_building.setText(Html.fromHtml(text1));
-                                    txtFilterValue.setText(rate_growth[i] + " %");
+                                    txtFilterValue.setText(buildingCacheModels.get(i).getRate_growth() + " %");
                                     txtFilterValue.setTextSize(16);
                                     txtFilterValue.setTypeface(Typeface.DEFAULT_BOLD);
-                                    if (Integer.parseInt(rate_growth[i]) < 0){
+                                    if (Integer.parseInt(buildingCacheModels.get(i).getRate_growth()) < 0){
                                         txtFilterValue.setTextColor(Color.parseColor("#ffb91422"));// FFA64139 red
                                         if (brokerType.equalsIgnoreCase("rent")) {
-                                            String text = "<font color=#ffffff ><small>" + name[i] + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price(config[i],ll_pm[i]))).substring(2, General.currencyFormat(String.valueOf(price(config[i],ll_pm[i]))).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+                                            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(i).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price(buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm()))).substring(2, General.currencyFormat(String.valueOf(price(buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm()))).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
                                             tvFetchingrates.setText(Html.fromHtml(text));
                                         } else {
-                                            String text = "<font color=#ffffff ><small>" + name[i] + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(or_psf[i])).substring(2, General.currencyFormat(String.valueOf(or_psf[i])).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
+                                            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(i).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(buildingCacheModels.get(i).getOr_psf())).substring(2, General.currencyFormat(String.valueOf(buildingCacheModels.get(i).getOr_psf())).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
                                             tvFetchingrates.setText(Html.fromHtml(text));
                                         }
                                     }
-                                    else if(Integer.parseInt(rate_growth[i]) > 0){
+                                    else if(Integer.parseInt(buildingCacheModels.get(i).getRate_growth()) > 0){
                                         txtFilterValue.setTextColor(Color.parseColor("#2dc4b6"));// FF377C39 green FF2CA621   FFB91422
                                         if (brokerType.equalsIgnoreCase("rent")) {
-                                            String text = "<font color=#ffffff ><small>" + name[i] + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price(config[i],ll_pm[i]))).substring(2, General.currencyFormat(String.valueOf(price(config[i],ll_pm[i]))).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+                                            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(i).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price(buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm()))).substring(2, General.currencyFormat(String.valueOf(price(buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm()))).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
                                             tvFetchingrates.setText(Html.fromHtml(text));
                                         } else {
-                                            String text = "<font color=#ffffff ><small>" + name[i] + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(or_psf[i])).substring(2, General.currencyFormat(String.valueOf(or_psf[i])).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
+                                            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(i).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(buildingCacheModels.get(i).getOr_psf())).substring(2, General.currencyFormat(String.valueOf(buildingCacheModels.get(i).getOr_psf())).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
                                             tvFetchingrates.setText(Html.fromHtml(text));
                                         }
                                     }
                                     else{
                                         if (brokerType.equalsIgnoreCase("rent")) {
-                                            String text = "<font color=#ffffff ><small>" + name[i] + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price(config[i],ll_pm[i]))).substring(2, General.currencyFormat(String.valueOf(price(config[i],ll_pm[i]))).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+                                            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(i).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price(buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm()))).substring(2, General.currencyFormat(String.valueOf(price(buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm()))).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
                                             tvFetchingrates.setText(Html.fromHtml(text));
                                         } else {
-                                            String text = "<font color=#ffffff ><small>" + name[i] + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(or_psf[i])).substring(2, General.currencyFormat(String.valueOf(or_psf[i])).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
+                                            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(i).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(buildingCacheModels.get(i).getOr_psf())).substring(2, General.currencyFormat(String.valueOf(buildingCacheModels.get(i).getOr_psf())).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
                                             tvFetchingrates.setText(Html.fromHtml(text));
                                         }
                                         txtFilterValue.setTextColor(Color.parseColor("black"));
@@ -1368,20 +1371,21 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
 //                                  Log.i("coming soon", "coming soon :" + marker.getTitle().toString());
                                     tv_building.setVisibility(View.VISIBLE);
                                     tvFetchingrates.setTypeface(null, Typeface.BOLD);
-                                    lng = mCustomerMarker[i].getPosition().longitude;
-                                    lat = mCustomerMarker[i].getPosition().latitude;
-                                    Log.i("marker lat", "==============marker position :" + mCustomerMarker[i].getPosition() + " " + lat + " " + lng);
+                                    lng = customMarker.get(i).getPosition().longitude;
+                                    lat = customMarker.get(i).getPosition().latitude;
+                                    Log.i("marker lat", "==============marker position :" + customMarker.get(i).getPosition() + " " + lat + " " + lng);
                                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
                                     SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
                                     General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
                                     General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");//*/
 //                                  mCustomerMarker[i].showInfoWindow();
                                     new LocationUpdater().execute();
-                                    flag[i] = true;
+                                    //flag[i] = true;
+                                    buildingCacheModels.get(i).setFlag(true);
 
                                 } else {
                                     ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
-                                    mCustomerMarker[i].setIcon(icon1);
+                                    customMarker.get(i).setIcon(icon1);
 
 
                                /* m=mCustomerMarker[i];
@@ -1395,7 +1399,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                     search_building_icon.setVisibility(View.GONE);
                                     buildingIcon.setVisibility(View.GONE);
                                     fav.setVisibility(View.VISIBLE);
-                                    flag[i] = false;
+                                    //flag[i] = false;
+                                    buildingCacheModels.get(i).setFlag(false);
                                     horizontalPicker.setVisibility(View.VISIBLE);
                                     tvFetchingrates.setVisibility(View.GONE);
                                     recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
@@ -1427,7 +1432,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
 
                                 }
                             } else {
-                                mCustomerMarker[i].setIcon(icon1);
+                                customMarker.get(i).setIcon(icon1);
 
                             }
                         }
@@ -1627,7 +1632,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
         zoomout_right = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_slide));
         zoomout_left = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_slide_left));
         slide_up1 = (AnimationUtils.loadAnimation(getContext(), R.anim.slide_up_and_down));
-        zoomin_zoomout = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_zoomin));
+        zoomin_zoomout = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_zoomin));//slide_left
+        slide_left = (AnimationUtils.loadAnimation(getContext(), R.anim.slide_left1));
         PropertyButtonSlideAnimation();
         AppConstants.PROPERTY = "Home";
 
@@ -2062,6 +2068,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                     General.setSharedPreferences(getContext(),AppConstants.MY_BASE_LNG,SharedPrefs.getString(getContext(),SharedPrefs.MY_LNG));
                     General.setSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION,SharedPrefs.getString(getContext(),SharedPrefs.MY_LOCALITY));
 //                  AppConstants.BROKER_BASE_REGION="true";
+                    brokerType = "rent";
                     fav.setClickable(true);
                     ((ClientMainActivity) getActivity()).Reset();
                 }else {
@@ -2452,12 +2459,18 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                                     portal[i] = j.getString("portals");
                                                     Log.i("Buildingdata", "listing transaction portal" + listing[i] + " " + transaction[i] + " " + portal[i]);
                                                     String customSnippet = rate_growth[i];
+                                                    CacheBuildings(name[i],lat+"",longi+"",j.getString("locality"),ll_pm[i],or_psf[i],id[i],config[i],listing[i],portal[i],rate_growth[i],transaction[i] );
+
+
                                                     mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc[i]).title(name[i]).snippet(customSnippet).icon(icon1).flat(true));
                                                     Log.i("TRACE", "mCustomerMarker after :" + mCustomerMarker[i]);
                                                     flag[i] = false;
 //                                                dropPinEffect(mCustomerMarker[i]);
+//                                                private void CacheBuildings(String name,String lat,String longi,String locality,int ll_pm,int or_psf,String id,String conf,String listing,String portal,String rate_growth,String transaction){
 
                                                 }
+
+
                                                 String building_count = jsonResponseData.getString("building_count");
                                                 Log.i("Buildingdata", "loc " + building_count + " " + mCustomerMarker.length);
                                                 SnackbarManager.show(
@@ -2468,6 +2481,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                             } catch (Exception e) {
                                                 Log.i("Price Error", "Caught in exception Building plot success" + e.getMessage());
                                             }
+                                            PlotBuilding();
+
                                             showFavourites();
                                             mVisits.setEnabled(true);
                                             txtFilterValue.setEnabled(true);
@@ -2674,12 +2689,14 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                         rental.setText( Property_type );
                         property_type_layout.setVisibility( View.VISIBLE );
                     }
-                    if (flag[INDEX] == true) {
-                        tv_building.setVisibility( View.VISIBLE );
-                        tv_building.setText( "Average Rate in last 1 WEEK" );
-                        String text = "<font color=#ffffff>" + name[INDEX] + "</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat( String.valueOf( price(config[INDEX],ll_pm[INDEX])) ).substring( 2, General.currencyFormat( String.valueOf(price(config[INDEX],ll_pm[INDEX])) ).length() ) + "</font><b><font color=#ff9f1c><sub>/m</sub></font>";
-                        tvFetchingrates.setText( Html.fromHtml( text ) );
-                    }
+                    try {
+                        if (buildingCacheModels.get(INDEX).getFlag() == true) {
+                            tv_building.setVisibility(View.VISIBLE);
+                            tv_building.setText("Average Rate in last 1 WEEK");
+                            String text = "<font color=#ffffff>" + buildingCacheModels.get(INDEX).getName() + "</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat(String.valueOf(price(buildingCacheModels.get(INDEX).getConfig(), buildingCacheModels.get(INDEX).getLl_pm()))).substring(2, General.currencyFormat(String.valueOf(price(buildingCacheModels.get(INDEX).getConfig(), buildingCacheModels.get(INDEX).getLl_pm()))).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font>";
+                            tvFetchingrates.setText(Html.fromHtml(text));
+                        }
+                    }catch (Exception e){}
                     break;
 
 
@@ -2733,10 +2750,10 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                             rental.setVisibility( View.INVISIBLE );
                             property_type_layout.setVisibility( View.VISIBLE );
                         }
-                        if (flag[INDEX] == true) {
+                        if (buildingCacheModels.get(INDEX).getFlag() == true) {
                             tv_building.setVisibility( View.VISIBLE );
                             tv_building.setText( "Average Rate in last 1 WEEK" );
-                            String text = "<font color=#ffffff>" + name[INDEX] + "</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat( String.valueOf( or_psf[INDEX] ) ).substring( 2, General.currencyFormat( String.valueOf( or_psf[INDEX] ) ).length() ) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font>";
+                            String text = "<font color=#ffffff>" + buildingCacheModels.get(INDEX).getName() + "</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat( String.valueOf( buildingCacheModels.get(INDEX).getOr_psf() ) ).substring( 2, General.currencyFormat( String.valueOf( buildingCacheModels.get(INDEX).getOr_psf() ) ).length() ) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font>";
                             tvFetchingrates.setText( Html.fromHtml( text ) );
                         }
                         break;
@@ -2779,7 +2796,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                         rental.setVisibility( View.INVISIBLE );
                         property_type_layout.setVisibility( View.VISIBLE );
                     }
-                    if (flag[INDEX] == true) {
+                    if (buildingCacheModels.get(INDEX).getFlag() == true) {
                         tv_building.setVisibility( View.VISIBLE );
                         tv_building.setText( "Average Rate in last 1 WEEK" );
                         String text = "<font color=#ffffff>" + name[INDEX] + "</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat( String.valueOf( or_psf[INDEX] ) ).substring( 2, General.currencyFormat( String.valueOf( or_psf[INDEX] ) ).length() ) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font>";
@@ -3248,12 +3265,18 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
         sequence.addSequenceItem(rootView.findViewById(R.id.ic_search),
                 "                   Type Locality\n        1.Close to your Workplace\n  2.Your current/new neighbourhood\n       3.Where you want to Invest\n\n                              OR\n\n                You own a Property ?,\n      you can type name and address\n                of your building.\n", "     GOT IT! (Go to next screen)");
         sequence.addSequenceItem(rootView.findViewById(R.id.walk),
-                "                   You can find\n          Average rate @ Locality\n       for 2BHK [can be changed]", "       GOT IT! (Click to FINISH)");
+                "                   You can find\n          Average rate @ Locality\n       for 2BHK [can be changed]", "       GOT IT! (Go to next screen)");
+
+        sequence.addSequenceItem(rootView.findViewById(R.id.txtFilterValue),
+                "       Post your requirement,\n         chat with Broker,\n       schedule property visit.", "       GOT IT! (Click to FINISH)");
+
+
+
         sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
             @Override
             public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
                 countertut++;
-                if (countertut == 3) {
+                if (countertut == 4) {
                     Log.i("ischecked", "beacon_walk==========  :" + beacon);
                     try {
                         if (beacon.equalsIgnoreCase("true")) {
@@ -3545,6 +3568,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
         /*Intent intent = new Intent(AppConstants.PROPERTY_TYPE_BROADCAST);
                  intent.putExtra("protype",Property_type );
                  LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);*/
+//        if(brokerType.equalsIgnoreCase(""))
+//            brokerType="rent";
         if (brokerType.equalsIgnoreCase("rent")) {
             ani = zoomout_left;
             property_type_layout.startAnimation(ani);
@@ -3641,14 +3666,14 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
     public void onMapclicked(){
         spanning = false;
         Log.i("onMapclicked","Inside onMapclicked   ");
-        for (int i = 0; i < 5; i++) {
-            if (flag[i] == true) {
+        for (int i = 0; i < customMarker.size(); i++) {
+            if (buildingCacheModels.get(i).getFlag() == true) {
                 mVisits.setEnabled(true);
                 txtFilterValue.setEnabled(true);
                 tvRate.setVisibility(View.VISIBLE);
                 rupeesymbol.setVisibility(View.VISIBLE);
-                mCustomerMarker[i].setIcon(icon1);
-                mCustomerMarker[i].hideInfoWindow();
+                customMarker.get(i).setIcon(icon1);
+                customMarker.get(i).hideInfoWindow();
                 ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                 Intent in = new Intent(AppConstants.MARKERSELECTED);
                 in.putExtra("markerClicked", "false");
@@ -3657,7 +3682,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 search_building_icon.setVisibility(View.GONE);
                 buildingIcon.setVisibility(View.GONE);
                 fav.setVisibility(View.VISIBLE);
-                flag[i] = false;
+                buildingCacheModels.get(i).setFlag(false);
                 horizontalPicker.setVisibility(View.VISIBLE);
                 tvFetchingrates.setVisibility(View.GONE);
                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
@@ -3763,7 +3788,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                             @Override
                             public void run() {
                                 mVisits.startAnimation(zoomin_zoomout);
-//                                   oye_arrow.startAnimation(zoomin_zoomout);
+                                   oye_arrow.startAnimation(slide_left);
                             }
                         });
                     }
@@ -4328,27 +4353,27 @@ favOText.getText()*/
     public void SaveBuildingDataToRealm(){
             Realm myRealm = General.realmconfig( getContext() );
             MyPortfolioModel myPortfolioModel = new MyPortfolioModel();
-        myPortfolioModel.setName( name[INDEX] );
-        myPortfolioModel.setConfig( config[INDEX] );
-        myPortfolioModel.setLat( loc[INDEX].latitude + "" );
-        myPortfolioModel.setLng( loc[INDEX].longitude + "" );
+        myPortfolioModel.setName( buildingCacheModels.get(INDEX).getName() );
+        myPortfolioModel.setConfig( buildingCacheModels.get(INDEX).getConfig() );
+        myPortfolioModel.setLat( buildingCacheModels.get(INDEX).getLat()+ "" );
+        myPortfolioModel.setLng( buildingCacheModels.get(INDEX).getLng() + "" );
 
 
         if(brokerType=="rent") {
-            myPortfolioModel.setId( id[INDEX] );
+            myPortfolioModel.setId( buildingCacheModels.get(INDEX).getId() );
 
-            myPortfolioModel.setLl_pm(price(config[INDEX],ll_pm[INDEX]));
+            myPortfolioModel.setLl_pm(price(buildingCacheModels.get(INDEX).getConfig(),buildingCacheModels.get(INDEX).getLl_pm()));
 
         }else{
-            myPortfolioModel.setId( id[INDEX]+"1" );
-            myPortfolioModel.setOr_psf( or_psf[INDEX] );
+            myPortfolioModel.setId( buildingCacheModels.get(INDEX).getId()+"1" );
+            myPortfolioModel.setOr_psf( buildingCacheModels.get(INDEX).getOr_psf() );
         }
 
-            myPortfolioModel.setPortals( portal[INDEX] );
-            myPortfolioModel.setListing( listing[INDEX] );
-            myPortfolioModel.setRate_growth( rate_growth[INDEX] );
-            myPortfolioModel.setTransactions( transaction[INDEX] );
-            myPortfolioModel.setLocality( SharedPrefs.getString( getContext(), SharedPrefs.MY_LOCALITY ) );
+            myPortfolioModel.setPortals( buildingCacheModels.get(INDEX).getPortals() );
+            myPortfolioModel.setListing( buildingCacheModels.get(INDEX).getListing() );
+            myPortfolioModel.setRate_growth(buildingCacheModels.get(INDEX).getRate_growth() );
+            myPortfolioModel.setTransactions( buildingCacheModels.get(INDEX).getTransactions() );
+            myPortfolioModel.setLocality( buildingCacheModels.get(INDEX).getLocality() );
             myPortfolioModel.setTimestamp(String.valueOf(System.currentTimeMillis()));
            if(myRealm.isInTransaction())
                    myRealm.cancelTransaction();
@@ -4627,31 +4652,107 @@ public void resetSeekBar(){
 
 
     private void CacheBuildings(String name,String lat,String longi,String locality,int ll_pm,int or_psf,String id,String conf,String listing,String portal,String rate_growth,String transaction){
-        Realm myRealm = General.realmconfig( getContext());
-        BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
-        buildingCacheRealm.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
-        buildingCacheRealm.setName(name);
-        buildingCacheRealm.setLat(lat);
-        buildingCacheRealm.setLng(longi);
-        buildingCacheRealm.setLocality(locality);
-        buildingCacheRealm.setLl_pm(ll_pm);
-        buildingCacheRealm.setOr_psf(or_psf);
-        buildingCacheRealm.setId(id);
-        buildingCacheRealm.setConfig(conf);
-        buildingCacheRealm.setListing(listing);
-        buildingCacheRealm.setPortals(portal);
-        buildingCacheRealm.setRate_growth(rate_growth);
-        buildingCacheRealm.setTransactions(transaction);
 
-        if(myRealm.isInTransaction())
-            myRealm.cancelTransaction();
-        myRealm.beginTransaction();
-        myRealm.copyToRealmOrUpdate( buildingCacheRealm );
+
+        Realm myRealm = General.realmconfig( getContext());
+
+        RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false);
+        Log.i("dataformrealm1","BuildingCacheRealm before "+result1.size());
+
+        if(result1.size()>100){
+            if(myRealm.isInTransaction())
+                myRealm.cancelTransaction();
+            realm.beginTransaction();
+            result1.remove(100);
+            realm.commitTransaction();
+
+            Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size());
+
+            BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
+            buildingCacheRealm.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+            buildingCacheRealm.setName(name);
+            buildingCacheRealm.setLat(lat);
+            buildingCacheRealm.setLng(longi);
+            buildingCacheRealm.setLocality(locality);
+            buildingCacheRealm.setLl_pm(ll_pm);
+            buildingCacheRealm.setOr_psf(or_psf);
+            buildingCacheRealm.setId(id);
+            buildingCacheRealm.setConfig(conf);
+            buildingCacheRealm.setListing(listing);
+            buildingCacheRealm.setPortals(portal);
+            buildingCacheRealm.setRate_growth(rate_growth);
+            buildingCacheRealm.setTransactions(transaction);
+            if(myRealm.isInTransaction())
+                myRealm.cancelTransaction();
+            myRealm.beginTransaction();
+            myRealm.copyToRealmOrUpdate( buildingCacheRealm );
 //        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
-        myRealm.commitTransaction();
+            myRealm.commitTransaction();
+
+        }else{
+            Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size());
+
+            BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
+            buildingCacheRealm.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+            buildingCacheRealm.setName(name);
+            buildingCacheRealm.setLat(lat);
+            buildingCacheRealm.setLng(longi);
+            buildingCacheRealm.setLocality(locality);
+            buildingCacheRealm.setLl_pm(ll_pm);
+            buildingCacheRealm.setOr_psf(or_psf);
+            buildingCacheRealm.setId(id);
+            buildingCacheRealm.setConfig(conf);
+            buildingCacheRealm.setListing(listing);
+            buildingCacheRealm.setPortals(portal);
+            buildingCacheRealm.setRate_growth(rate_growth);
+            buildingCacheRealm.setTransactions(transaction);
+            if(myRealm.isInTransaction())
+                myRealm.cancelTransaction();
+            myRealm.beginTransaction();
+            myRealm.copyToRealmOrUpdate( buildingCacheRealm );
+//        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
+            myRealm.commitTransaction();
+        }
+
+
+
+
     }
 
+  private void PlotBuilding(){
+      Log.i("dataformrealm","BuildingCacheRealm entered 122 ");
+      map.clear();
+      customMarker.clear();
+      buildingCacheModels.clear();
+      realm = General.realmconfig(getContext());
+      RealmResults<BuildingCacheRealm> result1= realm.where(BuildingCacheRealm.class).findAll();
+      Log.i("dataformrealm","BuildingCacheRealm entered 12234 ");
 
+
+      int len =result1.size();
+      Log.i("dataformrealm","BuildingCacheRealm entered kamine  "+result1.size());
+
+      for(BuildingCacheRealm c :result1){
+          Log.i("dataformrealm","BuildingCacheRealm"+c.getName());
+//          customMarker.add( map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(c.getLng()),Double.parseDouble(c.getLng()))).title(c.getName()).snippet(c.getId()).icon(icon1).flat(true)));
+//           map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(c.getLng()),Double.parseDouble(c.getLng()))).title(c.getName()).snippet(c.getId()).icon(icon1).flat(true));
+          customMarker.add(map.addMarker(new MarkerOptions()
+                  .position(new LatLng(Double.parseDouble(c.getLat()), Double.parseDouble(c.getLng())))
+                  .title(c.getName())
+                  .snippet(c.getId())
+                  .icon(icon1)));
+          buildingCacheModels.add(new buildingCacheModel(c.getId(),c.getName(),c.getConfig(),c.getOr_psf(),c.getLl_pm(),c.getLat(),c.getLng(),c.getRate_growth(),c.getListing(),c.getPortals(),c.getTimestamp(),c.getTransactions(),c.getLocality(),false));
+         // public buildingCacheModel(String id, String name, String config, int or_psf, int ll_pm, String lat, String lng, String rate_growth, String listing, String portals, String timestamp, String transactions, String locality) {
+
+              Log.i("dataformrealm","BuildingCacheRealm11m :  "+c.getName());
+
+          /*buildingCacheModel buildingCacheModels = new  buildingCacheModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),c.getTimestamp(),c.getTransactions(),c.getConfig(),null);
+
+          myPortfolioOR.add(portListingModel);*/
+
+
+      }
+  }
 
 
 
