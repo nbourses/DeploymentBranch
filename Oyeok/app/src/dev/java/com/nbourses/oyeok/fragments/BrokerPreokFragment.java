@@ -2086,14 +2086,16 @@ private String transaction_type="Rental";
     public void walkthroughBroker(final View v) {
         countertut = 0;
         MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this.getActivity());
-        sequence.addSequenceItem(v.findViewById(R.id.iv_client_type),
-                "         Select client type","", "      GOT IT! (Go to next screen)");
+        /*sequence.addSequenceItem(v.findViewById(R.id.iv_client_type),
+                "         Select client type", "      GOT IT! (Go to next screen)");*/
         sequence.addSequenceItem(v.findViewById(R.id.iv_transection_type),
-                "         Select Transaction Type","", "       GOT IT! (Go to next screen)");
+                "         Select TransactionType\n\n\n", "       GOT IT! (Go to next screen)");
+        sequence.addSequenceItem(v.findViewById(R.id.iv_client_type),
+                "            Select client type\n\n\n", "      GOT IT! (Go to next screen)");
         sequence.addSequenceItem(v.findViewById(R.id.imageView111),
-                "         Select lead type to check the requirement","", "      GOT IT! (Go to next screen)");
+                "           Select Client Lead", "      GOT IT! (Go to next screen)");
         sequence.addSequenceItem(v.findViewById(R.id.okButton),
-                "Press 'OK' to select three Property for Visit","", "      GOT IT! (Go to next screen)");
+                " Press 'OK' to Start dealing with Client", "      GOT IT! (Go to next screen)");
         sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
             @Override
             public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {

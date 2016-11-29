@@ -248,7 +248,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private CustomPhasedSeekBar mPhasedSeekBar;
     Drawable marker = null;
 
-    String brokerType="rent";
+    String brokerType;
     private Geocoder geocoder;
     private GetCurrentLocation.CurrentLocationCallback mcallback;
     private FrameLayout ll_map;
@@ -2068,6 +2068,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                     General.setSharedPreferences(getContext(),AppConstants.MY_BASE_LNG,SharedPrefs.getString(getContext(),SharedPrefs.MY_LNG));
                     General.setSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION,SharedPrefs.getString(getContext(),SharedPrefs.MY_LOCALITY));
 //                  AppConstants.BROKER_BASE_REGION="true";
+                    brokerType = "rent";
                     fav.setClickable(true);
                     ((ClientMainActivity) getActivity()).Reset();
                 }else {
@@ -2795,7 +2796,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                         rental.setVisibility( View.INVISIBLE );
                         property_type_layout.setVisibility( View.VISIBLE );
                     }
-                    if (flag[INDEX] == true) {
+                    if (buildingCacheModels.get(INDEX).getFlag() == true) {
                         tv_building.setVisibility( View.VISIBLE );
                         tv_building.setText( "Average Rate in last 1 WEEK" );
                         String text = "<font color=#ffffff>" + name[INDEX] + "</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat( String.valueOf( or_psf[INDEX] ) ).substring( 2, General.currencyFormat( String.valueOf( or_psf[INDEX] ) ).length() ) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font>";
@@ -3264,12 +3265,18 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
         sequence.addSequenceItem(rootView.findViewById(R.id.ic_search),
                 "                   Type Locality\n        1.Close to your Workplace\n  2.Your current/new neighbourhood\n       3.Where you want to Invest\n\n                              OR\n\n                You own a Property ?,\n      you can type name and address\n                of your building.\n", "     GOT IT! (Go to next screen)");
         sequence.addSequenceItem(rootView.findViewById(R.id.walk),
-                "                   You can find\n          Average rate @ Locality\n       for 2BHK [can be changed]", "       GOT IT! (Click to FINISH)");
+                "                   You can find\n          Average rate @ Locality\n       for 2BHK [can be changed]", "       GOT IT! (Go to next screen)");
+
+        sequence.addSequenceItem(rootView.findViewById(R.id.txtFilterValue),
+                "       Post your requirement,\n         chat with Broker,\n       schedule property visit.", "       GOT IT! (Click to FINISH)");
+
+
+
         sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
             @Override
             public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
                 countertut++;
-                if (countertut == 3) {
+                if (countertut == 4) {
                     Log.i("ischecked", "beacon_walk==========  :" + beacon);
                     try {
                         if (beacon.equalsIgnoreCase("true")) {

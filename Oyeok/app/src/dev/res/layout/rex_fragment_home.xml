@@ -964,6 +964,18 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:text="Office"
+                    android:textColor="@color/greenish_blue"
+                    android:background="@drawable/gradient_button_bg_with_border"
+                    android:id="@+id/office"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="1dp"
+                    />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:text="Shop"
                     android:textColor="@color/greenish_blue"
                     android:background="@drawable/gradient_button_bg_with_border"
@@ -985,18 +997,7 @@
                     android:layout_marginRight="2dp"
                     android:layout_marginBottom="1dp"
                     />
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Office"
-                    android:textColor="@color/greenish_blue"
-                    android:background="@drawable/gradient_button_bg_with_border"
-                    android:id="@+id/office"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginRight="2dp"
-                    android:layout_marginBottom="1dp"
-                    />
+
 
 
             </LinearLayout>
