@@ -94,7 +94,6 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
  */
 public class BrokerPreokFragment extends Fragment implements CustomPhasedListener, CircularSeekBarNew.imageAction, OnAcceptOkSuccess, OnChartValueSelectedListener, OnChartGestureListener {
 
-
     @Bind(R.id.phasedSeekBar)
     CustomPhasedSeekBar mCustomPhasedSeekbar;
 
@@ -121,16 +120,6 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     @Bind(R.id.pd)
     TextView pd;
-
-
-//    @Bind(R.id.price)
-//    TextView price;
-
-    // @Bind(R.id.contactText)
-    // TextView contactText;
-
-    // @Bind(R.id.pickContact)
-    // Button pickContact;
 
     @Bind(R.id.okButton)
     Button okButton;
@@ -177,16 +166,6 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     @Bind(R.id.leadPrompt)
     TextView leadPrompt;
     private int countertut;
-
-
-//
-//    @Bind(R.id.option2CountCont1)
-//    LinearLayout option2CountCont1;
-//
-//    @Bind(R.id.option2CountCont2)
-//    LinearLayout option2CountCont2;
-
-
 
     private static final String TAG = "BrokerPreokFragment";
     private static final int REQUEST_CODE_TO_SELECT_CLIENT = 302;
@@ -265,7 +244,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private int ownersCount1;
     private int buyerCount1;
     private int sellerCount1;
-private String Walkthrough,beacon;
+    private String Walkthrough,beacon;
     private int prompt = 2;
     private static final long THRESHOLD_MILLIS = 2000L;
     private long lastClickMillis = 0;
@@ -273,7 +252,7 @@ private String Walkthrough,beacon;
     Animation bounce;
     Animation zoomin;
     Animation zoomout;
-
+private String transaction_type="Rental";
 
     public BrokerPreokFragment() {
         // Required empty public constructor
@@ -332,24 +311,16 @@ private String Walkthrough,beacon;
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_broker_preok, container, false);
         ButterKnife.bind(this, v);
         bounce = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
         zoomin = AnimationUtils.loadAnimation(getContext(), R.anim.zoomin);
         zoomout = AnimationUtils.loadAnimation(getContext(), R.anim.zoomout);
-        /*final RippleBackground rippleBackground1=(RippleBackground)v.findViewById(R.id.content);
-        rippleBackground1.startRippleAnimation();
-        final RippleBackground rippleBackground2=(RippleBackground)v.findViewById(R.id.content1);
-        rippleBackground1.startRippleAnimation();*/
-
       //chart removed// chart = (BarChart) v.findViewById(R.id.chart);
         init();
-
         if(SharedPrefs.getString(getContext(),SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
-           // beacon = "true";
             beacon = "false";  // beacon disabled
             SharedPrefs.save(getContext(), SharedPrefs.CHECK_BEACON, "false");
         }
@@ -357,7 +328,6 @@ private String Walkthrough,beacon;
             beacon = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_BEACON);
             Log.i("ischecked", "walkthrough3dashboard" + beacon);
         }
-
         if(SharedPrefs.getString(getContext(),SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("")) {
             Walkthrough = "true";
             SharedPrefs.save(getContext(), SharedPrefs.CHECK_WALKTHROUGH, "false");
@@ -366,10 +336,8 @@ private String Walkthrough,beacon;
             Walkthrough = SharedPrefs.getString(getContext(), SharedPrefs.CHECK_WALKTHROUGH);
             Log.i("ischecked", "walkthrough3dashboard" + Walkthrough);
         }
-
         Walkthrough=SharedPrefs.getString(getContext(),SharedPrefs.CHECK_WALKTHROUGH);
         Log.i("ischecked","walkthrough3_broker"+Walkthrough);
-
 
         //Tutorial and Beacon code
         if(Walkthrough.equalsIgnoreCase("true")) {
@@ -385,9 +353,6 @@ private String Walkthrough,beacon;
             }
             beacon="false";
         }
-
-
-
         return v;
     }
 
@@ -408,14 +373,11 @@ private String Walkthrough,beacon;
 
 
     private void init() {
-
-
         bounce.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
             }
-
             @Override
             public void onAnimationEnd(Animation animation) {
                 option1Count.clearAnimation();
@@ -423,7 +385,6 @@ private String Walkthrough,beacon;
                 rentalCount.clearAnimation();
                 resaleCount.clearAnimation();
             }
-
             @Override
             public void onAnimationRepeat(Animation animation) {
 
@@ -434,100 +395,43 @@ private String Walkthrough,beacon;
         }catch(Exception e){
             Log.i(TAG,"Caught in exception reading GCM id from shared "+e);
         }
-/* //chart removed//try {
-    if (General.clearChart) {
-        buildingPriceLL.clear();
-        buildingPriceOR.clear();
-        LLbuildingPrice.clear();
-        ORbuildingPrice.clear();
-        buildingPrice.clear();
-        General.clearChart = false;
-    }
-}catch(Exception e){
-    Log.i(TAG,"Caught in exception clearing chart after back from broker map "+e);
-}
-
-        highlighter = new ChartHighlighter(chart);
-
-        slide_up = AnimationUtils.loadAnimation(getContext(),
-                R.anim.slide_up);
-        slide_down = AnimationUtils.loadAnimation(getContext(),
-                R.anim.slide_down);
-
-        animation = ObjectAnimator.ofFloat(chart, "rotationY", 0.0f, 360f);  // HERE 360 IS THE ANGLE OF ROTATE, YOU CAN USE 90, 180 IN PLACE OF IT,  ACCORDING TO YOURS REQUIREMENT
-
-        animation.setDuration(500); // HERE 500 IS THE DURATION OF THE ANIMATION, YOU CAN INCREASE OR DECREASE ACCORDING TO YOURS REQUIREMENT
-        animation.setInterpolator(new AccelerateDecelerateInterpolator());
-
-
-
-        buildingNames = new ArrayList<String>();
-        buildingPrice = new ArrayList<Integer>();
-
-
-        brokerbuildings(buildingsPage);
-
-*/
-
-        zoomin.setAnimationListener(new Animation.AnimationListener() {
-
+        /*zoomin.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation arg0) {
                 // TODO Auto-generated method stub
-
             }
-
             @Override
             public void onAnimationRepeat(Animation arg0) {
                 // TODO Auto-generated method stub
-
             }
-
             @Override
             public void onAnimationEnd(Animation arg0) {
                 //beaconOK.startAnimation(zoomout);
-
             }
         });
-
-
         zoomout.setAnimationListener(new Animation.AnimationListener() {
-
             @Override
             public void onAnimationStart(Animation arg0) {
                 // TODO Auto-generated method stub
-
             }
 
             @Override
             public void onAnimationRepeat(Animation arg0) {
                 // TODO Auto-generated method stub
-
             }
 
             @Override
             public void onAnimationEnd(Animation arg0) {
                 //beaconOK.startAnimation(zoomin);
-
             }
-        });
-
-
+        });*/
         if (General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT) <= 0)
             hdroomsCount.setVisibility(View.GONE);
         else {
             hdroomsCount.setVisibility(View.VISIBLE);
             hdroomsCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT)));
         }
-
-
-
-
-
-
-
-
-Log.i("PHASE","before adapter set");
+        Log.i("PHASE","before adapter set");
         mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(),
                 new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
                 new String[]{"30", "15"},
@@ -570,96 +474,55 @@ Log.i("PHASE","before adapter set");
     public void chart() {
         Log.i("GRAPH","scale before set chart 1"+ chart.getScaleX());
         // pricechart = false;
-
-
         entries = new ArrayList<>();
         labels = new ArrayList<String>();
-
         //if(!pricechart) {
-
-
         // buildingPrice.addAll(Arrays.asList(4,8,12,15,18,22,16,2,10,7));
         //buildingNames.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
-
         Log.i("STEP2", "STEP2");
-
         setChart();
-
            /* for (int i = 0; i < buildingPrice.size(); i++) {
                 entries.add(new BarEntry(buildingPrice.get(i), i));
             }
-
             dataset = new BarDataSet(entries, Integer.toString(buildingPrice.size()));
-
-
             Log.i("GRAPH", "entries " + entries + "buildingPrice.get(i) " + buildingPrice.get(1));
-
-
             labels.addAll(buildingNames);
             //labels.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
-
             Log.i("GRAPH", "labels " + labels);
-
             BarData data = new BarData(labels, dataset);
             chart.setData(data); // set the data and list of lables into chart  */
-
-        chart.setDescription("Select three Buildings.");
-
-
-
-        //chart.animateY(1500);
-
-
+            chart.setDescription("Select three Buildings.");
+          //chart.animateY(1500);
 //            chart.setScaleYEnabled(false);
 //            chart.setScaleXEnabled(false);
         // chart.setScaleEnabled(false);
         //chart.fitScreen();
-
-
         YAxis rightAxis = chart.getAxisRight();
         rightAxis.setEnabled(false);
-
         Log.i("GRAPH", "scale after set chart1 " + chart.getScaleX());
-
         chart.setDragEnabled(true);
-
         YAxis yaxis = chart.getAxis(YAxis.AxisDependency.LEFT);
         XAxis xAxis = chart.getXAxis();
         yaxis.setAxisMinValue(500);
-
         Log.i("GRAPH", "chart.getYMax " + chart.getYMax() + "chart.getYChartMax " + chart.getYChartMax());
-
         //yaxis.setAxisMaxValue(999999999);
-
         //   chart.setPinchZoom(false);
         xAxis.setLabelsToSkip(0);
         chart.setDoubleTapToZoomEnabled(false);
         chart.setTouchEnabled(true);
         chart.setDrawHighlightArrow(true);
-
-
-
         chart.setOnChartValueSelectedListener(this);
         chart.setOnChartGestureListener(this);
-
-
-
       /*  }
-
         else {
             setB.setClickable(false);
             //pricechart = true;
-
             entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(0)), 0));
             entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(1)), 1));
             entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(2)), 2));
-
-
             buildingsSelected.clear();
             dataset = new BarDataSet(entries, "3");
-
             // creating labels
-
             labels.add("January");
             labels.add("February");
             labels.add("March");
@@ -667,61 +530,39 @@ Log.i("PHASE","before adapter set");
             chart.setData(data);
             chart.notifyDataSetChanged();
             chart.invalidate();
-
-
             // highlight all three buildings
             Highlight h0 = new Highlight(0, 0);
             Highlight h1 = new Highlight(1, 0);
             Highlight h2 = new Highlight(2, 0);
             chart.highlightValues(new Highlight[]{h0, h1, h2});
-
-
             chart.setDescription("Set price for buildings.");
-
             chart.animateY(2000);
-
-
             chart.setScaleYEnabled(false);
             //chart.setScaleEnabled(false);
-
             chart.fitScreen();
             chart.zoom(1.001f, 1f, 0, 0);
             Log.i("GRAPH", "scale after set chart2 " + chart.getScaleX());
-
             chart.setDragEnabled(true);
-
             //   chart.setPinchZoom(false);
             chart.setDoubleTapToZoomEnabled(false);
             chart.setTouchEnabled(true);
-
-
             // chart1.setOnChartValueSelectedListener(this);
         }*/
-
-
-
     }
 
     void setChart()
     {
-
-
         if(buildingsSelected.size()!=3) {
             pricechart = false;
-
             chart.highlightValues(null);
-
             float fr = buildingNames.size() * 0.33f;
             Log.i("FR is", "fr is " + fr);
             if(!pagination) {
-
                 // chart.fitScreen();
                 //chart.zoomAndCenterAnimated(fr, 1f, 0, 0, YAxis.AxisDependency.LEFT, 2000);
             }
             else{
-
                 pagination = false;
-                //
                 Log.i("yo mana","yo mana "+fr +" "+((buildingsPage - 1) * 10 + 7));
                 // chart.zoomAndCenterAnimated(6.6f, 1f, 0, 0, YAxis.AxisDependency.RIGHT, 2000);
                 chart.fitScreen();
@@ -730,62 +571,25 @@ Log.i("PHASE","before adapter set");
                 chart.moveViewToX(((buildingsPage*10)-14));
                 chart.zoom(fr, 1f, 0, 0);
                 // chart.moveViewToX((buildingsPage - 1) * 10 + 7);
-
-
             }
-
-
-
-//            for (Float fl = 1f;fl<= 3.3f;fl = fl+ 0.1f){
-//               // try {
-//                    //Thread.sleep(500);
-//                    chart.zoom(fl, 1f, 0, 0);
-////                } catch (InterruptedException e1) {
-////                    e1.printStackTrace();
-////                }
-//            }
-
-//            new CountDownTimer(30000, 1000) {
-//
-//                public void onTick(long millisUntilFinished) {
-//                    chart.
-//                }
-//
-//                public void onFinish() {
-//
-//                }
-//            }.start();
-
-
             try {
                 if(buildingsPage<=1) {
-                  entries.clear();
-                  labels.clear();
+                    entries.clear();
+                    labels.clear();
                 }
             }
-            catch(Exception e)
-            {
-
-            }
-
-
-
+            catch(Exception e) { }
             chart.editEntryValue = false;
-//            entries.clear();
             for (int i = 0; i < buildingPrice.size(); i++) {
-
                 Log.i("adding CHARTS","==========");
                 entries.add(new BarEntry(buildingPrice.get(i), i));
             }
-
             if(buildingPrice.size()>0) {
-
                 dataset = new BarDataSet(entries, Integer.toString(buildingPrice.size()));
                 Log.i("GRAPH","buildingPrice "+buildingPrice+" entries "+entries+" labels "+labels+" dataset "+dataset);
                 dataset.setColors(new int[] { R.color.greenish_blue, R.color.google_yellow, R.color.red_light}, getContext());
-                    //dataset.setColors(new int[]{Color.parseColor("#2dc4b6"), Color.parseColor("#eeb110"), Color.parseColor("#e74c3c")}, getActivity());
-                    //  dataset.setColors(new int[] { R.color.red, R.color.green, R.color.blue, R.color.orange }, 50);
-
+                //dataset.setColors(new int[]{Color.parseColor("#2dc4b6"), Color.parseColor("#eeb110"), Color.parseColor("#e74c3c")}, getActivity());
+                //  dataset.setColors(new int[] { R.color.red, R.color.green, R.color.blue, R.color.orange }, 50);
             }
             labels.addAll(buildingNames);
         }
@@ -793,206 +597,112 @@ Log.i("PHASE","before adapter set");
         {
             pricechart = true;
             chart.fitScreen();
-
             chart.highlightValues(null);
             entries.clear();
             labels.clear();
-
             chart.editEntryValue = true;
             for (int i = 0; i < buildingsSelected.size(); i++) {
                 entries.add(new BarEntry(buildingPrice.get(buildingsSelected.get(i)), i));
                 labels.add(buildingNames.get(buildingsSelected.get(i)));
             }
-            //buildingsSelected.clear();
-
-//chart = (BarChart) v.findViewById(R.id.chart);
-
             dataset = new BarDataSet(entries, Integer.toString(buildingsSelected.size()));
             dataset.setColors(new int[] { R.color.greenish_blue, R.color.google_yellow, R.color.red_light}, getContext());
-
         }
-
-
-
-
-
         //labels.addAll(Arrays.asList("Abhinav","Mahesh","Neha","Ekdanta","Karachi","Konark","Vishal","Angels Paradise", "Divyam","Om"));
-
         Log.i("GRAPH", "labels " + labels);
         Log.i("GRAPH", "labels " + dataset);
-
-
-       // chart = (BarChart) v.findViewById(R.id.chart);
         BarData data = new BarData(labels, dataset);
         chart.setData(data); // set the data and list of labels into chart
-
     }
 
     private final Runnable mRunnable = new Runnable() {
-
-        //...
         public void run() {
-
-                fl = fl+0.00005f;
+            fl = fl+0.00005f;
             count++;
-        //fl<=1.3499997f
-if(count<=220) {
-    chart.zoom(fl, 1f, 0, 0);
-
-    Log.i("ZOOM leve set", "zoom level set "+fl);
-}else{
-    fl = 1;
-    count = 1;
-    continueToRun = false;
-}
-
+            if(count<=220) {
+                chart.zoom(fl, 1f, 0, 0);
+                Log.i("ZOOM leve set", "zoom level set "+fl);
+            }else{
+                fl = 1;
+                count = 1;
+                continueToRun = false;
+            }
             if(continueToRun == true){
                 mHandler.postDelayed(mRunnable, mSampleDurationTime);
             }
-
         }
-
     };
+
+
     public void brokerbuildings(final Integer buildingsPage){
         if(General.isNetworkAvailable(getContext())) {
-        General.slowInternet(getContext());
-
-        Log.i("BROKER BUILDINGS CALLED","with page "+ buildingsPage);
-
-        BrokerBuildings brokerBuildings = new BrokerBuildings();
-        brokerBuildings.setDeviceId("Hardware");
-        brokerBuildings.setGcmId(SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
-        brokerBuildings.setPage(buildingsPage.toString());
-        brokerBuildings.setLng(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
-        brokerBuildings.setLat(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
-
-        brokerBuildings.setPropertyType("home");
-
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(AppConstants.SERVER_BASE_URL)
-                .build();
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-
-        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
-
-
-        try {
-            oyeokApiService.brokerBuildings(brokerBuildings, new Callback<JsonElement>() {
-                @Override
-                public void success(JsonElement jsonElement, Response response) {
-
-
-                    General.slowInternetFlag = false;
-                    General.t.interrupt();
-
-
-
-                    JsonObject k = jsonElement.getAsJsonObject();
-                    try {
-
-                        Log.i("BROKER BUILDINGS CALLED","success response "+response);
-/*
-
-
-                        Log.i("BROKER BUILDINGS","LAT1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
-                        Log.i("BROKER BUILDINGS","LNG1 "+General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
-                        Log.i("BROKER BUILDINGS","LAT "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
-                        Log.i("BROKER BUILDINGS","LNG "+SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
-*/
-
-
-                        JSONObject ne = new JSONObject(k.toString());
-                        Log.i("BROKER BUILDINGS CALLED","success ne "+ne);
-                        buildings = ne.getJSONObject("responseData").getJSONArray("buildings");
-                        Log.i("BROKER BUILDINGS CALLED","buildings"+ne.getJSONObject("responseData"));
-
-                        for (int i=0; i<buildings.length(); i++) {
-                            JSONObject actor = buildings.getJSONObject(i);
-                            String name = actor.getString("name");
-                            // if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RESALE"))
-
-
-
-                            buildingPriceOR.add(actor.getInt("or_psf"));
-                            buildingPriceLL.add(actor.getInt("ll_pm"));
-
-                            Log.i("BROKER BUILDINGS CALLED", "buildingPriceOR" + buildingPriceOR);
-
-                            Log.i("BROKER BUILDINGS CALLED", "buildingPriceLL" + buildingPriceLL);
-
-
-
-
-                            // Log.i("BROKER BUILDINGS CALLED","success"+name+" "+price);
-
-
-                            //  Log.i("BROKER BUILDINGS CALLED","success"+price.getClass().getName()+" "+buildingPrice.getClass().getName());
-
-                            buildingNames.add(name);
-                            // buildingPrice.add(price);
-                            Log.i("BROKER BUILDINGS CALLED", "buildingNames" + buildingNames);
-
-                            Log.i("STEP1","STEP1");
-
-
+            General.slowInternet(getContext());
+            Log.i("BROKER BUILDINGS CALLED","with page "+ buildingsPage);
+            BrokerBuildings brokerBuildings = new BrokerBuildings();
+            brokerBuildings.setDeviceId("Hardware");
+            brokerBuildings.setGcmId(SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
+            brokerBuildings.setPage(buildingsPage.toString());
+            brokerBuildings.setLng(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
+            brokerBuildings.setLat(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
+            brokerBuildings.setPropertyType("home");
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setEndpoint(AppConstants.SERVER_BASE_URL)
+                    .build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+            OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+            try {
+                oyeokApiService.brokerBuildings(brokerBuildings, new Callback<JsonElement>() {
+                    @Override
+                    public void success(JsonElement jsonElement, Response response) {
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
+                        JsonObject k = jsonElement.getAsJsonObject();
+                        try {
+                            Log.i("BROKER BUILDINGS CALLED","success response "+response);
+                            JSONObject ne = new JSONObject(k.toString());
+                            Log.i("BROKER BUILDINGS CALLED","success ne "+ne);
+                            buildings = ne.getJSONObject("responseData").getJSONArray("buildings");
+                            Log.i("BROKER BUILDINGS CALLED","buildings"+ne.getJSONObject("responseData"));
+                            for (int i=0; i<buildings.length(); i++) {
+                                JSONObject actor = buildings.getJSONObject(i);
+                                String name = actor.getString("name");
+                                buildingPriceOR.add(actor.getInt("or_psf"));
+                                buildingPriceLL.add(actor.getInt("ll_pm"));
+                                Log.i("BROKER BUILDINGS CALLED", "buildingPriceOR" + buildingPriceOR);
+                                Log.i("BROKER BUILDINGS CALLED", "buildingPriceLL" + buildingPriceLL);
+                                buildingNames.add(name);
+                                // buildingPrice.add(price);
+                                Log.i("BROKER BUILDINGS CALLED", "buildingNames" + buildingNames);
+                                Log.i("STEP1","STEP1");
+                            }
+                            LLbuildingPrice.addAll(buildingPriceLL);
+                            ORbuildingPrice.addAll(buildingPriceOR);
+                            Log.i("BROKER BUILDINGS CALLED", "LLbuildingPrice" +  LLbuildingPrice);
+                            buildingPrice.addAll(LLbuildingPrice);
+                            Log.i("BROKER BUILDINGS CALLED", "buildingPrice" +  buildingPrice);
+                            Log.i("BROKER BUILDINGS CALLED","buildings"+buildings);
+                            Log.i("BROKER BUILDINGS CALLED","buildingNames"+buildingNames);
+                            Log.i("BROKER BUILDINGS CALLED","buildingPrice"+buildingPrice);
+                            if(buildings.length()>0)
+                                chart();
                         }
-                        LLbuildingPrice.addAll(buildingPriceLL);
-                        ORbuildingPrice.addAll(buildingPriceOR);
-                        Log.i("BROKER BUILDINGS CALLED", "LLbuildingPrice" +  LLbuildingPrice);
-                        buildingPrice.addAll(LLbuildingPrice);
-                        Log.i("BROKER BUILDINGS CALLED", "buildingPrice" +  buildingPrice);
-
-
-
-
-
-
-
-                        // Log.i("PREOK CALLED","buildings"+a);
-                        Log.i("BROKER BUILDINGS CALLED","buildings"+buildings);
-                        Log.i("BROKER BUILDINGS CALLED","buildingNames"+buildingNames);
-                        Log.i("BROKER BUILDINGS CALLED","buildingPrice"+buildingPrice);
-
-                        if(buildings.length()>0)
-                        chart();
-
-//                        jsonArrayReqLl = neighbours.getJSONArray("recent");;//neighbours.getJSONArray("req_ll");
-//                        jsonArrayAvlLl = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_ll");
-//
-//                        jsonArrayReqOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("req_or");
-//                        jsonArrayAvlOr = neighbours.getJSONArray("recent");//neighbours.getJSONArray("avl_or");
-//
-//                        Log.i("PREOK CALLED","jsonArrayReqLl"+jsonArrayReqLl);
-//                        Log.i("PREOK CALLED","jsonArrayAvlLl"+jsonArrayAvlLl);
-//                        Log.i("PREOK CALLED","jsonArrayReqOr"+jsonArrayReqOr);
-//                        Log.i("PREOK CALLED","jsonArrayAvlOr"+jsonArrayAvlOr);
-//
-//
-//
-//                        onPositionSelected(currentSeekbarPosition, currentCount);
-                    }
-                    catch (JSONException e) {
-                        Log.e(TAG, e.getMessage());
-                        Log.i("BROKER BUILDINGS CALLED","Failed "+e.getMessage());
+                        catch (JSONException e) {
+                            Log.e(TAG, e.getMessage());
+                            Log.i("BROKER BUILDINGS CALLED","Failed "+e.getMessage());
+                        }
                     }
 
+                    @Override
+                    public void failure(RetrofitError error) {
+                        General.slowInternetFlag = false;
+                        General.t.interrupt();
+                    }
+                });
 
-
-
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    General.slowInternetFlag = false;
-                    General.t.interrupt();
-                }
-            });
-
-
-        }
-        catch (Exception e){
-            Log.e(TAG, e.getMessage());
-        }
+            }
+            catch (Exception e){
+                Log.e(TAG, e.getMessage());
+            }
 
         }else{
 
@@ -1004,38 +714,20 @@ if(count<=220) {
     /**
      * load preok data by making server API call
      */
+
     public void preok() {
         Log.i(TAG,"preok called ");
-
         if(General.isNetworkAvailable(getContext())) {
-
             General.slowInternet(getContext());
-
             Log.i("TRACE", "GCM id is" + SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
             //preok params
             Oyeok preok = new Oyeok();
-//        int permissionCheck = ContextCompat.checkSelfPermission(getContext(),
-//                Manifest.permission.WRITE_CALENDAR);
-            //permissionCheckForDeviceId = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE);
-//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE)
-//                == PackageManager.PERMISSION_GRANTED) {
-//            Log.i("PREOK","getcontext "+General.getDeviceId(getContext()));
-//            preok.setDeviceId(General.getDeviceId(getContext()));
-//
-//
-//        }else{
-            // preok.setDeviceId(General.getSharedPreferences(this,AppConstants.));
             preok.setDeviceId(General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
             Log.i("PREOK", "getcontext " + General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
-
-//        }
-
-
             preok.setUserRole("broker");
             preok.setEmail("");
             preok.setGcmId(SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
             Log.i("baseLoc","Base location case "+General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION));
-
             if(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase("")) {
                 Log.i("baseLoc","Base location case 1"+General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION));
                 preok.setLocality("Mumbai");
@@ -1048,7 +740,6 @@ if(count<=220) {
                 preok.setLong(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LNG));
             }
             preok.setPlatform("android");
-
             Log.i("PREOK", "user_id1 " + General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER));
             if (General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
                 preok.setUserId(General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
@@ -1057,8 +748,6 @@ if(count<=220) {
                 preok.setUserId(General.getSharedPreferences(getContext(), AppConstants.USER_ID));
                 Log.i("PREOK", "user_id " + General.getSharedPreferences(getContext(), AppConstants.USER_ID));
             }
-
-
             RestAdapter restAdapter = new RestAdapter.Builder()
                     //.setEndpoint(AppConstants.SERVER_BASE_URL_101)
                     .setEndpoint(AppConstants.SERVER_BASE_URL_102)
@@ -1102,19 +791,6 @@ if(count<=220) {
                                 Log.i("PREOK CALLED", "jsonArrayAvlLl" + jsonArrayAvlLl);
                                 Log.i("PREOK CALLED", "jsonArrayReqOr" + jsonArrayReqOr);
                                 Log.i("PREOK CALLED", "jsonArrayAvlOr" + jsonArrayAvlOr);
-
-
-                                // jsonArrayPreokRecent = neighbours.getJSONArray("recent");
-                                //if all values are empty then show from resent
-//                        if (jsonArrayReqLl.length() == 0 && jsonArrayAvlLl.length() == 0 &&
-//                                jsonArrayReqOr.length() == 0 && jsonArrayAvlOr.length() == 0) {
-//                            jsonArrayReqLl = jsonArrayPreokRecent;
-//                            jsonArrayAvlLl = jsonArrayPreokRecent;
-//                            jsonArrayReqOr = jsonArrayPreokRecent;
-//                            jsonArrayAvlOr = jsonArrayPreokRecent;
-//                        }
-
-
                                 onPositionSelected(currentSeekbarPosition, currentCount);
                             }
                         } catch (JSONException e) {
@@ -1168,18 +844,7 @@ if(count<=220) {
                                     .position(Snackbar.SnackbarPosition.BOTTOM)
                                     .text("Please select a Lead and then press OK.")
                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-//                if (buildingSlider.getVisibility() == View.GONE) {
-//                    TranslateAnimation animate = new TranslateAnimation(0, 0, 0 , buildingSlider.getHeight());
-//                    animate.setDuration(2000);
-//                    animate.setFillAfter(true);
-//                    buildingSlider.startAnimation(animate);
-//                    buildingSlider.setVisibility(View.VISIBLE);
-//                }
-
-
                 } else {
-
-
                     if (!General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes")) {
 
                         dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
@@ -1189,22 +854,15 @@ if(count<=220) {
                         //bundle.putString("lastFragment", "BrokerPreokFragment");
                         bundle.putString("JsonArray", jsonObjectArray.toString());
                         bundle.putInt("Position", selectedItemPosition);
-
-
                         String[] bNames = new String[]{"building1", "building2", "building3"};
                         int[] bPrice = new int[]{1, 2, 3};
-
-
                         bundle.putIntArray("bPrice", bPrice);
                         bundle.putStringArray("bNames", bNames);
                         bundle.putString("lastFragment", "okyed");
-
-
                         bundle.putSerializable("listings", listings);
                         Fragment fragment = null;
                         fragment = new SignUpFragment();
                         fragment.setArguments(bundle);
-
                         FragmentManager fragmentManager = getFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
@@ -1215,26 +873,17 @@ if(count<=220) {
 
                     } else {
                         //here broker is registered
-
-
                         AcceptOkCall a = new AcceptOkCall();
                         a.setmCallBack(BrokerPreokFragment.this);
                         a.acceptOk(listings, jsonObjectArray, selectedItemPosition, dbHelper, getActivity());
-
                         General.setBadgeCount(getContext(), AppConstants.RENTAL_COUNT, 0);
                         General.setBadgeCount(getContext(), AppConstants.RESALE_COUNT, 0);
                         General.setBadgeCount(getContext(), AppConstants.TENANTS_COUNT, 0);
                         General.setBadgeCount(getContext(), AppConstants.OWNERS_COUNT, 0);
                         General.setBadgeCount(getContext(), AppConstants.BUYER_COUNT, 0);
                         General.setBadgeCount(getContext(), AppConstants.SELLER_COUNT, 0);
-
-
                     }
-
-
                     //show buildings
-
-
                 /*//buildings removed// buildingSlider.startAnimation(slide_up);
                 buildingSlider.setVisibility(View.VISIBLE);
                 buildingSliderflag = true;
@@ -1248,8 +897,6 @@ if(count<=220) {
                 /////okBtn.setEnabled(false);
                 //okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
                 okBtn.setText("Choose 3 Buildings");*/
-
-
                 }
 //            else {
 //                if (!General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
@@ -1303,11 +950,6 @@ if(count<=220) {
         if (now - lastClickMillis > THRESHOLD_MILLIS) {
             Log.i("CHART", "clickeda ");
         if(okBtn.getText().equals("OK")) {
-
-
-//            okBtn.setEnabled(false);
-//            okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
-
                 try {
                     Log.i("CHART", "y value " + chart.getEntriesAtIndex(0).get(0).getVal());
                     listings = new HashMap<String, Float>();
@@ -1317,11 +959,8 @@ if(count<=220) {
                 } catch (Exception e) {
 
                 }
-
-
                 //if (!General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
             if (!General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes")) {
-
                     dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
                     //show sign up screen if broker is not registered
                     Bundle bundle = new Bundle();
@@ -1360,35 +999,16 @@ if(count<=220) {
 
                 } else {
                     //here broker is registered
-
-
                     AcceptOkCall a = new AcceptOkCall();
                     a.setmCallBack(BrokerPreokFragment.this);
                     a.acceptOk(listings, jsonObjectArray, selectedItemPosition, dbHelper, getActivity());
-
                     General.setBadgeCount(getContext(), AppConstants.RENTAL_COUNT, 0);
                     General.setBadgeCount(getContext(), AppConstants.RESALE_COUNT, 0);
                     General.setBadgeCount(getContext(), AppConstants.TENANTS_COUNT, 0);
                     General.setBadgeCount(getContext(), AppConstants.OWNERS_COUNT, 0);
                     General.setBadgeCount(getContext(), AppConstants.BUYER_COUNT, 0);
                     General.setBadgeCount(getContext(), AppConstants.SELLER_COUNT, 0);
-
-
                 }
-
-
-//        buildingSlider.startAnimation(slide_down);
-//        buildingSlider.setVisibility(View.GONE);
-
-
-//        if (buildingSlider.getVisibility() == View.VISIBLE) {
-//            TranslateAnimation animate = new TranslateAnimation(0, 0, buildingSlider.getHeight(), 0);
-//            animate.setDuration(500);
-//            animate.setFillAfter(true);
-//            buildingSlider.startAnimation(animate);
-//            buildingSlider.setVisibility(View.GONE);
-//        }
-
         }
         else{
             try {
@@ -1504,6 +1124,9 @@ if(count<=220) {
         }
 
     }
+
+
+
     @OnClick({R.id.txtOption1, R.id.txtOption2})
     public void onOptionClick(View v) {
         jsonObjectArray = null;
@@ -1511,49 +1134,35 @@ if(count<=220) {
         option1Count.setVisibility(View.GONE);
         option2Count.setVisibility(View.GONE);
         animatebadges();
-
-        //okButton.setAnimation(zoomin);
-        //okButton.setAnimation(zoomout);
+        Log.i("PREOK CALLED11","yoyoyoy2 sus1 "+General.getSharedPreferences(getContext(),AppConstants.TT)+" "+transaction_type);
         circularSeekbar.onTabclick();
         if (txtPreviouslySelectedOption != null)
             txtPreviouslySelectedOption.setBackgroundResource(R.color.colorPrimaryDark);
-
         txtPreviouslySelectedOption = (TextView) v;
+        Log.i("PREOK CALLED11","yoyoyoy2 sus2 "+General.getSharedPreferences(getContext(),AppConstants.TT) + "  "+transaction_type);
 
         if (v.getId() == txtOption1.getId()) {
-
-            Log.i("PREOK CALLED11","yoyoyoy1 "+General.getSharedPreferences(getContext(),AppConstants.TT));
-
+            Log.i("PREOK CALLED11","yoyoyoy1 "+General.getSharedPreferences(getContext(),AppConstants.TT)+ "  "+transaction_type);
             Log.i("PREOK CALLED11","jetcool"+currentOptionSelectedString);
-
-            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("rental")){
-
+//            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("rental")){
+            if(transaction_type.equalsIgnoreCase("rental")){
                 lookingSeeking1 = "Tenant (";
-                        lookingSeeking2 = ") looking for";
-                //lookingSeeking = "Tenant is looking for";
-                //texPtype.setText("Tenant is looking for");
+                lookingSeeking2 = ") looking for";
                 Log.i("PREOK CALLED", "tototo" + lookingSeeking);
             }
-            else if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("resale")){
+//            else if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("resale")){
+            else if(transaction_type.equalsIgnoreCase("resale")){
                 lookingSeeking1 = "Buyer (";
                 lookingSeeking2 = ") is looking for";
-               // lookingSeeking = "Buyer is looking for";
-               // texPtype.setText("Buyer is looking for");
                 Log.i("PREOK CALLED", "tototo" + lookingSeeking);
             }
             rentText.setVisibility(View.GONE);
-           // texPtype.setVisibility(View.GONE);
             texPtype.setText("Please select a Lead and press OK.");
-
             texPstype.setVisibility(View.GONE);
-            //option2CountCont2.setVisibility(View.GONE);
-             //   option2Count.setVisibility(View.GONE);
             txtOption1.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption1.getText().toString();
             Log.i("PREOK CALLED11","currentOptionSelectedString"+currentOptionSelectedString);
-
             // update circular seekbar
-
             if (currentOptionSelectedString.equalsIgnoreCase(strSeekers))
                 currentOptionSelectedString = strTenants;
             Log.i("PREOK CALLED1","currentOptionSelectedString1 phase"+currentOptionSelectedString);
@@ -1575,59 +1184,41 @@ if(count<=220) {
 
         }
         else if (v.getId() == txtOption2.getId()) {
-            Log.i("PREOK CALLED11","yoyoyoy2 "+General.getSharedPreferences(getContext(),AppConstants.TT));
+            Log.i("PREOK CALLED11","yoyoyoy2 "+General.getSharedPreferences(getContext(),AppConstants.TT) + " "+transaction_type);
             Log.i("PREOK CALLED11","jetcool"+currentOptionSelectedString);
-            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("rental")){
+//            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("rental")){
+            if(transaction_type.equalsIgnoreCase("rental")){
                 lookingSeeking1 = "Owner (";
                 lookingSeeking2 = ") is having";
-                //lookingSeeking = "Owner is having";
-                //texPtype.setText("Owner is having");
                 Log.i("PREOK CALLED", "tototo" + lookingSeeking + " "+ txtOption2.getText().toString());
             }
-            else if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("resale")){
-               // lookingSeeking = "Seller is having";
+//            else if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("resale")){
+            else if(transaction_type.equalsIgnoreCase("resale")){
                 lookingSeeking = "Seller (";
                 lookingSeeking = ") is having";
-               // texPtype.setText("Seller is having");
                 Log.i("PREOK CALLED", "tototo" + lookingSeeking);
             }
-
-            //           option2CountCont1.setVisibility(View.GONE);
-             // option1Count.setVisibility(View.GONE);
             txtOption2.setBackgroundResource(R.color.greenish_blue);
             currentOptionSelectedString = txtOption2.getText().toString();
             Log.i("PREOK CALLED1","currentOptionSelectedString"+currentOptionSelectedString);
             rentText.setVisibility(View.GONE);
-            //displayOkText.setVisibility(View.GONE);
-           // texPtype.setVisibility(View.GONE);
             texPtype.setText("Please select a Lead and press OK.");
             texPstype.setVisibility(View.GONE);
-            // update circular seekbar
-
             if (currentOptionSelectedString.equalsIgnoreCase(strTenants))
                 currentOptionSelectedString = strSeekers;
-
             Log.i(TAG,"jsonArrayReqOr yo "+jsonArrayReqOr);
             if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
                 Log.i(TAG,"jsonArrayReqOr yo 1"+jsonArrayReqOr);
-
-               // Log.i(TAG,"lookingSeeking "+lookingSeeking);
                 Log.i("PREOK CALLED", "values set phase" + jsonArrayReqOr.toString());
-
                 circularSeekbar.setValues(jsonArrayReqOr.toString());
-
             }
             else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
                 Log.i(TAG,"jsonArrayReqOr yo 2"+jsonArrayReqOr);
-
                 Log.i("PREOK CALLED1", "values set phase" + jsonArrayAvlOr.toString());
                 Log.i("tester","4"+currentOptionSelectedString);
                 circularSeekbar.setValues(jsonArrayAvlOr.toString());
-
             }
-
         }
-
         onPositionSelected(currentSeekbarPosition, currentCount);
         if(!General.isNetworkAvailable(getContext())){
             texPtype.setText("Go online to get Leads.");
@@ -1635,131 +1226,95 @@ if(count<=220) {
        animatebadges();
     }
 
+
     @Override
     public void onPositionSelected(int position, int count) {
-
-
-
         circularSeekbar.onTabclick();
         currentSeekbarPosition = position;
         Log.i("PREOK CALLED","currentSeekbarPosition"+currentSeekbarPosition);
-
-
-
         if (position == 0) {
+            General.setSharedPreferences(getContext(),AppConstants.TT,"RENTAL");
+            transaction_type="RENTAL";
             option1Count.setBackgroundResource(R.drawable.circle_badge);
             option2Count.setBackgroundResource(R.drawable.circle_badge);
-
             atFor = "at";
             jsonObjectArray = null;
-
-try {
-    SnackbarManager.show(
-            Snackbar.with(getContext())
-                    .position(Snackbar.SnackbarPosition.TOP)
-                    .text("Rental Property Type set")
-                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-}
-catch(Exception e){}
-
-
-//      if(txtOption2.getText().toString().equalsIgnoreCase("Tenants"))
-//            lookingSeeking = "Tenant is looking for";
-//            else if(txtOption2.getText().toString().equalsIgnoreCase("Owners"))
-//                lookingSeeking = "Owner is having";
-
-
+            try {
+                SnackbarManager.show(
+                        Snackbar.with(getContext())
+                                .position(Snackbar.SnackbarPosition.TOP)
+                                .text("Rental Property Type set")
+                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+            }
+            catch(Exception e){}
             notClicked.setVisibility(View.VISIBLE);
-
             rentText.setVisibility(View.GONE);
-           // texPtype.setVisibility(View.GONE);
-
-
-                texPtype.setText("Please select a Lead and press OK.");
-
+            texPtype.setText("Please select a Lead and press OK.");
             texPstype.setVisibility(View.GONE);
-
             resaleCount.setVisibility(View.GONE);
             Log.i(TAG, "itha count " + AppConstants.TENANTS_COUNT);
+            try {
+                Log.i("CONTEXT", "object " + getContext());
+                if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) <= 0) {
+                    Log.i(TAG, "itha count 1 " + AppConstants.TENANTS_COUNT);
+                    rentalCount.setVisibility(View.GONE);
+                    option1Count.setVisibility(View.GONE);
+                    option2Count.setVisibility(View.GONE);
+                } else {
+                    Log.i(TAG, "itha count 2 " + AppConstants.TENANTS_COUNT);
+                    rentalCount.setVisibility(View.VISIBLE);
+                    rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
+                    if (General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT) <= 0) {
+                        Log.i(TAG, "itha count 3 " + AppConstants.TENANTS_COUNT);
+                        //option1Count.setVisibility(View.GONE);
+                        Log.i(TAG, "itha " + AppConstants.TENANTS_COUNT);
+                        option1Count.setVisibility(View.GONE);
+                    } else {
+                        Log.i(TAG, "itha count 4 " + AppConstants.TENANTS_COUNT);
+                        option1Count.setVisibility(View.VISIBLE);
+                        option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
+                    }
+                    if (General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT) <= 0) {
+                        Log.i(TAG, "ownerscount1" + General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT));
+                        option2Count.setVisibility(View.GONE);
+                    } else {
+                        Log.i(TAG, "ownerscount2" + General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT));
+                        option2Count.setVisibility(View.VISIBLE);
+                        option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT)));
+                    }
+                }
+                if (General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT) > 0) {
+                    resaleCount.setVisibility(View.VISIBLE);
+                    resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
+                }
+            }
+            catch (Exception e){
+                Log.i("sustesting", "currentOptionSelectedString2" + e);
 
-try {
-    Log.i("CONTEXT", "object " + getContext());
-    if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) <= 0) {
-        Log.i(TAG, "itha count 1 " + AppConstants.TENANTS_COUNT);
-        rentalCount.setVisibility(View.GONE);
-        option1Count.setVisibility(View.GONE);
-        option2Count.setVisibility(View.GONE);
-    } else {
-        Log.i(TAG, "itha count 2 " + AppConstants.TENANTS_COUNT);
-        rentalCount.setVisibility(View.VISIBLE);
-        rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
-
-        if (General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT) <= 0) {
-            Log.i(TAG, "itha count 3 " + AppConstants.TENANTS_COUNT);
-            //option1Count.setVisibility(View.GONE);
-            Log.i(TAG, "itha " + AppConstants.TENANTS_COUNT);
-            option1Count.setVisibility(View.GONE);
-        } else {
-            Log.i(TAG, "itha count 4 " + AppConstants.TENANTS_COUNT);
-            //option1Count.setVisibility(View.VISIBLE);
-
-            option1Count.setVisibility(View.VISIBLE);
-            option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT)));
-        }
-        if (General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT) <= 0) {
-            Log.i(TAG, "ownerscount1" + General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT));
-            //option2Count.setVisibility(View.GONE);
-            option2Count.setVisibility(View.GONE);
-
-        } else {
-            Log.i(TAG, "ownerscount2" + General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT));
-            //option2Count.setVisibility(View.VISIBLE);
-            option2Count.setVisibility(View.VISIBLE);
-            option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT)));
-        }
-    }
-    if (General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT) > 0) {
-        resaleCount.setVisibility(View.VISIBLE);
-        resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
-    }
-
-}
-catch (Exception e){
-
-}
+            }
             animatebadges();
-
-
-
-            //rental
-            //Tenants, Owners
             txtOption1.setText(strTenants);
             txtOption2.setText(strOwners);
             Log.i("PREOK CALLED13#", "currentOptionSelectedString2" + currentOptionSelectedString);
-
             if (currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
                 currentOptionSelectedString = strTenants;
                 lookingSeeking1 = "Tenant (";
                 lookingSeeking2 = ") looking for";
-                //lookingSeeking = "Tenant is looking for";
-                Log.i("PREOK CALLED10", "currentOptionSelectedString1" + currentOptionSelectedString);
-            }
+                Log.i("PREOK CALLED10", "currentOptionSelectedString1" + currentOptionSelectedString+" lookingSeeking: "+lookingSeeking);
+            }else
             if (currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
                 currentOptionSelectedString = strOwners;
-                lookingSeeking = "Owner (";
-                lookingSeeking = ") is having";
-               // lookingSeeking = "Owner is having";
-                Log.i("PREOK CALLED13", "currentOptionSelectedString1" + currentOptionSelectedString);
+                lookingSeeking1 = "Owner (";
+                lookingSeeking2 = ") is having";
+                Log.i("PREOK CALLED13", "currentOptionSelectedString1" + currentOptionSelectedString+" lookingSeeking: "+lookingSeeking);
             }
-
             if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
                 Log.i("PREOK CALLED11","values set"+jsonArrayReqLl.toString());
                 prompt = circularSeekbar.setValues(jsonArrayReqLl.toString());
             }
             else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 Log.i("PREOK CALLED12", "values set" + jsonArrayAvlLl.toString());
-               prompt = circularSeekbar.setValues(jsonArrayAvlLl.toString());
-
+                prompt = circularSeekbar.setValues(jsonArrayAvlLl.toString());
             }
             if(prompt == 1 ){
                 texPtype.setText("No leads available in this area for now.");
@@ -1770,34 +1325,19 @@ catch (Exception e){
                 leadPrompt.setText("Please select a Lead and press OK.");
             }
 
-
-
-            //added
-
-//            if (currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
-//                currentOptionSelectedString = strOwners;
-//                Log.i("PREOK CALLED13", "currentOptionSelectedString1" + currentOptionSelectedString);
-//            }
-//            if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
-//                Log.i("PREOK CALLED14","values set"+jsonArrayAvlLl.toString());
-//                circularSeekbar.setValues(jsonArrayReqLl.toString());
-//            }
-//            else if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
-//                Log.i("PREOK CALLED15", "values set" + jsonArrayReqLl.toString());
-//                circularSeekbar.setValues(jsonArrayAvlLl.toString());
-//            }
-//            buildingPrice.clear();
-//            buildingPrice.addAll(buildingPriceLL);
-//            setChart();
+         Log.i("ja munna ja"," agaya beta tu : "+General.getSharedPreferences(getContext(),AppConstants.TT)+"   "+transaction_type);
+//            txtPreviouslySelectedOption = txtOption1;
 
         }
         else if (position == 1) {
+//            txtPreviouslySelectedOption = txtOption1;
+            General.setSharedPreferences(getContext(),AppConstants.TT,"RESALE");
+            transaction_type="RESALE";
 
             option1Count.setBackgroundResource(R.drawable.badge_navy);
             option2Count.setBackgroundResource(R.drawable.badge_navy);
             atFor = "for";
             jsonObjectArray = null;
-
             try {
                 SnackbarManager.show(
                         Snackbar.with(getContext())
@@ -1806,91 +1346,65 @@ catch (Exception e){
                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
             }
             catch(Exception e){}
-
-
-//            if(txtOption2.getText().toString().equalsIgnoreCase("Buyer"))
-//                lookingSeeking = "Buyer is looking for";
-//            else if(txtOption2.getText().toString().equalsIgnoreCase("Seller"))
-//                lookingSeeking = "Seller is having";
-
             notClicked.setVisibility(View.VISIBLE);
-
             rentText.setVisibility(View.GONE);
-           // texPtype.setVisibility(View.GONE);
-
-                texPtype.setText("Please select a Lead and press OK.");
-
+            texPtype.setText("Please select a Lead and press OK.");
             texPstype.setVisibility(View.GONE);
-
             rentalCount.setVisibility(View.GONE);
             option1Count.setVisibility(View.INVISIBLE);
             option2Count.setVisibility(View.INVISIBLE);
-            
-   try {
-       if (General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT) <= 0) {
-           resaleCount.setVisibility(View.GONE);
-           option1Count.setVisibility(View.GONE);
-           option2Count.setVisibility(View.GONE);
-       } else {
-           resaleCount.setVisibility(View.VISIBLE);
-           resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
-
-           if (General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT) <= 0) {
-               Log.i("BADGE", "BUYER COUNT5 " + General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT));
-               //option1Count.setVisibility(View.GONE);
-               option1Count.setVisibility(View.GONE);
-           } else {
-               //option1Count.setVisibility(View.VISIBLE);
-               option1Count.setVisibility(View.VISIBLE);
-               option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
-           }
-           if (General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT) <= 0) {
-               Log.i("BADGE", "SELLER_COUNT1 " + General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT));
-               //option2Count.setVisibility(View.GONE);
-               option2Count.setVisibility(View.GONE);
-           } else {
-               Log.i("BADGE", "SELLER_COUNT2 " + General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT));
-               //option2Count.setVisibility(View.VISIBLE);
-               option2Count.setVisibility(View.VISIBLE);
-               option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
-           }
-
-       }
-       if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) > 0) {
-           rentalCount.setVisibility(View.VISIBLE);
-           rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
-       }
-
-
-        }
-        catch (Exception e){
-
-        }
-
+            try {
+                if (General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT) <= 0) {
+                    resaleCount.setVisibility(View.GONE);
+                    option1Count.setVisibility(View.GONE);
+                    option2Count.setVisibility(View.GONE);
+                } else {
+                    resaleCount.setVisibility(View.VISIBLE);
+                    resaleCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RESALE_COUNT)));
+                    if (General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT) <= 0) {
+                        Log.i("BADGE", "BUYER COUNT5 " + General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT));
+                        option1Count.setVisibility(View.GONE);
+                    } else {
+                        option1Count.setVisibility(View.VISIBLE);
+                        option1Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.BUYER_COUNT)));
+                    }
+                    if (General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT) <= 0) {
+                        Log.i("BADGE", "SELLER_COUNT1 " + General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT));
+                        //option2Count.setVisibility(View.GONE);
+                        option2Count.setVisibility(View.GONE);
+                    } else {
+                        Log.i("BADGE", "SELLER_COUNT2 " + General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT));
+                        //option2Count.setVisibility(View.VISIBLE);
+                        option2Count.setVisibility(View.VISIBLE);
+                        option2Count.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.SELLER_COUNT)));
+                    }
+                }
+                if (General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT) > 0) {
+                    rentalCount.setVisibility(View.VISIBLE);
+                    rentalCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.RENTAL_COUNT)));
+                }
+            }
+            catch (Exception e){
+            }
             animatebadges();
-
             //sale
             //Buyer, Seller
             txtOption1.setText(strSeekers);
             txtOption2.setText(strSeller);
-
             Log.i("PREOK CALLED13*", "currentOptionSelectedString2" + currentOptionSelectedString);
-
             if (currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
                 currentOptionSelectedString = strSeekers;
-                lookingSeeking = "Buyer (";
-                lookingSeeking = ") is looking for";
-               // lookingSeeking = "Buyer is looking for";
-                Log.i("PREOK CALLED16", "currentOptionSelectedString2" + currentOptionSelectedString);
-            }
-            if (currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
+                lookingSeeking1 = "Buyer (";
+                lookingSeeking2 = ") is looking for";
+                Log.i("PREOK CALLED16", "currentOptionSelectedString2" + currentOptionSelectedString+" lookingSeeking: "+lookingSeeking);
+            }else
+           // if (currentOptionSelectedString.equalsIgnoreCase(strOwners))
+            {
                 currentOptionSelectedString = strSeller;
-                lookingSeeking = "Seller (";
-                lookingSeeking = ") is having";
-               // lookingSeeking = "Seller is having";
-                Log.i("PREOK CALLED19", "currentOptionSelectedString2" + currentOptionSelectedString);
+                lookingSeeking1 = "Seller (";
+                lookingSeeking2 = ") is having";
+                Log.i("PREOK CALLED19", "currentOptionSelectedString2" + currentOptionSelectedString+" lookingSeeking: "+lookingSeeking);
             }
-
             if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
                 Log.i("PREOK CALLED17", "values set" + jsonArrayReqOr.toString());
                 prompt = circularSeekbar.setValues(jsonArrayReqOr.toString());
@@ -1899,31 +1413,12 @@ catch (Exception e){
                 Log.i("PREOK CALLED18", "values set" + jsonArrayAvlOr.toString());
                 prompt = circularSeekbar.setValues(jsonArrayAvlOr.toString());
             }
-
-            // Added
-
-//            if (currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
-//                currentOptionSelectedString = strSeller;
-//                Log.i("PREOK CALLED19", "currentOptionSelectedString2" + currentOptionSelectedString);
-//            }
-//
-//            if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
-//                Log.i("PREOK CALLED120", "values set" + jsonArrayAvlOr.toString());
-//                circularSeekbar.setValues(jsonArrayReqOr.toString());
-//            }
-//            else if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
-//                Log.i("PREOK CALLED121", "values set" + jsonArrayReqOr.toString());
-//                circularSeekbar.setValues(jsonArrayAvlOr.toString());
-//            }
-
             try {
                 buildingPrice.clear();
                 buildingPrice.addAll(ORbuildingPrice);
                 setChart();
             }catch(Exception e){
-
             }
-
             if(prompt == 1 ){
                 texPtype.setText("No leads available in this area for now.");
                 leadPrompt.setText("No leads available in this area for now.");
@@ -1932,13 +1427,7 @@ catch (Exception e){
                 texPtype.setText("Please select a Lead and press OK.");
                 leadPrompt.setText("Please select a Lead and press OK.");
             }
-
         }
-
-
-
-
-
         synchronized (circularSeekbar) {
             circularSeekbar.post(new Runnable() {
                 @Override
@@ -1954,21 +1443,19 @@ catch (Exception e){
             }
         }
         catch(Exception e){
-
         }
+        Log.i("ja munna ja"," agaya beta tu 1 : "+General.getSharedPreferences(getContext(),AppConstants.TT)+ "  "+transaction_type);
     }
+
 
     @Override
     public void onclick(int position, JSONArray m, String show, int x_c, int y_c) {
         deal.setEnabled(true);
-        //deal.setBackgroundColor(Color.parseColor("#ff9f1c"));
         deal.setBackground(getResources().getDrawable(R.drawable.deals_button_background));
-        //deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.orange));
         try {
             leadPrompt.setVisibility(View.VISIBLE);
             leadPrompt.setText("Please select a Lead and press OK.");
             jsonObjectArray = m;
-
             selectedItemPosition = position;
             String ptype = null;
             String pstype;
@@ -1977,54 +1464,28 @@ catch (Exception e){
             String possession_date = "";
             if(jsonObjectArray.getJSONObject(position).getString("possession_date") != ""){
                 possession_date = jsonObjectArray.getJSONObject(position).getString("possession_date");
-
             }
             pstype = jsonObjectArray.getJSONObject(position).getString("property_subtype");
             if(jsonObjectArray.getJSONObject(position).getString("furnishing").equalsIgnoreCase("uf"))
                 furnishing = "Un-Furnished";
             else if(jsonObjectArray.getJSONObject(position).getString("furnishing").equalsIgnoreCase("uf"))
                 furnishing = "Fully-Furnished";
-            Log.i("debug circ","inside onclick");
+            Log.i("debug circ","inside onclick  : "+lookingSeeking1);
             Log.i("debug circ","inside onclick m "+jsonObjectArray);
-
-
-
-
-
-          /*  if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
-                ptype = "home";
-            }
-            else if(pstype.equals("retail outlet") || pstype.equals("food outlet") || pstype.equals("shop")){
-                ptype = "shop";
-            }
-            else if(pstype.equals("cold storage") || pstype.equals("kitchen") || pstype.equals("manufacturing") || pstype.equals("warehouse") || pstype.equals("workshop")){
-                ptype = "industrial";
-            }
-            else if(pstype.equals("<15") || pstype.equals("<35") || pstype.equals("<50") || pstype.equals("<100") || pstype.equals("100+")){
-                ptype = "office";
-            }
-            */
-                    Log.i(TAG,"furnishing "+jsonObjectArray.getJSONObject(position).getString("furnishing"));
-
+            Log.i(TAG,"furnishing "+jsonObjectArray.getJSONObject(position).getString("furnishing"));
             ptype = jsonObjectArray.getJSONObject(position).getString("property_type");
-name = jsonObjectArray.getJSONObject(position).getString("name");
+            name = jsonObjectArray.getJSONObject(position).getString("name");
             Log.i(TAG,"property_type "+ptype);
             Log.i(TAG, "property_subtype " + pstype);
-           // texPtype.setText("Property type: "+ptype);
-            //texPtype.setText(lookingSeeking);
             texPtype.setText(lookingSeeking1+name+lookingSeeking2);
-           // texPstype.setText("Property subtype: "+pstype);
-if(ptype.equalsIgnoreCase("home")) {
-    texPstype.setText(furnishing + " " + ptype.substring(0, 1).toUpperCase() + ptype.substring(1));
-
-}
+            if(ptype.equalsIgnoreCase("home")) {
+                texPstype.setText(furnishing + " " + ptype.substring(0, 1).toUpperCase() + ptype.substring(1));
+            }
             else {
-    texPstype.setText(furnishing + " " + ptype.substring(0, 1).toUpperCase() + ptype.substring(1) );
-    pstype = pstype + " sq.ft";
-}  /*     texPtype.setText("Property Type: "+ptype);
-            texPstype.setText("Property Subtype: "+pstype);
-            */
-Log.i("Diamond","diamond "+possession_date);
+                texPstype.setText(furnishing + " " + ptype.substring(0, 1).toUpperCase() + ptype.substring(1) );
+                pstype = pstype + " sq.ft";
+            }
+            Log.i("Diamond","diamond "+possession_date);
             if(possession_date.isEmpty()){
                 Log.i("Diamond","diamond 1 "+possession_date);
                 pd.setVisibility(View.VISIBLE);
@@ -2034,48 +1495,28 @@ Log.i("Diamond","diamond "+possession_date);
                 pd.setVisibility(View.VISIBLE);
                 pd.setText(pstype+" by "+possession_date);
             }
-
-            //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
             if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")) {
                 rentText.setText("@" + General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")) + " /m.");
-                //rentText.setText(Html.fromHtml("<font size=50>"+"yo"+"</font>" + General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))));
-
-//                String download_styledText = "<font size='10'color='white'>"
-//                        + "Download" + "</font> " + "<br />"+""+"<font size='2'color='#883e33'>"
-//                        + "Save it now!"+"</font>";
-               // rentText.setText(Html.fromHtml(download_styledText));
-
             }
-                else {
+            else {
                 rentText.setText("@" + General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")));
-            }//  rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /m.");
-            //      displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used.");
-
+            }
             General.setSharedPreferences(getContext(),AppConstants.PTYPE,ptype);
             General.setSharedPreferences(getContext(),AppConstants.PSTYPE,pstype);
             General.setSharedPreferences(getContext(),AppConstants.PRICE,jsonObjectArray.getJSONObject(position).getString("price"));
-
             Log.i(TAG, "show is " + show);
-
             if(show.equals("show")) {
-
                 notClicked.setVisibility(View.GONE);
                 leadPrompt.setVisibility(View.GONE);
                 rentText.setVisibility(View.VISIBLE);
-
                 //   displayOkText.setVisibility(View.VISIBLE);
                 texPtype.setVisibility(View.VISIBLE);
                 texPstype.setVisibility(View.VISIBLE);
-
                 rentText.startAnimation(bounce);
-
                 deal.setEnabled(false);
                 deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
-                // pickContact.setVisibility(View.GONE);
-                // contactText.setVisibility(View.GONE);
             }
             else if(show.equals("hide")) {
-
                 jsonObjectArray = null;
                 if(buildingSliderflag) {
                     buildingSlider.startAnimation(slide_down);
@@ -2084,31 +1525,22 @@ Log.i("Diamond","diamond "+possession_date);
                     Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
                     intent.putExtra("buildingSliderFlag",buildingSliderflag);
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-
-
-                    //clearChart();
-                   if(buildingsSelected.size() !=0)
-                     buildingsSelected.clear();
+                    if(buildingsSelected.size() !=0)
+                        buildingsSelected.clear();
                     selectB.setText("Selected buildings ["+buildingsSelected.size()+"]");
                     selectB.performClick();
                 }
                 notClicked.setVisibility(View.VISIBLE);
                 rentText.setVisibility(View.GONE);
-                //   displayOkText.setVisibility(View.GONE);
                 texPtype.setVisibility(View.GONE);
                 texPstype.setVisibility(View.GONE);
                 pd.setVisibility(View.GONE);
-                // pickContact.setVisibility(View.GONE);
-                // contactText.setVisibility(View.GONE);
             }
             else {
                 notClicked.setVisibility(View.GONE);
                 rentText.setVisibility(View.VISIBLE);
-                //   displayOkText.setVisibility(View.VISIBLE);
                 texPtype.setVisibility(View.VISIBLE);
                 texPstype.setVisibility(View.VISIBLE);
-                //  pickContact.setVisibility(View.VISIBLE);
-                //  contactText.setVisibility(View.VISIBLE);
             }
         }
         catch (JSONException e) {
@@ -2118,9 +1550,6 @@ Log.i("Diamond","diamond "+possession_date);
             e.printStackTrace();
         }
     }
-
-    //   @OnClick({R.id.okButton, R.id.deal, R.id.pickContact})
-
 
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
@@ -2149,14 +1578,14 @@ Log.i("Diamond","diamond "+possession_date);
     public void animatebadges(){
         if(General.getBadgeCount(getContext(),AppConstants.RENTAL_COUNT)>0) {
             rentalCount.startAnimation(bounce);
-if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("resale")) {
-    if (General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT) > 0) {
-        option1Count.startAnimation(bounce);
-    }
-    if (General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT) > 0) {
-        option2Count.startAnimation(bounce);
-    }
-}
+            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("resale")) {
+                if (General.getBadgeCount(getContext(), AppConstants.TENANTS_COUNT) > 0) {
+                    option1Count.startAnimation(bounce);
+                }
+                if (General.getBadgeCount(getContext(), AppConstants.OWNERS_COUNT) > 0) {
+                    option2Count.startAnimation(bounce);
+                }
+            }
         }
         if(General.getBadgeCount(getContext(),AppConstants.RESALE_COUNT)>0) {
             resaleCount.startAnimation(bounce);
@@ -2169,14 +1598,9 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
                     option2Count.startAnimation(bounce);
                 }
             }
-
-
-
         }
-
-
-
     }
+
 
     private void setBadges(){
 
@@ -2257,13 +1681,6 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
 
 
     }
-
-
-
-
-
-
-
 
     @Override
     public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
@@ -2446,7 +1863,6 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
             chart.highlightValues(null);
         }
 
-
 //        if (buildingsSelected.size() == 0) {
 //            // chart.highlightValues(null);
 //            //do nothing
@@ -2480,10 +1896,6 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
 //
 //
  }
-
-
-
-
 
 
     ////////////////////////////////
@@ -2535,9 +1947,6 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
 
     @Override
     public void onChartSingleTapped(MotionEvent me) {
-
-
-
         //  Log.i("GRAPH","me onChartSingleTapped "+me);
 //
         //highlighter.getHighlight(me.getX(0),me.getY(0));
@@ -2557,17 +1966,8 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
 //        chart.highlightValues(new Highlight[]{h0, h1, h2});
 
 //        Log.i("GRAPH","me "+highlight.getXIndex());
-
         chartIndex = highlight.getXIndex();
-
-
-
 //        highlight();
-
-
-
-
-
     }
 
     @Override
@@ -2578,8 +1978,6 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
     @Override
     public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
 //        Log.i("GRAPH","onChartScale "+me);
-
-
     }
 
     @Override
@@ -2607,10 +2005,6 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
                         }
                         pagination = true;
                         chart.clear();
-//                        float fr = buildingNames.size() * 0.33f;
-//                        chart.fitScreen();
-                        //chart.zoom(9.3f,1f,0,0);
-                       // chart.zoomAndCenterAnimated(6.6f,1f,0,0, YAxis.AxisDependency.LEFT ,2000);
                         brokerbuildings(buildingsPage);
                     }
                 }
@@ -2619,34 +2013,9 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
 
             }
         }
-
-    //    Log.i("GRAPH","onChartTranslate "+me);
-        // Log.i("GRAPH","onChartTranslate "+me.getAction() +" "+me.getAxisValue(MotionEvent.AXIS_Y));
-
-        // highlight = highlighter.getHighlight(me.getX(),me.getY());
-        // e = dataset.getEntryForIndex(highlight.getXIndex());
-
-//        if(pricechart) {
-//            e = chart.getEntryByTouchPoint(me.getX(), me.getY());
-//            e.setVal(chart.getYValueByTouchPoint(me.getX(), me.getY(), YAxis.AxisDependency.LEFT));
-//
-//            chart.notifyDataSetChanged();
-//            chart.invalidate();
-////            Log.i("GRAPH", "once onChartTranslate again " + me);
-//        }
-
-        // Log.i("GRAPH","onChartTranslate1 "+me.getX()+" "+me.getY()+" "+dX+" "+dY+" ");
-
-
-
-
     }
 
-
-
-
-
-    public void onTabclick(int position, JSONArray m, String show, int x_c, int y_c) {
+   /* public void onTabclick(int position, JSONArray m, String show, int x_c, int y_c) {
         try {
             jsonObjectArray = m;
             selectedItemPosition = position;
@@ -2654,52 +2023,30 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
             String pstype;
             String name;
             pstype = jsonObjectArray.getJSONObject(position).getString("property_subtype");
-            Log.i("debug circ","inside onclick");
+            Log.i("debug circ","inside onclick sushil");
             Log.i("debug circ","inside onclick m "+jsonObjectArray);
-
-
-          /*  if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
-                ptype = "home";
-            }
-            else if(pstype.equals("retail outlet") || pstype.equals("food outlet") || pstype.equals("shop")){
-                ptype = "shop";
-            }
-            else if(pstype.equals("cold storage") || pstype.equals("kitchen") || pstype.equals("manufacturing") || pstype.equals("warehouse") || pstype.equals("workshop")){
-                ptype = "industrial";
-            }
-            else if(pstype.equals("<15") || pstype.equals("<35") || pstype.equals("<50") || pstype.equals("<100") || pstype.equals("100+")){
-                ptype = "office";
-            }
-            */
-
             ptype = jsonObjectArray.getJSONObject(position).getString("property_type");
             name = jsonObjectArray.getJSONObject(position).getString("name");
-
             Log.i(TAG,"property_type "+ptype);
             Log.i(TAG, "property_subtype " + pstype);
             texPtype.setText(lookingSeeking1+name+lookingSeeking2);
-            //texPtype.setText(lookingSeeking);
-            //texPtype.setText("Property Type: "+ptype);
             texPstype.setText(ptype.substring(0, 1).toUpperCase() + ptype.substring(1)+" ("+pstype+")");
-            //texPstype.setText("Property Subtype: "+jsonObjectArray.getJSONObject(position).getString("property_subtype."));
-            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL"))
+
+            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")){
                 rentText.setText("@"+General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))+" /m.");
-            else
+                Log.i(TAG, "Rental type " + General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price"))+" /m.");
+            }
+            else{
                 rentText.setText("@"+General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")));
-            //  rentText.setText("Rs "+jsonObjectArray.getJSONObject(position).getString("price")+" /m.");
-            //      displayOkText.setText(jsonObjectArray.getJSONObject(position).getString("ok_price")+" Oks will be used.");
+                Log.i(TAG, "Resale type " + General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")));
 
+            }
             Log.i(TAG, "show is " + show);
-
             if(show.equals("show")) {
                 notClicked.setVisibility(View.GONE);
                 rentText.setVisibility(View.VISIBLE);
-                //   displayOkText.setVisibility(View.VISIBLE);
                 texPtype.setVisibility(View.VISIBLE);
                 texPstype.setVisibility(View.VISIBLE);
-
-                // pickContact.setVisibility(View.GONE);
-                // contactText.setVisibility(View.GONE);
             }
             else if(show.equals("hide")) {
                 jsonObjectArray = null;
@@ -2710,8 +2057,6 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
                     Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
                     intent.putExtra("buildingSliderFlag",buildingSliderflag);
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-
-
                     //clearChart();
                     if(buildingsSelected.size() !=0)
                         buildingsSelected.clear();
@@ -2720,20 +2065,14 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
                 }
                 notClicked.setVisibility(View.VISIBLE);
                 rentText.setVisibility(View.GONE);
-                //   displayOkText.setVisibility(View.GONE);
                 texPtype.setVisibility(View.GONE);
                 texPstype.setVisibility(View.GONE);
-                // pickContact.setVisibility(View.GONE);
-                // contactText.setVisibility(View.GONE);
             }
             else {
                 notClicked.setVisibility(View.GONE);
                 rentText.setVisibility(View.VISIBLE);
-                //   displayOkText.setVisibility(View.VISIBLE);
                 texPtype.setVisibility(View.VISIBLE);
                 texPstype.setVisibility(View.VISIBLE);
-                //  pickContact.setVisibility(View.VISIBLE);
-                //  contactText.setVisibility(View.VISIBLE);
             }
         }
         catch (JSONException e) {
@@ -2743,68 +2082,45 @@ if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("
             e.printStackTrace();
         }
     }
-
-public void walkthroughBroker(final View v) {
-
-
-    countertut = 0;
-    MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this.getActivity());
-    sequence.addSequenceItem(v.findViewById(R.id.iv_client_type),
-            "         Select client type","", "      GOT IT! (Go to next screen)");
-    sequence.addSequenceItem(v.findViewById(R.id.iv_transection_type),
-            "         Select Transaction Type","", "       GOT IT! (Go to next screen)");
-    sequence.addSequenceItem(v.findViewById(R.id.imageView111),
-            "         Select lead type to check the requirement","", "      GOT IT! (Go to next screen)");
-
-
-    sequence.addSequenceItem(v.findViewById(R.id.okButton),
-            "Press 'OK' to select three Property for Visit","", "      GOT IT! (Go to next screen)");
-
-
-//        sequence.addSequenceItem(v.findViewById(R.id.ic_search),
-//                "Select Lead", "GOT IT");
-
-
-    sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
-        @Override
-        public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
-            countertut++;
-            if (countertut == 4) {
-                Log.i("ischecked", "beacon_walk_broker==========  :" + beacon);
-
-
+*/
+    public void walkthroughBroker(final View v) {
+        countertut = 0;
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this.getActivity());
+        sequence.addSequenceItem(v.findViewById(R.id.iv_client_type),
+                "         Select client type","", "      GOT IT! (Go to next screen)");
+        sequence.addSequenceItem(v.findViewById(R.id.iv_transection_type),
+                "         Select Transaction Type","", "       GOT IT! (Go to next screen)");
+        sequence.addSequenceItem(v.findViewById(R.id.imageView111),
+                "         Select lead type to check the requirement","", "      GOT IT! (Go to next screen)");
+        sequence.addSequenceItem(v.findViewById(R.id.okButton),
+                "Press 'OK' to select three Property for Visit","", "      GOT IT! (Go to next screen)");
+        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
+            @Override
+            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
+                countertut++;
+                if (countertut == 4) {
+                    Log.i("ischecked", "beacon_walk_broker==========  :" + beacon);
                     Log.i("ischecked", "beacon_walk1_broker  ==========   :" + beacon);
-                try {
-                    if (beacon.equalsIgnoreCase("true"))
-                    beaconAlertBroker(v);
-                } catch (InterruptedException e) {e.printStackTrace();}
-                // rippleBackground4.startRippleAnimation();
+                    try {
+                        if (beacon.equalsIgnoreCase("true"))
+                            beaconAlertBroker(v);
+                    } catch (InterruptedException e) {e.printStackTrace();}
+                    // rippleBackground4.startRippleAnimation();
+                }
             }
-        }
-    });
-    sequence.start();
+        });
+        sequence.start();
 
-}
-
-
+    }
 
     public void beaconAlertBroker( final View rootView) throws InterruptedException {
-
         final RippleBackground rippleBackground1 = (RippleBackground) rootView.findViewById(R.id.broker_content);
         final RippleBackground rippleBackground2 = (RippleBackground) rootView.findViewById(R.id.broker_content1);
         final RippleBackground rippleBackground3 = (RippleBackground) rootView.findViewById(R.id.broker_content3);
-//        start = System.currentTimeMillis();
-//        boolean ripple = true;
-//        long now;
-
         new CountDownTimer(3000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 rippleBackground1.startRippleAnimation();
-
-
-
-
                 SnackbarManager.show(
                         Snackbar.with(getContext())
                                 .text("Select the Role")
@@ -2815,9 +2131,7 @@ public void walkthroughBroker(final View v) {
             }
 
             public void onFinish() {
-
                 new CountDownTimer(3000, 1000) {
-
                     public void onTick(long millisUntilFinished) {
                         rippleBackground1.stopRippleAnimation();
                         rippleBackground2.startRippleAnimation();
@@ -2829,60 +2143,25 @@ public void walkthroughBroker(final View v) {
                                         .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
 
                     }
-
                     public void onFinish() {
-
                         new CountDownTimer(3000, 1000) {
-
                             public void onTick(long millisUntilFinished) {
                                 rippleBackground2.stopRippleAnimation();
                                 rippleBackground3.startRippleAnimation();
                                 SnackbarManager.show(
                                         Snackbar.with(getContext())
                                                 .text("Press 'OK' to select three Property for Visit")
-
                                                 .position(Snackbar.SnackbarPosition.TOP)
                                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
-
-
                             }
-
                             public void onFinish() {
-
                                 rippleBackground3.stopRippleAnimation();
-
                             }
                         }.start();
-
-
                     }
                 }.start();
             }
         }.start();
-
-
-
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

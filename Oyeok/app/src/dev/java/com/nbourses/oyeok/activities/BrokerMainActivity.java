@@ -770,15 +770,7 @@ GoogleMap map;
            if(AppConstants.REGISTERING_FLAG){}else{
                 //getSupportFragmentManager().popBackStackImmediate();
                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
-
-
-
-              /* Intent inten = new Intent(this, BrokerMainActivity.class);
-
-            startActivity(inten);
-            finish();*/
             AppConstants.SIGNUP_FLAG=false;
-
             backpress = 0;}
         }else
         if(webView != null){
@@ -787,7 +779,6 @@ GoogleMap map;
             }
             else {
             webView = null;
-
                 Intent inten = new Intent(this, BrokerMainActivity.class);
                 inten.addFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -796,28 +787,16 @@ GoogleMap map;
                 startActivity(inten);
                 finish();
 
-//            finish();
                 backpress = 0;
                  }
         }
         else if(gmap ==true){
             Log.i("ONBACKPRESSED","broker main activity gmap"+getSupportFragmentManager().getBackStackEntryCount());
-
-//            int count = getFragmentManager().getBackStackEntryCount();
-//            for(int i = 0; i < count; ++i) {
-//            getSupportFragmentManager().popBackStackImmediate();
-//            }
             Log.i("ONBACKPRESSED","broker main activity gmap"+getSupportFragmentManager().getBackStackEntryCount());
             Intent inten = new Intent(this, BrokerMainActivity.class);
-
             startActivity(inten);
             finish();
-//            }
-
-
             gmap =false;
-//            finish();
-
             backpress = 0;
         }
         else if(buildingSliderflag == true){
@@ -829,16 +808,11 @@ GoogleMap map;
             backpress = 0;
         }else if(setting==true){
             Log.i("BACK PRESSED"," =================== setting"+setting);
-//            getFragmentManager().popBackStack();
             if(SharedPrefs.getString(this, SharedPrefs.CHECK_WALKTHROUGH).equalsIgnoreCase("true") || SharedPrefs.getString(this, SharedPrefs.CHECK_BEACON).equalsIgnoreCase("true")){
-//                super.onBackPressed();
-//                getSupportFragmentManager().popBackStack();
-
                 int count = getFragmentManager().getBackStackEntryCount();
                 for(int i = 0; i < count; ++i) {
                     getFragmentManager().popBackStackImmediate();
                 }
-
                 Intent inten = new Intent(this, BrokerMainActivity.class);
                 inten.addFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -850,13 +824,9 @@ GoogleMap map;
                 setting = false;
 
                 backpress = 0;
-
-
             }else {
                 Log.i("BACK","FRAGMENT COUNT "+getSupportFragmentManager().getBackStackEntryCount());
                 getSupportFragmentManager().popBackStackImmediate();
-                //super.onBackPressed();
-                //finish();
                 Log.i("SIGNUP_FLAG", "SIGNUP_FLAG=========  loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
                 backpress = 0;
@@ -870,17 +840,13 @@ GoogleMap map;
         }
 
         else if(!General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equals("")) {
-
-
             Log.i("SIGNUP_FLAG", " closing app =================== 3" + getFragmentManager().getBackStackEntryCount());
             if (backpress < 1) {
                 backpress = (backpress + 1);
                 TastyToast.makeText(this, "Press Back again to Exit!", TastyToast.LENGTH_LONG, TastyToast.INFO);
-                //Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
             } else if (backpress >= 1) {
                 backpress = 0;
                 this.finish();
-
             }
         }
         else{

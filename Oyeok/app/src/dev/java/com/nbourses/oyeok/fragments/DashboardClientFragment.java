@@ -248,7 +248,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private CustomPhasedSeekBar mPhasedSeekBar;
     Drawable marker = null;
 
-    String brokerType;
+    String brokerType="rent";
     private Geocoder geocoder;
     private GetCurrentLocation.CurrentLocationCallback mcallback;
     private FrameLayout ll_map;
@@ -307,7 +307,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private View v1;
     private Boolean spanning = false,autoIsClicked=false,pro_click=false;
     RelativeLayout parenttop,parentbottom;
-    Animation zoomout_right, slide_up, zoomout_left, ani, zoomin_zoomout,slide_up1;
+    Animation zoomout_right, slide_up, zoomout_left, ani, zoomin_zoomout,slide_up1,slide_left;
 //    Intent intent ;
 
     private RelativeLayout topView;
@@ -618,7 +618,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         addlistinglayout=(LinearLayout) rootView.findViewById(R.id.addlistinglayout);
         btn_add_building=(TextView) rootView.findViewById(R.id.btn_add_building);
         btn_add_listing=(TextView) rootView.findViewById(R.id.btn_add_listing);
-       /* oye_arrow=(TextView) rootView.findViewById(R.id.oye_arrow);*/
+        oye_arrow=(TextView) rootView.findViewById(R.id.oye_arrow);
         btn_add_building.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1632,7 +1632,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
         zoomout_right = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_slide));
         zoomout_left = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_slide_left));
         slide_up1 = (AnimationUtils.loadAnimation(getContext(), R.anim.slide_up_and_down));
-        zoomin_zoomout = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_zoomin));
+        zoomin_zoomout = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_zoomin));//slide_left
+        slide_left = (AnimationUtils.loadAnimation(getContext(), R.anim.slide_left1));
         PropertyButtonSlideAnimation();
         AppConstants.PROPERTY = "Home";
 
@@ -3560,6 +3561,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
         /*Intent intent = new Intent(AppConstants.PROPERTY_TYPE_BROADCAST);
                  intent.putExtra("protype",Property_type );
                  LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);*/
+//        if(brokerType.equalsIgnoreCase(""))
+//            brokerType="rent";
         if (brokerType.equalsIgnoreCase("rent")) {
             ani = zoomout_left;
             property_type_layout.startAnimation(ani);
@@ -3662,8 +3665,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 txtFilterValue.setEnabled(true);
                 tvRate.setVisibility(View.VISIBLE);
                 rupeesymbol.setVisibility(View.VISIBLE);
-                mCustomerMarker[i].setIcon(icon1);
-                mCustomerMarker[i].hideInfoWindow();
+                customMarker.get(i).setIcon(icon1);
+                customMarker.get(i).hideInfoWindow();
                 ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                 Intent in = new Intent(AppConstants.MARKERSELECTED);
                 in.putExtra("markerClicked", "false");
@@ -3672,7 +3675,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 search_building_icon.setVisibility(View.GONE);
                 buildingIcon.setVisibility(View.GONE);
                 fav.setVisibility(View.VISIBLE);
-                flag[i] = false;
+                buildingCacheModels.get(i).setFlag(false);
                 horizontalPicker.setVisibility(View.VISIBLE);
                 tvFetchingrates.setVisibility(View.GONE);
                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
@@ -3778,7 +3781,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                             @Override
                             public void run() {
                                 mVisits.startAnimation(zoomin_zoomout);
-//                                   oye_arrow.startAnimation(zoomin_zoomout);
+                                   oye_arrow.startAnimation(slide_left);
                             }
                         });
                     }
