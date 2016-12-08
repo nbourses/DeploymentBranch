@@ -116,7 +116,8 @@ import retrofit.http.POST;
         @POST("/1/user/gps")
         void userGps(@Body User user, Callback<User> callback);
 
-
+        @POST("/game/price")
+        void game(@Body User user, Callback<JsonElement> callback);
 
 //        @POST("/1/verify/mobile")
 //        void verifyMobile(@Body User user, Callback<MobileVerify> callback);

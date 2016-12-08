@@ -29,6 +29,8 @@
             android:id="@+id/txtEmail"
             android:textAlignment="center"
             android:layout_centerHorizontal="true"
+            android:textSize="15sp"
+            android:textStyle="bold"
             android:textColor="@color/White" />
 
     </RelativeLayout>

@@ -1,34 +1,709 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:id="@+id/map_parent"
     tools:context="com.nbourses.oyeok.activities.BrokerMap">
 
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout
+        android:id="@+id/activity_Broker_map"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/MyMaterialTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        android:orientation="vertical"
+        tools:context="com.nbourses.oyeok.activities.BrokerMap">
+        <LinearLayout
+            android:id="@+id/container_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/MyMaterialTheme.PopupOverlay" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/toolbar_with_deal_btn" />
+        </LinearLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="75dp">
+        <fragment
+            android:id="@+id/g_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"/>
+        <View
+            android:id="@+id/br_helperView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+       <!-- <RelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/property_type"
+            android:gravity="bottom"
+            android:layout_gravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:layout_height="50dp">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
 
-    </android.support.design.widget.AppBarLayout>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Home"
+                    android:textColor="@color/greenish_blue"
+                    android:background="@drawable/gradient_button_bg_with_border"
+                    android:id="@+id/home"
 
-    <include layout="@layout/content_broker_map" />
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="1dp"
+                    />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Office"
+                    android:textColor="@color/greenish_blue"
+                    android:background="@drawable/gradient_button_bg_with_border"
+                    android:id="@+id/office"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="1dp"
+                    />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Shop"
+                    android:textColor="@color/greenish_blue"
+                    android:background="@drawable/gradient_button_bg_with_border"
+                    android:id="@+id/shop"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="1dp"
+                    />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Industrial"
+                    android:textColor="@color/greenish_blue"
+                    android:background="@drawable/gradient_button_bg_with_border"
+                    android:id="@+id/industrial"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="1dp"
+                    />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
+
+
+            </LinearLayout>
+        </RelativeLayout>-->
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:id="@+id/recordWorkout"
+            android:background="@color/greenish_blue"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/selected_property"
+                android:src="@drawable/selected_property"
+                android:foregroundGravity="left"
+                android:visibility="gone"
+                android:background="@android:color/transparent"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp" />
+
+            <ImageView
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="@color/white"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                android:id="@+id/route"
+                android:nestedScrollingEnabled="false">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:padding="@dimen/eight_dp"
+                    android:clickable="true"
+                    android:id="@+id/favWrapper"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/heart"
+                        android:clickable="false"
+                        android:id="@+id/fav" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/selected_property"
+                        android:clickable="false"
+                        android:visibility="gone"
+                        android:id="@+id/buildingIcon" />
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:visibility="visible"/>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:id="@+id/addressPanel1"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:layout_marginRight="1dp">
+                    <TextView
+                        android:text="CHANGE LOCATION"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:id="@+id/textView6"
+                        android:gravity="bottom|center_horizontal" />
+                    <TextView
+                        android:text=" Fun Republic Rd, Industrial Area, Andheri"
+                        android:textSize="14sp"
+                        android:textColor="#FEFCFF"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top"
+                        android:paddingBottom="5dp"
+                        android:maxLines="2"
+                        android:id="@+id/addressBar1"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+               <!-- <AutoCompleteTextView android:id="@+id/inputSearch"
+                    android:inputType="textMultiLine|textPostalAddress"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Search Building Name or Locality .."
+                    android:background="@android:color/transparent"
+                    android:textColorHint="@color/white"
+                    android:clickable="true"
+                    android:textColor="@color/white"
+                    android:textCursorDrawable="@drawable/cursor"
+                    android:layout_marginRight="50dp"
+                    android:cursorVisible="false"
+                    android:singleLine="false"
+                    android:maxLines="2"
+                    android:scrollbars="none"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"
+                    android:textSize="15dp"
+                    android:nestedScrollingEnabled="false"
+                    android:foregroundGravity="center"
+                    android:paddingLeft="5dp"
+                    android:visibility="visible"/>-->
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_margin="@dimen/eight_dp"
+                android:clickable="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_search_24dp"
+                    android:clickable="false"
+                    android:id="@+id/ic_search" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="@color/white"
+                android:visibility="visible"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_margin="@dimen/eight_dp"
+                android:clickable="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_gps_fixed_24dp"
+                    android:clickable="false"
+                    android:id="@+id/myLoc" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dip"
+        android:text="Find Building on Map &amp; Save"
+        android:gravity="center"
+        android:background="@color/grey"
+        android:textColor="@color/greenish_blue"
+        android:textSize="14sp"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:layout_marginTop="1dip"
+        android:id="@+id/txt_info"
+        android:visibility="gone"
+        android:textStyle="bold"/>
+</LinearLayout>
+        <!--////Rate panel////-->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="45dp"
+            android:id="@+id/hPicker"
+            android:clickable="true">
+            <LinearLayout
+                android:id="@+id/ll_marker"
+                android:visibility="visible"
+                android:layout_width="fill_parent"
+                android:layout_height="65dp"
+                android:layout_marginLeft="@dimen/sixteen_dp"
+                android:layout_marginRight="@dimen/sixteen_dp"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:background="@drawable/maker_bg">
+                <RelativeLayout
+                    android:id="@+id/markerpanelminmax"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:clickable="true"
+                    android:visibility="visible">
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/average_rate_this_locality"
+                        android:id="@+id/tv_building"
+                        android:textColor="@color/White"
+                        android:maxLines="1"
+                        android:layout_marginRight="40dp"
+                        android:textSize="12sp"
+                        android:visibility="visible"
+                        android:gravity="top"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="25dp"
+                        android:textStyle="bold|italic"
+                        android:clickable="false" />
+                    <com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker
+                        android:id="@+id/picker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="50dp"
+                        android:layout_marginTop="1dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:ellipsize="marquee"
+                        android:textStyle="bold"
+                        android:marqueeRepeatLimit="1"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:layout_below="@+id/tv_building"
+                        app:values="@array/hpicker"
+                        app:dividerSize="10dp"
+                        app:sideItems="@integer/sideItems"
+                        android:focusableInTouchMode="false"
+                        android:layout_above="@+id/tvRate" />
+                    <TextView
+                        android:id="@+id/tvRate1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="psf"
+                        android:clickable="false"
+                        android:textColor="@color/greenish_blue"
+                        android:layout_alignParentBottom="true"
+                        android:textSize="12sp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="120dp"
+                        android:layout_marginBottom="2dp" />
+                    <TextView
+                        android:id="@+id/rupeesymbol1"
+                        android:layout_width="wrap_content"
+                        android:text="@string/Rs"
+                        android:clickable="false"
+                        android:layout_marginLeft="98dp"
+                        android:layout_marginBottom="4dp"
+                        android:textColor="@color/greenish_blue"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:textSize="12sp" />
+                    <TextView
+                        android:layout_width="255dip"
+                        android:layout_height="40dip"
+                        android:id="@+id/tvFetchingRates"
+                        android:textColor="@color/White"
+                        android:visibility="visible"
+                        android:layout_marginTop="12dp"
+                        android:paddingBottom="1dp"
+                        android:text=""
+                        android:maxLines="2"
+                        android:gravity="top|center_horizontal"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+
+
+        <!--================////oye button/////================-->
+                    <LinearLayout
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="-5dp" >
+
+                        <TextView
+                            android:id="@+id/newVisits"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:paddingLeft="1dp"
+                            android:paddingRight="1dp"
+                            android:layout_marginBottom="-6dp"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginLeft="8dp"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:layout_alignParentRight="true" />
+
+                        <TextView
+                            android:id="@+id/txtFilterValue"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:text="Home"
+                            android:textStyle="bold|italic"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:paddingLeft="1dp"
+                            android:paddingRight="1dp"
+                            android:layout_marginRight="2dp"
+                            android:layout_marginLeft="-45dp"
+                            android:layout_marginTop="3dp"
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:visibility="visible"
+                            android:layout_alignParentRight="true" />
+
+                    </LinearLayout>
+
+
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_markerpin"
+                android:layout_below="@id/ll_marker"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-4dp"
+                android:id="@+id/Mmarker"
+                android:layout_marginRight="3dp" />
+
+
+
+
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:id="@+id/missingArea"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:background="@color/yellow"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="We cater Only in Mumbai."/>
+        </RelativeLayout>
+
+        <Button
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:id="@+id/addbuilding"
+            android:layout_gravity="left|bottom"
+            android:background="@drawable/asset_add_listing"
+            android:text=""
+            android:textSize="30dip"
+            android:layout_marginLeft="10dp"
+            android:visibility="visible"
+            android:layout_marginBottom="40dp"
+            android:layout_marginTop="10dp"  />
+    </FrameLayout>
+
+
+
+
+</LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/property_type"
+        android:gravity="bottom"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="75dip"
+        android:layout_height="50dp">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Home"
+                android:textColor="@color/greenish_blue"
+                android:background="@drawable/gradient_button_bg_with_border"
+                android:id="@+id/home"
+
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="1dp"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Office"
+                android:textColor="@color/greenish_blue"
+                android:background="@drawable/gradient_button_bg_with_border"
+                android:id="@+id/office"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="1dp"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Shop"
+                android:textColor="@color/greenish_blue"
+                android:background="@drawable/gradient_button_bg_with_border"
+                android:id="@+id/shop"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="1dp"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Industrial"
+                android:textColor="@color/greenish_blue"
+                android:background="@drawable/gradient_button_bg_with_border"
+                android:id="@+id/industrial"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="1dp"
+                />
+
+
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/seekbar_linearlayout"
+        android:gravity="bottom"
+        android:layout_gravity="bottom"
+        android:background="@color/grey"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_marginTop="-70dp"
+        android:orientation="vertical">
+
+        <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
+            android:id="@+id/phasedSeekBar1"
+            android:layout_width="match_parent"
+            android:layout_height="75dip"
+            android:background="@color/grey"
+            android:layout_alignParentBottom="true"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="75dip"
+            android:gravity="bottom"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:layout_marginTop="-70dp"
+            android:background="@color/greenish_blue"
+            android:id="@+id/addlistingText"
+            android:visibility="gone"
+            >
+            <Button
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="left|bottom"
+                android:background="@drawable/asset_add_listing"
+                android:text=""
+                android:layout_marginLeft="10dp"
+                android:visibility="visible"
+                android:layout_marginTop="15dp"  />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="60dip"
+                android:textColor="@color/white"
+                android:layout_marginLeft="5dip"
+                android:layout_marginTop="2dip"
+                android:layout_marginBottom="2dip"
+                android:textStyle="bold"
+                android:id="@+id/addBText"
+                android:visibility="visible"
+                android:gravity="center"
+                android:text="Find your Building Location and on Save"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:gravity="bottom"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:id="@+id/property_type_layout"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="55dp"
+        android:layout_alignParentBottom="true"
+        >
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/rental"
+            android:textColor="@color/greenish_blue"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="home"/>
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/sale"
+            android:textColor="@color/greenish_blue"
+            android:layout_marginLeft="80dp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="Home"/>
+    </LinearLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:id="@+id/addlistinglayout"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="60dip"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="@color/orange"
+            android:gravity="center"
+            android:id="@+id/btn_add_building"
+            android:text="Done"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="60dip"
+            android:textColor="@color/white"
+            android:layout_margin="4dip"
+            android:textStyle="bold"
+            android:background="@color/orange"
+            android:layout_weight="1"
+            android:id="@+id/btn_add_listing"
+            android:visibility="visible"
+            android:gravity="center"
+            android:text="Continue to listing"/>
+    </LinearLayout>
+
+
+
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:id="@+id/container_OyeConfirmation"
+        android:layout_alignBottom="@+id/sliding_layout">
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/container_Signup"
+        >
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/card"
+        android:layout_margin="40dp">
+    </FrameLayout>
+</FrameLayout>
+<!--
+<ImageView
+android:layout_width="40dp"
+android:layout_height="40dp"
+android:background="@color/tw__transparent"
+android:id="@+id/pin"
+android:visibility="visible"
+android:foregroundGravity="center_horizontal"
+android:layout_gravity="center_horizontal|center_vertical"
+android:src="@drawable/pin"
+android:layout_centerHorizontal="true"
+android:layout_marginTop="-30dp" />-->

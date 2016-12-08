@@ -18,13 +18,6 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/border_line">
 
-            <!--  <fragment
-                  android:id="@+id/broker_map"
-                  android:name="com.google.android.gms.maps.SupportMapFragment"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"/> -->
-
-
             <fragment
                 android:id="@+id/map"
                 android:layout_width="match_parent"
@@ -34,14 +27,6 @@
                 android:layout_gravity="center_vertical">
             </fragment>
 
-            <!--<fragment-->
-            <!--android:id="@+id/map"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:orientation="vertical"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--class="com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.MySupportMapFragment">-->
-            <!--</fragment>-->
 
             <!-- Helper view to manage touches -->
             <View
@@ -57,27 +42,24 @@
                 android:layout_gravity="center_horizontal"
 
                 />
+
             <TextView
                 android:id="@+id/oye_arrow"
-                android:layout_width="35dp"
-                android:layout_height="45dp"
+                android:layout_width="35dip"
+                android:layout_height="45dip"
                 android:background="@drawable/oye_arrow"
-                android:layout_marginTop="164dp"
-                android:layout_marginLeft="335dp"
-                android:gravity="right"
-
+                android:gravity="right|top"
+                android:layout_marginBottom="62dp"
+                android:layout_marginLeft="10dip"
+                android:layout_gravity="center_vertical|right"
                 />
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-
-                android:layout_marginBottom="40dp"
+                android:layout_marginBottom="45dp"
                 android:id="@+id/hPicker"
-
                 android:clickable="true">
-
-
                 <LinearLayout
                     android:id="@+id/ll_marker"
                     android:visibility="visible"
@@ -88,8 +70,6 @@
                     android:orientation="horizontal"
                     android:clickable="true"
                     android:background="@drawable/maker_bg">
-
-
                     <RelativeLayout
                         android:id="@+id/markerpanelminmax"
                         android:layout_width="fill_parent"
@@ -164,24 +144,6 @@
                             android:layout_marginTop="20dp"
                             android:textSize="12sp" />
 
-                        <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:id="@+id/tvCommingsoon"-->
-                        <!--android:layout_marginRight="30dp"-->
-                        <!--android:layout_alignBottom="@+id/picker"-->
-                        <!--android:layout_alignEnd="@+id/picker"-->
-                        <!--android:layout_alignTop="@+id/picker"-->
-                        <!--android:textColor="@color/White"-->
-
-                        <!--android:foregroundGravity="center_vertical"-->
-                        <!--android:layout_marginLeft="50dp"-->
-                        <!--android:layout_marginTop="15dp" />-->
-                        <!--    android:layout_toEndOf="@+id/tvFetchingRates"
-                        android:layout_toEndOf="@+id/beacons2"-->
-
-
-
                         <TextView
                             android:layout_width="255dp"
                             android:layout_height="50dip"
@@ -227,80 +189,11 @@
                             </com.skyfishjy.library.RippleBackground>
 
                         </LinearLayout>
-
-                        <!--<LinearLayout
-                            android:layout_width="265dp"
-                            android:layout_height="fill_parent"
-                            android:orientation="vertical"
-                            android:layout_below="@+id/tv_building"
-                            android:layout_alignBottom="@+id/tvRate">
-                            <com.skyfishjy.library.RippleBackground
-                                xmlns:android="http://schemas.android.com/apk/res/android"
-                                xmlns:app="http://schemas.android.com/apk/res-auto"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:id="@+id/client_content3"
-                                app:rb_color="#ff0000"
-                                app:rb_radius="4dp"
-                                app:rb_rippleAmount="4"
-                                app:rb_duration="3000"
-                                app:rb_scale="6">
-                            <TextView
-                                android:layout_width="255dp"
-                                android:layout_height="match_parent"
-                                android:id="@+id/tvFetchingRates"
-                                android:textColor="@color/White"
-                                android:visibility="visible"
-                                android:foregroundGravity="top|center"
-                                android:layout_marginTop="-5dp"
-                                android:gravity="center"
-                                android:textSize="12sp"
-                                android:textStyle="bold" />
-                            </com.skyfishjy.library.RippleBackground>
-                        </LinearLayout>-->
-
-
-
-
-
-                        <!--<RelativeLayout
-                            android:layout_width="60dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            >
-                       <TextView
-                           android:id="@+id/newVisits"
-                           android:layout_width="61dp"
-                           android:layout_height="61dp"
-                           android:textStyle="bold"
-                           android:layout_marginBottom="2dp"
-                           android:gravity="center_horizontal|center_vertical"
-                           android:paddingLeft="1dp"
-                           android:paddingRight="1dp"
-                           android:textColor="@color/white"
-                           android:textSize="20sp"
-                           android:layout_alignParentRight="true"
-                           android:layout_margin="5dp" />
-                       <TextView
-                           android:id="@+id/txtFilterValue"
-                           android:layout_width="61dp"
-                           android:layout_height="61dp"
-                           android:text="Home"
-                           android:textStyle="bold|italic"
-                           android:gravity="center_horizontal|center_vertical"
-                           android:paddingLeft="1dp"
-                           android:paddingRight="1dp"
-                           android:textColor="@color/white"
-                           android:textSize="13sp"
-                           android:visibility="visible"
-                           android:layout_alignParentRight="true" />
-                       </RelativeLayout>-->
-
                         <LinearLayout
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_alignParentRight="true"
-                            android:layout_marginRight="-4dp"
+                            android:layout_marginRight="-5dp"
                             >
 
                             <TextView
@@ -369,6 +262,8 @@
                             </com.skyfishjy.library.RippleBackground>
 
                         </LinearLayout>
+
+
                     </RelativeLayout>
 
 
@@ -385,69 +280,6 @@
                     android:layout_marginRight="3dp" />
 
             </RelativeLayout>
-
-            <!--<com.github.clans.fab.FloatingActionMenu
-                android:id="@+id/menu2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                fab:menu_labels_style="@style/MenuLabelsStyle"
-                fab:menu_labels_showAnimation="@anim/jump_from_down"
-                fab:menu_labels_hideAnimation="@anim/jump_to_down"
-                fab:menu_animationDelayPerItem="0"
-                fab:menu_shadowColor="#444"
-                fab:menu_colorNormal="#FFB805"
-                fab:menu_colorPressed="#F2AB00"
-                fab:menu_colorRipple="#D99200"
-                android:layout_gravity="bottom|right"
-                android:layout_marginBottom="8dp"
-                android:layout_marginRight="8dp">-->
-
-            <!--<com.github.clans.fab.FloatingActionButton-->
-            <!--android:id="@+id/fab12"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--fab:fab_label="Menu item 1"-->
-            <!--style="@style/MenuButtonsStyle" />-->
-
-            <!--<com.github.clans.fab.FloatingActionButton-->
-            <!--android:id="@+id/fab22"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--fab:fab_label="Menu item 2"-->
-            <!--style="@style/MenuButtonsStyle" />-->
-
-            <!--<com.github.clans.fab.FloatingActionButton-->
-            <!--android:id="@+id/fab32"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--style="@style/MenuButtonsStyle" />-->
-
-            <!--</com.github.clans.fab.FloatingActionMenu>-->
-
-
-            <!--//sushil-->
-
-            <!--<RelativeLayout
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:visibility="gone"
-                android:id="@+id/alertLayout"
-                android:background="#2DC4B6"
-                android:layout_gravity="bottom"
-                android:layout_width="match_parent"
-                android:layout_height="25dp">
-                <TextView
-                    android:id="@+id/errorText"
-                    android:text="ss"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:gravity="center_horizontal"/>
-            </RelativeLayout>-->
-
-
             <Button
                 android:layout_width="65dp"
                 android:layout_height="65dp"
@@ -472,10 +304,7 @@
                 android:visibility="gone"
                 android:layout_marginBottom="40dp"
                 android:layout_marginTop="10dp"  />
-
         </FrameLayout>
-
-
         <FrameLayout
             android:id="@+id/hideOnSearch"
             android:layout_width="match_parent"
@@ -546,8 +375,6 @@
                 android:weightSum="1"
                 android:id="@+id/route"
                 android:nestedScrollingEnabled="false">
-
-
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
@@ -632,44 +459,8 @@
                     android:foregroundGravity="center"
                     android:paddingLeft="5dp"
                     android:visibility="gone"/>
-
-                <!--android:textCursorDrawable="@color/white"
-                android:textCursorDrawable="@color/white"-->
-                <!--android:drawableRight="@drawable/ic_search_24dp"-->
-
-
-
-
-
-
             </LinearLayout>
 
-
-            <!--<RelativeLayout
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:orientation="vertical"
-                android:layout_marginLeft="-40dp"
-                android:visibility="visible">-->
-
-            <!--<com.skyfishjy.library.RippleBackground
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/client_content2"
-                    app:rb_color="#ff0000"
-                    app:rb_radius="4dp"
-                    app:rb_rippleAmount="4"
-                    app:rb_duration="3000"
-                    app:rb_scale="6">
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_search_24dp"
-                            android:clickable="false"
-                            android:id="@+id/ic_search" />
-                    </com.skyfishjy.library.RippleBackground>-->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
@@ -901,35 +692,14 @@
             android:layout_above="@+id/seekbar_linearlayout"
             android:orientation="horizontal"
             android:background="@color/yellow"
-            android:visibility="gone">
+            android:visibility="visible">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:text="We cater Only in Mumbai."/>
-
         </RelativeLayout>
-
-
-
-        <!--<LinearLayout
-            android:id="@+id/seekbar_linearlayout"
-            android:paddingTop="6dp"
-            android:paddingLeft="@dimen/eight_dp"
-            android:paddingRight="@dimen/eight_dp"
-            android:background="@color/dark_white"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:orientation="vertical"
-            android:gravity="bottom"
-            android:baselineAligned="false"
-            android:foregroundGravity="bottom"
-            android:layout_alignParentBottom="true"
-            android:visibility="visible">-->
-
-
-
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -1004,13 +774,13 @@
         </RelativeLayout>
 
 
-
+<!--
         <ViewStub
             android:id="@+id/layout_stub"
             android:inflatedId="@+id/message_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.75" />
+            android:layout_weight="0.75" />-->
 
         <LinearLayout
             android:id="@+id/seekbar_linearlayout"
@@ -1028,31 +798,6 @@
             android:layout_alignParentBottom="true"
             android:visibility="visible">
 
-            <!--android:paddingTop="@dimen/eight_dp"-->
-            <!--android:paddingBottom="@dimen/eight_dp"-->
-            <!--<RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                        &lt;!&ndash;<TextView&ndash;&gt;
-                            &lt;!&ndash;android:layout_width="100dp"&ndash;&gt;
-                            &lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;
-                            &lt;!&ndash;android:id="@+id/rental"&ndash;&gt;
-                            &lt;!&ndash;android:textColor="@color/greenish_blue"&ndash;&gt;
-                            &lt;!&ndash;android:textStyle="bold"&ndash;&gt;
-                            &lt;!&ndash;android:visibility="visible"&ndash;&gt;
-                            &lt;!&ndash;android:gravity="center_horizontal|center_vertical"&ndash;&gt;
-                            &lt;!&ndash;android:text="home"/>&ndash;&gt;
-                        &lt;!&ndash;<TextView&ndash;&gt;
-                            &lt;!&ndash;android:layout_width="100dp"&ndash;&gt;
-                            &lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;
-                            &lt;!&ndash;android:id="@+id/sale"&ndash;&gt;
-                            &lt;!&ndash;android:textColor="@color/greenish_blue"&ndash;&gt;
-                            &lt;!&ndash;android:layout_marginLeft="130dp"&ndash;&gt;
-                            &lt;!&ndash;android:textStyle="bold"&ndash;&gt;
-                            &lt;!&ndash;android:visibility="visible"&ndash;&gt;
-                            &lt;!&ndash;android:gravity="center_horizontal|center_vertical"&ndash;&gt;
-                            &lt;!&ndash;android:text="home"/>&ndash;&gt;
-            </RelativeLayout>-->
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -1089,32 +834,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-
-
-
         </LinearLayout>
-        <!--<RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="-14dp"
-            android:layout_above="@+id/seekbar_linearlayout">-->
-
-        <!--</RelativeLayout>-->
-
-        <!--      <LinearLayout
-                  android:orientation="horizontal"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:id="@+id/hideOnSearch"
-                  android:clickable="true"
-                  android:visibility="gone"
-                  android:gravity="bottom"
-                  android:layout_below="@+id/recordWorkout"
-                  android:alpha="0.8"></LinearLayout> -->
-
-
-
-
     </RelativeLayout>
 
 
@@ -1143,7 +863,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/sale"
             android:textColor="@color/greenish_blue"
-            android:layout_marginLeft="80dp"
+            android:layout_marginLeft="180dp"
             android:textStyle="bold"
             android:visibility="gone"
             android:gravity="center_horizontal|center_vertical"

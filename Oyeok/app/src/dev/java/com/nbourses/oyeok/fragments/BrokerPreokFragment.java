@@ -62,9 +62,8 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
-import com.nbourses.oyeok.activities.BrokerDealsListActivity;
-import com.nbourses.oyeok.activities.ClientDealsListActivity;
-import com.nbourses.oyeok.activities.ProfileActivity;
+import com.nbourses.oyeok.activities.*;
+import com.nbourses.oyeok.activities.BrokerMap;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
@@ -258,6 +257,21 @@ private String transaction_type="Rental";
         // Required empty public constructor
     }
 
+
+    /*private BroadcastReceiver ResetPhase = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("getstring","get string reset phase: "+intent.getExtras().getBoolean("resetphase"));
+            if (intent.getExtras().getBoolean("resetphase")){
+            resetSeekBar();
+            }
+        }
+    };*/
+
+
+
+
+
     private BroadcastReceiver slideDownBuildings = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -353,6 +367,7 @@ private String transaction_type="Rental";
             }
             beacon="false";
         }
+        resetSeekBar();
         return v;
     }
 
@@ -361,6 +376,7 @@ private String transaction_type="Rental";
         super.onResume();
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(slideDownBuildings, new IntentFilter(AppConstants.SLIDEDOWNBUILDINGS));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(badgeCountBroadcast, new IntentFilter(AppConstants.BADGE_COUNT_BROADCAST));
+       // LocalBroadcastManager.getInstance(getContext()).registerReceiver(ResetPhase, new IntentFilter(AppConstants.RESETPHASE));
         preok();
     }
     @Override
@@ -368,6 +384,8 @@ private String transaction_type="Rental";
         super.onPause();
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(slideDownBuildings);
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(badgeCountBroadcast);
+       // LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(ResetPhase);
+
     }
 
 
@@ -432,11 +450,14 @@ private String transaction_type="Rental";
             hdroomsCount.setText(String.valueOf(General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT)));
         }
         Log.i("PHASE","before adapter set");
-        mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(),
+        /*mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(),
                 new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
                 new String[]{"30", "15"},
                 new String[]{getContext().getResources().getString(R.string.Rental), getContext().getResources().getString(R.string.Resale)
-                }));
+                }));*/
+
+        mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector,
+                R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), "Listing", getContext().getResources().getString(R.string.Resale)}));
         mCustomPhasedSeekbar.setListener(this);
 
         Log.i("PHASE","after adapter set");
@@ -1328,8 +1349,20 @@ private String transaction_type="Rental";
          Log.i("ja munna ja"," agaya beta tu : "+General.getSharedPreferences(getContext(),AppConstants.TT)+"   "+transaction_type);
 //            txtPreviouslySelectedOption = txtOption1;
 
-        }
-        else if (position == 1) {
+        }else  if(position==1){
+
+            try {
+                new CountDownTimer(1000, 500) {
+                    public void onTick(long millisUntilFinished) {
+                    }
+                    public void onFinish() {
+                        Intent intent = new Intent(getContext(), BrokerMap.class);
+                        startActivity(intent);
+                    }
+                }.start();
+            } catch (Exception e) {}
+
+        } else if (position == 2) {
 //            txtPreviouslySelectedOption = txtOption1;
             General.setSharedPreferences(getContext(),AppConstants.TT,"RESALE");
             transaction_type="RESALE";
@@ -2165,5 +2198,13 @@ private String transaction_type="Rental";
             }
         }.start();
     }
+
+
+    public void resetSeekBar(){
+        mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental),"listing", getContext().getResources().getString(R.string.Resale)}));
+    }
+
+
+
 
 }

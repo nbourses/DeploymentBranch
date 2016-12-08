@@ -25,9 +25,8 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
-import com.nbourses.oyeok.activities.ClientMainActivity;
-import com.nbourses.oyeok.activities.MyPortfolioActivity;
-import com.nbourses.oyeok.activities.ProfileActivity;
+import com.nbourses.oyeok.activities.*;
+import com.nbourses.oyeok.activities.BrokerMap;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.AddListingBorker;
@@ -257,7 +256,16 @@ public class AddListingFinalCard extends Fragment {
         Cancel_final_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ClientMainActivity)getActivity()).closeAddBuilding();
+
+
+                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                    ((BrokerMap)getActivity()).closeCardContainer();
+                }else{
+
+                    ((ClientMainActivity)getActivity()).closeAddBuilding();
+
+                }
+
             }
         });
 
@@ -515,12 +523,17 @@ private void init(){
 //        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
         myRealm.commitTransaction();
 
-        Intent in= new Intent(getContext(), MyPortfolioActivity.class);
-        in.addFlags(
-                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                        Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(in);
+        if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+            Intent in = new Intent(getContext(), MyPortfolioActivity.class);
+            startActivity(in);
+        }else {
+            Intent in = new Intent(getContext(), MyPortfolioActivity.class);
+            in.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(in);
+        }
 
     }
 
@@ -554,7 +567,7 @@ private  void getprice()
             Log.i("getprice", "user_id " + General.getSharedPreferences(getContext(), AppConstants.USER_ID));
         }
 
-        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_102).build();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_11).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
         UserApiService userApiService = restAdapter.create(UserApiService.class);

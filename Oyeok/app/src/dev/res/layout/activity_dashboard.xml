@@ -15,11 +15,13 @@
         sothree:umanoPanelHeight="125dp"
         sothree:umanoShadowHeight="4dp"
         sothree:umanoParallaxOffset="100dp"
-        sothree:umanoDragView="@+id/dragView"
         sothree:umanoFadeColor = "@android:color/transparent"
         sothree:umanoOverlay="true"
-        sothree:umanoScrollableView="@+id/sv">
+        >
 
+
+        <!--sothree:umanoDragView="@+id/dragView"-->
+        <!--sothree:umanoScrollableView="@+id/sv"-->
         <!-- MAIN CONTENT -->
         <android.support.v4.widget.DrawerLayout
             android:id="@+id/drawer_layout"
@@ -67,13 +69,8 @@
                             android:textAlignment="center"
                             android:text="Test"/>
                     </LinearLayout>
-
                 </FrameLayout>
-
-
             </LinearLayout>
-
-
             <fragment
                 android:id="@+id/fragment_navigation_drawer"
                 android:name="com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer"
@@ -87,22 +84,21 @@
         <!-- SLIDING LAYOUT -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="300dp"
             android:background="#ffffff"
-            android:orientation="vertical"
-            android:clickable="true"
-            android:focusable="false"
             android:id="@+id/dragView">
-            <ScrollView
+            <!--android:focusable="false"-->
+            <!--<ScrollView
                 android:id="@+id/sliding_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent" >-->
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clickable="true"
                     android:id="@+id/container_oye">
                 </FrameLayout>
-            </ScrollView>
+            <!--</ScrollView>-->
         </LinearLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
@@ -110,7 +106,6 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-
         android:id="@+id/container_Signup">
     </FrameLayout>
     <!--android:visibility="gone"
@@ -133,7 +128,6 @@
         android:background="@color/yellow"
         android:layout_alignParentBottom="true"
         android:foregroundGravity="center"
-
         android:orientation="vertical"
         android:weightSum="1"
         android:visibility="invisible"
@@ -153,11 +147,8 @@
             android:textColor="@color/White"
             android:layout_margin="5dp"
             android:text="CONNECT NOW | Find @"
-
             android:textIsSelectable="false"
             android:textStyle="bold|italic" />
-
-
 
         <TextView
             android:id="@+id/tv_dealinfo"

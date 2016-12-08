@@ -20,7 +20,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.activities.ClientMainActivity;
+import com.nbourses.oyeok.activities.*;
+import com.nbourses.oyeok.activities.BrokerMap;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
@@ -309,7 +310,13 @@ public class AddListing extends Fragment {
             @Override
             public void onClick(View v) {
                 AppConstants.PROPERTY="Home";
-                ((ClientMainActivity)getActivity()).closeAddListing();
+                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                    ((BrokerMap) getActivity()).closeCardContainer();
+                }else{
+
+                    ((ClientMainActivity) getActivity()).closeAddListing();
+
+                }
             }
         });
 
@@ -319,9 +326,14 @@ public class AddListing extends Fragment {
                 AppConstants.PROPERTY=Property;
                 General.setSharedPreferences(getContext(),AppConstants.PROPERTY,Property);
                 General.setSharedPreferences(getContext(),AppConstants.APPROX_AREA,approx_area);
+               if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+                   ((BrokerMap) getActivity()).closeCardContainer();
+                   ((BrokerMap) getActivity()).openAddBuilding();
 
-                ((ClientMainActivity)getActivity()).closeAddListing();
-                ((ClientMainActivity)getActivity()).openAddBuilding();
+                }else{
+                    ((ClientMainActivity) getActivity()).closeAddListing();
+                    ((ClientMainActivity) getActivity()).openAddBuilding();
+                }
             }
         });
 

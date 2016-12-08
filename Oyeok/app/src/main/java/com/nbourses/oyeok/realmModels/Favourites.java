@@ -8,9 +8,19 @@ import io.realm.annotations.PrimaryKey;
  */
 public class Favourites extends RealmObject{
     @PrimaryKey
+    private String id;
     private String title;
     private LatiLongi latiLongi;
     private String address;
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

@@ -75,6 +75,7 @@ import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     private static final String TAG = "SignUpFragment";
@@ -133,7 +134,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     private Activity activity;
     private Button submit;
     ImageView profile_pic;
-    private String oldRole;
+    private String oldRole,UserOldRole,reqRole;
     private Realm myRealm;
     ////////////////////////////////////////////////////
     // Variables defined for digits authentication
@@ -527,7 +528,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 UserApiService user1 = restAdapter.create(UserApiService.class);
                 user1.userSignUp(user, new Callback<SignUp>() {
                     @Override
-                    public void success(SignUp signUp, retrofit.client.Response response) {
+                    public void success(SignUp signUp, Response response) {
                         General.slowInternetFlag = false;
                         General.t.interrupt();
                         Log.i("TAG", "Inside signup success");
@@ -562,6 +563,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), activity);
                             if(signUp.responseData.getMessage().contains("client")){
                                 oldRole = "client";
+                                UserOldRole="Customer";
+                                reqRole="Broker";
                                 okBroker = false;
                                 role_of_user = "client";
                                 General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
@@ -570,6 +573,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 userInfo.setUserRole("client");
                             }  else{
                                 oldRole = "broker";
+                                UserOldRole="broker";
+                                reqRole="Customer";
                                 okBroker = true;
                                 role_of_user = "broker";
                                 General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"broker");
@@ -577,10 +582,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 Log.i(TAG,"fakat 2 "+General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
                                 userInfo.setUserRole("broker");
                             }
+
                             final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                            builder.setMessage("You have a "+oldRole+" account associated with this number.\n Do you want to Login as a "+oldRole)
-                                    .setCancelable(true)
-                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                           // builder.set
+                            builder.setMessage("You are already registered as a " +UserOldRole+ " with this Mobile Number.\nPlease signup as a "+reqRole+" from Another Mobile Number on another Device.")
+                                    .setCancelable(false)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                                             Log.i(TAG,"yoyoyo11 "+oldRole +" "+redirectClient);
                                             if(oldRole.equalsIgnoreCase("broker")){
@@ -599,14 +606,14 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                             signup_success();
                                         }
                                     })
-                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                         public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                                             dialog.cancel();
-                                            Intent intent = new Intent(getContext(), ClientMainActivity.class);
+                                            /*Intent intent = new Intent(getContext(), ClientMainActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                                     Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            startActivity(intent);
+                                            startActivity(intent);*/
                                             AppConstants.REGISTERING_FLAG=false;
                                         }
                                     });

@@ -34,6 +34,8 @@ import com.nbourses.oyeok.adapters.PlacesAutoCompleteAdapter;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.listeners.RecyclerItemClickListener;
+import com.nbourses.oyeok.realmModels.Favourites;
+import com.nbourses.oyeok.realmModels.LatiLongi;
 import com.nbourses.oyeok.realmModels.addBuildingRealm;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -131,7 +133,7 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
                     public void onItemClick(final View view, int position) {
                         final PlacesAutoCompleteAdapter.PlaceAutocomplete item = mAutoCompleteAdapter.getItem(position);
                         final String placeId = String.valueOf(item.placeId);
-                        Log.i("TAG", "floki Autocomplete item selected: "+placeId);
+                        Log.i("TAG", "floki Autocomplete item selected: "+placeId+"  title  "+mAutoCompleteAdapter.getItem(position).title+"  address : "+mAutoCompleteAdapter.getItem(position).description);
                         /*
                              Issue a request to the Places Geo Data API to retrieve a Place object with additional details about the place.
                          */
@@ -155,8 +157,7 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
                                 }else {
                                     try {
                                         Realm myRealm = General.realmconfig(getContext());
-                                        addBuildingRealm results1 =
-                                                myRealm.where(addBuildingRealm.class).equalTo("id", placeId).findFirst();
+                                        addBuildingRealm results1 = myRealm.where(addBuildingRealm.class).equalTo("id", placeId).findFirst();
 
                                         AppConstants.MY_LATITUDE= Double.parseDouble(results1.getLat());
                                         AppConstants.MY_LONGITUDE= Double.parseDouble(results1.getLng());
@@ -169,7 +170,7 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
                                     }
                                    // Toast.makeText(getContext(),AppConstants.SOMETHING_WENT_WRONG,Toast.LENGTH_SHORT).show();
                                 }
-
+                                saveAddress(item.title+"",item.description+"",AppConstants.MY_LATITUDE,AppConstants.MY_LONGITUDE,item.placeId+"");
                                 getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.container_Signup)).commit();
                                 Intent intent = new Intent(AppConstants.RESETMAP);
                                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
@@ -268,6 +269,30 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
             mGoogleApiClient.disconnect();
         }
     }
+
+   public void saveAddress(String title,String Address,Double lat,Double longi,String placeid) {
+       Realm myRealm = General.realmconfig( getContext());
+        Favourites favourites = new Favourites();
+        favourites.setTitle(title);
+        favourites.setAddress(Address);
+        LatiLongi latlon = new LatiLongi();
+        latlon.setLat(lat);
+        latlon.setLng(longi);
+        favourites.setLatiLongi(latlon);
+        favourites.setId(placeid);
+
+       if (myRealm.isInTransaction())
+            myRealm.cancelTransaction();
+        myRealm.beginTransaction();
+        myRealm.copyToRealmOrUpdate(favourites);
+        myRealm.commitTransaction();
+   }
+
+
+
+
+
+
 
 
 
