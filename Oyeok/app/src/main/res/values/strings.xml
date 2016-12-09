@@ -179,4 +179,6 @@
     <string name="client_log_in_heading">You are Logging in as a Customer</string>
     <string name="broker_log_in_heading">You are Logging in as a Broker</string>
     <string name="facebook_app_id">273470946346289</string>
+    <string name="crossSingupTitleClient">You are already registered as a Customer with  this Mobile Number \n Do you want to Continue as a Customer?</string>
+    <string name="crossSignupMsgClient">Do you want to Continue as a Customer?</string>
 </resources>

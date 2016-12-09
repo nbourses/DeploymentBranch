@@ -25,8 +25,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
-import com.nbourses.oyeok.activities.ClientMainActivity;
-import com.nbourses.oyeok.activities.MyPortfolioActivity;
+import com.nbourses.oyeok.activities.*;
+import com.nbourses.oyeok.activities.BrokerMap;
 import com.nbourses.oyeok.adapters.searchBuilding;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -104,15 +104,30 @@ private TextView Cancel,back,usertext;
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ClientMainActivity)getActivity()).closeAddBuilding();
-                ((ClientMainActivity)getActivity()).openAddListing();
+
+                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                    ((BrokerMap) getActivity()).closeCardContainer();
+                    ((BrokerMap)getActivity()).openAddListing();
+                }else{
+
+                    ((ClientMainActivity)getActivity()).closeAddBuilding();
+                    ((ClientMainActivity)getActivity()).openAddListing();
+                }
+
+
             }
         });
         Cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AppConstants.PROPERTY="Home";
-                ((ClientMainActivity)getActivity()).closeAddBuilding();
+                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                    ((BrokerMap) getActivity()).closeCardContainer();
+                }else{
+
+                    ((ClientMainActivity)getActivity()).closeAddBuilding();
+
+                }
             }
         });
 
@@ -190,7 +205,14 @@ private TextView Cancel,back,usertext;
                 }else {
                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
+                    if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                        ((BrokerMap) getActivity()).closeCardContainer();
+                        ((BrokerMap) getActivity()).setlocation(name);
+                    }else{
+
+
                     ((ClientMainActivity) getActivity()).setlocation(name);
+                    }
                 }
 
                 General.setSharedPreferences(getContext(), AppConstants.BUILDING_NAME,name);
@@ -253,7 +275,7 @@ private TextView Cancel,back,usertext;
         Log.i("updateStatus CALLED","updateStatus success called ");
         SearchBuildingModel searchBuildingModel = new SearchBuildingModel();
         searchBuildingModel.setBuilding(name);
-        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_101).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
 //        UserApiService userApiService = restAdapter.create(UserApiService.class);
@@ -322,7 +344,7 @@ private TextView Cancel,back,usertext;
 //                 General.setSharedPreferences(getContext(),AppConstants.PROPERTY,adapter.getItem(position).getProperty_type());
                                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                                     imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
-                                    ((ClientMainActivity)getActivity()).openAddListingFinalCard();
+                                    ((BrokerMap)getActivity()).openAddListingFinalCard();
                                 }else{
 
 
@@ -407,7 +429,7 @@ private TextView Cancel,back,usertext;
         updateBuildingRateModel.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
         updateBuildingRateModel.setUser_role(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
         updateBuildingRateModel.setLocality(locality);
-        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_101).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
         try {

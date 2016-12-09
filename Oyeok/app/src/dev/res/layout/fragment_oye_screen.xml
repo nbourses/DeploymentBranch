@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/eight_dp"
     android:background="#FFFFFF"
+    android:clickable="true"
     android:orientation="vertical">
 
     <LinearLayout
@@ -292,12 +293,6 @@
 
 </LinearLayout>
 
-
-
-
-
-
-
         <LinearLayout
             android:id="@+id/loadContainer"
             android:layout_width="match_parent"
@@ -335,15 +330,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                   <!-- <TextView
-                        android:id="@+id/txtRsSymbol"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:visibility="gone"
-                        android:textColor="@color/greenish_blue"
-                        android:textStyle="bold" />-->
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -374,73 +360,6 @@
                 app:dsb_progressColor="@color/greenish_blue"/>
 
         </LinearLayout>
-
-
-
-        <!--
-
-        <LinearLayout
-            android:id="@+id/propertyTypeWrapper"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/action_button_content_margin"
-            android:paddingLeft="@dimen/eight_dp"
-            android:paddingRight="@dimen/eight_dp"
-            android:layout_weight="3.75">
-
-            <TextView
-                android:id="@+id/txtHome"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:padding="4dp"
-                android:text="Homie"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimaryDark"/>
-
-            <TextView
-                android:id="@+id/txtShop"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_marginLeft="@dimen/eight_dp"
-                android:padding="4dp"
-                android:text="Shop"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimaryDark"/>
-
-            <TextView
-                android:id="@+id/txtIndustry"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_marginLeft="@dimen/eight_dp"
-                android:padding="4dp"
-                android:text="Industry"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimaryDark"/>
-
-            <TextView
-                android:id="@+id/txtOffice"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_marginLeft="@dimen/eight_dp"
-                android:padding="4dp"
-                android:text="Office"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimaryDark"/>
-
-            <TextView
-                android:id="@+id/txtOthers"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_marginLeft="@dimen/eight_dp"
-                android:padding="4dp"
-                android:text="Others"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimaryDark"/>-->
-     <!--   </LinearLayout>-->
-
-
 
 
         <LinearLayout
@@ -497,21 +416,6 @@
                 android:foregroundGravity="center_horizontal"
                 android:paddingLeft="20dp"
                 />
-            <!--<CheckBox
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:gravity="center_horizontal"
-                android:foregroundGravity="center_horizontal"
-                android:text="Apply for finance\nSECURITY DEPOSIT"
-                android:id="@+id/checkBox"
-                android:layout_below="@+id/rootWrapper"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:textColor="@color/greenish_blue"
-                android:textSize="13dp"
-                android:textStyle="bold|italic"
-                android:layout_weight="0.6" />-->
 
 
         </LinearLayout>
@@ -532,14 +436,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp">
-            <!--android:layout_marginBottom="3dp"-->
 
-            <!--<LinearLayout-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:layout_marginTop="-2dp"-->
-                <!--android:layout_marginBottom="1dp">-->
                 <TextView
                     android:id="@+id/txtfixedString"
                     android:layout_width="wrap_content"
@@ -555,54 +452,8 @@
                     android:textStyle="bold" />
 
 
-
-                <!--<TextView
-                    android:id="@+id/tv_dealinfo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left|top"
-                    android:textColor="@color/foreground_material_light"
-                    android:text=""
-                    android:singleLine="false"
-                    android:textStyle="bold|italic"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="5dp" />-->
-            <!--</LinearLayout>-->
-           <!-- <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="-7dp">
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="170dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:textColor="@color/White"
-
-                    android:text="(Brokers,Visits,Listings)"
-                    android:textStyle="bold|italic"
-                    android:layout_marginTop="-4dp"
-                    android:layout_marginBottom="3dp" />
-            </LinearLayout>-->
-
         </GridLayout>
 
     </LinearLayout>
 
-
-    <!--<TextView-->
-        <!--android:id="@+id/tv_dealinfo11"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="30dp"-->
-        <!--android:layout_gravity="center_horizontal|bottom"-->
-        <!--android:textColor="@color/foreground_material_light"-->
-        <!--android:text=""-->
-        <!--android:singleLine="false"-->
-        <!--android:layout_below="@+id/btnOnOyeClick"-->
-        <!--android:textStyle="bold|italic"-->
-        <!--android:layout_marginTop="5dp"-->
-        <!--android:layout_marginRight="5dp"-->
-        <!--android:layout_marginBottom="5dp" />-->
 </RelativeLayout>

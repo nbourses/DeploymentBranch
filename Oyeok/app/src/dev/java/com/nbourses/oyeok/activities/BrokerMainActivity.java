@@ -31,6 +31,8 @@ import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -68,10 +70,18 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
     @Bind(R.id.txtEmail)
     TextView emailTxt;
 
-    @Bind(R.id.openmaps)
-    Button openmaps;
+    @Bind(R.id.editBaseLocation)
+    ImageView editBaseLocation;
+
     @Bind(R.id.DONE)
     Button doneButton;
+
+    @Bind(R.id.favbroker)
+    ImageView favbroker;
+
+
+    @Bind(R.id.setbaseloc)
+    LinearLayout setbaseloc;
 
 //    @Bind(R.id.preok_layout)
 //    Toolbar preok_layout;
@@ -120,6 +130,17 @@ GoogleMap map;
 
         }
     };
+
+
+    /*private BroadcastReceiver ResetPhase = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("getstring","get string reset phase: "+intent.getExtras().getBoolean("resetphase"));
+            if (intent.getExtras().getBoolean("resetphase")){
+                ((BrokerPreokFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
+            }
+        }
+    };*/
 
 
     private BroadcastReceiver buildingSliderFlag = new BroadcastReceiver() {
@@ -200,8 +221,9 @@ GoogleMap map;
         ButterKnife.bind(this);
 
         tv_change_region=(TextView) findViewById(R.id.tv_change_region);
-        openmaps=(Button) findViewById(R.id.openmaps);
-
+       // editBaseLocation=(ImageView) findViewById(R.id.editBaseLocation);
+        setbaseloc.setVisibility(View.VISIBLE);
+        favbroker.setVisibility(View.VISIBLE);
         tv_change_region.setVisibility(View.VISIBLE);
         try {
             if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
@@ -246,7 +268,13 @@ GoogleMap map;
 //        General.setSharedPreferences(this,AppConstants.USER_ID, "krve2cnz03rc1hfi06upjpnoh9hrrtsy");
 //        General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
 
-
+        favbroker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in=new Intent(getBaseContext(),MyPortfolioActivity.class);
+                startActivity(in);
+            }
+        });
 
         init();
     }
@@ -254,11 +282,12 @@ GoogleMap map;
     protected void onResume() {
         super.onResume();
         // Register mMessageReceiver to receive messages.
-
+        ((BrokerPreokFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(localityBroadcast, new IntentFilter(AppConstants.LOCALITY_BROADCAST));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(buildingSliderFlag, new IntentFilter(AppConstants.BUILDINGSLIDERFLAG));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(profileEmailUpdate, new IntentFilter(AppConstants.EMAIL_PROFILE));
+       // LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(ResetPhase, new IntentFilter(AppConstants.RESETPHASE));
 
     }
 
@@ -270,6 +299,7 @@ GoogleMap map;
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(localityBroadcast);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(buildingSliderFlag);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(profileEmailUpdate);
+       // LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(ResetPhase);
 
 
     }
@@ -283,7 +313,7 @@ GoogleMap map;
     private void init() {
         slide_down = AnimationUtils.loadAnimation(this,
                 R.anim.slide_down);
-        openmaps.setVisibility(View.VISIBLE);
+        editBaseLocation.setVisibility(View.VISIBLE);
 
        try {
             SharedPreferences prefs =
@@ -294,7 +324,11 @@ GoogleMap map;
                     if (key.equals(AppConstants.EMAIL)) {
                         emailTxt.setText(General.getSharedPreferences(BrokerMainActivity.this,AppConstants.EMAIL));
                     }else if (key.equals(AppConstants.MY_BASE_LOCATION)) {
-                        tv_change_region.setText(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION));                    }
+                        tv_change_region.setText(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION));
+                    }else if (key.equals(AppConstants.RESETPHASE)) {
+                        ((BrokerPreokFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
+                        General.setSharedPreferences(getBaseContext(),AppConstants.RESETPHASE,"false");
+                    }
                 }
 
 
@@ -418,40 +452,15 @@ GoogleMap map;
 
 //Remember
 
-        openmaps.setOnClickListener(new View.OnClickListener() {
+        editBaseLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"BC");
+                /*General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"BC");
                 Intent intent = new Intent(getBaseContext(),ClientMainActivity.class);
-//                intent.putExtra("role","broker");
-                /*if(AppConstants.BROKER_BASE_REGION.equalsIgnoreCase("false"))
-                intent.putExtra("setBaseRegion","true");*/
-
+                startActivity(intent);*/
+                General.setSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LOCATION,"");
+                Intent intent = new Intent(getBaseContext(),BrokerMap.class);
                 startActivity(intent);
-                /*Intent intent1 = new Intent(AppConstants.SETLOCN);
-                LocalBroadcastManager.getInstance(BrokerMainActivity.this).sendBroadcast(intent1);*/
-
-               /*BrokerMap brokerMap=new BrokerMap();
-                DashboardClientFragment dashboardClientFragment=new DashboardClientFragment();
-//                brokerMap.setChangeLoction(this);
-                getSupportActionBar().setDisplayShowHomeEnabled(false);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-//                loadFragment(brokerMap,null,R.id.container_map,"");
-                loadFragment(dashboardClientFragment,null,R.id.container_map,"");
-                doneButton.setVisibility(View.VISIBLE);
-                gmap=true;
-
-                tv_change_region.setVisibility(View.VISIBLE);*/
-             //   tv_change_region.setText(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
-
-                //tv_change_region.setVisibility(View.VISIBLE);
-               // tv_change_region.setText(SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LOCALITY));
-
-               
-
-
-//                DashboardClientFragment dashboardClientFragment = new DashboardClientFragment();
-//                loadFragment(dashboardClientFragment, null, R.id.container_map, "");
 
             }
         });
@@ -503,20 +512,11 @@ GoogleMap map;
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-
-
         protected Bitmap doInBackground(String... urls) {
-
             Log.i("TAG","stopDownloadImage3 yo bro porter 2 "+urls[0]);
-
-
             final String urldisplay = urls[0];
             Bitmap mIcon11 = General.getBitmapFromURL(urldisplay);
-
-
             return mIcon11;
-
-
         }
 
         protected void onPostExecute(final Bitmap result) {
@@ -532,8 +532,6 @@ GoogleMap map;
                     }
 
                 }, 1000);
-
-
             }
         }
     }

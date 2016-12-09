@@ -68,9 +68,11 @@ public class AppConstants {
 
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     public static final String SERVER_BASE_URL = "https://test.hailyo.com/1";
+
     public static final String SERVER_BASE_URL_101 = "https://test.hailyo.com/1.01";
     public static final String SERVER_BASE_URL_11 = "https://test.hailyo.com/1.1";
     public static final String SERVER_BASE_URL_102 = "https://test.hailyo.com/1.02";
+
     /*public static final String SERVER_BASE_URL_103 = "https://test.hailyo.com/1";
     public static final String SERVER_BASE_URL_TEST = "https://test.hailyo.com/1";
     public static final String SERVER_BASE_URL_TEST_102 = "https://test.hailyo.com/1.02";*/
@@ -187,6 +189,7 @@ public class AppConstants {
     public static final String DISPLAY_BUILDING_CONF="displayBuildingConf";
     public static final String DISPLAY_CONFIG_BASED_PRICE="displayConfigBasedPrice";
 
-
+    //Reset PhaseSeekbar Key
+    public static final String RESETPHASE = "resetPhase";
 
 }

@@ -50,7 +50,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -121,14 +120,14 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.sliding_layout)
     SlidingUpPanelLayout slidingLayout;
 
-    @Bind(R.id.sliding_view)
-    ScrollView slidingView;
+    /*@Bind(R.id.sliding_view)
+    ScrollView slidingView;*/
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
-  private   int   backpress=0;
-   boolean setting=false;
+    private   int   backpress=0;
+    boolean setting=false;
     TextView tv_client_heading;
 
     @Bind(R.id.btnMyDeals)
@@ -176,6 +175,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     TextView cancel_btn;
     @Bind(R.id.confirm_screen_title)
     TextView confirm_screen_title;
+
     @Bind(R.id.dealsWrapper)
     RelativeLayout dealsWrapper;
 
@@ -313,7 +313,6 @@ public void signUp(){
                 (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
                         slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
             closeOyeScreen();
-
         }
 
         SignUpFragment signUpFragment = new SignUpFragment();
@@ -323,109 +322,6 @@ public void signUp(){
 //    }
 }
 
-   /* private BroadcastReceiver oyebuttondata1 = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if(intent.getExtras().getString("isclicked")=="true") {
-                Boolean s = General.retriveBoolean(getBaseContext(), "propertySubtypeFlag");
-
-                if (General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-                    Log.i("TRACE", "clicked oyebutton if");
-                    //show ƒlo up screen
-                    Bundle bundle = new Bundle();
-                    bundle.putStringArray("propertySpecification", null);
-                    //bundle.putString("lastFragment", "OyeIntentSpecs");
-                    bundle.putString("lastFragment", "oyed");
-
-                    if (s.equals(false)) {
-                        SnackbarManager.show(
-                                Snackbar.with(getBaseContext())
-                                        .position(Snackbar.SnackbarPosition.TOP)
-                                        .text("Please select property subtype")
-                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                    } else {
-                        if (slidingLayout != null &&
-                                (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
-                                        slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
-                            closeOyeScreen();
-
-                        }
-
-                        SignUpFragment signUpFragment = new SignUpFragment();
-                        loadFragment(signUpFragment, bundle, R.id.container_Signup, "");
-                        Log.i("Signup called =", "Sign up");
-                        // btnOnOyeClick.setVisibility(View.GONE);
-                    }
-                } else {
-                    Log.i("already", "Signed up");
-                    if (s.equals(false)) {
-                        SnackbarManager.show(
-                                Snackbar.with(getBaseContext())
-                                        .position(Snackbar.SnackbarPosition.TOP)
-                                        .text("Please select property subtype")
-                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-
-                    } else {
-                        //create new deal
-
-
-                        OyeConfirmation  oyeConfirmation1=new OyeConfirmation( );
-                        confirm_screen_title.setVisibility(View.VISIBLE);
-                        getSupportActionBar().setDisplayShowHomeEnabled(false);
-                        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                        cancel_btn.setVisibility(View.VISIBLE);
-                        getSupportActionBar().setTitle("");
-                        if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")){
-
-                            if(AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner"))
-                                confirm_screen_title.setText("Posting Confirmation\n(I am Owner)");
-                            else
-                                confirm_screen_title.setText("Posting Confirmation \n(I am Tenant)");
-
-
-                        }else
-                        {
-
-                            if (AppConstants.CUSTOMER_TYPE.equalsIgnoreCase("Owner"))
-                                confirm_screen_title.setText("Posting Confirmation\n(I am Owner)");
-                            else
-                                confirm_screen_title.setText("Posting Confirmation\n(I am Tenant)");
-                        }
-                        loadFragment(oyeConfirmation1, null, R.id.container_OyeConfirmation, "");
-                        dealsWrapper.setVisibility(View.GONE);
-                        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).getNearbyLatLong();
-                        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).broadcastingConfirmationMsg();
-
-
-
-
-
-
-
-                        oyeconfirm_flag=true;
-                        if (slidingLayout != null &&
-                                (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ||
-                                        slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
-                            closeOyeScreen();
-
-                        }
-//                        alertbuilder();
-
-
-
-
-                    }
-                }
-
-
-            }
-
-
-
-
-        }
-    };*/
 
 
     private BroadcastReceiver doSignUp = new BroadcastReceiver() {
@@ -439,19 +335,14 @@ public void signUp(){
             //loadFragment(d,null,R.id.container_Signup,"");
             Bundle bundle = new Bundle();
             bundle.putString("lastFragment", "clientDrawer");  //consider as direct signup so keep last fragment as clientDrawer
-
             d.setArguments(bundle);
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-
             fragmentTransaction.addToBackStack("card");
             fragmentTransaction.replace(R.id.container_Signup, d);
             fragmentTransaction.commitAllowingStateLoss();
-            /*SignUpFragment signUpFragment = new SignUpFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("lastFragment", "clientDrawer");  //consider as direct signup so keep last fragment as clientDrawer
-            loadFragment(signUpFragment, bundle, R.id.container_Signup, "");*/
+
 
 
         }
@@ -505,8 +396,6 @@ public void signUp(){
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         // Check status of Google Play Services
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 
@@ -723,8 +612,6 @@ try {
 
 
         Log.i("kabali","kabali HDROOMS_COUNT_UV :  "+General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV)+"     "+General.getBadgeCount(this, AppConstants.HDROOMS_COUNT));
-
-
         if (!General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker") && (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0)){
 
             hdroomsCount.setVisibility(View.VISIBLE);
@@ -778,9 +665,11 @@ try {
         startService(intent);*/
 
         //setup sliding layout
+
         slidingLayout.setTouchEnabled(false);
-        slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-        slidingLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+//        slidingLayout.setEnabled(false);
+          slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+          slidingLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
 //                resizeScrollView(panel, slideOffset);
@@ -804,13 +693,13 @@ try {
             public void onPanelHidden(View panel) {
             }
 
-//            private void resizeScrollView(View panel, float slideOffset) {
-//                final int scrollViewHeight =
-//                        (int) ((panel.getHeight() - slidingLayout.getPanelHeight()) * (1.0f - slideOffset));
-//                slidingView.setLayoutParams(
-//                        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-//                                scrollViewHeight));
-//            }
+           /* private void resizeScrollView(View panel, float slideOffset) {
+                final int scrollViewHeight =
+                        (int) ((panel.getHeight() - slidingLayout.getPanelHeight()) * (1.0f - slideOffset));
+                slidingView.setLayoutParams(
+                        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                scrollViewHeight));
+            }*/
         });
 
         //  RelativeLayout re = (RelativeLayout) findViewById(R.id.badge);
@@ -843,8 +732,6 @@ try {
                 BrokerRole="broker";
                 Log.i(TAG, "set base region ");
                 //setBaseRegion();
-
-
             }*/
             if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
                 bundle1.putString("setBaseRegion", "true");
@@ -865,7 +752,6 @@ try {
                 if (bundle.containsKey("bicon")) {
                     description = bundle.getString("desc");
                     heading = bundle.getString("title");
-
                     Log.i("TRACE", " toto "+bundle.getString("bicon"));
                     Log.i("TRACE", " toto 1 "+bundle.getString("bicon"));
                     new DownloadImageTask().execute(bundle.getString("bicon"));
@@ -924,7 +810,6 @@ try {
     {
         //set arguments
         fragment.setArguments(args);
-
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -932,7 +817,6 @@ try {
         Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  loadFragment client "+getFragmentManager().getBackStackEntryCount());
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
-
         //set title
         //set title
 //        getSupportActionBar().setTitle(title);
@@ -944,8 +828,6 @@ try {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-
-
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }

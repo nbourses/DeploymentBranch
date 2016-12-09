@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.realmModels.Favourites;
 import com.nbourses.oyeok.realmModels.addBuildingRealm;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -48,8 +49,7 @@ import io.realm.RealmResults;
  * The API client must be maintained in the encapsulating Activity, including all lifecycle and
  * connection states. The API client must be connected with the {@link Places#GEO_DATA_API} API.
  */
-public class PlacesAutoCompleteAdapter
-        extends RecyclerView.Adapter<PlacesAutoCompleteAdapter.PredictionHolder> implements Filterable {
+public class PlacesAutoCompleteAdapter extends RecyclerView.Adapter<PlacesAutoCompleteAdapter.PredictionHolder> implements Filterable {
 
     private static final String TAG = "PlacesAutoCompleteAdapter";
     private ArrayList<PlaceAutocomplete> mResultList;
@@ -172,27 +172,51 @@ public class PlacesAutoCompleteAdapter
             autocompletePredictions.release();
             try {
                 /*Realm myRealm = General.realmconfig(mContext);
-                RealmResults<Favourites> results1 =
+                RealmResults<Favourites> results11 =
                         myRealm.where(Favourites.class).findAll();
 
-                for (Favourites c : results1) {
+                for (Favourites c : results11) {
                     Log.i("TAG", "insiderrnm2 ");
                     Log.i("TAG", "insiderrnm3 " + c.getTitle());
                     Log.i("TAG", "insiderrnm4 " + c.getLatiLongi().getLat());
                     Log.i("TAG", "insiderrnm4 " + c.getLatiLongi().getLng());
-                   *//* Log.i("TAG", "insiderrn yo 1 " + searchQuery + " " + c.getTitle());*//*
-                    if(constraint.toString().equalsIgnoreCase("Ritz369")){
-                        resultList.add(0,new PlaceAutocomplete(c.getTitle(),
-                                c.getTitle(),c.getAddress(), true));
-                    }
-                    else if(c.getTitle().toLowerCase().contains(constraint.toString().toLowerCase())){
+//                    Log.i("TAG", "insiderrn yo 1 " + searchQuery + " " + c.getTitle());
+                    if (constraint.toString().equalsIgnoreCase("Ritz369")) {
+                        resultList.add(0, new PlaceAutocomplete(c.getTitle(),
+                                c.getTitle(), c.getAddress(), true));
+                    } else if (c.getTitle().toLowerCase().contains(constraint.toString().toLowerCase())) {
                         Log.i("TAG", "insiderrn yo " + constraint.toString() + " " + c.getTitle());
                         //resultList.ins(c.getTitle());
-                        resultList.add(0,new PlaceAutocomplete(c.getTitle(),
-                                c.getTitle(),c.getAddress(), false));
-                    }*/
-
+                        resultList.add(0, new PlaceAutocomplete(c.getTitle(),
+                                c.getTitle(), c.getAddress(), false));
+                    }
+                }*/
                 Realm myRealm = General.realmconfig(mContext);
+                RealmResults<Favourites> results11 = myRealm.where(Favourites.class).findAll();
+                Log.i("TAG", "insiderrn yo 1 sushil ==================================");
+                for (Favourites c : results11) {
+                    Log.i("TAG", "insiderrnm21 ");
+                    Log.i("TAG", "insiderrnm31 " + c.getTitle());
+                    Log.i("TAG", "insiderrnm41 " + c.getLatiLongi().getLat());
+                    Log.i("TAG", "insiderrnm41 " + c.getLatiLongi().getLng());
+                    Log.i("TAG", "insiderrnm sushil "+ c.getTitle());
+
+                        if (constraint.toString().equalsIgnoreCase("Ritz369")) {
+                            resultList.add(0, new PlaceAutocomplete(c.getId(),
+                                    c.getTitle(), c.getAddress(), false));
+
+                        } else if (c.getTitle().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                            Log.i("TAG", "insiderrn yo  " + constraint.toString() + " " + c.getTitle());
+                            //resultList.ins(c.getTitle());
+                            resultList.add(0, new PlaceAutocomplete(c.getId(),
+                                    c.getTitle(), c.getAddress(), false));
+                        }
+
+
+
+                }
+
+               // Realm myRealm = General.realmconfig(mContext);
                 RealmResults<addBuildingRealm> results1 =
                         myRealm.where(addBuildingRealm.class).findAll();
 
@@ -201,12 +225,13 @@ public class PlacesAutoCompleteAdapter
                     //* Log.i("TAG", "insiderrn yo 1 " + searchQuery + " " + c.getTitle());*//*
                     if(c.getType().equalsIgnoreCase("ADD")) {
                         if (constraint.toString().equalsIgnoreCase("Ritz369")) {
-                            resultList.add(0, new PlaceAutocomplete(c.getId(),
+                            resultList.add(1, new PlaceAutocomplete(c.getId(),
                                     c.getBuilding_name(), c.getAddress(), true));
+
                         } else if (c.getBuilding_name().toLowerCase().contains(constraint.toString().toLowerCase())) {
                             Log.i("TAG", "insiderrn yo " + constraint.toString() + " " + c.getBuilding_name());
                             //resultList.ins(c.getTitle());
-                            resultList.add(0, new PlaceAutocomplete(c.getId(),
+                            resultList.add(1, new PlaceAutocomplete(c.getId(),
                                     c.getBuilding_name(), c.getAddress(), false));
                         }
 
@@ -245,7 +270,37 @@ public class PlacesAutoCompleteAdapter
 
             }*/
 
+
+
             Realm myRealm = General.realmconfig(mContext);
+            RealmResults<Favourites> results11 = myRealm.where(Favourites.class).findAll();
+            Log.i("TAG", "insiderrn yo 1 sushil ==================================");
+            for (Favourites c : results11) {
+                Log.i("TAG", "insiderrnm21 ");
+                Log.i("TAG", "insiderrnm31 " + c.getTitle());
+                Log.i("TAG", "insiderrnm41 " + c.getLatiLongi().getLat());
+                Log.i("TAG", "insiderrnm41 " + c.getLatiLongi().getLng());
+                Log.i("TAG", "insiderrnm sushil "+ c.getId());
+
+               // if (constraint.toString().equalsIgnoreCase("Ritz369")) {
+                    resultList.add(0, new PlaceAutocomplete(c.getId(),
+                            c.getTitle(), c.getAddress(), true));
+
+               /* } else if (c.getTitle().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                    Log.i("TAG", "insiderrn yo  " + constraint.toString() + " " + c.getTitle());
+                    //resultList.ins(c.getTitle());
+                    resultList.add(0, new PlaceAutocomplete(c.getId(),
+                            c.getTitle(), c.getAddress(), false));
+               }*/
+
+
+
+            }
+
+
+
+
+//            Realm myRealm = General.realmconfig(mContext);
             RealmResults<addBuildingRealm> results1 =
                     myRealm.where(addBuildingRealm.class).findAll();
 
@@ -295,14 +350,18 @@ public class PlacesAutoCompleteAdapter
                                 //do your work here
                                 try {
                                     Realm myRealm = General.realmconfig(mContext);
+
                                     myRealm.beginTransaction();
-
-                                    RealmResults<addBuildingRealm> results1 =
-                                            myRealm.where(addBuildingRealm.class).equalTo("id",mResultList.get(mPredictionHolder.getAdapterPosition()).placeId.toString()).findAll();
-
-                                    results1.clear();
-
+                                    RealmResults<Favourites> results = myRealm.where(Favourites.class).equalTo("id",mResultList.get(mPredictionHolder.getAdapterPosition()).placeId.toString()).findAll();
+                                    results.clear();
                                     myRealm.commitTransaction();
+
+
+                                    myRealm.beginTransaction();
+                                    RealmResults<addBuildingRealm> results1 = myRealm.where(addBuildingRealm.class).equalTo("id",mResultList.get(mPredictionHolder.getAdapterPosition()).placeId.toString()).findAll();
+                                    results1.clear();
+                                    myRealm.commitTransaction();
+
                                     getFilter().filter("ritz369");
 
                                 }

@@ -54,7 +54,7 @@ public class Profile extends Fragment {
      String name;
     TextView tx;
     String email ;
-    String namePattern = "^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$";
+    String namePattern = "^[a-zA-Z0-9_ ]+([a-zA-Z0-9_]+)*$";
     String emailPattern = "[a-z]+[a-zA-Z0-9._-]+@[a-z]+\\.+(in|com|org|net)";
     String emailPattern1 ="[a-z]+[a-zA-Z0-9._-]+@[a-z]+\\.+[ac]+\\.+[in]";
 
@@ -191,7 +191,7 @@ public class Profile extends Fragment {
         if(General.isNetworkAvailable(getContext())) {
             General.slowInternet(getContext());
 
-        String API = AppConstants.SERVER_BASE_URL;
+        String API = AppConstants.SERVER_BASE_URL_11;
         User user = new User();
         user.setMobileNo(phoneTxt.getText().toString());
         user.setEmail(emailTxt.getText().toString());
@@ -213,7 +213,6 @@ public class Profile extends Fragment {
 
             @Override
             public void success(UpdateProfile updateProfile, Response response) {
-
                 General.slowInternetFlag = false;
                 General.t.interrupt();
                 Log.i("Profile","success"+response);
@@ -295,10 +294,10 @@ public class Profile extends Fragment {
 
          if (name.matches(namePattern) && (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) )
         {
+            Log.i("TRACE", "Plz enter email  check");
+
             updateProfile();
                 //if (!dbHelper.getValue(DatabaseConstants.email).equalsIgnoreCase("null")) {
-
-
         }
 
         else if (!(email.matches(emailPattern) || email.matches(emailPattern1)) )
@@ -315,11 +314,7 @@ public class Profile extends Fragment {
             Log.i("TRACE", "Plz enter name");
             return;
         }
-
-
 //email.matches(emailPattern) || email.matches(emailPattern1)
-
-
     }
 
 

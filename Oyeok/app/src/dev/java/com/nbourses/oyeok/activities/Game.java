@@ -143,8 +143,6 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     private LatLng[] loc = new LatLng[10];
     private boolean flag[] = new boolean[10];
     Integer balance;
-    Thread[] gamethread = new Thread[10];
-    boolean[] textFlag = new boolean[10];
     private Timer[] gametimer = new Timer[10];
     private Timer[] timer1 = new Timer[10];
     private Timer timer, DisplayBuildingTimer, HideBuildingsTimer;
@@ -549,16 +547,13 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                     JSONArray Results = jsonObj.getJSONArray( "results" );
                     JSONObject zero = Results.getJSONObject( 0 );
                     JSONArray address_components = zero.getJSONArray( "address_components" );
-
                     fullAddres = zero.getString( "formatted_address" );
                     locality = zero.getString( "sublocality_level_1" );
-
                     for (int i = 0; i < address_components.length(); i++) {
                         JSONObject zero2 = address_components.getJSONObject( i );
                         String long_name = zero2.getString( "long_name" );
                         JSONArray mtypes = zero2.getJSONArray( "types" );
                         String Type = mtypes.getString( 0 );
-
                         if (TextUtils.isEmpty( long_name ) == false || !long_name.equals( null ) || long_name.length() > 0 || long_name != "") {
                             if (Type.equalsIgnoreCase( "street_number" )) {
                                 Address1 += long_name;
@@ -567,13 +562,10 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                             } else if (Type.equalsIgnoreCase( "sublocality_level_2" )) {
                                 Address2 = long_name;
                                 if (this != null) {
-
                                     SharedPrefs.save( getBaseContext(), SharedPrefs.MY_LOCALITY, long_name );
                                 }
-
                             } else if (Type.equalsIgnoreCase( "sublocality_level_1" )) {
                                 Address2 += " " + long_name;
-
 //                                if (getActivity() != null)
 //                                    SharedPrefs.save(getActivity(),SharedPrefs.MY_LOCALITY,long_name);
                             } else if (Type.equalsIgnoreCase( "locality" )) {
@@ -602,7 +594,6 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             return fullAddres;
         }
 
@@ -616,7 +607,6 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     }
 
     public void getLocationFromAddress(String strAddress) {
-
         Geocoder coder = new Geocoder( this );
         List<Address> address;
         try {
@@ -643,15 +633,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         try {
-            switch (requestCode) {
-                case MY_PERMISSION_FOR_CAMERA: {
-                    if (grantResults.length > 0
-                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    } else {
 
-                    }
-                }
-                case LOCATION_REQUEST:
                     if (grantResults.length > 0
                             && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         customMapFragment.getMapAsync( new OnMapReadyCallback() {
@@ -668,15 +650,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                         } );
                         getLocationActivity = new GetCurrentLocation( this, mcallback );
 
-                    } else {
-                        // permission denied, boo! Disable the
-                        // functionality that depends on this permission.
                     }
-                    break;
-                // other 'case' lines to check for other
-                // permissions this app might request
-            }
-
 
         } catch (Exception e) {
         }
@@ -716,7 +690,6 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     public void StopAllThread(){
         CancelDisplayBuildingTimer();
         HideBuildingsTimer();
-
         for(int i=0;i<buildingcount;i++){
             if(timer1[i]!=null){
                 Cancel_timer(i);
@@ -811,71 +784,51 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
 
             User user = new User();
 
-            user.setDeviceId( General.getSharedPreferences( getBaseContext(), AppConstants.TIME_STAMP_IN_MILLI ) );
-            Log.i( "PREOK", "getcontext " + General.getSharedPreferences( getBaseContext(), AppConstants.TIME_STAMP_IN_MILLI ) );
+           // user.setDeviceId( General.getSharedPreferences( getBaseContext(), AppConstants.TIME_STAMP_IN_MILLI ) );
+           // Log.i( "PREOK", "getcontext " + General.getSharedPreferences( getBaseContext(), AppConstants.TIME_STAMP_IN_MILLI ) );
             user.setGcmId( SharedPrefs.getString( this, SharedPrefs.MY_GCM_ID ) );
-            user.setUserRole( "client" );
+            //user.setUserRole( "client" );
             user.setLongitude( SharedPrefs.getString( this, SharedPrefs.MY_LNG ) );
-            user.setProperty_type( "home" );
+            //user.setProperty_type( "home" );
             user.setLatitude( SharedPrefs.getString( this, SharedPrefs.MY_LAT ) );
-            Log.i( "t1", "My_lng" + "  " + SharedPrefs.getString( this, SharedPrefs.MY_LNG ) );
-            user.setLocality( "Andheri west" );
+            Log.i( "t1", "My_lng inside game api" + "  " + SharedPrefs.getString( this, SharedPrefs.MY_LNG ) );
+            user.setLocality( "" );
             Log.i( "t1", "My_lat" + "  " + SharedPrefs.getString( this, SharedPrefs.MY_LAT ) );
             user.setPlatform( "android" );
             Log.i( "my_locality", SharedPrefs.getString( this, SharedPrefs.MY_LOCALITY ) );
-            user.setPincode( "400058" );
+//            user.setPincode( "400058" );
             if (General.getSharedPreferences( this, AppConstants.IS_LOGGED_IN_USER ).equals( "" )) {
                 user.setUserId( General.getSharedPreferences( this, AppConstants.TIME_STAMP_IN_MILLI ) );
 
             } else {
                 user.setUserId( General.getSharedPreferences( this, AppConstants.USER_ID ) );
             }
-            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint( AppConstants.SERVER_BASE_URL_102 ).build();
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint( AppConstants.SERVER_BASE_URL ).build();
             restAdapter.setLogLevel( RestAdapter.LogLevel.FULL );
 
             UserApiService userApiService = restAdapter.create( UserApiService.class );
 
 
-            userApiService.getPrice( user, new retrofit.Callback<JsonElement>() {
+            userApiService.game( user, new retrofit.Callback<JsonElement>() {
 
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
-
                     try {
                         General.slowInternetFlag = false;
                         General.t.interrupt();
                         String strResponse = new String( ((TypedByteArray) response.getBody()).getBytes() );
                         JSONObject jsonResponse = new JSONObject( strResponse );
                         String errors = jsonResponse.getString( "errors" );
-                        if (errors.equals( "8" )) {
-                       /*     Log.i(TAG, "error code is 2 ");
-                            Log.i(TAG, "error code is 1 " + jsonResponse.toString());
-                            Log.i(TAG, "error code is " + errors);
-                            Log.i(TAG, "error code is 3 ");*/
-                            SnackbarManager.show(
-                                    Snackbar.with( getBaseContext() )
-                                            .text( "You must update profile to proceed." )
-                                            .position( Snackbar.SnackbarPosition.TOP )
-                                            .color( Color.parseColor( AppConstants.DEFAULT_SNACKBAR_COLOR ) ) );
-                            Intent openProfileActivity = new Intent( getBaseContext(), ProfileActivity.class );
-                            openProfileActivity.putExtra( "msg", "compulsary" );
-                            startActivity( openProfileActivity );
-                        } else {
-                            JSONObject jsonResponseData = new JSONObject( jsonResponse.getString( "responseData" ) );
-                            // horizontalPicker.stopScrolling();
-                            Log.i( "TRACE", "Response getprice buildings jsonResponseData" + jsonResponseData );
+                        JSONObject jsonResponseData = new JSONObject( jsonResponse.getString( "responseData" ) );
+                        // horizontalPicker.stopScrolling();
+                            Log.i( "TRACE", "Response getprice buildings jsonResponseDat" + jsonResponseData );
                             JSONObject price = new JSONObject( jsonResponseData.getString( "price" ) );
-
                             Log.i( "TRACE", "Response getprice buildings pricer " );
                             Log.i( "TRACE", "Response getprice buildings price " + price );
-
                             JSONArray buildings = new JSONArray( jsonResponseData.getString( "buildings" ) );
-
                             Log.i( "TRACE", "Response getprice buildings" + buildings );
                             JSONObject k = new JSONObject( buildings.get( 1 ).toString() );
                             Log.i( "TRACE", "Response getprice buildings yo" + price.getString( "ll_min" ) );
-
-
                             if (!price.getString( "ll_min" ).equalsIgnoreCase( "" )) {
                                 if (!price.getString( "ll_min" ).equalsIgnoreCase( "0" )) {
                                     Log.i( "tt", "I am here" + 2 );
@@ -888,7 +841,6 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                                     llMax = 5 * (Math.round( llMax / 5 ));
                                     Log.i( "TRACE", "RESPONSEDATAr" + llMin );
                                     Log.i( "TRACE", "RESPONSEDATAr" + llMax );
-
                                     orMin = Integer.parseInt( price.getString( "or_min" ) );
                                     orMax = Integer.parseInt( price.getString( "or_max" ) );
                                     Log.i( "TRACE", "RESPONSEDATArr" + orMin );
@@ -897,37 +849,24 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                                     orMax = 500 * (Math.round( orMax / 500 ));
                                     Log.i( "TRACE", "RESPONSEDATAr" + orMin );
                                     Log.i( "TRACE", "RESPONSEDATAr" + orMax );
-
-                                   /* BroadCastMinMaxValue(llMin, llMax, orMin, orMax);
-
-                                    updateHorizontalPicker();
-
-                                    marquee(500, 100);*/
                                     map.clear();
-                                   /* buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
-                                    recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-
-                                    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
-                                    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
-                                    search_building_icon.setVisibility(View.GONE);
-                                    StartOyeButtonAnimation();*/
                                     Log.i( "sizebuilding", "building" + buildings.length() );
                                     buildingcount = buildings.length();
                                     try {
                                         for (int i = 0; i < buildings.length(); i++) {
 
                                             JSONObject j = new JSONObject( buildings.get( i ).toString() );
-                                            config[i] = j.getString( "config" );
-                                            Log.i( "metropolitandraw", "config : " + config[i] );
+                                           /* config[i] = j.getString( "config" );
+                                            Log.i( "metropolitandraw", "config : " + config[i] );*/
                                             name[i] = j.getString( "name" );
                                             Log.i( "metropolitandraw", "name : " + name[i] );
-                                            rate_growth[i] = j.getString( "rate_growth" );
-                                            Log.i( "metropolitandraw", "rate_growth : " + rate_growth[i] );
+                                            /*rate_growth[i] = j.getString( "rate_growth" );
+                                            Log.i( "metropolitandraw", "rate_growth : " + rate_growth[i] );*/
                                             or_psf[i] = Integer.parseInt( j.getString( "or_psf" ) );
                                             Log.i( "metropolitandraw", "or_psf : " + or_psf[i] );
-                                            ll_pm[i] = Integer.parseInt( j.getString( "ll_pm" ) );
+//                                            ll_pm[i] = Integer.parseInt( j.getString( "ll_pm" ) );
                                             id[i] = j.getString( "id" );
-                                            Log.i( "metropolitandraw", "id : " + ll_pm[i] );
+                                            Log.i( "metropolitandraw", "id : " + id[i] );
                                             double lat = Double.parseDouble( j.getJSONArray( "loc" ).get( 1 ).toString() );
                                             Log.i( "metropolitandraw", "lat : " + lat );
                                             double longi = Double.parseDouble( j.getJSONArray( "loc" ).get( 0 ).toString() );
@@ -940,109 +879,32 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                                             }
 //l
                                         }
-                                        /*OnScreenCo_ordinateFromLatLng();
-                                        Displaybuilding();*/
-                                        Log.i( "metropolitandraw", "metropolitandraw11 entry:" );
-
-//                                        metropolitandraw(0);
-                                        /*SnackbarManager.show(
-                                                Snackbar.with(getBaseContext())
-                                                        .text("Displaying 5 buildings out of 12,000.")
-                                                        .position(Snackbar.SnackbarPosition.TOP)
-                                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));*/
-//                                        if(locked==false){
-
-//                                        locked=true;
-//                                        }
+                                        OnScreenCo_ordinateFromLatLng();
+//
                                     } catch (Exception e) {
-
                                     }
                                     OnScreenCo_ordinateFromLatLng();
-//                                        Displaybuilding();
-                                    Log.i( "metropolitandraw", "metropolitandraw11 entry:" );
-
                                     map.clear();
-                                    /*metropolitandraw(0);
-                                    metropolitandraw(1);*/
                                     DisplayBuilding();
                                     HideBuildings();
-                                    /*metropolitandraw(2);
-                                    metropolitandraw(3);*/
-//                                    metropolitandraw(4);
-
-
                                     gametimer();
-                                    /*showFavourites();
-                                    mVisits.setEnabled(true);
-                                    txtFilterValue.setEnabled(true);
-                                    horizontalPicker.setVisibility(View.VISIBLE);
-                                    tv_building.setVisibility(View.VISIBLE);
-                                    tvRate.setVisibility(View.VISIBLE);
-                                    rupeesymbol.setVisibility(View.VISIBLE);
-                                    tvFetchingrates.setVisibility(View.GONE);
-                                    missingArea.setVisibility(View.GONE);*/
-
                                 } else {
                                     Log.i( "tt", "I am here" + 3 );
-/*
                                     map.clear();
-                                    tv_building.setVisibility(View.INVISIBLE);
-                                    horizontalPicker.setVisibility(View.GONE);
-                                    tvRate.setVisibility(View.INVISIBLE);
-                                    rupeesymbol.setVisibility(View.INVISIBLE);
-                                    tvFetchingrates.setVisibility(View.VISIBLE);
-                                    tvFetchingrates.setText("Coming Soon...");
-                                    missingArea.setVisibility(View.VISIBLE);
-                                    mVisits.setEnabled(false);
-                                    txtFilterValue.setEnabled(false);
-                                    CancelAnimation();*/
                                 }
-                            } else {
-
-                               /* map.clear();
-                                tv_building.setVisibility(View.INVISIBLE);
-                                horizontalPicker.setVisibility(View.GONE);
-                                tvRate.setVisibility(View.INVISIBLE);
-                                rupeesymbol.setVisibility(View.INVISIBLE);
-                                tvFetchingrates.setVisibility(View.VISIBLE);
-                                tvFetchingrates.setText("Coming Soon...");
-                                missingArea.setVisibility(View.VISIBLE);
-                                mVisits.setEnabled(false);
-                                txtFilterValue.setEnabled(false);
-                                CancelAnimation();
-                                Log.i("GETPRICE", "Else mode ====== ");*/
-
-
                             }
-
-                        }
                     } catch (Exception e) {
                         General.slowInternetFlag = false;
                         General.t.interrupt();
-
                         Log.i( "Price Error", "Caught in exception getprice success" + e.getMessage() );
                     }
-
-
                 }
-
                 @Override
                 public void failure(RetrofitError error) {
                     General.slowInternetFlag = false;
                     map.clear();
-                   /* tv_building.setVisibility(View.INVISIBLE);
-                    horizontalPicker.setVisibility(View.GONE);
-                    tvRate.setVisibility(View.INVISIBLE);
-                    rupeesymbol.setVisibility(View.INVISIBLE);
-                    tvFetchingrates.setVisibility(View.VISIBLE);
-                    tvFetchingrates.setText("Coming Soon...");
-                    missingArea.setVisibility(View.VISIBLE);
-                    mVisits.setEnabled(false);
-                    txtFilterValue.setEnabled(false);
-                    CancelAnimation();*/
                     General.t.interrupt();
                     Log.i( "getPrice", "retrofit failure getprice " + error.getMessage() );
-
                 }
             } );
 
@@ -1053,19 +915,64 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     }
 
 
+/*
+    public void getPrice() {
+
+        //getRegion();
+
+            User user = new User();
+
+            // user.setDeviceId( General.getSharedPreferences( getBaseContext(), AppConstants.TIME_STAMP_IN_MILLI ) );
+            // Log.i( "PREOK", "getcontext " + General.getSharedPreferences( getBaseContext(), AppConstants.TIME_STAMP_IN_MILLI ) );
+            user.setGcmId( SharedPrefs.getString( this, SharedPrefs.MY_GCM_ID ) );
+            //user.setUserRole( "client" );
+            user.setLongitude( SharedPrefs.getString( this, SharedPrefs.MY_LNG ) );
+            //user.setProperty_type( "home" );
+            user.setLatitude( SharedPrefs.getString( this, SharedPrefs.MY_LAT ) );
+            Log.i( "t1", "My_lng inside game api" + "  " + SharedPrefs.getString( this, SharedPrefs.MY_LNG ) );
+            user.setLocality( "" );
+            Log.i( "t1", "My_lat" + "  " + SharedPrefs.getString( this, SharedPrefs.MY_LAT ) );
+            user.setPlatform( "android" );
+            Log.i( "my_locality", SharedPrefs.getString( this, SharedPrefs.MY_LOCALITY ) );
+//            user.setPincode( "400058" );
+            if (General.getSharedPreferences( this, AppConstants.IS_LOGGED_IN_USER ).equals( "" )) {
+                user.setUserId( General.getSharedPreferences( this, AppConstants.TIME_STAMP_IN_MILLI ) );
+
+            } else {
+                user.setUserId( General.getSharedPreferences( this, AppConstants.USER_ID ) );
+            }
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint( AppConstants.SERVER_BASE_URL ).build();
+            restAdapter.setLogLevel( RestAdapter.LogLevel.FULL );
+
+            UserApiService userApiService = restAdapter.create( UserApiService.class );
+
+
+            userApiService.game(user,new retrofit.Callback<JsonElement>(){
+
+
+
+
+
+
+
+
+
+
+        }
+    }
+    */
+
+
+
+
     @Override
     public void onResume() {
-
         super.onResume();
-
-
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
-
     }
 
 
@@ -1074,7 +981,6 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                 icon( BitmapDescriptorFactory.fromBitmap( iconFactory.makeIcon( String.valueOf( (text) ) ) ) ).
                 position( position ).
                 anchor( iconFactory.getAnchorU(), iconFactory.getAnchorV() );
-
         Markertext[marker_position] = map.addMarker( markerOptions );
     }
 
@@ -1083,9 +989,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
         final long duration = 1500;
-
         final Interpolator interpolator = new BounceInterpolator();
-
         handler.post( new Runnable() {
             @Override
             public void run() {
@@ -1094,13 +998,10 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                         1 - interpolator.getInterpolation( (float) elapsed
                                 / duration ), 0 );
                 marker.setAnchor( 0.5f, 1.0f + 14 * t );
-
                 if (t > 0.0) {
                     handler.postDelayed( this, 15 );
                 } else {
 //                    Log.i(TAG,"building drop ");
-
-
                 }
             }
         } );
@@ -1349,8 +1250,8 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     }
 
     private void metropolitandraw(int i) {
-        game_min[i] = (or_psf[i] / 1000) - 10;
-        game_max[i] = (or_psf[i] / 1000) + 10;
+        game_min[i] = (or_psf[i] / 1000) + 10;
+        game_max[i] = (or_psf[i] / 1000) + 20;
         Log.i( "metropolitandraw", "metropolitandraw11:" + i );
         iconFactory = new IconGenerator( this );
         mCustomerMarker[i] = map.addMarker( new MarkerOptions().position( loc[i] ).icon( icon1 ) );
@@ -1449,18 +1350,18 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                                     iconFactory.setStyle( IconGenerator.STYLE_GREEN );
                                 } else
                                     iconFactory.setStyle( IconGenerator.STYLE_RED );
-                                Log.i("countervalue11", "count new : " + rate+" "+((or_psf[i]/1000)-10)+" "+((or_psf[i]/1000)+10)+" "+game_min[i]+" "+game_max[i]);
+                                Log.i("countervalue11", "count new : " + rate+" "+((or_psf[i]/1000)+10)+" "+((or_psf[i]/1000)+20)+" "+game_min[i]+" "+game_max[i]);
                                 addIcon( iconFactory, rate + "k", cent[i], i );
 //                                c=1300;
-                                if (game_max[i] < ((or_psf[i] / 1000) - 10) && game_min[i] >= ((or_psf[i] / 1000) + 10)) {
-                                    game_max[i] = (or_psf[i] / 1000) + 10;
-                                    game_min[i] = (or_psf[i] / 1000) - 10;
+                                if (game_max[i] < ((or_psf[i] / 1000) + 10) && game_min[i] >= ((or_psf[i] / 1000) + 20)) {
+                                    game_max[i] = (or_psf[i] / 1000) + 20;
+                                    game_min[i] = (or_psf[i] / 1000) +10;
                                 }
                             }
                         } );
                     }
                 }
-            }, 1000, 300 );
+            }, 500, 300 );
 
         }
     }
@@ -1616,12 +1517,10 @@ try {
         if(clockTickTimer!=null){
             clockTickTimer.cancel();
         }
-
       clockTickTimer = new Timer();
         clockTickTimer.schedule(new TimerTask() {
                @Override
                public void run () {
-
                    runOnUiThread( new Runnable() {
                        @Override
                        public void run() {
@@ -1645,8 +1544,6 @@ try {
                                clocktick.setText( String.valueOf( tickcount-- ) );
                                if(tickcount<2)
                                tickSound();
-
-
                            }
                        }
                    });
@@ -1740,8 +1637,10 @@ try {
 
     public void radomizedBuildingDisplay() {
         int count = buildingcount;
+        Log.i( "startgame","startgame : =======================" );
         for (int i = 0; i < count; i++) {
             if (status[i] == 0) {
+                Log.i( "startgame","startgame : metropolitandraw =======================" );
                 metropolitandraw( i );
                 break;
             }
@@ -1749,7 +1648,6 @@ try {
     }
 
     public void HideBuildings() {
-
         if (HideBuildingsTimer == null) {
             HideBuildingsTimer = new Timer();
             HideBuildingsTimer.schedule( new TimerTask() {
