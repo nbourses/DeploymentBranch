@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
@@ -73,7 +74,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
     private String TT = "LL";
     LinearLayout add_build;
     private String matchedId;
-
+    TextView usertext,add_create;
     @Bind(R.id.container_Signup1)
     FrameLayout container_Signup1;
 
@@ -106,7 +107,7 @@ Log.i("port","portListing "+portListing);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("My WatchList");
+
 
         //Phased seekbar initialisation
         mPhasedSeekBar = (CustomPhasedSeekBar) findViewById(R.id.phasedSeekBar);
@@ -114,8 +115,11 @@ Log.i("port","portListing "+portListing);
         mPhasedSeekBar.setListener((this));
         rental_list=(ListView) findViewById(R.id.Rental_listview);
         inputSearch=(EditText) findViewById( R.id.inputSearch1);
-
         add_build=(LinearLayout)findViewById(R.id.add_build);
+        usertext=(TextView)findViewById(R.id.usertext);
+        add_create=(TextView)findViewById(R.id.add_create);
+
+
         add_build.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -230,6 +234,19 @@ Log.i("port","portListing "+portListing);
         portListingCopy.addAll(portListing);
 
         adapter.notifyDataSetChanged();
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+            getSupportActionBar().setTitle("My Advertised Listings");
+            inputSearch.setHint("Search "+portListing.size()+" Listings");
+            usertext.setHint("My Listing");
+            add_create.setText("Create");
+        }else{
+            getSupportActionBar().setTitle("My WatchList");
+            inputSearch.setHint("Search "+ portListing.size()+" Watchlist");
+            usertext.setHint("My Watchlist");
+            add_create.setText("Add");
+
+        }
+       // inputSearch.setHint("Search My "+portListing.size()+" Listings");
         Log.i("dataritesh","myPortfolioLL"+portListing);
 //        portListing.addAll(myPortfolioLL);
 
@@ -486,7 +503,7 @@ inputSearch.addTextChangedListener(new TextWatcher() {
         String searchQuery = s.toString().trim();
         Log.i("searcho","s "+searchQuery.length());
         Log.i("searcho","sb "+portListingCopy);
-
+        usertext.setText(s);
        if(portListing != null)
            portListing.clear();
         portListing.addAll(portListingCopy);

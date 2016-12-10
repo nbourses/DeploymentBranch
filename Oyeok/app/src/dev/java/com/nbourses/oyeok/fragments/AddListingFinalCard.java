@@ -404,10 +404,13 @@ private void init(){
        addListingBorker.setPossession_date(txtcalendar.getText().toString());
        addListingBorker.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
        addListingBorker.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
-       addListingBorker.setUser_name(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+       addListingBorker.setUser_name(General.getSharedPreferences(getContext(),AppConstants.NAME));
        Log.i("magic","username   : "+ General.getSharedPreferences(getContext(),AppConstants.NAME)+"  "+General.getSharedPreferences(getContext(),AppConstants.MOBILE_NUMBER));
        addListingBorker.setTt(tt);
 
+       addListingBorker.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+       int carpet_area=Integer.parseInt(approx_area.getText().toString());
+       addListingBorker.getCarpet_area(carpet_area);
        Log.i("Reqstatus","Reqstatus 1 : "+Avail.isChecked()+ " "+Req.isChecked());
        if(Avail.isChecked()){
            Log.i("Reqstatus","Reqstatus 1 inside: "+Avail.isChecked()+ " "+Req.isChecked());
@@ -552,7 +555,7 @@ private  void getprice()
         user.setLatitude(General.getSharedPreferences(getContext(), AppConstants.MY_LAT));
         Log.i("getprice", "My_lng" + "  " + General.getSharedPreferences(getContext(), AppConstants.MY_LNG));
         if (SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) == "")
-            user.setLocality("mumbai");
+            user.setLocality("Mumbai");
         else
             user.setLocality(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
         Log.i("getprice", "My_lat" + "  " + General.getSharedPreferences(getContext(), AppConstants.MY_LAT));

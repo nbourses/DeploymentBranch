@@ -82,7 +82,7 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
 
     @Bind(R.id.setbaseloc)
     LinearLayout setbaseloc;
-
+    //setbaseloc
 //    @Bind(R.id.preok_layout)
 //    Toolbar preok_layout;
 
@@ -313,7 +313,7 @@ GoogleMap map;
     private void init() {
         slide_down = AnimationUtils.loadAnimation(this,
                 R.anim.slide_down);
-        editBaseLocation.setVisibility(View.VISIBLE);
+       // editBaseLocation.setVisibility(View.VISIBLE);
 
        try {
             SharedPreferences prefs =
@@ -452,7 +452,7 @@ GoogleMap map;
 
 //Remember
 
-        editBaseLocation.setOnClickListener(new View.OnClickListener() {
+        setbaseloc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 /*General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"BC");

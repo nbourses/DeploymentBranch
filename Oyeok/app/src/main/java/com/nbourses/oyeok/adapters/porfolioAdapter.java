@@ -63,7 +63,9 @@ public class porfolioAdapter extends BaseAdapter {
         }
         if(listing.getLl_pm()!=0&&listing.getDisplay_type()==null){
         holder.heading.setText(listing.getName()+" ("+listing.getConfig()+")");
-            holder.ActualPrice.setText(General.currencyFormat(listing.getLl_pm()+"")+"/month");
+//            String text;
+//            text="<html><sup></html>";
+            holder.ActualPrice.setText(General.currencyFormatWithoutRupeeSymbol(listing.getLl_pm()+"")+"/month");
             if(listing.getTransaction()==null) {
                 holder.B_image.setImageResource(R.drawable.asset_add_listing);
                 holder.B_image.setBackground(null);
@@ -77,7 +79,7 @@ public class porfolioAdapter extends BaseAdapter {
         holder.description.setText(listing.getLocality());
         setIcon(listing, holder);
         }else if(listing.getOr_psf()!=0 && listing.getDisplay_type()==null){
-            holder.ActualPrice.setText(General.currencyFormat(listing.getOr_psf()+"") + "/sq-ft" );
+            holder.ActualPrice.setText(General.currencyFormatWithoutRupeeSymbol(listing.getOr_psf()+"") + "/sq-ft" );
             holder.heading.setText(listing.getName()+" ("+listing.getConfig()+")");
             if(listing.getTransaction()==null) {
                 holder.B_image.setImageResource(R.drawable.asset_add_listing);

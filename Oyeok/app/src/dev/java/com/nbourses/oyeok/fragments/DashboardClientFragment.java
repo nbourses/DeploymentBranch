@@ -289,13 +289,13 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private String filterValue;
     private String bhk;
     private int filterValueMultiplier = 950;
-    TextView rental,resale,btn_add_building,btn_add_listing,oye_arrow;
+    TextView rental,resale,btn_add_building,btn_add_listing,oye_arrow,addBText;
     RelativeLayout property_type_layout;
     LinearLayout dispProperty;
     private int countertut,p=0;
 
     private ImageView myLoc,ic_search;
-    LinearLayout recordWorkout,addlistinglayout;
+    LinearLayout recordWorkout,addlistinglayout,addlistingText;
     boolean clicked = true;
     private String address;
     private LinearLayout seekbar_linearlayout;
@@ -589,6 +589,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         btn_add_building=(TextView) rootView.findViewById(R.id.btn_add_building);
         btn_add_listing=(TextView) rootView.findViewById(R.id.btn_add_listing);
         oye_arrow=(TextView) rootView.findViewById(R.id.oye_arrow);
+        ///save and done change on phase seek bar
+        addlistingText=(LinearLayout) rootView.findViewById(R.id.addlistingText);
+        addBText = (TextView) rootView.findViewById(R.id.addBText);
         btn_add_building.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1134,7 +1137,9 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                     txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_bg_color_white));
                                     String text1;//="<font color=#ffffff size=20> "+rate_growth[i] + " %</font>";
 
-                                    text1 = "<font color=#ffffff>Observed </font><font color=#ff9f1c> "+buildingCacheModels.get(i).getListing()+" </font> <font color=#ffffff>online listing in last 1 WEEK</font>";
+                                    /*text1 = "<font color=#ffffff>Observed </font><font color=#ff9f1c> "+buildingCacheModels.get(i).getListing()+" </font> <font color=#ffffff>online listing in last 1 WEEK</font>";
+                                    tv_building.setText(Html.fromHtml(text1));*/
+                                    text1="<font color=#2dc4b6>Today's Rate</font>";
                                     tv_building.setText(Html.fromHtml(text1));
                                     txtFilterValue.setText(buildingCacheModels.get(i).getRate_growth() + " %");
                                     txtFilterValue.setTextSize(16);
@@ -1849,6 +1854,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
             map.addMarker(new MarkerOptions().icon(iconOffice).position(new LatLng(lat,lng)));
             txtFilterValue.setText("done");
             txt_info.setText("Is this Location Correct ? press Done");
+            addlistingText.setVisibility(View.VISIBLE);
+            addBText.setText("To confirm your building Location click on Done");
         }else if(txtFilterValue.getText().toString().equalsIgnoreCase("done")){
             Log.i("user_role","role of user");
             if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
@@ -2098,7 +2105,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
             user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
             Log.i("jumba1", "My_lng" + "  " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
             if (SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) == "")
-                user.setLocality("mumbai");
+                user.setLocality("Mumbai");
             else
                 user.setLocality(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
             Log.i("jumba1", "My_lat" + "  " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
@@ -3257,6 +3264,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                         Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
                         Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
                         getRegion();
+                        addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
                         if (!AppConstants.SETLOCATION && !savebuilding) {
                             search_building_icon.setVisibility(View.GONE);
                             buildingIcon.setVisibility(View.GONE);
@@ -4240,6 +4248,8 @@ public int price(String conf,int rate){
         B_name=b_name;
         savebuilding=true;
         map.clear();
+        addlistingText.setVisibility(View.VISIBLE);
+        addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
         new LocationUpdater().execute();
         horizontalPicker.setVisibility(View.GONE);
         rupeesymbol.setVisibility(View.GONE);
@@ -4261,6 +4271,7 @@ public int price(String conf,int rate){
 
     public void  ResetChanges(){
       savebuilding=false;
+      addlistingText.setVisibility(View.GONE);
       txt_info.setVisibility(View.GONE);
       tvFetchingrates.setVisibility(View.GONE);
       horizontalPicker.setVisibility(View.VISIBLE);

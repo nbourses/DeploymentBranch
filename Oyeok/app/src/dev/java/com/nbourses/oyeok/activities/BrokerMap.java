@@ -616,19 +616,18 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                                 tvRate.setVisibility(View.GONE);
                                 rupeesymbol.setVisibility(View.GONE);
                                 recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
-
                                 mVisits.setBackground(getBaseContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
                                 txtFilterValue.setBackground(getBaseContext().getResources().getDrawable(R.drawable.oye_bg_color_white));
                                 String text1;
                                 //="<font color=#ffffff size=20> "+rate_growth[i] + " %</font>";
-
-                                text1 = "<font color=#ffffff>Observed </font><font color=#ff9f1c> "+buildingCacheModels.get(i).getListing()+" </font> <font color=#ffffff>online listing in last 1 WEEK</font>";
+//                                text1 = "<font color=#ffffff>Observed </font><font color=#ff9f1c> "+buildingCacheModels.get(i).getListing()+" </font> <font color=#ffffff>online listing in last 1 WEEK</font>";
+//                                tv_building.setText(Html.fromHtml(text1));
+                                text1="<font color=#2dc4b6>Today's Rate</font>";
                                 tv_building.setText(Html.fromHtml(text1));
                                 txtFilterValue.setText(buildingCacheModels.get(i).getRate_growth() + " %");
                                 txtFilterValue.setTextSize(16);
                                 txtFilterValue.setTypeface(Typeface.DEFAULT_BOLD);
                                 tvFetchingrates.setVisibility(View.VISIBLE);
-
                                 if (Integer.parseInt(buildingCacheModels.get(i).getRate_growth()) < 0){
                                     txtFilterValue.setTextColor(Color.parseColor("#ffb91422"));// FFA64139 red
                                     if (brokerType.equalsIgnoreCase("rent")) {
@@ -658,14 +657,12 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                                         tvFetchingrates.setText(Html.fromHtml(text));
                                     }
                                     txtFilterValue.setTextColor(Color.parseColor("black"));
-
                                 }
 //                                    txtFilterValue.setTextColor(Color.parseColor("black"));
                                 //ll_marker.setEnabled(false);
                                 mVisits.setEnabled(false);
                                 txtFilterValue.setEnabled(false);
 //                                txtFilterValue.setTextColor(Color.parseColor("green"));
-
                                 tv_building.setVisibility(View.VISIBLE);
                                 tvFetchingrates.setTypeface(null, Typeface.BOLD);
                                 lng = customMarker.get(i).getPosition().longitude;
@@ -705,9 +702,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                                 rupeesymbol.setVisibility(View.VISIBLE);
                                 tv_building.setVisibility(View.VISIBLE);
                                 buildingTextChange(General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY), 950);
-
                                 //tv_building.setText("Average Rate @ this Locality");
-
                             }
                         } else {
                             customMarker.get(i).setIcon(icon1);
@@ -1213,7 +1208,9 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                                 General.setSharedPreferences(getBaseContext(), AppConstants.MY_LNG, lng + "");
                                 Log.i("t1", "Sharedpref_lat" + General.getSharedPreferences(getBaseContext(), AppConstants.MY_LAT));
                                 Log.i("t1", "Sharedpref_lng" + General.getSharedPreferences(getBaseContext(), AppConstants.MY_LNG));
+                                addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
                                 getRegion();
+
                                 new LocationUpdater().execute();
                                 if (!AppConstants.SETLOCATION && !savebuilding) {
                                     search_building_icon.setVisibility(View.GONE);
@@ -1480,7 +1477,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                 user.setLatitude(General.getSharedPreferences(getBaseContext(), AppConstants.MY_LAT));
                 Log.i("jumba", "My_lng" + "  " + SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_LNG));
                 if (General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY) == "")
-                    user.setLocality("mumbai");
+                    user.setLocality("Mumbai");
                 else
                     user.setLocality(General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY));
                 Log.i("jumba", "My_lat" + "  " + General.getSharedPreferences(getBaseContext(), AppConstants.MY_LAT));

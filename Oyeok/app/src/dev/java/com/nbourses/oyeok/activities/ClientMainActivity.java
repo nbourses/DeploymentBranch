@@ -669,15 +669,15 @@ try {
         slidingLayout.setTouchEnabled(false);
 //        slidingLayout.setEnabled(false);
           slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-          slidingLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+         /* slidingLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-//                resizeScrollView(panel, slideOffset);
+                resizeScrollView(panel, slideOffset);
             }
 
             @Override
             public void onPanelExpanded(View panel) {
-//                resizeScrollView(panel, 0.0f);
+                resizeScrollView(panel, 0.0f);
             }
 
             @Override
@@ -686,12 +686,12 @@ try {
 
             @Override
             public void onPanelAnchored(View panel) {
-//                resizeScrollView(panel, anchorPoint);
+                resizeScrollView(panel, anchorPoint);
             }
 
             @Override
             public void onPanelHidden(View panel) {
-            }
+            }*/
 
            /* private void resizeScrollView(View panel, float slideOffset) {
                 final int scrollViewHeight =
@@ -699,8 +699,9 @@ try {
                 slidingView.setLayoutParams(
                         new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                 scrollViewHeight));
+               // slidingView.s
             }*/
-        });
+       // });
 
         //  RelativeLayout re = (RelativeLayout) findViewById(R.id.badge);
         //setup toolbar

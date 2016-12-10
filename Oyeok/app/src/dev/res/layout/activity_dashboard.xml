@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:visibility="visible">
 
-    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+   <!-- <com.sothree.slidinguppanel.SlidingUpPanelLayout
         xmlns:sothree="http://schemas.android.com/apk/res-auto"
         android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
@@ -17,8 +17,34 @@
         sothree:umanoParallaxOffset="100dp"
         sothree:umanoFadeColor = "@android:color/transparent"
         sothree:umanoOverlay="true"
+        >-->
+   <!-- <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="340dp"
+        sothree:umanoShadowHeight="1dp"
+        sothree:umanoFadeColor = "@android:color/transparent"
+        sothree:umanoOverlay="true"
+        sothree:umanoParallaxOffset="100dip"
+        sothree:umanoDragView="@+id/dragView"
+        >-->
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="68dp"
+        sothree:umanoShadowHeight="4dp"
+        sothree:umanoParallaxOffset="100dp"
+        android:foregroundGravity="bottom"
+        sothree:umanoDragView="@+id/dragView"
+        sothree:umanoFadeColor = "@android:color/transparent"
+        sothree:umanoOverlay="true"
         >
-
 
         <!--sothree:umanoDragView="@+id/dragView"-->
         <!--sothree:umanoScrollableView="@+id/sv"-->
@@ -84,21 +110,26 @@
         <!-- SLIDING LAYOUT -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:background="#ffffff"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:orientation="vertical"
+            android:focusable="false"
+            android:background="@color/white"
             android:id="@+id/dragView">
             <!--android:focusable="false"-->
-            <!--<ScrollView
+            <ScrollView
                 android:id="@+id/sliding_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >-->
+                android:layout_height="match_parent" >
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:foregroundGravity="bottom"
+                    android:background="@color/white"
                     android:id="@+id/container_oye">
                 </FrameLayout>
-            <!--</ScrollView>-->
+            </ScrollView>
         </LinearLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 

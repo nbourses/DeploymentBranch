@@ -498,7 +498,12 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
         user.setDeviceId("hardware");
         user.setPlatform("android");
-        user.setLocality(SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY));
+        if(!SharedPrefs.getString(getActivity(),SharedPrefs.MY_LOCALITY).equalsIgnoreCase("")) {
+            user.setLocality(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+        }
+        else {
+            user.setLocality("Mumbai");
+        }
 
         Log.i(TAG,"fakat 5 "+user.getUserRole() + okBroker);
         Log.i("TAG", "role before signup call "+user.getUserRole() +okBroker);

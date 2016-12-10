@@ -86,6 +86,33 @@ public class AddListingBorker {
     @SerializedName("property_type")
     private String property_type;
 
+
+    @Expose
+    @SerializedName("user_id")
+    private String user_id;
+
+    @Expose
+    @SerializedName("carpet_area")
+    private int carpet_area;
+
+
+    public int getCarpet_area(int carpet_area) {
+        return this.carpet_area;
+    }
+
+    public void setCarpet_area(int carpet_area) {
+        this.carpet_area = carpet_area;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+
     public String getBuilding_name() {
         return building_name;
     }
