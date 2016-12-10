@@ -48,6 +48,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.PointD;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.loopj.android.image.SmartImageView;
 import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
@@ -62,8 +63,10 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
-import com.nbourses.oyeok.activities.*;
+import com.nbourses.oyeok.activities.BrokerDealsListActivity;
 import com.nbourses.oyeok.activities.BrokerMap;
+import com.nbourses.oyeok.activities.ClientDealsListActivity;
+import com.nbourses.oyeok.activities.ProfileActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
@@ -333,6 +336,9 @@ private String transaction_type="Rental";
         zoomin = AnimationUtils.loadAnimation(getContext(), R.anim.zoomin);
         zoomout = AnimationUtils.loadAnimation(getContext(), R.anim.zoomout);
       //chart removed// chart = (BarChart) v.findViewById(R.id.chart);
+
+        SmartImageView myImage = (SmartImageView) v.findViewById(R.id.my_image);
+
         init();
         if(SharedPrefs.getString(getContext(),SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
             beacon = "false";  // beacon disabled

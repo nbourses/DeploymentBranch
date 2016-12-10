@@ -126,6 +126,7 @@ dependencies {
     //    compile 'com.baoyz.swipemenulistview:library:1.3.0'
     compile project(':SwipeTouchLibrary')
     compile 'com.android.support:design:23.0.0'
+    compile files('libs/android-smart-image-view-1.0.0.jar')
 }
 
 //dependencies {
@@ -260,7 +261,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
-    compile files('libs/pgsdk.jar')
+    /*compile files('libs/pgsdk.jar')*/
     //    added by Rohit
     // Digits
     compile fileTree(dir: 'libs', include: ['*.jar'])

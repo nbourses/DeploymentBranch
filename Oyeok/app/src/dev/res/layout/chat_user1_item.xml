@@ -74,6 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:textIsSelectable="true"
                     style="@style/chat_text_message_style"
                     android:paddingLeft="20dp"
                     android:autoLink="web"

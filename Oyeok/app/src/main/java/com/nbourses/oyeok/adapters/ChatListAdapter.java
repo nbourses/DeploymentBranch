@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.enums.ChatMessageStatus;
-import com.nbourses.oyeok.enums.ChatMessageUserSubtype;
 import com.nbourses.oyeok.enums.ChatMessageUserType;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -106,7 +105,7 @@ public class ChatListAdapter extends BaseAdapter {
 
                 //holder4.messageTextView = (TextView) v.findViewById(R.id.message_text);
                 //holder4.timeTextView = (TextView) v.findViewById(R.id.time_text);
-               // holder4.chatReplyAuthor = (TextView) v.findViewById(R.id.chat_reply_author);
+                // holder4.chatReplyAuthor = (TextView) v.findViewById(R.id.chat_reply_author);
                 holder4.txtFirstChar = (TextView) v.findViewById(R.id.txt_first_char);
                 holder4.building1 = (TextView) v.findViewById(R.id.building1);
                 holder4.building2 = (TextView) v.findViewById(R.id.building2);
@@ -174,7 +173,7 @@ public class ChatListAdapter extends BaseAdapter {
                     if(i==3)
                         holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(3).indexOf("."))));
                     if(i == 4)
-                       holder4.building3.setText(list.get(4));
+                        holder4.building3.setText(list.get(4));
                     if(i==5)
                         holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(5).indexOf("."))));
                 }
@@ -184,7 +183,7 @@ public class ChatListAdapter extends BaseAdapter {
             /*holder4.price1.setText(" @"+General.currencyFormat(list.get(1).substring(0,list.get(1).length()-2)));
             holder4.price2.setText(" @"+General.currencyFormat(list.get(3).substring(0,list.get(3).length()-2)));
             holder4.price3.setText(" @"+General.currencyFormat(list.get(5).substring(0,list.get(5).length()-2)));*/
-           // holder3.messageTextView.setText(message.getMessageText());
+            // holder3.messageTextView.setText(message.getMessageText());
 //            holder4.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
             //holder3.chatReplyAuthor.setText("Welcome "+name);
             //holder3.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
@@ -233,12 +232,12 @@ public class ChatListAdapter extends BaseAdapter {
             }*/
             try{
                 // self type will crash
-            if (message.getMessageStatus() == ChatMessageStatus.DELIVERED) {
-                holder5.messageStatus.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_double_tick));
-            } else if (message.getMessageStatus() == ChatMessageStatus.SENT) {
-                holder5.messageStatus.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_single_tick));
+                if (message.getMessageStatus() == ChatMessageStatus.DELIVERED) {
+                    holder5.messageStatus.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_double_tick));
+                } else if (message.getMessageStatus() == ChatMessageStatus.SENT) {
+                    holder5.messageStatus.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_single_tick));
 
-            }
+                }
             }
             catch(Exception e){
 
@@ -247,7 +246,7 @@ public class ChatListAdapter extends BaseAdapter {
             Log.i("IMGURL","image url is yo yo to "+message.getImageUrl());
             Log.i("IMGURL","image name is yo yo to "+message.getImageName());
 
-          //  imgName = message.getImageUrl().split("/")[4];
+            //  imgName = message.getImageUrl().split("/")[4];
             imgName = message.getMessageText().split("/")[4];
             Log.i("IMGURL","image name is yo yo to po "+imgName);
 
@@ -264,7 +263,7 @@ public class ChatListAdapter extends BaseAdapter {
                     Bitmap bmp = BitmapFactory.decodeFile(Environment.getDataDirectory()
                             + "/oyeok/"+imgName);
                     Log.i("IMGURL","image exists 1 bmp "+bmp);
-                     holder5.imageView.setImageBitmap(bmp);
+                    holder5.imageView.setImageBitmap(bmp);
                     holder5.spinnerProgress.setVisibility(View.GONE);
 
 
@@ -297,7 +296,6 @@ public class ChatListAdapter extends BaseAdapter {
                        /* int newWidth = getScreenWidth(); //this method should return the width of device screen.
                     float scaleFactor = (float)newWidth/(float)imageWidth;
                     int newHeight = (int)(imageHeight * scaleFactor);
-
                     bitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);*/
 
 //                    int ivWidth = holder5.imageView.getWidth();
@@ -348,20 +346,20 @@ public class ChatListAdapter extends BaseAdapter {
                                     + "/oyeok/"+imgName);
 
 
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    Uri imgUri = Uri.parse("file://" + directory);
-                    intent.setDataAndType(imgUri, "image/*");
-                    v.getContext().startActivity(intent);
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_VIEW);
+                            Uri imgUri = Uri.parse("file://" + directory);
+                            intent.setDataAndType(imgUri, "image/*");
+                            v.getContext().startActivity(intent);
                         }
                     }catch(Exception e){
                         Log.i("TAG", "Caught in exception opening image in gallery "+e);
                     }
 
-                   // TextView i =(TextView) v.findViewById(R.id.edtTypeMsg);
+                    // TextView i =(TextView) v.findViewById(R.id.edtTypeMsg);
                     //View vi = LayoutInflater.from(context).inflate(R.layout.activity_deal_conversation, null, false);
                     //WebView i =(WebView) vi.findViewById(R.id.webView3);
-                 // i.setVisibility(View.VISIBLE);
+                    // i.setVisibility(View.VISIBLE);
 
 
                 }
@@ -377,7 +375,7 @@ public class ChatListAdapter extends BaseAdapter {
 
             Boolean stopDownloadImage6 = false;
             if (convertView == null) {
-                    v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
+                v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
 
                /* else //(message.getUserSubtype() == ChatMessageUserSubtype.OTHER)
                     v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);*/
@@ -475,7 +473,6 @@ public class ChatListAdapter extends BaseAdapter {
                        /* int newWidth = getScreenWidth(); //this method should return the width of device screen.
                     float scaleFactor = (float)newWidth/(float)imageWidth;
                     int newHeight = (int)(imageHeight * scaleFactor);
-
                     bitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);*/
 
 //                    int ivWidth = holder5.imageView.getWidth();
@@ -565,10 +562,10 @@ public class ChatListAdapter extends BaseAdapter {
             }
 
             //String userName = message.getUserName(); // broker
-           // String userName = General.getSharedPreferences(context, AppConstants.NAME);
+            // String userName = General.getSharedPreferences(context, AppConstants.NAME);
             String userName = "unverified user";
             if(General.getSharedPreferences(context, AppConstants.NAME) != "") {
-               userName = General.getSharedPreferences(context, AppConstants.NAME);
+                userName = General.getSharedPreferences(context, AppConstants.NAME);
             }
 
             String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
@@ -593,7 +590,7 @@ public class ChatListAdapter extends BaseAdapter {
         }
 
 
-        else if (message.getUserType() == ChatMessageUserType.OTHER || message.getUserSubtype() == ChatMessageUserSubtype.OTHER) {
+        else if (message.getUserType() == ChatMessageUserType.OTHER /*|| message.getUserSubtype() == ChatMessageUserSubtype.OTHER*/) {
             if (convertView == null) {
                 v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
                 holder1 = new ViewHolder1();
@@ -624,7 +621,7 @@ public class ChatListAdapter extends BaseAdapter {
             Log.i("CONVER","message time self "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
 
         }
-        else if (message.getUserType() == ChatMessageUserType.SELF || message.getUserSubtype() == ChatMessageUserSubtype.SELF)
+        else if (message.getUserType() == ChatMessageUserType.SELF /*|| message.getUserSubtype() == ChatMessageUserSubtype.SELF*/)
         {
 
             if (convertView == null) {
@@ -672,20 +669,15 @@ public class ChatListAdapter extends BaseAdapter {
 
     /*@Override
     public int getItemViewType(int position) {
-
          if(position >0)
         Log.i("VIEW TYPE","======== yo 1  "+chatMessages.get(position-1).getMessageText());
         Log.i("VIEW TYPE","======== yo 2  "+position);
-
         ChatMessage message = chatMessages.get(position);
-
         Log.i("VIEW TYPE","======== yo 3  "+message.getUserType());
         Log.i("VIEW TYPE","======== yo 4  "+message.getUserSubtype());
         if(message.getUserType() != null)
             return message.getUserType().ordinal();
-
         return 1;
-
 //        return message.getUserSubtype().ordinal();
     }*/
 
@@ -723,7 +715,7 @@ public class ChatListAdapter extends BaseAdapter {
 
     private class ViewHolder4 {
         public ProgressBar spinnerProgress;
-//        public TextView messageTextView;
+        //        public TextView messageTextView;
 //        public TextView timeTextView;
 //        public TextView chatReplyAuthor;
         public TextView txtFirstChar;
@@ -960,15 +952,15 @@ public class ChatListAdapter extends BaseAdapter {
                 /*DealConversationActivity d = new DealConversationActivity();
                 InputStream in = new java.net.URL("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName).openStream();
                 Bitmap mIcon11 = BitmapFactory.decodeStream(in);*/
-               // File file = new File(destdir);
+                // File file = new File(destdir);
 
-               // File fileToDownload = new File(new URL("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName).toURI());
+                // File fileToDownload = new File(new URL("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName).toURI());
 
                 /*d.credentialsProvider();
                 d.setTransferUtility();
                 d.setFileToDownload(imageName,destdir);*/
 
-             //DealConversationActivity.copyFileUsingStream(fileToDownload, destdir);
+                //DealConversationActivity.copyFileUsingStream(fileToDownload, destdir);
 
             }
 

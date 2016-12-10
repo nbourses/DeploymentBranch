@@ -17,6 +17,7 @@
         sothree:umanoParallaxOffset="100dp"
         sothree:umanoFadeColor = "@android:color/transparent"
         sothree:umanoOverlay="true"
+        sothree:umanoDragView="@+id/dragView"
         >
 
 
@@ -84,7 +85,7 @@
         <!-- SLIDING LAYOUT -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="match_parent"
             android:background="#ffffff"
             android:id="@+id/dragView">
             <!--android:focusable="false"-->

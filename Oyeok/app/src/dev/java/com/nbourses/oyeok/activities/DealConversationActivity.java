@@ -427,8 +427,11 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         Bundle bundle = getIntent().getExtras();
 
+        Log.i(TAG,"bundle is "+bundle);
+
         try {
             if (bundle != null) {
+                Log.i(TAG,"bundle is 1 "+bundle);
                 if (bundle.containsKey("OkAccepted") && bundle.containsKey(AppConstants.OK_ID)) {
                     channel_name = bundle.getString(AppConstants.OK_ID);
 
@@ -501,10 +504,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         name = bundle.getString(AppConstants.NAME);
                         getSupportActionBar().setTitle(Html.fromHtml(String.format(name + "<font color=\"#%s\"> (offline)</font>", offlineColor)));
 
-                       // getSupportActionBar().setTitle(Html.fromHtml(String.format(name+"DEALING ROOMs <font color=\"#%s\">(Rental)</font>", offlineColor)));
-
-                       // getSupportActionBar().setTitle(Html.fromHtml(String.format("<font color=\"#%s\">(offline)</font>", offlineColor)));
-                       // getSupportActionBar().setTitle(" (offline)");
 
                     }
                         else {
@@ -517,9 +516,10 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 }
                 getSupportActionBar().setDisplayShowHomeEnabled(true);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+                Log.i(TAG,"bundle is 2 "+bundle);
                 if(bundle.containsKey(AppConstants.OYE_ID)){
                     Log.i(TAG,"perser 1 ");
+                    Log.i(TAG,"bundle is 3 "+bundle);
                     if (bundle.getString(AppConstants.OYE_ID).toLowerCase().contains("unverified_user".toLowerCase())) {
                         Log.i(TAG,"perser 2 ");
                         isUnverified = true;
@@ -758,9 +758,12 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
                 .state(myState).async(new PNCallback<PNSetStateResult>() {
             @Override
             public void onResponse(PNSetStateResult result, PNStatus status) {
-                // handle set state response
-                Log.i(TAG,"zxc"+result.getState());
-                //getState();
+                try {
+                    // handle set state response
+                    Log.i(TAG, "zxc" + result.getState());
+                    //getState();
+
+                }catch(Exception e){}
 
             }
         });
@@ -1122,7 +1125,11 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
                 .async(new PNCallback<PNPushListProvisionsResult>() {
                     @Override
                     public void onResponse(PNPushListProvisionsResult result, PNStatus status) {
-                        Log.i("getChannelsPush", "getChannelsPush "+result.getChannels());
+                        try {
+                            Log.i("getChannelsPush", "getChannelsPush " + result.getChannels());
+                        }catch(Exception e){
+
+                        }
                     }
                 });
 
@@ -1305,6 +1312,13 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
                 msgStatus = "IMG";*/
             else
                 msgStatus = null;
+
+
+            if(jsonMsg.has("timetoken"))
+                timetoken = jsonMsg.getString("timetoken");
+
+            else
+                timetoken = null;
 
 
             Log.i(TAG," after assigning =====  _from "+msgStatus);
@@ -1782,39 +1796,40 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
         pubnub.history()
                 .channel(channel_name) // where to fetch history from
-                .count(5) // how many items to fetch
+                .count(30) // how many items to fetch
                 .includeTimetoken(true)// include timetoken with each entry
                 .async(new PNCallback<PNHistoryResult>() {
                     @Override
                     public void onResponse(PNHistoryResult result, PNStatus status) {
-                        Log.i(TAG,"history is tha 100 "+result.getMessages());
-                        Log.i(TAG,"history is tha 1 "+result.getMessages().toString());
+
                         try {
-                            chatMessages.clear();
-                        for (PNHistoryItemResult historyItemResult : result.getMessages()) {
-                            Log.i(TAG, "history is tha 2 " + historyItemResult.getEntry());
-                            try {
-                                if (historyItemResult.getEntry().has("pn_gcm")) {
-                                    Log.i(TAG, "history is tha 33 " + historyItemResult.getTimetoken());
-                                    // String content = jsonNode.get("data").textValue();
+                            if(!result.getMessages().isEmpty()) {
+                                Log.i(TAG, "perser 48 "+isUnverified);
+                                chatMessages.clear();
+                                for (PNHistoryItemResult historyItemResult : result.getMessages()) {
+                                    Log.i(TAG, "history is tha 2 " + historyItemResult);
+                                    try {
+                                        if (historyItemResult.getEntry().has("pn_gcm")) {
+                                            Log.i(TAG, "history is tha 33 " + historyItemResult.getTimetoken());
+                                            // String content = jsonNode.get("data").textValue();
 
-                                    String j = historyItemResult.getEntry().get("pn_gcm").get("data").toString();
-                                    // JSONObject j = new JSONObject(historyItemResult.getEntry().get("pn_gcm").toString());
-                                    Log.i(TAG, "history is tha 75 " + historyItemResult.getEntry().get("pn_gcm").get("data").toString());
-                                    Log.i(TAG, "history is tha 70 " + j);
-                                    JSONObject jsonObj = new JSONObject(j);
+                                            String j = historyItemResult.getEntry().get("pn_gcm").get("data").toString();
+                                            // JSONObject j = new JSONObject(historyItemResult.getEntry().get("pn_gcm").toString());
+                                            Log.i(TAG, "history is tha 75 " + historyItemResult.getEntry().get("pn_gcm").get("data").toString());
+                                            Log.i(TAG, "history is tha 70 " + j);
+                                            JSONObject jsonObj = new JSONObject(j);
 
-                                    jsonObj.put("timetoken",historyItemResult.getTimetoken().toString());
-                                    Log.i(TAG, "history is tha 39 " + jsonObj);
-                                    displayMessage(jsonObj);
+                                            jsonObj.put("timetoken", historyItemResult.getTimetoken().toString());
+                                            Log.i(TAG, "history is tha 39 " + jsonObj);
+                                            displayMessage(jsonObj);
+
+                                        }
+
+                                    } catch (Exception e) {
+                                        Log.i(TAG, "PUBNUB history Caught in exception recieved message not proper " + e);
+                                    }
 
                                 }
-
-                            }catch(Exception e){
-                                Log.i(TAG,"PUBNUB history Caught in exception recieved message not proper "+e);
-                            }
-
-                        }
 
 /*
                             JSONArray jsonArrayResponse = new JSONArray(result.toString());
@@ -1863,7 +1878,16 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
                                 lastMessageTime = String.valueOf(System.currentTimeMillis());
 
                             }
+
 */
+                            }else {
+                                Log.i(TAG, "perser 49 "+isUnverified);
+
+                                if (isUnverified) {
+                                    Log.i(TAG, "perser 4");
+                                    displayDefaultMessageUnverified();
+                                }
+                            }
                         }
                         catch (Exception e) {
                             Log.i(TAG,"PUBNUB history Caught in exception 56 "+e);
@@ -2324,39 +2348,40 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
        pubnub.history()
                 .channel(channel_name) // where to fetch history from
-                .count(5) // how many items to fetch
+                .count(30) // how many items to fetch
                 .includeTimetoken(true) // include timetoken with each entry
                 .async(new PNCallback<PNHistoryResult>() {
                     @Override
                     public void onResponse(PNHistoryResult result, PNStatus status) {
+                        try {
 
-                        for (PNHistoryItemResult historyItemResult : result.getMessages()) {
-                            Log.i(TAG, "history is tha 2 " + historyItemResult.getEntry());
-                            try {
-                                if (historyItemResult.getEntry().has("pn_gcm")) {
-                                    Log.i(TAG, "history is tha 3 " + historyItemResult.getEntry().toString());
-                                    // String content = jsonNode.get("data").textValue();
+                            for (PNHistoryItemResult historyItemResult : result.getMessages()) {
+                                Log.i(TAG, "history is tha 2 " + historyItemResult.getEntry());
+                                try {
+                                    if (historyItemResult.getEntry().has("pn_gcm")) {
+                                        Log.i(TAG, "history is tha 3 " + historyItemResult.getEntry().toString());
+                                        // String content = jsonNode.get("data").textValue();
 
-                                    String j = historyItemResult.getEntry().get("pn_gcm").get("data").toString();
-                                    // JSONObject j = new JSONObject(historyItemResult.getEntry().get("pn_gcm").toString());
-                                    Log.i(TAG, "history is tha 7 " + j);
-                                    JSONObject jsonObj = new JSONObject(j);
-                                    jsonObj.put("timetoken",historyItemResult.getTimetoken().toString());
+                                        String j = historyItemResult.getEntry().get("pn_gcm").get("data").toString();
+                                        // JSONObject j = new JSONObject(historyItemResult.getEntry().get("pn_gcm").toString());
+                                        Log.i(TAG, "history is tha 7 " + j);
+                                        JSONObject jsonObj = new JSONObject(j);
+                                        jsonObj.put("timetoken", historyItemResult.getTimetoken().toString());
 
 
-                                   // jsonA = new JSONArray();
-                                    Log.i(TAG, "history is tha 10 jsonArrayHistory jsonObj " + jsonObj);
-                                    jsonArrayHistory.put(jsonObj);
-                                    Log.i(TAG, "history is tha 9 jsonArrayHistory " + jsonArrayHistory);
+                                        // jsonA = new JSONArray();
+                                        Log.i(TAG, "history is tha 10 jsonArrayHistory jsonObj " + jsonObj);
+                                        jsonArrayHistory.put(jsonObj);
+                                        Log.i(TAG, "history is tha 9 jsonArrayHistory " + jsonArrayHistory);
 
+                                    }
+
+                                } catch (Exception e) {
+                                    Log.i(TAG, "PUBNUB history Caught in exception recieved message not proper " + e);
                                 }
-
-                            } catch (Exception e) {
-                                Log.i(TAG, "PUBNUB history Caught in exception recieved message not proper " + e);
                             }
-                        }
-                        clearCache();
-                        cacheMessages(jsonArrayHistory);
+                            clearCache();
+                            cacheMessages(jsonArrayHistory);
 
 
                        /* try {
@@ -2372,8 +2397,9 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
                         catch (Exception e) {
                             e.printStackTrace();
                         }*/
+                        }catch(Exception e){}
+                        }
 
-                    }
                 });
 
 
@@ -2463,8 +2489,10 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
 
             jsonMsg.put("to",channel_name);
+            jsonMsg.put("timetoken",String.valueOf(System.currentTimeMillis()));
 
-            jsonMsg.put("status","SYSTEM"); // SYSTEM as this would be welcome message
+            jsonMsg.put("status","SYSTEM");
+            jsonMsg.put("name","");// SYSTEM as this would be welcome message
 
             Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
 
@@ -2529,6 +2557,9 @@ String furnishing = "Semi-Furnished";
             jsonMsg.put("_from", General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI));
 
             jsonMsg.put("to",channel_name);
+            jsonMsg.put("name","");
+            jsonMsg.put("timetoken",String.valueOf(System.currentTimeMillis()));
+
 
             jsonMsg.put("status","SYSTEM"); // SYSTEM as this would be welcome message
 
