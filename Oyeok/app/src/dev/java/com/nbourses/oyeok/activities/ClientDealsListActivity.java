@@ -769,6 +769,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
                 intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
                 intent.putExtra(AppConstants.NAME, brokerDeals.getName());
+                intent.putExtra(AppConstants.OYE_ID, brokerDeals.getOyeId());
+                intent.putExtra(AppConstants.LOCALITY, brokerDeals.getLocality());
+
                 Log.i("TRACE", "ment" + AppConstants.OK_ID);
 
                 startActivity(intent);

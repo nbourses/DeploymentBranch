@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.enums.ChatMessageStatus;
-import com.nbourses.oyeok.enums.ChatMessageUserSubtype;
 import com.nbourses.oyeok.enums.ChatMessageUserType;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -49,7 +48,8 @@ public class ChatListAdapter extends BaseAdapter {
     private static Thread t;
     private String imgName;
     private ViewHolder5 holder5;
-private WebView i;
+    private ViewHolder6 holder6;
+    private WebView i;
     private Boolean isDefaultDeal = false;
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("h:mm a");
     private Bitmap mIcon12 = null; // null image for test condition in download image
@@ -105,7 +105,7 @@ private WebView i;
 
                 //holder4.messageTextView = (TextView) v.findViewById(R.id.message_text);
                 //holder4.timeTextView = (TextView) v.findViewById(R.id.time_text);
-               // holder4.chatReplyAuthor = (TextView) v.findViewById(R.id.chat_reply_author);
+                // holder4.chatReplyAuthor = (TextView) v.findViewById(R.id.chat_reply_author);
                 holder4.txtFirstChar = (TextView) v.findViewById(R.id.txt_first_char);
                 holder4.building1 = (TextView) v.findViewById(R.id.building1);
                 holder4.building2 = (TextView) v.findViewById(R.id.building2);
@@ -173,7 +173,7 @@ private WebView i;
                     if(i==3)
                         holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(3).indexOf("."))));
                     if(i == 4)
-                       holder4.building3.setText(list.get(4));
+                        holder4.building3.setText(list.get(4));
                     if(i==5)
                         holder4.price2.setText(" @"+ General.currencyFormat(list.get(3).substring(0 , list.get(5).indexOf("."))));
                 }
@@ -183,7 +183,7 @@ private WebView i;
             /*holder4.price1.setText(" @"+General.currencyFormat(list.get(1).substring(0,list.get(1).length()-2)));
             holder4.price2.setText(" @"+General.currencyFormat(list.get(3).substring(0,list.get(3).length()-2)));
             holder4.price3.setText(" @"+General.currencyFormat(list.get(5).substring(0,list.get(5).length()-2)));*/
-           // holder3.messageTextView.setText(message.getMessageText());
+            // holder3.messageTextView.setText(message.getMessageText());
 //            holder4.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
             //holder3.chatReplyAuthor.setText("Welcome "+name);
             //holder3.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
@@ -191,17 +191,14 @@ private WebView i;
 
         }
 
-        else if (message.getUserType() == ChatMessageUserType.IMG) {
+        else if (message.getUserType() == ChatMessageUserType.IMGSELF /*&& message.getUserSubtype() == ChatMessageUserSubtype.SELF*/) {
 
-            Log.i("TEST","================================================== IMG");
+            Log.i("TEST","================================================== IMG u "+message.getMessageText() + " "+message.getUserType() + " "+message.getUserSubtype());
             Log.i("image adapter","image adapter narcos "+message.getUserSubtype()+message.getMessageText());
 
-            Boolean stopDownloadImage = false;
+            Boolean stopDownloadImage5 = false;
             if (convertView == null) {
-               if(message.getUserSubtype() == ChatMessageUserSubtype.SELF)
-                    v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);
-                else
-                v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
+                v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);
 
                /* else //(message.getUserSubtype() == ChatMessageUserSubtype.OTHER)
                     v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);*/
@@ -235,12 +232,12 @@ private WebView i;
             }*/
             try{
                 // self type will crash
-            if (message.getMessageStatus() == ChatMessageStatus.DELIVERED) {
-                holder5.messageStatus.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_double_tick));
-            } else if (message.getMessageStatus() == ChatMessageStatus.SENT) {
-                holder5.messageStatus.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_single_tick));
+                if (message.getMessageStatus() == ChatMessageStatus.DELIVERED) {
+                    holder5.messageStatus.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_double_tick));
+                } else if (message.getMessageStatus() == ChatMessageStatus.SENT) {
+                    holder5.messageStatus.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_single_tick));
 
-            }
+                }
             }
             catch(Exception e){
 
@@ -249,7 +246,7 @@ private WebView i;
             Log.i("IMGURL","image url is yo yo to "+message.getImageUrl());
             Log.i("IMGURL","image name is yo yo to "+message.getImageName());
 
-          //  imgName = message.getImageUrl().split("/")[4];
+            //  imgName = message.getImageUrl().split("/")[4];
             imgName = message.getMessageText().split("/")[4];
             Log.i("IMGURL","image name is yo yo to po "+imgName);
 
@@ -266,11 +263,11 @@ private WebView i;
                     Bitmap bmp = BitmapFactory.decodeFile(Environment.getDataDirectory()
                             + "/oyeok/"+imgName);
                     Log.i("IMGURL","image exists 1 bmp "+bmp);
-                     holder5.imageView.setImageBitmap(bmp);
+                    holder5.imageView.setImageBitmap(bmp);
                     holder5.spinnerProgress.setVisibility(View.GONE);
 
 
-                    stopDownloadImage = true;
+                    stopDownloadImage5 = true;
 
                 }
 
@@ -299,7 +296,6 @@ private WebView i;
                        /* int newWidth = getScreenWidth(); //this method should return the width of device screen.
                     float scaleFactor = (float)newWidth/(float)imageWidth;
                     int newHeight = (int)(imageHeight * scaleFactor);
-
                     bitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);*/
 
 //                    int ivWidth = holder5.imageView.getWidth();
@@ -316,14 +312,14 @@ private WebView i;
 
                     Log.i("IMGURL","image exists 2 bmp "+bmp);
                     //holder5.imageView.setImageBitmap(bmp);
-                    stopDownloadImage = true;
+                    stopDownloadImage5 = true;
                 }
             }
-            Log.i("TAG","stopDownloadImage "+stopDownloadImage);
-            if(!stopDownloadImage) {
-                Log.i("TAG","stopDownloadImage1 "+stopDownloadImage);
+            Log.i("TAG","stopDownloadImage "+stopDownloadImage5);
+            if(!stopDownloadImage5) {
+                Log.i("TAG","stopDownloadImage1 "+stopDownloadImage5);
                 try {
-                    new DownloadImageTask(holder5.imageView).execute(message.getImageUrl());
+                    new DownloadImageTask5(holder5.imageView).execute(message.getImageUrl());
 
                 } catch (Exception e) {
                     Log.i("IMGURL", "image url is e " + e);
@@ -350,20 +346,197 @@ private WebView i;
                                     + "/oyeok/"+imgName);
 
 
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    Uri imgUri = Uri.parse("file://" + directory);
-                    intent.setDataAndType(imgUri, "image/*");
-                    v.getContext().startActivity(intent);
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_VIEW);
+                            Uri imgUri = Uri.parse("file://" + directory);
+                            intent.setDataAndType(imgUri, "image/*");
+                            v.getContext().startActivity(intent);
                         }
                     }catch(Exception e){
                         Log.i("TAG", "Caught in exception opening image in gallery "+e);
                     }
 
-                   // TextView i =(TextView) v.findViewById(R.id.edtTypeMsg);
+                    // TextView i =(TextView) v.findViewById(R.id.edtTypeMsg);
                     //View vi = LayoutInflater.from(context).inflate(R.layout.activity_deal_conversation, null, false);
                     //WebView i =(WebView) vi.findViewById(R.id.webView3);
-                 // i.setVisibility(View.VISIBLE);
+                    // i.setVisibility(View.VISIBLE);
+
+
+                }
+            });
+
+
+        }
+
+        else if(message.getUserType() == ChatMessageUserType.IMGOTHER /*&& message.getUserSubtype() == ChatMessageUserSubtype.OTHER*/){
+
+            Log.i("TEST","================================================== IMG u "+message.getMessageText() + " "+message.getUserType() + " "+message.getUserSubtype());
+            Log.i("image adapter","image adapter narcos "+message.getUserSubtype()+message.getMessageText());
+
+            Boolean stopDownloadImage6 = false;
+            if (convertView == null) {
+                v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
+
+               /* else //(message.getUserSubtype() == ChatMessageUserSubtype.OTHER)
+                    v = LayoutInflater.from(context).inflate(R.layout.chat_user2_item, null, false);*/
+//v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
+
+                holder6 = new ViewHolder6();
+                holder6.imageView = (ImageView) v.findViewById(R.id.shareImage);
+                holder6.messageTextView = (TextView) v.findViewById(R.id.message_text);
+                holder6.timeTextView = (TextView) v.findViewById(R.id.time_text);
+                holder6.messageStatus = (ImageView) v.findViewById(R.id.user_reply_status);
+                holder6.spinnerProgress = (ProgressBar) v.findViewById(R.id.spinnerProgress);
+
+                v.setTag(holder6);
+            }
+            else {
+
+                v = convertView;
+                holder6 = (ViewHolder6) v.getTag();
+
+            }
+
+            holder6.imageView.setVisibility(View.VISIBLE);
+            holder6.messageTextView.setVisibility(View.GONE);
+            holder6.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
+            holder6.spinnerProgress.setVisibility(View.VISIBLE);
+            /*if(message.getUserSubtype() == ChatMessageUserSubtype.SELF){
+                holder5.spinnerProgress.setVisibility(View.VISIBLE);
+            }
+            else{
+                holder5.spinnerProgress.setVisibility(View.GONE);
+            }*/
+            try{
+                // self type will crash
+                if (message.getMessageStatus() == ChatMessageStatus.DELIVERED) {
+                    holder6.messageStatus.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_double_tick));
+                } else if (message.getMessageStatus() == ChatMessageStatus.SENT) {
+                    holder6.messageStatus.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_single_tick));
+
+                }
+            }
+            catch(Exception e){
+
+            }
+            Log.i("IMGURL", "flokie 7 "+message.getImageName());
+            Log.i("IMGURL","image url is yo yo to "+message.getImageUrl());
+            Log.i("IMGURL","image name is yo yo to "+message.getImageName());
+
+            //  imgName = message.getImageUrl().split("/")[4];
+            imgName = message.getMessageText().split("/")[4];
+            Log.i("IMGURL","image name is yo yo to po "+imgName);
+
+//Add image from local folder oyeok
+            if (Environment.getExternalStorageState() == null) {
+                Log.i("IMGURL","image exists 11 ");
+                //create new file directory object
+                File image = new File(Environment.getDataDirectory()
+                        + "/oyeok/"+imgName);
+
+                // if no directory exists, create new directory
+                if (image.exists()) {
+                    Log.i("IMGURL","image exists 1 ");
+                    Bitmap bmp = BitmapFactory.decodeFile(Environment.getDataDirectory()
+                            + "/oyeok/"+imgName);
+                    Log.i("IMGURL","image exists 1 bmp "+bmp);
+                    holder6.imageView.setImageBitmap(bmp);
+                    holder6.spinnerProgress.setVisibility(View.GONE);
+
+
+                    stopDownloadImage6 = true;
+
+                }
+
+                // if phone DOES have sd card
+            } else if (Environment.getExternalStorageState() != null) {
+                Log.i("IMGURL","image exists 22 ");
+                // search for directory on SD card
+                File image = new File(Environment.getExternalStorageDirectory()
+                        + "/oyeok/"+imgName);
+
+                Log.i("IMGURL","image exists 223 "+image);
+
+                // if no directory exists, create new directory to store test
+                // results
+                if (image.exists()) {
+                    Log.i("IMGURL","image exists 2 ");
+                    Bitmap bmp = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()
+                            + "/oyeok/"+imgName);
+
+                    /*int currentBitmapWidth = bmp.getWidth();
+                    int currentBitmapHeight = bmp.getHeight();*/
+
+                   /* if(bmp.getHeight()>bmp.getWidth())
+                        holder5.imageView.;*/
+
+                       /* int newWidth = getScreenWidth(); //this method should return the width of device screen.
+                    float scaleFactor = (float)newWidth/(float)imageWidth;
+                    int newHeight = (int)(imageHeight * scaleFactor);
+                    bitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);*/
+
+//                    int ivWidth = holder5.imageView.getWidth();
+//                    int ivHeight = holder5.imageView.getHeight();
+//                    int newWidth = ivWidth;
+//
+//                    int newHeight = (int) Math.floor((double) currentBitmapHeight *( (double) newWidth / (double) currentBitmapWidth));
+//
+//                    Bitmap newbitMap = Bitmap.createScaledBitmap(bmp, newWidth, newHeight, true);
+
+                    holder6.imageView.setImageBitmap(bmp);
+                    holder6.spinnerProgress.setVisibility(View.GONE);
+
+
+                    Log.i("IMGURL","image exists 2 bmp "+bmp);
+                    //holder5.imageView.setImageBitmap(bmp);
+                    stopDownloadImage6 = true;
+                }
+            }
+            Log.i("TAG","stopDownloadImage "+stopDownloadImage6);
+            if(!stopDownloadImage6) {
+                Log.i("TAG","stopDownloadImage1 "+stopDownloadImage6);
+                try {
+                    new DownloadImageTask6(holder6.imageView).execute(message.getImageUrl());
+
+                } catch (Exception e) {
+                    Log.i("IMGURL", "image url is e " + e);
+                }
+            }
+
+            holder6.imageView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Log.i("TAG","I clicked the image yoman "+message.getImageName());
+                    Log.i("TAG","I clicked the image yoman "+message.getImageUrl());
+                    String imgName = message.getImageUrl().split("/")[4];
+                    File directory = null;
+
+                    try {
+                        if (Environment.getExternalStorageState() == null) {
+                            directory = new File(Environment.getDataDirectory()
+                                    + "/oyeok/"+imgName);
+
+                        } else if (Environment.getExternalStorageState() != null) {
+                            // search for directory on SD card
+                            directory = new File(Environment.getExternalStorageDirectory()
+                                    + "/oyeok/"+imgName);
+
+
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_VIEW);
+                            Uri imgUri = Uri.parse("file://" + directory);
+                            intent.setDataAndType(imgUri, "image/*");
+                            v.getContext().startActivity(intent);
+                        }
+                    }catch(Exception e){
+                        Log.i("TAG", "Caught in exception opening image in gallery "+e);
+                    }
+
+                    // TextView i =(TextView) v.findViewById(R.id.edtTypeMsg);
+                    //View vi = LayoutInflater.from(context).inflate(R.layout.activity_deal_conversation, null, false);
+                    //WebView i =(WebView) vi.findViewById(R.id.webView3);
+                    // i.setVisibility(View.VISIBLE);
 
 
                 }
@@ -389,10 +562,10 @@ private WebView i;
             }
 
             //String userName = message.getUserName(); // broker
-           // String userName = General.getSharedPreferences(context, AppConstants.NAME);
+            // String userName = General.getSharedPreferences(context, AppConstants.NAME);
             String userName = "unverified user";
             if(General.getSharedPreferences(context, AppConstants.NAME) != "") {
-               userName = General.getSharedPreferences(context, AppConstants.NAME);
+                userName = General.getSharedPreferences(context, AppConstants.NAME);
             }
 
             String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
@@ -417,7 +590,7 @@ private WebView i;
         }
 
 
-        else if (message.getUserType() == ChatMessageUserType.OTHER || message.getUserSubtype() == ChatMessageUserSubtype.OTHER) {
+        else if (message.getUserType() == ChatMessageUserType.OTHER /*|| message.getUserSubtype() == ChatMessageUserSubtype.OTHER*/) {
             if (convertView == null) {
                 v = LayoutInflater.from(context).inflate(R.layout.chat_user1_item, null, false);
                 holder1 = new ViewHolder1();
@@ -448,7 +621,7 @@ private WebView i;
             Log.i("CONVER","message time self "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
 
         }
-        else if (message.getUserType() == ChatMessageUserType.SELF || message.getUserSubtype() == ChatMessageUserSubtype.SELF)
+        else if (message.getUserType() == ChatMessageUserType.SELF /*|| message.getUserSubtype() == ChatMessageUserSubtype.SELF*/)
         {
 
             if (convertView == null) {
@@ -491,28 +664,29 @@ private WebView i;
 
     @Override
     public int getViewTypeCount() {
-        return 5;
+        return 6;
     }
 
-    @Override
+    /*@Override
     public int getItemViewType(int position) {
-
          if(position >0)
         Log.i("VIEW TYPE","======== yo 1  "+chatMessages.get(position-1).getMessageText());
         Log.i("VIEW TYPE","======== yo 2  "+position);
-
         ChatMessage message = chatMessages.get(position);
-
         Log.i("VIEW TYPE","======== yo 3  "+message.getUserType());
         Log.i("VIEW TYPE","======== yo 4  "+message.getUserSubtype());
         if(message.getUserType() != null)
             return message.getUserType().ordinal();
-
         return 1;
-
 //        return message.getUserSubtype().ordinal();
-    }
+    }*/
 
+
+    @Override
+    public int getItemViewType(int position) {
+        ChatMessage message = chatMessages.get(position);
+        return message.getUserType().ordinal();
+    }
 
     private class ViewHolder1 {
         public ProgressBar spinnerProgress;
@@ -541,7 +715,7 @@ private WebView i;
 
     private class ViewHolder4 {
         public ProgressBar spinnerProgress;
-//        public TextView messageTextView;
+        //        public TextView messageTextView;
 //        public TextView timeTextView;
 //        public TextView chatReplyAuthor;
         public TextView txtFirstChar;
@@ -563,12 +737,19 @@ private WebView i;
         public TextView timeTextView;
     }
 
+    private class ViewHolder6 {
+        public ProgressBar spinnerProgress;
+        public ImageView imageView;
+        public ImageView messageStatus;
+        public TextView messageTextView;
+        public TextView timeTextView;
+    }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+    private class DownloadImageTask5 extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
 
-        public DownloadImageTask(ImageView bmImage) {
+        public DownloadImageTask5(ImageView bmImage) {
             this.bmImage = bmImage;
         }
 
@@ -602,7 +783,7 @@ private WebView i;
                                     wait(2000);
 
                                     Thread.currentThread().interrupt();
-                                    call(urldisplay);
+                                    call5(urldisplay);
                                 }
                             }
                             catch(InterruptedException ex){
@@ -635,6 +816,82 @@ private WebView i;
             }
         }
     }
+
+
+
+    private class DownloadImageTask6 extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+
+        public DownloadImageTask6(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            Log.i("TAG","stopDownloadImage3 yo bro "+urls[0]);
+
+
+            final String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+
+            if(exists(urldisplay)) {
+                Log.i("TAG","exists image url yo bro "+exists(urldisplay));
+                try {
+                    InputStream in = new java.net.URL(urldisplay).openStream();
+                    mIcon11 = BitmapFactory.decodeStream(in);
+                } catch (Exception e) {
+                    Log.e("Error", e.getMessage());
+                    e.printStackTrace();
+                }
+
+                return mIcon11;
+            }
+            else{
+                try {
+
+                    final Thread thread=  new Thread(){
+                        @Override
+                        public void run(){
+                            try {
+                                synchronized(this){
+                                    wait(2000);
+
+                                    Thread.currentThread().interrupt();
+                                    call6(urldisplay);
+                                }
+                            }
+                            catch(InterruptedException ex){
+                            }
+
+                            // TODO
+                        }
+                    };
+
+                    thread.start();
+
+
+                }
+                catch(Exception e){
+
+                }
+                return mIcon12;
+            }
+
+        }
+
+
+
+        protected void onPostExecute(Bitmap result) {
+            if(result != null) {
+                Log.i("flok", "flokai 2");
+                bmImage.setImageBitmap(result);
+                holder6.spinnerProgress.setVisibility(View.GONE);
+                saveImageLocally(imgName, result);
+            }
+        }
+    }
+
+
 
     public static boolean exists(String URLName){
         Log.i("flok","inside exists yo bro ");
@@ -695,15 +952,15 @@ private WebView i;
                 /*DealConversationActivity d = new DealConversationActivity();
                 InputStream in = new java.net.URL("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName).openStream();
                 Bitmap mIcon11 = BitmapFactory.decodeStream(in);*/
-               // File file = new File(destdir);
+                // File file = new File(destdir);
 
-               // File fileToDownload = new File(new URL("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName).toURI());
+                // File fileToDownload = new File(new URL("https://s3.ap-south-1.amazonaws.com/oyeok-chat-images/"+imageName).toURI());
 
                 /*d.credentialsProvider();
                 d.setTransferUtility();
                 d.setFileToDownload(imageName,destdir);*/
 
-             //DealConversationActivity.copyFileUsingStream(fileToDownload, destdir);
+                //DealConversationActivity.copyFileUsingStream(fileToDownload, destdir);
 
             }
 
@@ -715,9 +972,14 @@ private WebView i;
     }
 
 
-    private void call(String url){
+    private void call5(String url){
         Log.i("TAG","inside call yo bro");
-        new DownloadImageTask(holder5.imageView).execute(url);
+        new DownloadImageTask5(holder5.imageView).execute(url);
+    }
+
+    private void call6(String url){
+        Log.i("TAG","inside call yo bro");
+        new DownloadImageTask6(holder6.imageView).execute(url);
     }
 
 

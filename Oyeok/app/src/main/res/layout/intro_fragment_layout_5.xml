@@ -13,7 +13,7 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Maintain Portfolio"
+            android:text="Build Portfolio"
             android:gravity="center"
             android:textStyle="italic"
             android:textColor="@color/dark_white"
@@ -29,7 +29,7 @@
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text='"1 CLICK create portfolio of \n property you own, track rates"'
+            android:text='"1 CLICK create portfolio of \n properties &amp; track current Networth"'
             android:layout_below="@id/title"
             android:textStyle="italic"
             android:textColor="@color/dark_white"

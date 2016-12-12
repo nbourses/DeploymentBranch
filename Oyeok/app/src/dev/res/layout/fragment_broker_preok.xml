@@ -14,12 +14,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/time_count_linear_layout"
             android:visibility="gone">
+            <com.loopj.android.image.SmartImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:id="@+id/my_image" />
             <TextView
                 android:layout_height="12dp"
                 android:layout_width="50dp"

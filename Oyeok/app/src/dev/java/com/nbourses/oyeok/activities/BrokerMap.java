@@ -1273,7 +1273,9 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
 //                  AppConstants.BROKER_BASE_REGION="true";
                     brokerType = "rent";
                     fav.setClickable(true);
+                    updateHorizontalPicker();
                     Reset();
+
                 }else {
                     addlistingText.setVisibility(View.GONE);
                     addlistinglayout.setVisibility(View.VISIBLE);

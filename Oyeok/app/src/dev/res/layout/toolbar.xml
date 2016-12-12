@@ -87,7 +87,7 @@
     android:layout_marginLeft="60dip"
     android:orientation="horizontal"
     android:id="@+id/setbaseloc"
-    android:visibility="visible"
+    android:visibility="gone"
     android:layout_marginRight="50dp"
     android:gravity="center">
     <ImageView
@@ -149,7 +149,7 @@
     <ImageView
         android:id="@+id/favbroker"
         android:layout_gravity="center|right"
-        android:src="@drawable/heart"
+        android:src="@drawable/broker_portfolio_icon"
         android:gravity="center"
         android:visibility="gone"
         android:layout_marginRight="2dp"
