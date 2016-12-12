@@ -1881,25 +1881,6 @@ if(AppConstants.FAV) {
                 getSupportFragmentManager().popBackStack();
         buidingInfoFlag=false;
     }
-    public void openOyeSreen(){
-        if (!isShowing) {
-
-
-            isShowing = true;
-//            OyeIntentFragment oye = new OyeIntentFragment();
-
-            //reset PublishLetsOye object
-            AppConstants.letsOye = new PublishLetsOye();
-
-            OyeScreenFragment oye = new OyeScreenFragment();
-            loadFragment(oye, bundle_args, R.id.container_oye, "");
-            slidingLayout.setAnchorPoint(0.5f);
-            slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
-
-            // btnOnOyeClick.setVisibility(View.VISIBLE);
-        }
-    }
-
 
     public  void closeOyeConfirmation(){
         Log.i("backstack count","   : "+oyeconfirm_flag+"  "+getSupportFragmentManager().getBackStackEntryCount());

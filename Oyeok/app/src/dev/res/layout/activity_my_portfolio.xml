@@ -27,7 +27,7 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+            layout="@layout/toolbar_with_deal_btn" />
     </LinearLayout>
 
     <!--<EditText android:id="@+id/inputSearch1"
