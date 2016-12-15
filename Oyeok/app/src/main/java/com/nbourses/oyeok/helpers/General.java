@@ -98,6 +98,7 @@ public class General extends BroadcastReceiver {
     private static Context con;
     public static Thread t;
     public static Boolean slowInternetFlag;
+    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("h:mm a");
     private static Bitmap mIcon12 = null; // null image for test condition in download image
     private static ImageView img;
 
@@ -490,6 +491,32 @@ while(slowInternetFlag) {
         String deviceId = deviceUuid.toString();
         return deviceId;
     }
+
+
+    public static String timeStampToString(Long timeStamp){
+
+        int secondsInADay   = 60*60*24;
+        int daysSinceEpoch1 = (int) ((System.currentTimeMillis()/1000)/secondsInADay);
+        int daysSinceEpoch2 = (int) ((timeStamp/1000)/secondsInADay);
+
+
+        if( daysSinceEpoch1 == daysSinceEpoch2 )
+            return SIMPLE_DATE_FORMAT.format(timeStamp);
+
+        else if((daysSinceEpoch1 - daysSinceEpoch2) == 1)
+            return "Yesterday";
+
+        else if( ((daysSinceEpoch1 - daysSinceEpoch2) < 7))
+           return "Last week";
+
+        else if( (daysSinceEpoch1 - daysSinceEpoch2) < 30 )
+            return "This month";//timestamp2 is a day before timetamp1
+
+        else
+            return "Last month";
+
+    }
+
 
     public static void publishOye(final Context context) {
         try {

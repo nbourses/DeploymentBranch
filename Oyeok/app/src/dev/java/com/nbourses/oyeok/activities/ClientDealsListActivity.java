@@ -23,6 +23,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -95,7 +96,7 @@ import retrofit.mime.TypedByteArray;
 
 
 
-public class ClientDealsListActivity extends AppCompatActivity implements CustomPhasedListener {
+public class ClientDealsListActivity extends AppCompatActivity implements CustomPhasedListener, AbsListView.OnScrollListener {
 
 
     private List<PublishLetsOye> publishLetsOyes;
@@ -148,8 +149,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 //    @Bind(R.id.searchView)
 //    SearchView searchView;
-
-
+private int page = 1;
+    private int preLast;
     private boolean default_deal_flag;
     private ArrayList<BrokerDeals> default_deals;
     private ArrayList<BrokerDeals> default_dealsLL;
@@ -266,6 +267,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         supportChat.setVisibility(View.VISIBLE);
         listViewDeals.setVisibility(View.VISIBLE);
 
+
+        listViewDeals.setOnScrollListener(this);
 
         ButterKnife.bind(this);
 
@@ -755,6 +758,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
         listViewDeals.setAdapter(listAdapter);
 
+
+
+
         listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -776,7 +782,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                 startActivity(intent);
             }
+
+
+
         });
+
 
         Log.i("Phaseseekbar", "oncreate value sign " + General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER));
         if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")) {
@@ -807,7 +817,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         }
         else {
             loadCachedDeals();
-            loadBrokerDeals();
+            loadBrokerDeals(page);
         }
 
         // }
@@ -829,6 +839,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         *//*progressBar.pauseAnimation();
         progressBar.setVisibility(View.GONE);*//*
     }*/
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -878,6 +890,42 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 //        }
     }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView lw, final int firstVisibleItem,
+                         final int visibleItemCount, final int totalItemCount)
+    {
+
+        switch(lw.getId())
+        {
+            case R.id.listViewDeals:
+
+                // Make your calculation stuff here. You have all your
+                // needed info from the parameters of this function.
+
+                // Sample calculation to determine if the last
+                // item is fully visible.
+                final int lastItem = firstVisibleItem + visibleItemCount;
+
+                if(lastItem == totalItemCount)
+                {
+                    if(preLast!=lastItem)
+                    {
+                        //to avoid multiple calls for last item
+                        Log.d("Last", "Last");
+                       // loadBrokerDeals(page);
+                        preLast = lastItem;
+                    }
+                }
+        }
+    }
+
+
 
 
     private void deleteDealingroom(String deleteOyeId, String deleteOKId, final String specCode) {
@@ -1058,7 +1106,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     }
 
 
-    private void loadBrokerDeals() {
+    private void loadBrokerDeals(int pageno) {
         if (General.isNetworkAvailable(this)) {
             General.slowInternet(this);
             Log.i("TRACE", "in Load broker deals================= " + General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
@@ -1096,7 +1144,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             hdRooms.setLat("123456789");
             hdRooms.setLon("123456789");
             hdRooms.setDeviceId(deviceId);
-            hdRooms.setPage("1");
+            hdRooms.setPage(pageno+"");
 
 
             Log.i("TRACE", "in Load broker deals ");
@@ -1116,6 +1164,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                     Log.i(TAG, "tidin tidin tindin 1 " + strResponse);
                     try {
+                        page++;
                         JSONObject jsonObjectServer = new JSONObject(strResponse);
                         Log.i(TAG, "tidin tidin tindin 2" + jsonObjectServer);
                         if (jsonObjectServer.getBoolean("success")) {
@@ -1162,9 +1211,14 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                     BrokerDeals deals = it.next();
 
                                     if (deals.getOkId() != null) {
-                                        Log.i("TRACE", "dhishoom timestamp 1 " + deals.getLastSeen());
+                                        Log.i("TRACE", "dhishoom timestamp 13 "+ deals.getName() +"   "+deals.getSpecCode()+"   " + deals.getLastSeen());
                                         if (deals.getLastSeen().equalsIgnoreCase("default"))
-                                            deals.setLastSeen("1464922983000");
+                                            deals.setLastSeen("1480924852933");
+                                            //deals.setLastSeen("1481701800596");
+                                            //deals.setLastSeen("1464922983000");
+
+                                        Log.i("TRACE", "dhishoom timestamp 12 "+ deals.getName() +"   "+deals.getSpecCode()+"   "  + deals.getLastSeen());
+
 
                                         Log.i("TRACE", "dhishoom hdroomstatus 22 " + deals.getOkId());
                                         Log.i("TRACE", "dhishoom hdroomstatus 22 " + deals.getHDroomStatus().getSelfStatus());
@@ -1234,6 +1288,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                 Log.i(TAG, "listbrokerdeals loaded are " + listBrokerDeals_new);
                                 showBgText();
                                 Collections.sort(total_deals);
+
                                 listAdapter.notifyDataSetChanged();
 
 
@@ -1603,6 +1658,7 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
     }
 
 
+
     private void loadCachedDeals() {
 
         if (cachedDeals != null) {
@@ -1783,6 +1839,8 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
 
                 if (deals.getOkId().equalsIgnoreCase(okId)) {
                     deals.setLastSeen(String.valueOf(System.currentTimeMillis()));
+
+
                 }
 
 
@@ -1806,6 +1864,12 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
         catch(Exception e){
 Log.i(TAG,"Caught in exception narcos "+e);
         }
+
+        // need to call api to set lastseen on server,
+        try {
+            General.setDealStatus(this, "default", okId, String.valueOf(System.currentTimeMillis()), "");
+        }catch(Exception e){}
+
     }
 
 }

@@ -1062,6 +1062,7 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
                     okyed = false;
                    // displayCardView();
                     loadHistoryFromPubnub(channel_name);
+                    displayDefaultMessage();
                     //chatMessages.clear();
 
                 }
@@ -1327,12 +1328,20 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
                 body = jsonMsg.getString("message");
 
 
-                if (msgStatus.equalsIgnoreCase("DEFAULT") || msgStatus.equalsIgnoreCase("SYSTEM")){
+                if (msgStatus.equalsIgnoreCase("DEFAULT") || msgStatus.equalsIgnoreCase("SYSTEM") || msgStatus.equalsIgnoreCase("OYES") || msgStatus.equalsIgnoreCase("OKS")){
                     Log.i("CONVER", "DEFAULT set");
+                    if(msgStatus.equalsIgnoreCase("OKS") &&  General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                        return;
+                    if(msgStatus.equalsIgnoreCase("OYES") &&  General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+                        return;
+                    if(msgStatus.equalsIgnoreCase("DEFAULT") &&  General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+                        return;
+                    if(msgStatus.equalsIgnoreCase("SYSTEM") &&  General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+                        return;
                     userType = ChatMessageUserType.DEFAULT;
                 }
 
-                else if (msgStatus.equalsIgnoreCase("IMG")){
+                else if (msgStatus.equalsIgnoreCase("IMG") || msgStatus.equalsIgnoreCase("OYEI") || msgStatus.equalsIgnoreCase("OKI")){
 
                     Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
 
@@ -1361,8 +1370,6 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
                 else if (msgStatus.equalsIgnoreCase("LISTING")){
 
-                    Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
-
                     userType = ChatMessageUserType.LISTING;
 
 
@@ -1370,7 +1377,7 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
 
                 else{
-                    Log.i("MSGSTATUS","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%% tork "+userID+"  "+FROM);
+
                     if(userID.equalsIgnoreCase(FROM) )
                     {
                         userType = ChatMessageUserType.SELF;
@@ -1382,15 +1389,7 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
                 }
 
-//                if(userID.equalsIgnoreCase(FROM) || demoId.equalsIgnoreCase(FROM))
-//                {
-//                    userType = ChatMessageUserType.SELF;
-//                }
-//                else
-//                {
-//                    userType = ChatMessageUserType.OTHER;
-//                }
-
+//
                 Log.i("TAG","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%   "+msgStatus);
                 Log.i(TAG, "calipso yo" + roleOfUser);
                 Log.i(TAG, "calipso yo" + userType);
@@ -1500,12 +1499,12 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 //                Log.i(TAG, "until insideroui4 " + c.getTo());
 //                Log.i(TAG, "until insideroui4 " + c.getImageUrl());
 
-                if (c.getStatus().equalsIgnoreCase("DEFAULT") || c.getStatus().equalsIgnoreCase("SYSTEM")){
+                if (c.getStatus().equalsIgnoreCase("DEFAULT") || c.getStatus().equalsIgnoreCase("SYSTEM") || c.getStatus().equalsIgnoreCase("OYES")){
                     Log.i("CONVER", "DEFAULT set");
                     userType = ChatMessageUserType.DEFAULT;
                 }
 
-                else if (c.getStatus().equalsIgnoreCase("IMG")){
+                else if (c.getStatus().equalsIgnoreCase("IMG") || c.getStatus().equalsIgnoreCase("OYEI") || c.getStatus().equalsIgnoreCase("OKI")){
 
                     Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
 
@@ -1533,7 +1532,7 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
                else if (c.getStatus().equalsIgnoreCase("LISTING")){
 
-                    Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
+
 
                     userType = ChatMessageUserType.LISTING;
 
@@ -1541,13 +1540,7 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
                 }
 
                 else{
-                Log.i(TAG, "until toro foro loro "+userID+" "+c.getFrom());
 
-                Log.i(TAG, "until toro foro loro boro "+userSubtype);
-                /*if(c.getStatus() == null || userType == null || c.getStatus() == "")
-                {*/
-
-                    Log.i("MSGSTATUS", "narcos " + userID + "  " + c.getFrom());
                     if (userID.equalsIgnoreCase(c.getFrom())) {
                         userType = ChatMessageUserType.SELF;
                     } else {
@@ -1555,7 +1548,7 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
                     }
                 }
 
-               /* }*/
+
 
                 Log.i(TAG, "until toro foro loro abcs "+Long.valueOf(c.getTimestamp())/10000);
 
@@ -1638,12 +1631,6 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
         String To = "support";
         String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
 
-        if(role.equals("broker"))
-            To = "client";
-        else if(role.equals("client"))
-            To = "broker";
-        else
-            Log.i(TAG, "Role is not properly saved in shared preferences" + role);
 
         try {
 
@@ -1657,20 +1644,13 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
             jsonMsg.put("name", dbHelper.getValue(DatabaseConstants.name));
             jsonMsg.put("to", channel_name);
             jsonMsg.put("message", messageText);
-            jsonMsg.put("status", " ");
-
-            Log.i("TEST", "jsonMsg in send msg USER_ID " + General.getSharedPreferences(this ,AppConstants.USER_ID));
-            Log.i("TEST", "jsonMsg in send msg DEMO_ID " + General.getSharedPreferences(this ,AppConstants.TIME_STAMP_IN_MILLI));
+            if(role.equals("broker"))
+                jsonMsg.put("status", "OKU");
+            else if(role.equals("client"))
+                jsonMsg.put("status", "OYEU");
 
             jsonMsgtoWhereNow = jsonMsg;
 
-
-
-
-//            Log.i("TEST", "jsonMsg in send msg from " + General.getSharedPreferences(this ,AppConstants.USER_ID));
-//            Log.i("TEST", "jsonMsg in send msg from " + General.getSharedPreferences(this ,AppConstants.TIME_STAMP_IN_MILLI));
-
-            //publish message
 
 
             if (channel_name.equals("my_channel")){
@@ -1679,7 +1659,6 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
             }
 
-            Log.i("TEST", "jsonMsg in send msg _from" + jsonMsg);
 
             sendNotification(jsonMsg);
             //displayMessage(jsonMsg);    // Dont uncomment (avoid redundant messages in list)
@@ -2061,25 +2040,6 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
         myRealm = General.realmconfig(this);
 
 
-//        try {
-//
-//            //clear cache
-//            Log.i(TAG,"until 3 ");
-//            myRealm.beginTransaction();
-//            Log.i(TAG,"until 4 ");
-//            RealmResults<Message> result = myRealm.where(Message.class).equalTo(AppConstants.OK_ID,channel_name).findAll();
-//            Log.i(TAG,"until result to del is 6 "+result);
-//            result.clear();
-//
-//        }catch(Exception e){
-//            Log.i(TAG,"Caught in the exception clearing cache "+e );
-//        }
-//        finally{
-//            myRealm.commitTransaction();
-//        }
-
-
-
         try {
 
             int jsonArrayHistoryLength = jsonArrayHistory.length();
@@ -2113,88 +2073,10 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
                 }catch(Exception e){}
 
-                /*/
-                if(js.getJSONObject("message").has("pn_gcm")) {
 
-                    JSONObject jsonMsg = js.getJSONObject("message").getJSONObject("pn_gcm").getJSONObject("data");
-
-
-                    Log.i(TAG, "until here is the cacheMessages 1 jsonMsg yo yo yo " + jsonMsg);
-
-                    if (jsonMsg.has("message") && (jsonMsg.has("from") || jsonMsg.has("_from"))) {
-
-                        String timetoken = js.getString("timetoken");
-                        String imageUrl = null;
-                        String from = null;
-                        String msgStatus = null;
-                        Log.i(TAG, "until here is the cacheMessages 1 to to to  " + jsonMsg.getString("message"));
-
-                        if (jsonMsg.has("from")) {
-                            from = jsonMsg.getString("from");
-                        } else {
-                            from = jsonMsg.getString("_from");
-                        }
-
-                        String to = jsonMsg.getString("to");
-                        String body = jsonMsg.getString("message");
-                        if (jsonMsg.has("imageUrl"))
-                            imageUrl = jsonMsg.getString("imageUrl");
-                        else
-                            imageUrl = null;
-
-                        if (jsonMsg.has("user_id"))
-                            user_id = jsonMsg.getString("user_id");
-
-                        if (jsonMsg.has("status"))
-                            msgStatus = jsonMsg.getString("status");
-                        else
-                            msgStatus = null;
-
-
-                        Log.i(TAG, "until here is the cacheMessages 1 2 " + from + " " + to + " " + body);
-
-                        message = new Message();
-                        Log.i(TAG, "until here is the cacheMessages 1 2 ithe " + myRealm.isInTransaction());
-//
-                        message = myRealm.createObject(Message.class); //new Message();
-                        Log.i(TAG, "until here is the cacheMessages 1 2 Tithe");
-                        message.setOk_id(channel_name);
-                        message.setMessage(body);
-                        message.setImageUrl(imageUrl);
-                        message.setTimestamp(timetoken);
-                        message.setFrom(from);
-                        message.setUser_id(user_id);
-                        message.setTo(to);
-                        message.setStatus(msgStatus);
-
-                        Log.i(TAG, "until here is the cacheMessages 246 " + body);
-                        myRealm.copyToRealm(message);
-                        Log.i(TAG, "until here is the cacheMessages 634 " + body);
-
-//                    myRealm.executeTransaction(new Realm.Transaction() {
-//                        @Override
-//                        public void execute(Realm realm) {
-//                            Log.i(TAG,"here is the 1 2 andar");
-//                            Message message = realm.createObject(Message.class);
-//                            message.setOk_id(channel_name);
-//                            message.setMessage("body");
-//                            message.setTimestamp("timetoken");
-//                            message.setFrom("from");
-//                            message.setTo("to");
-//                            Log.i(TAG,"here is the 1 2 khali");
-//                        }
-//                    });
-
-
-                        Log.i(TAG, "until here is the cacheMessages 1 3 I am back " + body);
-
-                    }
-                }
-
-                */
             }
 
-            // myRealm.commitTransaction();
+
 
 
         }
@@ -2485,13 +2367,18 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
             //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
 //            jsonMsg.put("_from", "DEFAULT");
+
+
+
+
+
            jsonMsg.put("_from", General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
 
 
             jsonMsg.put("to",channel_name);
             jsonMsg.put("timetoken",String.valueOf(System.currentTimeMillis()));
 
-            jsonMsg.put("status","SYSTEM");
+
             jsonMsg.put("name","");// SYSTEM as this would be welcome message
 
             Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
@@ -2501,7 +2388,6 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
                 final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
                 String json = gson.toJson(AppConstants.letsOye);
-                // Log.i(TAG, "role of user def 3 "+General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(DealConversationActivity.this,AppConstants.PTYPE).substring(1));
 
                 JSONObject jsonResponse = new JSONObject(json);
                 // Log.i(TAG, "role of user def 4 ");
@@ -2514,10 +2400,11 @@ String furnishing = "Semi-Furnished";
 
                 jsonMsg.put("message", "You have initiated enquiry for a "+furnishing+" "+ jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") by "+jsonResponse.getString("possession_date")+" within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
 
+                jsonMsg.put("status","OYES");
 
             }
 
-/*    ******************************
+
 
   if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
 
@@ -2527,13 +2414,23 @@ String furnishing = "Semi-Furnished";
                 jsonMsg.put("message", "Client have initiated enquiry for " + General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE).substring(1)
                         + " property (" + General.getSharedPreferences(getApplicationContext(), AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(), AppConstants.PRICE)) + ".");
 
-
+                jsonMsg.put("status","OKS");
             }
-*/
+
+            final ChatMessage message = new ChatMessage();
+            message.setUserName("self");
+            message.setMessageStatus(ChatMessageStatus.SENT);
+            message.setMessageText(jsonMsg.getString("message"));
+            message.setUserType(ChatMessageUserType.DEFAULT);
+            message.setMessageTime(System.currentTimeMillis());
+
+            chatMessages.add(message);
+
+            listAdapter.notifyDataSetChanged();
+            setState("online","true");
 
 
-            Log.i(TAG,"display default message "+jsonMsg);
-            displayMessage(jsonMsg);
+            //displayMessage(jsonMsg);
             sendNotification(jsonMsg);
 
 
@@ -2561,7 +2458,7 @@ String furnishing = "Semi-Furnished";
             jsonMsg.put("timetoken",String.valueOf(System.currentTimeMillis()));
 
 
-            jsonMsg.put("status","SYSTEM"); // SYSTEM as this would be welcome message
+            jsonMsg.put("status","OYES"); // SYSTEM as this would be welcome message
 
             Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
             String intent;
@@ -2613,7 +2510,11 @@ String furnishing = "Semi-Furnished";
             jsonMsg.put("to", channel_name);
             //jsonMsg.put("to", "client");
 //            jsonMsg.put("imageUrl", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);
-            jsonMsg.put("status","IMG");
+            if(General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+                jsonMsg.put("status","OKI");
+            else if(General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                jsonMsg.put("status","OYEI");
+
             jsonMsg.put("name","");
 
 //            jsonMsg.put("imageName", imgName);
