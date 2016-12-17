@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -120,7 +121,7 @@ import retrofit.client.Response;
 
 import static android.util.Log.i;
 
-public class DealConversationActivity extends AppCompatActivity implements OnRatingBarChangeListener {
+public class DealConversationActivity extends AppCompatActivity implements OnRatingBarChangeListener, AbsListView.OnScrollListener {
 
     @Bind(R.id.edtTypeMsg)
     TextView edtTypeMsg;
@@ -149,6 +150,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     RatingBar ratingBar;
     // @Bind(R.id.texRating)
     // ProgressBar texrating;
+    private Boolean paginate = false;
+    private Long timetoken;
 
     private SubscribeCallback s;
 
@@ -169,6 +172,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private String channel_name = "";
     private ChatListAdapter listAdapter;
     private ArrayList<ChatMessage> chatMessages;
+    private ArrayList<ChatMessage> chatMessagesCopy = new ArrayList<>();
     private String UUID;
     private Boolean isUnverified = false;
 
@@ -502,6 +506,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     setSupportActionBar(mToolbar);
                     if(bundle.containsKey(AppConstants.NAME)) {
                         name = bundle.getString(AppConstants.NAME);
+                        if(name.equalsIgnoreCase("Searching brokers"))
+                            getSupportActionBar().setTitle(Html.fromHtml(String.format(name + "<font color=\"#%s\">...</font>", offlineColor)));
+                        else
                         getSupportActionBar().setTitle(Html.fromHtml(String.format(name + "<font color=\"#%s\"> (offline)</font>", offlineColor)));
 
 
@@ -565,7 +572,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         listAdapter = new ChatListAdapter(chatMessages,isDefaultDeal, this);
         chatListView.setAdapter(listAdapter);
 
-
+        chatListView.setOnScrollListener(this);
         Log.i(TAG, "channel_name yo" + channel_name);
 
         General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,channel_name);
@@ -1263,6 +1270,174 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
         }
     }
 
+
+
+    private void displayPaginatedMessage(JSONObject jsonMsg) {
+        try {
+
+            String user_id = null;
+            String body = null;
+            String timetoken = null;
+            ChatMessageUserType userType = null;
+            ChatMessageUserSubtype userSubtype = null;
+            String imageUrl = null;
+            String imageName = null;
+            String FROM = null;
+            String msgStatus = null;
+            final ChatMessage message = new ChatMessage();
+            String roleOfUser = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client") ? "broker" : "client";
+            String userID = null;
+
+            if(General.getSharedPreferences(getApplicationContext(), AppConstants.IS_LOGGED_IN_USER).equals("yes"))
+            {
+                userID = General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID);
+            }
+            else
+                userID = General.getSharedPreferences(getApplicationContext(), AppConstants.TIME_STAMP_IN_MILLI);
+
+
+
+            Log.i(TAG,"inside displaymessge =====  jsonMSG "+jsonMsg);
+
+            if(jsonMsg.has("from"))
+                FROM = jsonMsg.getString("from");
+            else {
+                FROM = jsonMsg.getString("_from");
+            }
+
+            Log.i(TAG," =====  _from "+msgStatus);
+
+            if(jsonMsg.has("status"))
+                msgStatus = jsonMsg.getString("status");
+
+            /*else if(jsonMsg.getString("message").contains("https://"))
+                msgStatus = "IMG";*/
+            else
+                msgStatus = null;
+
+
+            if(jsonMsg.has("timetoken"))
+                timetoken = jsonMsg.getString("timetoken");
+
+            else
+                timetoken = null;
+
+
+            Log.i(TAG," after assigning =====  _from "+msgStatus);
+            if (jsonMsg.has("message") && FROM != null && jsonMsg.has("to")) {
+
+                body = jsonMsg.getString("message");
+
+
+                if (msgStatus.equalsIgnoreCase("DEFAULT") || msgStatus.equalsIgnoreCase("SYSTEM") || msgStatus.equalsIgnoreCase("OYES") || msgStatus.equalsIgnoreCase("OKS")){
+                    Log.i("CONVER", "DEFAULT set");
+                    if(msgStatus.equalsIgnoreCase("OKS") &&  General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                        return;
+                    if(msgStatus.equalsIgnoreCase("OYES") &&  General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+                        return;
+                    if(msgStatus.equalsIgnoreCase("DEFAULT") &&  General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+                        return;
+                    if(msgStatus.equalsIgnoreCase("SYSTEM") &&  General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+                        return;
+                    userType = ChatMessageUserType.DEFAULT;
+                }
+
+                else if (msgStatus.equalsIgnoreCase("IMG") || msgStatus.equalsIgnoreCase("OYEI") || msgStatus.equalsIgnoreCase("OKI")){
+
+                    Log.i("TAG","IMAGE ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%");
+
+                    //userType = ChatMessageUserType.IMG;
+
+                    imageUrl = jsonMsg.getString("message");
+
+                    imageName = imageUrl.substring(imageUrl.lastIndexOf("/")+1);
+
+                    Log.i("grrrr IMG IMAGE NAME"," "+imageName);
+                    Log.i(TAG, "calipso" + userSubtype);
+
+                    if(userID.equalsIgnoreCase(FROM))
+                    {
+                        userType = ChatMessageUserType.IMGSELF;
+                        userSubtype = ChatMessageUserSubtype.SELF;
+                    }
+                    else
+                    {
+                        userType = ChatMessageUserType.IMGOTHER;
+                        userSubtype = ChatMessageUserSubtype.OTHER;
+                    }
+
+
+                }
+
+                else if (msgStatus.equalsIgnoreCase("LISTING")){
+
+                    userType = ChatMessageUserType.LISTING;
+
+
+                }
+
+
+                else{
+
+                    if(userID.equalsIgnoreCase(FROM) )
+                    {
+                        userType = ChatMessageUserType.SELF;
+                    }
+                    else
+                    {
+                        userType = ChatMessageUserType.OTHER;
+                    }
+
+                }
+
+//
+                Log.i("TAG","NULL ===================== %%%%%%%%%%%%%%%%%%%%%%%%%%   "+msgStatus);
+                Log.i(TAG, "calipso yo" + roleOfUser);
+                Log.i(TAG, "calipso yo" + userType);
+                Log.i(TAG,"calipso yo message "+body);
+
+                Log.i("TAG","narcos img   "+userSubtype+" "+body+" "+userType);
+
+
+                message.setUserName(roleOfUser);
+                message.setMessageStatus(ChatMessageStatus.SENT);
+                message.setMessageText(body);
+                message.setUserType(userType);
+                message.setUserSubtype(userSubtype);
+                message.setImageUrl(imageUrl);
+                message.setUser_id(userID);
+                message.setImageName(imageName);
+                Log.i(TAG,"timestap "+Long.valueOf(jsonMsg.getString("timetoken"))/10000);
+                message.setMessageTime(Long.valueOf(jsonMsg.getString("timetoken"))/10000);
+                chatMessages.add(message);
+
+                    /*chatMessagesCopy.clear();
+                    chatMessagesCopy.addAll(chatMessages);
+                    chatMessages.clear();
+                    chatMessages.add(message);
+                    chatMessages.addAll(chatMessagesCopy);*/
+
+
+                Log.i(TAG, "message after adding to chatMessages" + message.getUserType());
+
+
+
+
+            }
+
+
+
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG, "calipso caught in display message1 debug" + e);
+        }
+
+    }
+
+
+
     /**
      * display incoming messages through pubnub
      * @param jsonMsg
@@ -1271,8 +1446,6 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
     private void displayMessage(JSONObject jsonMsg) {
         try {
-
-
 
         String user_id = null;
         String body = null;
@@ -1409,7 +1582,8 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
                 Log.i(TAG,"timestap "+Long.valueOf(jsonMsg.getString("timetoken"))/10000);
                 message.setMessageTime(Long.valueOf(jsonMsg.getString("timetoken"))/10000);
 
-                chatMessages.add(message);
+
+    chatMessages.add(message);
 
 
                 Log.i(TAG, "message after adding to chatMessages" + message.getUserType());
@@ -1673,8 +1847,9 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
                     .async(new PNCallback<PNPushListProvisionsResult>() {
                         @Override
                         public void onResponse(PNPushListProvisionsResult result, PNStatus status) {
-                            Log.i("TEST", "auditPushChannelProvisions" + result.getChannels() +" "+status.isError());
-
+                            try {
+                                Log.i("TEST", "auditPushChannelProvisions" + result.getChannels() + " " + status.isError());
+                            }catch(Exception e){}
 
                         }
                     });
@@ -1766,7 +1941,111 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
      * load pubnub history
      */
 
-    private void loadHistoryFromPubnub(String channel_name) throws JSONException {
+
+    private void loadHistorypaginated(String channel_name, Long starttime){
+
+        pubnub.history()
+                .start(starttime)
+                .channel(channel_name) // where to fetch history from
+                .count(AppConstants.MSG_COUNT)// how many items to fetch
+                .includeTimetoken(true)// include timetoken with each entry
+                .async(new PNCallback<PNHistoryResult>() {
+                    @Override
+                    public void onResponse(PNHistoryResult result, PNStatus status) {
+
+                        try {
+                            timetoken = result.getStartTimetoken();
+                            Log.i(TAG, "history is tha 209 " + result.getEndTimetoken()+"  "+result.getStartTimetoken());
+                            if(!result.getMessages().isEmpty()) {
+                                chatMessagesCopy.clear();
+                                chatMessagesCopy.addAll(chatMessages);
+                                chatMessages.clear();
+                                int i =0;
+                               // chatMessages.clear();
+                                for (PNHistoryItemResult historyItemResult : result.getMessages()) {
+                                    i++;
+                                    Log.i(TAG, "history is tha 2 " + historyItemResult);
+                                    try {
+                                        if (historyItemResult.getEntry().has("pn_gcm")) {
+                                            Log.i(TAG, "history is tha 33 " + historyItemResult.getTimetoken());
+                                            // String content = jsonNode.get("data").textValue();
+
+                                            String j = historyItemResult.getEntry().get("pn_gcm").get("data").toString();
+                                            // JSONObject j = new JSONObject(historyItemResult.getEntry().get("pn_gcm").toString());
+                                            Log.i(TAG, "history is tha 75 " + historyItemResult.getEntry().get("pn_gcm").get("data").toString());
+                                            Log.i(TAG, "history is tha 70 " + j);
+                                            JSONObject jsonObj = new JSONObject(j);
+
+                                            jsonObj.put("timetoken", historyItemResult.getTimetoken().toString());
+                                            Log.i(TAG, "history is tha 39 " + jsonObj);
+
+                                            displayPaginatedMessage(jsonObj);
+
+
+                                        }
+
+                                    } catch (Exception e) {
+                                        Log.i(TAG, "PUBNUB history Caught in exception recieved message not proper " + e);
+                                    }
+
+                                }
+
+                                final int count = i;
+
+                                if(i==AppConstants.MSG_COUNT) {
+                                    Log.i(TAG,"pagination 1");
+                                    paginate = true;
+                                    i = 0;
+                                }else{
+                                    Log.i(TAG,"pagination 2  "+i);
+                                }
+
+
+
+                                chatMessages.addAll(chatMessagesCopy);
+
+
+                                chatListView.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        chatListView.setSelection(count);
+                                    }
+                                });
+
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+//                        Log.i(TAG, "message runOnUiThread" + listAdapter);
+
+                                        if (listAdapter != null) {
+                                            Log.i(TAG, "message runOnUiThread  not null");
+                                            Log.i(TAG, "calipso yo notify" );
+                                            listAdapter.notifyDataSetChanged();
+                                        }
+
+
+
+//
+                                    }
+                                });
+
+                            }else {
+                                Log.i(TAG, "perser dont load pagination anymore ");
+
+
+                            }
+                        }
+                        catch (Exception e) {
+                            Log.i(TAG,"PUBNUB history Caught in exception 56 "+e);
+                        }
+
+                    }
+                });
+    }
+
+    private void loadHistoryFromPubnub(final String channel_name) throws JSONException {
         Log.i(TAG,"Load history from pubnub called");
 
         /*if(channel_name.equalsIgnoreCase("my_channel"))
@@ -1774,19 +2053,25 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 */
 
         pubnub.history()
+
                 .channel(channel_name) // where to fetch history from
-                .count(30) // how many items to fetch
+                .count(AppConstants.MSG_COUNT)// how many items to fetch
                 .includeTimetoken(true)// include timetoken with each entry
                 .async(new PNCallback<PNHistoryResult>() {
                     @Override
                     public void onResponse(PNHistoryResult result, PNStatus status) {
 
                         try {
+
+                            timetoken = result.getStartTimetoken();
+                            Log.i(TAG, "history is tha 2090 " + result.getEndTimetoken()+"  "+result.getStartTimetoken());
                             if(!result.getMessages().isEmpty()) {
                                 Log.i(TAG, "perser 48 "+isUnverified);
                                 chatMessages.clear();
+                                int i = 0;
                                 for (PNHistoryItemResult historyItemResult : result.getMessages()) {
                                     Log.i(TAG, "history is tha 2 " + historyItemResult);
+                                    i++;
                                     try {
                                         if (historyItemResult.getEntry().has("pn_gcm")) {
                                             Log.i(TAG, "history is tha 33 " + historyItemResult.getTimetoken());
@@ -1810,55 +2095,13 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
                                 }
 
-/*
-                            JSONArray jsonArrayResponse = new JSONArray(result.toString());
-                            JSONArray jsonArrayHistory = jsonArrayResponse.getJSONArray(0);
-                            int jsonArrayHistoryLength = jsonArrayHistory.length();
-                            // cacheMessages(jsonArrayHistory);
-                            if (jsonArrayHistory.length() > 0) {
-                                chatMessages.clear();// to remove cached messages
-                                clearCache();
-                                Log.i(TAG, "loadhistory not empty "+result);
-
-                                firstMessage = false;
-
-                                for (int i = 0; i < jsonArrayHistoryLength; i++) {
-
-                                    JSONObject jsonMsg = jsonArrayHistory.getJSONObject(i);
-
-//                            Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub jsonArrayResponse" + jsonArrayResponse);
-//                            Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub jsonArrayHistory" + jsonArrayHistory);
-//                            Log.i(TAG, "jsonMsg is success loadHistoryFromPubnub" + jsonMsg);
-
-
-                                    if(jsonMsg.getJSONObject("message").has("pn_gcm")) {
-                                        JSONObject message = jsonMsg.getJSONObject("message").getJSONObject("pn_gcm").getJSONObject("data");
-
-                                        displayMessage(message);
-                                    }
-                                }
-                            }
-
-                            else {
-                                if(isUnverified){
-                                    Log.i(TAG, "perser 4");
-                                    displayDefaultMessageUnverified();
-                                }
-
-                                Log.i(TAG, "loadhistory empty");
-
-                                if(!okyed && !oyed ) {
-                                    //displayDefaultMessage();  // if client have not okeyed or oyed , its old dealing room but its empty then we need to show him default message
-                                    //need to be handled
-                                }
-                                //default deal time we are storing at default deal creation
-
-                                Log.i(TAG, "Default message published");
-                                lastMessageTime = String.valueOf(System.currentTimeMillis());
-
-                            }
-
-*/
+if(i==AppConstants.MSG_COUNT) {
+    Log.i(TAG,"pagination 3");
+    paginate = true;
+    i = 0;
+}else{
+    Log.i(TAG,"pagination 4");
+}
                             }else {
                                 Log.i(TAG, "perser 49 "+isUnverified);
 
@@ -2230,7 +2473,7 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
        pubnub.history()
                 .channel(channel_name) // where to fetch history from
-                .count(30) // how many items to fetch
+                .count(AppConstants.MSG_COUNT) // how many items to fetch
                 .includeTimetoken(true) // include timetoken with each entry
                 .async(new PNCallback<PNHistoryResult>() {
                     @Override
@@ -2988,5 +3231,40 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
         }
 
 
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        switch(view.getId())
+        {
+            case R.id.chat_list_view:
+
+                // Make your calculation stuff here. You have all your
+                // needed info from the parameters of this function.
+
+                // Sample calculation to determine if the last
+                // item is fully visible.
+
+                final int firstItem = firstVisibleItem;
+
+                if(firstItem == 0 && paginate)
+                { Log.i(TAG,"pagination 5");
+                    paginate = false;
+                    if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME))
+                    loadHistorypaginated(General.getSharedPreferences(DealConversationActivity.this,AppConstants.TIME_STAMP_IN_MILLI), timetoken);
+                    else
+                    loadHistorypaginated(channel_name, timetoken);
+
+                }
+                else if(firstItem == 0)
+                    Log.i(TAG,"pagination 6");
+                else if(paginate)
+                    Log.i(TAG,"pagination 7");
+        }
     }
 }

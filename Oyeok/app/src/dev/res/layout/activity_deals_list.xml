@@ -393,89 +393,103 @@
             android:gravity="center"
             android:padding="5dp" />
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="75dp"
-    android:layout_gravity="bottom"
-    android:layout_alignParentEnd="false"
-    android:layout_alignParentBottom="true"
-    android:id="@+id/phaseSeekbar1"
-    android:gravity="bottom">
-        <LinearLayout
-            android:orientation="horizontal"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:id="@+id/phaseSeekbar"
             android:layout_gravity="bottom"
-            android:background="@drawable/filter_border"
-            android:visibility="visible"
-            android:gravity="bottom"
             android:layout_alignParentEnd="false"
             android:layout_alignParentBottom="true"
-            android:layout_margin="3dp">
+            android:id="@+id/phaseSeekbar1"
+            android:gravity="bottom">
 
-
-            <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
-                android:id="@+id/phasedSeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textAlignment="center"
-                android:visibility="visible"
-                android:clickable="false" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="92dp"
-            android:visibility="visible">
             <TextView
+                android:text="Fetching deals..."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/loadingDeals"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:textColor="@color/greenish_blue"
+                android:visibility="visible"
+                android:textStyle="bold"
+                android:paddingTop="2dp" />
 
-                android:id="@+id/rentalCount"
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:id="@+id/phaseSeekbar"
+                android:layout_gravity="bottom"
+                android:background="@drawable/filter_border"
+                android:visibility="visible"
+                android:gravity="bottom"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="3dp">
+
+
+                <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
+                    android:id="@+id/phasedSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAlignment="center"
+                    android:visibility="visible"
+                    android:clickable="false"
+                    android:layout_gravity="center_horizontal" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/circle_badge2"
-                android:text="123"
+                android:paddingLeft="92dp"
+                android:visibility="visible">
+                <TextView
 
-                android:layout_alignParentRight="true"
-                android:paddingEnd="8dp"
-                android:paddingRight="8dp"
-                android:paddingLeft="8dp"
-                android:gravity="center"
-                android:textColor="#FFF"
-                android:textSize="11sp"
-                android:visibility="gone" />
+                    android:id="@+id/rentalCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circle_badge2"
+                    android:text="123"
+
+                    android:layout_alignParentRight="true"
+                    android:paddingEnd="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingLeft="8dp"
+                    android:gravity="center"
+                    android:textColor="#FFF"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
 
 
-        </LinearLayout>
+            </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/box1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="240dp"
-        android:visibility="visible">
+            <LinearLayout
+                android:id="@+id/box1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="240dp"
+                android:visibility="visible">
 
-        <TextView
+                <TextView
 
-            android:id="@+id/resaleCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/circle_badge2"
-            android:text="3"
+                    android:id="@+id/resaleCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circle_badge2"
+                    android:text="3"
 
-            android:layout_alignParentRight="true"
-            android:paddingEnd="8dp"
-            android:paddingRight="8dp"
-            android:paddingLeft="8dp"
-            android:gravity="center"
-            android:textColor="#FFF"
-            android:textSize="11sp"
-            android:visibility="gone" />
-    </LinearLayout>
-</RelativeLayout>
+                    android:layout_alignParentRight="true"
+                    android:paddingEnd="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingLeft="8dp"
+                    android:gravity="center"
+                    android:textColor="#FFF"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </RelativeLayout>
 
         <!--<TextView
             android:id="@+id/txtNoActiveDeal"

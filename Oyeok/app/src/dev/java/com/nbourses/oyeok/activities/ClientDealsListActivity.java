@@ -136,6 +136,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Bind(R.id.resaleCount)
     TextView resaleCount;
 
+    @Bind(R.id.loadingDeals)
+    TextView loadingDeals;
+
 
 
    /* @Bind(R.id.search)
@@ -149,6 +152,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 //    @Bind(R.id.searchView)
 //    SearchView searchView;
+private int maxPages = 5;
 private int page = 1;
     private int preLast;
     private boolean default_deal_flag;
@@ -914,11 +918,12 @@ private int page = 1;
 
                 if(lastItem == totalItemCount)
                 {
-                    if(preLast!=lastItem)
+                    if(preLast!=lastItem && page < maxPages)
                     {
                         //to avoid multiple calls for last item
                         Log.d("Last", "Last");
-                       // loadBrokerDeals(page);
+                        loadingDeals.setVisibility(View.VISIBLE);
+                        loadBrokerDeals(page);
                         preLast = lastItem;
                     }
                 }
@@ -1043,7 +1048,7 @@ private int page = 1;
                 defaultOkIds.add(c.getOk_id());
                 Log.i(TAG, "locality is the r " + c.getLocality());
 
-                BrokerDeals dealsa = new BrokerDeals(General.getSharedPreferences(this, AppConstants.NAME), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOk_id(), c.getLastSeen(), true);
+                BrokerDeals dealsa = new BrokerDeals("Searching brokers", c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOk_id(), c.getLastSeen(), true);
                 Log.i(TAG, "happy " + c.getSpec_code().toLowerCase().contains("-ll"));
                 if (c.getSpec_code().toLowerCase().contains("-ll")) {
 
@@ -1106,7 +1111,10 @@ private int page = 1;
     }
 
 
-    private void loadBrokerDeals(int pageno) {
+    private void loadBrokerDeals(final int pageno) {
+
+
+
         if (General.isNetworkAvailable(this)) {
             General.slowInternet(this);
             Log.i("TRACE", "in Load broker deals================= " + General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
@@ -1170,7 +1178,8 @@ private int page = 1;
                         if (jsonObjectServer.getBoolean("success")) {
                             JSONObject jsonObjectResponseData = new JSONObject(jsonObjectServer.getString("responseData"));
                             Log.i(TAG, "tidin tidin tindin 3 " + jsonObjectResponseData);
-                            Log.i("TRACE", "jsonObjectResponseData" + jsonObjectResponseData);
+                            Log.i("TRACE", "jsonObjectResponseData max_pages" + jsonObjectResponseData.getString("max_pages"));
+                            maxPages = Integer.parseInt(jsonObjectResponseData.getString("max_pages"));
                             Log.d("CHATTRACE", "default drooms" + jsonObjectResponseData);
 
 
@@ -1198,10 +1207,15 @@ private int page = 1;
 
                             Log.i("TRACE", "list broker deals" + listBrokerDeals.isEmpty());
                             if (!listBrokerDeals.isEmpty()) {
+
+
                                 myRealm = General.realmconfig(ClientDealsListActivity.this);
                                 myRealm.beginTransaction();
-                                RealmResults<HalfDeals> h = myRealm.where(HalfDeals.class).findAll();
-                                 h.clear();
+                                if(page ==2) {
+                                    RealmResults<HalfDeals> h = myRealm.where(HalfDeals.class).findAll();
+                                    h.clear();
+                                }
+
                                 Iterator<BrokerDeals> it = listBrokerDeals.iterator();
 
 
@@ -1211,13 +1225,15 @@ private int page = 1;
                                     BrokerDeals deals = it.next();
 
                                     if (deals.getOkId() != null) {
-                                        Log.i("TRACE", "dhishoom timestamp 13 "+ deals.getName() +"   "+deals.getSpecCode()+"   " + deals.getLastSeen());
+                                        Log.i("TRACE", "dhishoom timestamp 13   "+page+"  "+deals.getLocality()+"   "+deals.getName() +"   "+deals.getSpecCode()+"   " + deals.getLastSeen());
                                         if (deals.getLastSeen().equalsIgnoreCase("default"))
                                             deals.setLastSeen("1480924852933");
+                                        else if(deals.getLastSeen().length() == 17)
+                                            deals.setLastSeen(deals.getLastSeen().substring(0,13));
                                             //deals.setLastSeen("1481701800596");
                                             //deals.setLastSeen("1464922983000");
 
-                                        Log.i("TRACE", "dhishoom timestamp 12 "+ deals.getName() +"   "+deals.getSpecCode()+"   "  + deals.getLastSeen());
+                                        Log.i("TRACE", "dhishoom timestamp 12 "+"page no "+page+"   "+deals.getLocality()+"   " +deals.getName() +"   "+deals.getSpecCode()+"   "  + deals.getLastSeen());
 
 
                                         Log.i("TRACE", "dhishoom hdroomstatus 22 " + deals.getOkId());
@@ -1279,18 +1295,48 @@ private int page = 1;
                                 Log.i("TRACE", "dhishoom unverifiedLL " + unverifiedLL);
                                 Log.i("TRACE", "dhishoom listBrokerDealsLL " + listBrokerDealsLL);
                                 Log.i("TRACE", "dhishoom total_deals " + total_deals);
-                                total_deals.removeAll(cachedDealsLL);
+                                /*if(page >2) {*/
+                                    if (listBrokerDeals_new != null)
 
-                                listBrokerDeals_new.addAll(unverifiedLL);
-                                listBrokerDeals_new.addAll(listBrokerDealsLL);
-                                total_deals.addAll(listBrokerDeals_new);
+                                        listBrokerDeals_new.clear();
+
+                                    if (total_deals != null)
+
+                                        total_deals.clear();
+                                /*if (default_deals != null)
+                                    default_deals.clear();*/
+
+                               /* }*/
+
+
+
+                                if(TT.equalsIgnoreCase("LL")){
+                                    total_deals.addAll(default_dealsLL);
+
+                                    total_deals.removeAll(cachedDealsLL);
+
+                                    listBrokerDeals_new.addAll(unverifiedLL);
+                                    listBrokerDeals_new.addAll(listBrokerDealsLL);
+                                    total_deals.addAll(listBrokerDeals_new);
+
+                                }else{
+                                    total_deals.addAll(default_dealsOR);
+
+                                    total_deals.removeAll(cachedDealsOR);
+
+                                    listBrokerDeals_new.addAll(unverifiedOR);
+                                    listBrokerDeals_new.addAll(listBrokerDealsOR);
+                                    total_deals.addAll(listBrokerDeals_new);
+
+                                }
+
 
                                 Log.i(TAG, "listbrokerdeals loaded are " + listBrokerDeals_new);
                                 showBgText();
                                 Collections.sort(total_deals);
 
                                 listAdapter.notifyDataSetChanged();
-
+                                loadingDeals.setVisibility(View.GONE);
 
 
 
@@ -1362,6 +1408,7 @@ private int page = 1;
         } else {
 
             General.internetConnectivityMsg(this);
+            loadingDeals.setVisibility(View.GONE);
         }
     }
 
@@ -1613,8 +1660,13 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
                 } else {
                     listBrokerDeals_new.clear();
                     listBrokerDeals_new.addAll(unverifiedOR);
+                    Log.i(TAG,"oroa unverifiedOR "+unverifiedOR);
+                    Log.i(TAG,"oroa listBrokerDeals_new "+listBrokerDeals_new);
                     listBrokerDeals_new.addAll(listBrokerDealsOR);
+                    Log.i(TAG,"oroa listBrokerDealsOR "+listBrokerDealsOR);
+                    Log.i(TAG,"oroa listBrokerDeals_new 1 "+listBrokerDeals_new);
                     total_deals.addAll(listBrokerDeals_new);
+                    Log.i(TAG,"oroa total_deals "+total_deals);
                 }
                 Collections.sort(total_deals);
                 listAdapter.notifyDataSetChanged();
