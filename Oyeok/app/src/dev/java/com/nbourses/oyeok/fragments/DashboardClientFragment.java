@@ -290,8 +290,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private String bhk;
     private int filterValueMultiplier = 950;
     TextView rental,resale,btn_add_building,btn_add_listing,oye_arrow,addBText;
-    RelativeLayout property_type_layout;
-    LinearLayout dispProperty;
+    RelativeLayout property_type_layout,dispProperty;
+   // LinearLayout dispProperty;
     private int countertut,p=0;
 
     private ImageView myLoc,ic_search;
@@ -781,7 +781,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             }
         });*/
 
-        autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
+      /*  autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
         autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
         autoCompView.setOnItemClickListener(this);
         autoCompView.setOnClickListener(new View.OnClickListener() {
@@ -801,7 +801,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     // new LocationUpdater().execute();
                     property_type_layout.clearAnimation(); /////
                     property_type_layout.setVisibility(View.GONE);
-                    dispProperty.setVisibility(View.GONE);
+                    //dispProperty.setVisibility(View.GONE);
                     //hideOnSearch.clearAnimation();/////
                     hideOnSearch.setVisibility(View.VISIBLE);
                     hideOnSearch.setVisibility(View.VISIBLE);
@@ -822,7 +822,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     Log.i(TAG,"Caught in exception autocompleteview click "+e);
                 }
             }
-        });
+        });*/
 
 
         addbuilding.setOnClickListener( new View.OnClickListener() {
@@ -1435,7 +1435,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         rental = (TextView) rootView.findViewById(R.id.rental);
         resale = (TextView) rootView.findViewById(R.id.sale);
         property_type_layout = (RelativeLayout) rootView.findViewById(R.id.property_type);
-        dispProperty=(LinearLayout) rootView.findViewById(R.id.property_type_layout);
+        dispProperty=(RelativeLayout) rootView.findViewById(R.id.property_type_layout1);
         zoomout_right = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_slide));
         zoomout_left = (AnimationUtils.loadAnimation(getContext(), R.anim.zoomout_slide_left));
         slide_up1 = (AnimationUtils.loadAnimation(getContext(), R.anim.slide_up_and_down));
@@ -2478,7 +2478,6 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                     .color( Color.parseColor( AppConstants.DEFAULT_SNACKBAR_COLOR ) ) );
                     tvRate.setText( "/ month" );
                     brokerType = "rent";
-                    dispProperty.setVisibility(View.VISIBLE);
                     AppConstants.CURRENT_DEAL_TYPE = "rent";
                    // dbHelper.save( DatabaseConstants.brokerType, "LL" );
                    // dbHelper.save( "brokerType", "On Rent" );
@@ -2495,12 +2494,15 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                         property_type_layout.setVisibility( View.VISIBLE );
                     }
                     try {
+
                         if (buildingCacheModels.get(INDEX).getFlag() == true) {
                             tv_building.setVisibility(View.VISIBLE);
                             tv_building.setText("Average Rate in last 1 WEEK");
                             String text = "<font color=#ffffff>" + buildingCacheModels.get(INDEX).getName() + "</b></b></font> <font color=#ffffff>@</font>&nbsp&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat(String.valueOf(price(buildingCacheModels.get(INDEX).getConfig(), buildingCacheModels.get(INDEX).getLl_pm()))).substring(2, General.currencyFormat(String.valueOf(price(buildingCacheModels.get(INDEX).getConfig(), buildingCacheModels.get(INDEX).getLl_pm()))).length()) + "</font><b><font color=#ff9f1c><sub>/m</sub></font>";
                             tvFetchingrates.setText(Html.fromHtml(text));
                         }
+                        dispProperty.setVisibility(View.VISIBLE);
+
                     }catch (Exception e){}
                     break;
 
@@ -2539,7 +2541,6 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                        }
 
                                        PropertyButtonSlideAnimation();*/
-                    dispProperty.setVisibility(View.VISIBLE);
                     SnackbarManager.show(
                             Snackbar.with( getContext() )
                                     .text( "Buy/Sell Property Type set" )
@@ -2563,6 +2564,9 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                         property_type_layout.setVisibility( View.VISIBLE );
                     }
                     Log.i("index value","value of index : "+INDEX);
+
+                    dispProperty.setVisibility(View.VISIBLE);
+
                     if (INDEX!=0 && buildingCacheModels.get(INDEX).getFlag() == true) {
                         tv_building.setVisibility( View.VISIBLE );
                         tv_building.setText( "Average Rate in last 1 WEEK" );

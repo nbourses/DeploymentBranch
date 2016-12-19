@@ -52,6 +52,8 @@ public class ChatListAdapter extends BaseAdapter {
     private WebView i;
     private Boolean isDefaultDeal = false;
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("h:mm a");
+
+    public static final SimpleDateFormat SIMPLE_DATE_FORMAT_FULL = new SimpleDateFormat("dd MMMM yyyy   h:mm a");
     private Bitmap mIcon12 = null; // null image for test condition in download image
 
     public ChatListAdapter(ArrayList<ChatMessage> chatMessages, Boolean isDefaultDeal, Context context) {
@@ -222,7 +224,8 @@ public class ChatListAdapter extends BaseAdapter {
 
             holder5.imageView.setVisibility(View.VISIBLE);
             holder5.messageTextView.setVisibility(View.GONE);
-            holder5.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
+            holder5.timeTextView.setText(General.timeStampToString(message.getMessageTime()));
+           // holder5.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
             holder5.spinnerProgress.setVisibility(View.VISIBLE);
             /*if(message.getUserSubtype() == ChatMessageUserSubtype.SELF){
                 holder5.spinnerProgress.setVisibility(View.VISIBLE);
@@ -399,7 +402,8 @@ public class ChatListAdapter extends BaseAdapter {
 
             holder6.imageView.setVisibility(View.VISIBLE);
             holder6.messageTextView.setVisibility(View.GONE);
-            holder6.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
+            holder6.timeTextView.setText(General.timeStampToString(message.getMessageTime()));
+           // holder6.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
             holder6.spinnerProgress.setVisibility(View.VISIBLE);
             /*if(message.getUserSubtype() == ChatMessageUserSubtype.SELF){
                 holder5.spinnerProgress.setVisibility(View.VISIBLE);
@@ -570,19 +574,18 @@ public class ChatListAdapter extends BaseAdapter {
 
             String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
 
-            Log.i("CONVER", "Chat message is2" + message.getMessageText());
-            Log.i("TRACE DEALS FLAG", "FLAG " + isDefaultDeal);
-
-            if(!isDefaultDeal) {
-                holder3.spinnerProgress.setVisibility(View.INVISIBLE);
-                holder3.txtFirstChar.setVisibility(View.VISIBLE);
-            }else{
+           /* if(!isDefaultDeal) {*/
+               /* holder3.spinnerProgress.setVisibility(View.INVISIBLE);
+                holder3.txtFirstChar.setVisibility(View.VISIBLE);*/
+           /* }else{*/
                 holder3.spinnerProgress.setVisibility(View.VISIBLE);
                 holder3.txtFirstChar.setVisibility(View.INVISIBLE);
-            }
+           /* }*/
+
 
             holder3.messageTextView.setText(message.getMessageText());
-            holder3.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
+            holder3.timeTextView.setText(SIMPLE_DATE_FORMAT_FULL.format(message.getMessageTime()));
+            //holder3.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
             holder3.chatReplyAuthor.setText("Welcome "+name);
             //holder3.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
             holder3.txtFirstChar.setText("O");
@@ -615,7 +618,11 @@ public class ChatListAdapter extends BaseAdapter {
             String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
             holder1.spinnerProgress.setVisibility(View.GONE);
             holder1.messageTextView.setText(message.getMessageText());
-            holder1.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
+
+            holder1.timeTextView.setText(General.timeStampToString(message.getMessageTime()));
+
+
+          //  holder1.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
             holder1.chatReplyAuthor.setText(name);
             holder1.txtFirstChar.setText(userName.substring(0, 1).toUpperCase());
             Log.i("CONVER","message time self "+message.getMessageTime() + "formated"  + SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
@@ -648,8 +655,10 @@ public class ChatListAdapter extends BaseAdapter {
 
             holder2.imageFrame.setVisibility(View.GONE);
             holder2.messageTextView.setText(message.getMessageText());
+
+            holder2.timeTextView.setText(General.timeStampToString(message.getMessageTime()));
             //holder2.messageTextView.setText(message.getMessageText());
-            holder2.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
+           // holder2.timeTextView.setText(SIMPLE_DATE_FORMAT.format(message.getMessageTime()));
 
             if (message.getMessageStatus() == ChatMessageStatus.DELIVERED) {
                 holder2.messageStatus.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_double_tick));

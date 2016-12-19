@@ -2,6 +2,7 @@ package com.nbourses.oyeok.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -31,7 +32,7 @@ import java.util.Map;
 
 import io.realm.Realm;
 
-import static com.nbourses.oyeok.R.id.wrapper;
+import static com.nbourses.oyeok.R.id.dealWrapper;
 
 
 /**
@@ -118,7 +119,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                 holder.locality = (TextView) v.findViewById(R.id.locality);
                 holder.listing = (TextView) v.findViewById(R.id.listing);
                 holder.hdroomsCount = (TextView) v.findViewById(R.id.hdroomsCount);
-                holder.wrapper = (RelativeLayout) v.findViewById(wrapper);
+                holder.wrapper = (RelativeLayout) v.findViewById(dealWrapper);
 
                 v.setTag(holder);
             } else {
@@ -132,6 +133,8 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
             deal = dealses.get(position);
             holder.hdroomsCount.clearAnimation();
             holder.hdroomsCount.setVisibility(View.GONE); // dont remove me unless you want to see random chatcounts in dealslist :-P
+            holder.wrapper.setBackgroundColor(Color.parseColor("#fcfcfc"));
+            holder.locality.setTextColor(ContextCompat.getColor(context,R.color.greenish_blue));
             try{
                 Realm myRealm = General.realmconfig(context);
                 NotifCount notifcount1 = myRealm.where(NotifCount.class).equalTo(AppConstants.OK_ID, deal.getOkId()).findFirst();
@@ -139,7 +142,11 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                     holder.hdroomsCount.setText(notifcount1.getNotif_count().toString());
                     holder.hdroomsCount.setVisibility(View.VISIBLE);
                     holder.hdroomsCount.setAnimation(bounce);
-                    holder.wrapper.setBackgroundColor(Color.parseColor("#000000"));
+                   // holder.wrapper.setBackgroundColor(Color.parseColor("#C6FFEA"));
+                    holder.wrapper.setBackgroundResource(R.drawable.deal_highlight_bg);
+                    holder.locality.setTextColor(ContextCompat.getColor(context,R.color.black));
+                }else{
+                    holder.wrapper.setBackgroundColor(Color.parseColor("#fcfcfc"));
                 }
 
                 //Log.i(TAG, "notif count is the " + notifcount1.getNotif_count());
@@ -300,6 +307,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                 Log.i("TAG","description description "+description);
                 holder.txtDescription.setText(description);
 
+
                 // get time from shared if not available then assign random date from last few months
                /* String time = fetchTime();
 
@@ -327,10 +335,13 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                     holder.txtTime.setText("Last month");*/
                 // holder.txtTime.setText(dfDateTime.format(gc.getTime()));
                 Log.i("HDROOM locality", "locality is yo bro " + deal.getLastSeen()+"  "+SIMPLE_DATE_FORMAT.format(Long.parseLong(deal.getLastSeen())));
-                if(!deal.getLastSeen().equalsIgnoreCase("1464922983000"))
+                /*if(!deal.getLastSeen().equalsIgnoreCase("1464922983000"))
                 holder.txtTime.setText(SIMPLE_DATE_FORMAT.format(Long.parseLong(deal.getLastSeen())));
                 else
-                    holder.txtTime.setText("LAST WEEK");
+                    holder.txtTime.setText("LAST WEEK");*/
+
+                Log.i("spa","spator "+deal.getName()+"   "+deal.getSpecCode()+"  "+deal.getLastSeen()+"  "+General.timeStampToString(Long.parseLong(deal.getLastSeen())));
+                holder.txtTime.setText(General.timeStampToString(Long.parseLong(deal.getLastSeen())));
 
                 Log.i("HDROOM locality", "locality is " + deal.getLocality());
                 try {
@@ -367,6 +378,7 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
             holder.txtDescription.setText("");
 
             holder.txtTime.setText("23:11");
+
         }
 
         return v;

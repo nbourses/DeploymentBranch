@@ -639,7 +639,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
         }else{
-            Log.i(TAG,"chaniya 2 ");
+            Log.i(TAG,"tw 2 ");
 
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             notification = new NotificationCompat.Builder(this)

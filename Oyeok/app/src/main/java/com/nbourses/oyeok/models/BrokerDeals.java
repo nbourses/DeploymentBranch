@@ -233,17 +233,26 @@ public class BrokerDeals implements Comparable<BrokerDeals>{
         this.lastSeen = lastSeen;
     }
 
-    public int compareTo(BrokerDeals compareFruit) {
-        Log.i("Adapter","spandan chukya called");
+    public int compareTo(BrokerDeals timeStamp) {
 
+
+
+        long t1 = Long.parseLong(this.lastSeen);
+        long t2 = Long.parseLong(timeStamp.getLastSeen());
+        if(t2 > t1)
+            return 1;
+        else if(t1 > t2)
+            return -1;
+        else
+            return 0;
         //Log.i("Adapter","spandan chukya"+compareFruit.getLastSeen()+" "+Integer.parseInt(compareFruit.getLastSeen()));
 
         //int compareQuantity = Integer.parseInt(compareFruit.getLastSeen());
-        Long compareQuantity = Long.parseLong(compareFruit.getLastSeen());
-        Log.i("Adapter","spandan chukya called 1 "+compareQuantity);
+       /* Long comparetimeStamp = Long.parseLong(timeStamp.getLastSeen());
+        Log.i("Adapter","spandan chukya called 1 "+comparetimeStamp);*/
         //ascending order
-        Log.i("Adapter","spandan chukya called 2 "+Long.parseLong(this.lastSeen));
-        return (int) (compareQuantity - Long.parseLong(this.lastSeen));
+        /*Log.i("Adapter","spandan chukya called 2 "+Long.parseLong(this.lastSeen));
+        return (int) (comparetimeStamp - Long.parseLong(this.lastSeen));*/
 
         //descending order
        //return compareQuantity - this.quantity;

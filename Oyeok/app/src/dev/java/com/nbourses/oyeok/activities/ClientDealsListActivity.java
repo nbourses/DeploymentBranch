@@ -23,6 +23,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -95,7 +96,7 @@ import retrofit.mime.TypedByteArray;
 
 
 
-public class ClientDealsListActivity extends AppCompatActivity implements CustomPhasedListener {
+public class ClientDealsListActivity extends AppCompatActivity implements CustomPhasedListener, AbsListView.OnScrollListener {
 
 
     private List<PublishLetsOye> publishLetsOyes;
@@ -135,6 +136,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Bind(R.id.resaleCount)
     TextView resaleCount;
 
+    @Bind(R.id.loadingDeals)
+    TextView loadingDeals;
+
 
 
    /* @Bind(R.id.search)
@@ -148,8 +152,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 //    @Bind(R.id.searchView)
 //    SearchView searchView;
-
-
+private int maxPages = 5;
+private int page = 1;
+    private int preLast;
     private boolean default_deal_flag;
     private ArrayList<BrokerDeals> default_deals;
     private ArrayList<BrokerDeals> default_dealsLL;
@@ -266,6 +271,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         supportChat.setVisibility(View.VISIBLE);
         listViewDeals.setVisibility(View.VISIBLE);
 
+
+        listViewDeals.setOnScrollListener(this);
 
         ButterKnife.bind(this);
 
@@ -755,6 +762,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         listAdapter = new BrokerDealsListAdapter(total_deals, getApplicationContext());
         listViewDeals.setAdapter(listAdapter);
 
+
+
+
         listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -776,7 +786,11 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                 startActivity(intent);
             }
+
+
+
         });
+
 
         Log.i("Phaseseekbar", "oncreate value sign " + General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER));
         if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")) {
@@ -807,7 +821,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         }
         else {
             loadCachedDeals();
-            loadBrokerDeals();
+            loadBrokerDeals(page);
         }
 
         // }
@@ -829,6 +843,8 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         *//*progressBar.pauseAnimation();
         progressBar.setVisibility(View.GONE);*//*
     }*/
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -878,6 +894,43 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 //        }
     }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView lw, final int firstVisibleItem,
+                         final int visibleItemCount, final int totalItemCount)
+    {
+
+        switch(lw.getId())
+        {
+            case R.id.listViewDeals:
+
+                // Make your calculation stuff here. You have all your
+                // needed info from the parameters of this function.
+
+                // Sample calculation to determine if the last
+                // item is fully visible.
+                final int lastItem = firstVisibleItem + visibleItemCount;
+
+                if(lastItem == totalItemCount)
+                {
+                    if(preLast!=lastItem && page < maxPages)
+                    {
+                        //to avoid multiple calls for last item
+                        Log.d("Last", "Last");
+                        loadingDeals.setVisibility(View.VISIBLE);
+                        loadBrokerDeals(page);
+                        preLast = lastItem;
+                    }
+                }
+        }
+    }
+
+
 
 
     private void deleteDealingroom(String deleteOyeId, String deleteOKId, final String specCode) {
@@ -995,7 +1048,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                 defaultOkIds.add(c.getOk_id());
                 Log.i(TAG, "locality is the r " + c.getLocality());
 
-                BrokerDeals dealsa = new BrokerDeals(General.getSharedPreferences(this, AppConstants.NAME), c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOk_id(), c.getLastSeen(), true);
+                BrokerDeals dealsa = new BrokerDeals("Searching brokers", c.getOk_id(), c.getSpec_code(), c.getLocality(), c.getOk_id(), c.getLastSeen(), true);
                 Log.i(TAG, "happy " + c.getSpec_code().toLowerCase().contains("-ll"));
                 if (c.getSpec_code().toLowerCase().contains("-ll")) {
 
@@ -1058,7 +1111,10 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     }
 
 
-    private void loadBrokerDeals() {
+    private void loadBrokerDeals(final int pageno) {
+
+
+
         if (General.isNetworkAvailable(this)) {
             General.slowInternet(this);
             Log.i("TRACE", "in Load broker deals================= " + General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
@@ -1096,7 +1152,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
             hdRooms.setLat("123456789");
             hdRooms.setLon("123456789");
             hdRooms.setDeviceId(deviceId);
-            hdRooms.setPage("1");
+            hdRooms.setPage(pageno+"");
 
 
             Log.i("TRACE", "in Load broker deals ");
@@ -1116,12 +1172,14 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                     String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                     Log.i(TAG, "tidin tidin tindin 1 " + strResponse);
                     try {
+                        page++;
                         JSONObject jsonObjectServer = new JSONObject(strResponse);
                         Log.i(TAG, "tidin tidin tindin 2" + jsonObjectServer);
                         if (jsonObjectServer.getBoolean("success")) {
                             JSONObject jsonObjectResponseData = new JSONObject(jsonObjectServer.getString("responseData"));
                             Log.i(TAG, "tidin tidin tindin 3 " + jsonObjectResponseData);
-                            Log.i("TRACE", "jsonObjectResponseData" + jsonObjectResponseData);
+                            Log.i("TRACE", "jsonObjectResponseData max_pages" + jsonObjectResponseData.getString("max_pages"));
+                            maxPages = Integer.parseInt(jsonObjectResponseData.getString("max_pages"));
                             Log.d("CHATTRACE", "default drooms" + jsonObjectResponseData);
 
 
@@ -1149,10 +1207,15 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
                             Log.i("TRACE", "list broker deals" + listBrokerDeals.isEmpty());
                             if (!listBrokerDeals.isEmpty()) {
+
+
                                 myRealm = General.realmconfig(ClientDealsListActivity.this);
                                 myRealm.beginTransaction();
-                                RealmResults<HalfDeals> h = myRealm.where(HalfDeals.class).findAll();
-                                 h.clear();
+                                if(page ==2) {
+                                    RealmResults<HalfDeals> h = myRealm.where(HalfDeals.class).findAll();
+                                    h.clear();
+                                }
+
                                 Iterator<BrokerDeals> it = listBrokerDeals.iterator();
 
 
@@ -1162,9 +1225,16 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                     BrokerDeals deals = it.next();
 
                                     if (deals.getOkId() != null) {
-                                        Log.i("TRACE", "dhishoom timestamp 1 " + deals.getLastSeen());
+                                        Log.i("TRACE", "dhishoom timestamp 13   "+page+"  "+deals.getLocality()+"   "+deals.getName() +"   "+deals.getSpecCode()+"   " + deals.getLastSeen());
                                         if (deals.getLastSeen().equalsIgnoreCase("default"))
-                                            deals.setLastSeen("1464922983000");
+                                            deals.setLastSeen("1480924852933");
+                                        else if(deals.getLastSeen().length() == 17)
+                                            deals.setLastSeen(deals.getLastSeen().substring(0,13));
+                                            //deals.setLastSeen("1481701800596");
+                                            //deals.setLastSeen("1464922983000");
+
+                                        Log.i("TRACE", "dhishoom timestamp 12 "+"page no "+page+"   "+deals.getLocality()+"   " +deals.getName() +"   "+deals.getSpecCode()+"   "  + deals.getLastSeen());
+
 
                                         Log.i("TRACE", "dhishoom hdroomstatus 22 " + deals.getOkId());
                                         Log.i("TRACE", "dhishoom hdroomstatus 22 " + deals.getHDroomStatus().getSelfStatus());
@@ -1225,17 +1295,48 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
                                 Log.i("TRACE", "dhishoom unverifiedLL " + unverifiedLL);
                                 Log.i("TRACE", "dhishoom listBrokerDealsLL " + listBrokerDealsLL);
                                 Log.i("TRACE", "dhishoom total_deals " + total_deals);
-                                total_deals.removeAll(cachedDealsLL);
+                                /*if(page >2) {*/
+                                    if (listBrokerDeals_new != null)
 
-                                listBrokerDeals_new.addAll(unverifiedLL);
-                                listBrokerDeals_new.addAll(listBrokerDealsLL);
-                                total_deals.addAll(listBrokerDeals_new);
+                                        listBrokerDeals_new.clear();
+
+                                    if (total_deals != null)
+
+                                        total_deals.clear();
+                                /*if (default_deals != null)
+                                    default_deals.clear();*/
+
+                               /* }*/
+
+
+
+                                if(TT.equalsIgnoreCase("LL")){
+                                    total_deals.addAll(default_dealsLL);
+
+                                    total_deals.removeAll(cachedDealsLL);
+
+                                    listBrokerDeals_new.addAll(unverifiedLL);
+                                    listBrokerDeals_new.addAll(listBrokerDealsLL);
+                                    total_deals.addAll(listBrokerDeals_new);
+
+                                }else{
+                                    total_deals.addAll(default_dealsOR);
+
+                                    total_deals.removeAll(cachedDealsOR);
+
+                                    listBrokerDeals_new.addAll(unverifiedOR);
+                                    listBrokerDeals_new.addAll(listBrokerDealsOR);
+                                    total_deals.addAll(listBrokerDeals_new);
+
+                                }
+
 
                                 Log.i(TAG, "listbrokerdeals loaded are " + listBrokerDeals_new);
                                 showBgText();
                                 Collections.sort(total_deals);
-                                listAdapter.notifyDataSetChanged();
 
+                                listAdapter.notifyDataSetChanged();
+                                loadingDeals.setVisibility(View.GONE);
 
 
 
@@ -1307,6 +1408,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
         } else {
 
             General.internetConnectivityMsg(this);
+            loadingDeals.setVisibility(View.GONE);
         }
     }
 
@@ -1558,8 +1660,13 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
                 } else {
                     listBrokerDeals_new.clear();
                     listBrokerDeals_new.addAll(unverifiedOR);
+                    Log.i(TAG,"oroa unverifiedOR "+unverifiedOR);
+                    Log.i(TAG,"oroa listBrokerDeals_new "+listBrokerDeals_new);
                     listBrokerDeals_new.addAll(listBrokerDealsOR);
+                    Log.i(TAG,"oroa listBrokerDealsOR "+listBrokerDealsOR);
+                    Log.i(TAG,"oroa listBrokerDeals_new 1 "+listBrokerDeals_new);
                     total_deals.addAll(listBrokerDeals_new);
+                    Log.i(TAG,"oroa total_deals "+total_deals);
                 }
                 Collections.sort(total_deals);
                 listAdapter.notifyDataSetChanged();
@@ -1601,6 +1708,7 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
                         .text("INTERNET CONNECTIVITY NOT AVAILABLE")
                         .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
     }
+
 
 
     private void loadCachedDeals() {
@@ -1783,6 +1891,8 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
 
                 if (deals.getOkId().equalsIgnoreCase(okId)) {
                     deals.setLastSeen(String.valueOf(System.currentTimeMillis()));
+
+
                 }
 
 
@@ -1806,6 +1916,12 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
         catch(Exception e){
 Log.i(TAG,"Caught in exception narcos "+e);
         }
+
+        // need to call api to set lastseen on server,
+        try {
+            General.setDealStatus(this, "default", okId, String.valueOf(System.currentTimeMillis()), "");
+        }catch(Exception e){}
+
     }
 
 }
