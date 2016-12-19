@@ -66,6 +66,9 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
     @Bind(R.id.container_Signup1)
     FrameLayout container_Signup1;
 
+    @Bind(R.id.confirm_screen_title)
+    TextView confirm_screen_title;
+
     CustomPhasedSeekBar  mPhasedSeekBar;
     int position=0;
     ViewPager viewPager;
@@ -127,7 +130,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        confirm_screen_title.setVisibility(View.VISIBLE);
         btnMyDeals.setBackground(getResources().getDrawable(R.drawable.share_btn_background));
         btnMyDeals.setText("Share");
         //Phased seekbar initialisation
@@ -256,12 +259,14 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
 
         adapter.notifyDataSetChanged();
         if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
-            getSupportActionBar().setTitle("My Advertised Listings");
+            getSupportActionBar().setTitle("");
+            confirm_screen_title.setText("My Advertised \nListings");
             inputSearch.setHint("Search "+portListing.size()+" Listings");
-            usertext.setHint("My Listing");
+            usertext.setHint("\"My Listing\"");
             add_create.setText("Create");
         }else{
-            getSupportActionBar().setTitle("My WatchList");
+            getSupportActionBar().setTitle("");
+            confirm_screen_title.setText("My WatchList");
             inputSearch.setHint("Search "+ portListing.size()+" Watchlist");
             usertext.setHint("My Watchlist");
             add_create.setText("Add");
@@ -403,6 +408,18 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
                             }
                             mode.finish();
                             adapter.notifyDataSetChanged();
+                            if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+                                inputSearch.setHint("Search "+portListing.size()+" Listings");
+                                usertext.setText("");
+                                usertext.setHint("\"My Listing\"");
+                                add_create.setText("Create");
+                            }else{
+                                inputSearch.setHint("Search "+ portListing.size()+" Watchlist");
+                                usertext.setText("");
+                                usertext.setHint("My Watchlist");
+                                add_create.setText("Add");
+
+                            }
                             return true;
 
                             /*for(deletelist.size()
@@ -524,7 +541,16 @@ inputSearch.addTextChangedListener(new TextWatcher() {
         String searchQuery = s.toString().trim();
         Log.i("searcho","s "+searchQuery.length());
         Log.i("searcho","sb "+portListingCopy);
-        usertext.setText(s);
+        String s1="\""+s+"\"";
+        if(!s1.equalsIgnoreCase(""))
+        usertext.setText(s1);
+        else {
+            if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+            usertext.setHint("My Watchlist");
+            else
+                usertext.setHint("My Listing");
+
+        }
        if(portListing != null)
            portListing.clear();
         portListing.addAll(portListingCopy);
@@ -637,9 +663,23 @@ inputSearch.addTextChangedListener(new TextWatcher() {
                 portListing.addAll(myPortfolioLL);
                 portListingCopy.clear();
                 portListingCopy.addAll(portListing);
+
                 adapter.notifyDataSetChanged();
+                if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+                    inputSearch.setHint("Search "+portListing.size()+" Listings");
+                    usertext.setText("");
+                    usertext.setHint("\"My Listing\"");
+                    add_create.setText("Create");
+                }else{
+                    inputSearch.setHint("Search "+ portListing.size()+" Watchlist");
+                    usertext.setText("");
+                    usertext.setHint("My Watchlist");
+                    add_create.setText("Add");
+
+                }
             } else {
                 TT = "OR";
+
                 Log.i("addbuildingOR", "addbuildingOR 3" + addbuildingOR);
                 portListing.clear();
                 portListing.addAll(addbuildingOR);
@@ -647,6 +687,18 @@ inputSearch.addTextChangedListener(new TextWatcher() {
                 portListingCopy.clear();
                 portListingCopy.addAll(portListing);
                 adapter.notifyDataSetChanged();
+                if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+                    inputSearch.setHint("Search "+portListing.size()+" Listings");
+                    usertext.setText("");
+                    usertext.setHint("\"My Listing\"");
+                    add_create.setText("Create");
+                }else{
+                    inputSearch.setHint("Search "+ portListing.size()+" Watchlist");
+                    usertext.setText("");
+                    usertext.setHint("My Watchlist");
+                    add_create.setText("Add");
+
+                }
             }
 
 

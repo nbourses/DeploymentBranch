@@ -183,7 +183,7 @@ public class AppConstants {
     public static final String MY_BASE_LOCATION = "myBaseLocation";
     public static  String MY_BASE_LAT = "myBaseLat";
     public static  String MY_BASE_LNG = "myBaseLng";
-
+    public static  Boolean MY_BASE_LOCATION_FLAG = false;
     //  display config on building confirmation
 
     public static final String DISPLAY_BUILDING_CONF="displayBuildingConf";

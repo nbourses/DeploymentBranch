@@ -104,6 +104,17 @@ public class User {
     @SerializedName("property_type")
     private String property_type;
 
+    @SerializedName("distance")
+    private String distance;
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
     public String getGcmId() {
         return gcmId;
     }

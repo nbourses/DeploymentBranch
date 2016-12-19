@@ -82,11 +82,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.Firebase.ChatList;
-import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.GooglePlacesApiServices.GooglePlacesReadTask;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AutoOk;
@@ -160,6 +157,9 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import static com.nbourses.oyeok.R.id.parent;
 import static java.lang.Math.log10;
 
+//import com.nbourses.oyeok.Database.DBHelper;
+//import com.nbourses.oyeok.Firebase.DroomChatFirebase;
+
 
 public class DashboardClientFragment extends Fragment implements CustomPhasedListener,AdapterView.OnItemClickListener, ChatList, HorizontalPicker.pickerPriceSelected, FragmentDrawer.MDrawerListener {
 
@@ -196,13 +196,13 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     View mHelperView;
     Button home,shop,industrial,office;
-    String Property_type="",oyetext="2BHK";
+    String Property_type="Home",oyetext="2BHK";
     private static final int INITIAL_REQUEST = 133;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
     private static final int MAP_ZOOM = 14;
     private Point point;
     private  Intent callIntent;
-    DBHelper dbHelper;
+   // DBHelper dbHelper;
     //    private TextView mDrooms;
     private TextView mVisits,txt_info;
     private ImageView mQrCode;
@@ -255,7 +255,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     String pincode, region, fullAddress;
     Double lat, lng;
     ClientMainActivity dashboardActivity;
-    DroomChatFirebase droomChatFirebase;
+   // DroomChatFirebase droomChatFirebase;
     private   MapView mapView;
     private GetCurrentLocation getLocationActivity;
     //View rootView;
@@ -638,7 +638,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 SharedPrefs.save(getContext(), SharedPrefs.PERMISSION, "false");
             }
         }
-        droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl, getActivity());
+       // droomChatFirebase = new DroomChatFirebase(DatabaseConstants.firebaseUrl, getActivity());
         mVisits = (TextView) rootView.findViewById(R.id.newVisits);
         mQrCode = (ImageView) rootView.findViewById(R.id.qrCode);
         mMarkerPanel = (LinearLayout) rootView.findViewById(R.id.ll_marker);
@@ -672,7 +672,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 //        if(!General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
         dashboardActivity = (ClientMainActivity) getActivity();
         wrapper = (RelativeLayout) dashboardActivity.findViewById(R.id.wrapper);
-        dbHelper = new DBHelper(getContext());
+        //dbHelper = new DBHelper(getContext());
         ll_map = (FrameLayout) rootView.findViewById(R.id.ll_map);
         permissionCheckForLocation = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
         rupeesymbol = (TextView) rootView.findViewById(R.id.rupeesymbol);
@@ -1110,7 +1110,10 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                 if (buildingCacheModels.get(i).getFlag() == false) {
                                     Log.i("1sushil11", "===========================");
 
-
+                                    General.setSharedPreferences(getContext(),AppConstants.BUILDING_NAME,buildingCacheModels.get(i).getName());
+                                    General.setSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY,buildingCacheModels.get(i).getLocality()+"");
+                                    General.setSharedPreferences(getContext(),AppConstants.MY_LAT,buildingCacheModels.get(i).getLat()+"");
+                                    General.setSharedPreferences(getContext(),AppConstants.MY_LNG,buildingCacheModels.get(i).getLng()+"");
                                     ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
 //                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(listing[i],transaction[i],portal[i],config[i]);
                                     ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig());
@@ -1316,8 +1319,10 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
 
 
                     //make retrofit call to get Min Max price
-                    if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
-                        try {
+                   // if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
+                     if (isNetworkAvailable()) {
+
+                    try {
 
                             Log.i("Network available","%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                             getPrice();
@@ -1333,8 +1338,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
             droomChatFirebase.getDroomList(dbHelper.getValue(DatabaseConstants.userId), getActivity());
             */
 
-        dbHelper.save(DatabaseConstants.userRole, "Client");
-
+        //dbHelper.save(DatabaseConstants.userRole, "Client");
+General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         rupeesymbol.bringToFront();
         tvRate.bringToFront();
 //        ll_marker.bringToFront();
@@ -1459,6 +1464,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 index = ((ViewGroup) property_type_layout.getParent()).indexOfChild(property_type_layout);
                 Log.i("indexxx", "index of layout :12 " + index);
                 property_type_layout.setVisibility(View.GONE);
+                getPrice();
             }
         });
         shop.setOnClickListener(new View.OnClickListener() {
@@ -1478,7 +1484,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 Log.i("home", "you are in shop ");
                 PropertyButtonAnimation();
 //                property_type_layout.setVisibility(View.GONE);
-
+                getPrice();
             }
         });
         industrial.setOnClickListener(new View.OnClickListener() {
@@ -1499,6 +1505,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 Log.i("home", "you are in industrial ");
                 PropertyButtonAnimation();
 //                property_type_layout.setVisibility(View.GONE);
+                getPrice();
 
             }
         });
@@ -1521,7 +1528,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 PropertyButtonAnimation();
                // property_type_layout.setVisibility(View.GONE);
                 Log.i("indexxx", "index of layout last : " + index+" "+((ViewGroup) property_type_layout.getParent()));
-
+                getPrice();
             }
         });
 
@@ -2101,7 +2108,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
             user.setGcmId(SharedPrefs.getString(getActivity(), SharedPrefs.MY_GCM_ID));
             user.setUserRole("client");
             user.setLongitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
-            user.setProperty_type("home");
+            user.setProperty_type(Property_type.toLowerCase());
             user.setLatitude(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
             Log.i("jumba1", "My_lng" + "  " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
             if (SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) == "")
@@ -2271,7 +2278,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                                 Log.i("Buildingdata", "loc " + building_count + " " + mCustomerMarker.length);
                                                 SnackbarManager.show(
                                                         Snackbar.with(getActivity())
-                                                                .text("Displaying 5 buildings out of " + building_count)
+                                                                //.text("Displaying 5 buildings out of " + building_count)
+                                                                .text("Drag to get more Buildings..")
                                                                 .position(Snackbar.SnackbarPosition.TOP)
                                                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
                                             } catch (Exception e) {
@@ -2288,7 +2296,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                             tvRate.setVisibility(View.VISIBLE);
                                             rupeesymbol.setVisibility(View.VISIBLE);
                                             tvFetchingrates.setVisibility(View.GONE);
-                                            missingArea.setVisibility(View.GONE);
+                                            //missingArea.setVisibility(View.GONE);
 
                                         } else {
                                             Log.i("tt", "I am here" + 3);
@@ -2300,7 +2308,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                             rupeesymbol.setVisibility(View.INVISIBLE);
                                             tvFetchingrates.setVisibility(View.VISIBLE);
                                             tvFetchingrates.setText("Coming Soon...");
-                                            missingArea.setVisibility(View.VISIBLE);
+                                           // missingArea.setVisibility(View.VISIBLE);
                                             mVisits.setEnabled(false);
                                             txtFilterValue.setEnabled(false);
                                             CancelAnimation();
@@ -2314,7 +2322,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                         rupeesymbol.setVisibility(View.INVISIBLE);
                                         tvFetchingrates.setVisibility(View.VISIBLE);
                                         tvFetchingrates.setText("Coming Soon...");
-                                        missingArea.setVisibility(View.VISIBLE);
+                                       // missingArea.setVisibility(View.VISIBLE);
                                         mVisits.setEnabled(false);
                                         txtFilterValue.setEnabled(false);
                                         CancelAnimation();
@@ -2470,9 +2478,10 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                     .color( Color.parseColor( AppConstants.DEFAULT_SNACKBAR_COLOR ) ) );
                     tvRate.setText( "/ month" );
                     brokerType = "rent";
+                    dispProperty.setVisibility(View.VISIBLE);
                     AppConstants.CURRENT_DEAL_TYPE = "rent";
-                    dbHelper.save( DatabaseConstants.brokerType, "LL" );
-                    dbHelper.save( "brokerType", "On Rent" );
+                   // dbHelper.save( DatabaseConstants.brokerType, "LL" );
+                   // dbHelper.save( "brokerType", "On Rent" );
                     recordWorkout.setBackgroundColor( Color.parseColor( "#2dc4b6" ) );
                     if (Property_type.equalsIgnoreCase( "" )) {
                         rental.setText( "Home" );
@@ -2497,7 +2506,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
 
 
                 case 1:
-                    if(!General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                    dispProperty.setVisibility(View.GONE);
                         try {
                             new CountDownTimer(1000, 500) {
                                 public void onTick(long millisUntilFinished) {
@@ -2512,48 +2521,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                             }.start();
                         } catch (Exception e) {
                         }
-                    }else{
-                        marquee( 500, 100 );
-                        int index1 = ((ViewGroup) property_type_layout.getParent()).indexOfChild( property_type_layout );
-                        Log.i( "indexxx", "index of layout : " + index1 +" "+property_type_layout);
-                        /*if (index1 == 3) {
-                                           Log.i( "indexx", "inside if stmt" );
-                                           property_type_layout.clearAnimation();
-                                           parenttop.removeView( property_type_layout );
-                                           parentbottom.addView( property_type_layout, 7 );
-                                       }
 
-                                       PropertyButtonSlideAnimation();*/
-                        SnackbarManager.show(
-                                Snackbar.with( getContext() )
-                                        .text( "Buy/Sell Property Type set" )
-                                        .position( Snackbar.SnackbarPosition.TOP )
-                                        .color( Color.parseColor( AppConstants.DEFAULT_SNACKBAR_COLOR ) ) );
-                        updateHorizontalPicker();
-                        tvRate.setText( "/ sq.ft" );
-                        brokerType = "resale";
-                        AppConstants.CURRENT_DEAL_TYPE = "resale";
-                        dbHelper.save( DatabaseConstants.brokerType, "OR" );
-                        dbHelper.save( "brokerType", "For Sale" );
-                        if (Property_type.equalsIgnoreCase( "" )) {
-                            rental.setText( "Home" );
-                            resale.setVisibility( View.VISIBLE );
-                            rental.setVisibility( View.INVISIBLE );
-                            property_type_layout.setVisibility( View.VISIBLE );
-                        } else {
-                            resale.setText( Property_type );
-                            resale.setVisibility( View.VISIBLE );
-                            rental.setVisibility( View.INVISIBLE );
-                            property_type_layout.setVisibility( View.VISIBLE );
-                        }
-                        if (buildingCacheModels.get(INDEX).getFlag() == true) {
-                            tv_building.setVisibility( View.VISIBLE );
-                            tv_building.setText( "Average Rate in last 1 WEEK" );
-                            String text = "<font color=#ffffff>" + buildingCacheModels.get(INDEX).getName() + "</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat( String.valueOf( buildingCacheModels.get(INDEX).getOr_psf() ) ).substring( 2, General.currencyFormat( String.valueOf( buildingCacheModels.get(INDEX).getOr_psf() ) ).length() ) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font>";
-                            tvFetchingrates.setText( Html.fromHtml( text ) );
-                        }
-                        break;
-                    }
+                    break;
                     /* case 1:
                                        Intent intent = new Intent( getContext(), Game.class );
                                        startActivity( intent );
@@ -2570,6 +2539,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                        }
 
                                        PropertyButtonSlideAnimation();*/
+                    dispProperty.setVisibility(View.VISIBLE);
                     SnackbarManager.show(
                             Snackbar.with( getContext() )
                                     .text( "Buy/Sell Property Type set" )
@@ -2579,8 +2549,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                     tvRate.setText( "/ sq.ft" );
                     brokerType = "resale";
                     AppConstants.CURRENT_DEAL_TYPE = "resale";
-                    dbHelper.save( DatabaseConstants.brokerType, "OR" );
-                    dbHelper.save( "brokerType", "For Sale" );
+                   // dbHelper.save( DatabaseConstants.brokerType, "OR" );
+                   // dbHelper.save( "brokerType", "For Sale" );
                     if (Property_type.equalsIgnoreCase( "" )) {
                         rental.setText( "Home" );
                         resale.setVisibility( View.VISIBLE );
@@ -2747,8 +2717,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
             try {
                 String lat1 = SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT);
                 String lng1 = SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG);
-                JSONObject jsonObj = getJSONfromURL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat1 + ","
-                        + lng1 + "&sensor=true");
+                JSONObject jsonObj = getJSONfromURL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat1 + ","
+                        + lng1 + "&sensor=true&key=AIzaSyC7aqVbRyNsF1JNgtYbpPDsJAf981dPp5Q");
                 Log.i("chai","Response_chai1");
 //                JSONObject jsonObj = getJSONfromURL("https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input=Arun%20Ka&scope=APP&key=AIzaSyC7aqVbRyNsF1JNgtYbpPDsJAf981dPp5Q");
                 String Status = jsonObj.getString("status");
@@ -2935,7 +2905,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
         horizontalPicker.setVisibility(View.GONE);
         tv_building.setVisibility(View.GONE);
         tvRate.setVisibility(View.GONE);
-        rupeesymbol.setVisibility(View.INVISIBLE);
+        rupeesymbol.setVisibility(View.GONE);
         tvFetchingrates.setVisibility(View.VISIBLE);
         String llmin1;
         String llmax1;
@@ -3211,7 +3181,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                 horizontalPicker.stopScrolling();
 
             }
-            addressBar.setText("Getting Adddress... ");
+            addressBar.setText("Getting Address... ");
 //                          Log.i("MotionEvent.ACTION_MOVE", "=========================");
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 //                                  horizontalPicker.stopScrolling();

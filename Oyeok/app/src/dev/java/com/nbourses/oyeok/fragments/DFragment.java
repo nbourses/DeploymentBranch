@@ -22,15 +22,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.sdsmdg.tastytoast.TastyToast;
+
+//import com.nbourses.oyeok.Database.DBHelper;
 
 
 public class DFragment extends Fragment implements CustomPhasedListener {
@@ -97,12 +96,12 @@ public class DFragment extends Fragment implements CustomPhasedListener {
     }
     private  void init(){
         locality.setText(General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
-        DBHelper dbHelper = new DBHelper(getContext());
-        if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
+        //DBHelper dbHelper = new DBHelper(getContext());
+      /*  if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getContext().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), getContext().getResources().getString(R.string.Resale)}));
         else
             mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getContext().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
-        mPhasedSeekBar.setListener(this);
+        mPhasedSeekBar.setListener(this);*/
 
         cardMaps.setOnClickListener(new View.OnClickListener() {
             @Override

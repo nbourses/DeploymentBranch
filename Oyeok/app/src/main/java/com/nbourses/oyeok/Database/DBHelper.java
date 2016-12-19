@@ -1,3 +1,4 @@
+/*
 package com.nbourses.oyeok.Database;
 
 import android.content.ContentValues;
@@ -11,9 +12,11 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+*/
 /**
  * Created by Abhinandan on 11/26/2015.
- */
+ *//*
+
 public class DBHelper extends SQLiteOpenHelper{
 
     public static final String DB_NAME="mobileData.db";
@@ -44,7 +47,9 @@ public class DBHelper extends SQLiteOpenHelper{
         onCreate(db);
     }
 
-    /* Basic Database Functionalities */
+    */
+/* Basic Database Functionalities *//*
+
 
     public long save(String key,String value) {
         if(ifexists(key)==0) {
@@ -116,3 +121,4 @@ public class DBHelper extends SQLiteOpenHelper{
         return keyValuePairList;
     }
 }
+*/

@@ -162,16 +162,16 @@ public class AddListingFinalCard extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     transaction_type.setText("RESALE");
-                    tt="resale";
-                    tv_rate.setText("/sq.ft");
+                    tt="or";
+                    tv_rate.setText("");
                     minvalue=orMin*area;
                     maxvalue=orMax*area;
                     minvalue=minvalue/1000;
                     minvalue=minvalue*1000;
                     maxvalue=maxvalue/1000;
                     maxvalue=maxvalue*1000;
-                    min.setText(String.valueOf(General.currencyFormat((minvalue)+"")));
-                    max.setText(String.valueOf(General.currencyFormat((maxvalue)+"")));
+                    min.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue)+"")));
+                    max.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((maxvalue)+"")));
 //                    selected_rate.setText(String.valueOf(General.currencyFormat((orMin*area)+"")));
                     selected_rate.setText(General.currencyFormat(String.valueOf(minvalue)).substring(2, General.currencyFormat(String.valueOf(minvalue)).length()));
                     seekBar.setMax(maxvalue);
@@ -179,7 +179,7 @@ public class AddListingFinalCard extends Fragment {
                 }
                 else{
                     transaction_type.setText("RENT");
-                    tt="rental";
+                    tt="ll";
                     tv_rate.setText("/month");
                     int price =llMin*area;
                     minvalue=llMin*area;
@@ -188,8 +188,8 @@ public class AddListingFinalCard extends Fragment {
                     minvalue=minvalue*1000;
                     maxvalue=maxvalue/1000;
                     maxvalue=maxvalue*1000;
-                    min.setText(String.valueOf(General.currencyFormat((minvalue)+"")));
-                    max.setText(String.valueOf(General.currencyFormat((maxvalue)+"")));
+                    min.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue)+"")));
+                    max.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((maxvalue)+"")));
 //                    selected_rate.setText(String.valueOf(General.currencyFormat((llMin*area)+"")));
                     selected_rate.setText(General.currencyFormat(String.valueOf(minvalue)).substring(2, General.currencyFormat(String.valueOf(minvalue)).length()));
                     seekBar.setMax(maxvalue);
@@ -419,7 +419,7 @@ private void init(){
        }else{
            addListingBorker.setReq_avl("req");
        }
-       if(tt.equalsIgnoreCase("rental")){
+       if(tt.equalsIgnoreCase("ll")){
           addListingBorker.setLl_pm(numberAsString);
 
            addListingBorker.setOr_psf("0");
@@ -433,7 +433,10 @@ private void init(){
        addListingBorker.setSublocality("Andheri west");
        else
            addListingBorker.setSublocality(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
-       addListingBorker.setMobile("+918655201886");
+
+
+      // addListingBorker.setMobile("+918655201886");
+       addListingBorker.setMobile(General.getSharedPreferences(getContext(),AppConstants.MOBILE_NUMBER));
 
 
 
@@ -657,9 +660,9 @@ private  void getprice()
                                 minvalue=minvalue*1000;
                                 maxvalue=maxvalue/1000;
                                 maxvalue=maxvalue*1000;
-                                min.setText(String.valueOf(General.currencyFormat((minvalue)+"")));
-                                max.setText(String.valueOf(General.currencyFormat((maxvalue)+"")));
-                                selected_rate.setText(String.valueOf(General.currencyFormat((minvalue)+"")));
+                                min.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue)+"")));
+                                max.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((maxvalue)+"")));
+                                selected_rate.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue)+"")));
                                 seekBar.setMax(maxvalue);
                                 seekBar.setMin(minvalue);
                             }
@@ -680,38 +683,4 @@ private  void getprice()
 
  }
 
-
-
-
-
-
-
-   /* // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction( uri );
-        }
-    }*/
-
-    /*@Override
-    public void onAttach(Context context) {
-        super.onAttach( context );
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException( context.toString()
-                    + " must implement OnFragmentInteractionListener" );
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }*/
 }

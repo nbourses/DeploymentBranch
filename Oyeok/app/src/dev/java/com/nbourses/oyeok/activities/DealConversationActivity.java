@@ -53,8 +53,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateStatus;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
@@ -120,6 +118,8 @@ import retrofit.client.Response;
 
 import static android.util.Log.i;
 
+//import com.nbourses.oyeok.Database.DBHelper;
+
 public class DealConversationActivity extends AppCompatActivity implements OnRatingBarChangeListener {
 
     @Bind(R.id.edtTypeMsg)
@@ -156,7 +156,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
     private TextView texrating;
 
-    private DBHelper dbHelper;
+   // private DBHelper dbHelper;
 
     private String onlineColor;
     private String offlineColor;
@@ -299,7 +299,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             General.internetConnectivityMsg(this);
         }
 
-        dbHelper = new DBHelper(getBaseContext());
+        //dbHelper = new DBHelper(getBaseContext());
 
 //        IntentFilter filter = new IntentFilter("shine");
 //        LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
@@ -1654,7 +1654,10 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
             else
                 jsonMsg.put("_from", General.getSharedPreferences(this ,AppConstants.TIME_STAMP_IN_MILLI));
 
-            jsonMsg.put("name", dbHelper.getValue(DatabaseConstants.name));
+           // jsonMsg.put("name", dbHelper.getValue(DatabaseConstants.name));
+//changed after removing sqldb sushil
+            jsonMsg.put("name", General.getSharedPreferences(getBaseContext(),AppConstants.NAME));
+
             jsonMsg.put("to", channel_name);
             jsonMsg.put("message", messageText);
             jsonMsg.put("status", " ");

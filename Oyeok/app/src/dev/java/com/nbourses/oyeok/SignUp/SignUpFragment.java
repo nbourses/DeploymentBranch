@@ -39,7 +39,7 @@ import com.digits.sdk.android.DigitsAuthButton;
 import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsSession;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.nbourses.oyeok.Database.DBHelper;
+//import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.Firebase.UserProfileFirebase;
@@ -90,7 +90,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     private static final int RESULT_LOAD_IMAGE = 1;
     Dialog alertD;
     Context context;
-    DBHelper dbHelper;
+    //DBHelper dbHelper;
     private static Bitmap Image = null;
     private static Bitmap rotateImage = null;
     String picturePath, mobile;
@@ -192,7 +192,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 okBroker = true;
             Log.i("Signup called =", "view assigned");
             View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
-            dbHelper=new DBHelper(getActivity());
+            //dbHelper=new DBHelper(getActivity());
             Log.i("Signup called =", "view assigned");
             Digits.getSessionManager().clearActiveSession();
             authCallback = new AuthCallback() {
@@ -545,15 +545,15 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                             if (!signUp.responseData.getName().equalsIgnoreCase("null")) {
                                 Log.i(TAG, "fakata name " + signUp.responseData.getName());
                                 General.setSharedPreferences(getContext(), AppConstants.NAME, signUp.responseData.getName());
-                                dbHelper.save(DatabaseConstants.name, signUp.responseData.getName());
+                                //dbHelper.save(DatabaseConstants.name, signUp.responseData.getName());
                             }
                             if (!signUp.responseData.getEmail().equalsIgnoreCase("null")) {
                                 Log.i(TAG, "fakata name " + signUp.responseData.getEmail());
                                 General.setSharedPreferences(getContext(), AppConstants.EMAIL, signUp.responseData.getEmail());
-                                dbHelper.save(DatabaseConstants.email, signUp.responseData.getEmail());
+                               // dbHelper.save(DatabaseConstants.email, signUp.responseData.getEmail());
                             }
-                            Log.i("TAG","fakata name 12 "+dbHelper.getValue(DatabaseConstants.name));
-                            Log.i("TAG","fakata email 12 "+dbHelper.getValue(DatabaseConstants.email));
+                           // Log.i("TAG","fakata name 12 "+dbHelper.getValue(DatabaseConstants.name));
+                          //  Log.i("TAG","fakata email 12 "+dbHelper.getValue(DatabaseConstants.email));
                             Log.i("TAG","fakata email 13 "+General.getSharedPreferences(getContext(), AppConstants.NAME));
                             Log.i("TAG","fakata email 13 "+General.getSharedPreferences(getContext(), AppConstants.EMAIL));
                         }catch(Exception e){
@@ -573,7 +573,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 okBroker = false;
                                 role_of_user = "client";
                                 General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
-                                dbHelper.save(DatabaseConstants.userRole, "Client");
+                                //dbHelper.save(DatabaseConstants.userRole, "Client");
                                 Log.i(TAG,"fakat 1 "+General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
                                 userInfo.setUserRole("client");
                             }  else{
@@ -583,7 +583,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                 okBroker = true;
                                 role_of_user = "broker";
                                 General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"broker");
-                                dbHelper.save(DatabaseConstants.userRole, "Broker");
+                                //dbHelper.save(DatabaseConstants.userRole, "Broker");
                                 Log.i(TAG,"fakat 2 "+General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
                                 userInfo.setUserRole("broker");
                             }
@@ -687,16 +687,17 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                             Log.i(TAG,"Caught in exdception UseerInfo Realm "+e );
                         }
                         Log.i("TRACE", "bef saveDb");
-                        dbHelper.save(DatabaseConstants.userId, my_user_id);
+                       // dbHelper.save(DatabaseConstants.userId, my_user_id);
                         SharedPrefs.save(getActivity(), "UserId", my_user_id);
-                        dbHelper.save(DatabaseConstants.name, Sname);
-                        dbHelper.save(DatabaseConstants.email,Semail);
-                        dbHelper.save(DatabaseConstants.mobileNumber,mobile_number);
+                        General.setSharedPreferences(getContext(),AppConstants.USER_ID,my_user_id);
+                       // dbHelper.save(DatabaseConstants.name, Sname);
+                       // dbHelper.save(DatabaseConstants.email,Semail);
+                       // dbHelper.save(DatabaseConstants.mobileNumber,mobile_number);
                         General.setSharedPreferences(getContext(), AppConstants.MOBILE_NUMBER,mobile_number);
-                        if (dbHelper.getValue(DatabaseConstants.userRole).equals("Broker")) {
+                       /* if (dbHelper.getValue(DatabaseConstants.userRole).equals("Broker")) {
                             dbHelper.save(DatabaseConstants.user, "Broker");
                         } else
-                            dbHelper.save(DatabaseConstants.user, "Client");
+                            dbHelper.save(DatabaseConstants.user, "Client");*/
                         try {  // clear unregistered deals from realm
                             Realm myRealm = General.realmconfig(getContext());
                             myRealm.beginTransaction();
@@ -765,7 +766,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                             Log.i(TAG,"c prasanna 2 " +j);
                             AcceptOkCall a = new AcceptOkCall();
                             a.setmCallBack(SignUpFragment.this);
-                            a.acceptOk(listings,p,j,dbHelper, getActivity());
+                            a.acceptOk(listings,p,j,getActivity());
                         }
                     }
                     @Override

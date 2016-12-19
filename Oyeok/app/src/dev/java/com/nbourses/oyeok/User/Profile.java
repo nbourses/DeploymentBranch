@@ -23,8 +23,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateProfile;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
@@ -40,13 +38,15 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+//import com.nbourses.oyeok.Database.DBHelper;
+
 
 public class Profile extends Fragment {
     private TextView role_txt,phoneTxt;
     private EditText emailTxt,username_txt;
     private Button updateProfile;
     private ImageView profileImage,profileImageMain;
-    DBHelper dbhelper;
+   // DBHelper dbhelper;
     String filePath="";
 //
 //    @Bind(R.id.txtEmail)
@@ -82,11 +82,11 @@ public class Profile extends Fragment {
 
 
 
-        dbhelper=new DBHelper(getActivity());
+        //dbhelper=new DBHelper(getActivity());
         username_txt=(EditText)layout.findViewById(R.id.txt_user);
         updateProfile= (Button)layout.findViewById(R.id.update_profile);
-        Log.i("TAG","fakata name 12 "+dbhelper.getValue(DatabaseConstants.name));
-        Log.i("TAG","fakata email 12 "+dbhelper.getValue(DatabaseConstants.email));
+       // Log.i("TAG","fakata name 12 "+dbhelper.getValue(DatabaseConstants.name));
+       // Log.i("TAG","fakata email 12 "+dbhelper.getValue(DatabaseConstants.email));
         Log.i("TAG","fakata email 13 "+General.getSharedPreferences(getContext(), AppConstants.NAME));
         Log.i("TAG","fakata email 13 "+General.getSharedPreferences(getContext(), AppConstants.EMAIL));
         Log.i("TAG","fakata email 14 "+General.getSharedPreferences(getContext(), AppConstants.MOBILE_NUMBER));
@@ -197,8 +197,10 @@ public class Profile extends Fragment {
         user.setEmail(emailTxt.getText().toString());
         user.setName((username_txt.getText().toString()));
         user.setUserRole((String) role_txt.getText());
-        user.setUserId(dbhelper.getValue(DatabaseConstants.userId));
-        user.setMyPhoto(filePath);
+//        user.setUserId(dbhelper.getValue(DatabaseConstants.userId));
+            user.setUserId(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+
+            user.setMyPhoto(filePath);
         user.setPlatform("android");
         user.setSeeWhat("all");
         user.setAdditionalProperty(null, null);
@@ -223,11 +225,11 @@ public class Profile extends Fragment {
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
 
-                        dbhelper.save(DatabaseConstants.email, emailTxt.getText().toString());
+                        //dbhelper.save(DatabaseConstants.email, emailTxt.getText().toString());
                 General.setSharedPreferences(getContext(), AppConstants.EMAIL,emailTxt.getText().toString());
-                dbhelper.save(DatabaseConstants.name,username_txt.getText().toString());
+               // dbhelper.save(DatabaseConstants.name,username_txt.getText().toString());
                 General.setSharedPreferences(getContext(),AppConstants.NAME,username_txt.getText().toString());
-                dbhelper.save(DatabaseConstants.imageFilePath,filePath);
+               // dbhelper.save(DatabaseConstants.imageFilePath,filePath);
                 //drawerFragment = (FragmentDrawer) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
 //                AppConstants.EMAIL_PROFILE=email;
                 profileImageMain = (ImageView)getActivity().findViewById(R.id.profile_image_main);

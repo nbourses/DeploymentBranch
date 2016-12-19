@@ -49,8 +49,6 @@ import com.github.mikephil.charting.utils.PointD;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.loopj.android.image.SmartImageView;
-import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.BrokerBuildings;
@@ -90,6 +88,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+
+//import com.nbourses.oyeok.Database.DBHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -192,7 +192,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private TextView txtPreviouslySelectedOptionB;
     private JSONArray jsonObjectArray;
     private int selectedItemPosition;
-    private DBHelper dbHelper;
+   // private DBHelper dbHelper;
     SharedPreferences.OnSharedPreferenceChangeListener listener;
     //private int[] buildingsSelected = new int[3];
     private List<Integer> buildingsSelected = new ArrayList<Integer>();
@@ -479,7 +479,7 @@ private String transaction_type="Rental";
 
         circularSeekbar.setmImageAction(this);
 
-        dbHelper = new DBHelper(getContext());
+        //dbHelper = new DBHelper(getContext());
 
         //get preok data
        // preok();
@@ -777,7 +777,7 @@ private String transaction_type="Rental";
             }
             RestAdapter restAdapter = new RestAdapter.Builder()
                     //.setEndpoint(AppConstants.SERVER_BASE_URL_101)
-                    .setEndpoint(AppConstants.SERVER_BASE_URL_102)
+                    .setEndpoint(AppConstants.SERVER_BASE_URL_11)
                     .build();
             restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
@@ -874,7 +874,7 @@ private String transaction_type="Rental";
                 } else {
                     if (!General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes")) {
 
-                        dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
+                        //dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
                         General.setSharedPreferences(getContext(), AppConstants.ROLE_OF_USER, "broker");
                         //show sign up screen if broker is not registered
                         Bundle bundle = new Bundle();
@@ -902,7 +902,7 @@ private String transaction_type="Rental";
                         //here broker is registered
                         AcceptOkCall a = new AcceptOkCall();
                         a.setmCallBack(BrokerPreokFragment.this);
-                        a.acceptOk(listings, jsonObjectArray, selectedItemPosition, dbHelper, getActivity());
+                        a.acceptOk(listings, jsonObjectArray, selectedItemPosition, getActivity());
                         General.setBadgeCount(getContext(), AppConstants.RENTAL_COUNT, 0);
                         General.setBadgeCount(getContext(), AppConstants.RESALE_COUNT, 0);
                         General.setBadgeCount(getContext(), AppConstants.TENANTS_COUNT, 0);
@@ -988,7 +988,8 @@ private String transaction_type="Rental";
                 }
                 //if (!General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
             if (!General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes")) {
-                    dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
+                    //dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
+                General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"Broker");
                     //show sign up screen if broker is not registered
                     Bundle bundle = new Bundle();
                     //bundle.putString("lastFragment", "BrokerPreokFragment");
@@ -1028,7 +1029,7 @@ private String transaction_type="Rental";
                     //here broker is registered
                     AcceptOkCall a = new AcceptOkCall();
                     a.setmCallBack(BrokerPreokFragment.this);
-                    a.acceptOk(listings, jsonObjectArray, selectedItemPosition, dbHelper, getActivity());
+                    a.acceptOk(listings, jsonObjectArray, selectedItemPosition, getActivity());
                     General.setBadgeCount(getContext(), AppConstants.RENTAL_COUNT, 0);
                     General.setBadgeCount(getContext(), AppConstants.RESALE_COUNT, 0);
                     General.setBadgeCount(getContext(), AppConstants.TENANTS_COUNT, 0);

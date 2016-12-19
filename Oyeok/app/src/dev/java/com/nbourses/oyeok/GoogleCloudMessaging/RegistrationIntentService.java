@@ -7,14 +7,14 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 
 import java.io.IOException;
+
+//import com.nbourses.oyeok.Database.DBHelper;
 
 /**
  * Created by YASH_SHAH on 28/12/2015.
@@ -24,7 +24,7 @@ public class RegistrationIntentService extends IntentService {
 
     private static final String TAG = "RegIntentService";
     private static final String[] TOPICS = {"global"};
-    public DBHelper dbHelper;
+   // public DBHelper dbHelper;
 
     public RegistrationIntentService() {
         super(TAG);
@@ -34,8 +34,10 @@ public class RegistrationIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        dbHelper = new DBHelper(this.getBaseContext());
-        if(dbHelper.getValue(DatabaseConstants.gcmId).equals("null")) {
+        //dbHelper = new DBHelper(this.getBaseContext());
+//        if(dbHelper.getValue(DatabaseConstants.gcmId).equals("null")) {
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.GCM_ID).equalsIgnoreCase("")) {
+
             try {
                 // [START register_for_gcm]
                 // Initially this call goes out to the network to retrieve the token, subsequent calls
@@ -46,7 +48,7 @@ public class RegistrationIntentService extends IntentService {
                         GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
                 // [END get_token]
                 SharedPrefs.save(this, SharedPrefs.MY_GCM_ID,token);
-                dbHelper.save(DatabaseConstants.gcmId, token);
+              //  dbHelper.save(DatabaseConstants.gcmId, token);
                 General.setSharedPreferences(this, AppConstants.GCM_ID,token);
                 // TODO: Implement this method to send any registration to your app's servers.
                 sendRegistrationToServer(token);
@@ -64,7 +66,7 @@ public class RegistrationIntentService extends IntentService {
             }
             // Notify UI that registration has completed, so the progress indicator can be hidden.
         }
-        Log.i(TAG, "GCM Registration Token: " + dbHelper.getValue(DatabaseConstants.gcmId));
+       // Log.i(TAG, "GCM Registration Token: " + dbHelper.getValue(DatabaseConstants.gcmId));
     }
 
     /**
