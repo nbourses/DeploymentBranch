@@ -365,7 +365,16 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             setupPubnub(channel_name);
         }
 
-        General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,channel_name);  // check my channel case later
+        Log.i(TAG,channel_name+"   "+ General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)+" marine2    "+General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI));
+
+        if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME))
+            General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI));
+        else
+            General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,channel_name);
+
+        Log.i(TAG,channel_name+"   "+ General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)+" marine3    "+General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI));
+
+
     }
 
     @Override
@@ -469,11 +478,16 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 }
 
                 else if(bundle.containsKey(AppConstants.OK_ID)){
+                    Log.i(TAG,"listing ghya 1 "+channel_name+"   "+General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI));
+                    if(bundle.getString(AppConstants.OK_ID).equalsIgnoreCase(General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI)))
+                        channel_name = AppConstants.SUPPORT_CHANNEL_NAME;
+                    else
                     channel_name = bundle.getString(AppConstants.OK_ID); //my_channel if came from root item
+
                 }
 
 
-                Log.i(TAG,"listing ghya listing 1 "+channel_name);
+                Log.i(TAG,"listing ghya 2 "+channel_name);
 
 
                 if(channel_name.equalsIgnoreCase("my_channel"))
@@ -574,8 +588,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         chatListView.setOnScrollListener(this);
         Log.i(TAG, "channel_name yo" + channel_name);
-
-        General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,channel_name);
 
         userRole = bundle.getString("userRole");
 
@@ -2334,29 +2346,11 @@ if(i==AppConstants.MSG_COUNT) {
             Log.i(TAG,"until fitra 3 "+myRealm.isInTransaction());
         }
 
-
-
-//        JSONObject jo = new JSONObject();
-//
-//// populate the array
-//        try {
-//            jo.put("msg",msgs);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
-//        General.setSharedPreferences(this,channel_name+AppConstants.CACHE,msgs.toString());
-//        Log.i("CHAT","cache "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
-
-        try {
+       /* try {
 
 //            Realm myRealm = General.realmconfig(this);
             RealmResults<Message> results1 =
                     myRealm.where(Message.class).equalTo(AppConstants.OK_ID, channel_name).findAll();
-
-//            Message myPuppy = myRealm.where(Message.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findFirst();
-//
-//            Log.i(TAG, "my name is " + myPuppy.getName());
 
             for (Message c : results1) {
                 Log.i(TAG, "until insiderou2 ");
@@ -2367,7 +2361,7 @@ if(i==AppConstants.MSG_COUNT) {
         }catch(Exception e){
             Log.i(TAG,"Caught in the exception reading cache from realm "+e);
         }
-
+*/
 
     }
 
@@ -2464,49 +2458,47 @@ if(i==AppConstants.MSG_COUNT) {
     }
 
     private void loadFinalHistory(){
+        Log.i(TAG,"Load final history called ");
+
+try {
 
 
+    pubnub.history()
+            .channel(channel_name) // where to fetch history from
+            .count(AppConstants.MSG_COUNT) // how many items to fetch
+            .includeTimetoken(true) // include timetoken with each entry
+            .async(new PNCallback<PNHistoryResult>() {
+                @Override
+                public void onResponse(PNHistoryResult result, PNStatus status) {
+                    try {
+
+                        for (PNHistoryItemResult historyItemResult : result.getMessages()) {
+                            Log.i(TAG, "history is tha 2 " + historyItemResult.getEntry());
+                            try {
+                                if (historyItemResult.getEntry().has("pn_gcm")) {
+                                    Log.i(TAG, "history is tha 3 " + historyItemResult.getEntry().toString());
+                                    // String content = jsonNode.get("data").textValue();
+
+                                    String j = historyItemResult.getEntry().get("pn_gcm").get("data").toString();
+                                    // JSONObject j = new JSONObject(historyItemResult.getEntry().get("pn_gcm").toString());
+                                    Log.i(TAG, "history is tha 7 " + j);
+                                    JSONObject jsonObj = new JSONObject(j);
+                                    jsonObj.put("timetoken", historyItemResult.getTimetoken().toString());
 
 
+                                    // jsonA = new JSONArray();
+                                    Log.i(TAG, "history is tha 10 jsonArrayHistory jsonObj " + jsonObj);
+                                    jsonArrayHistory.put(jsonObj);
+                                    Log.i(TAG, "history is tha 9 jsonArrayHistory " + jsonArrayHistory);
 
-
-
-       pubnub.history()
-                .channel(channel_name) // where to fetch history from
-                .count(AppConstants.MSG_COUNT) // how many items to fetch
-                .includeTimetoken(true) // include timetoken with each entry
-                .async(new PNCallback<PNHistoryResult>() {
-                    @Override
-                    public void onResponse(PNHistoryResult result, PNStatus status) {
-                        try {
-
-                            for (PNHistoryItemResult historyItemResult : result.getMessages()) {
-                                Log.i(TAG, "history is tha 2 " + historyItemResult.getEntry());
-                                try {
-                                    if (historyItemResult.getEntry().has("pn_gcm")) {
-                                        Log.i(TAG, "history is tha 3 " + historyItemResult.getEntry().toString());
-                                        // String content = jsonNode.get("data").textValue();
-
-                                        String j = historyItemResult.getEntry().get("pn_gcm").get("data").toString();
-                                        // JSONObject j = new JSONObject(historyItemResult.getEntry().get("pn_gcm").toString());
-                                        Log.i(TAG, "history is tha 7 " + j);
-                                        JSONObject jsonObj = new JSONObject(j);
-                                        jsonObj.put("timetoken", historyItemResult.getTimetoken().toString());
-
-
-                                        // jsonA = new JSONArray();
-                                        Log.i(TAG, "history is tha 10 jsonArrayHistory jsonObj " + jsonObj);
-                                        jsonArrayHistory.put(jsonObj);
-                                        Log.i(TAG, "history is tha 9 jsonArrayHistory " + jsonArrayHistory);
-
-                                    }
-
-                                } catch (Exception e) {
-                                    Log.i(TAG, "PUBNUB history Caught in exception recieved message not proper " + e);
                                 }
+
+                            } catch (Exception e) {
+                                Log.i(TAG, "PUBNUB history Caught in exception recieved message not proper " + e);
                             }
-                            clearCache();
-                            cacheMessages(jsonArrayHistory);
+                        }
+                        clearCache();
+                        cacheMessages(jsonArrayHistory);
 
 
                        /* try {
@@ -2522,10 +2514,12 @@ if(i==AppConstants.MSG_COUNT) {
                         catch (Exception e) {
                             e.printStackTrace();
                         }*/
-                        }catch(Exception e){}
-                        }
+                    } catch (Exception e) {
+                        Log.i(TAG, "Caught in exception loading final history " + e);
+                    }
+                }
 
-                });
+            });
 
 
        /* Callback callback = new Callback() {
@@ -2553,7 +2547,9 @@ if(i==AppConstants.MSG_COUNT) {
         // pubnub.history(channel_name, 10, false, callback);
         pubnub.history(channel_name,true, 15,callback);
         Log.i(TAG, "inside loadHistoryFromPubnub channel name is2 yo jsonArrayHistory 1 "+jsonArrayHistory);*/
+}catch(Exception e){
 
+}
 
     }
 
@@ -3002,6 +2998,7 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
     }
 
     private void clearNotifCount(){
+        Log.i(TAG,"clear notification called ");
         try{
             Realm myRealm = General.realmconfig(this);
             NotifCount notifcount1 = myRealm.where(NotifCount.class).equalTo(AppConstants.OK_ID, channel_name).findFirst();
@@ -3016,7 +3013,7 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
 
         }
         catch(Exception e){
-
+Log.i(TAG,"Caught in exception clearing notification count "+e);
         }
     }
 
@@ -3101,6 +3098,10 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
             finish();
 
         }
+        else{
+            Log.i(TAG,"onsuperp");
+            super.onBackPressed();
+        }
 
     }
 
@@ -3111,7 +3112,7 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
 
         updateStatus.setOkId(okId);
 
-        Log.i("getDealStatus ","getDealStatus okId "+General.getSharedPreferences(c,AppConstants.USER_ID)+" "+okId);
+        Log.i("getDealStatus ","getDealStactus okId "+General.getSharedPreferences(c,AppConstants.USER_ID)+" "+okId);
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(AppConstants.SERVER_BASE_URL_101)

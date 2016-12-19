@@ -447,6 +447,7 @@ public class MyGcmListenerService extends GcmListenerService {
             // [END_EXCLUDE]
         } else {
             try {
+                Log.i(TAG,General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)+" marine    "+data.getString("to"));
                 if (!General.getSharedPreferences(this, AppConstants.USER_ID).equalsIgnoreCase(data.getString("_from")) && !(General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID).equalsIgnoreCase(data.getString("to"))))
                 {
                     Log.i(TAG,"muted ok ids "+General.getMutedOKIds(this));
@@ -455,6 +456,7 @@ public class MyGcmListenerService extends GcmListenerService {
                             sendNotification("New Message Recieved", data.getString("to") + "@" + data.getString("message"), data);
                     }
                     else{
+                        Log.i(TAG,"pushed on drawer");
                         sendNotification("New Message Recieved", data.getString("to") + "@" + data.getString("message"), data);
                     }
 
@@ -573,6 +575,12 @@ public class MyGcmListenerService extends GcmListenerService {
                     intent.putExtra("userRole", "client");
                 }
             }
+            else if(General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("")){
+                intent = new Intent(context, DealConversationActivity.class);
+                intent.putExtra(AppConstants.OK_ID, data.getString("to"));
+                //intent.putExtra(AppConstants.SPEC_CODE, halfDeals.getSpec_code());
+                intent.putExtra("userRole", "client");
+            }
         }
         else if(data.containsKey("bicon")){
             if(!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
@@ -610,17 +618,7 @@ public class MyGcmListenerService extends GcmListenerService {
             Bitmap b = getBitmapFromURL(data.getString("bicon"));
 
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            /*notification = new Notification.Builder(this)
-                    .setContentTitle(title)
-                    .setContentText(message)
-                    .setPriority(Notification.PRIORITY_HIGH)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setAutoCancel(true)
-                    .setSound(defaultSoundUri)
-                    .setStyle(new Notification.BigPictureStyle()
-                            .bigPicture(b))
-                    .setContentIntent(pendingIntent)
-                    .build();*/
+
             notification = new NotificationCompat.Builder(this)
                     .setContentTitle(heading)
                     .setPriority(Notification.PRIORITY_HIGH)

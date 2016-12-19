@@ -167,11 +167,6 @@
         </service>
         -->
 
-        <activity
-            android:name="com.paytm.pgsdk.PaytmPGActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
 
 
         <receiver

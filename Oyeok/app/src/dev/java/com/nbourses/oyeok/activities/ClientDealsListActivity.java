@@ -152,7 +152,7 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
 
 //    @Bind(R.id.searchView)
 //    SearchView searchView;
-private int maxPages = 5;
+private int maxPages = 1;
 private int page = 1;
     private int preLast;
     private boolean default_deal_flag;
@@ -918,6 +918,7 @@ private int page = 1;
 
                 if(lastItem == totalItemCount)
                 {
+                    Log.i(TAG,"before call  "+page+"    "+maxPages);
                     if(preLast!=lastItem && page < maxPages)
                     {
                         //to avoid multiple calls for last item
@@ -1292,9 +1293,9 @@ private int page = 1;
                                     if (matchedOkIds != null)
                                         deleteDefaultDeals();
                                 }
-                                Log.i("TRACE", "dhishoom unverifiedLL " + unverifiedLL);
-                                Log.i("TRACE", "dhishoom listBrokerDealsLL " + listBrokerDealsLL);
-                                Log.i("TRACE", "dhishoom total_deals " + total_deals);
+                                Log.i("TRACE", "dhishoom 2 unverifiedLL " + unverifiedLL);
+                                Log.i("TRACE", "dhishoom 2 listBrokerDealsLL " + listBrokerDealsLL);
+                                Log.i("TRACE", "dhishoom 2 total_deals " + total_deals);
                                 /*if(page >2) {*/
                                     if (listBrokerDeals_new != null)
 
@@ -1309,6 +1310,9 @@ private int page = 1;
                                /* }*/
 
 
+                                Log.i("TRACE", "dhishoom 2 unverifiedLL  1 " + unverifiedLL);
+                                Log.i("TRACE", "dhishoom 2 listBrokerDealsLL 1 " + listBrokerDealsLL);
+                                Log.i("TRACE", "dhishoom 2 total_deals 1 " + total_deals);
 
                                 if(TT.equalsIgnoreCase("LL")){
                                     total_deals.addAll(default_dealsLL);
@@ -1331,7 +1335,7 @@ private int page = 1;
                                 }
 
 
-                                Log.i(TAG, "listbrokerdeals loaded are " + listBrokerDeals_new);
+                                Log.i(TAG, "dhishoom 2 listbrokerdeals loaded are " + total_deals);
                                 showBgText();
                                 Collections.sort(total_deals);
 
@@ -1394,13 +1398,14 @@ private int page = 1;
                     } catch (Exception e) {
                         Log.i("TRACE", "Caught in exception in loadbrokerdeals " + e);
                     }
+                    loadingDeals.setVisibility(View.GONE);
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
                     General.slowInternetFlag = false;
                     General.t.interrupt();
-
+                    loadingDeals.setVisibility(View.GONE);
                     Log.i("TRACE", "in failure " + error);
                 }
             });
