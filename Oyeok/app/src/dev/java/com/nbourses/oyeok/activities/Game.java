@@ -21,6 +21,8 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -38,6 +40,7 @@ import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -62,6 +65,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
+import com.nbourses.oyeok.fragments.gameDiscountCard;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
@@ -98,9 +102,19 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     @Bind(R.id.balance1)
     TextView balance1;
 
+    @Bind(R.id.gm_cashback_btn)
+    TextView gm_cashback_btn;
+
 
     @Bind(R.id.myaccount)
     LinearLayout myaccount;
+
+    @Bind(R.id.load_card_container)
+    FrameLayout load_card_container;
+
+    @Bind(R.id.card1)
+    FrameLayout card;
+
     private GetCurrentLocation getLocationActivity;
     private GoogleMap map;
     View mHelperView;
@@ -155,7 +169,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     private Point[] buildingPosition = new Point[15];
     LinearLayout recordWorkout, searchbar;
 
-    boolean locked, gameflag = false;
+    boolean locked, gameflag = false,gameDiscountCardFlag=false;
     private long lastTouched = 0, start = 0;
     private static final long SCROLL_TIME = 200L;
     private int[] status = new int[15];
@@ -166,6 +180,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     private Animation shake;
     private Timer clockTickTimer;
     double results ;
+
     Point centerPoint,rightendPoint;
     Geofence geofence;
     @Override
@@ -203,13 +218,15 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
 
             balance = 34;
         }
+        gm_cashback_btn.setVisibility(View.VISIBLE);
+
         myaccount.setVisibility( View.VISIBLE );
 //        balance1=(TextView) findViewById( R.id.balance1 );
         final Toolbar toolbar = (Toolbar) findViewById( R.id.toolbar );
         setSupportActionBar( toolbar );
         getSupportActionBar().setDisplayShowHomeEnabled( true );
         getSupportActionBar().setDisplayHomeAsUpEnabled( true );
-        getSupportActionBar().setTitle( "OyeOk Game" );
+        getSupportActionBar().setTitle( "" );
 
 
         autoCompView.setAdapter( new AutoCompletePlaces.GooglePlacesAutocompleteAdapter( this, R.layout.list_item1 ) );
@@ -307,12 +324,24 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
         } );
 
 
+
+        gm_cashback_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                       opengameDiscountCard();
+            }
+        });
+
+
+
         location_button.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getLocationActivity = new GetCurrentLocation( getBaseContext(), mcallback );
             }
         } );
+
+
         map.setOnMarkerClickListener( new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -682,19 +711,27 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     @Override
     public void onBackPressed() {
 
-        if(clockTickTimer!=null)
-            clockTickTimer.cancel();
-        StopAllThread();
+        if(gameDiscountCardFlag)
 
-        SharedPrefs.save( this, SharedPrefs.My_BALANCE, balance + "" );
-        Intent intent = new Intent( this, ClientMainActivity.class );
+        {
+            closeCardContainer();
+        }else {
+            if (clockTickTimer != null)
 
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                        Intent.FLAG_ACTIVITY_NEW_TASK );
-        startActivity( intent );
-        finish();
+                clockTickTimer.cancel();
+            StopAllThread();
+            SharedPrefs.save(this, SharedPrefs.My_BALANCE, balance + "");
+            Intent intent = new Intent(this, ClientMainActivity.class);
+            intent.addFlags(
+
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
         //super.onBackPressed();
     }
 
@@ -902,13 +939,13 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                                     } catch (Exception e) {
                                     }
                                     OnScreenCo_ordinateFromLatLng();
-                                    //map.clear();
+                                    map.clear();
                                     DisplayBuilding();
                                     HideBuildings();
                                     gametimer();
                                 } else {
                                     Log.i( "tt", "I am here" + 3 );
-                                   // map.clear();
+                                    map.clear();
                                 }
                             }
                     } catch (Exception e) {
@@ -1652,7 +1689,9 @@ try {
 
 
     public void radomizedBuildingDisplay() {
-        int count = buildingcount;
+       // int count = buildingcount;
+                int count = 5;
+
         Log.i( "startgame","startgame : ======================= : "+count );
         for (int i = 0; i < count; i++) {
             if (status[i] == 0) {
@@ -1687,7 +1726,9 @@ try {
     }
 
     public void HideBuilding() {
-        int count = buildingcount;
+       // int count = buildingcount;
+                int count = 5;
+
         for (int i = 0; i < count; i++) {
             if (status[i] == 1) {
                 Cancel_timer( i );
@@ -1742,12 +1783,33 @@ Log.i("t1","result distance value ===================    :   "+result[0]);
    }
 
 
+    public void opengameDiscountCard(){
+
+        load_card_container.setBackgroundColor(Color.parseColor("#CC000000"));
+        load_card_container.setClickable(true);
+        gameDiscountCard gameDiscountcard= new gameDiscountCard();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        card.setClickable(true);
+        gameDiscountCardFlag=true;
+        fragmentTransaction.addToBackStack("card");
+        fragmentTransaction.replace(R.id.card1, gameDiscountcard);
+        fragmentTransaction.commitAllowingStateLoss();
+//        loadFragmentAnimated(addListingFinalCard, null, R.id.card, "");
+
+    }
 
 
 
+    public void closeCardContainer(){
 
-
-
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card1)).commit();
+        load_card_container.setBackgroundColor(getResources().getColor(R.color.transparent));
+        load_card_container.setClickable(false);
+        card.setClickable(false);
+        gameDiscountCardFlag=false;
+    }
 
 
 

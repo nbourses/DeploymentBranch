@@ -11,14 +11,24 @@ public class loadBuildingDataModel {
     double lng;
     String id;
     String locality;
+    String city;
 
-    public loadBuildingDataModel(String name, double lat, double lng, String id,String locality ) {
+    public loadBuildingDataModel(String name, double lat, double lng, String id,String locality ,String city) {
         this.name=name;
         this.lat=lat;
         this.lng=lng;
         this.id=id;
         this.locality=locality;
+        this.city=city;
 
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getName() {

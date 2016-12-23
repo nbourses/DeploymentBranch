@@ -14,8 +14,8 @@
         <translate
             android:duration="1000"
             android:fromYDelta="0"
-            android:toYDelta="75%"
-            android:toXDelta="25%"/>
+            android:toYDelta="65%"
+            android:toXDelta="35%"/>
         <!--<alpha
             android:startOffset="1000"
             android:fromAlpha="1"

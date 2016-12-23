@@ -293,17 +293,16 @@
                 android:id="@+id/box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="92dp"
+                android:paddingLeft="52dp"
+                android:gravity="center"
                 android:visibility="visible">
                 <TextView
 
                     android:id="@+id/rentalCount"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/circle_badge2"
                     android:text="123"
-
-                    android:layout_alignParentRight="true"
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"
                     android:paddingLeft="8dp"
@@ -314,16 +313,17 @@
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/box1"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="210dp"
+                android:paddingRight="50dp"
+                android:gravity="right"
                 android:visibility="visible">
                 <TextView
                     android:id="@+id/resaleCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/badge_navy1"
-                    android:text="3"
+                    android:text="123"
 
                     android:layout_alignParentRight="true"
                     android:paddingEnd="8dp"

@@ -1004,7 +1004,7 @@ try {
             Log.i(TAG,"itemTitle 1 "+itemTitle + R.string.MyPortfolio);
             Intent intent =new Intent( this,MyPortfolioActivity.class );
             startActivity(intent);
-            /*My_portfolio my_portfolio = new My_portfolio();
+            /*MainScreenPropertyListing my_portfolio = new MainScreenPropertyListing();
             loadFragment(my_portfolio, null, R.id.container_Signup, "");
             Myportfolio=true;*/
 

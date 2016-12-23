@@ -233,39 +233,6 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                     description = ptype.substring(0, 1).toUpperCase() + ptype.substring(1) + " property (" + pstype + ") " + intend + " " + General.currencyFormat(price) + ".";
 
                 }
-//            String ptype = null;
-
-//            if(pstype.equalsIgnoreCase("1bhk") || pstype.equalsIgnoreCase("2bhk") || pstype.equalsIgnoreCase("3bhk") || pstype.equalsIgnoreCase("4bhk") || pstype.equalsIgnoreCase("4+bhk")){
-//                ptype = "home";
-//            }
-//            else if(pstype.equalsIgnoreCase("retail outlet") || pstype.equalsIgnoreCase("food outlet") || pstype.equalsIgnoreCase("bank")){
-//                ptype = "shop";
-//            }
-//            else if(pstype.equalsIgnoreCase("cold storage") || pstype.equalsIgnoreCase("kitchen") || pstype.equalsIgnoreCase("manufacturing") || pstype.equalsIgnoreCase("warehouse") || pstype.equalsIgnoreCase("workshop")){
-//                ptype = "industrial";
-//            }
-//            else if(pstype.equalsIgnoreCase("<15") || pstype.equalsIgnoreCase("<35") || pstype.equalsIgnoreCase("<50") || pstype.equalsIgnoreCase("<100") || pstype.equalsIgnoreCase("100+")){
-//                ptype = "office";
-//                pstype = pstype+" seater";
-//            }
-
-
-//            Iterator<BrokerDeals> it = dealses.iterator();
-//
-//          //  listBrokerDeals_new = new ArrayList<BrokerDeals>();
-//            while (it.hasNext()) {
-//                BrokerDeals deals = it.next();
-//
-//                Log.i("CHAT","deals.are"+deals);
-//                Log.i("CHAT","deals.ok_id"+deals.getdefaultDeal());
-////                if(!(deals.getOkId() == null))
-////                {   if(deals.getSpecCode().contains(TT+"-")) {
-////                    Log.i("DEALREFRESHPHASESEEKBA","deal spec code "+deals.getSpecCode()+" for "+TT);
-////
-////
-////
-////                }
-//                }
 
 
                 Log.i("TAG","description description 1 "+description);
@@ -284,13 +251,15 @@ Log.i("inside brokerdeals view","flag check "+this.default_deal);
                    }
                 }
                 else {
-                    if(General.getSharedPreferences(context, AppConstants.NAME).equalsIgnoreCase(name)) { // change this condition as names can be same for two user
-                        holder.txtTitle.setText("Searching brokers..");
-                        holder.listing.setText(" Listed ");
-                    }else{
-                        holder.txtTitle.setText("Broker " + name);
-                        holder.listing.setText("Verified");
-                    }
+                   if(name.equalsIgnoreCase("SEARCHING BROKERS")) { // change this condition as names can be same for two user
+                       holder.txtTitle.setText("Searching brokers..");
+                       holder.listing.setText(" Listed ");
+                   }else{
+                       Log.i("name value","value of name : "+name);
+                       //if(name.equals("Searching brokers.."))
+                       holder.txtTitle.setText("Broker " + name);
+                       holder.listing.setText("Verified");
+                   }
                 }
 
                 if (ptype.equalsIgnoreCase("office"))

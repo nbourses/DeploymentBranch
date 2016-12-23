@@ -53,6 +53,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.User.UserProfileViewModel;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
 import com.nbourses.oyeok.activities.BrokerMainActivity;
+import com.nbourses.oyeok.activities.BrokerMap;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -188,7 +189,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         fragment_container1 = (FrameLayout) view1.findViewById(R.id.fragment_container1);
         supportChat = (LinearLayout) view1.findViewById(R.id.supportChat);
         listViewDeals = (ListView) view1.findViewById(R.id.listViewDeals);
-        if(lastFragment.equalsIgnoreCase("brokerDrawer")|| lastFragment.equalsIgnoreCase("okyed") || lastFragment.equalsIgnoreCase("brokerDeal") || lastFragment.equalsIgnoreCase("brokerIntro"))
+        if(lastFragment.equalsIgnoreCase("brokerDrawer")|| lastFragment.equalsIgnoreCase("okyed") || lastFragment.equalsIgnoreCase("brokerDeal") || lastFragment.equalsIgnoreCase("brokerIntro")||lastFragment.equalsIgnoreCase("brokermap"))
                 okBroker = true;
             Log.i("Signup called =", "view assigned");
             View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
@@ -767,6 +768,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                             AcceptOkCall a = new AcceptOkCall();
                             a.setmCallBack(SignUpFragment.this);
                             a.acceptOk(listings,p,j,getActivity());
+                        }else if(lastFragment.equalsIgnoreCase("brokermap")){
+
+                            ((BrokerMap)getActivity()).CloseSignUP();
                         }
                     }
                     @Override

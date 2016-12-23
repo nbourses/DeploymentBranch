@@ -76,7 +76,7 @@ public class AddListingFinalCard extends Fragment {
     LinearLayout submit_listing;
     String numberAsString;
     private int llMin, llMax, orMin, orMax,area;
-
+    TextView txt_req_aval;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -115,7 +115,7 @@ public class AddListingFinalCard extends Fragment {
         building_name=(TextView)v.findViewById(R.id.building_name);
         building_locality=(TextView)v.findViewById(R.id.building_locality);
         tv_rate=(TextView) v.findViewById(R.id.tv_rate);
-
+        txt_req_aval=(TextView) v.findViewById(R.id.txt_req_aval11);
 
 
         config.setText(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG).toString());
@@ -129,7 +129,7 @@ public class AddListingFinalCard extends Fragment {
         //deafault values
         toggleBtn1.toggle();
         Req.setChecked(true);
-        tt="rental";
+        tt="ll";
 
         seekBar.setProgress(1000);
 
@@ -351,6 +351,8 @@ private void init(){
             if(!isChecked){
                 Req.setChecked(false);
                 Avail.setChecked(true);
+                txt_req_aval.setText("Availability");
+
 
             }else{
                 Req.setChecked(true);
@@ -367,6 +369,7 @@ private void init(){
 
             if(!isChecked){
 
+                txt_req_aval.setText("Requirement");
                 Req.setChecked(true);
                 Avail.setChecked(false);
 
@@ -399,7 +402,7 @@ private void init(){
        addListingBorker.setConfig(General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
        addListingBorker.setListing_date(myCalendar+"");
        Log.i("AddListingBorker","myCalendar current date"+General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
-       addListingBorker.setLocality("mumbai");
+       addListingBorker.setCity(General.getSharedPreferences(getContext(),AppConstants.MY_CITY));
        addListingBorker.setBuilding_name(General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
        addListingBorker.setPossession_date(txtcalendar.getText().toString());
        addListingBorker.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
@@ -410,7 +413,7 @@ private void init(){
 
        addListingBorker.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
        int carpet_area=Integer.parseInt(approx_area.getText().toString());
-       addListingBorker.getCarpet_area(carpet_area);
+       addListingBorker.setCarpet_area(carpet_area);
        Log.i("Reqstatus","Reqstatus 1 : "+Avail.isChecked()+ " "+Req.isChecked());
        if(Avail.isChecked()){
            Log.i("Reqstatus","Reqstatus 1 inside: "+Avail.isChecked()+ " "+Req.isChecked());
@@ -430,9 +433,9 @@ private void init(){
            addListingBorker.setOr_psf(numberAsString);
        }
        if(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY) == "")
-       addListingBorker.setSublocality("Andheri west");
+       addListingBorker.setLocality("");
        else
-           addListingBorker.setSublocality(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
+           addListingBorker.setLocality(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
 
 
       // addListingBorker.setMobile("+918655201886");
@@ -499,7 +502,7 @@ private void init(){
         add_Building.setType("LIST");
         add_Building.setDisplay_type(null);
 
-        if(tt.equalsIgnoreCase("rental")){
+        if(tt.equalsIgnoreCase("ll")){
             add_Building.setLl_pm(Integer.parseInt(numberAsString));
 
             add_Building.setOr_psf(0);
@@ -531,6 +534,10 @@ private void init(){
 
         if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
             Intent in = new Intent(getContext(), MyPortfolioActivity.class);
+            /*in.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);*/
             startActivity(in);
         }else {
             Intent in = new Intent(getContext(), MyPortfolioActivity.class);
@@ -665,6 +672,7 @@ private  void getprice()
                                 selected_rate.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue)+"")));
                                 seekBar.setMax(maxvalue);
                                 seekBar.setMin(minvalue);
+                                numberAsString=minvalue+"";
                             }
                         }
                     }

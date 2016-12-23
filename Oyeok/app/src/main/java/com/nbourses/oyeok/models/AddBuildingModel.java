@@ -33,6 +33,17 @@ public class AddBuildingModel {
     @SerializedName("user_role")
     private String user_role;
 
+    @Expose
+    @SerializedName("city")
+    private String city;
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
 
     public String getBuilding() {
         return building;

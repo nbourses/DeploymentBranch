@@ -236,7 +236,8 @@ GoogleMap map;
         tv_change_region.setVisibility(View.VISIBLE);
         try {
             if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase("") && !General.getSharedPreferences(this, AppConstants.LOCALITY).equalsIgnoreCase(""))
-            tv_change_region.setText(General.getSharedPreferences(this, AppConstants.LOCALITY));
+            //tv_change_region.setText(General.getSharedPreferences(this, AppConstants.LOCALITY));
+                AppConstants.MY_BASE_LOCATION_FLAG=true;
             else {
 //                AppConstants.BROKER_BASE_REGION="true";
                 tv_change_region.setText(General.getSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LOCATION));
@@ -680,7 +681,7 @@ GoogleMap map;
             Log.i("myWatchList","itemTitle 1 "+itemTitle + R.string.MyPortfolio);
             Intent intent =new Intent( this,MyPortfolioActivity.class );
             startActivity(intent);
-            /*My_portfolio my_portfolio = new My_portfolio();
+            /*MainScreenPropertyListing my_portfolio = new MainScreenPropertyListing();
             loadFragment(my_portfolio, null, R.id.container_Signup, "");
             Myportfolio=true;*/
 

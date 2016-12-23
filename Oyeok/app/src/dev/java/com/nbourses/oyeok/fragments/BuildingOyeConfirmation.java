@@ -145,39 +145,61 @@ public class BuildingOyeConfirmation extends Fragment {
                 {
                     case R.id.rk1:
                         approx_area="300";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1 Rk");
                         break;
                     case R.id.bhk1:
                         approx_area="600";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1 BHK");
+
                         break;
                     case R.id.bhk1_5:
                         approx_area="800";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1.5 BHK");
+
                         break;
                     case R.id.bhk2:
                         approx_area="950";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2 BHK");
+
                         break;
                     case R.id.bhk2_5:
                         approx_area="1300";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2.5 BHK");
+
                         break;
                     case R.id.bhk3:
                         approx_area="1600";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"3 BHK");
+
                         break;
                     case R.id.bhk3_5:
                         approx_area="1800";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"3.5 BHK");
+
                         break;
                     case R.id.bhk4:
                         approx_area="2100";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"4 BHK");
+
                         break;
                     case R.id.bhk4_5:
                         approx_area="2300";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"4.5 BHK");
+
                         break;
                     case R.id.bhk5:
                         approx_area="2500";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"5 BHK");
+
                         break;
                     case R.id.bhk5_5:
                         approx_area="2700";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"5.5 BHK");
+
                         break;
                     case R.id.bhk6:
                         approx_area="2900";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"6 BHK");
                         break;
                     default:
                         break;
@@ -225,10 +247,15 @@ public class BuildingOyeConfirmation extends Fragment {
             @Override
             public void onClick(View v) {
                 if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-                    AppConstants.PROPERTY = "home";
-                    General.setSharedPreferences(getContext(), AppConstants.PROPERTY, "home");
-                    General.setSharedPreferences(getContext(), AppConstants.APPROX_AREA, approx_area);
-                    ((BrokerMap) getActivity()).openAddListingFinalCard();
+                    if(General.getSharedPreferences(getContext(),AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")){
+                        ((BrokerMap)getActivity()).OpenSignUpFrag();
+                    }
+                    else {
+                        AppConstants.PROPERTY = "home";
+                        General.setSharedPreferences(getContext(), AppConstants.PROPERTY, "home");
+                        General.setSharedPreferences(getContext(), AppConstants.APPROX_AREA, approx_area);
+                        ((BrokerMap) getActivity()).openAddListingFinalCard();
+                    }
                 }
             }
         });
@@ -375,6 +402,8 @@ public class BuildingOyeConfirmation extends Fragment {
               if(fisrtconf==true){
                   Log.i("entered","got it "+conf);
                   commanbhk.setChecked(true);
+                  General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,conf);
+
                   fisrtconf=false;
               }
 

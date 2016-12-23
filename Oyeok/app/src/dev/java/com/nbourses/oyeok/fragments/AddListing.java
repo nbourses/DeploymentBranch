@@ -329,7 +329,6 @@ public class AddListing extends Fragment {
                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
                    ((BrokerMap) getActivity()).closeCardContainer();
                    ((BrokerMap) getActivity()).openAddBuilding();
-
                 }else{
                     ((ClientMainActivity) getActivity()).closeAddListing();
                     ((ClientMainActivity) getActivity()).openAddBuilding();

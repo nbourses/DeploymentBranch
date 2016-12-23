@@ -52,6 +52,14 @@ public class portListingModel {
     @SerializedName("display_type")
     private String display_type;
 
+    /*@Expose
+    @SerializedName("display_type")
+    private String display_type;
+
+    @Expose
+    @SerializedName("display_type")
+    private String display_type;*/
+
     public String getDisplay_type() {
         return display_type;
     }

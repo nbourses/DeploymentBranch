@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -212,7 +213,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private GoogleMap map;
     private LinearLayout ll_marker;
     private ImageView Mmarker;
-    private ImageView search_building_icon;
+    private ImageView search_building_icon;//,shutterlist;
 
     private BitmapDescriptor icon1;
     private BitmapDescriptor icon2;
@@ -328,8 +329,10 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private AutoCompletePlaces.GooglePlacesAutocompleteAdapter dataAdapter;
     ArrayList<buildingCacheModel> buildingCacheModels=new ArrayList<>();
     ArrayList<Marker> customMarker=new ArrayList<>();
-
-
+    private ViewGroup mRrootLayout;
+    private int _xDelta;
+    private int _yDelta;
+    SharedPreferences.OnSharedPreferenceChangeListener listener;
 //    @Bind(R.id.seekbar_linearlayout)
 //    LinearLayout seekbarLinearLayout;
 
@@ -390,6 +393,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     @Bind(R.id.favWrapper)
     LinearLayout favWrapper;
+
+    @Bind(R.id.list_container)
+    FrameLayout list_container;
+
+    /*@Bind(R.id.slidelayout)
+    FrameLayout slidelayout;*/
 
 //    @Bind(R.id.hPicker)
 //    LinearLayout hPicker;
@@ -591,6 +600,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         oye_arrow=(TextView) rootView.findViewById(R.id.oye_arrow);
         ///save and done change on phase seek bar
         addlistingText=(LinearLayout) rootView.findViewById(R.id.addlistingText);
+       // shutterlist=(ImageView)rootView.findViewById(R.id.shutterlist);
+
         addBText = (TextView) rootView.findViewById(R.id.addBText);
         btn_add_building.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -608,6 +619,106 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 ((ClientMainActivity)getActivity()).openAddListingFinalCard();
             }
         });
+        /*list_container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                *//*list_container.setBackgroundColor(Color.parseColor("#CC000000"));
+                list_container.setClickable(true);*//*
+                MainScreenPropertyListing mainScreenPropertyListing= new MainScreenPropertyListing();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+//                list_container.setClickable(true);
+                fragmentTransaction.addToBackStack("card22");
+                fragmentTransaction.replace(R.id.list_container, mainScreenPropertyListing);
+                fragmentTransaction.commitAllowingStateLoss();
+            }
+        });*/
+
+
+        /*list_container.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event)
+            {
+                final int y = (int) event.getRawY();
+
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
+                switch (event.getAction() & MotionEvent.ACTION_MASK)
+                {
+                    case MotionEvent.ACTION_DOWN:
+                        element.setEventY(y - params.topMargin);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        viewGroup.invalidate();
+                        break;
+
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                    case MotionEvent.ACTION_POINTER_UP:
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+                        params.topMargin = y - element.getEventY();
+                        params.bottomMargin = screenHeight - view.getHeight() - params.topMargin;
+
+                        // Avoid out of screen
+                        if (params.topMargin < 0) return true;
+
+                        // Apply changes
+                        view.setLayoutParams(params);
+                        break;
+                }
+
+                return true;
+            }
+        });*/
+
+
+
+        list_container.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event)
+            {
+               // if (currentState != State.EDIT_MOVE) return false;
+
+                MainScreenPropertyListing mainScreenPropertyListing= new MainScreenPropertyListing();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                //fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+//                list_container.setClickable(true);
+                fragmentTransaction.addToBackStack("card22");
+                fragmentTransaction.replace(R.id.list_container, mainScreenPropertyListing);
+                fragmentTransaction.commitAllowingStateLoss();
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
+                if (view.getId() != R.id.list_container) return false;
+                switch (event.getAction())
+                {
+                    case MotionEvent.ACTION_MOVE:
+                        params.topMargin = (int) event.getRawY(); //- (view.getHeight()/2);
+                        //params.leftMargin = (int) event.getRawX() - (view.getWidth());
+                        view.setLayoutParams(params);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        params.topMargin = (int) event.getRawY() ;//- (view.getHeight());
+                        //params.leftMargin = (int) event.getRawX() - (view.getWidth());
+                        view.setLayoutParams(params);
+                        break;
+
+                    case MotionEvent.ACTION_DOWN:
+                        view.setLayoutParams(params);
+                        break;
+                }
+
+                return true;
+            }
+        });
+
+
+
+
+
+
 
         if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
             General.setSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI, String.valueOf(System.currentTimeMillis()));
@@ -781,7 +892,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             }
         });*/
 
-      /*  autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
+        autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.inputSearch);
         autoCompView.setAdapter(new AutoCompletePlaces.GooglePlacesAutocompleteAdapter(getActivity(), R.layout.list_item1));
         autoCompView.setOnItemClickListener(this);
         autoCompView.setOnClickListener(new View.OnClickListener() {
@@ -822,7 +933,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     Log.i(TAG,"Caught in exception autocompleteview click "+e);
                 }
             }
-        });*/
+        });
 
 
         addbuilding.setOnClickListener( new View.OnClickListener() {
@@ -1410,6 +1521,27 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
 
             }
         }
+
+
+        /*try {
+            SharedPreferences prefs =
+                    PreferenceManager.getDefaultSharedPreferences(getContext());
+            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+
+                    if (key.equals(AppConstants.OUTO_CLICK_MARKER)) {
+
+                    }
+                }
+
+
+            };
+            prefs.registerOnSharedPreferenceChangeListener(listener);
+
+        }
+        catch (Exception e){
+            Log.e("loc", e.getMessage());
+        }*/
 
         return rootView;
     }
@@ -2172,7 +2304,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                 }
 
 
-                                Log.i("Chaman", "ho ghe " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) + " " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG) + " " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT) + " " + jsonResponse);
+                                Log.i("Chaman", "ho ghe " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) + " " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG) + " " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT) + " " + jsonResponse+"   : "+msg);
 
                                 if (errors.equals("8")) {
                                     Log.i(TAG, "error code is 2 ");
@@ -2478,7 +2610,6 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                     .color( Color.parseColor( AppConstants.DEFAULT_SNACKBAR_COLOR ) ) );
                     tvRate.setText( "/ month" );
                     brokerType = "rent";
-                    AppConstants.CURRENT_DEAL_TYPE = "rent";
                    // dbHelper.save( DatabaseConstants.brokerType, "LL" );
                    // dbHelper.save( "brokerType", "On Rent" );
                     recordWorkout.setBackgroundColor( Color.parseColor( "#2dc4b6" ) );
@@ -2494,6 +2625,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                         property_type_layout.setVisibility( View.VISIBLE );
                     }
                     try {
+                        AppConstants.CURRENT_DEAL_TYPE = "rent";
 
                         if (buildingCacheModels.get(INDEX).getFlag() == true) {
                             tv_building.setVisibility(View.VISIBLE);
@@ -2789,7 +2921,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             favAdrs.setText(s);
             Log.i("", "");
             autoCompView.dismissDropDown();
-            autoCompView.setCursorVisible(false);
+          autoCompView.setCursorVisible(false);
             // new LocationUpdater().execute();
             Log.i(TAG,"locality automata ");
             try {
@@ -4308,9 +4440,10 @@ public int price(String conf,int rate){
         addBuildingModel.setBuilding(B_name);
         addBuildingModel.setLat(lat+"");
         addBuildingModel.setLng(lng+"");
+        addBuildingModel.setCity(City);
         addBuildingModel.setLocality(SharedPrefs.getString( getContext(), SharedPrefs.MY_LOCALITY ));
         addBuildingModel.setUser_role(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
-        addBuildingModel.setUser_id("sushil");
+        addBuildingModel.setUser_id(General.getSharedPreferences(getContext(),AppConstants.NAME));
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_101).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
@@ -4504,7 +4637,34 @@ public void resetSeekBar(){
 
       }
   }
-
-
+/*
+    public boolean onTouch(View view, MotionEvent event) {
+        final int X = (int) event.getRawX();
+        final int Y = (int) event.getRawY();
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+                _xDelta = X - lParams.leftMargin;
+                _yDelta = Y - lParams.topMargin;
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view
+                        .getLayoutParams();
+                layoutParams.leftMargin = X - _xDelta;
+                layoutParams.topMargin = Y - _yDelta;
+                layoutParams.rightMargin = getResources().getDimension(-250);
+                layoutParams.bottomMargin = getResources().getDimension(-250);
+                view.setLayoutParams(layoutParams);
+                break;
+        }
+        mRrootLayout.invalidate();
+        return true;
+    }*/
 
 }

@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -86,6 +87,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
     private static ArrayList<portListingModel> addbuildingLL=new ArrayList<>();
     private static ArrayList<portListingModel> addbuildingOR=new ArrayList<>();
     private static ArrayList<portListingModel> deletelist=new ArrayList<>();
+    private static ArrayList<portListingModel> item=new ArrayList<>();
 
     RealmResults<MyPortfolioModel> results1;
     RealmResults<addBuildingRealm> results2;
@@ -152,7 +154,10 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
 //                    General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
                     SignUpFragment d = new SignUpFragment();
                     Bundle bundle = new Bundle();
+                    if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
                     bundle.putString("lastFragment", "clientDrawer");
+                    else
+                        bundle.putString("lastFragment", "brokerDrawer");
 //                    loadFragment(signUpFragment, bundle, R.id.container_Signup1, "");
 //                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
                     d.setArguments(bundle);
@@ -167,13 +172,19 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
                     fragmentTransaction.commitAllowingStateLoss();
 //                    AppConstants.SIGNUP_FLAG = true;
 
-                }else {
+                }else if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")){
                     General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
                     Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
                 /*in.putExtra("data","portfolio");
                 in.putExtra("role","");*/
                     startActivity(in);
-              }
+              }else{
+                    General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
+                    Intent in = new Intent(getBaseContext(), BrokerMap.class);
+                /*in.putExtra("data","portfolio");
+                in.putExtra("role","");*/
+                    startActivity(in);
+                }
 
             }
         });
@@ -261,13 +272,13 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
             getSupportActionBar().setTitle("");
             confirm_screen_title.setText("My Advertised \nListings");
-            inputSearch.setHint("Search "+portListing.size()+" Listings");
+            inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
             usertext.setHint("\"My Listing\"");
             add_create.setText("Create");
         }else{
             getSupportActionBar().setTitle("");
             confirm_screen_title.setText("My WatchList");
-            inputSearch.setHint("Search "+ portListing.size()+" Watchlist");
+            inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
             usertext.setHint("My Watchlist");
             add_create.setText("Add");
 
@@ -285,6 +296,26 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
 
             }
         } );*/
+
+
+        rental_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                /*if(item != null)
+                    item.clear();
+                item.add((portListingModel)adapter.getItem(position));
+                General.setSharedPreferences(getBaseContext(),AppConstants.BUILDING_ID,item.get(0).getId());
+                if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+                    Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
+                    startActivity(in);
+                }else{
+                    Intent in = new Intent(getBaseContext(), BrokerMap.class);
+                    startActivity(in);
+                }*/
+            }
+        });
+
 
                 rental_list.setChoiceMode( ListView.CHOICE_MODE_MULTIPLE_MODAL);
                    rental_list.setMultiChoiceModeListener( new AbsListView.MultiChoiceModeListener() {
@@ -409,12 +440,12 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
                             mode.finish();
                             adapter.notifyDataSetChanged();
                             if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
-                                inputSearch.setHint("Search "+portListing.size()+" Listings");
+                                inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
                                 usertext.setText("");
                                 usertext.setHint("\"My Listing\"");
                                 add_create.setText("Create");
                             }else{
-                                inputSearch.setHint("Search "+ portListing.size()+" Watchlist");
+                                inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
                                 usertext.setText("");
                                 usertext.setHint("My Watchlist");
                                 add_create.setText("Add");
@@ -666,12 +697,12 @@ inputSearch.addTextChangedListener(new TextWatcher() {
 
                 adapter.notifyDataSetChanged();
                 if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
-                    inputSearch.setHint("Search "+portListing.size()+" Listings");
+                    inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
                     usertext.setText("");
                     usertext.setHint("\"My Listing\"");
                     add_create.setText("Create");
                 }else{
-                    inputSearch.setHint("Search "+ portListing.size()+" Watchlist");
+                    inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
                     usertext.setText("");
                     usertext.setHint("My Watchlist");
                     add_create.setText("Add");
@@ -688,12 +719,12 @@ inputSearch.addTextChangedListener(new TextWatcher() {
                 portListingCopy.addAll(portListing);
                 adapter.notifyDataSetChanged();
                 if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
-                    inputSearch.setHint("Search "+portListing.size()+" Listings");
+                    inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
                     usertext.setText("");
                     usertext.setHint("\"My Listing\"");
                     add_create.setText("Create");
                 }else{
-                    inputSearch.setHint("Search "+ portListing.size()+" Watchlist");
+                    inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
                     usertext.setText("");
                     usertext.setHint("My Watchlist");
                     add_create.setText("Add");
