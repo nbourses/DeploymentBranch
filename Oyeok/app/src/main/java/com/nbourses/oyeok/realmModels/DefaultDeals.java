@@ -12,7 +12,52 @@ public class DefaultDeals extends RealmObject {
     private String spec_code;
     private String locality;
     private String lastSeen;
+    private String p_type;
+    private String ps_type;
+    private String furnishing;
+    private String possation_date;
+    private String budget;
     public DefaultDeals() { }
+
+    public String getP_type() {
+        return p_type;
+    }
+
+    public String getBudget() {
+        return budget;
+    }
+
+    public void setBudget(String budget) {
+        this.budget = budget;
+    }
+
+    public void setP_type(String p_type) {
+        this.p_type = p_type;
+    }
+
+    public String getPs_type() {
+        return ps_type;
+    }
+
+    public void setPs_type(String ps_type) {
+        this.ps_type = ps_type;
+    }
+
+    public String getFurnishing() {
+        return furnishing;
+    }
+
+    public void setFurnishing(String furnishing) {
+        this.furnishing = furnishing;
+    }
+
+    public String getPossation_date() {
+        return possation_date;
+    }
+
+    public void setPossation_date(String possation_date) {
+        this.possation_date = possation_date;
+    }
 
     public String getOk_id() {
         return ok_id;

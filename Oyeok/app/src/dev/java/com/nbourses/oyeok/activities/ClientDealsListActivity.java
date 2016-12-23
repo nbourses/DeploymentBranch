@@ -63,6 +63,7 @@ import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.PublishLetsOye;
 import com.nbourses.oyeok.realmModels.DefaultDeals;
 import com.nbourses.oyeok.realmModels.HalfDeals;
+import com.nbourses.oyeok.realmModels.NotifCount;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
@@ -680,6 +681,39 @@ private int page = 1;
 
 
     private void init() {
+
+        Bundle bundle = getIntent().getExtras();
+
+        Log.i(TAG,"bundle is "+bundle);
+
+        try {
+            if (bundle != null) {
+                Log.i(TAG,"bundle is 1 "+bundle);
+                if (bundle.containsKey("oyeok "+AppConstants.OK_ID)) {
+                    Log.i(TAG,"default ok Id is the "+bundle.getString("oye "+AppConstants.OK_ID));
+
+                    try {
+                        Realm myRealm = General.realmconfig(this);
+                        NotifCount notifcount = myRealm.where(NotifCount.class).equalTo(AppConstants.OK_ID, bundle.getString("oyeok "+AppConstants.OK_ID)).findFirst();
+
+                        if (notifcount == null){
+                            NotifCount notifCount = new NotifCount();
+                            notifCount.setOk_id(bundle.getString("oyeok "+AppConstants.OK_ID));
+                            notifCount.setNotif_count(1);
+                            myRealm.beginTransaction();
+                            NotifCount notifCount1 = myRealm.copyToRealmOrUpdate(notifCount);
+                            myRealm.commitTransaction();
+                        } else {
+                            myRealm.beginTransaction();
+                            notifcount.setNotif_count(notifcount.getNotif_count() + 1);
+                            myRealm.commitTransaction();
+                        }
+                    }catch(Exception e){}
+
+                }}}
+        catch(Exception e){}
+
+
         int labelColor = getResources().getColor(R.color.greenish_blue);
         сolorString = String.format("%X", labelColor).substring(2);
         searchView = (SearchView) findViewById(R.id.searchView);

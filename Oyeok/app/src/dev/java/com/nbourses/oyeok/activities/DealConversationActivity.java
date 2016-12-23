@@ -175,7 +175,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private ArrayList<ChatMessage> chatMessagesCopy = new ArrayList<>();
     private String UUID;
     private Boolean isUnverified = false;
-
+    private Boolean isDefault = false;
+    private ArrayList<String> defaultOkIds = new ArrayList<String>();
 
     private String userRole = "client";
     private static final String[] suggestionsForClientArray = {"How can I use this app?", "How can I find property?", "Will I get broker within 15 or 20 minutes?"};
@@ -229,7 +230,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     };
 
 
-    private BroadcastReceiver unverifiedDeal = new BroadcastReceiver() {
+    /*private BroadcastReceiver unverifiedDeal = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -237,7 +238,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             UnverifiedDeal = bundle.getBoolean("unverfieddeals");
         }
     };
-
+*/
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -549,7 +550,15 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         Log.i(TAG,"perser 3 "+isUnverified);
 
                     }
+                    else {
+                        Realm myRealm = General.realmconfig(this);
+                        myRealm.beginTransaction();
+                        DefaultDeals result = myRealm.where(DefaultDeals.class).equalTo(AppConstants.OK_ID, bundle.getString(AppConstants.OYE_ID)).findFirst();
 
+                        if(result != null)
+                            isDefault = true;
+
+                    }
                 }
             }
         }
@@ -1671,7 +1680,8 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
 
         try {
-
+if(myRealm.isInTransaction())
+    myRealm.cancelTransaction();
             myRealm.beginTransaction();
             RealmResults<Message> results1 =
                     myRealm.where(Message.class).equalTo(AppConstants.OK_ID, channelName).findAll();
@@ -2120,6 +2130,10 @@ if(i==AppConstants.MSG_COUNT) {
                                 if (isUnverified) {
                                     Log.i(TAG, "perser 4");
                                     displayDefaultMessageUnverified();
+                                }
+                                else  if (isDefault) {
+                                    Log.i(TAG, "perser 4");
+                                    displayDefaultMessage();
                                 }
                             }
                         }
@@ -2602,50 +2616,47 @@ try {
     private void displayDefaultMessage(){
         Log.i(TAG, "displayDefaultMessage called ");
         try {
-            JSONObject jsonMsg = new JSONObject();
+            if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
 
-            //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
-//            jsonMsg.put("_from", "DEFAULT");
-
-
-
-
-
+                JSONObject jsonMsg = new JSONObject();
            jsonMsg.put("_from", General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
-
-
             jsonMsg.put("to",channel_name);
             jsonMsg.put("timetoken",String.valueOf(System.currentTimeMillis()));
-
 
             jsonMsg.put("name","");// SYSTEM as this would be welcome message
 
             Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
 
-            if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
 
-                final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                Realm myRealm = General.realmconfig(this);
+
+                DefaultDeals result = myRealm.where(DefaultDeals.class).equalTo(AppConstants.OK_ID, channel_name).findFirst();
+
+
+
+                /*final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
                 String json = gson.toJson(AppConstants.letsOye);
 
-                JSONObject jsonResponse = new JSONObject(json);
+                JSONObject jsonResponse = new JSONObject(json);*/
                 // Log.i(TAG, "role of user def 4 ");
-                Log.i("TORO","froyo "+jsonResponse);
+                /*Log.i("TORO","froyo "+jsonResponse);*/
 String furnishing = "Semi-Furnished";
-                if(jsonResponse.getString("furnishing").equalsIgnoreCase("uf"))
+                if(result.getFurnishing().equalsIgnoreCase("uf"))
                     furnishing = "Un-Furnished";
-                else if (jsonResponse.getString("furnishing").equalsIgnoreCase("ff"))
+                else if (result.getFurnishing().equalsIgnoreCase("ff"))
                     furnishing = "Fully-Furnished";
 
-                jsonMsg.put("message", "You have initiated enquiry for a "+furnishing+" "+ jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") by "+jsonResponse.getString("possession_date")+" within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
+                jsonMsg.put("message", "You have initiated enquiry for a "+furnishing+" "+ result.getP_type().substring(0, 1).toUpperCase() + result.getP_type().substring(1) + " property (" + result.getPs_type() + ") by "+result.getPossation_date()+" within budget " + General.currencyFormat(result.getBudget()) + ".");
+
 
                 jsonMsg.put("status","OYES");
 
-            }
 
 
 
-  if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+
+/*  if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
 
                 // prepare a default message now get ptype
                 String ptype = General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE);
@@ -2654,7 +2665,10 @@ String furnishing = "Semi-Furnished";
                         + " property (" + General.getSharedPreferences(getApplicationContext(), AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(), AppConstants.PRICE)) + ".");
 
                 jsonMsg.put("status","OKS");
-            }
+
+
+            }*/
+            Log.i(TAG,"message to def "+jsonMsg);
 
             final ChatMessage message = new ChatMessage();
             message.setUserName("self");
@@ -2672,7 +2686,7 @@ String furnishing = "Semi-Furnished";
             //displayMessage(jsonMsg);
             sendNotification(jsonMsg);
 
-
+            }
         }
 
         catch(Exception e){

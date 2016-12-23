@@ -16,15 +16,21 @@ import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AcceptOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
-import com.nbourses.oyeok.activities.DealConversationActivity;
+import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.pubnub.api.PubNub;
+import com.pubnub.api.callbacks.PNCallback;
+import com.pubnub.api.models.consumer.PNPublishResult;
+import com.pubnub.api.models.consumer.PNStatus;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -140,7 +146,7 @@ public class AcceptOkCall {
 
                             Log.i(TAG, "getOkId " + acceptOk.responseData.getOkId());
 
-
+                           displayDefaultMessageB(activity,acceptOk.responseData.getOkId());
 
                             //String coolOffString = acceptOk.responseData.getCoolOff();
                             //int coolOff = Integer.parseInt(coolOffString);
@@ -178,16 +184,22 @@ public class AcceptOkCall {
                                // mCallBack.replaceFragment(args);
 
 
+                                Intent openDealsListing = new Intent(activity, ClientDealsListActivity.class);
+                                openDealsListing.putExtra("oyeok "+AppConstants.OK_ID, acceptOk.responseData.getOkId());
 
 
-                                AppConstants.BROKER_DEAL_FLAG = true;
+                                openDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
+
+                                /*AppConstants.BROKER_DEAL_FLAG = true;
                                 Intent openDealsListing = new Intent(activity, DealConversationActivity.class);
                                 Bundle extra = new Bundle();
                                 extra.putSerializable("listings",listings);
                                 openDealsListing.putExtras(extra);
                                 openDealsListing.putExtra("OkAccepted","yes");
                                 openDealsListing.putExtra(AppConstants.OK_ID, acceptOk.responseData.getOkId());
-                                openDealsListing.putExtra("userRole", "broker");
+                                openDealsListing.putExtra("userRole", "broker");*/
 
 
                                // Log.i("TRACEOK", "serverMessage " + acceptOk.responseData.getMessage());
@@ -214,11 +226,17 @@ public class AcceptOkCall {
                     droomChatFirebase.updateChatRoom(okId,userId1,userId2,droomDetails);*/
                         }
                         else {
+
+                            if(acceptOk.responseData.getMessage().equalsIgnoreCase("Oye user unavailable")){
+                                TastyToast.makeText(activity, acceptOk.responseData.getMessage(), TastyToast.LENGTH_LONG, TastyToast.WARNING);
+                            }
+                            else
+                                TastyToast.makeText(activity, acceptOk.responseData.getMessage(), TastyToast.LENGTH_LONG, TastyToast.INFO);
                             Log.i(TAG,"chaman prasanna 8");
                             Log.i("TRACE", "else called ");
                             Log.i("TRACE","serverMessage "+acceptOk.responseData.getMessage());
 
-                            Intent openDealsListing = new Intent(activity, BrokerDealsListActivity.class);
+                            Intent openDealsListing = new Intent(activity, ClientDealsListActivity.class);
                             openDealsListing.putExtra("serverMessage", acceptOk.responseData.getMessage());
                             Log.i("TRACEOK", "serverMessage " + acceptOk.responseData.getMessage());
                             Log.i("TRACEBROKERSIGNUP","3");
@@ -282,6 +300,54 @@ public class AcceptOkCall {
 
     }
 
+    private void displayDefaultMessageB(Context context, String channelName){
+        try {
+            PubNub pubnub = General.initPubnub(context, General.getSharedPreferences(context, AppConstants.USER_ID));
+
+            final JSONObject jsonMsg = new JSONObject();
+            jsonMsg.put("_from", General.getSharedPreferences(context, AppConstants.USER_ID));
+            jsonMsg.put("to", channelName);
+            jsonMsg.put("timetoken", String.valueOf(System.currentTimeMillis()));
+
+            jsonMsg.put("name", "");
+            jsonMsg.put("message", "Client have initiated enquiry for " + General.getSharedPreferences(context, AppConstants.PTYPE).substring(0, 1).toUpperCase() + General.getSharedPreferences(context, AppConstants.PTYPE).substring(1)
+                    + " property (" + General.getSharedPreferences(context, AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(context, AppConstants.PRICE)) + ".");
+
+            jsonMsg.put("status", "OKS");
+
+            Map message = new HashMap();
+
+            message.put("pn_gcm", new HashMap(){{put("data",new HashMap(){{put("message",jsonMsg.getString("message")); put("_from",jsonMsg.getString("_from"));put("to",jsonMsg.getString("to"));put("name",jsonMsg.getString("name")); put("status",jsonMsg.getString("status"));}});}});
+            message.put("pn_apns", new HashMap(){{put("aps",new HashMap(){{put("alert",jsonMsg.getString("message")); put("_from",jsonMsg.getString("_from"));put("to",jsonMsg.getString("to"));put("name",jsonMsg.getString("name")); put("status",jsonMsg.getString("status"));}});}});
+
+
+            Log.i(TAG,"Message is "+message);
+
+            pubnub.publish()
+                    .message(message)
+                    .shouldStore(true)
+                    .usePOST(true)
+                    .channel(channelName)
+                    .async(new PNCallback<PNPublishResult>() {
+                        @Override
+                        public void onResponse(PNPublishResult result, PNStatus status) {
+                            if (status.isError()) {
+                                System.out.println("publish failed!");
+                                Log.i(TAG,"PUBNUB publish "+status.getStatusCode());
+                            } else {
+                                System.out.println("push notification worked!");
+                                System.out.println(result);
+                            }
+                        }
+                    });
+
+
+        }
+        catch(Exception e){
+
+        }
+
+    }
     private boolean isNetworkAvailable(Activity activity) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);

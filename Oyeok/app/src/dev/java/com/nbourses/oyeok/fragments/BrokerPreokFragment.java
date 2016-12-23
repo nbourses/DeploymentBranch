@@ -777,7 +777,7 @@ private String transaction_type="Rental";
             }
             RestAdapter restAdapter = new RestAdapter.Builder()
                     //.setEndpoint(AppConstants.SERVER_BASE_URL_101)
-                    .setEndpoint(AppConstants.SERVER_BASE_URL_102)
+                    .setEndpoint(AppConstants.SERVER_BASE_URL_11)
                     .build();
             restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
