@@ -175,7 +175,8 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     private ArrayList<ChatMessage> chatMessagesCopy = new ArrayList<>();
     private String UUID;
     private Boolean isUnverified = false;
-
+    private Boolean isDefault = false;
+    private ArrayList<String> defaultOkIds = new ArrayList<String>();
 
     private String userRole = "client";
     private static final String[] suggestionsForClientArray = {"How can I use this app?", "How can I find property?", "Will I get broker within 15 or 20 minutes?"};
@@ -229,7 +230,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
     };
 
 
-    private BroadcastReceiver unverifiedDeal = new BroadcastReceiver() {
+    /*private BroadcastReceiver unverifiedDeal = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -237,7 +238,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             UnverifiedDeal = bundle.getBoolean("unverfieddeals");
         }
     };
-
+*/
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -365,7 +366,16 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
             setupPubnub(channel_name);
         }
 
-        General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,channel_name);  // check my channel case later
+        Log.i(TAG,channel_name+"   "+ General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)+" marine2    "+General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI));
+
+        if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME))
+            General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI));
+        else
+            General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,channel_name);
+
+        Log.i(TAG,channel_name+"   "+ General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)+" marine3    "+General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI));
+
+
     }
 
     @Override
@@ -469,11 +479,16 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 }
 
                 else if(bundle.containsKey(AppConstants.OK_ID)){
+                    Log.i(TAG,"listing ghya 1 "+channel_name+"   "+General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI));
+                    if(bundle.getString(AppConstants.OK_ID).equalsIgnoreCase(General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI)))
+                        channel_name = AppConstants.SUPPORT_CHANNEL_NAME;
+                    else
                     channel_name = bundle.getString(AppConstants.OK_ID); //my_channel if came from root item
+
                 }
 
 
-                Log.i(TAG,"listing ghya listing 1 "+channel_name);
+                Log.i(TAG,"listing ghya 2 "+channel_name);
 
 
                 if(channel_name.equalsIgnoreCase("my_channel"))
@@ -535,7 +550,15 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                         Log.i(TAG,"perser 3 "+isUnverified);
 
                     }
+                    else {
+                        Realm myRealm = General.realmconfig(this);
+                        myRealm.beginTransaction();
+                        DefaultDeals result = myRealm.where(DefaultDeals.class).equalTo(AppConstants.OK_ID, bundle.getString(AppConstants.OYE_ID)).findFirst();
 
+                        if(result != null)
+                            isDefault = true;
+
+                    }
                 }
             }
         }
@@ -574,8 +597,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
         chatListView.setOnScrollListener(this);
         Log.i(TAG, "channel_name yo" + channel_name);
-
-        General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,channel_name);
 
         userRole = bundle.getString("userRole");
 
@@ -1659,7 +1680,8 @@ if(!channel_name.equalsIgnoreCase("my_channel")){
 
 
         try {
-
+if(myRealm.isInTransaction())
+    myRealm.cancelTransaction();
             myRealm.beginTransaction();
             RealmResults<Message> results1 =
                     myRealm.where(Message.class).equalTo(AppConstants.OK_ID, channelName).findAll();
@@ -2112,6 +2134,10 @@ if(i==AppConstants.MSG_COUNT) {
                                     Log.i(TAG, "perser 4");
                                     displayDefaultMessageUnverified();
                                 }
+                                else  if (isDefault) {
+                                    Log.i(TAG, "perser 4");
+                                    displayDefaultMessage();
+                                }
                             }
                         }
                         catch (Exception e) {
@@ -2337,29 +2363,11 @@ if(i==AppConstants.MSG_COUNT) {
             Log.i(TAG,"until fitra 3 "+myRealm.isInTransaction());
         }
 
-
-
-//        JSONObject jo = new JSONObject();
-//
-//// populate the array
-//        try {
-//            jo.put("msg",msgs);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
-//        General.setSharedPreferences(this,channel_name+AppConstants.CACHE,msgs.toString());
-//        Log.i("CHAT","cache "+General.getSharedPreferences(this,channel_name+AppConstants.CACHE));
-
-        try {
+       /* try {
 
 //            Realm myRealm = General.realmconfig(this);
             RealmResults<Message> results1 =
                     myRealm.where(Message.class).equalTo(AppConstants.OK_ID, channel_name).findAll();
-
-//            Message myPuppy = myRealm.where(Message.class).equalTo(AppConstants.MOBILE_NUMBER, "+918483014575").findFirst();
-//
-//            Log.i(TAG, "my name is " + myPuppy.getName());
 
             for (Message c : results1) {
                 Log.i(TAG, "until insiderou2 ");
@@ -2370,7 +2378,7 @@ if(i==AppConstants.MSG_COUNT) {
         }catch(Exception e){
             Log.i(TAG,"Caught in the exception reading cache from realm "+e);
         }
-
+*/
 
     }
 
@@ -2467,49 +2475,47 @@ if(i==AppConstants.MSG_COUNT) {
     }
 
     private void loadFinalHistory(){
+        Log.i(TAG,"Load final history called ");
+
+try {
 
 
+    pubnub.history()
+            .channel(channel_name) // where to fetch history from
+            .count(AppConstants.MSG_COUNT) // how many items to fetch
+            .includeTimetoken(true) // include timetoken with each entry
+            .async(new PNCallback<PNHistoryResult>() {
+                @Override
+                public void onResponse(PNHistoryResult result, PNStatus status) {
+                    try {
+
+                        for (PNHistoryItemResult historyItemResult : result.getMessages()) {
+                            Log.i(TAG, "history is tha 2 " + historyItemResult.getEntry());
+                            try {
+                                if (historyItemResult.getEntry().has("pn_gcm")) {
+                                    Log.i(TAG, "history is tha 3 " + historyItemResult.getEntry().toString());
+                                    // String content = jsonNode.get("data").textValue();
+
+                                    String j = historyItemResult.getEntry().get("pn_gcm").get("data").toString();
+                                    // JSONObject j = new JSONObject(historyItemResult.getEntry().get("pn_gcm").toString());
+                                    Log.i(TAG, "history is tha 7 " + j);
+                                    JSONObject jsonObj = new JSONObject(j);
+                                    jsonObj.put("timetoken", historyItemResult.getTimetoken().toString());
 
 
+                                    // jsonA = new JSONArray();
+                                    Log.i(TAG, "history is tha 10 jsonArrayHistory jsonObj " + jsonObj);
+                                    jsonArrayHistory.put(jsonObj);
+                                    Log.i(TAG, "history is tha 9 jsonArrayHistory " + jsonArrayHistory);
 
-
-
-       pubnub.history()
-                .channel(channel_name) // where to fetch history from
-                .count(AppConstants.MSG_COUNT) // how many items to fetch
-                .includeTimetoken(true) // include timetoken with each entry
-                .async(new PNCallback<PNHistoryResult>() {
-                    @Override
-                    public void onResponse(PNHistoryResult result, PNStatus status) {
-                        try {
-
-                            for (PNHistoryItemResult historyItemResult : result.getMessages()) {
-                                Log.i(TAG, "history is tha 2 " + historyItemResult.getEntry());
-                                try {
-                                    if (historyItemResult.getEntry().has("pn_gcm")) {
-                                        Log.i(TAG, "history is tha 3 " + historyItemResult.getEntry().toString());
-                                        // String content = jsonNode.get("data").textValue();
-
-                                        String j = historyItemResult.getEntry().get("pn_gcm").get("data").toString();
-                                        // JSONObject j = new JSONObject(historyItemResult.getEntry().get("pn_gcm").toString());
-                                        Log.i(TAG, "history is tha 7 " + j);
-                                        JSONObject jsonObj = new JSONObject(j);
-                                        jsonObj.put("timetoken", historyItemResult.getTimetoken().toString());
-
-
-                                        // jsonA = new JSONArray();
-                                        Log.i(TAG, "history is tha 10 jsonArrayHistory jsonObj " + jsonObj);
-                                        jsonArrayHistory.put(jsonObj);
-                                        Log.i(TAG, "history is tha 9 jsonArrayHistory " + jsonArrayHistory);
-
-                                    }
-
-                                } catch (Exception e) {
-                                    Log.i(TAG, "PUBNUB history Caught in exception recieved message not proper " + e);
                                 }
+
+                            } catch (Exception e) {
+                                Log.i(TAG, "PUBNUB history Caught in exception recieved message not proper " + e);
                             }
-                            clearCache();
-                            cacheMessages(jsonArrayHistory);
+                        }
+                        clearCache();
+                        cacheMessages(jsonArrayHistory);
 
 
                        /* try {
@@ -2525,10 +2531,12 @@ if(i==AppConstants.MSG_COUNT) {
                         catch (Exception e) {
                             e.printStackTrace();
                         }*/
-                        }catch(Exception e){}
-                        }
+                    } catch (Exception e) {
+                        Log.i(TAG, "Caught in exception loading final history " + e);
+                    }
+                }
 
-                });
+            });
 
 
        /* Callback callback = new Callback() {
@@ -2556,7 +2564,9 @@ if(i==AppConstants.MSG_COUNT) {
         // pubnub.history(channel_name, 10, false, callback);
         pubnub.history(channel_name,true, 15,callback);
         Log.i(TAG, "inside loadHistoryFromPubnub channel name is2 yo jsonArrayHistory 1 "+jsonArrayHistory);*/
+}catch(Exception e){
 
+}
 
     }
 
@@ -2609,50 +2619,47 @@ if(i==AppConstants.MSG_COUNT) {
     private void displayDefaultMessage(){
         Log.i(TAG, "displayDefaultMessage called ");
         try {
-            JSONObject jsonMsg = new JSONObject();
+            if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
 
-            //String role = General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER);
-//            jsonMsg.put("_from", "DEFAULT");
-
-
-
-
-
+                JSONObject jsonMsg = new JSONObject();
            jsonMsg.put("_from", General.getSharedPreferences(getApplicationContext(), AppConstants.USER_ID));
-
-
             jsonMsg.put("to",channel_name);
             jsonMsg.put("timetoken",String.valueOf(System.currentTimeMillis()));
-
 
             jsonMsg.put("name","");// SYSTEM as this would be welcome message
 
             Log.i(TAG, "role of user def " + General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER));
 
-            if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
 
-                final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                Realm myRealm = General.realmconfig(this);
+
+                DefaultDeals result = myRealm.where(DefaultDeals.class).equalTo(AppConstants.OK_ID, channel_name).findFirst();
+
+
+
+                /*final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
                 String json = gson.toJson(AppConstants.letsOye);
 
-                JSONObject jsonResponse = new JSONObject(json);
+                JSONObject jsonResponse = new JSONObject(json);*/
                 // Log.i(TAG, "role of user def 4 ");
-                Log.i("TORO","froyo "+jsonResponse);
+                /*Log.i("TORO","froyo "+jsonResponse);*/
 String furnishing = "Semi-Furnished";
-                if(jsonResponse.getString("furnishing").equalsIgnoreCase("uf"))
+                if(result.getFurnishing().equalsIgnoreCase("uf"))
                     furnishing = "Un-Furnished";
-                else if (jsonResponse.getString("furnishing").equalsIgnoreCase("ff"))
+                else if (result.getFurnishing().equalsIgnoreCase("ff"))
                     furnishing = "Fully-Furnished";
 
-                jsonMsg.put("message", "You have initiated enquiry for a "+furnishing+" "+ jsonResponse.getString("property_type").substring(0, 1).toUpperCase() + jsonResponse.getString("property_type").substring(1) + " property (" + jsonResponse.getString("property_subtype") + ") by "+jsonResponse.getString("possession_date")+" within budget " + General.currencyFormat(jsonResponse.getString("price")) + ".");
+                jsonMsg.put("message", "You have initiated enquiry for a "+furnishing+" "+ result.getP_type().substring(0, 1).toUpperCase() + result.getP_type().substring(1) + " property (" + result.getPs_type() + ") by "+result.getPossation_date()+" within budget " + General.currencyFormat(result.getBudget()) + ".");
+
 
                 jsonMsg.put("status","OYES");
 
-            }
 
 
 
-  if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+
+/*  if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
 
                 // prepare a default message now get ptype
                 String ptype = General.getSharedPreferences(getApplicationContext(), AppConstants.PTYPE);
@@ -2661,7 +2668,10 @@ String furnishing = "Semi-Furnished";
                         + " property (" + General.getSharedPreferences(getApplicationContext(), AppConstants.PSTYPE) + ") within budget " + General.currencyFormat(General.getSharedPreferences(getApplicationContext(), AppConstants.PRICE)) + ".");
 
                 jsonMsg.put("status","OKS");
-            }
+
+
+            }*/
+            Log.i(TAG,"message to def "+jsonMsg);
 
             final ChatMessage message = new ChatMessage();
             message.setUserName("self");
@@ -2679,7 +2689,7 @@ String furnishing = "Semi-Furnished";
             //displayMessage(jsonMsg);
             sendNotification(jsonMsg);
 
-
+            }
         }
 
         catch(Exception e){
@@ -3005,6 +3015,7 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
     }
 
     private void clearNotifCount(){
+        Log.i(TAG,"clear notification called ");
         try{
             Realm myRealm = General.realmconfig(this);
             NotifCount notifcount1 = myRealm.where(NotifCount.class).equalTo(AppConstants.OK_ID, channel_name).findFirst();
@@ -3019,7 +3030,7 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
 
         }
         catch(Exception e){
-
+Log.i(TAG,"Caught in exception clearing notification count "+e);
         }
     }
 
@@ -3104,6 +3115,10 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
             finish();
 
         }
+        else{
+            Log.i(TAG,"onsuperp");
+            super.onBackPressed();
+        }
 
     }
 
@@ -3114,7 +3129,7 @@ Log.i(TAG,"download image "+fileToD+" "+fileToDownload);
 
         updateStatus.setOkId(okId);
 
-        Log.i("getDealStatus ","getDealStatus okId "+General.getSharedPreferences(c,AppConstants.USER_ID)+" "+okId);
+        Log.i("getDealStatus ","getDealStactus okId "+General.getSharedPreferences(c,AppConstants.USER_ID)+" "+okId);
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(AppConstants.SERVER_BASE_URL_101)

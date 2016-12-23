@@ -753,6 +753,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                             AppConstants.SIGNUP_FLAG =false;
                         }
                         else if(lastFragment.equalsIgnoreCase("oyed")){
+
                             General.publishOye(getActivity());
                         }
                         else if(lastFragment.equalsIgnoreCase("okyed")){

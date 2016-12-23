@@ -43,12 +43,14 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateStatus;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
-import com.nbourses.oyeok.activities.DealConversationActivity;
+import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.fragments.GPSTracker;
 import com.nbourses.oyeok.models.PublishLetsOye;
 import com.nbourses.oyeok.realmModels.DefaultDeals;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.pubnub.api.PNConfiguration;
+import com.pubnub.api.PubNub;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
@@ -101,6 +103,7 @@ public class General extends BroadcastReceiver {
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("h:mm a");
     private static Bitmap mIcon12 = null; // null image for test condition in download image
     private static ImageView img;
+    private static String OKID = null ;
 
 
 
@@ -231,6 +234,17 @@ while(slowInternetFlag) {
        Realm myRealm = Realm.getInstance(config);
         return myRealm;
     }
+
+public static PubNub initPubnub(Context context, String UUID){
+    PNConfiguration pnConfiguration = new PNConfiguration();
+    pnConfiguration.setSubscribeKey(AppConstants.PUBNUB_SUBSCRIBE_KEY);
+    pnConfiguration.setPublishKey(AppConstants.PUBNUB_PUBLISH_KEY);
+
+        pnConfiguration.setUuid(UUID);
+
+
+    return new PubNub(pnConfiguration);
+}
 
 
     public static void saveSet(Context context,String name, Set<String> value) {
@@ -538,6 +552,8 @@ while(slowInternetFlag) {
     }
 
 
+
+
     public static void publishOye(final Context context) {
         try {
 
@@ -546,10 +562,10 @@ while(slowInternetFlag) {
 
             String intend;
             String tt;
-            String ptype;
-            String pstype;
+            final String ptype;
+            final String pstype;
             //String ptype;
-            String price;
+            final String price;
             final String speccode;
             final Realm myRealm = realmconfig(context);
             Log.i("TRACE", "in publishOye");
@@ -583,6 +599,7 @@ while(slowInternetFlag) {
                 AppConstants.letsOye.setGcmId(SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
                 AppConstants.letsOye.setPossession_date(General.getSharedPreferences(context,AppConstants.POSSESSION_DATE));
                 String furnishingStatus="sf",furnishing=General.getSharedPreferences(context,AppConstants.FURNISHING);
+                Log.i(TAG,"oye published r"+General.getSharedPreferences(context,AppConstants.FURNISHING));
                     if (furnishing.equalsIgnoreCase("Fully-Furnished")){
                         furnishingStatus="ff";
                     }else if (furnishing.equalsIgnoreCase("Un-furnished")){
@@ -590,9 +607,10 @@ while(slowInternetFlag) {
                     }else if (furnishing.equalsIgnoreCase("Semi-furnished")){
                         furnishingStatus="sf";
                     }
+                Log.i(TAG,"oye published r 1 "+furnishingStatus);
                 AppConstants.letsOye.setFurnishing(furnishingStatus);
                 AppConstants.letsOye.setNo_call(General.getSharedPreferences(context,AppConstants.NO_CALL));
-                Log.i("NO_CALL", "Get Furnishing from model " + General.getSharedPreferences(context,AppConstants.NO_CALL));
+                Log.i("NO_CALL", "Get Furnishing from model " + AppConstants.letsOye.getFurnishing());
                 Log.i("TRACE", "Get Possession Date from model " + AppConstants.letsOye.getPossession_date());
                 Log.i("TRACE", "GCM id is" + SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
                 Log.i("TRACE", "Get user Id from model " + AppConstants.letsOye.getUserId());
@@ -608,6 +626,7 @@ while(slowInternetFlag) {
                         .build();
                 restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
                 OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+
                 oyeokApiService.publishOye(AppConstants.letsOye, new Callback<PublishLetsOye>() {
                     @Override
                     public void success(PublishLetsOye letsOye, Response response) {
@@ -634,7 +653,7 @@ while(slowInternetFlag) {
                             JSONObject jsonResponse = new JSONObject(strResponse);
                             JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
                             Log.i("TRACE", "Response data" + jsonResponse.getString("responseData"));
-
+                            OKID = jsonResponseData.getString("ok_id");
                             //change this msg with error code
                             if ("Exhausted your daily limit of Oyes today. Pls try tomorrow".equals(jsonResponseData.getString("message"))) {
                                 Log.i("TRACE", "Hello user, " + jsonResponseData.getString("message"));
@@ -646,10 +665,90 @@ while(slowInternetFlag) {
                                                 .text("Your old oye with same specs: " + jsonResponseData.getString("message"))
                                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
                             } else {
-                                Log.i("TRACE", "Ok id from response is " + jsonResponseData.getString("ok_id"));
+
+
+                                try {
+
+                                    if(myRealm.isInTransaction()) {
+                                        Log.i("HOTFIX","is in transaction saving default deal");
+
+                                        myRealm.commitTransaction();
+                                    }
+                                    DefaultDeals defaultDeals = new DefaultDeals();
+
+                                    defaultDeals.setOk_id(OKID);
+                                    //defaultDeals.setOk_id(General.getSharedPreferences(context, "OK_ID"));
+                                    defaultDeals.setSpec_code(speccode);
+                                    defaultDeals.setLastSeen(String.valueOf(System.currentTimeMillis()));
+                                    defaultDeals.setFurnishing(AppConstants.letsOye.getFurnishing());
+                                    defaultDeals.setP_type(ptype);
+                                    defaultDeals.setPs_type(pstype);
+                                    defaultDeals.setPossation_date(AppConstants.letsOye.getPossession_date());
+                                    defaultDeals.setBudget(price);
+
+                                    Log.i("locality is thee ","locality is thee " +SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY));
+                                    defaultDeals.setLocality(SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY));
+                                    myRealm.beginTransaction();
+                                    DefaultDeals defaultDeals1 = myRealm.copyToRealmOrUpdate(defaultDeals);
+                                    Log.i("locality is thee ","locality is thee w " +defaultDeals1.getLocality());
+
+                                    myRealm.commitTransaction();
+                                }
+                                catch(Exception e){
+                                    Log.i("Exception","Caught in saving default deal "+e);
+                                }
+
+                                try{
+                                    RealmResults<DefaultDeals> results1 =
+                                            myRealm.where(DefaultDeals.class).findAll();
+
+                                    for(DefaultDeals r:results1) {
+                                        // Log.i(TAG,"insiderro2 ");
+                                        Log.i(TAG, "insiderrou3 " + r.getOk_id());
+                                        Log.i(TAG, "insiderrou4 " + r.getSpec_code());
+                                        Log.i(TAG, "insiderrou5 " + r.getLocality());
+                                        Log.i(TAG, "insiderrou6 " + r.getLastSeen());
+                                        Log.i(TAG, "insiderrou7 " + r.getP_type());
+                                        Log.i(TAG, "insiderrou8 " + r.getPs_type());
+                                        Log.i(TAG, "insiderrou9 " + r.getPossation_date());
+                                        Log.i(TAG, "insiderrou10 " + r.getFurnishing());
+                                    }
+
+                                }
+                                catch(Exception e){
+
+                                }
+
+                                Log.i("TRACE", "open intent deal listing "+OKID);
+                                //open deals listing
+                                AppConstants.CLIENT_DEAL_FLAG = true;
+                                Intent openDealsListing = new Intent(context, ClientDealsListActivity.class);
+                                openDealsListing.putExtra("oyeok "+AppConstants.OK_ID, OKID);
+                       /* Intent openDealsListing = new Intent(context, DealConversationActivity.class);
+
+                        openDealsListing.putExtra("userRole", "client");
+                        openDealsListing.putExtra("Oyed", "yes");
+                        openDealsListing.putExtra(AppConstants.SPEC_CODE, speccode);
+                        openDealsListing.putExtra(AppConstants.OK_ID, General.getSharedPreferences(context, "OK_ID"));
+                        openDealsListing.putExtra("isDefaultDeal",true);*/
+
+                                openDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(openDealsListing);
+
+                                Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
+                                AppConstants.letsOye.setTime(formattedDate);
+
+                                storeDealTime(OKID,context);
+                                TastyToast.makeText(context, jsonResponseData.getString("message"), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+//                                AppConstants.letsOye.save();
+
+                                /*Log.i("TRACE", "Ok id from response is " + jsonResponseData.getString("ok_id"));
                                 Log.i("TRACE", "step2");
                                 General.setSharedPreferences(context, "OK_ID", jsonResponseData.getString("ok_id"));
                                 Log.i("TRACE", "json response data" + jsonResponseData);
+                                OKID = jsonResponseData.getString("ok_id");
                                 Log.i("TRACE", "json response data message" + jsonResponseData.getString("message"));
 
                                 TastyToast.makeText(context, jsonResponseData.getString("message"), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
@@ -702,7 +801,7 @@ while(slowInternetFlag) {
                                 Log.i("TRACE", "hashmapstring" + hashMapString);
 
                                 saveDefaultDeals(context, hashMapString);
-                                Log.i("TRACE", "Saved");
+                                Log.i("TRACE", "Saved");*/
 
                             }
                         } catch (Exception e) {
@@ -711,63 +810,7 @@ while(slowInternetFlag) {
 
 
                         //to do: use Appconstants.OKID replace all dependencies
-                        try {
 
-                            if(myRealm.isInTransaction()) {
-                                Log.i("HOTFIX","is in transaction saving default deal");
-
-                                myRealm.commitTransaction();
-                            }
-                            DefaultDeals defaultDeals = new DefaultDeals();
-                            defaultDeals.setOk_id(General.getSharedPreferences(context, "OK_ID"));
-                            defaultDeals.setSpec_code(speccode);
-                            defaultDeals.setLastSeen(String.valueOf(System.currentTimeMillis()));
-                            Log.i("locality is thee ","locality is thee " +SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY));
-                            defaultDeals.setLocality(SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY));
-                            myRealm.beginTransaction();
-                            DefaultDeals defaultDeals1 = myRealm.copyToRealmOrUpdate(defaultDeals);
-                            Log.i("locality is thee ","locality is thee w " +defaultDeals1.getLocality());
-
-                            myRealm.commitTransaction();
-                        }
-                        catch(Exception e){
-                            Log.i("Exception","Caught in saving default deal "+e);
-                        }
-
-                        try{
-                            RealmResults<DefaultDeals> results1 =
-                                    myRealm.where(DefaultDeals.class).findAll();
-
-                            for(DefaultDeals r:results1) {
-                                // Log.i(TAG,"insiderro2 ");
-                                Log.i(TAG, "insiderrou3 " + r.getOk_id());
-                                Log.i(TAG, "insiderrou4 " + r.getSpec_code());
-                                Log.i(TAG, "insiderrou5 " + r.getLocality());
-                                Log.i(TAG, "insiderrou6 " + r.getLastSeen());
-                            }
-
-                        }
-                        catch(Exception e){
-
-                        }
-
-                        Log.i("TRACE", "open intent deal listing");
-                        //open deals listing
-                        AppConstants.CLIENT_DEAL_FLAG = true;
-                        Intent openDealsListing = new Intent(context, DealConversationActivity.class);
-                        //openDealsListing.putExtra("default_deal_flag", true);
-
-                        openDealsListing.putExtra("userRole", "client");
-                        openDealsListing.putExtra("Oyed", "yes");
-                        openDealsListing.putExtra(AppConstants.SPEC_CODE, speccode);
-                        openDealsListing.putExtra(AppConstants.OK_ID, General.getSharedPreferences(context, "OK_ID"));
-                        openDealsListing.putExtra("isDefaultDeal",true);
-
-                        openDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(openDealsListing);
-
-                        Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                     }
 
                     @Override

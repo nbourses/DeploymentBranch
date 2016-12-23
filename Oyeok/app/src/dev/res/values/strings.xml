@@ -188,23 +188,28 @@
     <string name="tenant_card_question1">with fixed Budget, Suggest me locations</string>
     <string name="tenant_card_question2">fixed Budget &amp; fixed Locality</string>
     <string name="tenant_card_question3">to save Travel Time</string>
+    <string name="tenant_card_question4">apply for I Hate Deposit scheme</string>
 
     <string name="owner_card_question1">compare with neigbouring Building</string>
     <string name="owner_card_question2">create Portfolio of all rental Properties</string>
     <string name="owner_card_question3">hire local Brokers, advertise as listing</string>
+    <string name="owner_card_question4">apply for I Hate Deposit scheme</string>
 
     <string name="buyer_card_question1">Rates of old vs new Buildings</string>
     <string name="buyer_card_question2">new Projects in Budget &amp; EMI</string>
     <string name="buyer_card_question3">best investment locations</string>
+    <string name="buyer_card_question4">apply for I Hate Deposit scheme</string>
 
     <string name="seller_card_question1">compare with Live Market Rates</string>
     <string name="seller_card_question2">track to sell at right time &amp; price</string>
     <string name="seller_card_question3">broadcast to hire Local Brokers</string>
+    <string name="seller_card_question4">apply for I Hate Deposit scheme</string>
 
     <string name="app_name1">SimpleKeyboard</string>
     <string name="oyeok_keyboard">Oyeok Keyboard</string>
     <string name="subtype_en_US">English (US)</string>
     <string name="title_activity_broker_map">BrokerMap</string>
+    <string name="title_activity_log">LogActivity</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
