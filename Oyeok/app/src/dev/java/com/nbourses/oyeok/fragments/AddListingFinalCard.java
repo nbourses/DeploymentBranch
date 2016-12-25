@@ -258,13 +258,13 @@ public class AddListingFinalCard extends Fragment {
             public void onClick(View v) {
 
 
-                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                //if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                     ((BrokerMap)getActivity()).closeCardContainer();
-                }else{
+               // }else{
 
-                    ((ClientMainActivity)getActivity()).closeAddBuilding();
+                 //   ((ClientMainActivity)getActivity()).closeAddBuilding();
 
-                }
+                //}
 
             }
         });
@@ -402,7 +402,7 @@ private void init(){
        addListingBorker.setConfig(General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
        addListingBorker.setListing_date(myCalendar+"");
        Log.i("AddListingBorker","myCalendar current date"+General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
-       addListingBorker.setCity(General.getSharedPreferences(getContext(),AppConstants.MY_CITY));
+       addListingBorker.setCity("Mumbai");
        addListingBorker.setBuilding_name(General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
        addListingBorker.setPossession_date(txtcalendar.getText().toString());
        addListingBorker.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));

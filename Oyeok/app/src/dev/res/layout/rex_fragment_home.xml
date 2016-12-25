@@ -716,11 +716,10 @@
                 android:foregroundGravity="bottom"/>-->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="bottom"
             android:id="@+id/list_container"
-            android:layout_alignTop="@+id/seekbar_linearlayout"
-            android:background="@drawable/framlayout_bg"
+            android:layout_marginBottom="55dp"
             android:foregroundGravity="bottom"/>
 
         <!--</FrameLayout>-->

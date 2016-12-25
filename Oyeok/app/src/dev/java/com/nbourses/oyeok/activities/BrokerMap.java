@@ -215,7 +215,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
     LinearLayout dispProperty,my_loc;
     RelativeLayout property_type_layout;
     TextView rental,resale,btn_add_building,btn_add_listing;
-    private Boolean pro_click=false,buidingInfoFlag=false,Signupflag=false;
+    private Boolean pro_click=false,buidingInfoFlag=false,Signupflag=false,searchflag=false;
     ///Animation variable
     Animation zoomout_right, slide_up, zoomout_left, ani, zoomin_zoomout,slide_up1,slide_left,slideDown,slideUp,bounce;
     FrameLayout map_parent;
@@ -791,8 +791,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
             searchFragment c1 = new searchFragment();
            // AppConstants.SEARCHFLAG = true;
 
-            loadFragmentAnimated(c1, null, container_Signup, "Search1");
-
+            loadFragmentAnimated(c1, null, R.id.container_Signup, "Search1");
+            searchflag=true;
             /*Intent in = new Intent(AppConstants.MARKERSELECTED);
             in.putExtra("markerClicked", "false");
             LocalBroadcastManager.getInstance(this).sendBroadcast(in);*/
@@ -1139,7 +1139,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
             horizontalPicker.keepScrolling();
             horizontalPicker.stopScrolling();
             // }
-            addressBar.setText("Getting Address... ");
+
 //                                      Log.i("MotionEvent.ACTION_MOVE", "=========================");
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 //                                              horizontalPicker.stopScrolling();
@@ -1200,7 +1200,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                                 Log.i("t1", "Sharedpref_lng" + General.getSharedPreferences(getBaseContext(), AppConstants.MY_LNG));
                                 //addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
                                 addBText.setText("Find your Building Location on map and click on Save.");
-
+                                addressBar.setText("Getting Address... ");
                                 getRegion();
 
                                 new LocationUpdater().execute();
@@ -1288,21 +1288,25 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        Log.i("onBackPressed ","onBackPressed() =========== ");
+        //super.onBackPressed();
+        Log.i("onBackPressed ","onBackPressed() =========== "+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
 
       /*  Intent in =new Intent(AppConstants.RESETPHASE);
         in.putExtra("resetphase",true);
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);*/
-       if( buidingInfoFlag){
+        if(searchflag){
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(container_Signup)).commitAllowingStateLoss();
+            searchflag=false;
+        }else if( buidingInfoFlag){
            CloseBuildingOyeComfirmation();
        }else if(Signupflag){
             CloseSignUP();
         }else {
             AppConstants.MY_BASE_LOCATION_FLAG = false;
             General.setSharedPreferences(getBaseContext(), AppConstants.RESETPHASE, "true");
+            this.finish();
         }
-
+        Log.i("onBackPressed ","onBackPressed() =========== "+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
 
     }
 

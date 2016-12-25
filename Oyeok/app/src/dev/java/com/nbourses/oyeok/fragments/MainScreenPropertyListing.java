@@ -3,10 +3,16 @@ package com.nbourses.oyeok.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.nbourses.oyeok.R;
@@ -25,7 +31,9 @@ public class MainScreenPropertyListing extends Fragment {
     private View view;
     EditText Searchlist;
     ListView listview;
-
+    LinearLayout dragablelistview;
+Animation cust_slideup,cust_slide_down;
+    FrameLayout.LayoutParams params;
     public MainScreenPropertyListing() {
 
     }
@@ -48,7 +56,9 @@ public class MainScreenPropertyListing extends Fragment {
 
 
          listview=(ListView) view.findViewById(R.id.listview);
-
+        dragablelistview=(LinearLayout)view.findViewById(R.id.dragablelistview);
+        cust_slideup = (AnimationUtils.loadAnimation(getContext(), R.anim.cust_slideup));
+        cust_slide_down = (AnimationUtils.loadAnimation(getContext(), R.anim.cust_slide_down));
 
 
 
@@ -57,8 +67,74 @@ public class MainScreenPropertyListing extends Fragment {
         listview.setAdapter(adapter);
         realm = General.realmconfig(getContext());
         adapter.setResults(realm.where(BuildingCacheRealm.class).findAll());
+         params = (FrameLayout.LayoutParams) dragablelistview.getLayoutParams();
+        params.topMargin = 1330;
+        dragablelistview.startAnimation(cust_slideup);
+        /*dragablelistview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(params.topMargin<1330 && params.topMargin>=170) {
+                    params.topMargin = 1330;
+                    view.setLayoutParams(params);
+                }
+                else {
+                    params.topMargin = 170;
+                    view.setLayoutParams(params);
+                }
 
+            }
+        });*/
+        dragablelistview.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event)
+            {
+                // if (currentState != State.EDIT_MOVE) return false;
 
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
+                //if (view.getId() != R.id.dragablelistview) return false;
+                switch (event.getAction())
+                {
+                    case MotionEvent.ACTION_MOVE:
+                        Log.i("touchcheck","ACTION_MOVE"+event.getRawY());
+                       // if(params.topMargin<1372)
+                        params.topMargin = (int) event.getRawY()-310 ;//- (view.getHeight());
+                        //params.leftMargin = (int) event.getRawX() - (view.getWidth());
+                        Log.i("touchcheck","ACTION_MOVE"+event.getRawY()+"   : "+params.topMargin +"   :  : "+params);
+
+                        view.setLayoutParams(params);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        if(params.topMargin<1372)
+                        params.topMargin = (int) event.getRawY()-310;//- (view.getHeight());
+                        else {
+                            params.topMargin = 1330;
+                            dragablelistview.startAnimation(cust_slideup);
+                        }
+                        if(params.topMargin<170)
+                        {
+                            params.topMargin = 170;
+                          //  dragablelistview.startAnimation(cust_slide_down);
+                        }
+                        //params.bottomMargin=(int) event.getRawY();
+                        Log.i("touchcheck","ACTION_UP"+event.getRawY()+"   : "+params.topMargin +"   :  : "+params);
+
+                        //params.leftMargin = (int) event.getRawX() - (view.getWidth());
+                        view.setLayoutParams(params);
+                        break;
+
+                    case MotionEvent.ACTION_DOWN:
+                        Log.i("touchcheck","ACTION_UP"+event.getRawY()+"   : "+params.topMargin +"   :  : "+params);
+                        //params.topMargin==(int)1372;
+                        //params.topMargin = 1300;
+                        params.topMargin = (int) event.getRawY() -310;
+                        view.setLayoutParams(params);
+                        break;
+                }
+
+                return true;
+            }
+        });
 
 /*
         if(portListing != null)

@@ -328,6 +328,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
         gm_cashback_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                        StopAllThread();
                        opengameDiscountCard();
             }
         });

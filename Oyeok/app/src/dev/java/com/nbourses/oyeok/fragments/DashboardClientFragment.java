@@ -673,22 +673,24 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             }
         });*/
 
+        MainScreenPropertyListing mainScreenPropertyListing= new MainScreenPropertyListing();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.cust_slideup, R.anim.cust_slide_down);
+//                list_container.setClickable(true);
+        fragmentTransaction.addToBackStack("card22");
+        fragmentTransaction.replace(R.id.list_container, mainScreenPropertyListing);
+        fragmentTransaction.commitAllowingStateLoss();
 
 
-        list_container.setOnTouchListener(new View.OnTouchListener() {
+        //dragablelistview.startAnimation(cust_slideup);
+       /* list_container.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event)
             {
                // if (currentState != State.EDIT_MOVE) return false;
 
-                MainScreenPropertyListing mainScreenPropertyListing= new MainScreenPropertyListing();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                //fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-//                list_container.setClickable(true);
-                fragmentTransaction.addToBackStack("card22");
-                fragmentTransaction.replace(R.id.list_container, mainScreenPropertyListing);
-                fragmentTransaction.commitAllowingStateLoss();
+
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
                 if (view.getId() != R.id.list_container) return false;
                 switch (event.getAction())
@@ -712,7 +714,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
                 return true;
             }
-        });
+        });*/
 
 
 

@@ -9,6 +9,7 @@ import com.digits.sdk.android.AuthCallback;
 import com.digits.sdk.android.Digits;
 import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsSession;
+import com.google.android.gms.analytics.Tracker;
 import com.onesignal.OneSignal;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -26,7 +27,7 @@ public class MyApplication extends MultiDexApplication {
     private static final String TWITTER_SECRET = "5AMXDHAXG0luBuuHzSrDLD0AvwP8GzF06klXFgcwnzAVurXUoS";
 
     private AuthCallback authCallback;
-
+    private Tracker mTracker;
 
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -67,7 +68,14 @@ public class MyApplication extends MultiDexApplication {
        // ActiveAndroid.initialize(this);
 
     }
-
+//    synchronized public Tracker getDefaultTracker() {
+//        if (mTracker == null) {
+//            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+//            // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+//            mTracker = analytics.newTracker(R.xml.global_tracker);
+//        }
+//        return mTracker;
+//    }
 
 
     public AuthCallback getAuthCallback(){

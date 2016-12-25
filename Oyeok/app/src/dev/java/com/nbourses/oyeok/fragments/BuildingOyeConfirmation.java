@@ -145,61 +145,61 @@ public class BuildingOyeConfirmation extends Fragment {
                 {
                     case R.id.rk1:
                         approx_area="300";
-                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1 Rk");
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1Rk");
                         break;
                     case R.id.bhk1:
                         approx_area="600";
-                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1 BHK");
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1BHK");
 
                         break;
                     case R.id.bhk1_5:
                         approx_area="800";
-                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1.5 BHK");
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1.5BHK");
 
                         break;
                     case R.id.bhk2:
                         approx_area="950";
-                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2 BHK");
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2BHK");
 
                         break;
                     case R.id.bhk2_5:
                         approx_area="1300";
-                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2.5 BHK");
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2.5BHK");
 
                         break;
                     case R.id.bhk3:
                         approx_area="1600";
-                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"3 BHK");
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"3BHK");
 
                         break;
                     case R.id.bhk3_5:
                         approx_area="1800";
-                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"3.5 BHK");
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"3.5BHK");
 
                         break;
                     case R.id.bhk4:
                         approx_area="2100";
-                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"4 BHK");
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"4BHK");
 
                         break;
                     case R.id.bhk4_5:
                         approx_area="2300";
-                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"4.5 BHK");
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"4.5BHK");
 
                         break;
                     case R.id.bhk5:
                         approx_area="2500";
-                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"5 BHK");
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"5BHK");
 
                         break;
                     case R.id.bhk5_5:
                         approx_area="2700";
-                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"5.5 BHK");
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"5.5BHK");
 
                         break;
                     case R.id.bhk6:
                         approx_area="2900";
-                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"6 BHK");
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"6BHK");
                         break;
                     default:
                         break;

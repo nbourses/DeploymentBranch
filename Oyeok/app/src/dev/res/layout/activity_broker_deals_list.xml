@@ -80,7 +80,7 @@
             android:background="@color/common_plus_signin_btn_text_dark_disabled"
             android:visibility="visible"
             android:gravity="bottom"
-            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="false"
             android:layout_alignParentBottom="true">
 
             <com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar
