@@ -459,6 +459,7 @@ try {
                     if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
                     setBaseRegion();
                 }
+
             }.start();*/
 
         }
