@@ -26,9 +26,7 @@ public class AddListingBorker {
     private String locality;
 
 
-    @Expose
-    @SerializedName("sublocality")
-    private String sublocality;
+
 
     @Expose
     @SerializedName("config")
@@ -86,6 +84,46 @@ public class AddListingBorker {
     @SerializedName("property_type")
     private String property_type;
 
+
+    @Expose
+    @SerializedName("user_id")
+    private String user_id;
+
+    @Expose
+    @SerializedName("carpet_area")
+    private int carpet_area;
+
+
+    @Expose
+    @SerializedName("city")
+    private String city;
+
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public int getCarpet_area(int carpet_area) {
+        return this.carpet_area;
+    }
+
+    public void setCarpet_area(int carpet_area) {
+        this.carpet_area = carpet_area;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+
     public String getBuilding_name() {
         return building_name;
     }
@@ -118,13 +156,7 @@ public class AddListingBorker {
         this.locality = locality;
     }
 
-    public String getSublocality() {
-        return sublocality;
-    }
 
-    public void setSublocality(String sublocality) {
-        this.sublocality = sublocality;
-    }
 
     public String getConfig() {
         return config;

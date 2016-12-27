@@ -17,19 +17,15 @@ import com.nbourses.oyeok.models.portListingModel;
 import java.util.ArrayList;
 
 /**
- * Created by sushil on 07/11/16.
+ * Created by sushil on 20/12/16.
  */
-/*
-public class porfolioAdapter {
-}*/
 
-
-public class porfolioAdapter extends BaseAdapter {
+public class MainScreenListviewAdapter extends BaseAdapter {
     private ArrayList<portListingModel> portListing;
     private Context context;
     portListingModel listing;
     private LayoutInflater inflater;
-    public porfolioAdapter(Context context, ArrayList<portListingModel> portListing) {
+    public MainScreenListviewAdapter(Context context, ArrayList<portListingModel> portListing) {
         this.context = context;
         this.portListing = portListing;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -49,20 +45,20 @@ public class porfolioAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View v = convertView;
-        Holder holder;
+        MainScreenListviewAdapter.Holder holder;
         listing=portListing.get(position);
         if (v == null) {
             v = inflater.inflate(R.layout.rental_listview_row, null);
-            holder = new Holder(v);
+            holder = new MainScreenListviewAdapter.Holder(v);
             /*holder.tvPersonName = (TextView) v.findViewById(R.id.tvPersonName);
             holder.ivEditPesonDetail=(ImageView)v.findViewById(R.id.ivEditPesonDetail);
             holder.ivDeletePerson=(ImageView)v.findViewById(R.id.ivDeletePerson);*/
             v.setTag(holder);
         } else {
-            holder = (Holder) v.getTag();
+            holder = (MainScreenListviewAdapter.Holder) v.getTag();
         }
         if(listing.getLl_pm()!=0&&listing.getDisplay_type()==null){
-        holder.heading.setText(listing.getName()+" ("+listing.getConfig()+")");
+            holder.heading.setText(listing.getName()+" ("+listing.getConfig()+")");
 //            String text;
 //            text="<html><sup></html>";
             holder.ActualPrice.setText(General.currencyFormatWithoutRupeeSymbol(listing.getLl_pm()+"")+"/month");
@@ -76,8 +72,8 @@ public class porfolioAdapter extends BaseAdapter {
                 holder.B_image.setBackground(context.getResources().getDrawable(R.drawable.custom_img_bg));
 
             }
-        holder.description.setText(listing.getLocality());
-        setIcon(listing, holder);
+            holder.description.setText(listing.getLocality());
+            setIcon(listing, holder);
         }else if(listing.getOr_psf()!=0 && listing.getDisplay_type()==null){
             holder.ActualPrice.setText(General.currencyFormatWithoutRupeeSymbol(listing.getOr_psf()+"") + "/sq-ft" );
             holder.heading.setText(listing.getName()+" ("+listing.getConfig()+")");
@@ -102,73 +98,44 @@ public class porfolioAdapter extends BaseAdapter {
         }
 
         Log.i("namerate","grothrate "+listing.getGrowth_rate()+" name"+listing.getName()+"listing.getLl_pm() "+listing.getLl_pm()+" listing.getor_psf() "+listing.getOr_psf()+" "+listing.getLocality());
-        /*if(type==1 && item.getLl_pm()>0){
-            holder.ActualPrice.setText(General.currencyFormat(item.getLl_pm()+"")+"/month");
-            holder.heading.setText(item.getName()+" ("+item.getConfig()+")");
-            holder.B_image.setImageResource(R.drawable.buildingiconbeforeclick);
-            holder.description.setText(item.getLocality());
-            setIcon(item, holder);
-        }
-        else if(type==2 && item.getOr_psf()>0){
-            holder.ActualPrice.setText(General.currencyFormat(item.getOr_psf()+"") + "/sq-ft" );
-            holder.heading.setText(item.getName()+" ("+item.getConfig()+")");
-            holder.B_image.setImageResource(R.drawable.buildingiconbeforeclick);
-            holder.description.setText(item.getLocality());
-            setIcon(item, holder);
-        }*/
 
 
-        /*holder.tvPersonName.setText(myPortfolio.get(position).getName());
-        holder.ivEditPesonDetail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PersonDetailsModel dataToEditModel= MainActivity.getInstance().searchPerson(personDetailsArrayList.get(position).getId());
-                MainActivity.getInstance().addOrUpdatePersonDetailsDialog(dataToEditModel,position);
-
-            }
-        });
-        holder.ivDeletePerson.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ShowConfirmDialog(context,personDetailsArrayList.get(position).getId(), position);
-            }
-        });*/
         return v;
     }
 
 
-    public void setIcon(portListingModel item, porfolioAdapter.Holder holder) {
+    public void setIcon(portListingModel item, MainScreenListviewAdapter.Holder holder) {
 
 //        Log.i("namerate","grothrate 123 :  "+(item.getGrowth_rate()).subSequence( 1, (item.getGrowth_rate()).length() )+" name"+item.getName());
 
-       try {
-           if(item.getGrowth_rate() !=null) {
-               if (Integer.parseInt(item.getGrowth_rate()) < 0) {
+        try {
+            if(item.getGrowth_rate() !=null) {
+                if (Integer.parseInt(item.getGrowth_rate()) < 0) {
 
-                   holder.RateIndicator.setImageResource(R.drawable.sort_down_red);
-                   holder.ActualPrice.setTextColor(Color.parseColor("#ffb91422"));
-                   holder.percentChange.setText((item.getGrowth_rate()).subSequence(1, (item.getGrowth_rate()).length()) + "%");
+                    holder.RateIndicator.setImageResource(R.drawable.sort_down_red);
+                    holder.ActualPrice.setTextColor(Color.parseColor("#ffb91422"));
+                    holder.percentChange.setText((item.getGrowth_rate()).subSequence(1, (item.getGrowth_rate()).length()) + "%");
 
-               } else if (Integer.parseInt(item.getGrowth_rate()) > 0) {
+                } else if (Integer.parseInt(item.getGrowth_rate()) > 0) {
 
-                   holder.RateIndicator.setImageResource(R.drawable.sort_up_green);
-                   holder.ActualPrice.setTextColor(Color.parseColor("#2dc4b6"));
-                   holder.percentChange.setText((item.getGrowth_rate()).subSequence(1, (item.getGrowth_rate()).length()) + "%");
+                    holder.RateIndicator.setImageResource(R.drawable.sort_up_green);
+                    holder.ActualPrice.setTextColor(Color.parseColor("#2dc4b6"));
+                    holder.percentChange.setText((item.getGrowth_rate()).subSequence(1, (item.getGrowth_rate()).length()) + "%");
 
-               } else {
-                   holder.RateIndicator.setImageResource(R.drawable.sort_up_black);
-                   holder.ActualPrice.setTextColor(Color.parseColor("black"));
-                   holder.percentChange.setText(item.getGrowth_rate() + "%");
-               }
-           }else{
-               holder.RateIndicator.setVisibility(View.GONE);
+                } else {
+                    holder.RateIndicator.setImageResource(R.drawable.sort_up_black);
+                    holder.ActualPrice.setTextColor(Color.parseColor("black"));
+                    holder.percentChange.setText(item.getGrowth_rate() + "%");
+                }
+            }else{
+                holder.RateIndicator.setVisibility(View.GONE);
 
 //               holder.ActualPrice.setText("Rates will be updated soon.");
 //               holder.ActualPrice.setTextColor(Color.parseColor("#000000"));
-               holder.ActualPrice.setTextColor(Color.parseColor("#000000"));
-               holder.percentChange.setText("");
-           }
-       }catch (Exception e){}
+                holder.ActualPrice.setTextColor(Color.parseColor("#000000"));
+                holder.percentChange.setText("");
+            }
+        }catch (Exception e){}
     }
 
     class Holder {
@@ -215,4 +182,5 @@ public class porfolioAdapter extends BaseAdapter {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }*/
+
 }

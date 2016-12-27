@@ -22,6 +22,16 @@ public class BuildingCacheRealm extends RealmObject {
     private  String timestamp;
     private  String transactions;
     private String  locality;
+    private String  city;
+
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
 
     public String getId() {
         return id;

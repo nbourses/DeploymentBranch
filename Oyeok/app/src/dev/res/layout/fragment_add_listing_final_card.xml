@@ -432,6 +432,7 @@
                 android:layout_marginLeft="4dip"
                 android:text="Requirement"
                 android:gravity="center"
+                android:id="@+id/txt_req_aval11"
                 android:textColor="@color/black"
                 android:textSize="20dip"
                 android:textStyle="bold"/>

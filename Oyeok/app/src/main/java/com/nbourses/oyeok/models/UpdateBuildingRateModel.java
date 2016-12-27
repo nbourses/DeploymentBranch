@@ -33,6 +33,18 @@ public class UpdateBuildingRateModel {
     @SerializedName("building_id")
     private String building_id;
 
+    @Expose
+    @SerializedName("city")
+    private String city;
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public String getBuilding() {
         return building;
     }

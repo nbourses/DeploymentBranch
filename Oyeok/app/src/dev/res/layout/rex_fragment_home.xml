@@ -40,7 +40,6 @@
                 android:layout_marginTop="160dp"
                 android:layout_marginLeft="-21dp"
                 android:layout_gravity="center_horizontal"
-
                 />
 
             <TextView
@@ -92,7 +91,7 @@
                             android:gravity="top"
                             android:layout_alignParentTop="true"
                             android:layout_marginLeft="25dp"
-                            android:textStyle="bold|italic"
+                            android:textStyle="italic"
                             android:clickable="false" />
 
                         <com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker
@@ -692,7 +691,7 @@
             android:layout_above="@+id/seekbar_linearlayout"
             android:orientation="horizontal"
             android:background="@color/yellow"
-            android:visibility="visible">
+            android:visibility="gone">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -700,7 +699,31 @@
                 android:textColor="@color/white"
                 android:text="We cater Only in Mumbai."/>
         </RelativeLayout>
+        <!--<FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            android:layout_alignBottom="@+id/property_type"
+            android:id="@+id/slidelayout">-->
+            <!--<ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/pullup_button"
+                android:gravity="center"
+                android:layout_gravity="bottom|center_horizontal"
+                android:id="@+id/shutterlist"
+                android:layout_marginBottom="70dp"
+                android:foregroundGravity="bottom"/>-->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:id="@+id/list_container"
+            android:layout_alignTop="@+id/seekbar_linearlayout"
+            android:background="@drawable/framlayout_bg"
+            android:foregroundGravity="bottom"/>
 
+        <!--</FrameLayout>-->
         <RelativeLayout
             android:layout_width="match_parent"
             android:id="@+id/property_type"
@@ -709,12 +732,12 @@
             android:foregroundGravity="bottom"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="440dp"
-            android:layout_height="50dp">
+            android:layout_height="50dp"
+            android:visibility="visible">
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="45dp"
                 android:gravity="center"
-
                 android:layout_alignParentBottom="true"
                 android:orientation="horizontal">
 
@@ -784,10 +807,6 @@
 
         <LinearLayout
             android:id="@+id/seekbar_linearlayout"
-            android:paddingTop="6dp"
-            android:paddingLeft="@dimen/eight_dp"
-            android:paddingRight="@dimen/eight_dp"
-
             android:background="@color/dark_white"
             android:layout_width="match_parent"
             android:layout_height="75dp"
@@ -797,7 +816,6 @@
             android:foregroundGravity="bottom"
             android:layout_alignParentBottom="true"
             android:visibility="visible">
-
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -834,20 +852,54 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="75dip"
+                android:gravity="bottom"
+                android:layout_gravity="bottom"
+                android:orientation="horizontal"
+                android:background="@color/greenish_blue"
+                android:id="@+id/addlistingText"
+                android:visibility="gone"
+                >
+                <Button
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="left|bottom"
+                    android:background="@drawable/asset_add_listing"
+                    android:text=""
+                    android:layout_marginLeft="10dp"
+                    android:visibility="visible"
+                    android:layout_marginTop="15dp"  />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dip"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginTop="2dip"
+                    android:layout_marginBottom="2dip"
+                    android:textStyle="bold"
+                    android:id="@+id/addBText"
+                    android:visibility="visible"
+                    android:gravity="center"
+                    android:text="Find your Building Location and on Save"/>
+            </LinearLayout>
+
+
         </LinearLayout>
+
     </RelativeLayout>
 
 
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="bottom"
         android:orientation="horizontal"
-        android:id="@+id/property_type_layout"
+        android:id="@+id/property_type_layout1"
         android:layout_marginBottom="55dp"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="10dp"
         android:layout_alignParentBottom="true"
         >
         <TextView
@@ -856,6 +908,7 @@
             android:id="@+id/rental"
             android:textColor="@color/greenish_blue"
             android:textStyle="bold"
+            android:layout_alignParentLeft="true"
             android:gravity="center_horizontal|center_vertical"
             android:text="home"/>
         <TextView
@@ -863,12 +916,12 @@
             android:layout_height="wrap_content"
             android:id="@+id/sale"
             android:textColor="@color/greenish_blue"
-            android:layout_marginLeft="180dp"
             android:textStyle="bold"
-            android:visibility="gone"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_alignParentRight="true"
+            android:visibility="visible"
+            android:gravity="center"
             android:text="Home"/>
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

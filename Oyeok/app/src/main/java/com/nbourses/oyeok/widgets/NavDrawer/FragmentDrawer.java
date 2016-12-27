@@ -19,7 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.nbourses.oyeok.Database.DBHelper;
+//import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -37,7 +37,7 @@ public class FragmentDrawer extends Fragment {
     private DrawerLayout mDrawerLayout;
     private NavigationDrawerAdapter adapter;
     private View containerView;
-    private DBHelper dbHelper;
+   // private DBHelper dbHelper;
     String userType="";
     private static TextView[] title = null;
     private static String[] titles = null;
@@ -90,7 +90,7 @@ public class FragmentDrawer extends Fragment {
         super.onCreate(savedInstanceState);
 
         // drawer labels
-        dbHelper=new DBHelper(getActivity());
+        //dbHelper=new DBHelper(getActivity());
 //        userType=dbHelper.getValue(DatabaseConstants.user);
 
 

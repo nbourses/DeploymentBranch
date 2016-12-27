@@ -14,17 +14,13 @@ import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.General;
-import com.nbourses.oyeok.realmModels.MyPortfolioModel;
-
-import java.util.ArrayList;
-
-import io.realm.Realm;
+import com.nbourses.oyeok.realmModels.BuildingCacheRealm;
 
 /**
  * Created by sushil on 29/09/16.
  */
 
-public  class myPortfolioAdapter extends realmAdapter<MyPortfolioModel,myPortfolioAdapter.ViewHolder> implements View.OnLongClickListener{
+public  class myPortfolioAdapter extends realmAdapter<BuildingCacheRealm,myPortfolioAdapter.ViewHolder> implements View.OnLongClickListener{
     @Override
     public boolean onLongClick(View v) {
         return false;
@@ -58,7 +54,7 @@ public  class myPortfolioAdapter extends realmAdapter<MyPortfolioModel,myPortfol
 
 
     public static interface OnItemClickListener {
-        public void onItemClick(MyPortfolioModel myPortfolioModel);
+        public void onItemClick(BuildingCacheRealm myPortfolioModel);
     }
 
 
@@ -83,7 +79,7 @@ public  class myPortfolioAdapter extends realmAdapter<MyPortfolioModel,myPortfol
 
     @Override
     public   void onBindViewHolder(final myPortfolioAdapter.ViewHolder holder, final int position) {
-        final MyPortfolioModel item = getItem(position);
+        final BuildingCacheRealm item = getItem(position);
 
 
         if(type==1 && item.getLl_pm()>0){
@@ -111,7 +107,7 @@ public  class myPortfolioAdapter extends realmAdapter<MyPortfolioModel,myPortfol
 
     }
 
-public void setIcon(MyPortfolioModel item, myPortfolioAdapter.ViewHolder holder) {
+public void setIcon(BuildingCacheRealm item, myPortfolioAdapter.ViewHolder holder) {
     if (Integer.parseInt( item.getRate_growth() ) < 0) {
 
         holder.RateIndicator.setImageResource( R.drawable.sort_down_red );
@@ -131,7 +127,7 @@ public void setIcon(MyPortfolioModel item, myPortfolioAdapter.ViewHolder holder)
     }
 
 }
-    public void removeSelection(ArrayList<String> ids) {
+    /*public void removeSelection(ArrayList<String> ids) {
         Realm myRealm= General.realmconfig( context );
    for(int i=0;i<ids.size();i++) {
        try {
@@ -150,7 +146,7 @@ public void setIcon(MyPortfolioModel item, myPortfolioAdapter.ViewHolder holder)
 }
 //        mSelectedItemsIds = new SparseBooleanArray();
 
-    }
+    }*/
 
     public void selectView(int position, boolean value) {
         if (value)

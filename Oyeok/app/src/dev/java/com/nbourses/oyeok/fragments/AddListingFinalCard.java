@@ -76,7 +76,7 @@ public class AddListingFinalCard extends Fragment {
     LinearLayout submit_listing;
     String numberAsString;
     private int llMin, llMax, orMin, orMax,area;
-
+    TextView txt_req_aval;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -115,7 +115,7 @@ public class AddListingFinalCard extends Fragment {
         building_name=(TextView)v.findViewById(R.id.building_name);
         building_locality=(TextView)v.findViewById(R.id.building_locality);
         tv_rate=(TextView) v.findViewById(R.id.tv_rate);
-
+        txt_req_aval=(TextView) v.findViewById(R.id.txt_req_aval11);
 
 
         config.setText(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG).toString());
@@ -129,7 +129,7 @@ public class AddListingFinalCard extends Fragment {
         //deafault values
         toggleBtn1.toggle();
         Req.setChecked(true);
-        tt="rental";
+        tt="ll";
 
         seekBar.setProgress(1000);
 
@@ -162,16 +162,16 @@ public class AddListingFinalCard extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     transaction_type.setText("RESALE");
-                    tt="resale";
-                    tv_rate.setText("/sq.ft");
+                    tt="or";
+                    tv_rate.setText("");
                     minvalue=orMin*area;
                     maxvalue=orMax*area;
                     minvalue=minvalue/1000;
                     minvalue=minvalue*1000;
                     maxvalue=maxvalue/1000;
                     maxvalue=maxvalue*1000;
-                    min.setText(String.valueOf(General.currencyFormat((minvalue)+"")));
-                    max.setText(String.valueOf(General.currencyFormat((maxvalue)+"")));
+                    min.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue)+"")));
+                    max.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((maxvalue)+"")));
 //                    selected_rate.setText(String.valueOf(General.currencyFormat((orMin*area)+"")));
                     selected_rate.setText(General.currencyFormat(String.valueOf(minvalue)).substring(2, General.currencyFormat(String.valueOf(minvalue)).length()));
                     seekBar.setMax(maxvalue);
@@ -179,7 +179,7 @@ public class AddListingFinalCard extends Fragment {
                 }
                 else{
                     transaction_type.setText("RENT");
-                    tt="rental";
+                    tt="ll";
                     tv_rate.setText("/month");
                     int price =llMin*area;
                     minvalue=llMin*area;
@@ -188,8 +188,8 @@ public class AddListingFinalCard extends Fragment {
                     minvalue=minvalue*1000;
                     maxvalue=maxvalue/1000;
                     maxvalue=maxvalue*1000;
-                    min.setText(String.valueOf(General.currencyFormat((minvalue)+"")));
-                    max.setText(String.valueOf(General.currencyFormat((maxvalue)+"")));
+                    min.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue)+"")));
+                    max.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((maxvalue)+"")));
 //                    selected_rate.setText(String.valueOf(General.currencyFormat((llMin*area)+"")));
                     selected_rate.setText(General.currencyFormat(String.valueOf(minvalue)).substring(2, General.currencyFormat(String.valueOf(minvalue)).length()));
                     seekBar.setMax(maxvalue);
@@ -351,6 +351,8 @@ private void init(){
             if(!isChecked){
                 Req.setChecked(false);
                 Avail.setChecked(true);
+                txt_req_aval.setText("Availability");
+
 
             }else{
                 Req.setChecked(true);
@@ -367,6 +369,7 @@ private void init(){
 
             if(!isChecked){
 
+                txt_req_aval.setText("Requirement");
                 Req.setChecked(true);
                 Avail.setChecked(false);
 
@@ -399,15 +402,18 @@ private void init(){
        addListingBorker.setConfig(General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
        addListingBorker.setListing_date(myCalendar+"");
        Log.i("AddListingBorker","myCalendar current date"+General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
-       addListingBorker.setLocality("mumbai");
+       addListingBorker.setCity(General.getSharedPreferences(getContext(),AppConstants.MY_CITY));
        addListingBorker.setBuilding_name(General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
        addListingBorker.setPossession_date(txtcalendar.getText().toString());
        addListingBorker.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
        addListingBorker.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
-       addListingBorker.setUser_name(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+       addListingBorker.setUser_name(General.getSharedPreferences(getContext(),AppConstants.NAME));
        Log.i("magic","username   : "+ General.getSharedPreferences(getContext(),AppConstants.NAME)+"  "+General.getSharedPreferences(getContext(),AppConstants.MOBILE_NUMBER));
        addListingBorker.setTt(tt);
 
+       addListingBorker.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+       int carpet_area=Integer.parseInt(approx_area.getText().toString());
+       addListingBorker.setCarpet_area(carpet_area);
        Log.i("Reqstatus","Reqstatus 1 : "+Avail.isChecked()+ " "+Req.isChecked());
        if(Avail.isChecked()){
            Log.i("Reqstatus","Reqstatus 1 inside: "+Avail.isChecked()+ " "+Req.isChecked());
@@ -416,7 +422,7 @@ private void init(){
        }else{
            addListingBorker.setReq_avl("req");
        }
-       if(tt.equalsIgnoreCase("rental")){
+       if(tt.equalsIgnoreCase("ll")){
           addListingBorker.setLl_pm(numberAsString);
 
            addListingBorker.setOr_psf("0");
@@ -427,10 +433,13 @@ private void init(){
            addListingBorker.setOr_psf(numberAsString);
        }
        if(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY) == "")
-       addListingBorker.setSublocality("Andheri west");
+       addListingBorker.setLocality("");
        else
-           addListingBorker.setSublocality(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
-       addListingBorker.setMobile("+918655201886");
+           addListingBorker.setLocality(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
+
+
+      // addListingBorker.setMobile("+918655201886");
+       addListingBorker.setMobile(General.getSharedPreferences(getContext(),AppConstants.MOBILE_NUMBER));
 
 
 
@@ -493,7 +502,7 @@ private void init(){
         add_Building.setType("LIST");
         add_Building.setDisplay_type(null);
 
-        if(tt.equalsIgnoreCase("rental")){
+        if(tt.equalsIgnoreCase("ll")){
             add_Building.setLl_pm(Integer.parseInt(numberAsString));
 
             add_Building.setOr_psf(0);
@@ -525,6 +534,10 @@ private void init(){
 
         if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
             Intent in = new Intent(getContext(), MyPortfolioActivity.class);
+            /*in.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);*/
             startActivity(in);
         }else {
             Intent in = new Intent(getContext(), MyPortfolioActivity.class);
@@ -552,7 +565,7 @@ private  void getprice()
         user.setLatitude(General.getSharedPreferences(getContext(), AppConstants.MY_LAT));
         Log.i("getprice", "My_lng" + "  " + General.getSharedPreferences(getContext(), AppConstants.MY_LNG));
         if (SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) == "")
-            user.setLocality("mumbai");
+            user.setLocality("Mumbai");
         else
             user.setLocality(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
         Log.i("getprice", "My_lat" + "  " + General.getSharedPreferences(getContext(), AppConstants.MY_LAT));
@@ -654,11 +667,12 @@ private  void getprice()
                                 minvalue=minvalue*1000;
                                 maxvalue=maxvalue/1000;
                                 maxvalue=maxvalue*1000;
-                                min.setText(String.valueOf(General.currencyFormat((minvalue)+"")));
-                                max.setText(String.valueOf(General.currencyFormat((maxvalue)+"")));
-                                selected_rate.setText(String.valueOf(General.currencyFormat((minvalue)+"")));
+                                min.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue)+"")));
+                                max.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((maxvalue)+"")));
+                                selected_rate.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue)+"")));
                                 seekBar.setMax(maxvalue);
                                 seekBar.setMin(minvalue);
+                                numberAsString=minvalue+"";
                             }
                         }
                     }
@@ -677,38 +691,4 @@ private  void getprice()
 
  }
 
-
-
-
-
-
-
-   /* // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction( uri );
-        }
-    }*/
-
-    /*@Override
-    public void onAttach(Context context) {
-        super.onAttach( context );
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException( context.toString()
-                    + " must implement OnFragmentInteractionListener" );
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }*/
 }

@@ -62,7 +62,7 @@ public class AppConstants {
     public static final String CLIENT_HEADING = "client_heading";
     public static final String MARKERSELECTED = "markerSelected";
     public static PublishLetsOye letsOye = new PublishLetsOye();
-
+    public static String MY_CITY = "myCity";
     //public static final String SERVER_BASE_URL = "http://52.41.200.154:9000/1";
     //public static final String SERVER_BASE_URL_101 = "http://52.41.200.154:9000/1.01";
     //public static final String SERVER_BASE_URL_102 = "http://52.41.200.154:9000/1.02";
@@ -184,7 +184,7 @@ public class AppConstants {
     public static final String MY_BASE_LOCATION = "myBaseLocation";
     public static  String MY_BASE_LAT = "myBaseLat";
     public static  String MY_BASE_LNG = "myBaseLng";
-
+    public static  Boolean MY_BASE_LOCATION_FLAG = false;
     //  display config on building confirmation
 
     public static final String DISPLAY_BUILDING_CONF="displayBuildingConf";
@@ -192,5 +192,7 @@ public class AppConstants {
 
     //Reset PhaseSeekbar Key
     public static final String RESETPHASE = "resetPhase";
+    public static final String OUTO_CLICK_MARKER = "autoClickMarker";
+    public static  String BUILDING_ID = "buildingId";
 
 }

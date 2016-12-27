@@ -493,6 +493,26 @@ public static PubNub initPubnub(Context context, String UUID){
         return price;
     }
 
+
+    public static String currencyFormatWithoutRupeeSymbol(String price) {
+
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        int truncate_first;
+        if (currentapiVersion >= 23)
+            truncate_first = 2;
+        else
+            truncate_first = 3;
+
+        int x = Integer.parseInt(price);
+
+        Format format1 = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+        price = format1.format(x);
+        price = price.substring(truncate_first, price.length() - 3);
+       // price = "₹ " + price;
+
+        return price;
+    }
+
     public static String getDeviceId(Context context) {
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 

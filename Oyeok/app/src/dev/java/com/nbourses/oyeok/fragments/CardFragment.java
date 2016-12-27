@@ -25,7 +25,7 @@ import android.widget.TextView;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.nbourses.oyeok.Database.DBHelper;
+//import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AutoOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
@@ -161,7 +161,7 @@ public class CardFragment  extends Fragment{
                 R.anim.bounce);
         //cardMaps.startAnimation(animFadein);
         locality.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
-        DBHelper dbHelper = new DBHelper(getContext());
+        //DBHelper dbHelper = new DBHelper(getContext());
 
         toggleBtn.toggle();
 

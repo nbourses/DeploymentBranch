@@ -39,7 +39,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.nbourses.oyeok.Database.DBHelper;
+//import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.deleteHDroom;
@@ -83,7 +83,7 @@ import retrofit.mime.TypedByteArray;
 public class BrokerDealsListActivity extends AppCompatActivity implements CustomPhasedListener {
 
     private static final String TAG = "BrokerDealsListActivity";
-    private DBHelper dbHelper;
+    //private DBHelper dbHelper;
 
     @Bind(R.id.listViewDeals)
     SwipeMenuListView listViewDeals;
@@ -811,7 +811,7 @@ Log.i("SWIPE","inside swipe menu creator");
 
         Log.i("Phaseseekbar","oncreate value "+General.getSharedPreferences(this, AppConstants.TT));
 
-        dbHelper = new DBHelper(this);
+       // dbHelper = new DBHelper(this);
         /*mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setMessage("Loading...Please wait...");

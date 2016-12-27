@@ -28,8 +28,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
@@ -45,6 +43,8 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.nbourses.oyeok.helpers.AppConstants.LOCATION_PERMISSION_REQUEST_CODE;
+
+//import com.nbourses.oyeok.Database.DBHelper;
 
 /**
  * Created by ritesh on 22/08/16.
@@ -167,8 +167,8 @@ btnC.setOnClickListener(new View.OnClickListener() {
         AppConstants.SIGNUP_FLAG = true;
         Bundle bundle = new Bundle();
         bundle.putString("lastFragment", "clientIntro");
-        DBHelper dbHelper = new DBHelper(getBaseContext());
-        dbHelper.save(DatabaseConstants.userRole, "client");
+        //DBHelper dbHelper = new DBHelper(getBaseContext());
+       // dbHelper.save(DatabaseConstants.userRole, "client");
         General.setSharedPreferences(getApplicationContext(),AppConstants.ROLE_OF_USER,"client");
         skip.setVisibility(View.GONE);
         loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup1, "");
@@ -182,8 +182,8 @@ btnC.setOnClickListener(new View.OnClickListener() {
                 AppConstants.SIGNUP_FLAG = true;
                 Bundle bundle = new Bundle();
                 bundle.putString("lastFragment", "brokerIntro");
-                DBHelper dbHelper = new DBHelper(getBaseContext());
-                dbHelper.save(DatabaseConstants.userRole, "broker");
+               // DBHelper dbHelper = new DBHelper(getBaseContext());
+               // dbHelper.save(DatabaseConstants.userRole, "broker");
                 General.setSharedPreferences(getApplicationContext(),AppConstants.ROLE_OF_USER,"broker");
                 skip.setVisibility(View.GONE);
                 loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup1, "");

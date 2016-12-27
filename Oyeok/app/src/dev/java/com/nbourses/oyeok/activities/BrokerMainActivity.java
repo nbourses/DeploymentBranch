@@ -36,8 +36,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
@@ -62,6 +60,8 @@ import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
+//import com.nbourses.oyeok.Database.DBHelper;
+
 public class BrokerMainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener{
 
 @Bind(R.id.toolbar)
@@ -83,6 +83,12 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
     @Bind(R.id.setbaseloc)
     LinearLayout setbaseloc;
 
+    @Bind(R.id.tv_change_region)
+    TextView tv_change_region;
+
+
+
+    //setbaseloc
 //    @Bind(R.id.preok_layout)
 //    Toolbar preok_layout;
 
@@ -92,9 +98,12 @@ boolean setting=false,Owner_detail=false;
 
    int backpress;
 
-    TextView tv_change_region;
  private boolean gmap=false;
 GoogleMap map;
+
+
+    String baseloc;
+
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
 
@@ -115,7 +124,7 @@ GoogleMap map;
 
 
 
-    DBHelper dbHelper;
+    //DBHelper dbHelper;
     private FragmentDrawer drawerFragment;
     private WebView webView;
 
@@ -211,8 +220,8 @@ GoogleMap map;
         setContentView(R.layout.activity_agent_main);
         AppConstants.CURRENT_USER_ROLE ="broker";
 
-        dbHelper = new DBHelper(getBaseContext());
-        dbHelper.save(DatabaseConstants.userRole,"Broker");
+       // dbHelper = new DBHelper(getBaseContext());
+       // dbHelper.save(DatabaseConstants.userRole,"Broker");
         General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
 
         Log.i("uas","yo man 96");
@@ -220,14 +229,15 @@ GoogleMap map;
 
         ButterKnife.bind(this);
 
-        tv_change_region=(TextView) findViewById(R.id.tv_change_region);
+        //tv_change_region=(TextView) findViewById(R.id.tv_change_region);
        // editBaseLocation=(ImageView) findViewById(R.id.editBaseLocation);
         setbaseloc.setVisibility(View.VISIBLE);
         favbroker.setVisibility(View.VISIBLE);
         tv_change_region.setVisibility(View.VISIBLE);
         try {
-            if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
-            tv_change_region.setText(SharedPrefs.getString(this, SharedPrefs.MY_LOCALITY));
+            if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase("") && !General.getSharedPreferences(this, AppConstants.LOCALITY).equalsIgnoreCase(""))
+            //tv_change_region.setText(General.getSharedPreferences(this, AppConstants.LOCALITY));
+                AppConstants.MY_BASE_LOCATION_FLAG=true;
             else {
 //                AppConstants.BROKER_BASE_REGION="true";
                 tv_change_region.setText(General.getSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LOCATION));
@@ -313,7 +323,7 @@ GoogleMap map;
     private void init() {
         slide_down = AnimationUtils.loadAnimation(this,
                 R.anim.slide_down);
-        editBaseLocation.setVisibility(View.VISIBLE);
+       // editBaseLocation.setVisibility(View.VISIBLE);
 
        try {
             SharedPreferences prefs =
@@ -452,13 +462,15 @@ GoogleMap map;
 
 //Remember
 
-        editBaseLocation.setOnClickListener(new View.OnClickListener() {
+        setbaseloc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 /*General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"BC");
                 Intent intent = new Intent(getBaseContext(),ClientMainActivity.class);
                 startActivity(intent);*/
-                General.setSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LOCATION,"");
+                AppConstants.MY_BASE_LOCATION_FLAG=true;
+               // baseloc=General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION);
+               // General.setSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LOCATION,"");
                 Intent intent = new Intent(getBaseContext(),BrokerMap.class);
                 startActivity(intent);
 
@@ -560,13 +572,10 @@ GoogleMap map;
     {
         //set arguments
         fragment.setArguments(args);
-
         //load fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
         fragmentTransaction.replace(containerId, fragment);
-
         fragmentTransaction.show(fragment);
         fragmentTransaction.addToBackStack(title);
         fragmentTransaction.commitAllowingStateLoss();
@@ -577,8 +586,6 @@ GoogleMap map;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-
-
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -589,8 +596,8 @@ GoogleMap map;
         String title = getString(R.string.app_name);
 
         if (itemTitle.equals(getString(R.string.useAsClient))) {
-            dbHelper = new DBHelper(getBaseContext());
-            dbHelper.save(DatabaseConstants.userRole,"client");
+           // dbHelper = new DBHelper(getBaseContext());
+            //dbHelper.save(DatabaseConstants.userRole,"client");
             General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"client");
             Intent openDashboardActivity =  new Intent(this, ClientMainActivity.class);
             openDashboardActivity.addFlags(
@@ -664,9 +671,6 @@ GoogleMap map;
             bundle.putStringArray("Chat", null);
             bundle.putString("lastFragment", "brokerDrawer");
             loadFragmentAnimated(signUpFragment, bundle, R.id.container_sign, "");
-
-
-
         }
         else if(itemTitle.equals(getString(R.string.shareNo))){
             ShareOwnersNo shareOwnersNo = new ShareOwnersNo();
@@ -677,7 +681,7 @@ GoogleMap map;
             Log.i("myWatchList","itemTitle 1 "+itemTitle + R.string.MyPortfolio);
             Intent intent =new Intent( this,MyPortfolioActivity.class );
             startActivity(intent);
-            /*My_portfolio my_portfolio = new My_portfolio();
+            /*MainScreenPropertyListing my_portfolio = new MainScreenPropertyListing();
             loadFragment(my_portfolio, null, R.id.container_Signup, "");
             Myportfolio=true;*/
 
@@ -711,8 +715,9 @@ GoogleMap map;
 
 
     private void shareReferralLink() {
-        DBHelper dbHelper=new DBHelper(getApplicationContext());
-        String user_id = dbHelper.getValue(DatabaseConstants.userId);
+        //DBHelper dbHelper=new DBHelper(getApplicationContext());
+        //String user_id = dbHelper.getValue(DatabaseConstants.userId);
+        String user_id = General.getSharedPreferences(getBaseContext(),AppConstants.USER_ID);
 
         Branch branch = Branch.getInstance(getApplicationContext());
 
@@ -857,8 +862,8 @@ GoogleMap map;
 //                backpress = 0;
                 /*this.finish();*/
 //            }
-            dbHelper = new DBHelper(getBaseContext());
-            dbHelper.save(DatabaseConstants.userRole,"client");
+            //dbHelper = new DBHelper(getBaseContext());
+           // dbHelper.save(DatabaseConstants.userRole,"client");
             General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"client");
             Intent inten = new Intent(this, ClientMainActivity.class);
             inten.addFlags(

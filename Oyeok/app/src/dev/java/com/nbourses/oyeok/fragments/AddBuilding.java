@@ -25,8 +25,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
-import com.nbourses.oyeok.activities.*;
 import com.nbourses.oyeok.activities.BrokerMap;
+import com.nbourses.oyeok.activities.ClientMainActivity;
+import com.nbourses.oyeok.activities.MyPortfolioActivity;
 import com.nbourses.oyeok.adapters.searchBuilding;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -277,14 +278,8 @@ private TextView Cancel,back,usertext;
         searchBuildingModel.setBuilding(name);
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_101).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-
 //        UserApiService userApiService = restAdapter.create(UserApiService.class);
-
-
         /*userApiService.addBuildingRealm(AddBuildingModel, new retrofit.Callback<JsonElement>() {*/
-
-
-
 
         OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
 
@@ -293,21 +288,12 @@ private TextView Cancel,back,usertext;
             oyeokApiService.SearchBuilding(searchBuildingModel, new Callback<JsonElement>() {
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
-
                     Log.i("magic1","addBuildingRealm success ");
-
-
-
-
                     JsonObject k = jsonElement.getAsJsonObject();
-
-
                     try {
                         String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
 //                        Log.e(TAG, "RETROFIT SUCCESS " + getPrice.getResponseData().getPrice().getLlMin().toString());
-
                          JSONObject jsonResponse = new JSONObject(strResponse);
-
 //                        JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
                         String errors = jsonResponse.getString("errors");
                         Log.i("magic","addBuildingRealm success response "+response);
@@ -327,7 +313,7 @@ private TextView Cancel,back,usertext;
 
                             double longi = Double.parseDouble(j.getJSONArray("loc").get(0).toString());
                             Log.i("Buildingdata", "lat " + lat+"longi:  "+longi+"id:  "+j.getString("id")+"name: "+j.getString("name"));
-                            building_names.add(new loadBuildingDataModel(j.getString("name"),lat,longi,j.getString("id"),j.getString("locality")));
+                            building_names.add(new loadBuildingDataModel(j.getString("name"),lat,longi,j.getString("id"),j.getString("locality"),j.getString("city")));
 
                         }
                         adapter= new searchBuilding(building_names,getContext());
@@ -341,18 +327,13 @@ private TextView Cancel,back,usertext;
                                     General.setSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY,adapter.getItem(position).getLocality()+"");
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LAT,adapter.getItem(position).getLat()+"");
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LNG,adapter.getItem(position).getLng()+"");
-//                 General.setSharedPreferences(getContext(),AppConstants.PROPERTY,adapter.getItem(position).getProperty_type());
+                                    General.setSharedPreferences(getContext(), AppConstants.MY_CITY,adapter.getItem(position).getCity());
+                                   //General.setSharedPreferences(getContext(),AppConstants.PROPERTY,adapter.getItem(position).getProperty_type());
                                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                                     imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
                                     ((BrokerMap)getActivity()).openAddListingFinalCard();
                                 }else{
-
-
-
-                                    AddbuildingAPICall(adapter.getItem(position).getName(),adapter.getItem(position).getLat() + "",adapter.getItem(position).getLng() + "",adapter.getItem(position).getId()+"",adapter.getItem(position).getLocality());
-
-
-
+                                    AddbuildingAPICall(adapter.getItem(position).getName(),adapter.getItem(position).getLat() + "",adapter.getItem(position).getLng() + "",adapter.getItem(position).getId()+"",adapter.getItem(position).getLocality(),adapter.getItem(position).getCity());
                                 }
 
                             }
@@ -418,12 +399,13 @@ private TextView Cancel,back,usertext;
 
 
 
-    public void AddbuildingAPICall(final String name,final String lat,final String longi,final String b_id,final String locality) {
+    public void AddbuildingAPICall(final String name,final String lat,final String longi,final String b_id,final String locality,String city) {
 
         Log.i("updateStatus CALLED", "updateStatus success called ");
         UpdateBuildingRateModel updateBuildingRateModel =new UpdateBuildingRateModel();
         updateBuildingRateModel.setBuilding(name);
         updateBuildingRateModel.setLat(lat);
+        updateBuildingRateModel.setCity(city);
         updateBuildingRateModel.setLongiute(longi);
         updateBuildingRateModel.setBuilding_id(b_id);
         updateBuildingRateModel.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));

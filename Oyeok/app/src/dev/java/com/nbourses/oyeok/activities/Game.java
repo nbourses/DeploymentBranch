@@ -21,6 +21,8 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -38,15 +40,18 @@ import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -60,6 +65,7 @@ import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.AutoCompletePlaces;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.CustomMapFragment;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.GoogleMaps.GetCurrentLocation;
+import com.nbourses.oyeok.fragments.gameDiscountCard;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nispok.snackbar.Snackbar;
@@ -96,9 +102,19 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     @Bind(R.id.balance1)
     TextView balance1;
 
+    @Bind(R.id.gm_cashback_btn)
+    TextView gm_cashback_btn;
+
 
     @Bind(R.id.myaccount)
     LinearLayout myaccount;
+
+    @Bind(R.id.load_card_container)
+    FrameLayout load_card_container;
+
+    @Bind(R.id.card1)
+    FrameLayout card;
+
     private GetCurrentLocation getLocationActivity;
     private GoogleMap map;
     View mHelperView;
@@ -131,39 +147,42 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     private Double lat, lng;
 
     static IconGenerator iconFactory;
-    int[] game_min = new int[10], game_max = new int[10];
+    int[] game_min = new int[15], game_max = new int[15];
     MarkerOptions markerOptions;
     Marker[] Markertext = new Marker[10];
     private String Address1 = "", Address2 = "", City = "", State = "", Country = "", County = "", PIN = "", fullAddres = "", locality = "";
 
-    private String[] config = new String[10], rate_growth = new String[10], name = new String[10], listing = new String[10], portal = new String[10], transaction = new String[10], id = new String[10], distance = new String[5];
-    private Marker[] mCustomerMarker = new Marker[10];
+    private String[] config = new String[15], rate_growth = new String[10], name = new String[15], listing = new String[10], portal = new String[10], transaction = new String[10], id = new String[15], distance = new String[5];
+    private Marker[] mCustomerMarker = new Marker[15];
     private int llMin = 35, llMax = 60, orMin = 21000, orMax = 27000, c = 0;
-    private int[] or_psf = new int[10], ll_pm = new int[10];
-    private LatLng[] loc = new LatLng[10];
-    private boolean flag[] = new boolean[10];
+    private int[] or_psf = new int[15], ll_pm = new int[15];
+    private LatLng[] loc = new LatLng[15];
+    private boolean flag[] = new boolean[15];
     Integer balance;
-    private Timer[] gametimer = new Timer[10];
-    private Timer[] timer1 = new Timer[10];
+    private Timer[] gametimer = new Timer[15];
+    private Timer[] timer1 = new Timer[15];
     private Timer timer, DisplayBuildingTimer, HideBuildingsTimer;
-    private int[] SellorBuyPrice = new int[10], rand = new int[10];
+    private int[] SellorBuyPrice = new int[15], rand = new int[15];
     private int mposition = 0;
     private int INDEX;
-    LatLng[] cent = new LatLng[10];
-    private Point[] buildingPosition = new Point[10];
+    LatLng[] cent = new LatLng[15];
+    private Point[] buildingPosition = new Point[15];
     LinearLayout recordWorkout, searchbar;
 
-    boolean locked, gameflag = false;
+    boolean locked, gameflag = false,gameDiscountCardFlag=false;
     private long lastTouched = 0, start = 0;
     private static final long SCROLL_TIME = 200L;
-    private int[] status = new int[10];
+    private int[] status = new int[15];
 
     private TextView week, month, year, clocktick;
     private int w = 0, m = 0, y = 0;
     int tickcount = 3, buildingcount = 0, TimeInMillis = 4000;
     private Animation shake;
     private Timer clockTickTimer;
+    double results ;
 
+    Point centerPoint,rightendPoint;
+    Geofence geofence;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -199,13 +218,15 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
 
             balance = 34;
         }
+        gm_cashback_btn.setVisibility(View.VISIBLE);
+
         myaccount.setVisibility( View.VISIBLE );
 //        balance1=(TextView) findViewById( R.id.balance1 );
         final Toolbar toolbar = (Toolbar) findViewById( R.id.toolbar );
         setSupportActionBar( toolbar );
         getSupportActionBar().setDisplayShowHomeEnabled( true );
         getSupportActionBar().setDisplayHomeAsUpEnabled( true );
-        getSupportActionBar().setTitle( "OyeOk Game" );
+        getSupportActionBar().setTitle( "" );
 
 
         autoCompView.setAdapter( new AutoCompletePlaces.GooglePlacesAutocompleteAdapter( this, R.layout.list_item1 ) );
@@ -238,6 +259,12 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                     map.moveCamera( CameraUpdateFactory.newLatLngZoom( currLatLong, 13 ) );
                 }
 
+                VisibleRegion visibleRegion = map.getProjection()
+                        .getVisibleRegion();
+                Point x1 = map.getProjection().toScreenLocation( visibleRegion.farRight );
+                Point y1 = map.getProjection().toScreenLocation( visibleRegion.nearLeft );
+                centerPoint = new Point( x1.x / 2, y1.y / 2 );
+                rightendPoint= new Point( x1.x , y1.y/2  );
 //                enableMyLocation();
                 Log.i( "slsl", "location====================: " );
                 getLocationActivity = new GetCurrentLocation( getBaseContext(), mcallback );
@@ -297,12 +324,24 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
         } );
 
 
+
+        gm_cashback_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                       opengameDiscountCard();
+            }
+        });
+
+
+
         location_button.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getLocationActivity = new GetCurrentLocation( getBaseContext(), mcallback );
             }
         } );
+
+
         map.setOnMarkerClickListener( new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -410,7 +449,8 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                     Log.i( "bbt1", "lat_long" + currentLocation );
                     map.moveCamera( CameraUpdateFactory.newLatLng( currentLocation ) );
                     map.moveCamera( CameraUpdateFactory.zoomTo( 13 ) );
-                    getPrice();
+                    RadiustoCenter(currentLocation);
+                    //getPrice();
                 }
             }
         };
@@ -671,19 +711,27 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
     @Override
     public void onBackPressed() {
 
-        if(clockTickTimer!=null)
-            clockTickTimer.cancel();
-        StopAllThread();
+        if(gameDiscountCardFlag)
 
-        SharedPrefs.save( this, SharedPrefs.My_BALANCE, balance + "" );
-        Intent intent = new Intent( this, ClientMainActivity.class );
+        {
+            closeCardContainer();
+        }else {
+            if (clockTickTimer != null)
 
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                        Intent.FLAG_ACTIVITY_NEW_TASK );
-        startActivity( intent );
-        finish();
+                clockTickTimer.cancel();
+            StopAllThread();
+            SharedPrefs.save(this, SharedPrefs.My_BALANCE, balance + "");
+            Intent intent = new Intent(this, ClientMainActivity.class);
+            intent.addFlags(
+
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
         //super.onBackPressed();
     }
 
@@ -725,14 +773,17 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
 
                     Log.i( "longmillis", "longmillis  111 " + TimeInMillis );*/
 //                    }
-                    VisibleRegion visibleRegion = map.getProjection()
+                    /*VisibleRegion visibleRegion = map.getProjection()
                             .getVisibleRegion();
                     Point x1 = map.getProjection().toScreenLocation( visibleRegion.farRight );
                     Point y1 = map.getProjection().toScreenLocation( visibleRegion.nearLeft );
-                    Point centerPoint = new Point( x1.x / 2, y1.y / 2 );
-                    LatLng centerFromPoint = map.getProjection().fromScreenLocation(
+                    centerPoint = new Point( x1.x / 2, y1.y / 2 );
+                    rightendPoint= new Point( x1.x , y1.y/2  );*/
+                    currentLocation1 = map.getProjection().fromScreenLocation(
                             centerPoint );
-                    currentLocation1 = centerFromPoint;
+                    /*LatLng currentLocation = map.getProjection().fromScreenLocation(
+                            rightendPoint );*/
+                   // currentLocation1 = centerFromPoint;
                     lat = currentLocation1.latitude;
                     Log.i( "t1", "lat" + " " + lat );
                     lng = currentLocation1.longitude;
@@ -742,6 +793,9 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                     General.setSharedPreferences( this, AppConstants.MY_LNG, lng + "" );
                     getRegion();
                     new LocationUpdater().execute();
+                    //map.addMarker(new MarkerOptions().position(currentLocation1));
+                   // map.addMarker(new MarkerOptions().position(currentLocation));
+                    RadiustoCenter(currentLocation1);
                     /*for(int i=0;i<buildingcount;i++) {
                         if (Markertext != null) {
                             Markertext[i].remove();
@@ -750,7 +804,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                     }*/
                     CancelDisplayBuildingTimer();
                     HideBuildingsTimer();
-                    getPrice();
+                   // getPrice();
                 }
 
             } else {
@@ -791,8 +845,9 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
             user.setLongitude( SharedPrefs.getString( this, SharedPrefs.MY_LNG ) );
             //user.setProperty_type( "home" );
             user.setLatitude( SharedPrefs.getString( this, SharedPrefs.MY_LAT ) );
-            Log.i( "t1", "My_lng inside game api" + "  " + SharedPrefs.getString( this, SharedPrefs.MY_LNG ) );
+            Log.i( "t1", "My_lng inside game api" + "  " + SharedPrefs.getString( this, SharedPrefs.MY_LNG ) +"    : "+ results);
             user.setLocality( "" );
+            user.setDistance(results+"");
             Log.i( "t1", "My_lat" + "  " + SharedPrefs.getString( this, SharedPrefs.MY_LAT ) );
             user.setPlatform( "android" );
             Log.i( "my_locality", SharedPrefs.getString( this, SharedPrefs.MY_LOCALITY ) );
@@ -1413,8 +1468,6 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
 
 
     private void gametimer() {
-
-
         if (timer == null) {
             timer = new Timer();
             timer.schedule( new TimerTask() {
@@ -1629,15 +1682,17 @@ try {
                         } );
                     }
                 }
-            }, 200, 5000 );
+            }, 200, 3000 );
 
         }
     }
 
 
     public void radomizedBuildingDisplay() {
-        int count = buildingcount;
-        Log.i( "startgame","startgame : =======================" );
+       // int count = buildingcount;
+                int count = 5;
+
+        Log.i( "startgame","startgame : ======================= : "+count );
         for (int i = 0; i < count; i++) {
             if (status[i] == 0) {
                 Log.i( "startgame","startgame : metropolitandraw =======================" );
@@ -1671,7 +1726,9 @@ try {
     }
 
     public void HideBuilding() {
-        int count = buildingcount;
+       // int count = buildingcount;
+                int count = 5;
+
         for (int i = 0; i < count; i++) {
             if (status[i] == 1) {
                 Cancel_timer( i );
@@ -1685,33 +1742,75 @@ try {
 
 
 
+   private void RadiustoCenter(LatLng  oldPosition){
+//       oldPosition.distanceTo(newPosition);
+      /* LatLng  oldPosition = map.getProjection().fromScreenLocation(
+               centerPoint );*/
+       LatLng newposition = map.getProjection().fromScreenLocation(
+               rightendPoint );
+       // currentLocation1 = centerFromPoint;
+      /* lat = oldPosition.latitude;
+       Log.i( "t1", "lat" + " " + lat );
+       lng = oldPosition.longitude;
+       SharedPrefs.save( this, SharedPrefs.MY_LAT, lat + "" );
+       SharedPrefs.save( this, SharedPrefs.MY_LNG, lng + "" );
+       General.setSharedPreferences( this, AppConstants.MY_LAT, lat + "" );
+       General.setSharedPreferences( this, AppConstants.MY_LNG, lng + "" );*/
+       float[] result=new float[1];
+       Location.distanceBetween(oldPosition.latitude, oldPosition.longitude,
+               newposition.latitude, newposition.longitude, result);
+       /*geofence = new Geofence.Builder()
+               .setRequestId(GEOFENCE_REQ_ID) // Geofence ID
+               .setCircularRegion( oldPosition.latitude, oldPosition.longitude, results) // defining fence region
+              // .setExpirationDuration( 500 ) // expiring date
+               // Transition types that it should look for
+               .setTransitionTypes( Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT )
+               .build();*/
+
+Log.i("t1","result distance value ===================    :   "+result[0]);
+       results=result[0];
+       CircleOptions circleOptions = new CircleOptions()
+               .center( new LatLng(oldPosition.latitude, oldPosition.longitude) )
+               .radius( results)
+               .fillColor(Color.DKGRAY)
+               .strokeColor(Color.BLUE)
+               .strokeWidth(2);
 
 
+       getPrice();
 
-   /* public int RandomBuildingDisplay(int i){
-        int j;
-        if (i < 4) {
-            j = i + 1;
-            return  j;
-        }
-        else {
-            j = 0;
-            return  j;
 
-        }
+   }
+
+
+    public void opengameDiscountCard(){
+
+        load_card_container.setBackgroundColor(Color.parseColor("#CC000000"));
+        load_card_container.setClickable(true);
+        gameDiscountCard gameDiscountcard= new gameDiscountCard();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        card.setClickable(true);
+        gameDiscountCardFlag=true;
+        fragmentTransaction.addToBackStack("card");
+        fragmentTransaction.replace(R.id.card1, gameDiscountcard);
+        fragmentTransaction.commitAllowingStateLoss();
+//        loadFragmentAnimated(addListingFinalCard, null, R.id.card, "");
+
     }
 
-    public void checkPlace(int j){
-        if(status[j]==0){
-            metropolitandraw( j );
-//                                                                 flag[j]=true;
 
-        }else{
-            j= RandomBuildingDisplay(j);
-            checkPlace(j);
-//                                                                 flag[j]=true;
-        }
-    }*/
+
+    public void closeCardContainer(){
+
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card1)).commit();
+        load_card_container.setBackgroundColor(getResources().getColor(R.color.transparent));
+        load_card_container.setClickable(false);
+        card.setClickable(false);
+        gameDiscountCardFlag=false;
+    }
+
 
 
 }
@@ -1723,7 +1822,24 @@ try {
 
 
 
+/*(CLLocationDistance)getMapRadius {
+        CGPoint point = CGPointMake(5, self.gameMapView.frame.size.height / 2.0);
+        CLLocationCoordinate2D topCenterCoor = [_gameMapView.projection coordinateForPoint:point];
+        CLLocation *p1 = [[CLLocation alloc] initWithLatitude:topCenterCoor.latitude longitude:topCenterCoor.longitude];
+        CLLocation *p2 = [[CLLocation alloc] initWithLatitude:_coordinate.latitude longitude:_coordinate.longitude];
 
+        //    CLLocationCoordinate2D position = CLLocationCoordinate2DMake(lat, lon);
+
+        _mapRadius = [p1 distanceFromLocation:p2];
+        GMSCircle *geoFenceCircle = [[GMSCircle alloc] init];
+        geoFenceCircle.radius = _mapRadius; // Meters
+        geoFenceCircle.position = _coordinate;
+        geoFenceCircle.fillColor = [UIColor colorWithWhite:0.7 alpha:0.5];
+        geoFenceCircle.strokeWidth = 3;
+        geoFenceCircle.strokeColor = [UIColor orangeColor];
+        geoFenceCircle.map = _gameMapView; // Add it to the map.
+        return _mapRadius;
+        }*/
 
 
 

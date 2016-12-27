@@ -9,10 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.firebase.client.Firebase;
-import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
-import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AcceptOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
@@ -38,11 +36,13 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 
+//import com.nbourses.oyeok.Database.DBHelper;
+
 /**
  * Created by DADDU_DON on 12/30/2015.
  */
 public class AcceptOkCall {
-    DroomChatFirebase droomChatFirebase;
+   // DroomChatFirebase droomChatFirebase;
     private static final String TAG = "AcceptOkCall";
 
     public void setmCallBack(OnAcceptOkSuccess mCallBack) {
@@ -50,14 +50,16 @@ public class AcceptOkCall {
     }
 
     OnAcceptOkSuccess mCallBack;
-    public void acceptOk(final HashMap<String, Float> listings, JSONArray m, int position, final DBHelper dbHelper, final Activity activity) {
-        Log.i(TAG,"chaman prasanna 2");
+//    public void acceptOk(final HashMap<String, Float> listings, JSONArray m, int position, final DBHelper dbHelper, final Activity activity) {
+public void acceptOk(final HashMap<String, Float> listings, JSONArray m, int position,final Activity activity) {
+
+    Log.i(TAG,"chaman prasanna 2");
         if(General.isNetworkAvailable(activity)) {
             General.slowInternet(activity);
 
         String oyeId=null,oyeUserId=null,tt = null,size=null,price=null,reqAvl=null;
         Firebase.setAndroidContext(activity);
-        droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl,activity);
+       // droomChatFirebase=new DroomChatFirebase(DatabaseConstants.firebaseUrl,activity);
 
 
         Log.i("mArray= ",m.toString());
@@ -102,8 +104,10 @@ public class AcceptOkCall {
         acceptOk.setPrice(price);
         acceptOk.setReqAvl(reqAvl);
         acceptOk.setOyeId(oyeId);
-        acceptOk.setUserId(dbHelper.getValue(DatabaseConstants.userId));
-        //acceptOk.setUserId("yjhjoy71igl77w1as3krul7mb0wgavoy");
+//        acceptOk.setUserId(dbHelper.getValue(DatabaseConstants.userId));
+            acceptOk.setUserId(General.getSharedPreferences(activity.getBaseContext(),AppConstants.USER_ID));
+
+            //acceptOk.setUserId("yjhjoy71igl77w1as3krul7mb0wgavoy");
         acceptOk.setOyeUserId(oyeUserId);
         acceptOk.setTimeToMeet("15");
 

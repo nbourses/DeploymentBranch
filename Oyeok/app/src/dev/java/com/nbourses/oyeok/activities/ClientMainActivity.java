@@ -57,13 +57,10 @@ import com.firebase.client.Firebase;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.GoogleMap;
-import com.nbourses.oyeok.Database.DBHelper;
-import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
-import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AddBuilding;
 import com.nbourses.oyeok.fragments.AddListing;
@@ -106,13 +103,15 @@ import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
+//import com.nbourses.oyeok.Database.DBHelper;
+
 public class ClientMainActivity extends AppCompatActivity implements NetworkInterface, FragmentDrawer.FragmentDrawerListener, OnOyeClick, CustomPhasedListener,  GoogleMap.SnapshotReadyCallback {
 
     boolean isShowing = false,firstLaunch=false;
     private static final String TAG = "DashboardActivity";
     final float anchorPoint = 0.4f;
 
-    DBHelper dbHelper;
+   // DBHelper dbHelper;
     private Handler mHandler;
     private FragmentDrawer drawerFragment;
     //private FrameLayout containerSignup;
@@ -419,7 +418,7 @@ public void signUp(){
 
 
         //TODO: need to validate this functionality
-        dbHelper = new DBHelper(getBaseContext());
+       // dbHelper = new DBHelper(getBaseContext());
         mHandler = new Handler();
         Log.i("Game123", "outside     ==================: "+General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_GAMER));
          extras = getIntent().getExtras();
@@ -443,7 +442,7 @@ try {
             Log.i("Game123", "network role broker 1: ");
             BrokerRole = "broker";
             btnMyDeals.setVisibility(View.GONE);
-            dbHelper.save(DatabaseConstants.userRole, "broker");
+            //dbHelper.save(DatabaseConstants.userRole, "broker");
             General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, BrokerRole);
             AppConstants.CURRENT_USER_ROLE = BrokerRole;
             General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"");
@@ -469,7 +468,7 @@ try {
                 openAddListing();
 
         }else{
-            dbHelper.save(DatabaseConstants.userRole, "Client");
+            //dbHelper.save(DatabaseConstants.userRole, "Client");
             General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
             AppConstants.CURRENT_USER_ROLE = "client";
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -670,15 +669,15 @@ try {
         slidingLayout.setTouchEnabled(false);
 //        slidingLayout.setEnabled(false);
           slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-          slidingLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+         /* slidingLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-//                resizeScrollView(panel, slideOffset);
+                resizeScrollView(panel, slideOffset);
             }
 
             @Override
             public void onPanelExpanded(View panel) {
-//                resizeScrollView(panel, 0.0f);
+                resizeScrollView(panel, 0.0f);
             }
 
             @Override
@@ -687,12 +686,12 @@ try {
 
             @Override
             public void onPanelAnchored(View panel) {
-//                resizeScrollView(panel, anchorPoint);
+                resizeScrollView(panel, anchorPoint);
             }
 
             @Override
             public void onPanelHidden(View panel) {
-            }
+            }*/
 
            /* private void resizeScrollView(View panel, float slideOffset) {
                 final int scrollViewHeight =
@@ -700,8 +699,9 @@ try {
                 slidingView.setLayoutParams(
                         new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                 scrollViewHeight));
+               // slidingView.s
             }*/
-        });
+       // });
 
         //  RelativeLayout re = (RelativeLayout) findViewById(R.id.badge);
         //setup toolbar
@@ -923,8 +923,8 @@ try {
             startActivity(openProfileActivity);
         }
         else if (itemTitle.equals(getString(R.string.brokerOk))) {
-            dbHelper = new DBHelper(getBaseContext());
-            dbHelper.save(DatabaseConstants.userRole,"Broker");
+           // dbHelper = new DBHelper(getBaseContext());
+           // dbHelper.save(DatabaseConstants.userRole,"Broker");
             General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
             Intent openDashboardActivity =  new Intent(this, BrokerMainActivity.class);
             startActivity(openDashboardActivity);
@@ -1005,7 +1005,7 @@ try {
             Log.i(TAG,"itemTitle 1 "+itemTitle + R.string.MyPortfolio);
             Intent intent =new Intent( this,MyPortfolioActivity.class );
             startActivity(intent);
-            /*My_portfolio my_portfolio = new My_portfolio();
+            /*MainScreenPropertyListing my_portfolio = new MainScreenPropertyListing();
             loadFragment(my_portfolio, null, R.id.container_Signup, "");
             Myportfolio=true;*/
 
@@ -1018,8 +1018,9 @@ try {
     }
 
     private void shareReferralLink() {
-        DBHelper dbHelper=new DBHelper(getApplicationContext());
-        String user_id = dbHelper.getValue(DatabaseConstants.userId);
+       // DBHelper dbHelper=new DBHelper(getApplicationContext());
+       // String user_id = dbHelper.getValue(DatabaseConstants.userId);
+         String user_id = General.getSharedPreferences(getBaseContext(),AppConstants.USER_ID);
 
         Branch branch = Branch.getInstance(getApplicationContext());
 
@@ -1080,7 +1081,9 @@ try {
                 case android.R.id.home:
                     //Do stuff
                     //Toast.makeText(this,"getscalled",Toast.LENGTH_LONG).show();
-                    if (dbHelper.getValue(DatabaseConstants.user).equals("Broker")) {
+                   // if (dbHelper.getValue(DatabaseConstants.user).equals("Broker")) {
+                     if (General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+
 //                    changeFragment(new Ok_Broker_MainScreen(), null, "MarkerPanel");
                     } else {
 //                    changeFragment(new RexMarkerPanelScreen(), null, "MarkerPanel");
@@ -1299,14 +1302,7 @@ if(AppConstants.FAV) {
             }
 
         }
-
-
-
-
-
     }
-
-
 
     @OnClick(R.id.back_btn)
     public void Onbtn_BackClick1(View v) {
@@ -1479,13 +1475,16 @@ if(AppConstants.FAV) {
 
 
 
-
-            DBHelper dbHelper = new DBHelper(mcon);
+//changed after removimg sql database
+            //start
+           /* DBHelper dbHelper = new DBHelper(mcon);
             if (dbHelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null"))
                 mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(mcon.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{mcon.getResources().getString(R.string.Rental), mcon.getResources().getString(R.string.Resale)}));
             else
                 mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(mcon.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type3_selector, R.drawable.real_estate_selector}, new String[]{"30", "15", "40", "20"}, new String[]{"Rental", "Sale", "Audit", "Auction"}));
-              mPhasedSeekBar.setListener(this);
+              mPhasedSeekBar.setListener(this);*/
+            //end
+
             final PopupWindow optionspu1 = greyOut(mcon);
             //final PopupWindow optionspu = new PopupWindow(layout, 600,1000, true);
             AppConstants.optionspu = new PopupWindow(layout);
@@ -1881,25 +1880,6 @@ if(AppConstants.FAV) {
                 getSupportFragmentManager().popBackStack();
         buidingInfoFlag=false;
     }
-    public void openOyeSreen(){
-        if (!isShowing) {
-
-
-            isShowing = true;
-//            OyeIntentFragment oye = new OyeIntentFragment();
-
-            //reset PublishLetsOye object
-            AppConstants.letsOye = new PublishLetsOye();
-
-            OyeScreenFragment oye = new OyeScreenFragment();
-            loadFragment(oye, bundle_args, R.id.container_oye, "");
-            slidingLayout.setAnchorPoint(0.5f);
-            slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
-
-            // btnOnOyeClick.setVisibility(View.VISIBLE);
-        }
-    }
-
 
     public  void closeOyeConfirmation(){
         Log.i("backstack count","   : "+oyeconfirm_flag+"  "+getSupportFragmentManager().getBackStackEntryCount());

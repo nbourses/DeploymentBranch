@@ -20,7 +20,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.activities.BrokerMap;
 import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
 
 
 public class BuildingOyeConfirmation extends Fragment {
@@ -31,7 +33,7 @@ public class BuildingOyeConfirmation extends Fragment {
 
     View v;
     TextView conf1,conf2,conf3,conf4,conf;
-    TextView listingcount,sharing;
+    TextView listingcount,show_more,btn_listing,sharing;
     private RadioGroup radioGroup1;
     String  listing,portal,transaction,approx_area,config;
     Bundle  data;
@@ -71,6 +73,10 @@ public class BuildingOyeConfirmation extends Fragment {
         conf3=(TextView) v.findViewById(R.id.conf3);*/
         listingcount=(TextView ) v.findViewById(R.id.listingcount);
         sharing=(TextView) v.findViewById(R.id.sharing);
+        show_more=(TextView) v.findViewById(R.id.show_more);
+        btn_listing=(TextView) v.findViewById(R.id.btn_listing);
+        sharing=(TextView) v.findViewById(R.id.sharing);
+
         rk1=(RadioButton) v.findViewById( R.id.rk1 );
         bhk1=(RadioButton) v.findViewById( R.id.bhk1 );
         bhk1_5=(RadioButton) v.findViewById( R.id.bhk1_5 );
@@ -84,6 +90,23 @@ public class BuildingOyeConfirmation extends Fragment {
         bhk5_5=(RadioButton) v.findViewById( R.id.bhk5_5 );
         bhk6=(RadioButton) v.findViewById( R.id.bhk6 );
         radioGroup1 = (RadioGroup) v.findViewById(R.id.radioGroup1);
+
+        if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+            sharing.setVisibility(View.GONE);
+            show_more.setVisibility(View.VISIBLE);
+            btn_listing.setVisibility(View.VISIBLE);
+        }
+        show_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(show_more.getText().toString().equalsIgnoreCase("Show More")) {
+                    showconfigs();
+                }
+                else{
+                    Hideconfigs();
+                }
+            }
+        });
         init();
 //        commanbhk=bhk2;
 
@@ -122,39 +145,61 @@ public class BuildingOyeConfirmation extends Fragment {
                 {
                     case R.id.rk1:
                         approx_area="300";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1 Rk");
                         break;
                     case R.id.bhk1:
                         approx_area="600";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1 BHK");
+
                         break;
                     case R.id.bhk1_5:
                         approx_area="800";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"1.5 BHK");
+
                         break;
                     case R.id.bhk2:
                         approx_area="950";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2 BHK");
+
                         break;
                     case R.id.bhk2_5:
                         approx_area="1300";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"2.5 BHK");
+
                         break;
                     case R.id.bhk3:
                         approx_area="1600";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"3 BHK");
+
                         break;
                     case R.id.bhk3_5:
                         approx_area="1800";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"3.5 BHK");
+
                         break;
                     case R.id.bhk4:
                         approx_area="2100";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"4 BHK");
+
                         break;
                     case R.id.bhk4_5:
                         approx_area="2300";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"4.5 BHK");
+
                         break;
                     case R.id.bhk5:
                         approx_area="2500";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"5 BHK");
+
                         break;
                     case R.id.bhk5_5:
                         approx_area="2700";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"5.5 BHK");
+
                         break;
                     case R.id.bhk6:
                         approx_area="2900";
+                        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"6 BHK");
                         break;
                     default:
                         break;
@@ -197,6 +242,24 @@ public class BuildingOyeConfirmation extends Fragment {
         config=data.getString("config");
         SplitString(config);
 
+
+        btn_listing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                    if(General.getSharedPreferences(getContext(),AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")){
+                        ((BrokerMap)getActivity()).OpenSignUpFrag();
+                    }
+                    else {
+                        AppConstants.PROPERTY = "home";
+                        General.setSharedPreferences(getContext(), AppConstants.PROPERTY, "home");
+                        General.setSharedPreferences(getContext(), AppConstants.APPROX_AREA, approx_area);
+                        ((BrokerMap) getActivity()).openAddListingFinalCard();
+                    }
+                }
+            }
+        });
+
     }
 
   /* private BroadcastReceiver Displayconf=new BroadcastReceiver() {
@@ -219,8 +282,26 @@ public class BuildingOyeConfirmation extends Fragment {
        bhk5.setVisibility(View.GONE);
        bhk5_5.setVisibility(View.GONE);
        bhk6.setVisibility(View.GONE);
+       //show_more.setVisibility(View.VISIBLE);
+       show_more.setText("Show More");
+       SplitString(config);
    }
-
+    private void showconfigs(){
+        rk1.setVisibility(View.VISIBLE);
+        bhk1.setVisibility(View.VISIBLE);
+        bhk1_5.setVisibility(View.VISIBLE);
+        bhk2.setVisibility(View.VISIBLE);
+        bhk2_5.setVisibility(View.VISIBLE);
+        bhk3.setVisibility(View.VISIBLE);
+        bhk3_5.setVisibility(View.VISIBLE);
+        bhk4.setVisibility(View.VISIBLE);
+        bhk4_5.setVisibility(View.VISIBLE);
+        bhk5.setVisibility(View.VISIBLE);
+        bhk5_5.setVisibility(View.VISIBLE);
+        bhk6.setVisibility(View.VISIBLE);
+        show_more.setVisibility(View.VISIBLE);
+        show_more.setText("Show Less");
+    }
 
     private void SplitString(String conf){
         Log.i("configdata", "getting and parsing config data 1 : " + conf+" ");
@@ -257,55 +338,72 @@ public class BuildingOyeConfirmation extends Fragment {
               if(conf.equalsIgnoreCase("1rk")){
                   rk1.setVisibility(View.VISIBLE);
                   commanbhk=rk1;
+                  approx_area="300";
               }else
               if(conf.equalsIgnoreCase("1bhk")){
                   bhk1.setVisibility(View.VISIBLE);
                   commanbhk=bhk1;
+                  approx_area="600";
               }else
               if(conf.equalsIgnoreCase("1.5bhk")){
                   bhk1_5.setVisibility(View.VISIBLE);
                   commanbhk=bhk1_5;
+                  approx_area="800";
               }else
               if(conf.equalsIgnoreCase("2bhk")){
                   bhk2.setVisibility(View.VISIBLE);
                   commanbhk=bhk2;
+                  approx_area="950";
               }else
               if(conf.equalsIgnoreCase("2.5bhk")){
                   bhk2_5.setVisibility(View.VISIBLE);
                   commanbhk=bhk2_5;
+                  approx_area="13000";
               }else
               if(conf.equalsIgnoreCase("3bhk")){
                   bhk3.setVisibility(View.VISIBLE);
                   commanbhk=bhk3;
+                  approx_area="1600";
               }else
               if(conf.equalsIgnoreCase("3.5bhk")){
                   bhk3_5.setVisibility(View.VISIBLE);
                   commanbhk=bhk3_5;
+                  approx_area="1800";
               }else
               if(conf.equalsIgnoreCase("4bhk")){
                   bhk4.setVisibility(View.VISIBLE);
                   commanbhk=bhk4;
+                  approx_area="2100";
               }else
               if(conf.equalsIgnoreCase("4.5bhk")){
                   bhk4_5.setVisibility(View.VISIBLE);
                   commanbhk=bhk4_5;
+                  approx_area="2300";
               }else
               if(conf.equalsIgnoreCase("5bhk")){
                   bhk5.setVisibility(View.VISIBLE);
                   commanbhk=bhk5;
+                  approx_area="2500";
               }else
               if(conf.equalsIgnoreCase("5.5bhk")){
                   bhk5_5.setVisibility(View.VISIBLE);
                   commanbhk=bhk5_5;
+                  approx_area="2700";
+
               }else
               if(conf.equalsIgnoreCase("6bhk")){
                   bhk6.setVisibility(View.VISIBLE);
                   commanbhk=bhk6;
+                  approx_area="2900";
+
+
               }
 
               if(fisrtconf==true){
                   Log.i("entered","got it "+conf);
                   commanbhk.setChecked(true);
+                  General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,conf);
+
                   fisrtconf=false;
               }
 

@@ -1,8 +1,14 @@
 package com.nbourses.oyeok.activities;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,10 +23,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
@@ -34,10 +43,14 @@ import com.nbourses.oyeok.models.portListingModel;
 import com.nbourses.oyeok.realmModels.MyPortfolioModel;
 import com.nbourses.oyeok.realmModels.addBuildingRealm;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -48,6 +61,14 @@ import io.realm.RealmResults;
 public class MyPortfolioActivity extends AppCompatActivity implements CustomPhasedListener {
 
 
+    @Bind(R.id.btnMyDeals)
+    Button btnMyDeals;
+
+    @Bind(R.id.container_Signup1)
+    FrameLayout container_Signup1;
+
+    @Bind(R.id.confirm_screen_title)
+    TextView confirm_screen_title;
 
     CustomPhasedSeekBar  mPhasedSeekBar;
     int position=0;
@@ -66,18 +87,23 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
     private static ArrayList<portListingModel> addbuildingLL=new ArrayList<>();
     private static ArrayList<portListingModel> addbuildingOR=new ArrayList<>();
     private static ArrayList<portListingModel> deletelist=new ArrayList<>();
+    private static ArrayList<portListingModel> item=new ArrayList<>();
 
     RealmResults<MyPortfolioModel> results1;
     RealmResults<addBuildingRealm> results2;
+
     EditText inputSearch;
     private String TT = "LL";
     LinearLayout add_build;
     private String matchedId;
-
-    @Bind(R.id.container_Signup1)
-    FrameLayout container_Signup1;
+    TextView usertext,add_create;
 
 
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +123,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         if(portListingCopy != null)
             portListingCopy.clear();
 
-Log.i("port","portListing "+portListing);
+        Log.i("port","portListing "+portListing);
         Log.i("port","portListing "+portListing);
         Log.i("port","myPortfolioLL "+myPortfolioLL);
         Log.i("port","addbuildingLL "+addbuildingLL);
@@ -106,16 +132,20 @@ Log.i("port","portListing "+portListing);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("My WatchList");
-
+        confirm_screen_title.setVisibility(View.VISIBLE);
+        btnMyDeals.setBackground(getResources().getDrawable(R.drawable.share_btn_background));
+        btnMyDeals.setText("Share");
         //Phased seekbar initialisation
         mPhasedSeekBar = (CustomPhasedSeekBar) findViewById(R.id.phasedSeekBar);
         mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(this.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{this.getResources().getString(R.string.Rental), this.getResources().getString(R.string.Resale)}));
         mPhasedSeekBar.setListener((this));
         rental_list=(ListView) findViewById(R.id.Rental_listview);
         inputSearch=(EditText) findViewById( R.id.inputSearch1);
-
         add_build=(LinearLayout)findViewById(R.id.add_build);
+        usertext=(TextView)findViewById(R.id.usertext);
+        add_create=(TextView)findViewById(R.id.add_create);
+
+
         add_build.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +154,10 @@ Log.i("port","portListing "+portListing);
 //                    General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
                     SignUpFragment d = new SignUpFragment();
                     Bundle bundle = new Bundle();
+                    if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
                     bundle.putString("lastFragment", "clientDrawer");
+                    else
+                        bundle.putString("lastFragment", "brokerDrawer");
 //                    loadFragment(signUpFragment, bundle, R.id.container_Signup1, "");
 //                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
                     d.setArguments(bundle);
@@ -139,13 +172,19 @@ Log.i("port","portListing "+portListing);
                     fragmentTransaction.commitAllowingStateLoss();
 //                    AppConstants.SIGNUP_FLAG = true;
 
-                }else {
+                }else if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")){
                     General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
                     Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
                 /*in.putExtra("data","portfolio");
                 in.putExtra("role","");*/
                     startActivity(in);
-              }
+              }else{
+                    General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
+                    Intent in = new Intent(getBaseContext(), BrokerMap.class);
+                /*in.putExtra("data","portfolio");
+                in.putExtra("role","");*/
+                    startActivity(in);
+                }
 
             }
         });
@@ -230,6 +269,21 @@ Log.i("port","portListing "+portListing);
         portListingCopy.addAll(portListing);
 
         adapter.notifyDataSetChanged();
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+            getSupportActionBar().setTitle("");
+            confirm_screen_title.setText("My Advertised \nListings");
+            inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
+            usertext.setHint("\"My Listing\"");
+            add_create.setText("Create");
+        }else{
+            getSupportActionBar().setTitle("");
+            confirm_screen_title.setText("My WatchList");
+            inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
+            usertext.setHint("My Watchlist");
+            add_create.setText("Add");
+
+        }
+       // inputSearch.setHint("Search My "+portListing.size()+" Listings");
         Log.i("dataritesh","myPortfolioLL"+portListing);
 //        portListing.addAll(myPortfolioLL);
 
@@ -242,6 +296,26 @@ Log.i("port","portListing "+portListing);
 
             }
         } );*/
+
+
+        rental_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                /*if(item != null)
+                    item.clear();
+                item.add((portListingModel)adapter.getItem(position));
+                General.setSharedPreferences(getBaseContext(),AppConstants.BUILDING_ID,item.get(0).getId());
+                if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+                    Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
+                    startActivity(in);
+                }else{
+                    Intent in = new Intent(getBaseContext(), BrokerMap.class);
+                    startActivity(in);
+                }*/
+            }
+        });
+
 
                 rental_list.setChoiceMode( ListView.CHOICE_MODE_MULTIPLE_MODAL);
                    rental_list.setMultiChoiceModeListener( new AbsListView.MultiChoiceModeListener() {
@@ -365,6 +439,18 @@ Log.i("port","portListing "+portListing);
                             }
                             mode.finish();
                             adapter.notifyDataSetChanged();
+                            if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+                                inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
+                                usertext.setText("");
+                                usertext.setHint("\"My Listing\"");
+                                add_create.setText("Create");
+                            }else{
+                                inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
+                                usertext.setText("");
+                                usertext.setHint("My Watchlist");
+                                add_create.setText("Add");
+
+                            }
                             return true;
 
                             /*for(deletelist.size()
@@ -486,7 +572,16 @@ inputSearch.addTextChangedListener(new TextWatcher() {
         String searchQuery = s.toString().trim();
         Log.i("searcho","s "+searchQuery.length());
         Log.i("searcho","sb "+portListingCopy);
+        String s1="\""+s+"\"";
+        if(!s1.equalsIgnoreCase(""))
+        usertext.setText(s1);
+        else {
+            if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+            usertext.setHint("My Watchlist");
+            else
+                usertext.setHint("My Listing");
 
+        }
        if(portListing != null)
            portListing.clear();
         portListing.addAll(portListingCopy);
@@ -527,6 +622,32 @@ inputSearch.addTextChangedListener(new TextWatcher() {
 }
 
 
+
+
+    @OnClick(R.id.btnMyDeals)
+    public void onBtnMyDealsClick(View v) {
+
+        // if(btnMyDeals.getText().toString().equalsIgnoreCase("share")) {
+
+        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // Log.i(TAG,"persy 12345");
+            ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+        } else {
+            //dashboardClientFragment.screenShot();
+            takeScreenshot();
+        }
+      /*  }
+        else {
+
+            Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
+            openDealsListing.putExtra("defaul_deal_flag", "false");
+            startActivity(openDealsListing);
+        }*/
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -564,26 +685,52 @@ inputSearch.addTextChangedListener(new TextWatcher() {
 
 
     @Override
-    public void onPositionSelected(int position, int count) {
-        inputSearch.setText("");
-        if(position==0){
-            TT = "LL";
-            portListing.clear();
-            portListing.addAll(addbuildingLL);
-            portListing.addAll(myPortfolioLL);
-            portListingCopy.clear();
-            portListingCopy.addAll(portListing);
-            adapter.notifyDataSetChanged();
-        }else{
-            TT = "OR";
-            Log.i("addbuildingOR","addbuildingOR 3"+addbuildingOR);
-            portListing.clear();
-            portListing.addAll(addbuildingOR);
-            portListing.addAll(myPortfolioOR);
-            portListingCopy.clear();
-            portListingCopy.addAll(portListing);
-            adapter.notifyDataSetChanged();
-        }
+    public void onPositionSelected(int position, int count){
+            inputSearch.setText("");
+            if (position == 0) {
+                TT = "LL";
+                portListing.clear();
+                portListing.addAll(addbuildingLL);
+                portListing.addAll(myPortfolioLL);
+                portListingCopy.clear();
+                portListingCopy.addAll(portListing);
+
+                adapter.notifyDataSetChanged();
+                if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+                    inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
+                    usertext.setText("");
+                    usertext.setHint("\"My Listing\"");
+                    add_create.setText("Create");
+                }else{
+                    inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
+                    usertext.setText("");
+                    usertext.setHint("My Watchlist");
+                    add_create.setText("Add");
+
+                }
+            } else {
+                TT = "OR";
+
+                Log.i("addbuildingOR", "addbuildingOR 3" + addbuildingOR);
+                portListing.clear();
+                portListing.addAll(addbuildingOR);
+                portListing.addAll(myPortfolioOR);
+                portListingCopy.clear();
+                portListingCopy.addAll(portListing);
+                adapter.notifyDataSetChanged();
+                if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+                    inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
+                    usertext.setText("");
+                    usertext.setHint("\"My Listing\"");
+                    add_create.setText("Create");
+                }else{
+                    inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
+                    usertext.setText("");
+                    usertext.setHint("My Watchlist");
+                    add_create.setText("Add");
+
+                }
+            }
 
 
 
@@ -631,6 +778,77 @@ inputSearch.addTextChangedListener(new TextWatcher() {
         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
+    }
+
+
+
+
+    private void takeScreenshot() {
+        Date now = new Date();
+        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+        try {
+            // image naming and path  to include sd card  appending name you choose for file
+            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".jpg";
+
+            // create bitmap screen capture
+            View v1 = getWindow().getDecorView().getRootView();
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            File imageFile = new File(mPath);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            openScreenshot(imageFile);
+        } catch (Throwable e) {
+            // Several error may come out with file handling or OOM
+            e.printStackTrace();
+        }
+    }
+
+
+
+    /*private void openScreenshot(File imageFile) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Uri.fromFile(imageFile);
+        intent.setDataAndType(uri, "image*//*");
+        startActivity(intent);
+    }*/
+
+
+
+
+
+    private void openScreenshot(File imageFile) {
+       // Log.i(TAG,"persy 1234");
+        int permission = ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+       /* if (permission != PackageManager.PERMISSION_GRANTED) {
+            Log.i(TAG,"persy 12345");
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }*/
+       // Log.i(TAG,"persy 12346");
+
+        Uri uri = Uri.fromFile(imageFile);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/jpeg/text/html");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        //intent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml("<p>Hey, please check out these property rates I found out on this super amazing app Oyeok.</p><p><a href=\"https://play.google.com/store/apps/details?id=com.nbourses.oyeok&hl=en/\">Download Oyeok for android</a></p>"));
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, "Hey, please check out these property rates I found out on this super amazing app Oyeok. \n \n  https://play.google.com/store/apps/details?id=com.nbourses.oyeok&hl=en/");
+        startActivity(Intent.createChooser(intent, "Share Image"));
+
+//        Spanned spanned = Html.fromHtml(code, this, null);
     }
 
 

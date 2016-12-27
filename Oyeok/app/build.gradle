@@ -42,7 +42,7 @@ android {
         minSdkVersion 16
         multiDexEnabled true
         targetSdkVersion 23
-        versionCode 37
+        versionCode 39
         versionName "1.0"
         manifestPlaceholders = [manifestApplicationId          : "${applicationId}",
                                 onesignal_app_id               : "9e2ab2be-54c5-4981-b15f-fb8dc78b81ee",
@@ -244,6 +244,9 @@ dependencies {
     compile 'com.android.support:support-v4:23.+'
 }
 dependencies {
+    compile 'com.android.support:support-v4:23.+'
+}
+dependencies {
     repositories {
         mavenCentral()
     }
@@ -261,7 +264,9 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
+
     /*compile files('libs/pgsdk.jar')*/
+
     //    added by Rohit
     // Digits
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -354,7 +359,7 @@ dependencies {
 
 //    compile 'com.github.thorbenprimke:realm-recycler-view:0.9.5'
 
-
+    //compile 'com.google.android.gms:play-services-analytics:9.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
