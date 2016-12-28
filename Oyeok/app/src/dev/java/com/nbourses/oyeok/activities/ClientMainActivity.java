@@ -17,6 +17,7 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -465,6 +466,23 @@ try {
 
                 General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
                 openAddListing();
+
+        }else if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("MPC")){
+            General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
+            final String s = getIntent().getStringExtra("id");
+            Log.i("idsdata","ids mpc "+s);
+             new CountDownTimer(1000, 500) {
+
+                public void onTick(long millisUntilFinished) {
+
+
+                }
+
+                public void onFinish() {
+                    General.setSharedPreferences(getBaseContext(),AppConstants.BUILDING_ID,s);
+
+                }
+            }.start();
 
         }else{
             //dbHelper.save(DatabaseConstants.userRole, "Client");

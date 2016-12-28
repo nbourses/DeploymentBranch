@@ -65,7 +65,7 @@ public class porfolioAdapter extends BaseAdapter {
         holder.heading.setText(listing.getName()+" ("+listing.getConfig()+")");
 //            String text;
 //            text="<html><sup></html>";
-            holder.ActualPrice.setText(General.currencyFormatWithoutRupeeSymbol(listing.getLl_pm()+"")+"/month");
+            holder.ActualPrice.setText(General.currencyFormatWithoutRupeeSymbol(General.getFormatedPrice(listing.getConfig(),listing.getLl_pm())+"")+"/month");
             if(listing.getTransaction()==null) {
                 holder.B_image.setImageResource(R.drawable.asset_add_listing);
                 holder.B_image.setBackground(null);

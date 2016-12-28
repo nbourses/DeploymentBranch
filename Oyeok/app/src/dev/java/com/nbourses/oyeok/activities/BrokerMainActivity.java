@@ -677,8 +677,8 @@ GoogleMap map;
 
             loadFragment(shareOwnersNo, null, R.id.container_sign, "");
             Owner_detail=true;
-        }else if(itemTitle.equals(getString(R.string.MyPortfolio))){
-            Log.i("myWatchList","itemTitle 1 "+itemTitle + R.string.MyPortfolio);
+        }else if(itemTitle.equals(getString(R.string.Listing))){
+            Log.i("myWatchList","itemTitle 1 "+itemTitle + R.string.Listing);
             Intent intent =new Intent( this,MyPortfolioActivity.class );
             startActivity(intent);
             /*MainScreenPropertyListing my_portfolio = new MainScreenPropertyListing();

@@ -1,26 +1,42 @@
 package com.nbourses.oyeok.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.adapters.myPortfolioAdapter;
+import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.helpers.OnSwipeTouchListener;
 import com.nbourses.oyeok.realmModels.BuildingCacheRealm;
 
+import java.util.ArrayList;
+
 import io.realm.Realm;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class MainScreenPropertyListing extends Fragment {
@@ -32,8 +48,21 @@ public class MainScreenPropertyListing extends Fragment {
     EditText Searchlist;
     ListView listview;
     LinearLayout dragablelistview;
-Animation cust_slideup,cust_slide_down;
+    ImageView pullup_button;
+    Animation cust_slideup,cust_slide_down,bounce;
     FrameLayout.LayoutParams params;
+    private GestureDetector gestureDetector;
+    myPortfolioAdapter adapter;
+    View v;
+    SharedPreferences.OnSharedPreferenceChangeListener listener;
+    private long lastTouched = 0, start = 0;
+    private static final long SCROLL_TIME = 200L;
+    long count;
+    ArrayList<String> ids =new ArrayList<>(  );
+    DisplayMetrics displaymetrics;
+    int height,screenheight;
+    int bottom,top ;
+    Bundle data;
     public MainScreenPropertyListing() {
 
     }
@@ -52,89 +81,359 @@ Animation cust_slideup,cust_slide_down;
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-              view=  inflater.inflate(R.layout.fragment_mainscreen_listview, container, false);
+        view = inflater.inflate(R.layout.fragment_mainscreen_listview, container, false);
 
 
-         listview=(ListView) view.findViewById(R.id.listview);
-        dragablelistview=(LinearLayout)view.findViewById(R.id.dragablelistview);
+        listview = (ListView) view.findViewById(R.id.listview);
+        dragablelistview = (LinearLayout) view.findViewById(R.id.dragablelistview);
         cust_slideup = (AnimationUtils.loadAnimation(getContext(), R.anim.cust_slideup));
         cust_slide_down = (AnimationUtils.loadAnimation(getContext(), R.anim.cust_slide_down));
-
-
-
-        myPortfolioAdapter adapter = new myPortfolioAdapter(getContext(), 1);
+        bounce=(AnimationUtils.loadAnimation(getContext(), R.anim.slideup_plus_bounce));
+        pullup_button = (ImageView) view.findViewById(R.id.pullup_button);
+        Searchlist =(EditText) view.findViewById(R.id.Searchlist);
+       // General.setSharedPreferences(getContext(),AppConstants.AUTO_TT_CHANGE,"or");
+        displaymetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        screenheight = displaymetrics.heightPixels;
+       // width  = displaymetrics.widthPixels;
+         adapter = new myPortfolioAdapter(getContext(), 1);
 
         listview.setAdapter(adapter);
         realm = General.realmconfig(getContext());
-        adapter.setResults(realm.where(BuildingCacheRealm.class).findAll());
-         params = (FrameLayout.LayoutParams) dragablelistview.getLayoutParams();
-        params.topMargin = 1330;
+
+        adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp"));
+        adapter.notifyDataSetChanged();
+        data=getArguments();
+        String height1=data.getString( "height1" );
+        height=  Integer.parseInt(height1);
+        params = (FrameLayout.LayoutParams) dragablelistview.getLayoutParams();
+        bottom=height-(int)dipToPixels(getContext(),60);
+        top=(int)dipToPixels(getContext(),60);
+        screenheight-=(height+100);
+        params.topMargin = bottom;
+
+        //params.topMargin = params.bottomMargin-(params.topMargin);
         dragablelistview.startAnimation(cust_slideup);
-        /*dragablelistview.setOnClickListener(new View.OnClickListener() {
+        Log.i("touchcheck", "ACTION_MOVE on create" + params.bottomMargin+"   "+params.topMargin+ "   :  height "+params.height+"  "+params.width+"  :"+height1+" screenheight "+screenheight+"dipToPixels(getContext(),110) "+dipToPixels(getContext(),110));
+
+        count = realm.where(BuildingCacheRealm.class).count();
+        Searchlist.setHint("Search");
+
+        /*dragablelistview.setOnTouchListener(new View.OnTouchListener() {
+
+
             @Override
-            public void onClick(View v) {
-                if(params.topMargin<1330 && params.topMargin>=170) {
-                    params.topMargin = 1330;
-                    view.setLayoutParams(params);
+            public boolean onTouch(View view, MotionEvent event) {
+
+                // if (currentState != State.EDIT_MOVE) return false;
+                gestureDetector = new GestureDetector(getContext(), new SingleTapConfirm());
+                // FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
+                if (gestureDetector.onTouchEvent(event)) {
+                    Log.i("touchcheck", "ACTION_MOVE    sushil :  " + event);
+                    if (params.topMargin < 1330 && params.topMargin >= 170) {
+                        params.topMargin = 1330;
+                        view.setLayoutParams(params);
+                    } else {
+                        params.topMargin = 170;
+                        view.setLayoutParams(params);
+                    }
+                    return true;
+                } else {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_MOVE:
+                            Log.i("touchcheck", "ACTION_MOVE" + event.getRawY());
+                            // if(params.topMargin<1372)
+                            params.topMargin = (int) event.getRawY() - 310;//- (view.getHeight());
+                            //params.leftMargin = (int) event.getRawX() - (view.getWidth());
+                            Log.i("touchcheck", "ACTION_MOVE" + event.getRawY() + "   : " + params.topMargin + "   :  : " + params);
+
+                            view.setLayoutParams(params);
+                            break;
+
+                        case MotionEvent.ACTION_UP:
+                            final long now = SystemClock.uptimeMillis();
+                            if (now - lastTouched > SCROLL_TIME) {
+                                if (params.topMargin < 1372)
+                                    params.topMargin = (int) event.getRawY() - 310;//- (view.getHeight());
+                                else {
+                                    params.topMargin = 1330;
+                                    dragablelistview.startAnimation(cust_slideup);
+                                }
+                                if (params.topMargin < 170) {
+                                    params.topMargin = 170;
+                                    //  dragablelistview.startAnimation(cust_slide_down);
+                                }
+                                //params.bottomMargin=(int) event.getRawY();
+                                Log.i("touchcheck", "ACTION_UP" + event.getRawY() + "   : " + params.topMargin + "   :  : " + params);
+
+                                //params.leftMargin = (int) event.getRawX() - (view.getWidth());
+                                view.setLayoutParams(params);
+                                break;
+                            }
+                        case MotionEvent.ACTION_DOWN:
+                            Log.i("touchcheck", "ACTION_UP" + event.getRawY() + "   : " + params.topMargin + "   :  : " + params);
+                            //params.topMargin==(int)1372;
+                            //params.topMargin = 1300;
+                            lastTouched = SystemClock.uptimeMillis();
+                            params.topMargin = (int) event.getRawY() - 310;
+                            view.setLayoutParams(params);
+                            break;
+                    }
                 }
-                else {
+                //if (view.getId() != R.id.dragablelistview) return false;
+
+
+                return false;
+            }
+        });*/
+
+
+        /*pullup_button.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+
+            @Override
+            public void onClick() {
+                super.onClick();
+                view=dragablelistview ;
+                if (params.topMargin < 1230 && params.topMargin >= 170) {
+                    params.topMargin = 1230;
+                    view.setLayoutParams(params);
+                } else {
                     params.topMargin = 170;
                     view.setLayoutParams(params);
                 }
-
+                // your on click here
             }
-        });*/
-        dragablelistview.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent event)
-            {
-                // if (currentState != State.EDIT_MOVE) return false;
-
-                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
-                //if (view.getId() != R.id.dragablelistview) return false;
-                switch (event.getAction())
-                {
+            public boolean onTouch( View view, final MotionEvent event) {
+                view=dragablelistview ;
+                switch (event.getAction()) {
                     case MotionEvent.ACTION_MOVE:
-                        Log.i("touchcheck","ACTION_MOVE"+event.getRawY());
-                       // if(params.topMargin<1372)
-                        params.topMargin = (int) event.getRawY()-310 ;//- (view.getHeight());
+                        Log.i("touchcheck", "ACTION_MOVE" + event.getRawY());
+                        // if(params.topMargin<1372)
+                        params.topMargin = (int) event.getRawY() - 310;//- (view.getHeight());
                         //params.leftMargin = (int) event.getRawX() - (view.getWidth());
-                        Log.i("touchcheck","ACTION_MOVE"+event.getRawY()+"   : "+params.topMargin +"   :  : "+params);
+                        Log.i("touchcheck", "ACTION_MOVE" + event.getRawY() + "   : " + params.topMargin + "   :  : " + params.bottomMargin+"   "+params.topMargin);
 
                         view.setLayoutParams(params);
                         break;
 
                     case MotionEvent.ACTION_UP:
-                        if(params.topMargin<1372)
-                        params.topMargin = (int) event.getRawY()-310;//- (view.getHeight());
-                        else {
-                            params.topMargin = 1330;
-                            dragablelistview.startAnimation(cust_slideup);
-                        }
-                        if(params.topMargin<170)
-                        {
-                            params.topMargin = 170;
-                          //  dragablelistview.startAnimation(cust_slide_down);
-                        }
-                        //params.bottomMargin=(int) event.getRawY();
-                        Log.i("touchcheck","ACTION_UP"+event.getRawY()+"   : "+params.topMargin +"   :  : "+params);
+                        final long now = SystemClock.uptimeMillis();
+                        if (now - lastTouched > SCROLL_TIME) {
+                            if (params.topMargin < 1272)
+                                params.topMargin = (int) event.getRawY()- 310;//- (view.getHeight());
+                            else {
+                                params.topMargin = 1230;
+                                dragablelistview.startAnimation(cust_slideup);
+                            }
+                            if (params.topMargin < 170) {
+                                params.topMargin = 170;
+                                //  dragablelistview.startAnimation(cust_slide_down);
+                            }
+                            //params.bottomMargin=(int) event.getRawY();
+                            Log.i("touchcheck", "ACTION_UP" + event.getRawY() + "   : " + params.topMargin + "   :  : " + params.bottomMargin+" === "+height+" ==== "+width);
 
-                        //params.leftMargin = (int) event.getRawX() - (view.getWidth());
-                        view.setLayoutParams(params);
-                        break;
+                            //params.leftMargin = (int) event.getRawX() - (view.getWidth());
+                            view.setLayoutParams(params);
+                            break;
+                        }else{
+                            if (params.topMargin < 1230 && params.topMargin >= 170) {
+                                params.topMargin = 1230;
+                                view.setLayoutParams(params);
+                            } else {
+                                params.topMargin = 170;
+                                view.setLayoutParams(params);
+                            }
+                            break;
+                        }
 
                     case MotionEvent.ACTION_DOWN:
-                        Log.i("touchcheck","ACTION_UP"+event.getRawY()+"   : "+params.topMargin +"   :  : "+params);
+                        Log.i("touchcheck", "ACTION_UP" + event.getRawY() + "   : " + params.topMargin + "   :  : " + params);
                         //params.topMargin==(int)1372;
                         //params.topMargin = 1300;
-                        params.topMargin = (int) event.getRawY() -310;
+                        v=view;
+                        lastTouched = SystemClock.uptimeMillis();
+                        params.topMargin = (int) event.getRawY() - 310;
                         view.setLayoutParams(params);
                         break;
                 }
+               // return gestureDetector.onTouchEvent(event);
+                return false;
+            }
 
-                return true;
+        });*/
+
+
+        pullup_button.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+
+            @Override
+            public void onClick() {
+                super.onClick();
+                view=dragablelistview ;
+                if (params.topMargin < bottom && params.topMargin >= top) {
+                    params.topMargin = bottom;
+                    dragablelistview.startAnimation(cust_slideup);
+                    view.setLayoutParams(params);
+                } else {
+                    params.topMargin = top;
+                    view.setLayoutParams(params);
+                }
+                // your on click here
+            }
+            @Override
+            public boolean onTouch( View view, final MotionEvent event) {
+                //View v1=view;
+               // dragablelistview.clearAnimation();
+                view=dragablelistview ;
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        Log.i("touchcheck", "ACTION_MOVE" + event.getRawY());
+                        // if(params.topMargin<1372)
+                       // params.topMargin = (int) (event.getRawY()+event.getY()) ;//- 310;//- (view.getHeight());
+                       // params.topMargin =(int)event.getY();
+                        params.topMargin = (int) event.getRawY()- screenheight;
+                        //params.leftMargin = (int) event.getRawX() - (view.getWidth());
+                        Log.i("touchcheck", "ACTION_MOVE" + event.getRawY() + "   : " + params.topMargin + "   :  : " + params.bottomMargin+"   "+params.topMargin+ " "+event.getY()+" :screenheight "+screenheight);
+
+                        view.setLayoutParams(params);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        final long now = SystemClock.uptimeMillis();
+                        if (now - lastTouched > SCROLL_TIME) {
+                            if (params.topMargin < bottom)
+                               params.topMargin = (int) event.getRawY()- screenheight;//- 310;//- (view.getHeight());
+                                //params.topMargin =(int)event.getY();
+                            else {
+                                params.topMargin = bottom;
+                                dragablelistview.startAnimation(cust_slideup);
+                            }
+                            if (params.topMargin < top) {
+                                params.topMargin = top;
+                                //  dragablelistview.startAnimation(cust_slide_down);
+                            }
+                            //params.bottomMargin=(int) event.getRawY();
+                            Log.i("touchcheck", "ACTION_UP" + event.getRawY() + "   : " + params.topMargin + "   :  : " + params.bottomMargin+" === "+height+" "+event.getY());
+
+                            //params.leftMargin = (int) event.getRawX() - (view.getWidth());
+                            view.setLayoutParams(params);
+                            break;
+                        }else{
+                            if (params.topMargin < bottom && params.topMargin >= top) {
+                                params.topMargin = bottom;
+                                view.setLayoutParams(params);
+                            } else {
+                                params.topMargin = top;
+                                view.setLayoutParams(params);
+                            }
+                            break;
+                        }
+
+                    case MotionEvent.ACTION_DOWN:
+                        Log.i("touchcheck", "ACTION_UP" + event.getRawY() + "   : " + params.topMargin + "   :  : " + params+" "+event.getY());
+                        //params.topMargin==(int)1372;
+                        //params.topMargin = 1300;
+                        v=view;
+                        lastTouched = SystemClock.uptimeMillis();
+                        params.topMargin = (int) event.getRawY()- screenheight  ;//- 310;
+                        //params.topMargin =(int)event.getY();
+                        view.setLayoutParams(params);
+                        break;
+                }
+                // return gestureDetector.onTouchEvent(event);
+                return false;
+            }
+
+        });
+
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i( "listview","onItemClick  LL : "+adapter.getItemId(position)+"  : "+position );
+                ids.add(adapter.getItem(position).getId());
+
+                General.setSharedPreferences(getContext(), AppConstants.BUILDING_ID,adapter.getItem(position).getId());
+                params.topMargin = bottom;
+                v.setLayoutParams(params);
+               // ((DashboardClientFragment)getContext())
             }
         });
+        Searchlist.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+               // if(TT=="LL"){
+                    Log.i( "portfolio","onTextChanged  LL : "+cs );
+                    adapter.setResults( realm.where(BuildingCacheRealm.class)
+                            .greaterThan("ll_pm", 0)  //implicit AND
+                            .beginGroup()
+                            .contains("name", cs.toString(),false)
+                            .endGroup()
+                            .findAll() );
+                /*}else{
+
+                    adapter.setResults( realm.where(MyPortfolioModel.class)
+                            .greaterThan("or_psf", 0)  //implicit AND
+                            .beginGroup()
+                            .contains("name", cs.toString(),false)
+                            .endGroup()
+                            .findAll() );
+                    Log.i( "portfolio","onTextChanged  LL : ");
+
+                }*/
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                          int arg3) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        try {
+            SharedPreferences prefs =
+                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+
+                    if (key.equals(AppConstants.AUTO_TT_CHANGE)) {
+
+                        if( General.getSharedPreferences(getContext(),AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("ll")){
+                            adapter = new myPortfolioAdapter(getContext(), 1);
+                            listview.setAdapter(adapter);
+                            adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp"));
+                            //adapter.notifyDataSetChanged();
+
+                        }else if( General.getSharedPreferences(getContext(),AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("or")){
+                            adapter = new myPortfolioAdapter(getContext(), 2);
+                            listview.setAdapter(adapter);
+                            adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp"));
+                            //adapter.notifyDataSetChanged();
+                        }/*else{
+                            adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp"));
+                            adapter.notifyDataSetChanged();
+                            //dragablelistview.startAnimation(bounce);
+                        }*/
+                        Log.i("builds","OUTO_CLICK_MARKER  : "+General.getSharedPreferences(getContext(),AppConstants.AUTO_TT_CHANGE));
+
+                    }
+                }
+
+
+            };
+            prefs.registerOnSharedPreferenceChangeListener(listener);
+
+        }
+        catch (Exception e){
+            Log.e("loc", e.getMessage());
+        }
 
 /*
         if(portListing != null)
@@ -630,12 +929,15 @@ Animation cust_slideup,cust_slide_down;
 
 
 
-    @Override
+   /* @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-    }
-
+        this.activity = activity;
+    }*/
+    /*@Override
+    public void onAttach(Activity activity){
+        this.activity = activity;
+    }*/
     @Override
     public void onDetach() {
         super.onDetach();
@@ -645,4 +947,33 @@ Animation cust_slideup,cust_slide_down;
     public interface OnFragmentInteractionListener {
 
     }
+
+
+
+  private  class SingleTapConfirm extends GestureDetector.SimpleOnGestureListener {
+
+      @Override
+      public boolean onDown(MotionEvent e) {
+            /*it needs to return true if we don't want
+            to ignore rest of the gestures*/
+          return true;
+      }
+        @Override
+        public boolean onSingleTapUp(MotionEvent event) {
+        return true;
+            //onClick();
+           // return super.onSingleTapUp(event);
+        }
+
+        /*public void onClick() {
+
+        }*/
+    }
+
+
+    public static float dipToPixels(Context context, int dipValue) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
+    }
+
 }

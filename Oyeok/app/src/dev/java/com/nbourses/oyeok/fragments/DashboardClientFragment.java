@@ -32,6 +32,7 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -49,6 +50,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -402,7 +404,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
 //    @Bind(R.id.hPicker)
 //    LinearLayout hPicker;
-
+     FrameLayout fr;
     ValueAnimator mFlipAnimator;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private Boolean buildingTouched = false;
@@ -673,14 +675,36 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             }
         });*/
 
-        MainScreenPropertyListing mainScreenPropertyListing= new MainScreenPropertyListing();
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+         fr=(FrameLayout)rootView.findViewById(R.id.list_container);
+        //int height=fr.getHeight();
+        //int width=fr.getWidth();
+
+        ViewTreeObserver vto = fr.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                fr.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                width  = fr.getMeasuredWidth();
+                height = fr.getMeasuredHeight();
+                Log.i("measurement","frag me========: "+height+"  ; "+width);
+                Bundle b=new Bundle();
+                b.putString("height1",height+"");
+                // Log.i("measurement","frag me========: "+height+"  ; "+width);
+                MainScreenPropertyListing mainScreenPropertyListing= new MainScreenPropertyListing();
+                loadFragmentAnimated(mainScreenPropertyListing,b,R.id.list_container,"");
+
+            }
+        });
+
+
+
+        /*FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.cust_slideup, R.anim.cust_slide_down);
 //                list_container.setClickable(true);
         fragmentTransaction.addToBackStack("card22");
         fragmentTransaction.replace(R.id.list_container, mainScreenPropertyListing);
-        fragmentTransaction.commitAllowingStateLoss();
+        fragmentTransaction.commitAllowingStateLoss();*/
 
 
         //dragablelistview.startAnimation(cust_slideup);
@@ -1525,13 +1549,15 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         }
 
 
-        /*try {
+        try {
             SharedPreferences prefs =
                     PreferenceManager.getDefaultSharedPreferences(getContext());
             listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 
-                    if (key.equals(AppConstants.OUTO_CLICK_MARKER)) {
+                    if (key.equals(AppConstants.BUILDING_ID)) {
+                        autoMarkerClick(General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID));
+                        Log.i("buildingid","OUTO_CLICK_MARKER  : "+General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID));
 
                     }
                 }
@@ -1543,7 +1569,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         }
         catch (Exception e){
             Log.e("loc", e.getMessage());
-        }*/
+        }
 
         return rootView;
     }
@@ -2626,9 +2652,9 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                         rental.setText( Property_type );
                         property_type_layout.setVisibility( View.VISIBLE );
                     }
+                    General.setSharedPreferences(getContext(),AppConstants.AUTO_TT_CHANGE,"ll");
                     try {
                         AppConstants.CURRENT_DEAL_TYPE = "rent";
-
                         if (buildingCacheModels.get(INDEX).getFlag() == true) {
                             tv_building.setVisibility(View.VISIBLE);
                             tv_building.setText("Average Rate in last 1 WEEK");
@@ -2683,6 +2709,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                     updateHorizontalPicker();
                     tvRate.setText( "/ sq.ft" );
                     brokerType = "resale";
+                    General.setSharedPreferences(getContext(),AppConstants.AUTO_TT_CHANGE,"or");
                     AppConstants.CURRENT_DEAL_TYPE = "resale";
                    // dbHelper.save( DatabaseConstants.brokerType, "OR" );
                    // dbHelper.save( "brokerType", "For Sale" );
@@ -2907,7 +2934,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Log.i("savebuilding","savebuilding: "+General.getSharedPreferences(getContext(), AppConstants.LOCALITY)+"  "+SharedPrefs.getString(getContext(), SharedPrefs.MY_CITY)+"  "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
+           // Log.i("savebuilding","savebuilding: "+General.getSharedPreferences(getContext(), AppConstants.LOCALITY)+"  "+SharedPrefs.getString(getContext(), SharedPrefs.MY_CITY)+"  "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
 
 
             Log.i("savebuilding","savebuilding: "+fullAddress);
@@ -3319,7 +3346,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                 horizontalPicker.stopScrolling();
 
             }
-            addressBar.setText("Getting Address... ");
+
 //                          Log.i("MotionEvent.ACTION_MOVE", "=========================");
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 //                                  horizontalPicker.stopScrolling();
@@ -3379,8 +3406,13 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                             fav.setVisibility(View.VISIBLE);
                             horizontalPicker.stopScrolling();
                             missingArea.setVisibility(View.GONE);
+                            /*try {
+                                General.setSharedPreferences(getContext(), AppConstants.AUTO_TT_CHANGE, "drag");
+                            }catch(Exception e){}*/
+
                             getPrice();
                         }
+                        addressBar.setText("Getting Address... ");
                         new LocationUpdater().execute();
                         if (txtFilterValue.getText().toString().equalsIgnoreCase("done")) {
                             txtFilterValue.setText("SAVE");
@@ -4283,7 +4315,7 @@ favOText.getText()*/
         if(brokerType=="rent") {
             myPortfolioModel.setId( buildingCacheModels.get(INDEX).getId() );
 
-            myPortfolioModel.setLl_pm(price(buildingCacheModels.get(INDEX).getConfig(),buildingCacheModels.get(INDEX).getLl_pm()));
+            myPortfolioModel.setLl_pm(buildingCacheModels.get(INDEX).getLl_pm());
 
         }else{
             myPortfolioModel.setId( buildingCacheModels.get(INDEX).getId()+"1" );
@@ -4543,13 +4575,15 @@ public void resetSeekBar(){
         Realm myRealm = General.realmconfig( getContext());
 
         RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false);
+        RealmResults<MyPortfolioModel> result= realm.where(MyPortfolioModel.class).findAll();
+       // RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false);
         Log.i("dataformrealm1","BuildingCacheRealm before "+result1.size());
-
-        if(result1.size()>100){
+        int size=100+result.size();
+        if(result1.size()>size){
             if(myRealm.isInTransaction())
                 myRealm.cancelTransaction();
             realm.beginTransaction();
-            result1.remove(100);
+            result1.remove(size);
             realm.commitTransaction();
 
             Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size());
@@ -4611,7 +4645,14 @@ public void resetSeekBar(){
       customMarker.clear();
       buildingCacheModels.clear();
       realm = General.realmconfig(getContext());
+      RealmResults<MyPortfolioModel> result= realm.where(MyPortfolioModel.class).findAll();
+
+      addbuildingCache(result);
+
+
+
       RealmResults<BuildingCacheRealm> result1= realm.where(BuildingCacheRealm.class).findAll();
+
       Log.i("dataformrealm","BuildingCacheRealm entered 12234 ");
 
 
@@ -4619,6 +4660,7 @@ public void resetSeekBar(){
       Log.i("dataformrealm","BuildingCacheRealm entered kamine  "+result1.size());
 
       for(BuildingCacheRealm c :result1){
+
           Log.i("dataformrealm","BuildingCacheRealm"+c.getName());
 //          customMarker.add( map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(c.getLng()),Double.parseDouble(c.getLng()))).title(c.getName()).snippet(c.getId()).icon(icon1).flat(true)));
 //           map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(c.getLng()),Double.parseDouble(c.getLng()))).title(c.getName()).snippet(c.getId()).icon(icon1).flat(true));
@@ -4638,35 +4680,208 @@ public void resetSeekBar(){
 
 
       }
+
+
   }
-/*
-    public boolean onTouch(View view, MotionEvent event) {
-        final int X = (int) event.getRawX();
-        final int Y = (int) event.getRawY();
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                _xDelta = X - lParams.leftMargin;
-                _yDelta = Y - lParams.topMargin;
-                break;
-            case MotionEvent.ACTION_UP:
-                break;
-            case MotionEvent.ACTION_POINTER_DOWN:
-                break;
-            case MotionEvent.ACTION_POINTER_UP:
-                break;
-            case MotionEvent.ACTION_MOVE:
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view
-                        .getLayoutParams();
-                layoutParams.leftMargin = X - _xDelta;
-                layoutParams.topMargin = Y - _yDelta;
-                layoutParams.rightMargin = getResources().getDimension(-250);
-                layoutParams.bottomMargin = getResources().getDimension(-250);
-                view.setLayoutParams(layoutParams);
-                break;
+
+
+
+
+    private void addbuildingCache(RealmResults<MyPortfolioModel> result){
+
+        for(MyPortfolioModel c :result) {
+            Realm myRealm = General.realmconfig(getContext());
+            BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
+            buildingCacheRealm.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+            buildingCacheRealm.setName(c.getName());
+            buildingCacheRealm.setLat(c.getLat());
+            buildingCacheRealm.setLng(c.getLng());
+            buildingCacheRealm.setLocality(c.getLocality());
+            buildingCacheRealm.setLl_pm(c.getLl_pm());
+            buildingCacheRealm.setOr_psf(c.getOr_psf());
+            buildingCacheRealm.setId(c.getId());
+            buildingCacheRealm.setConfig(c.getConfig());
+            buildingCacheRealm.setListing(c.getListing());
+            buildingCacheRealm.setPortals(c.getPortals());
+            buildingCacheRealm.setRate_growth(c.getRate_growth());
+            buildingCacheRealm.setTransactions(c.getTransactions());
+            if (myRealm.isInTransaction())
+                myRealm.cancelTransaction();
+            myRealm.beginTransaction();
+            myRealm.copyToRealmOrUpdate(buildingCacheRealm);
+//        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
+            myRealm.commitTransaction();
         }
-        mRrootLayout.invalidate();
-        return true;
+    }
+
+
+/*
+
+
+
+    /*public void autoMarkerClick(String id){
+        //GoogleMap google;
+        *//*Marker m;
+
+        for(int i=0;i<customMarker.size();i++) {
+            if(customMarker.get(i).getId().equalsIgnoreCase(id)){
+                //Object google = null;
+                m=customMarker.get(i);
+                google.maps.event.trigger(m, "click");
+                onView(withContentDescription("marker title. ")).perform(click());
+
+                m.
+
+            }
+        }*//*
+        markerClick1(id);
     }*/
+
+
+
+
+    private void autoMarkerClick(String id){
+        Log.i("1sushil11", "=============markerClick==============   :  ");
+
+        for (int i = 0; i < customMarker.size(); i++) {
+//            Log.i("1sushil11", "=============markerClick==============   :  "+customMarker.get(i).getSnippet());
+
+            if (customMarker.get(i).getSnippet().equalsIgnoreCase(id)) {
+                INDEX = i;
+//                Log.i("1sushil11", "===========================   :  " + customMarker.get(i).getId().toString() + " " + id + " " + buildingCacheModels.get(i).getFlag());
+                if (buildingCacheModels.get(i).getFlag() == false) {
+                    Log.i("1sushil11", "===========================");
+
+                    General.setSharedPreferences(getContext(),AppConstants.BUILDING_NAME,buildingCacheModels.get(i).getName());
+                    General.setSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY,buildingCacheModels.get(i).getLocality()+"");
+                    General.setSharedPreferences(getContext(),AppConstants.MY_LAT,buildingCacheModels.get(i).getLat()+"");
+                    General.setSharedPreferences(getContext(),AppConstants.MY_LNG,buildingCacheModels.get(i).getLng()+"");
+                    ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+//                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(listing[i],transaction[i],portal[i],config[i]);
+                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig());
+//                                    mCustomerMarker[i].setIcon(icon2);buildingCacheModels
+                    customMarker.get(i).setIcon(icon2);
+                    SaveBuildingDataToRealm();
+//                                    SendConfigData(config[i]);
+//                                    sendDataToOyeConfirmation(i);
+                                /*m=mCustomerMarker[i];
+                                mCustomerMarker[i].remove();
+                                mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).snippet(m.getSnippet()).icon(icon2));
+                                search_building_icon.setVisibility(View.VISIBLE);*/
+                    buildingIcon.setVisibility(View.VISIBLE);
+                    fav.setVisibility(View.GONE);
+//                                    mCustomerMarker[i].showInfoWindow();
+                    customMarker.get(i).showInfoWindow();
+                    horizontalPicker.setVisibility(View.GONE);
+                    tvFetchingrates.setVisibility(View.VISIBLE);
+                    tvRate.setVisibility(View.GONE);
+                    rupeesymbol.setVisibility(View.GONE);
+                    recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
+
+                    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
+                    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_bg_color_white));
+                    String text1;//="<font color=#ffffff size=20> "+rate_growth[i] + " %</font>";
+
+                                    /*text1 = "<font color=#ffffff>Observed </font><font color=#ff9f1c> "+buildingCacheModels.get(i).getListing()+" </font> <font color=#ffffff>online listing in last 1 WEEK</font>";
+                                    tv_building.setText(Html.fromHtml(text1));*/
+                    text1="<font color=#2dc4b6>Today's Rate</font>";
+                    tv_building.setText(Html.fromHtml(text1));
+                    txtFilterValue.setText(buildingCacheModels.get(i).getRate_growth() + " %");
+                    txtFilterValue.setTextSize(16);
+                    txtFilterValue.setTypeface(Typeface.DEFAULT_BOLD);
+                    if (Integer.parseInt(buildingCacheModels.get(i).getRate_growth()) < 0){
+                        txtFilterValue.setTextColor(Color.parseColor("#ffb91422"));// FFA64139 red
+                        if (brokerType.equalsIgnoreCase("rent")) {
+                            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(i).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price(buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm()))).substring(2, General.currencyFormat(String.valueOf(price(buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm()))).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+                            tvFetchingrates.setText(Html.fromHtml(text));
+                        } else {
+                            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(i).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(buildingCacheModels.get(i).getOr_psf())).substring(2, General.currencyFormat(String.valueOf(buildingCacheModels.get(i).getOr_psf())).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
+                            tvFetchingrates.setText(Html.fromHtml(text));
+                        }
+                    }
+                    else if(Integer.parseInt(buildingCacheModels.get(i).getRate_growth()) > 0){
+                        txtFilterValue.setTextColor(Color.parseColor("#2dc4b6"));// FF377C39 green FF2CA621   FFB91422
+                        if (brokerType.equalsIgnoreCase("rent")) {
+                            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(i).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price(buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm()))).substring(2, General.currencyFormat(String.valueOf(price(buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm()))).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+                            tvFetchingrates.setText(Html.fromHtml(text));
+                        } else {
+                            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(i).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(buildingCacheModels.get(i).getOr_psf())).substring(2, General.currencyFormat(String.valueOf(buildingCacheModels.get(i).getOr_psf())).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
+                            tvFetchingrates.setText(Html.fromHtml(text));
+                        }
+                    }
+                    else{
+                        if (brokerType.equalsIgnoreCase("rent")) {
+                            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(i).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price(buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm()))).substring(2, General.currencyFormat(String.valueOf(price(buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm()))).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+                            tvFetchingrates.setText(Html.fromHtml(text));
+                        } else {
+                            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(i).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(buildingCacheModels.get(i).getOr_psf())).substring(2, General.currencyFormat(String.valueOf(buildingCacheModels.get(i).getOr_psf())).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
+                            tvFetchingrates.setText(Html.fromHtml(text));
+                        }
+                        txtFilterValue.setTextColor(Color.parseColor("black"));
+
+                    }
+//                                    txtFilterValue.setTextColor(Color.parseColor("black"));
+                    ll_marker.setEnabled(false);
+                    mVisits.setEnabled(false);
+                    txtFilterValue.setEnabled(false);
+//                                txtFilterValue.setTextColor(Color.parseColor("green"));
+                    CancelAnimation();
+
+                    buildingSelected = false;
+                    Intent in = new Intent(AppConstants.MARKERSELECTED);
+                    in.putExtra("markerClicked", "true");
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+//                                  Log.i("coming soon", "coming soon :" + marker.getTitle().toString());
+                    tv_building.setVisibility(View.VISIBLE);
+                    tvFetchingrates.setTypeface(null, Typeface.BOLD);
+                    lng = customMarker.get(i).getPosition().longitude;
+                    lat = customMarker.get(i).getPosition().latitude;
+                    Log.i("marker lat", "==============marker position :" + customMarker.get(i).getPosition() + " " + lat + " " + lng);
+                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT, lat + "");
+                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, lng + "");
+                    General.setSharedPreferences(getContext(), AppConstants.MY_LAT, lat + "");
+                    General.setSharedPreferences(getContext(), AppConstants.MY_LNG, lng + "");//*/
+//                                  mCustomerMarker[i].showInfoWindow();
+                    new LocationUpdater().execute();
+                    //flag[i] = true;
+                    buildingCacheModels.get(i).setFlag(true);
+
+                } else {
+                    ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+                    customMarker.get(i).setIcon(icon1);
+                    updateHorizontalPicker();
+                    Log.i("mm_mithai", "marker draw");
+                    search_building_icon.setVisibility(View.GONE);
+                    buildingIcon.setVisibility(View.GONE);
+                    fav.setVisibility(View.VISIBLE);
+                    //flag[i] = false;
+                    buildingCacheModels.get(i).setFlag(false);
+                    horizontalPicker.setVisibility(View.VISIBLE);
+                    tvFetchingrates.setVisibility(View.GONE);
+                    recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                    mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
+                    txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
+                    txtFilterValue.setTextSize(13);
+                    txtFilterValue.setTextColor(Color.parseColor("white"));
+                    txtFilterValue.setText(oyetext);
+                    mVisits.setEnabled(true);
+                    txtFilterValue.setEnabled(true);
+                    ll_marker.setEnabled(true);
+                    Intent in = new Intent(AppConstants.MARKERSELECTED);
+                    in.putExtra("markerClicked", "false");
+                    buildingSelected = true;
+                    buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+                    tvRate.setVisibility(View.VISIBLE);
+                    rupeesymbol.setVisibility(View.VISIBLE);
+                    tv_building.setVisibility(View.VISIBLE);
+                }
+            } else {
+                customMarker.get(i).setIcon(icon1);
+
+            }
+        }
+    }
+
 
 }

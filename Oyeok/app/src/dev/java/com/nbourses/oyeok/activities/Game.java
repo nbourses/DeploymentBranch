@@ -398,9 +398,11 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
                             if (rand[i] >= SellorBuyPrice[i]) {
                                 profitSound();
                                 profitImageDisplay( mCustomerMarker[i] );
+
                             } else {
                                 lossSound();
                                 lossImageDisplay( mCustomerMarker[i] );
+                                myaccount.setBackgroundColor(Color.parseColor("#2dc4b6"));
 //                              mCustomerMarker[i].remove();
                             }
                             Markertext[i].remove();
@@ -1528,13 +1530,14 @@ try {
 
                 public void onTick(long millisUntilFinished) {
                     m.setIcon( profitIcon );
+                    myaccount.setBackgroundColor(Color.parseColor("#2dc4b6"));
 //                    ProfitLossAnimator( m );
                 }
 
                 public void onFinish() {
                     m.remove();
 
-
+                    myaccount.setBackgroundColor(0);
                 }
             }.start();
 
@@ -1551,12 +1554,13 @@ try {
 
                 public void onTick(long millisUntilFinished) {
                     m.setIcon( lossIcon );
+                    myaccount.setBackgroundColor(Color.parseColor("red"));
+
                 }
 
                 public void onFinish() {
                     m.remove();
-
-
+                    myaccount.setBackgroundColor(0);
                 }
             }.start();
 

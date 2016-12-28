@@ -2,16 +2,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
     android:id="@+id/dragablelistview"
     android:background="@color/transparent"
     android:orientation="vertical"
     tools:context="com.nbourses.oyeok.fragments.MainScreenPropertyListing">
 
 <ImageView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="55dp"
+    android:layout_height="45dp"
+    android:id="@+id/pullup_button"
     android:src="@drawable/pullup_button"
+    android:clickable="true"
     android:layout_gravity="center"/>
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,7 +22,7 @@
         <EditText android:id="@+id/Searchlist"
             android:layout_width="match_parent"
             android:layout_height="40dip"
-            android:hint="Search Your Watchlist"
+            android:hint="Search Your Building"
             android:gravity="center_horizontal|center_vertical"
             android:background="@drawable/greenishblue_border_grey_solid"
             android:layout_margin="4dip"
@@ -43,7 +44,7 @@
 
 
         <ListView
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:id="@+id/listview"
             android:background="@android:color/background_light"

@@ -1229,7 +1229,7 @@ public static PubNub initPubnub(Context context, String UUID){
 
 
 
-    /*public int getprice(String conf,int rate){
+    public static int getFormatedPrice(String conf,int rate){
         Log.i("conf case","conf  : "+conf+"  "+rate);
         int price=rate*950;
         switch(conf) {
@@ -1273,7 +1273,7 @@ public static PubNub initPubnub(Context context, String UUID){
         price=price/500;
         price=price*500;
         return price;
-    }*/
+    }
 
 
 

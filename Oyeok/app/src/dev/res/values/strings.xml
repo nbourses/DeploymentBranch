@@ -13,6 +13,7 @@
     <string name="brokerOk">Broker Dashboard</string>
     <string name="useAsClient">See Property Rates</string>
     <string name="MyPortfolio">My WatchList</string>
+    <string name="Listing">My Advertised Listing</string>
     <string name="RegisterSignIn">Register/SignIn</string>
     <string name="signup">Signup</string>
     <string name="PayTM">PayTM</string>
@@ -81,7 +82,7 @@
         <!--<item>@string/signup</item>-->
         <item>@string/RegisterSignIn</item>
         <item>@string/useAsClient</item>
-        <item>@string/MyPortfolio</item>
+        <item>@string/Listing</item>
         <item>@string/notifications</item>
         <item>@string/shareApp</item>
         <!--  <item>@string/supportChat</item> -->
@@ -124,7 +125,7 @@
     <string-array name="nav_drawer_labels_signup_broker">
         <item>@string/profile</item>
         <!--<item>@string/brokerOk</item>-->
-        <item>@string/MyPortfolio</item>
+        <item>@string/Listing</item>
         <!--  <item>@string/supportChat</item> -->
         <item>@string/notifications</item>
         <item>@string/shareApp</item>

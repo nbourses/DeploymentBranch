@@ -525,8 +525,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                         }*/
                         txtFilterValue.setTextSize(13);
                         txtFilterValue.setTextColor(Color.parseColor("white"));
-                        //txtFilterValue.setText(oyetext);
-                        txtFilterValue.setText("Home");
+                        txtFilterValue.setText(oyetext);
+                        //txtFilterValue.setText("Home");
                         recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
                         map.getUiSettings().setAllGesturesEnabled(true);
                         buildingTextChange(General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY), 950);
@@ -706,8 +706,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                                 txtFilterValue.setBackground(getBaseContext().getResources().getDrawable(R.drawable.oye_button_border));
                                 txtFilterValue.setTextSize(13);
                                 txtFilterValue.setTextColor(Color.parseColor("white"));
-//                                txtFilterValue.setText(oyetext);
-                                txtFilterValue.setText("Home");
+                                txtFilterValue.setText(oyetext);
+//                                txtFilterValue.setText("Home");
                                 mVisits.setEnabled(true);
                                 txtFilterValue.setEnabled(true);
                                 Intent in = new Intent(AppConstants.MARKERSELECTED);
@@ -1157,8 +1157,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                                 if (!AppConstants.SETLOCATION && !savebuilding) {
                                 txtFilterValue.setTextSize(13);
                                 txtFilterValue.setTextColor(Color.parseColor("white"));
-                                txtFilterValue.setText("Home");
-                                //txtFilterValue.setText(oyetext);
+                                //txtFilterValue.setText("Home");
+                                txtFilterValue.setText(oyetext);
                                // CloseBuildingOyeComfirmation();
                                 //((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
 //                                        Intent in = new Intent(AppConstants.MARKERSELECTED);
@@ -1528,8 +1528,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
 //                      START reset building selection(Click immediately old building after drag)
                         txtFilterValue.setTextSize(13);
                         txtFilterValue.setTextColor(Color.parseColor("white"));
-                        txtFilterValue.setText("Home");
-                        //txtFilterValue.setText(oyetext);
+                       // txtFilterValue.setText("Home");
+                        txtFilterValue.setText(oyetext);
                         txtFilterValue.setBackground(getBaseContext().getResources().getDrawable(R.drawable.oye_button_border));
                        // ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                         /*Intent in = new Intent(AppConstants.MARKERSELECTED);
@@ -1669,7 +1669,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                                             } catch (Exception e) {
                                                 Log.i("Price Error", "Caught in exception Building plot success" + e.getMessage());
                                             }
-                                           // PlotBuilding();
+                                            PlotBuilding();
 
                                             //showFavourites();
                                             mVisits.setEnabled(true);
@@ -1905,9 +1905,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
 
         if(brokerType=="rent") {
             myPortfolioModel.setId( buildingCacheModels.get(INDEX).getId() );
-
-            myPortfolioModel.setLl_pm(price(buildingCacheModels.get(INDEX).getConfig(),buildingCacheModels.get(INDEX).getLl_pm()));
-
+            myPortfolioModel.setLl_pm(buildingCacheModels.get(INDEX).getLl_pm());
         }else{
             myPortfolioModel.setId( buildingCacheModels.get(INDEX).getId()+"1" );
             myPortfolioModel.setOr_psf( buildingCacheModels.get(INDEX).getOr_psf() );
@@ -1961,8 +1959,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                 updateHorizontalPicker();
                 txtFilterValue.setTextSize(13);
                 txtFilterValue.setTextColor(Color.parseColor("white"));
-               // txtFilterValue.setText(oyetext);
-                txtFilterValue.setText("Home");
+                txtFilterValue.setText(oyetext);
+//                txtFilterValue.setText("Home");
                 txtFilterValue.setBackground(getBaseContext().getResources().getDrawable(R.drawable.oye_button_border));
                 Log.i("onMapclicked","Inside onMapclicked 909099099099  ");
                // ll_marker.setEnabled(true);

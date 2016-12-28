@@ -192,7 +192,7 @@ public class AppConstants {
 
     //Reset PhaseSeekbar Key
     public static final String RESETPHASE = "resetPhase";
-    public static final String OUTO_CLICK_MARKER = "autoClickMarker";
+    public static final String AUTO_TT_CHANGE = "autoClickMarker";
     public static  String BUILDING_ID = "buildingId";
 
 }

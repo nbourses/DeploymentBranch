@@ -714,13 +714,7 @@
                 android:id="@+id/shutterlist"
                 android:layout_marginBottom="70dp"
                 android:foregroundGravity="bottom"/>-->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:id="@+id/list_container"
-            android:layout_marginBottom="55dp"
-            android:foregroundGravity="bottom"/>
+
 
         <!--</FrameLayout>-->
         <RelativeLayout
@@ -795,7 +789,13 @@
             </LinearLayout>
         </RelativeLayout>
 
-
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:id="@+id/list_container"
+            android:layout_marginBottom="55dp"
+            android:foregroundGravity="bottom"/>
 <!--
         <ViewStub
             android:id="@+id/layout_stub"

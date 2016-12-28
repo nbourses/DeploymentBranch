@@ -302,17 +302,43 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                /*if(item != null)
+                if(item != null)
                     item.clear();
                 item.add((portListingModel)adapter.getItem(position));
-                General.setSharedPreferences(getBaseContext(),AppConstants.BUILDING_ID,item.get(0).getId());
-                if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
-                    Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
-                    startActivity(in);
-                }else{
-                    Intent in = new Intent(getBaseContext(), BrokerMap.class);
-                    startActivity(in);
-                }*/
+                String ids=((portListingModel) adapter.getItem(position)).getId();
+                Log.i( "portfolio1","portListingModel   : "+position+" "+ids);
+
+                RealmResults<MyPortfolioModel> result= realm.where(MyPortfolioModel.class).findAll();
+                for(MyPortfolioModel c:result){
+                    Log.i( "portfolio1","portListingModel inside for loop  : "+position+" "+ids+" "+c.getId());
+                    if(ids.equalsIgnoreCase(c.getId())){
+                        Log.i( "portfolio1","portListingModel inside if  : "+position+" "+ids);
+                        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+                            General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "MPC");
+                            Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
+                            in.putExtra("id",ids);
+                            in.putExtra("Cmarkerflag","true");
+                            in.addFlags(
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP );/*|
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);*/
+                            startActivity(in);
+
+                            break;
+                        }else{
+                            Intent in = new Intent(getBaseContext(), BrokerMap.class);
+                            in.putExtra("id",ids);
+                            in.putExtra("Bmarkerflag","true");
+                            in.addFlags(
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP );/*|
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);*/
+                            startActivity(in);
+                            break;
+                        }
+                    }
+                }
+
             }
         });
 
@@ -383,8 +409,6 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
                                             break;
                                         }
                                     }
-
-
 
                                 }
 

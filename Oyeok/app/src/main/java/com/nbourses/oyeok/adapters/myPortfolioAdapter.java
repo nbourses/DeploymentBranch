@@ -82,14 +82,14 @@ public  class myPortfolioAdapter extends realmAdapter<BuildingCacheRealm,myPortf
         final BuildingCacheRealm item = getItem(position);
 
 
-        if(type==1 && item.getLl_pm()>0){
-        holder.ActualPrice.setText(General.currencyFormat(item.getLl_pm()+"")+"/month");
+        if(type==1){
+        holder.ActualPrice.setText(General.currencyFormat(General.getFormatedPrice(item.getConfig(),item.getLl_pm())+"")+"/month");
         holder.heading.setText(item.getName()+" ("+item.getConfig()+")");
         holder.B_image.setImageResource(R.drawable.buildingiconbeforeclick);
         holder.description.setText(item.getLocality());
         setIcon(item, holder);
         }
-        else if(type==2 && item.getOr_psf()>0){
+        else if(type==2){
             holder.ActualPrice.setText(General.currencyFormat(item.getOr_psf()+"") + "/sq-ft" );
             holder.heading.setText(item.getName()+" ("+item.getConfig()+")");
             holder.B_image.setImageResource(R.drawable.buildingiconbeforeclick);
