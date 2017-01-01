@@ -598,6 +598,7 @@ public static PubNub initPubnub(Context context, String UUID){
                 //set gcmId
                 AppConstants.letsOye.setGcmId(SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
                 AppConstants.letsOye.setPossession_date(General.getSharedPreferences(context,AppConstants.POSSESSION_DATE));
+                AppConstants.letsOye.setBuilding_id("");
                 String furnishingStatus="sf",furnishing=General.getSharedPreferences(context,AppConstants.FURNISHING);
                 Log.i(TAG,"oye published r"+General.getSharedPreferences(context,AppConstants.FURNISHING));
                     if (furnishing.equalsIgnoreCase("Fully-Furnished")){

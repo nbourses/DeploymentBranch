@@ -107,7 +107,7 @@
     android:layout_marginLeft="60dip"
     android:orientation="horizontal"
     android:id="@+id/setbaseloc"
-    android:visibility="gone"
+    android:visibility="visible"
     android:layout_marginRight="50dp"
     android:gravity="center">
     <ImageView
@@ -135,33 +135,6 @@
         android:visibility="visible"
         android:paddingRight="1dp"
         android:textSize="15sp" />
-
-
-
-    <!--<Button
-        android:id="@+id/openmaps"
-
-        android:layout_gravity="right"
-        android:background="@drawable/broker_pin"
-        android:gravity="center"
-        android:visibility="gone"
-        android:layout_marginRight="15dp"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
-
-    <TextView
-        android:id="@+id/tv_change_region"
-        android:layout_gravity="right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SET LOCATION"
-        android:textStyle="bold"
-        android:layout_marginRight="30dp"
-        android:visibility="gone"
-        android:paddingRight="10dp"
-        android:textSize="15sp" />-->
 
 </LinearLayout>
 

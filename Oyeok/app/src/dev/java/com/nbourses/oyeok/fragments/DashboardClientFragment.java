@@ -86,7 +86,7 @@ import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nbourses.oyeok.Database.SharedPrefs;
-import com.nbourses.oyeok.Firebase.ChatList;
+//import com.nbourses.oyeok.Firebase.ChatList;
 import com.nbourses.oyeok.GooglePlacesApiServices.GooglePlacesReadTask;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AutoOk;
@@ -163,8 +163,8 @@ import static java.lang.Math.log10;
 //import com.nbourses.oyeok.Database.DBHelper;
 //import com.nbourses.oyeok.Firebase.DroomChatFirebase;
 
-
-public class DashboardClientFragment extends Fragment implements CustomPhasedListener,AdapterView.OnItemClickListener, ChatList, HorizontalPicker.pickerPriceSelected, FragmentDrawer.MDrawerListener {
+//ChatList,
+public class DashboardClientFragment extends Fragment implements CustomPhasedListener,AdapterView.OnItemClickListener, HorizontalPicker.pickerPriceSelected, FragmentDrawer.MDrawerListener {
 
 
     //GoogleMap.OnCameraChangeListener,TouchableWrapper.UpdateMapAfterUserInterection
@@ -305,7 +305,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private RelativeLayout hPicker;
     private FrameLayout hideOnSearch;
     private Boolean autoc = false;
-    private Boolean autocomplete = false,MarkerClickEnable=true;
+    private Boolean autocomplete = false,MarkerClickEnable=true,buildingoyeFlag=false;
     private  static  View  rootView;
     private Boolean buildingSelected = true;
     private View v1;
@@ -502,13 +502,47 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getExtras() != null) {
-                if ((intent.getExtras().getString("filterValue") != null)) {
-                    Log.i("filtervalue", "filtervalue " + intent.getExtras().getString("filterValue"));
-                    txtFilterValue.setText(intent.getExtras().getString("filterValue"));
+                if ((intent.getExtras().getString("filterValue") != null)&&intent.getExtras().getString("subproperty").equalsIgnoreCase("home")) {
+                    Log.i("filtervalue", "filtervalue " + intent.getExtras().getString("filterValue")+"  "+intent.getExtras().getString("area"));
+                   String txt=intent.getExtras().getString("filterValue");
+                    txtFilterValue.setText(Html.fromHtml("<html><small>"+txt+"</small></html>"));
                 }
-                if ((intent.getExtras().getString("filterValue") != null)) {
-                    bhk = intent.getExtras().getString("bhk");
+                if ((intent.getExtras().getString("area") != null)) {
+                    bhk = intent.getExtras().getString("area");
+                }
+                String subprop=intent.getExtras().getString("subproperty");
+                if(buildingoyeFlag){
+                    String text1;
+                    text1="<font color=#2dc4b6>Today's Rate</font>";
+                    tv_building.setText(Html.fromHtml(text1));
+
+                    if (brokerType.equalsIgnoreCase("rent")) {
+                        String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(Integer.parseInt(bhk)*buildingCacheModels.get(INDEX).getLl_pm())).substring(2, General.currencyFormat(String.valueOf(Integer.parseInt(bhk)*buildingCacheModels.get(INDEX).getLl_pm())).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+                        tvFetchingrates.setText(Html.fromHtml(text));
+                    } else {
+                        String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).substring(2, General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
+                        tvFetchingrates.setText(Html.fromHtml(text));
+                    }
+                }else {
+
                     Log.i("bhk", "=================  " + bhk);
+                        // if (bhk.equalsIgnoreCase("1bhk") || bhk.equalsIgnoreCase("<600")) {
+                        filterValueMultiplier = Integer.parseInt(bhk);
+                        updateHorizontalPicker();
+                        BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
+                        if (brokerType.equals("rent"))
+                            if (subprop.equalsIgnoreCase("home"))
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            else
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
+                        else
+                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
+                        // }
+                }
+
+                /*if ((intent.getExtras().getString("filterValue") != null)) {
+                    bhk = intent.getExtras().getString("bhk");
+                    Log.i("bhk", "=================  " + bhk);r
                     if (bhk.equalsIgnoreCase("1bhk") || bhk.equalsIgnoreCase("<600")) {
                         filterValueMultiplier = 600;
                         updateHorizontalPicker();
@@ -573,7 +607,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         else
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                     }
-                }
+                }*/
             }
         }
     };
@@ -1253,7 +1287,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LNG,buildingCacheModels.get(i).getLng()+"");
                                     ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
 //                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(listing[i],transaction[i],portal[i],config[i]);
-                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig());
+                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm(),buildingCacheModels.get(i).getOr_psf());
 //                                    mCustomerMarker[i].setIcon(icon2);buildingCacheModels
                                     customMarker.get(i).setIcon(icon2);
                                     SaveBuildingDataToRealm();
@@ -1281,8 +1315,9 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                     tv_building.setText(Html.fromHtml(text1));*/
                                     text1="<font color=#2dc4b6>Today's Rate</font>";
                                     tv_building.setText(Html.fromHtml(text1));
+
                                     txtFilterValue.setText(buildingCacheModels.get(i).getRate_growth() + " %");
-                                    txtFilterValue.setTextSize(16);
+                                    txtFilterValue.setTextSize(12);
                                     txtFilterValue.setTypeface(Typeface.DEFAULT_BOLD);
                                     if (Integer.parseInt(buildingCacheModels.get(i).getRate_growth()) < 0){
                                         txtFilterValue.setTextColor(Color.parseColor("#ffb91422"));// FFA64139 red
@@ -2445,7 +2480,6 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                             } catch (Exception e) {
                                                 Log.i("Price Error", "Caught in exception Building plot success" + e.getMessage());
                                             }
-                                            PlotBuilding();
 
                                             showFavourites();
                                             mVisits.setEnabled(true);
@@ -2456,6 +2490,8 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                             tvRate.setVisibility(View.VISIBLE);
                                             rupeesymbol.setVisibility(View.VISIBLE);
                                             tvFetchingrates.setVisibility(View.GONE);
+                                            PlotBuilding();
+
                                             //missingArea.setVisibility(View.GONE);
 
                                         } else {
@@ -2808,11 +2844,11 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         // Toast.makeText(getActivity(), "Selected position:" + position, Toast.LENGTH_LONG).show();
     }
 
-    @Override
+    /*@Override
     public void sendData(HashMap<String, HashMap<String, String>> hashMap) {
         chatListData = hashMap;
         Log.i("chatdata in rex", chatListData.toString());
-    }
+    }*/
 
     @Override
     public void priceSelected(String val) {
@@ -2913,9 +2949,10 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                             } else if (Type.equalsIgnoreCase("locality")) {
                                 // Address2 = Address2 + long_name + ", ";
                                 City = long_name;
-                                SharedPrefs.save(getActivity(), SharedPrefs.MY_CITY, City);
+//                                SharedPrefs.save(getActivity(), SharedPrefs.MY_CITY, City);
                             } else if (Type.equalsIgnoreCase("administrative_area_level_2")) {
                                 County = long_name;
+                                SharedPrefs.save(getActivity(), SharedPrefs.MY_CITY, County);
                             } else if (Type.equalsIgnoreCase("administrative_area_level_1")) {
                                 State = long_name;
                             } else if (Type.equalsIgnoreCase("country")) {
@@ -2937,7 +2974,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
            // Log.i("savebuilding","savebuilding: "+General.getSharedPreferences(getContext(), AppConstants.LOCALITY)+"  "+SharedPrefs.getString(getContext(), SharedPrefs.MY_CITY)+"  "+SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY));
 
 
-            Log.i("savebuilding","savebuilding: "+fullAddress);
+            Log.i("savebuilding","savebuilding: "+City+"1 "+Address2+" 2"+County+"3 "+Address2);
           return fullAddress;
         }
 
@@ -3657,6 +3694,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                 MarkerClickEnable=false;
                 oyebuttonBackgrountColorOrange();
                 clicked = false;
+                AppConstants.letsOye.setBuilding_id("");
                 map.getUiSettings().setAllGesturesEnabled(false);
                 mHelperView.setEnabled(false);
 
@@ -4576,9 +4614,10 @@ public void resetSeekBar(){
 
         RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false);
         RealmResults<MyPortfolioModel> result= realm.where(MyPortfolioModel.class).findAll();
+        int size=100+result.size();
        // RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false);
         Log.i("dataformrealm1","BuildingCacheRealm before "+result1.size());
-        int size=100+result.size();
+
         if(result1.size()>size){
             if(myRealm.isInTransaction())
                 myRealm.cancelTransaction();
@@ -4680,7 +4719,10 @@ public void resetSeekBar(){
 
 
       }
-
+      if(!General.getSharedPreferences(getContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("")&&!General.getSharedPreferences(getContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("PC")){
+         autoMarkerClick(General.getSharedPreferences(getContext(),AppConstants.CALLING_ACTIVITY));
+          General.setSharedPreferences(getContext(),AppConstants.CALLING_ACTIVITY,"");
+      }
 
   }
 
@@ -4740,7 +4782,7 @@ public void resetSeekBar(){
 
 
 
-    private void autoMarkerClick(String id){
+    public void autoMarkerClick(String id){
         Log.i("1sushil11", "=============markerClick==============   :  ");
 
         for (int i = 0; i < customMarker.size(); i++) {
@@ -4758,10 +4800,10 @@ public void resetSeekBar(){
                     General.setSharedPreferences(getContext(),AppConstants.MY_LNG,buildingCacheModels.get(i).getLng()+"");
                     ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
 //                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(listing[i],transaction[i],portal[i],config[i]);
-                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig());
+                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm(),buildingCacheModels.get(i).getOr_psf());
 //                                    mCustomerMarker[i].setIcon(icon2);buildingCacheModels
                     customMarker.get(i).setIcon(icon2);
-                    SaveBuildingDataToRealm();
+                   // SaveBuildingDataToRealm();
 //                                    SendConfigData(config[i]);
 //                                    sendDataToOyeConfirmation(i);
                                 /*m=mCustomerMarker[i];
@@ -4787,7 +4829,7 @@ public void resetSeekBar(){
                     text1="<font color=#2dc4b6>Today's Rate</font>";
                     tv_building.setText(Html.fromHtml(text1));
                     txtFilterValue.setText(buildingCacheModels.get(i).getRate_growth() + " %");
-                    txtFilterValue.setTextSize(16);
+                    txtFilterValue.setTextSize(12);
                     txtFilterValue.setTypeface(Typeface.DEFAULT_BOLD);
                     if (Integer.parseInt(buildingCacheModels.get(i).getRate_growth()) < 0){
                         txtFilterValue.setTextColor(Color.parseColor("#ffb91422"));// FFA64139 red
@@ -4883,5 +4925,52 @@ public void resetSeekBar(){
         }
     }
 
+
+    public void buildingOye(){
+       buildingoyeFlag=true;
+        txtFilterValue.setTextSize(12);
+        String text1;
+        text1="<font color=#2dc4b6>Today's Rate</font>";
+        AppConstants.letsOye.setBuilding_id(buildingCacheModels.get(INDEX).getId());
+        tv_building.setText(Html.fromHtml(text1));
+        if (brokerType.equalsIgnoreCase("rent")) {
+            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price(buildingCacheModels.get(INDEX).getConfig(),buildingCacheModels.get(INDEX).getLl_pm()))).substring(2, General.currencyFormat(String.valueOf(price(buildingCacheModels.get(INDEX).getConfig(),buildingCacheModels.get(INDEX).getLl_pm()))).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+            tvFetchingrates.setText(Html.fromHtml(text));
+        } else {
+            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).substring(2, General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
+            tvFetchingrates.setText(Html.fromHtml(text));
+        }
+        Intent inn = new Intent(AppConstants.BUILDING_OYE_MIN_MAX);
+        inn.putExtra("ll_price",price(buildingCacheModels.get(INDEX).getConfig(), buildingCacheModels.get(INDEX).getLl_pm()));
+        inn.putExtra("or_price", price(buildingCacheModels.get(INDEX).getConfig(),buildingCacheModels.get(INDEX).getOr_psf()));
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(inn);
+    }
+
+
+    public Bundle Brokertype(){
+        Bundle args = new Bundle();
+        args.putString("brokerType", brokerType);
+        args.putString("Address", SharedPrefs.getString(getActivity(), SharedPrefs.MY_REGION));
+        return args;
+    }
+
+    public void openSearch(){
+        searchFragment c = new searchFragment();
+        AppConstants.SEARCHFLAG = true;
+        Log.i(TAG,"searchwa 1234");
+        loadFragmentAnimated(c, null, R.id.container_Signup, "Search");
+        if(!AppConstants.SETLOCATION && !savebuilding) {
+            Log.i(TAG,"searchwa 123");
+            Intent in = new Intent(AppConstants.MARKERSELECTED);
+            in.putExtra("markerClicked", "false");
+            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+            if(!General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                ((ClientMainActivity) getActivity()).closeOyeConfirmation();
+                ((ClientMainActivity) getActivity()).closeOyeScreen();
+            }
+            ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+            onMapclicked();
+        }
+    }
 
 }

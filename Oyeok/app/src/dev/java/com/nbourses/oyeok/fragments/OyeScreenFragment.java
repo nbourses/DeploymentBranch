@@ -246,15 +246,15 @@ public class OyeScreenFragment extends Fragment {
 
 
 
-    private BroadcastReceiver oyebuttondata = new BroadcastReceiver() {
+    /*private BroadcastReceiver oyebuttondata = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            oyedata = SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
+            //oyedata = SharedPrefs.getString(context, SharedPrefs.MY_LOCALITY);
             Log.i("oyedata", "oyedata===============" + oyedata);
 
         }
-    };
+    };*/
 
 
 
@@ -524,7 +524,41 @@ public class OyeScreenFragment extends Fragment {
     };
 
 
+    private BroadcastReceiver BroadCastBuildingMinMaxValue=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("llmin111111", "llmin ++++++++++++++++++++++++++" + intent.getExtras().getInt("ll_price"));
+            if (intent.getExtras().getInt("ll_price") != 0)
+            {
+                AppConstants.minRent = intent.getExtras().getInt("ll_price");
+                Log.i("llmin111111", " min rent" + AppConstants.minRent);
+//                AppConstants.minRent = AppConstants.minRent / 1000;
+//                AppConstants.minRent = AppConstants.minRent * 1000;
+                AppConstants.minRent = AppConstants.minRent / 2;
 
+                AppConstants.maxRent = intent.getExtras().getInt("ll_price");
+//                AppConstants.maxRent = AppConstants.maxRent + AppConstants.maxRent / 1000;
+//                AppConstants.maxRent = AppConstants.maxRent + AppConstants.maxRent  * 1000;
+                AppConstants.maxRent = AppConstants.maxRent + AppConstants.maxRent / 2;
+
+                Log.i("llmin111111", "max rent" + AppConstants.maxRent);
+                AppConstants.minSale = intent.getExtras().getInt("or_price");
+                Log.i("llmin111111", "min Sale" + AppConstants.minSale);
+//                AppConstants.minSale = AppConstants.minSale / 1000;
+//                AppConstants.minSale = AppConstants.minSale * 1000;
+                AppConstants.minSale = AppConstants.minSale / 2;
+
+                AppConstants.maxSale = intent.getExtras().getInt("or_price");
+                Log.i("llmin111111", "max Sale" + AppConstants.maxSale);
+//                AppConstants.maxSale = (AppConstants.maxSale + (AppConstants.maxSale / 1000));
+//                AppConstants.maxSale = (AppConstants.maxSale + (AppConstants.maxSale * 1000));
+                AppConstants.maxSale = (AppConstants.maxSale + (AppConstants.maxSale / 2));
+
+            }
+            setMinMaxValueForDiscreteSeekBar();
+
+        }
+    };
 
 
     private void setMinMaxValueForDiscreteSeekBar() {
@@ -600,8 +634,8 @@ public class OyeScreenFragment extends Fragment {
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(BroadCastMinMaxValue, new IntentFilter(AppConstants.BROADCAST_MIN_MAX_VAL));
 
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(oyebuttondata, new IntentFilter(AppConstants.ON_FILTER_VALUE_UPDATE));
-//        LocalBroadcastManager.getInstance(getContext()).registerReceiver(ProType, new IntentFilter(AppConstants.PROPERTY_TYPE_BROADCAST));
+      //  LocalBroadcastManager.getInstance(getContext()).registerReceiver(oyebuttondata, new IntentFilter(AppConstants.ON_FILTER_VALUE_UPDATE));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(BroadCastBuildingMinMaxValue, new IntentFilter(AppConstants.BUILDING_OYE_MIN_MAX));
 
 
     }
@@ -610,7 +644,8 @@ public class OyeScreenFragment extends Fragment {
     public void onPause() {
         super.onPause();
        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(BroadCastMinMaxValue);
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oyebuttondata);
+       // LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oyebuttondata);BUILDING_OYE_MIN_MAX
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(BroadCastBuildingMinMaxValue);
 
     }
 

@@ -160,7 +160,42 @@
         android:textStyle="bold"
         android:textSize="18dp"
         android:visibility="visible"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dip"
+        android:layout_marginLeft="10dip"
+        android:orientation="horizontal"
+        android:id="@+id/setbaseloc1"
+        android:visibility="visible"
+        android:layout_marginRight="100dp"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/editBaseLocation"
+            android:layout_gravity="center|right"
+            android:src="@drawable/edit_icon"
+            android:gravity="left"
+            android:visibility="visible"
+            android:layout_marginRight="1dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="8dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+        <TextView
+            android:id="@+id/tv_change_region1"
+            android:layout_gravity="center|left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="SET LOCATION"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_marginRight="2dp"
+            android:visibility="visible"
+            android:paddingRight="1dp"
+            android:textSize="15sp" />
 
+    </LinearLayout>
     <RelativeLayout
         android:layout_width="100dp"
         android:layout_height="wrap_content"
@@ -172,6 +207,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/dealsWrap"
+            android:orientation="horizontal"
             >
             <View
                 android:layout_width="0dp"
@@ -190,6 +226,16 @@
             android:textStyle="normal"
             android:textColor="@color/greenish_blue"
             android:background="@drawable/asset_dealsbutton_v1" />
+            <Button
+                android:id="@+id/btnMyDeals1"
+                android:layout_width="35dp"
+                android:layout_height="32dp"
+                android:layout_gravity="right"
+                android:gravity="right"
+                android:text=""
+                android:visibility="gone"
+                android:textColor="@color/greenish_blue"
+                android:background="@drawable/snapshot"/>
         </LinearLayout>
         <TextView
 

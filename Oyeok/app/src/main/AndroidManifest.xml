@@ -33,6 +33,8 @@
         android:name="com.nbourses.oyeok.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
+
+
     <uses-permission android:name="com.nbourses.oyeok.permission.C2D_MESSAGE" />
 
     <uses-feature
@@ -307,6 +309,14 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+
+
+
+
+
+
+
     </application>
 
 </manifest>

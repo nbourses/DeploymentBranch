@@ -189,13 +189,9 @@ public class OyeConfirmation extends Fragment {
                     mLastClickTime = SystemClock.elapsedRealtime();
                     proceed_to_oye.setEnabled(false);
                     if (General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
-                        getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
+                        //getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
                         ((ClientMainActivity)getActivity()).signUp();
                         ((ClientMainActivity) getActivity()).closeOyeConfirmation();
-
-                        // General.publishOye(getContext());
-
-
 
                     }else {
                         General.publishOye(getContext());

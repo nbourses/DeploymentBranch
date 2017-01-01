@@ -107,8 +107,8 @@ public class MainScreenPropertyListing extends Fragment {
         String height1=data.getString( "height1" );
         height=  Integer.parseInt(height1);
         params = (FrameLayout.LayoutParams) dragablelistview.getLayoutParams();
-        bottom=height-(int)dipToPixels(getContext(),60);
-        top=(int)dipToPixels(getContext(),60);
+        bottom=height-(int)dipToPixels(getContext(),55);
+        top=(int)dipToPixels(getContext(),55);
         screenheight-=(height+100);
         params.topMargin = bottom;
 
@@ -404,24 +404,25 @@ public class MainScreenPropertyListing extends Fragment {
                 public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 
                     if (key.equals(AppConstants.AUTO_TT_CHANGE)) {
+try {
+    if (General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("ll")) {
+        adapter = new myPortfolioAdapter(getContext(), 1);
+        listview.setAdapter(adapter);
+        adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp"));
+        //adapter.notifyDataSetChanged();
 
-                        if( General.getSharedPreferences(getContext(),AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("ll")){
-                            adapter = new myPortfolioAdapter(getContext(), 1);
-                            listview.setAdapter(adapter);
-                            adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp"));
-                            //adapter.notifyDataSetChanged();
-
-                        }else if( General.getSharedPreferences(getContext(),AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("or")){
-                            adapter = new myPortfolioAdapter(getContext(), 2);
-                            listview.setAdapter(adapter);
-                            adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp"));
-                            //adapter.notifyDataSetChanged();
-                        }/*else{
+    } else if (General.getSharedPreferences(getContext(), AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("or")) {
+        adapter = new myPortfolioAdapter(getContext(), 2);
+        listview.setAdapter(adapter);
+        adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp"));
+        //adapter.notifyDataSetChanged();
+    }/*else{
                             adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp"));
                             adapter.notifyDataSetChanged();
                             //dragablelistview.startAnimation(bounce);
                         }*/
-                        Log.i("builds","OUTO_CLICK_MARKER  : "+General.getSharedPreferences(getContext(),AppConstants.AUTO_TT_CHANGE));
+    Log.i("builds", "OUTO_CLICK_MARKER  : " + General.getSharedPreferences(getContext(), AppConstants.AUTO_TT_CHANGE));
+}catch (Exception e){}
 
                     }
                 }

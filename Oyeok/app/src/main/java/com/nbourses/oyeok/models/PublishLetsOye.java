@@ -89,9 +89,21 @@ public class PublishLetsOye //extends Model {
     @Expose
     @SerializedName("no_call")
     @Column(name = "no_call")
-
     public String no_call;
 
+
+    @Expose
+    @SerializedName("building_id")
+    @Column(name = "building_id")
+    public String building_id;
+
+    public String getBuilding_id() {
+        return building_id;
+    }
+
+    public void setBuilding_id(String building_id) {
+        this.building_id = building_id;
+    }
 
     public String getNo_call() {
         return no_call;

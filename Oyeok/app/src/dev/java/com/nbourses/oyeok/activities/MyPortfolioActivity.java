@@ -2,6 +2,7 @@ package com.nbourses.oyeok.activities;
 
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -63,6 +65,9 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
 
     @Bind(R.id.btnMyDeals)
     Button btnMyDeals;
+
+    @Bind(R.id.btnMyDeals1)
+    Button btnMyDeals1;
 
     @Bind(R.id.container_Signup1)
     FrameLayout container_Signup1;
@@ -133,8 +138,11 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         confirm_screen_title.setVisibility(View.VISIBLE);
-        btnMyDeals.setBackground(getResources().getDrawable(R.drawable.share_btn_background));
-        btnMyDeals.setText("Share");
+        btnMyDeals.setVisibility(View.GONE);
+        btnMyDeals1.setVisibility(View.VISIBLE);
+        btnMyDeals1.setBackground(getResources().getDrawable(R.drawable.snapshot));
+
+        //btnMyDeals.setText("Share");
         //Phased seekbar initialisation
         mPhasedSeekBar = (CustomPhasedSeekBar) findViewById(R.id.phasedSeekBar);
         mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(this.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{this.getResources().getString(R.string.Rental), this.getResources().getString(R.string.Resale)}));
@@ -314,7 +322,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
                     if(ids.equalsIgnoreCase(c.getId())){
                         Log.i( "portfolio1","portListingModel inside if  : "+position+" "+ids);
                         if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
-                            General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "MPC");
+                            General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, ids);
                             Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
                             in.putExtra("id",ids);
                             in.putExtra("Cmarkerflag","true");
@@ -648,7 +656,7 @@ inputSearch.addTextChangedListener(new TextWatcher() {
 
 
 
-    @OnClick(R.id.btnMyDeals)
+    @OnClick(R.id.btnMyDeals1)
     public void onBtnMyDealsClick(View v) {
 
         // if(btnMyDeals.getText().toString().equalsIgnoreCase("share")) {
@@ -661,15 +669,28 @@ inputSearch.addTextChangedListener(new TextWatcher() {
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
         } else {
             //dashboardClientFragment.screenShot();
+
+            if(portListing.size()==0) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Empty List")
+                        .setMessage("Please add building to take Snapshot!")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+
+                            }
+                        })
+                        /*.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })*/
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }else
             takeScreenshot();
         }
-      /*  }
-        else {
 
-            Intent openDealsListing = new Intent(this, ClientDealsListActivity.class);
-            openDealsListing.putExtra("defaul_deal_flag", "false");
-            startActivity(openDealsListing);
-        }*/
     }
 
     @Override

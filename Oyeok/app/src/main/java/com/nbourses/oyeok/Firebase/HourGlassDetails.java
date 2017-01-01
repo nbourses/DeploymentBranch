@@ -1,8 +1,8 @@
-package com.nbourses.oyeok.Firebase;
+/*package com.nbourses.oyeok.Firebase;
 
-/**
+*//**
  * Created by Abhinandan on 1/11/2016.
- */
+ *//*
 public class HourGlassDetails {
     private int wholeHourGlass;
     private int percentage;
@@ -28,4 +28,4 @@ public class HourGlassDetails {
 
 
 
-}
+}*/

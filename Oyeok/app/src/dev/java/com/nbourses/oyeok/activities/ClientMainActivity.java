@@ -17,7 +17,6 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -125,6 +124,13 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
+
+
+    @Bind(R.id.setbaseloc1)
+    LinearLayout setbaseloc;
+
+    @Bind(R.id.tv_change_region1)
+    TextView tv_change_region;
 
     private   int   backpress=0;
     boolean setting=false;
@@ -260,6 +266,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
                 confirm_screen_title.setVisibility(View.VISIBLE);
                 getSupportActionBar().setDisplayShowHomeEnabled(false);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                setbaseloc.setVisibility(View.GONE);
                 cancel_btn.setVisibility(View.VISIBLE);
                 getSupportActionBar().setTitle("");
                 if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")){
@@ -415,8 +422,9 @@ public void signUp(){
         setSupportActionBar(mToolbar);
 
         //      mToolbar.setNavigationIcon(R.drawable.home);
-        getSupportActionBar().setTitle("Live Region Rates");
-
+        getSupportActionBar().setTitle("");
+        setbaseloc.setVisibility(View.VISIBLE);
+        tv_change_region.setText(SharedPrefs.getString(getBaseContext(),SharedPrefs.MY_CITY));
 
         //TODO: need to validate this functionality
        // dbHelper = new DBHelper(getBaseContext());
@@ -467,23 +475,6 @@ try {
                 General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
                 openAddListing();
 
-        }else if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("MPC")){
-            General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
-            final String s = getIntent().getStringExtra("id");
-            Log.i("idsdata","ids mpc "+s);
-             new CountDownTimer(1000, 500) {
-
-                public void onTick(long millisUntilFinished) {
-
-
-                }
-
-                public void onFinish() {
-                    General.setSharedPreferences(getBaseContext(),AppConstants.BUILDING_ID,s);
-
-                }
-            }.start();
-
         }else{
             //dbHelper.save(DatabaseConstants.userRole, "Client");
             General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
@@ -508,6 +499,15 @@ try {
                             .text("No internet connectivity.")
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
         }
+
+
+
+        setbaseloc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((DashboardClientFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).openSearch();
+            }
+        });
         init();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -526,7 +526,6 @@ try {
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(markerstatus, new IntentFilter(AppConstants.MARKERSELECTED));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(autoComplete, new IntentFilter(AppConstants.AUTOCOMPLETEFLAG));
-
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(doSignUp, new IntentFilter(AppConstants.DOSIGNUP));
 
 
@@ -858,6 +857,7 @@ try {
 //            OyeIntentFragment oye = new OyeIntentFragment();
 
             //reset PublishLetsOye object
+            Log.i("bundle data","print the bundle data    : "+args);
             AppConstants.letsOye = new PublishLetsOye();
 
             OyeScreenFragment oye = new OyeScreenFragment();
@@ -873,7 +873,7 @@ try {
     }
 
 
-/*    public void openOyeSreen(){
+    public void openOyeSreen(){
         if (!isShowing) {
 
 
@@ -882,18 +882,20 @@ try {
 
             //reset PublishLetsOye object
             AppConstants.letsOye = new PublishLetsOye();
-
+//bundle_args
+            bundle_args=  ((DashboardClientFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).Brokertype();
             OyeScreenFragment oye = new OyeScreenFragment();
             loadFragment(oye, bundle_args, R.id.container_oye, "");
             slidingLayout.setAnchorPoint(0.5f);
             slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
 
             // btnOnOyeClick.setVisibility(View.VISIBLE);
+
         }
     }
 
 
-    public  void closeOyeConfirmation(){
+  /*  public  void closeOyeConfirmation(){
 
         getSupportFragmentManager().popBackStack();
         oyeconfirm_flag=false;
@@ -1461,8 +1463,9 @@ if(AppConstants.FAV) {
 
            }
             else{
-               getSupportActionBar().setTitle("Live Region Rates");
-
+               getSupportActionBar().setTitle("");
+               setbaseloc.setVisibility(View.VISIBLE);
+               tv_change_region.setText(SharedPrefs.getString(getBaseContext(),SharedPrefs.MY_CITY));
                btnMyDeals.setBackgroundResource(R.drawable.asset_dealsbutton_v1);
                btnMyDeals.setText("");
            }
@@ -1827,7 +1830,9 @@ if(AppConstants.FAV) {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         cancel_btn.setVisibility(View.GONE);
-        getSupportActionBar().setTitle("Live Region Rates");
+        getSupportActionBar().setTitle("");
+        setbaseloc.setVisibility(View.VISIBLE);
+        tv_change_region.setText(SharedPrefs.getString(getBaseContext(),SharedPrefs.MY_CITY));
         confirm_screen_title.setVisibility(View.GONE);
         dealsWrapper.setVisibility(View.VISIBLE);
         oyeconfirm_flag=false;
@@ -1835,7 +1840,7 @@ if(AppConstants.FAV) {
 
     }
 
-    public  void OpenBuildingOyeConfirmation(String listing,String transaction,String portal,String Config){
+    public  void OpenBuildingOyeConfirmation(String listing,String transaction,String portal,String Config,int ll_pm,int or_psf){
         hdroomsCount.setVisibility(View.GONE);
         drawerFragment.setMenuVisibility(false);
         buidingInfoFlag=true;
@@ -1844,9 +1849,12 @@ if(AppConstants.FAV) {
         args.putString("transaction", transaction);
         args.putString("portal", portal);
         args.putString("config", Config);
+        args.putInt("ll_pm", ll_pm);
+        args.putInt("or_psf", or_psf);
         confirm_screen_title.setVisibility(View.VISIBLE);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        setbaseloc.setVisibility(View.GONE);
         cancel_btn.setVisibility(View.VISIBLE);
         cancel_btn.setText("Back");
 
@@ -1897,7 +1905,39 @@ if(AppConstants.FAV) {
                 getSupportFragmentManager().popBackStack();
         buidingInfoFlag=false;
     }
+    public  void CloseBuildingOye(){
 
+      /*  if (!General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker") && (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0)){
+            hdroomsCount.setVisibility(View.VISIBLE);
+            hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV)));
+        }
+        else if (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT) > 0) {
+            hdroomsCount.setVisibility(View.VISIBLE);
+            hdroomsCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.HDROOMS_COUNT)));
+        }
+        else{
+            hdroomsCount.setVisibility(View.GONE);
+        }
+*/
+        ((DashboardClientFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).buildingOye();
+        confirm_screen_title.setVisibility(View.GONE);
+        Intent in = new Intent(AppConstants.MARKERSELECTED);
+        in.putExtra("markerClicked", "false");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(in);
+
+        if(!BrokerRole.equalsIgnoreCase("broker")) {
+
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        cancel_btn.setVisibility(View.GONE);
+        getSupportActionBar().setTitle("Live Building Rates");
+
+        if( buidingInfoFlag==true)
+//            for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
+            getSupportFragmentManager().popBackStack();
+        buidingInfoFlag=false;
+    }
     public  void closeOyeConfirmation(){
         Log.i("backstack count","   : "+oyeconfirm_flag+"  "+getSupportFragmentManager().getBackStackEntryCount());
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).disablepanel(true);
@@ -1905,7 +1945,9 @@ if(AppConstants.FAV) {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         cancel_btn.setVisibility(View.GONE);
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).getPrice();
-        getSupportActionBar().setTitle("Live Region Rates");
+        getSupportActionBar().setTitle("");
+        setbaseloc.setVisibility(View.VISIBLE);
+        tv_change_region.setText(SharedPrefs.getString(getBaseContext(),SharedPrefs.MY_CITY));
         confirm_screen_title.setVisibility(View.GONE);
         Log.i("backstack count1","   : "+oyeconfirm_flag+"  "+getSupportFragmentManager().getBackStackEntryCount());
         dealsWrapper.setVisibility(View.VISIBLE);
@@ -2052,6 +2094,7 @@ public void openAddListing(){
         btn_cancel.setVisibility(View.VISIBLE);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        setbaseloc.setVisibility(View.GONE);
         confirm_screen_title.setVisibility(View.VISIBLE);
         confirm_screen_title.setText(b_name);
         getSupportActionBar().setTitle("");
@@ -2070,6 +2113,7 @@ public void openAddListing(){
         btn_cancel.setVisibility(View.VISIBLE);*/
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        setbaseloc.setVisibility(View.GONE);
         confirm_screen_title.setText("Set Base Region");
         getSupportActionBar().setTitle("");
         hdroomsCount.setVisibility(View.GONE);
@@ -2097,7 +2141,10 @@ public void openAddListing(){
         }
         pc=false;
         confirm_screen_title.setVisibility(View.GONE);
-        getSupportActionBar().setTitle("Live Region Rates");
+        getSupportActionBar().setTitle("");
+        setbaseloc.setVisibility(View.VISIBLE);
+        tv_change_region.setText(SharedPrefs.getString(getBaseContext(),SharedPrefs.MY_CITY));
+
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).ResetChanges();
         if (!General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker") && (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0)){
             hdroomsCount.setVisibility(View.VISIBLE);

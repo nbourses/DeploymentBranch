@@ -150,6 +150,7 @@ public class AppConstants {
     public static Boolean REGISTERING_FLAG = false;
     public static  String CURRENT_USER_ROLE = "currentUserRole";
     public static  String PROPERTY = "Home";
+    public static  String CONFIG = "2bhk";
     public static  String CURRENT_DEAL_TYPE = "currentDealType";
     public static final String EMAIL_PROFILE = "emailProfile";
     public static final String UPLOADED_IMAGE_PATH = "uploadedImagePath";
@@ -194,5 +195,6 @@ public class AppConstants {
     public static final String RESETPHASE = "resetPhase";
     public static final String AUTO_TT_CHANGE = "autoClickMarker";
     public static  String BUILDING_ID = "buildingId";
+    public static final String BUILDING_OYE_MIN_MAX = "buildingOyeMinMax";
 
 }

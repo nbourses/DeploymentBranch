@@ -1,8 +1,11 @@
+/*
 package com.nbourses.oyeok.Firebase;
 
+*/
 /**
  * Created by Abhinandan on 1/5/2016.
- */
+ *//*
+
 public class DroomDetails {
 
     private String title="";
@@ -44,3 +47,4 @@ public class DroomDetails {
     }
 
 }
+*/

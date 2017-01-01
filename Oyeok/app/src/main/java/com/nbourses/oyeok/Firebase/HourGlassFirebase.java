@@ -1,3 +1,4 @@
+/*
 package com.nbourses.oyeok.Firebase;
 
 import android.app.Activity;
@@ -12,9 +13,11 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import java.util.HashMap;
 import java.util.Map;
 
+*/
 /**
  * Created by Abhinandan on 1/11/2016.
- */
+ *//*
+
 public class HourGlassFirebase {
     Firebase firebaseReference;
 
@@ -64,4 +67,4 @@ public class HourGlassFirebase {
 
         return hourGlassDetails;
     }
-}
+}*/

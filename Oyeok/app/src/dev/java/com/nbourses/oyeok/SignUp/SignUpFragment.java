@@ -42,7 +42,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 //import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
-import com.nbourses.oyeok.Firebase.UserProfileFirebase;
+//import com.nbourses.oyeok.Firebase.UserProfileFirebase;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
@@ -121,7 +121,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     final String[] otpReceived = {""};
     //private String firebaseUrl;
     EditText name,email,number,vcode;
-    UserProfileFirebase userProfileFirebase;
+//    UserProfileFirebase userProfileFirebase;
     LinearLayout llsignup;
     LinearLayout llotp;
     String[] propertySpecification;
