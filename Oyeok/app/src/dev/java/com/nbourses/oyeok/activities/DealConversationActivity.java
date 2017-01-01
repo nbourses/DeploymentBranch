@@ -740,10 +740,12 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 });
 
 
-if(!channel_name.equalsIgnoreCase("my_channel")){
+if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCase(General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI)) ){
+    Log.i(TAG,"uil");
     checkLocalBlockStatus();
 }
   else{
+    Log.i(TAG,"suil");
     sendMessage(messageTyped);
 
 }
