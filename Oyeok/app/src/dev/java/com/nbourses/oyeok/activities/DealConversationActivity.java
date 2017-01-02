@@ -1813,6 +1813,8 @@ if(myRealm.isInTransaction())
 
     private void sendMessage(final String messageText)
     {
+
+        String channel;
         Log.i(TAG, "Inside send message" +messageTyped);
 
 
@@ -1832,6 +1834,14 @@ if(myRealm.isInTransaction())
 
         try {
 
+            if (channel_name.equalsIgnoreCase("my_channel")){
+
+                channel = General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI);
+
+            }
+            else
+                channel = channel_name;
+
             JSONObject jsonMsg = new JSONObject();
 
             if(General.getSharedPreferences(this ,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes"))
@@ -1843,7 +1853,7 @@ if(myRealm.isInTransaction())
 //changed after removing sqldb sushil
             jsonMsg.put("name", General.getSharedPreferences(getBaseContext(),AppConstants.NAME));
 
-            jsonMsg.put("to", channel_name);
+            jsonMsg.put("to", channel);
             jsonMsg.put("message", messageText);
             if(role.equals("broker"))
                 jsonMsg.put("status", "OKU");
@@ -1854,11 +1864,7 @@ if(myRealm.isInTransaction())
 
 
 
-            if (channel_name.equals("my_channel")){
 
-                channel_name = General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI);
-
-            }
 
 
             sendNotification(jsonMsg);
@@ -2158,8 +2164,16 @@ if(i==AppConstants.MSG_COUNT) {
      */
 
     public void sendNotification(final JSONObject jsonMsg) throws JSONException {
+String channel;
+        if (channel_name.equalsIgnoreCase("my_channel")){
+
+            channel = General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI);
+
+        }
+        else
+            channel = channel_name;
         Log.i(TAG,"PUBNUB publish msg "+jsonMsg);
-        Log.i(TAG,"PUBNUB publish channel "+channel_name);
+        Log.i(TAG,"PUBNUB publish channel "+channel);
         Map message = new HashMap();
 
         message.put("pn_gcm", new HashMap(){{put("data",new HashMap(){{put("message",jsonMsg.getString("message")); put("_from",jsonMsg.getString("_from"));put("to",jsonMsg.getString("to"));put("name",jsonMsg.getString("name")); put("status",jsonMsg.getString("status"));}});}});
@@ -2172,7 +2186,7 @@ if(i==AppConstants.MSG_COUNT) {
                 .message(message)
                 .shouldStore(true)
                 .usePOST(true)
-                .channel(channel_name)
+                .channel(channel)
                 .async(new PNCallback<PNPublishResult>() {
                     @Override
                     public void onResponse(PNPublishResult result, PNStatus status) {
@@ -2652,7 +2666,7 @@ String furnishing = "Semi-Furnished";
                 else if (result.getFurnishing().equalsIgnoreCase("ff"))
                     furnishing = "Fully-Furnished";
 
-                jsonMsg.put("message", "You have initiated enquiry for a "+furnishing+" "+ result.getP_type().substring(0, 1).toUpperCase() + result.getP_type().substring(1) + " property (" + result.getPs_type() + ") by "+result.getPossation_date()+" within budget " + General.currencyFormat(result.getBudget()) + ".");
+                jsonMsg.put("message", "You have initiated enquiry for a "+furnishing+" "+ result.getP_type().substring(0,1).toUpperCase() + result.getP_type().substring(1) + " property (" + result.getPs_type() + ") by "+result.getPossation_date()+" within budget " + General.currencyFormat(result.getBudget()) + ".");
 
 
                 jsonMsg.put("status","OYES");
@@ -3130,8 +3144,14 @@ Log.i(TAG,"Caught in exception clearing notification count "+e);
         UpdateStatus updateStatus = new UpdateStatus();
 
         updateStatus.setOkId(okId);
+        updateStatus.setRole(General.getSharedPreferences(this,AppConstants.ROLE_OF_USER));
 
         Log.i("getDealStatus ","getDealStactus okId "+General.getSharedPreferences(c,AppConstants.USER_ID)+" "+okId);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(updateStatus);
+        Log.i("magic","getDealStatus  json "+json);
+
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(AppConstants.SERVER_BASE_URL_101)
@@ -3160,21 +3180,21 @@ Log.i(TAG,"Caught in exception clearing notification count "+e);
 
                         if(ne.getString("success").equalsIgnoreCase("true")){
 
-                           if(ne.getJSONObject("responseData").getString("hdroom_status").equalsIgnoreCase("blocked")) {
-                               if (ne.getJSONObject("responseData").getString("blocked_by").equalsIgnoreCase(General.getSharedPreferences(DealConversationActivity.this, AppConstants.USER_ID))) {
-                                   SnackbarManager.show(
-                                           Snackbar.with(DealConversationActivity.this)
-                                                   .position(Snackbar.SnackbarPosition.TOP)
-                                                   .text("You have blocked this deal. Message will not be sent.")
-                                                   .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                               }
-                               else{
-                                   SnackbarManager.show(
-                                           Snackbar.with(DealConversationActivity.this)
-                                                   .position(Snackbar.SnackbarPosition.TOP)
-                                                   .text("Counter user have blocked this deal. Message will not be sent.")
-                                                   .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                               }
+                           if(ne.getJSONObject("responseData").getJSONObject("hdroom_status").getString("self_status").equalsIgnoreCase("blocked")) {
+                               SnackbarManager.show(
+                                       Snackbar.with(DealConversationActivity.this)
+                                               .position(Snackbar.SnackbarPosition.TOP)
+                                               .text("You have blocked this deal. Message will not be sent.")
+                                               .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+
+                           }
+                           else if(ne.getJSONObject("responseData").getJSONObject("hdroom_status").getString("other_status").equalsIgnoreCase("blocked")){
+                               SnackbarManager.show(
+                                       Snackbar.with(DealConversationActivity.this)
+                                               .position(Snackbar.SnackbarPosition.TOP)
+                                               .text("Counter user have blocked this deal. Message will not be sent.")
+                                               .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
                            }
                             else{
                                Log.i(TAG,"message to send is the pro "+messageTyped);
@@ -3197,6 +3217,11 @@ Log.i(TAG,"Caught in exception clearing notification count "+e);
                 @Override
                 public void failure(RetrofitError error) {
                     Log.i("get CALLED","update status failed "+error);
+                    SnackbarManager.show(
+                            Snackbar.with(DealConversationActivity.this)
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text(error+"")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
                 }
             });
 

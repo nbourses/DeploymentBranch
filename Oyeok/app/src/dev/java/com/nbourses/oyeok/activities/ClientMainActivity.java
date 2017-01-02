@@ -1751,7 +1751,8 @@ if(AppConstants.FAV) {
 
 
     public void showCard() {
-       if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("")&& !firstLaunch &&  !General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+        Log.i(TAG,"in show card "+firstLaunch);
+       if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("") && !firstLaunch &&  !General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
            firstLaunch=false;
             if (AppConstants.cardCounter >3) {
 
@@ -1761,13 +1762,7 @@ if(AppConstants.FAV) {
                     public void run() {
 
                         Log.i(TAG, "popup window shown delay ");
-                        /*if (General.getSharedPreferences(ClientMainActivity.this, "popcard").equalsIgnoreCase("yes")) {
-                            showOptions(ClientMainActivity.this);
-                            General.setSharedPreferences(ClientMainActivity.this, "popcard", "");
-                        }*/
-                        //  DFragment d = new DFragment();
-                        //loadFragment(d,null,R.id.container_Signup,"");
-                        //  d.setArguments(null);
+
                         containerSignup.setBackgroundColor(Color.parseColor("#CC000000"));
                         containerSignup.setClickable(true);
                         //containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
@@ -1775,11 +1770,8 @@ if(AppConstants.FAV) {
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
 
-                /*fragmentTransaction.addToBackStack("card");
-                fragmentTransaction.replace(R.id.container_Signup, d);
-                fragmentTransaction.commitAllowingStateLoss();*/
-                    // InitialCard c = new InitialCard();
-                      CardFragment c = new CardFragment();
+
+                     CardFragment c = new CardFragment();
                         //loadFragment(d,null,R.id.container_Signup,"");
                         c.setArguments(null);
 //                FragmentManager fragmentManager = getSupportFragmentManager();

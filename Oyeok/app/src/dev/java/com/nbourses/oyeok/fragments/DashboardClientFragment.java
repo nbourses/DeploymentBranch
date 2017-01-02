@@ -79,6 +79,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -4088,7 +4089,9 @@ favOText.getText()*/
         autoOk.setEmail("ritesh@nexchanges1.com");
         autoOk.setReq_avl(AppConstants.Card_REQ_AVL);
         autoOk.setTt(AppConstants.Card_TT);
-
+        Gson gson = new Gson();
+        String json = gson.toJson(autoOk);
+        Log.i("magic","autook request  json "+json);
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(AppConstants.SERVER_BASE_URL)
                 .build();
@@ -4185,7 +4188,7 @@ favOText.getText()*/
                     startActivity(inten);
                     Log.i("AUTOOK CALLED","coupon fail "+error);
                     SnackbarManager.show(
-                            Snackbar.with(getActivity())
+                            Snackbar.with(getContext())
                                     .text(error.toString())
                                     .position(Snackbar.SnackbarPosition.TOP)
                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());

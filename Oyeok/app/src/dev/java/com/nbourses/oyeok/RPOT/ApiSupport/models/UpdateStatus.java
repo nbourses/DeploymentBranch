@@ -10,6 +10,9 @@ public class UpdateStatus {
     @SerializedName("ok_id")
     private String okId;
 
+    @SerializedName("user_role")
+    private String role;
+
     public String getSuccess() {
         return success;
     }
@@ -56,5 +59,13 @@ public class UpdateStatus {
 
     public void setBlocked_by(String blocked_by) {
         this.blocked_by = blocked_by;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

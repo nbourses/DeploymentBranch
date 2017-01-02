@@ -571,10 +571,11 @@
 
 
         </LinearLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1.5"
+            android:layout_gravity="center"
             android:orientation="horizontal">
 
             <TextView
@@ -585,22 +586,63 @@
                 android:id="@+id/textView4"
                 android:gravity="center_vertical"
                 android:textSize="20sp"
+                android:layout_marginRight="5dp"
                 android:layout_toLeftOf="@+id/textView8"
                  />
 
-            <TextView
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/call"
+                android:id="@+id/call"
+                android:background="@drawable/filter_border"
+                android:layout_gravity="center"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/chat"
+                android:background="@drawable/filter_border"
+                android:layout_gravity="center"
+                android:layout_marginLeft="2dp"
+                android:id="@+id/chat" />
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:drawableLeft="@drawable/call"
-                android:id="@+id/textView8"
-                android:text="Call OyeOk"
-                android:textSize="20sp"
-                android:padding="3sp"
                 android:gravity="center"
-                android:elevation="12dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
-        </RelativeLayout>
+                android:orientation="vertical"
+                android:layout_marginLeft="5dp">
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:id="@+id/textView8"
+                    android:layout_weight="1"
+                    android:text="Contact"
+                    android:textSize="20sp"
+
+                    android:gravity="bottom"
+                    android:elevation="12dp" />
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:id="@+id/textView9"
+                    android:layout_weight="1"
+                    android:text="OyeOk"
+                    android:textSize="20sp"
+
+                    android:gravity="top"
+                    android:elevation="12dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
