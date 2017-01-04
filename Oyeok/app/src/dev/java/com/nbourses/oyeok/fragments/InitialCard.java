@@ -1,9 +1,16 @@
 package com.nbourses.oyeok.fragments;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CompoundButtonCompat;
 import android.text.Html;
 import android.text.SpannableString;
@@ -15,12 +22,15 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kyleduo.switchbutton.SwitchButton;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.activities.DealConversationActivity;
+import com.nbourses.oyeok.helpers.AppConstants;
 import com.sdsmdg.tastytoast.TastyToast;
 
 /**
@@ -74,11 +84,15 @@ public class InitialCard  extends Fragment {
     private TextView q4;
     private ImageView icon;
     private TextView userType;
+    private ImageButton call;
+    private ImageButton chat;
+    private  Intent callIntent;
 
     private SwitchButton toggleBtn;
     Animation bounce;
     private Boolean rent = true;
     private int selection = 0;
+    private static final int REQUEST_CALL_PHONE = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,6 +120,8 @@ public class InitialCard  extends Fragment {
         q4 = (TextView) rootView.findViewById(R.id.q4);
         icon = (ImageView) rootView.findViewById(R.id.icon);
         userType = (TextView) rootView.findViewById(R.id.userType);
+        chat = (ImageButton) rootView.findViewById(R.id.chat);
+        call = (ImageButton) rootView.findViewById(R.id.call);
         toggleBtn.performClick();
 
 
@@ -306,6 +322,18 @@ public class InitialCard  extends Fragment {
             @Override
             public void onClick(View v) {
                 TastyToast.makeText(getContext(),q1.getText().toString(),TastyToast.LENGTH_SHORT,TastyToast.SUCCESS);
+                if(selection == 0){
+
+                    Bundle b = new Bundle();
+                    if(rent)
+                    b.putString(AppConstants.TT,"LL");
+                    else
+                    b.putString(AppConstants.TT,"OR");
+
+
+                    BudgetToLocations budgetToLocations = new BudgetToLocations();
+                loadFragmentAnimated(budgetToLocations,b,R.id.card,"");
+                }
             }
         });
 
@@ -329,6 +357,54 @@ public class InitialCard  extends Fragment {
             }
         });
 
+
+
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:+912239659137"));//+912233836068
+                callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                String callPermission = Manifest.permission.CALL_PHONE;
+                int hasPermission = ContextCompat.checkSelfPermission(getActivity(), callPermission);
+                String[] permissions = new String[] { callPermission };
+//                if(isTelephonyEnabled()) {
+                if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(permissions, REQUEST_CALL_PHONE);
+
+
+                } else {
+
+                    startActivity(callIntent);
+                }
+//                }
+            }
+        });
+
+chat.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(getContext(), DealConversationActivity.class);
+
+            intent.putExtra("userRole", "client");
+            AppConstants.CLIENT_DEAL_FLAG = true;
+
+
+        intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
+        startActivity(intent);
+    }
+});
+    }
+
+    private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     private void setTenant() {

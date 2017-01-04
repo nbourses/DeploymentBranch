@@ -22,10 +22,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.kyleduo.switchbutton.SwitchButton;
-//import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AutoOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
@@ -45,6 +45,8 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+//import com.nbourses.oyeok.Database.DBHelper;
 
 /**
  * Created by ritesh on 10/08/16.
@@ -84,6 +86,7 @@ public class CardFragment  extends Fragment{
     SwitchButton toggleBtn;
     private Boolean rent = true;
     private String loc;
+
 
     private BroadcastReceiver localityBroadcast = new BroadcastReceiver() {
         @Override
@@ -128,7 +131,7 @@ public class CardFragment  extends Fragment{
         resalePanel = (LinearLayout) rootView.findViewById(R.id.resalePanel);
         //toggleBtn = (ToggleButton) rootView.findViewById(R.id.toggleBtn);
 
-                toggleBtn = (SwitchButton) rootView.findViewById(R.id.toggleBtn);
+        toggleBtn = (SwitchButton) rootView.findViewById(R.id.toggleBtn);
         // Do something else
         init();
         return rootView;
@@ -552,7 +555,9 @@ private void showLocalityText(){
 
 }
     private void autoOk(){
+
         Log.i("AUTO OK CALLED","autook 1 is "+General.getSharedPreferences(getContext(),AppConstants.MY_LAT)+" "+General.getSharedPreferences(getContext(),AppConstants.MY_LNG)+" "+General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
+        Log.i("magic","autook request 1");
         if(rent)
             tt = "LL";
          else
@@ -572,6 +577,10 @@ private void showLocalityText(){
         autoOk.setEmail("ritesh@nexchanges1.com");
         autoOk.setReq_avl(reqAvl);
         autoOk.setTt(tt);
+        Log.i("magic","autook request 2");
+        Gson gson = new Gson();
+        String json = gson.toJson(autoOk);
+        Log.i("magic","autook request  json "+json);
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(AppConstants.SERVER_BASE_URL)
@@ -579,13 +588,13 @@ private void showLocalityText(){
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
         OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
-
+        Log.i("magic","autook request 3");
 
         try {
             oyeokApiService.autoOk(autoOk, new Callback<JsonElement>() {
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
-
+                    Log.i("magic","autook request 4");
                     Log.i("AUTO OK CALLED","autook success "+General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI));
 
 
@@ -625,7 +634,7 @@ private void showLocalityText(){
 
 
 
-    General.setSharedPreferences(getContext(),AppConstants.STOP_CARD,"yes");
+                         General.setSharedPreferences(getContext(),AppConstants.STOP_CARD,"yes");
 
                             Intent inten = new Intent(getContext(), ClientMainActivity.class);
                             inten.addFlags(
@@ -659,6 +668,11 @@ private void showLocalityText(){
                 @Override
                 public void failure(RetrofitError error) {
                     Log.i("AUTOOK CALLED","coupon fail "+error);
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text(error+"")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
                 }
             });

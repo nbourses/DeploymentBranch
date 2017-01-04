@@ -87,12 +87,7 @@ public class AddListing extends Fragment {
         home.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Property="home" ;
-                b_type.setText("Home");
-                home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_btn_bg_with_check));
-                industry.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
-                shop.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
-                office.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
+
 
             }
         } );

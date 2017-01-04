@@ -390,43 +390,6 @@ public class MyGcmListenerService extends GcmListenerService {
                 // normal downstream message.
             }
 
-            // [START_EXCLUDE]
-            /**
-             * Production applications would usually process the message here.
-             * Eg: - Syncing with server.
-             *     - Store message in local database.
-             *     - Update UI.
-             */
-
-            /**
-             * In some cases it may be useful to show a notification indicating to the user
-             * that a message was received.
-             */
-
-/*
-        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-        HashMap<String, String> deals1 = gson.fromJson(deals, type);
-
-        Log.d("TRACE", "hashmap:" + deals1);
-
-        if(deals1 == null){
-            deals1 = new HashMap<String, String>();
-
-        }
-
-
-        Iterator<Map.Entry<String,String>> iter = deals1.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry<String,String> entry = iter.next();
-            Log.d("TRACE","Inside iterator "+entry);
-            if(okId.equalsIgnoreCase(entry.getKey())){
-                Log.d("TRACE","Deleted default deal "+entry);
-                iter.remove();
-
-            }
-        }
-
-*/
 
             if (title.equalsIgnoreCase("Oyeok")) {
 
@@ -448,7 +411,7 @@ public class MyGcmListenerService extends GcmListenerService {
         } else {
             try {
                 Log.i(TAG,General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)+" marine    "+data.getString("to"));
-                if (!General.getSharedPreferences(this, AppConstants.USER_ID).equalsIgnoreCase(data.getString("_from")) && !(General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID).equalsIgnoreCase(data.getString("to"))))
+                if ((!General.getSharedPreferences(this, AppConstants.USER_ID).equalsIgnoreCase(data.getString("_from")) || !General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI).equalsIgnoreCase(data.getString("_from"))) && !(General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID).equalsIgnoreCase(data.getString("to"))))
                 {
                     Log.i(TAG,"muted ok ids "+General.getMutedOKIds(this));
                     if(General.getMutedOKIds(this) != null) {
