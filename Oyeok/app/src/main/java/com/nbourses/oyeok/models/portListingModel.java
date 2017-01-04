@@ -52,6 +52,9 @@ public class portListingModel {
     @SerializedName("display_type")
     private String display_type;
 
+    @Expose
+    @SerializedName("tt")
+    private String tt;
     /*@Expose
     @SerializedName("display_type")
     private String display_type;
@@ -59,6 +62,18 @@ public class portListingModel {
     @Expose
     @SerializedName("display_type")
     private String display_type;*/
+
+    public void setDisplay_type(String display_type) {
+        this.display_type = display_type;
+    }
+
+    public String getTt() {
+        return tt;
+    }
+
+    public void setTt(String tt) {
+        this.tt = tt;
+    }
 
     public String getDisplay_type() {
         return display_type;
@@ -72,7 +87,7 @@ public class portListingModel {
         this.config = config;
     }
 
-    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config,String display_type) {
+    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config, String display_type, String tt) {
         this.id = id;
         this.name = name;
         this.locality = locality;
@@ -81,8 +96,9 @@ public class portListingModel {
         this.or_psf = or_psf;
         this.timpstamp = timpstamp;
         this.transaction = transaction;
-        this.config=config;
-        this.display_type=display_type;
+        this.config = config;
+        this.display_type = display_type;
+        this.tt = tt;
     }
 
     public String getId() {

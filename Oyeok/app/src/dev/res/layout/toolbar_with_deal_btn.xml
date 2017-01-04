@@ -166,7 +166,7 @@
         android:layout_marginLeft="10dip"
         android:orientation="horizontal"
         android:id="@+id/setbaseloc1"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_marginRight="100dp"
         android:gravity="center">
         <ImageView
@@ -174,7 +174,6 @@
             android:layout_gravity="center|right"
             android:src="@drawable/edit_icon"
             android:gravity="left"
-            android:visibility="visible"
             android:layout_marginRight="1dp"
             android:layout_width="35dp"
             android:layout_height="35dp"
@@ -191,7 +190,6 @@
             android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_marginRight="2dp"
-            android:visibility="visible"
             android:paddingRight="1dp"
             android:textSize="15sp" />
 

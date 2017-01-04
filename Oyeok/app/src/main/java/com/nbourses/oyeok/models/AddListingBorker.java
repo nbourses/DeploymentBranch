@@ -98,6 +98,21 @@ public class AddListingBorker {
     @SerializedName("city")
     private String city;
 
+    @Expose
+    @SerializedName("furnishing")
+    private String furnishing;
+
+    public int getCarpet_area() {
+        return carpet_area;
+    }
+
+    public String getFurnishing() {
+        return furnishing;
+    }
+
+    public void setFurnishing(String furnishing) {
+        this.furnishing = furnishing;
+    }
 
     public String getCity() {
         return city;

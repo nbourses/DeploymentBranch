@@ -61,7 +61,7 @@ public class porfolioAdapter extends BaseAdapter {
         } else {
             holder = (Holder) v.getTag();
         }
-        if(listing.getLl_pm()!=0&&listing.getDisplay_type()==null){
+        if(listing.getTt().equalsIgnoreCase("ll")&&listing.getDisplay_type()==null){
         holder.heading.setText(listing.getName()+" ("+listing.getConfig()+")");
 //            String text;
 //            text="<html><sup></html>";
@@ -78,7 +78,7 @@ public class porfolioAdapter extends BaseAdapter {
             }
         holder.description.setText(listing.getLocality());
         setIcon(listing, holder);
-        }else if(listing.getOr_psf()!=0 && listing.getDisplay_type()==null){
+        }else if(listing.getTt().equalsIgnoreCase("or") && listing.getDisplay_type()==null){
             holder.ActualPrice.setText(General.currencyFormatWithoutRupeeSymbol(listing.getOr_psf()+"") + "/sq-ft" );
             holder.heading.setText(listing.getName()+" ("+listing.getConfig()+")");
             if(listing.getTransaction()==null) {

@@ -1276,7 +1276,51 @@ public static PubNub initPubnub(Context context, String UUID){
         return price;
     }
 
-
+    public static int getFormatedarea(String conf){
+//        Log.i("conf case","conf  : "+conf+"  "+rate);
+        int price=0;//=rate*950;
+        switch(conf) {
+            case "1rk":
+                price =  300;
+                break;
+            case "1bhk":
+                price = 600;
+                break;
+            case "1.5bhk":
+                price =  800;
+                break;
+            case "2bhk":
+                price = 950;
+                break;
+            case "2.5bhk":
+                price = 1300;
+                break;
+            case "3bhk":
+                price = 1600;
+                break;
+            case "3.5bhk":
+                price = 1800;
+                break;
+            case "4bhk":
+                price = 2100;
+                break;
+            case "4.5bhk":
+                price = 2300;
+                break;
+            case "5bhk":
+                price = 2500;
+                break;
+            case "5.5bhk":
+                price = 2700;
+                break;
+            case "6bhk":
+                price = 2900;
+                break;
+        }
+        /*price=price/500;
+        price=price*500;*/
+        return price;
+    }
 
 }
 

@@ -510,9 +510,18 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 if ((intent.getExtras().getString("area") != null)) {
                     bhk = intent.getExtras().getString("area");
                 }
-                String subprop=intent.getExtras().getString("subproperty");
+                String subprop;
+                if(intent.getExtras().getString("subproperty")!=null)
+                    subprop=intent.getExtras().getString("subproperty");
+                else
+                   subprop="home";
                 if(buildingoyeFlag){
                     String text1;
+                    Log.i("bhkkkkk", "=================  " + bhk);
+                   // try {
+                    //if(bhk!=null)
+                        filterValueMultiplier = Integer.parseInt(bhk);
+                   // }
                     text1="<font color=#2dc4b6>Today's Rate</font>";
                     tv_building.setText(Html.fromHtml(text1));
 
@@ -523,6 +532,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).substring(2, General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
                         tvFetchingrates.setText(Html.fromHtml(text));
                     }
+                    Intent inn = new Intent(AppConstants.BUILDING_OYE_MIN_MAX);
+                    inn.putExtra("ll_price",buildingCacheModels.get(INDEX).getLl_pm()*filterValueMultiplier);
+                    inn.putExtra("or_price", buildingCacheModels.get(INDEX).getOr_psf()*filterValueMultiplier);
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(inn);
+                    buildingoyeFlag=false;
                 }else {
 
                     Log.i("bhk", "=================  " + bhk);
@@ -905,7 +919,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         if(!savebuilding) {
             if (!General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                 mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector,
-                        R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), "Game", getContext().getResources().getString(R.string.Resale)}));
+                        R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), "10% Cashback", getContext().getResources().getString(R.string.Resale)}));
             } else {
                 mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(this.getResources(),
                         new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
@@ -3448,6 +3462,8 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                             }catch(Exception e){}*/
 
                             getPrice();
+                             Intent inn = new Intent(AppConstants.REFRESH_LISTVIEW);
+                            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(inn);
                         }
                         addressBar.setText("Getting Address... ");
                         new LocationUpdater().execute();
@@ -4348,16 +4364,17 @@ favOText.getText()*/
         myPortfolioModel.setConfig( buildingCacheModels.get(INDEX).getConfig() );
         myPortfolioModel.setLat( buildingCacheModels.get(INDEX).getLat()+ "" );
         myPortfolioModel.setLng( buildingCacheModels.get(INDEX).getLng() + "" );
+        myPortfolioModel.setId( buildingCacheModels.get(INDEX).getId() );
+        myPortfolioModel.setLl_pm(buildingCacheModels.get(INDEX).getLl_pm());
+        myPortfolioModel.setOr_psf( buildingCacheModels.get(INDEX).getOr_psf() );
 
 
         if(brokerType=="rent") {
-            myPortfolioModel.setId( buildingCacheModels.get(INDEX).getId() );
 
-            myPortfolioModel.setLl_pm(buildingCacheModels.get(INDEX).getLl_pm());
-
+            myPortfolioModel.setTt("ll");
         }else{
-            myPortfolioModel.setId( buildingCacheModels.get(INDEX).getId()+"1" );
-            myPortfolioModel.setOr_psf( buildingCacheModels.get(INDEX).getOr_psf() );
+            myPortfolioModel.setTt("or");
+
         }
 
             myPortfolioModel.setPortals( buildingCacheModels.get(INDEX).getPortals() );

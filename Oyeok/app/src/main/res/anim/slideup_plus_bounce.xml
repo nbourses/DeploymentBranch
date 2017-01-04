@@ -1,16 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <translate
+        android:duration="500"
+        android:fromYDelta="14%"
+        android:toYDelta="-94%" />
+    <!--<scale
+        android:duration="600"
+        android:fromXScale="1"
+        android:fromYScale="0.5"
+        android:pivotX="50%"
+        android:pivotY="0%"
+        android:toXScale="1.0"
+        android:toYScale="1.0" />
+
+    <alpha
+        android:duration="600"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0" />-->
+
+</set>
+
+<!--
+ android:interpolator="@android:anim/bounce_interpolator"
+<?xml version="1.0" encoding="utf-8"?>
     <set xmlns:android="http://schemas.android.com/apk/res/android"
         android:fillAfter="true"
         android:interpolator="@android:anim/bounce_interpolator">
-    <translate
+   &lt;!&ndash; <translate
+        android:duration="500"
+        android:fromYDelta="40%"
+        android:toYDelta="4%" />&ndash;&gt;
+
+    &lt;!&ndash;<translate
         android:duration="500"
         android:fromYDelta="-40%"
-        android:toYDelta="14%" />
-        <!--<scale-->
-            <!--android:duration="500"-->
-            <!--android:fromXScale="1.0"-->
-            <!--android:fromYScale="0.0"-->
-            <!--android:toXScale="1.0"-->
-            <!--android:toYScale="1.0" />-->
+        android:toYDelta="14%" />&ndash;&gt;
+        <scale
+            android:startOffset="500"
+            android:duration="500"
+            android:fromXScale="1.0"
+            android:fromYScale="0.0"
+            android:toXScale="1.0"
+            android:toYScale="1.0" />
 
-    </set>
+    </set>-->

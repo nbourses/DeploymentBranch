@@ -403,7 +403,16 @@ private void init(){
        addListingBorker.setListing_date(myCalendar+"");
        Log.i("AddListingBorker","myCalendar current date"+General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
        addListingBorker.setCity("Mumbai");
-       addListingBorker.setBuilding_name(General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
+       if(Furnishing.equalsIgnoreCase("fully-furnished")){
+       addListingBorker.setFurnishing("ff");
+       }else  if(Furnishing.equalsIgnoreCase("un-furnished")) {
+           addListingBorker.setFurnishing("uf");
+
+       }else{
+           addListingBorker.setFurnishing("sf");
+
+       }
+           addListingBorker.setBuilding_name(General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
        addListingBorker.setPossession_date(txtcalendar.getText().toString());
        addListingBorker.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
        addListingBorker.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
@@ -501,16 +510,16 @@ private void init(){
         add_Building.setId(id);
         add_Building.setType("LIST");
         add_Building.setDisplay_type(null);
-
+        int area=General.getFormatedarea(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG));
         if(tt.equalsIgnoreCase("ll")){
-            add_Building.setLl_pm(Integer.parseInt(numberAsString));
+            add_Building.setLl_pm(Integer.parseInt(numberAsString)/area);
 
             add_Building.setOr_psf(0);
 
         }else{
             add_Building.setLl_pm(0);
 
-            add_Building.setOr_psf(Integer.parseInt(numberAsString));
+            add_Building.setOr_psf(Integer.parseInt(numberAsString)/area);
         }
 
         if(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY).equalsIgnoreCase(""))

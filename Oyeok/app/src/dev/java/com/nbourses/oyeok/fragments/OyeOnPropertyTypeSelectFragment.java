@@ -29,15 +29,17 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     private View v;
     private View rootView1;
     private TextView txtPreviousTextView;
-    private  TextView txtsqft;
-    private RadioButton rk1,bhk1,bhk1_5,bhk2,bhk2_5,bhk3,bhk3_5,bhk4,bhk4_5,bhk5,bhk5_5,bhk6,txt950h;
+    private TextView txtsqft;
+    private RadioButton rk1,bhk1,bhk1_5,bhk2,bhk2_5,bhk3,bhk3_5,bhk4,bhk4_5,bhk5,bhk5_5,bhk6,txt950h,commanbhk;
+    private RadioButton txt300h,txt600h,txt800h,txt1300h,txt1600h,txt1800h,txt2100h,txt2300h,txt2500h,txt2700h,txt2900;
     private RadioGroup radioGrouphome,radioGroupany;
 //    TextView tv_dealinfo;
     private static final String propertyTypeDefaultColor = "#FFFFFF";
     private String bhkNumber = "2";
     private String bhkNumberValue = "BHK";
     private String oyeButtonData;
-    String grouptype="home",Subproperty="home";
+    String grouptype="home",Subproperty="home",b_conf="2BHK";
+private boolean fisrtconf=false;
     HorizontalScrollView horizontalScrollViewAny,horizontalScrollViewHome;
     public OyeOnPropertyTypeSelectFragment() {
         // Required empty public constructor
@@ -58,15 +60,15 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
                              Bundle savedInstanceState) {
 //        View rootView1 = inflater.inflate(R.layout.activity_dashboard, container, false);
 //        tv_dealinfo=(TextView)rootView1.findViewById(R.id.tv_dealinfo);
-        Bundle bundle = getArguments();
-        selectedPropertyType = bundle.getString("propertyType");
+
         v = inflater.inflate(R.layout.fragment_any_click, container, false);
        // txtsqft = (TextView) v.findViewById(R.id.txtsqft);
-
+        Bundle bundle = getArguments();
+        selectedPropertyType = bundle.getString("propertyType");
         ButterKnife.bind(this, v);
         horizontalScrollViewHome=(HorizontalScrollView)v.findViewById(R.id.horizontalScrollView);
         horizontalScrollViewAny=(HorizontalScrollView)v.findViewById(R.id.horizontalScrollView1);
-       /* rk1=(RadioButton) v.findViewById( R.id.rk1 );
+        rk1=(RadioButton) v.findViewById( R.id.rk1 );
         bhk1=(RadioButton) v.findViewById( R.id.bhk1 );
         bhk1_5=(RadioButton) v.findViewById( R.id.bhk1_5 );
         bhk2=(RadioButton) v.findViewById( R.id.bhk2 );
@@ -77,12 +79,20 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         bhk4_5=(RadioButton) v.findViewById( R.id.bhk4_5 );
         bhk5=(RadioButton) v.findViewById( R.id.bhk5 );
         bhk5_5=(RadioButton) v.findViewById( R.id.bhk5_5 );
-        bhk6=(RadioButton) v.findViewById( R.id.bhk6 );*/
-        bhk2=(RadioButton) v.findViewById( R.id.bhk2 );
+        bhk6=(RadioButton) v.findViewById( R.id.bhk6 );
+       // bhk2=(RadioButton) v.findViewById( R.id.bhk2 );
         txt950h=(RadioButton) v.findViewById( R.id.txt950h );
 
         radioGrouphome = (RadioGroup) v.findViewById(R.id.radioGrouphome);
         radioGroupany = (RadioGroup) v.findViewById(R.id.radioGroupany);
+if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equalsIgnoreCase("")){
+    b_conf=General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG);
+    General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"");
+    plotconf(b_conf);
+    //plotconf(b_conf);
+    //commanbhk=AppConstants.CONFIG;
+}
+        Log.i("selectedPropertyType","selectedPropertyType================== "+selectedPropertyType+"  AppConstants.CONFIG   : "+AppConstants.CONFIG+" ===== "+General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG)+" ======= "+AppConstants.PROPERTY);
 
         /*selected_config =(TextView) v.findViewById( R.id.selected_config );*/
         //init(inflater, container);
@@ -90,15 +100,16 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         init();
 
         switch (selectedPropertyType) {
-            case "Home":
+            case "home":
                 horizontalScrollViewHome.setVisibility(View.VISIBLE);
                 horizontalScrollViewAny.setVisibility(View.GONE);
                 General.saveBoolean(getContext(), "propertySubtypeFlag", true);
-                General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,bhkNumber+""+bhkNumberValue);
-                AppConstants.letsOye.setPropertySubType(bhkNumber+""+bhkNumberValue);
-                AppConstants.letsOye.setSize(bhkNumber+""+bhkNumberValue);
-                onFilterValueUpdate("950",bhkNumber+""+bhkNumberValue);
-
+                General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,b_conf);
+                AppConstants.letsOye.setPropertySubType(b_conf);
+                AppConstants.letsOye.setSize(b_conf);
+                onFilterValueUpdate("950","home");
+                plotconf(b_conf);
+                Subproperty="home";
                 break;
             case "Shop":
                 horizontalScrollViewHome.setVisibility(View.GONE);
@@ -108,6 +119,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
                 AppConstants.letsOye.setPropertySubType("<950");
                 txt950h.setChecked(true);
                 onFilterValueUpdate("950","SHOP");
+                Subproperty="shop";
                 break;
             case "Industrial":
                 horizontalScrollViewHome.setVisibility(View.GONE);
@@ -117,6 +129,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
                 AppConstants.letsOye.setPropertySubType("<950");
                 txt950h.setChecked(true);
                 onFilterValueUpdate("950","IND.");
+                Subproperty="industrial";
                 break;
             case "Office":
                 horizontalScrollViewHome.setVisibility(View.GONE);
@@ -126,6 +139,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
                 AppConstants.letsOye.setPropertySubType("<950");
                 txt950h.setChecked(true);
                 onFilterValueUpdate("950","OFFC");
+                Subproperty="office";
                 break;
 
         }
@@ -144,12 +158,8 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
         return v;
     }
 
-    /**
-     * based on property type we will decide which view should be render
-     * @param inflater
-     * @param container
-     */
-    private void init(LayoutInflater inflater, ViewGroup container){
+
+   /* private void init(LayoutInflater inflater, ViewGroup container){
         switch (selectedPropertyType) {
 
             case "Home":
@@ -210,15 +220,15 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
                 txt950h.setChecked(true);
                 onFilterValueUpdate("950","OFFC");
                 break;
-            /*case "others":
+            *//*case "others":
                 v = inflater.inflate(R.layout.others_layout, container, false);
-                break;*/
+                break;*//*
         }
 
 
 
 
-    }
+    }*/
 
 
   /*private void  init(){
@@ -304,7 +314,7 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
                     case R.id.txt300h:
                         bhkNumber = "1";
                         bhkNumberValue = "RK";
-                        Subproperty="nonbhk";
+                        //Subproperty="nonbhk";
                         area="300";
                         addDataAny();
                         break;
@@ -487,6 +497,7 @@ private void addData(){
     oyeButtonData = selectedPropertyType +" "+bhkNumber+""+bhkNumberValue;
     AppConstants.letsOye.setPropertySubType(bhkNumber+""+bhkNumberValue);
     AppConstants.letsOye.setSize(bhkNumber+""+bhkNumberValue);
+
 }
 
 
@@ -590,7 +601,7 @@ private void addData(){
         Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
         intent.putExtra("filterValue",bhk );//selectedPropertyType
         intent.putExtra("area", filterValue);
-        intent.putExtra("subproperty",selectedPropertyType );
+        intent.putExtra("subproperty",Subproperty );
 //        intent.putExtra("tv_dealinfo",oyeButtonData);
 
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
@@ -604,6 +615,164 @@ private void addData(){
         intent.putExtra("tv_dealinfo",oyeButtonData);
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
     }*/
+
+    void plotconf(String conf){
+
+        Log.i("configdata", "getting and parsing config data 12 : " + conf+"  "+AppConstants.PROPERTY);
+        if(conf.equalsIgnoreCase("1rk")){
+            area="300";
+            if(AppConstants.PROPERTY.equalsIgnoreCase("home")){
+                AppConstants.CONFIG="1rk";
+                commanbhk=rk1;
+            }else{
+                AppConstants.CONFIG="300";
+                commanbhk=txt300h;
+            }
+        }else
+        if(conf.equalsIgnoreCase("1bhk")){
+            area="600";
+            if(AppConstants.PROPERTY.equalsIgnoreCase("home")){
+                AppConstants.CONFIG="1bhk";
+                commanbhk=bhk1;
+            }else{
+                AppConstants.CONFIG="600";
+                commanbhk=txt600h;
+            }
+        }else
+        if(conf.equalsIgnoreCase("1.5bhk")){
+            area="800";
+            if(AppConstants.PROPERTY.equalsIgnoreCase("home")){
+                AppConstants.CONFIG="bhk1_5";
+                commanbhk=bhk1_5;
+            }else{
+                AppConstants.CONFIG="800";
+                commanbhk=txt800h;
+            }
+        }else
+        if(conf.equalsIgnoreCase("2bhk")){
+            if(AppConstants.PROPERTY.equalsIgnoreCase("home")){
+                AppConstants.CONFIG="2bhk";
+                commanbhk=bhk2;
+
+            }else{
+                AppConstants.CONFIG=area;
+                commanbhk=txt950h;
+            }
+        }else
+        if(conf.equalsIgnoreCase("2.5bhk")){
+            area="13000";
+            if(AppConstants.PROPERTY.equalsIgnoreCase("home")){
+                AppConstants.CONFIG="2.5bhk";
+                commanbhk=bhk2_5;
+
+            }else{
+                AppConstants.CONFIG=area;
+                commanbhk=txt1300h;
+
+            }
+        }else
+        if(conf.equalsIgnoreCase("3bhk")){
+
+            area="1600";
+            if(AppConstants.PROPERTY.equalsIgnoreCase("home")){
+                AppConstants.CONFIG="3bhk";
+                commanbhk=bhk3;
+            }else{
+                AppConstants.CONFIG=area;
+                commanbhk=txt1600h;
+            }
+        }else
+        if(conf.equalsIgnoreCase("3.5bhk")){
+            area="1800";
+            if(AppConstants.PROPERTY.equalsIgnoreCase("home")){
+                AppConstants.CONFIG="3.5bhk";
+                commanbhk=bhk3_5;
+
+            }else{
+                AppConstants.CONFIG=area;
+                commanbhk=txt1800h;
+
+            }
+        }else
+        if(conf.equalsIgnoreCase("4bhk")){
+            area="2100";
+            if(AppConstants.PROPERTY.equalsIgnoreCase("home")){
+                AppConstants.CONFIG="4bhk";
+                commanbhk=bhk4;
+
+            }else{
+                AppConstants.CONFIG=area;
+                commanbhk=txt2100h;
+
+            }
+        }else
+        if(conf.equalsIgnoreCase("4.5bhk")){
+            area="2300";
+            if(AppConstants.PROPERTY.equalsIgnoreCase("home")){
+                AppConstants.CONFIG="4.5bhk";
+                commanbhk=bhk4_5;
+
+            }else{
+                AppConstants.CONFIG=area;
+                commanbhk=txt2300h;
+
+            }
+        }else
+        if(conf.equalsIgnoreCase("5bhk")){
+            area="2500";
+            if(AppConstants.PROPERTY.equalsIgnoreCase("home")){
+                AppConstants.CONFIG="5bhk";
+                commanbhk=bhk5;
+
+            }else{
+                AppConstants.CONFIG=area;
+                commanbhk=txt2500h;
+
+            }
+        }else
+        if(conf.equalsIgnoreCase("5.5bhk")){
+            area="2700";
+            if(AppConstants.PROPERTY.equalsIgnoreCase("home")){
+                AppConstants.CONFIG="5.5bhk";
+                commanbhk=bhk5_5;
+
+            }else{
+                AppConstants.CONFIG=area;
+                commanbhk=txt2700h;
+
+            }
+
+        }else
+        if(conf.equalsIgnoreCase("6bhk")){
+            area="2900";
+            if(AppConstants.PROPERTY.equalsIgnoreCase("home")){
+                AppConstants.CONFIG="6bhk";
+                commanbhk=bhk6;
+
+            }else{
+                AppConstants.CONFIG=area;
+                commanbhk=txt2900;
+
+            }
+
+        }
+
+        /*if(fisrtconf==true){
+            Log.i("entered","got it "+conf);
+            commanbhk.setChecked(true);
+            //formattedPrice=General.getFormatedPrice(conf,ll_pm);
+           // General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,conf);
+            if(AppConstants.PROPERTY.equalsIgnoreCase("home")){
+                AppConstants.CONFIG="1.5bhk";
+            }else{
+                AppConstants.CONFIG=area;
+            }
+            fisrtconf=false;
+        }*/
+        commanbhk.setChecked(true);
+        onFilterValueUpdate(area,AppConstants.CONFIG);
+    }
+
 
 
 }

@@ -53,6 +53,7 @@ public class AppConstants {
     public static final String CHAT_MESSAGE_RECIEVED = "chatMessageReceived";
     public static final String LOCALITY_BROADCAST = "localityBroadcast";
     public static final String ON_FILTER_VALUE_UPDATE = "onFilterValueUpdate";
+    public static final String OYEBUTTON = "oyeButton";
     public static final String BROADCAST_MIN_MAX_VAL = "broadcastMinMaxValue";
     public static final String IS_LOGGED_IN_USER = "isLoggedInUser";
     public static final String SETLOCN = "setLocation";
@@ -196,5 +197,5 @@ public class AppConstants {
     public static final String AUTO_TT_CHANGE = "autoClickMarker";
     public static  String BUILDING_ID = "buildingId";
     public static final String BUILDING_OYE_MIN_MAX = "buildingOyeMinMax";
-
+    public static final String REFRESH_LISTVIEW = "refreshListView";
 }

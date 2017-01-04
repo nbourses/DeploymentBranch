@@ -200,12 +200,12 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
          realm= General.realmconfig( getBaseContext() );
          adapter=new porfolioAdapter(getBaseContext(),portListing);
         rental_list.setAdapter(adapter);
-        RealmResults<MyPortfolioModel> results= realm.where(MyPortfolioModel.class).notEqualTo("ll_pm", 0).findAllSorted("timestamp",false);
+        RealmResults<MyPortfolioModel> results= realm.where(MyPortfolioModel.class).equalTo("tt", "ll").findAllSorted("timestamp",false);
 
         for(MyPortfolioModel c :results){
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),c.getTimestamp(),c.getTransactions(),c.getConfig(),null);
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),c.getTimestamp(),c.getTransactions(),c.getConfig(),null,"ll");
 
             myPortfolioLL.add(portListingModel);
 
@@ -213,11 +213,11 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         }
 
 
-        RealmResults<MyPortfolioModel> results1= realm.where(MyPortfolioModel.class).notEqualTo("or_psf", 0).findAllSorted("timestamp",false);
+        RealmResults<MyPortfolioModel> results1= realm.where(MyPortfolioModel.class).equalTo("tt", "or").findAllSorted("timestamp",false);
         for(MyPortfolioModel c :results1){
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),c.getTimestamp(),c.getTransactions(),c.getConfig(),null);
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),c.getTimestamp(),c.getTransactions(),c.getConfig(),null,"or");
 
             myPortfolioOR.add(portListingModel);
 
@@ -229,7 +229,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         for(addBuildingRealm c :result11){
 
             Log.i("getLocality","getLocality   : "+c.getLocality());
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),null);
 
             addbuildingLL.add(portListingModel);
 
@@ -240,7 +240,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         for(addBuildingRealm c :result1){
 
             Log.i("getLocality","getLocality   : "+c.getLocality());
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),null);
 
             addbuildingLL.add(portListingModel);
 
@@ -254,7 +254,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         for(addBuildingRealm c :result22){
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),null);
 
             addbuildingOR.add(portListingModel);
 
@@ -264,7 +264,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         for(addBuildingRealm c :result2){
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),null);
 
             addbuildingOR.add(portListingModel);
 

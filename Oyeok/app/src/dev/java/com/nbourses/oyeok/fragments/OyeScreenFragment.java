@@ -316,11 +316,6 @@ public class OyeScreenFragment extends Fragment {
 
     private void init() {
 
-
-
-
-
-
         //by default Home option is selected
         txtPreviouslySelectedPropertyType = txtHome;
         txtHome.setBackgroundResource(R.drawable.buy_option_circle);
@@ -440,7 +435,7 @@ public class OyeScreenFragment extends Fragment {
             AppConstants.letsOye.setReqAvl("avl");
         }
     }
-
+/*
     @Nullable
     @OnClick({R.id.txtHome, R.id.txtShop, R.id.txtIndustrial, R.id.txtOffice})
     public void onPropertyTypeClick(View v) {
@@ -479,7 +474,7 @@ public class OyeScreenFragment extends Fragment {
             property="office";
             //tv_dealinfo.setText(tv_dealinfo.getText()+" "+"office");
         }
-    }
+    }*/
 
     /**
      * set min and max value for seek bar
@@ -694,7 +689,7 @@ public class OyeScreenFragment extends Fragment {
             if (General.retriveBoolean(getContext(), "propertySubtypeFlag")) {
                 isclicked = "true";
 
-                Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
+                Intent intent = new Intent(AppConstants.OYEBUTTON);
                 intent.putExtra("isclicked", isclicked);
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                 Log.i("isclicked", "isclicked===============================");

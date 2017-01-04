@@ -523,7 +523,7 @@ try {
         Log.i(TAG,"fork resumed "+AppConstants.cardCounter);
         // Register mMessageReceiver to receive messages.
 //        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(oyebuttondata, new IntentFilter(AppConstants.ON_FILTER_VALUE_UPDATE));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(oyebuttondata, new IntentFilter(AppConstants.OYEBUTTON));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(markerstatus, new IntentFilter(AppConstants.MARKERSELECTED));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(autoComplete, new IntentFilter(AppConstants.AUTOCOMPLETEFLAG));
@@ -1844,6 +1844,7 @@ if(AppConstants.FAV) {
     public  void OpenBuildingOyeConfirmation(String listing,String transaction,String portal,String Config,int ll_pm,int or_psf){
         hdroomsCount.setVisibility(View.GONE);
         drawerFragment.setMenuVisibility(false);
+        setbaseloc.setVisibility(View.GONE);
         buidingInfoFlag=true;
         Bundle args = new Bundle();
         args.putString("listing", listing);
@@ -1855,11 +1856,11 @@ if(AppConstants.FAV) {
         confirm_screen_title.setVisibility(View.VISIBLE);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        setbaseloc.setVisibility(View.GONE);
+        //setbaseloc.setVisibility(View.GONE);
         cancel_btn.setVisibility(View.VISIBLE);
         cancel_btn.setText("Back");
-
         getSupportActionBar().setTitle("");
+        setbaseloc.setVisibility(View.GONE);
         if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")){
             confirm_screen_title.setText("Live Building Rates \n(Rent)");
         }else
@@ -1893,11 +1894,11 @@ if(AppConstants.FAV) {
         in.putExtra("markerClicked", "false");
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);
 
-        if(!BrokerRole.equalsIgnoreCase("broker")) {
+       // if(!BrokerRole.equalsIgnoreCase("broker")) {
 
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+       // }
         cancel_btn.setVisibility(View.GONE);
         getSupportActionBar().setTitle("Live Building Rates");
 
@@ -1926,19 +1927,19 @@ if(AppConstants.FAV) {
         in.putExtra("markerClicked", "false");
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);
 
-        if(!BrokerRole.equalsIgnoreCase("broker")) {
+       // if(!BrokerRole.equalsIgnoreCase("broker")) {
 
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+       // }
         cancel_btn.setVisibility(View.GONE);
         getSupportActionBar().setTitle("Live Building Rates");
-
         if( buidingInfoFlag==true)
 //            for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
             getSupportFragmentManager().popBackStack();
         buidingInfoFlag=false;
     }
+
     public  void closeOyeConfirmation(){
         Log.i("backstack count","   : "+oyeconfirm_flag+"  "+getSupportFragmentManager().getBackStackEntryCount());
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).disablepanel(true);

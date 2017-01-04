@@ -23,13 +23,18 @@ public class MyPortfolioModel extends RealmObject {
     private  String rate_growth;
     private  String listing;
     private  String portals;
-
-
-
     private  String timestamp;
     private  String transactions;
-    private String  locality;
+    private  String  locality;
+    private  String  tt;
 
+    public String getTt() {
+        return tt;
+    }
+
+    public void setTt(String tt) {
+        this.tt = tt;
+    }
 
     public String getTimestamp() {
         return timestamp;

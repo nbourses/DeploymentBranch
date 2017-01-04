@@ -107,7 +107,7 @@
     android:layout_marginLeft="60dip"
     android:orientation="horizontal"
     android:id="@+id/setbaseloc"
-    android:visibility="visible"
+    android:visibility="gone"
     android:layout_marginRight="50dp"
     android:gravity="center">
     <ImageView
