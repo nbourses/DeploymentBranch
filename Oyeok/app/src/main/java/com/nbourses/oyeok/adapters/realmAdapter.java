@@ -3,6 +3,8 @@ package com.nbourses.oyeok.adapters;
 /**
  * Created by sushil on 29/09/16.
  */
+import android.content.Context;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -23,6 +25,7 @@ public abstract class realmAdapter<E extends RealmObject, VH extends realmAdapte
     }
 
     private RealmResults<E> results;
+    private Context c;
 
     public abstract VH onCreateViewHolder(ViewGroup parent, int viewType);
 
@@ -31,9 +34,23 @@ public abstract class realmAdapter<E extends RealmObject, VH extends realmAdapte
     public void onViewRecycled(VH holder) {
     }
 
+   /* public void setResults(RealmResults<E> results) {
+        this.results = results;
+
+        notifyDataSetChanged();
+    }*/
+
     public void setResults(RealmResults<E> results) {
         this.results = results;
-        notifyDataSetChanged();
+        this.c=c;
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                // Code here will run in UI thread
+                notifyDataSetChanged();
+            }
+        });
+
     }
 
     @Override

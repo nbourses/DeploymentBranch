@@ -265,6 +265,7 @@ public class BuildingOyeConfirmation extends Fragment {
         config=data.getString("config");
         SplitString(config);
         if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            btn_listing.setBackground(getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
             setEMI();
            // btn_listing.setText(Html.fromHtml(text));
 
@@ -290,7 +291,6 @@ public class BuildingOyeConfirmation extends Fragment {
                         ((BrokerMap) getActivity()).openAddListingFinalCard();
                     }
                 }else{
-
                     AppConstants.PROPERTY = "home";
                     AppConstants.CONFIG="";
                     //text="<html>Connect'.........,, : <font color=#ff9f1c><big>32</big></font> Nearby Brokers</html>";
@@ -317,11 +317,11 @@ public class BuildingOyeConfirmation extends Fragment {
         btn_listing.setText(Html.fromHtml(text1));
             if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")){
                 int emi=(formattedPrice*4)/3;
-                sharing.setText("EMI Deposits starts at : "+General.currencyFormat(emi+""));
+                sharing.setText(Html.fromHtml("<html>EMI Deposits starts at : <big>"+General.currencyFormat(emi+"")+"<big><html>"));
 
             }else{
                 BigDecimal emi=calcEMI(BigDecimal.valueOf(or_psf*Integer.parseInt(approx_area)),BigDecimal.valueOf(240),BigDecimal.valueOf(10));
-                sharing.setText("EMI Deposits starts at : "+General.currencyFormat(emi+""));
+                sharing.setText(Html.fromHtml("<html>EMI starts at : <big>"+General.currencyFormat(emi+"")+"<big><html>"));
                 /*text1="<html>Connect : <font color=#ff9f1c>32</font> Nearby Brokers</html>";
                 btn_listing.setText(Html.fromHtml(text1));
 */

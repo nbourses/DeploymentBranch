@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -39,6 +41,7 @@ import com.nbourses.oyeok.realmModels.BuildingCacheRealm;
 import java.util.ArrayList;
 
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -48,7 +51,7 @@ public class MainScreenPropertyListing extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     Realm realm;
-    private View view;
+    private View view,view1;
     EditText Searchlist;
     ListView listview;
     LinearLayout dragablelistview;
@@ -65,7 +68,7 @@ public class MainScreenPropertyListing extends Fragment {
     ArrayList<String> ids =new ArrayList<>(  );
     DisplayMetrics displaymetrics;
     int height,screenheight;
-    int bottom,top ;
+    int bottom,top ,slideby=100;//=(int)dipToPixels(getContext(),75);
     Bundle data;
     public MainScreenPropertyListing() {
 
@@ -105,7 +108,7 @@ public class MainScreenPropertyListing extends Fragment {
         listview.setAdapter(adapter);
         realm = General.realmconfig(getContext());
 
-        adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp"));
+        adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSortedAsync("timestamp",false));
         adapter.notifyDataSetChanged();
         data=getArguments();
         String height1=data.getString( "height1" );
@@ -113,6 +116,7 @@ public class MainScreenPropertyListing extends Fragment {
         params = (FrameLayout.LayoutParams) dragablelistview.getLayoutParams();
         bottom=height-(int)dipToPixels(getContext(),55);
         top=(int)dipToPixels(getContext(),55);
+        slideby=(int)dipToPixels(getContext(),80);
         screenheight-=(height+100);
         params.topMargin = bottom;
 
@@ -121,8 +125,33 @@ public class MainScreenPropertyListing extends Fragment {
         Log.i("touchcheck", "ACTION_MOVE on create" + params.bottomMargin+"   "+params.topMargin+ "   :  height "+params.height+"  "+params.width+"  :"+height1+" screenheight "+screenheight+"dipToPixels(getContext(),110) "+dipToPixels(getContext(),110));
 
         count = realm.where(BuildingCacheRealm.class).count();
-        Searchlist.setHint("Search from"+ count +" Building");
+        Searchlist.setHint("Search from "+ count +" Building");
+       /* realm.addChangeListener(new RealmChangeListener() {
+            @Override
+            public void onChange() {
+                if(params.topMargin<bottom) {
+                    count = realm.where(BuildingCacheRealm.class).count();
+                    Searchlist.setHint("Search from" + count + " Building");
+                    Log.i("sliding111","==============refreshListView==========onChange========  : "+General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE));
 
+                    if (General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("ll")) {
+                        Log.i("sliding111", "==============refreshListView=======ll===========");
+                        // realm.addChangeListener(new chan);
+                        adapter = new myPortfolioAdapter(getContext(), 1);
+                        listview.setAdapter(adapter);
+                        adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSortedAsync("timestamp", false));
+                        // adapter.notifyDataSetChanged();
+
+                    } else if (General.getSharedPreferences(getContext(), AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("or")) {
+                        adapter = new myPortfolioAdapter(getContext(), 2);
+                        Log.i("sliding111", "==============refreshListView=========or=========");
+                        listview.setAdapter(adapter);
+                        adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSortedAsync("timestamp", false));
+                        // adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });*/
 
         pullup_button.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
 
@@ -207,11 +236,13 @@ public class MainScreenPropertyListing extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i( "listview","onItemClick  LL : "+adapter.getItemId(position)+"  : "+position );
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(Searchlist.getWindowToken(), 0);
                 ids.add(adapter.getItem(position).getId());
-
                 General.setSharedPreferences(getContext(), AppConstants.BUILDING_ID,adapter.getItem(position).getId());
                 params.topMargin = bottom;
                 v.setLayoutParams(params);
+
                // ((DashboardClientFragment)getContext())
             }
         });
@@ -222,7 +253,7 @@ public class MainScreenPropertyListing extends Fragment {
                // if(TT=="LL"){
                     Log.i( "portfolio","onTextChanged  LL : "+cs );
                     adapter.setResults( realm.where(BuildingCacheRealm.class)
-                            .greaterThan("ll_pm", 0)  //implicit AND
+                              //implicit AND
                             .beginGroup()
                             .contains("name", cs.toString(),false)
                             .endGroup()
@@ -265,13 +296,13 @@ try {
     if (General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("ll")) {
         adapter = new myPortfolioAdapter(getContext(), 1);
         listview.setAdapter(adapter);
-        adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp"));
+        adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false));
        // adapter.notifyDataSetChanged();
 
     } else if (General.getSharedPreferences(getContext(), AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("or")) {
         adapter = new myPortfolioAdapter(getContext(), 2);
         listview.setAdapter(adapter);
-        adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp"));
+        adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false));
        // adapter.notifyDataSetChanged();
     }/*else{
                             adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp"));
@@ -822,24 +853,65 @@ try {
     private BroadcastReceiver refreshListView=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i("sliding111","==============refreshListView==================  : "+General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE));
+            Log.i("sliding111","==============refreshListView==================  : "+General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE)+ "  slideby : "+slideby+"   params.topMargin  "+params.topMargin+"   :  === : "+bottom);
+
             if(params.topMargin<bottom) {
-                if (General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("ll")) {
-                    Log.i("sliding111","==============refreshListView=======ll===========");
+                count = realm.where(BuildingCacheRealm.class).count();
+                Searchlist.setHint("Search from " + count + " Building");
+                Log.i("sliding111","==============refreshListView==========onChange========  : "+General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE));
+                adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSortedAsync("timestamp", false));
+                /*new CountDownTimer(500, 500) {
+
+                    public void onTick(long millisUntilFinished) {
+
+
+                    }
+
+                    public void onFinish() {
+                        // if(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
+                        params.topMargin=params.topMargin-1;
+                        view.setLayoutParams(params);
+                    }
+
+                }.start();*/
+
+                /*if (General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("ll")) {
+                    Log.i("sliding111", "==============refreshListView=======ll===========");
+
                     adapter = new myPortfolioAdapter(getContext(), 1);
                     listview.setAdapter(adapter);
-                    adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false));
-                    adapter.notifyDataSetChanged();
+                    adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSortedAsync("timestamp", false));
+                     adapter.notifyDataSetChanged();
 
-                } else if (General.getSharedPreferences(getContext(), AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("or")) {
+               }
+                else if (General.getSharedPreferences(getContext(), AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("or")) {
                     adapter = new myPortfolioAdapter(getContext(), 2);
-                    Log.i("sliding111","==============refreshListView=========or=========");
+                    Log.i("sliding111", "==============refreshListView=========or=========");
                     listview.setAdapter(adapter);
-                    adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false));
-                    adapter.notifyDataSetChanged();
-                }
+                    adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSortedAsync("timestamp", false));
+                    // adapter.notifyDataSetChanged();
+                }*/
             }else{
+               // params.topMargin=bottom-top;
+                Log.i("sliding111", "==============animate=========or========= : "+params.topMargin);
+                params.topMargin=bottom-slideby;
+                view.setLayoutParams(params);
+                Log.i("sliding111", "==============animate=========or========= : "+params.topMargin+" :;;;;;;;;;;;;;;;; : " +bottom);
                 dragablelistview.startAnimation(bounce);
+                 new CountDownTimer(500, 500) {
+
+                public void onTick(long millisUntilFinished) {
+
+                }
+                public void onFinish() {
+                   // if(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
+                    dragablelistview.clearAnimation();
+                        params.topMargin=bottom;
+                        view.setLayoutParams(params);
+                }
+
+            }.start();
+                //params.topMargin=bottom-top;
             }
         }
     };

@@ -235,10 +235,12 @@ GoogleMap map;
         favbroker.setVisibility(View.VISIBLE);
         tv_change_region.setVisibility(View.VISIBLE);
         try {
-            if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase("") && !General.getSharedPreferences(this, AppConstants.LOCALITY).equalsIgnoreCase(""))
-            //tv_change_region.setText(General.getSharedPreferences(this, AppConstants.LOCALITY));
-                AppConstants.MY_BASE_LOCATION_FLAG=true;
-            else {
+            if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase("") && !General.getSharedPreferences(this, AppConstants.LOCALITY).equalsIgnoreCase("")) {//tv_change_region.setText(General.getSharedPreferences(this, AppConstants.LOCALITY));
+                AppConstants.MY_BASE_LOCATION_FLAG = true;
+
+                Intent intent = new Intent(getBaseContext(), BrokerMap.class);
+                startActivity(intent);
+            }else {
 //                AppConstants.BROKER_BASE_REGION="true";
                 tv_change_region.setText(General.getSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LOCATION));
             }
@@ -468,9 +470,10 @@ GoogleMap map;
                 /*General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"BC");
                 Intent intent = new Intent(getBaseContext(),ClientMainActivity.class);
                 startActivity(intent);*/
+
+                // baseloc=General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION);
+                // General.setSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LOCATION,"");
                 AppConstants.MY_BASE_LOCATION_FLAG=true;
-               // baseloc=General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION);
-               // General.setSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LOCATION,"");
                 Intent intent = new Intent(getBaseContext(),BrokerMap.class);
                 startActivity(intent);
 

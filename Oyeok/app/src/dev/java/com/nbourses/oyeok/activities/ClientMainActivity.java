@@ -1459,6 +1459,7 @@ if(AppConstants.FAV) {
            if(intent.getExtras().getString("markerClicked").equalsIgnoreCase("true"))
            {
                getSupportActionBar().setTitle("Live Building Rates");
+               setbaseloc.setVisibility(View.GONE);
                btnMyDeals.setBackground(getResources().getDrawable(R.drawable.share_btn_background));
                btnMyDeals.setText("Share");
 
@@ -1892,7 +1893,9 @@ if(AppConstants.FAV) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
        // }
         cancel_btn.setVisibility(View.GONE);
-        getSupportActionBar().setTitle("Live Building Rates");
+        setbaseloc.setVisibility(View.VISIBLE);
+        tv_change_region.setText(SharedPrefs.getString(getBaseContext(),SharedPrefs.MY_CITY));
+        getSupportActionBar().setTitle("");///Live Building Rates
 
         if( buidingInfoFlag==true)
 //            for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
@@ -1925,6 +1928,7 @@ if(AppConstants.FAV) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
        // }
         cancel_btn.setVisibility(View.GONE);
+
         getSupportActionBar().setTitle("Live Building Rates");
         if( buidingInfoFlag==true)
 //            for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)

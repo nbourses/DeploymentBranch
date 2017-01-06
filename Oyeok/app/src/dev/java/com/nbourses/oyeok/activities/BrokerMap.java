@@ -1252,6 +1252,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
 
 
         if(txtFilterValue.getText().toString().equalsIgnoreCase("save")){
+            map.clear();
             map.addMarker(new MarkerOptions().icon(iconOffice).position(new LatLng(lat,lng)));
             txtFilterValue.setText("Done");
             txt_info.setText("Is this Location Correct ? press Done");
@@ -1272,8 +1273,10 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                     AppConstants.MY_BASE_LOCATION_FLAG=false;
                     fav.setClickable(true);
                     fav.setEnabled(true);
-                    Reset();
-                    getPrice();
+                    onBackPressed();
+                    //Reset();
+                    //getPrice();
+
 
                 }else {
                     addlistingText.setVisibility(View.GONE);
@@ -1778,7 +1781,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
             realm.commitTransaction();
             Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size());
             BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
-            buildingCacheRealm.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+            buildingCacheRealm.setTimestamp(SystemClock.currentThreadTimeMillis());
             buildingCacheRealm.setName(name);
             buildingCacheRealm.setLat(lat);
             buildingCacheRealm.setLng(longi);
@@ -1802,7 +1805,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         }else{
             Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size());
             BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
-            buildingCacheRealm.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+            buildingCacheRealm.setTimestamp(SystemClock.currentThreadTimeMillis());
             buildingCacheRealm.setName(name);
             buildingCacheRealm.setLat(lat);
             buildingCacheRealm.setLng(longi);
@@ -1866,7 +1869,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         for(MyPortfolioModel c :result) {
             Realm myRealm = General.realmconfig(getBaseContext());
             BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
-            buildingCacheRealm.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+            buildingCacheRealm.setTimestamp((long)Double.parseDouble(c.getTimestamp()));
             buildingCacheRealm.setName(c.getName());
             buildingCacheRealm.setLat(c.getLat());
             buildingCacheRealm.setLng(c.getLng());

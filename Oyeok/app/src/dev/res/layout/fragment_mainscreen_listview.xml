@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/dragablelistview"
-    android:background="@color/transparent"
     android:orientation="vertical"
     tools:context="com.nbourses.oyeok.fragments.MainScreenPropertyListing">
 
@@ -13,6 +12,7 @@
     android:id="@+id/pullup_button"
     android:src="@drawable/pullup_button"
     android:clickable="true"
+    android:layout_marginBottom="-10dp"
     android:layout_gravity="center"/>
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,11 +47,10 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:id="@+id/listview"
-            android:background="@android:color/background_light"
+            android:background="@color/white"
             android:divider="@color/grey"
             android:layout_marginTop="4dp"
             android:dividerHeight="4px"
-            android:stateListAnimator="@anim/zoomout"
             />
         </LinearLayout>
 </LinearLayout>

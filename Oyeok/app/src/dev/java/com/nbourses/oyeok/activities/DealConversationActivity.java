@@ -497,9 +497,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                     Log.i("MY CHANNEL ","=== ====== ====== ===== ====== "+uuid);
                    // loadHistoryFromPubnub(uuid);
                     setSupportActionBar(mToolbar);
-                    getSupportActionBar().setTitle("OyeOk Assistant");
-
-
+                   // getSupportActionBar().setTitle("OyeOk Assistant");
+                    name = "OyeOk Assistant";
+                    getSupportActionBar().setTitle(Html.fromHtml(String.format(name + "<font color=\"#%s\"> (offline)</font>", offlineColor)));
 
 
                    /* if(firstMessage)
@@ -779,12 +779,18 @@ if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCas
     }
 
     private void setState(String state, String value){
+        String channel;
+        if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME))
+            channel = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
+        else
+            channel = channel_name;
+
         Map<String, Object> myState = new HashMap<>();
         myState.put(state, value);
 
         pubnub.setPresenceState()
                 .uuid(pubnub.getConfiguration().getUuid())
-                .channels(Arrays.asList(channel_name))
+                .channels(Arrays.asList(channel))
                 .state(myState).async(new PNCallback<PNSetStateResult>() {
             @Override
             public void onResponse(PNSetStateResult result, PNStatus status) {
@@ -801,9 +807,16 @@ if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCas
 
 
     private void herenow() {
+        Log.i(TAG,"herenow called");
+        String channel;
+        if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME))
+            channel = General.getSharedPreferences(this,AppConstants.TIME_STAMP_IN_MILLI);
+        else
+            channel = channel_name;
+
         pubnub.hereNow()
                 // tailor the next two lines to example
-                .channels(Arrays.asList(channel_name))
+                .channels(Arrays.asList(channel))
                 .includeUUIDs(true)
                 .includeState(true)
                 .async(new PNCallback<PNHereNowResult>() {
@@ -910,13 +923,13 @@ if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCas
 
 
                 if (status.getCategory() == PNStatusCategory.PNConnectedCategory){
-                    if(!channel_name.equalsIgnoreCase(General.getSharedPreferences(DealConversationActivity.this,AppConstants.TIME_STAMP_IN_MILLI))) {
+                   // if(!channel_name.equalsIgnoreCase(General.getSharedPreferences(DealConversationActivity.this,AppConstants.TIME_STAMP_IN_MILLI))) {
 
                         //getState();
                         herenow();
                         setState("online", "true");
 
-                    }
+                  //  }
 
                 }
                 else if (status.getCategory() == PNStatusCategory.PNUnexpectedDisconnectCategory) {
@@ -997,7 +1010,10 @@ if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCas
                     if (!presence.getUuid().equalsIgnoreCase(pubnub.getConfiguration().getUuid()) && presence.getChannel().equalsIgnoreCase(channel_name)) {
                         Log.i(TAG, "state is set PUBNUB presence status bro 5 " + presence.getUuid() + "   " + presence.getState() + "   " + presence.getChannel());
                         if (presence.getState().has("online")) {
+                            Log.i(TAG, "state is set PUBNUB presence status bro 61 ");
                             if (presence.getState().get("online").textValue().equalsIgnoreCase("true")) {
+                                Log.i(TAG, "state is set PUBNUB presence status bro 62 ");
+
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -1009,6 +1025,7 @@ if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCas
                                 });
 
                             } else {
+                                Log.i(TAG, "state is set PUBNUB presence status bro 63 ");
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {

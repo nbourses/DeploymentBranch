@@ -3463,8 +3463,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                             }catch(Exception e){}*/
 
                             getPrice();
-                             Intent inn = new Intent(AppConstants.REFRESH_LISTVIEW);
-                            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(inn);
+
                         }
                         addressBar.setText("Getting Address... ");
                         new LocationUpdater().execute();
@@ -4632,7 +4631,7 @@ public void resetSeekBar(){
 
         Realm myRealm = General.realmconfig( getContext());
 
-        RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false);
+        RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp");
         RealmResults<MyPortfolioModel> result= realm.where(MyPortfolioModel.class).findAll();
         int size=100+result.size();
        // RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false);
@@ -4645,10 +4644,10 @@ public void resetSeekBar(){
             result1.remove(size);
             realm.commitTransaction();
 
-            Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size());
+            Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size()+" =============== : "+String.valueOf(SystemClock.currentThreadTimeMillis()));
 
             BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
-            buildingCacheRealm.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+            buildingCacheRealm.setTimestamp(SystemClock.currentThreadTimeMillis());
             buildingCacheRealm.setName(name);
             buildingCacheRealm.setLat(lat);
             buildingCacheRealm.setLng(longi);
@@ -4672,7 +4671,7 @@ public void resetSeekBar(){
             Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size());
 
             BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
-            buildingCacheRealm.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+            buildingCacheRealm.setTimestamp(SystemClock.currentThreadTimeMillis());
             buildingCacheRealm.setName(name);
             buildingCacheRealm.setLat(lat);
             buildingCacheRealm.setLng(longi);
@@ -4744,6 +4743,23 @@ public void resetSeekBar(){
           General.setSharedPreferences(getContext(),AppConstants.CALLING_ACTIVITY,"");
       }
 
+      Intent inn = new Intent(AppConstants.REFRESH_LISTVIEW);
+      LocalBroadcastManager.getInstance(getContext()).sendBroadcast(inn);
+     /* new CountDownTimer(500, 500) {
+
+          public void onTick(long millisUntilFinished) {
+
+
+          }
+
+          public void onFinish() {
+              // if(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
+
+          }
+
+      }.start();*/
+
+
   }
 
 
@@ -4754,7 +4770,7 @@ public void resetSeekBar(){
         for(MyPortfolioModel c :result) {
             Realm myRealm = General.realmconfig(getContext());
             BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
-            buildingCacheRealm.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
+            buildingCacheRealm.setTimestamp(SystemClock.currentThreadTimeMillis());
             buildingCacheRealm.setName(c.getName());
             buildingCacheRealm.setLat(c.getLat());
             buildingCacheRealm.setLng(c.getLng());
@@ -4774,6 +4790,7 @@ public void resetSeekBar(){
 //        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
             myRealm.commitTransaction();
         }
+
     }
 
 

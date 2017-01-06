@@ -19,7 +19,7 @@ public class BuildingCacheRealm extends RealmObject {
     private  String rate_growth;
     private  String listing;
     private  String portals;
-    private  String timestamp;
+    private  long timestamp;
     private  String transactions;
     private String  locality;
     private String  city;
@@ -113,11 +113,11 @@ public class BuildingCacheRealm extends RealmObject {
         this.portals = portals;
     }
 
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 

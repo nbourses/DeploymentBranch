@@ -15,13 +15,12 @@ public class buildingCacheModel {
     private  String rate_growth;
     private  String listing;
     private  String portals;
-    private  String timestamp;
+    private  long timestamp;
     private  String transactions;
     private String  locality;
     private Boolean flag;
 
-
-    public buildingCacheModel(String id, String name, String config, int or_psf, int ll_pm, String lat, String lng, String rate_growth, String listing, String portals, String timestamp, String transactions, String locality, Boolean flag) {
+    public buildingCacheModel(String id, String name, String config, int or_psf, int ll_pm, String lat, String lng, String rate_growth, String listing, String portals, long timestamp, String transactions, String locality, Boolean flag) {
         this.id = id;
         this.name = name;
         this.config = config;
@@ -37,6 +36,7 @@ public class buildingCacheModel {
         this.locality = locality;
         this.flag = flag;
     }
+
 
 
     public String getId() {
@@ -119,11 +119,11 @@ public class buildingCacheModel {
         this.portals = portals;
     }
 
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
