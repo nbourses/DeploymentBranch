@@ -474,6 +474,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 SharedPrefs.save(getContext(),SharedPrefs.MY_LAT,AppConstants.MY_LATITUDE+"");
                 SharedPrefs.save(getContext(),SharedPrefs.MY_LNG,AppConstants.MY_LONGITUDE+"");
                 // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,MAP_ZOOM));
                 getRegion();
                  getPrice();
@@ -3451,7 +3452,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                         Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
                         Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
                         getRegion();
-                        addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
+                        //addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
                         if (!AppConstants.SETLOCATION && !savebuilding) {
                             search_building_icon.setVisibility(View.GONE);
                             buildingIcon.setVisibility(View.GONE);
@@ -3878,6 +3879,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             tvFetchingrates.setVisibility(View.GONE);
             CallButton.setClickable(true);
             txt_info.setVisibility(View.GONE);
+            addlistingText.setVisibility(View.GONE);
             mPhasedSeekBar.setVisibility(View.VISIBLE);
             dispProperty.setVisibility(View.VISIBLE);
             fav.setClickable(true);
@@ -3891,7 +3893,8 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             tvFetchingrates.setVisibility(View.VISIBLE);
             /*tv_building.setText("search or drag on map to set location");
                       tvFetchingrates.setText("Click OYE to reach brokers");*/
-
+            addlistingText.setVisibility(View.VISIBLE);
+            addBText.setText("Find your Base Location on map and click on Save.");
             tv_building.setText(fullAddress);
             txt_info.setVisibility(View.VISIBLE);
             txt_info.setText("Find Your Location on Map & Save");

@@ -252,6 +252,9 @@ public class MainScreenPropertyListing extends Fragment {
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
                // if(TT=="LL"){
                     Log.i( "portfolio","onTextChanged  LL : "+cs );
+                if(cs.equals(""))
+                    Searchlist.setHint("Search from " + count + " Building");
+
                     adapter.setResults( realm.where(BuildingCacheRealm.class)
                               //implicit AND
                             .beginGroup()
@@ -853,44 +856,15 @@ try {
     private BroadcastReceiver refreshListView=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i("sliding111","==============refreshListView==================  : "+General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE)+ "  slideby : "+slideby+"   params.topMargin  "+params.topMargin+"   :  === : "+bottom);
-
+          //  Log.i("sliding111","==============refreshListView==================  : "+General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE)+ "  slideby : "+slideby+"   params.topMargin  "+params.topMargin+"   :  === : "+bottom);
+            count = realm.where(BuildingCacheRealm.class).count();
+            Searchlist.setHint("Search from " + count + " Building");
             if(params.topMargin<bottom) {
-                count = realm.where(BuildingCacheRealm.class).count();
-                Searchlist.setHint("Search from " + count + " Building");
+                /*count = realm.where(BuildingCacheRealm.class).count();
+                Searchlist.setHint("Search from " + count + " Building");*/
                 Log.i("sliding111","==============refreshListView==========onChange========  : "+General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE));
                 adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSortedAsync("timestamp", false));
-                /*new CountDownTimer(500, 500) {
 
-                    public void onTick(long millisUntilFinished) {
-
-
-                    }
-
-                    public void onFinish() {
-                        // if(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
-                        params.topMargin=params.topMargin-1;
-                        view.setLayoutParams(params);
-                    }
-
-                }.start();*/
-
-                /*if (General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("ll")) {
-                    Log.i("sliding111", "==============refreshListView=======ll===========");
-
-                    adapter = new myPortfolioAdapter(getContext(), 1);
-                    listview.setAdapter(adapter);
-                    adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSortedAsync("timestamp", false));
-                     adapter.notifyDataSetChanged();
-
-               }
-                else if (General.getSharedPreferences(getContext(), AppConstants.AUTO_TT_CHANGE).equalsIgnoreCase("or")) {
-                    adapter = new myPortfolioAdapter(getContext(), 2);
-                    Log.i("sliding111", "==============refreshListView=========or=========");
-                    listview.setAdapter(adapter);
-                    adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSortedAsync("timestamp", false));
-                    // adapter.notifyDataSetChanged();
-                }*/
             }else{
                // params.topMargin=bottom-top;
                 Log.i("sliding111", "==============animate=========or========= : "+params.topMargin);

@@ -497,6 +497,7 @@ private void addData(){
     oyeButtonData = selectedPropertyType +" "+bhkNumber+""+bhkNumberValue;
     AppConstants.letsOye.setPropertySubType(bhkNumber+""+bhkNumberValue);
     AppConstants.letsOye.setSize(bhkNumber+""+bhkNumberValue);
+    General.saveBoolean(getContext(), "propertySubtypeFlag", true);
 
 }
 
@@ -508,6 +509,7 @@ private void addData(){
         //  tv_dealinfo.setText(txtPreviousTextView.getText().toString());
         AppConstants.letsOye.setSize(area);
         // oyeButtonData = area;
+        General.saveBoolean(getContext(), "propertySubtypeFlag", true);
         //setOyeButtonData(oyeButtonData);
         General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,oyeButtonData+" sq.ft");
         onFilterValueUpdate(area,bhkNumber+""+bhkNumberValue);
@@ -597,10 +599,11 @@ private void addData(){
             txtPreviousTextView.setTextColor(Color.parseColor("black"));
     }
 
-    private void onFilterValueUpdate(String filterValue, String bhk) {
+    private void onFilterValueUpdate(String area, String bhk) {
+        Log.i("jadu", "getting and parsing config data 12  filterValue : " + area+" bhk "+bhk);
         Intent intent = new Intent(AppConstants.ON_FILTER_VALUE_UPDATE);
-        intent.putExtra("filterValue",bhk );//selectedPropertyType
-        intent.putExtra("area", filterValue);
+        intent.putExtra("bhkvalue",bhk );//selectedPropertyType
+        intent.putExtra("area", area);
         intent.putExtra("subproperty",Subproperty );
 //        intent.putExtra("tv_dealinfo",oyeButtonData);
 
