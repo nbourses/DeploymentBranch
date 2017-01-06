@@ -922,6 +922,25 @@
             android:text="Home"/>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/phasetitle"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        >
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/phaseGameTitle"
+            android:textColor="@color/greenish_blue"
+            android:textStyle="bold"
+            android:textSize="13dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="10% Cashback"/>
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

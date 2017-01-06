@@ -311,7 +311,7 @@ public class BuildingOyeConfirmation extends Fragment {
     };*/
 
 
-    private void setEMI(){
+    private void   setEMI(){
         String text1;
         text1="<html>Connect : <font color=#ff9f1c>32</font> Nearby Brokers</html>";
         btn_listing.setText(Html.fromHtml(text1));

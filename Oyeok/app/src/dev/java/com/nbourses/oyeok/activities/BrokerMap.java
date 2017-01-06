@@ -2437,11 +2437,13 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         btnMyDeals.setVisibility(View.GONE);
         btn_back.setVisibility(View.VISIBLE);
         btn_cancel.setVisibility(View.VISIBLE);
+        fr.setVisibility(View.GONE);
         /*getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);*/
         confirm_screen_title.setVisibility(View.VISIBLE);
         confirm_screen_title.setText(b_name);
         getSupportActionBar().setTitle("");
+        setbaseloc.setVisibility(View.GONE);
         closeCardContainer();
         containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
         containerSignup.setClickable(false);
@@ -2453,12 +2455,14 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
     public  void setBaseRegion(){
         btnMyDeals.setVisibility(View.GONE);
         fav.setEnabled(false);
+        fr.setVisibility(View.GONE);
         /*btn_back.setVisibility(View.VISIBLE);
         btn_cancel.setVisibility(View.VISIBLE);*/
         /*getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);*/
         property_type_layout.clearAnimation();
         property_type_layout.setVisibility(View.GONE);
+        setbaseloc.setVisibility(View.GONE);
         confirm_screen_title.setText("Set Base Region");
         getSupportActionBar().setTitle("");
        // hdroomsCount.setVisibility(View.GONE);
@@ -2508,9 +2512,22 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
 
          B_name=b_name;
         addlistingText.setVisibility(View.VISIBLE);
-        addBText.setText("Find your Building  Location on map and click on Save.");
-       // addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
+        String txt;
 
+        if(b_name.equalsIgnoreCase(""))
+        {
+            txt="<font color=#2dc4b6><big>Drag & Save Base Location</big></font>";
+            tvFetchingrates.setText(Html.fromHtml(txt));
+            txt_info.setText("Find Base Location on Map & Save");
+            addBText.setText("Find your Base Location on map and click on Save to proceed.");
+        }else {
+            txt="<font color=#2dc4b6><big>Drag & Save Building Location</big></font>";
+            tvFetchingrates.setText(Html.fromHtml(txt));
+            txt_info.setText("Find Building on Map & Save");
+            addBText.setText("Find your Building Location on map and click on Save.");
+        }
+       // addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
+        fr.setVisibility(View.GONE);
         savebuilding=true;
         map.clear();
         new LocationUpdater().execute();
@@ -2518,7 +2535,9 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         rupeesymbol.setVisibility(View.GONE);
         tvRate.setVisibility(View.GONE);
         txtFilterValue.setText("SAVE");
-        txt_info.setText("Find Building on Map & Save");
+        setbaseloc.setVisibility(View.GONE);
+        //confirm_screen_title.setText("Save Building");
+
         tv_building.setText(fullAddress);
         tvFetchingrates.setVisibility(View.VISIBLE);
         txt_info.setVisibility(View.VISIBLE);
@@ -2529,9 +2548,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         mPhasedSeekBar.setVisibility(View.GONE);
         dispProperty.setVisibility(View.GONE);
 
-        String txt;
-        txt="<font color=#2dc4b6><big>Drag & Save Building Location</big></font>";
-        tvFetchingrates.setText(Html.fromHtml(txt));
+
     }
 
     @OnClick(R.id.back_btn)
@@ -2555,6 +2572,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         btn_back.setVisibility(View.GONE);
         btn_cancel.setVisibility(View.GONE);
         savebuilding=false;
+        fr.setVisibility(View.VISIBLE);
+        setbaseloc.setVisibility(View.VISIBLE);
         txt_info.setVisibility(View.GONE);
         tvFetchingrates.setVisibility(View.GONE);
         horizontalPicker.setVisibility(View.VISIBLE);
