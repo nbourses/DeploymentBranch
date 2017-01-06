@@ -653,9 +653,10 @@ public class OyeScreenFragment extends Fragment {
     public void onBtnCloseOyeScreenSlideClick(View v) {
 
 
-
+        //if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equalsIgnoreCase("")){
 
         Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+        intent.putExtra("buildingoye",true);
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
 
 //        DashboardClientFragment d=new DashboardClientFragment();

@@ -463,7 +463,7 @@ private String transaction_type="Rental";
                 }));*/
 
         mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector,
-                R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), "Listing", getContext().getResources().getString(R.string.Resale)}));
+                R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), "Add Listing", getContext().getResources().getString(R.string.Resale)}));
         mCustomPhasedSeekbar.setListener(this);
 
         Log.i("PHASE","after adapter set");
@@ -1359,12 +1359,14 @@ private String transaction_type="Rental";
         }else  if(position==1){
 
             try {
-                new CountDownTimer(1000, 500) {
+                new CountDownTimer(1000, 1000) {
                     public void onTick(long millisUntilFinished) {
                     }
                     public void onFinish() {
-                        Intent intent = new Intent(getContext(), BrokerMap.class);
-                        startActivity(intent);
+                        if (currentSeekbarPosition == 1) {
+                            Intent intent = new Intent(getContext(), BrokerMap.class);
+                            startActivity(intent);
+                        }
                     }
                 }.start();
             } catch (Exception e) {}
@@ -2208,7 +2210,7 @@ private String transaction_type="Rental";
 
 
     public void resetSeekBar(){
-        mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental),"listing", getContext().getResources().getString(R.string.Resale)}));
+        mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental),"Add Listing", getContext().getResources().getString(R.string.Resale)}));
     }
 
 

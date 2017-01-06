@@ -143,10 +143,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="50dp"
         android:id="@+id/loadbuilding"
         android:visibility="gone"/>
 </FrameLayout>
     <!--android:orientation="vertical"
     android:background="#FFF"
-
+style="?android:attr/progressBarStyleLarge"
     android:gravity="center_horizontal"-->

@@ -73,6 +73,7 @@ public class AddListingFinalCard extends Fragment {
     private int minvalue=20000,maxvalue=120000;
     TextView Cancel_final_card;
     String Furnishing,status,tt;
+    int carpet_area;
     LinearLayout submit_listing;
     String numberAsString;
     private int llMin, llMax, orMin, orMax,area;
@@ -421,7 +422,7 @@ private void init(){
        addListingBorker.setTt(tt);
 
        addListingBorker.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
-       int carpet_area=Integer.parseInt(approx_area.getText().toString());
+        carpet_area=Integer.parseInt(approx_area.getText().toString());
        addListingBorker.setCarpet_area(carpet_area);
        Log.i("Reqstatus","Reqstatus 1 : "+Avail.isChecked()+ " "+Req.isChecked());
        if(Avail.isChecked()){
@@ -460,17 +461,17 @@ private void init(){
            oyeokApiService.addListing(addListingBorker, new Callback<JsonElement>() {
                @Override
                public void success(JsonElement jsonElement, Response response) {
+                   String ids="";
                    try {
                        String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                        JSONObject jsonResponse = new JSONObject(strResponse);
 
+
                        Log.i("magic","addBuildingRealm success "+jsonResponse.getJSONObject("responseData").getString("id"));
-                       AddBuildingDataToRealm(jsonResponse.getJSONObject("responseData").getString("id"));
-                   } catch (Exception e) {
-
-                   }
-
-
+                       ids= jsonResponse.getJSONObject("responseData").getString("id");
+                   } catch (Exception e) {Log.i("magic","msg "+e);}
+                   Log.i("magic","addBuildingRealm success ids value :  "+ids);
+                   AddBuildingDataToRealm(ids);
 
 
                }
@@ -510,16 +511,21 @@ private void init(){
         add_Building.setId(id);
         add_Building.setType("LIST");
         add_Building.setDisplay_type(null);
-        int area=General.getFormatedarea(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG));
+        int area=carpet_area;
+        Log.i("magic","reached "+numberAsString+"  area : "+area);
+        int p=Integer.parseInt(numberAsString)/area;
+        Log.i("magic","reached "+p);
+
         if(tt.equalsIgnoreCase("ll")){
-            add_Building.setLl_pm(Integer.parseInt(numberAsString)/area);
+           // int p=Integer.parseInt(numberAsString)/area;
+            add_Building.setLl_pm(p);
 
             add_Building.setOr_psf(0);
 
         }else{
             add_Building.setLl_pm(0);
 
-            add_Building.setOr_psf(Integer.parseInt(numberAsString)/area);
+            add_Building.setOr_psf(p);
         }
 
         if(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY).equalsIgnoreCase(""))
@@ -540,13 +546,13 @@ private void init(){
         myRealm.copyToRealmOrUpdate(add_Building);
 //        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
         myRealm.commitTransaction();
-
+        Log.i("magic","reached "+General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
         if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
             Intent in = new Intent(getContext(), MyPortfolioActivity.class);
-            /*in.addFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+            in.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP /*|
                             Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                            Intent.FLAG_ACTIVITY_NEW_TASK);*/
+                            Intent.FLAG_ACTIVITY_NEW_TASK*/);
             startActivity(in);
         }else {
             Intent in = new Intent(getContext(), MyPortfolioActivity.class);

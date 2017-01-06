@@ -735,10 +735,10 @@ public static PubNub initPubnub(Context context, String UUID){
 
                                 openDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 context.startActivity(openDealsListing);
-
-                                Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-
+//sushil changed start
+//                                Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+//                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+//end
                                 AppConstants.letsOye.setTime(formattedDate);
 
                                 storeDealTime(OKID,context);

@@ -13,12 +13,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.JsonElement;
@@ -67,6 +69,7 @@ private TextView Cancel,back,usertext;
     EditText inputSearch1;
     searchBuilding adapter;
     private Realm realm;
+    private ProgressBar progressBar;
     ImageView add;
     String name;
     private TextView dialog;
@@ -101,6 +104,7 @@ private TextView Cancel,back,usertext;
         adapter.setResults(realm.where(addBuildingRealm.class).findAll());*/
         add_b=(LinearLayout)v.findViewById(R.id.add_b);
         usertext=(TextView)v.findViewById(R.id.usertext);
+        progressBar=(ProgressBar)v.findViewById(R.id.loadbuilding);
         building_names= new ArrayList<>();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,6 +180,7 @@ private TextView Cancel,back,usertext;
                 name=String.valueOf(arg0);
 //                if(count==3)
 //                lockedTimer();
+                progressBar.setVisibility(View.VISIBLE);
                 SearchBuilding();
 
             }
@@ -318,6 +323,7 @@ private TextView Cancel,back,usertext;
                         }
                         adapter= new searchBuilding(building_names,getContext());
                         listView1.setAdapter(adapter);
+                        progressBar.setVisibility(View.GONE);
                         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -442,15 +448,14 @@ private TextView Cancel,back,usertext;
                                 add_Building.setSublocality(locality);
                                 add_Building.setGrowth_rate(building.getString("rate_growth"));
                                 add_Building.setDisplay_type(null);
-
+                                add_Building.setId(b_id);
+                                add_Building.setLl_pm(price(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG),Integer.parseInt(building.getString("ll_pm"))));
+                                add_Building.setOr_psf(Integer.parseInt(building.getString("or_psf")));
                                 if(i==0){
-                                    add_Building.setId(b_id);
-                                    add_Building.setLl_pm(price(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG),Integer.parseInt(building.getString("ll_pm"))));
-                                    add_Building.setOr_psf(0);
+                                    add_Building.setTt("ll");
                                 }else{
-                                    add_Building.setId(b_id+"1");
-                                    add_Building.setLl_pm(0);
-                                    add_Building.setOr_psf(Integer.parseInt(building.getString("or_psf")));
+                                    //add_Building.setId(b_id+"1");
+                                    add_Building.setTt("or");
                                 }
                                 myRealm.beginTransaction();
                                 myRealm.copyToRealmOrUpdate(add_Building);

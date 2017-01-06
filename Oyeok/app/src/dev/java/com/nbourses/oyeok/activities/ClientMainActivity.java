@@ -185,7 +185,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     @Bind(R.id.dealsWrapper)
     RelativeLayout dealsWrapper;
 
-    boolean buidingInfoFlag=false;
+    boolean buidingInfoFlag=false,buildingoye=false;
 
 
 
@@ -1156,6 +1156,7 @@ try {
         if(!BrokerRole.equalsIgnoreCase("broker")){
             Log.i("sushil123"," closing app CLOSE_OYE_SCREEN_SLIDE =================== "+getFragmentManager().getBackStackEntryCount()+"  "+BrokerRole);
             Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+            intent.putExtra("buildingoye",buildingoye);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
 /*
@@ -1916,12 +1917,12 @@ if(AppConstants.FAV) {
             hdroomsCount.setVisibility(View.GONE);
         }
 */
-        ((DashboardClientFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).buildingOye();
+        buildingoye=true;
         confirm_screen_title.setVisibility(View.GONE);
         Intent in = new Intent(AppConstants.MARKERSELECTED);
         in.putExtra("markerClicked", "false");
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);
-
+        ((DashboardClientFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).buildingOye();
        // if(!BrokerRole.equalsIgnoreCase("broker")) {
 
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -1931,7 +1932,7 @@ if(AppConstants.FAV) {
 
         getSupportActionBar().setTitle("Live Building Rates");
         if( buidingInfoFlag==true)
-//            for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
+           // for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
             getSupportFragmentManager().popBackStack();
         buidingInfoFlag=false;
     }

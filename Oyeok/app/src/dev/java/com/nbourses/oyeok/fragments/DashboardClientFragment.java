@@ -459,8 +459,18 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         public void onReceive(Context context, Intent intent) {
             String area= intent.getExtras().getString("area1");
             int price = Integer.parseInt(area)*buildingCacheModels.get(INDEX).getLl_pm();
-            String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price)).substring(2, General.currencyFormat(String.valueOf(price)).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
-            tvFetchingrates.setText(Html.fromHtml(text));
+           /* String text ;//= "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price)).substring(2, General.currencyFormat(String.valueOf(price)).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+            text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price)).substring(2, General.currencyFormat(String.valueOf(price)).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+            tvFetchingrates.setText(Html.fromHtml(text));*/
+
+            if (brokerType.equalsIgnoreCase("rent")) {
+                String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price)).substring(2, General.currencyFormat(String.valueOf(price)).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+                tvFetchingrates.setText(Html.fromHtml(text));
+            } else {
+                String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).substring(2, General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
+                tvFetchingrates.setText(Html.fromHtml(text));
+            }
+
         }
     };
 
@@ -474,6 +484,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 SharedPrefs.save(getContext(),SharedPrefs.MY_LAT,AppConstants.MY_LATITUDE+"");
                 SharedPrefs.save(getContext(),SharedPrefs.MY_LNG,AppConstants.MY_LONGITUDE+"");
                 // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,MAP_ZOOM));
                 getRegion();
                  getPrice();
@@ -494,6 +505,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             ((ClientMainActivity)getActivity()).disEnDealsbtn(false);
             showHidepanel(false);
             map.clear();
+
             txtFilterValue.setText("save");
             txtFilterValue.setEnabled(true);
         }
@@ -516,18 +528,22 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     subprop=intent.getExtras().getString("subproperty");
                 else
                    subprop="home";
+
+
+                if(bhk!=null){
+                    filterValueMultiplier = Integer.parseInt(bhk);
+                }else
+                    filterValueMultiplier =950;
                 if(buildingoyeFlag){
                     String text1;
                     Log.i("bhkkkkk", "=================  " + bhk);
                    // try {
-                    //if(bhk!=null)
-                        filterValueMultiplier = Integer.parseInt(bhk);
-                   // }
+
                     text1="<font color=#2dc4b6>Today's Rate</font>";
                     tv_building.setText(Html.fromHtml(text1));
 
                     if (brokerType.equalsIgnoreCase("rent")) {
-                        String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(Integer.parseInt(bhk)*buildingCacheModels.get(INDEX).getLl_pm())).substring(2, General.currencyFormat(String.valueOf(Integer.parseInt(bhk)*buildingCacheModels.get(INDEX).getLl_pm())).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+                        String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(filterValueMultiplier*buildingCacheModels.get(INDEX).getLl_pm())).substring(2, General.currencyFormat(String.valueOf(filterValueMultiplier*buildingCacheModels.get(INDEX).getLl_pm())).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
                         tvFetchingrates.setText(Html.fromHtml(text));
                     } else {
                         String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).substring(2, General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
@@ -537,12 +553,12 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                     inn.putExtra("ll_price",buildingCacheModels.get(INDEX).getLl_pm()*filterValueMultiplier);
                     inn.putExtra("or_price", buildingCacheModels.get(INDEX).getOr_psf()*filterValueMultiplier);
                     LocalBroadcastManager.getInstance(getContext()).sendBroadcast(inn);
-                    buildingoyeFlag=false;
+                    //buildingoyeFlag=false;
                 }else {
 
                     Log.i("bhk", "=================  " + bhk);
                         // if (bhk.equalsIgnoreCase("1bhk") || bhk.equalsIgnoreCase("<600")) {
-                        filterValueMultiplier = Integer.parseInt(bhk);
+                       // filterValueMultiplier = Integer.parseInt(bhk);
                         updateHorizontalPicker();
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
@@ -636,7 +652,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
+         rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         ButterKnife.bind(this, rootView);
         hideOnSearch = (FrameLayout) rootView.findViewById(R.id.hideOnSearch);
@@ -801,7 +817,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         }
         init();
         Log.i("notifications", "sendNotification ==========================" + SharedPrefs.getString(getContext(), SharedPrefs.MY_GCM_ID));
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
+       // LocalBroadcastManager.getInstance(getContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));
          // Permission Request
         // General.showPermissionDialog(getContext(),getActivity());
         Log.i(TAG,"perma "+SharedPrefs.getString(getContext(), SharedPrefs.PERMISSION));
@@ -917,10 +933,10 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         });
 
         mPhasedSeekBar = (CustomPhasedSeekBar) rootView.findViewById(R.id.phasedSeekBar);
-        if(!savebuilding) {
+        if(!savebuilding) {//10% Cashback
             if (!General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                 mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector,
-                        R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), "10% Cashback", getContext().getResources().getString(R.string.Resale)}));
+                        R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), "", getContext().getResources().getString(R.string.Resale)}));
             } else {
                 mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(this.getResources(),
                         new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector},
@@ -1967,6 +1983,11 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i("closeOyeScreenSlide","=======");
+            if(intent.getExtras()!=null && intent.getExtras().getBoolean("buildingoye")==true)
+            {
+                Log.i("closeOyeScreenSlide","====onMapclicked===");
+                onMapclicked();
+            }
             UpdateRatePanel();
             RatePanel = true;
 //            OnOyeClick();
@@ -3451,7 +3472,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                         Log.i("t1", "Sharedpref_lat" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT));
                         Log.i("t1", "Sharedpref_lng" + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG));
                         getRegion();
-                        addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
+                        //addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
                         if (!AppConstants.SETLOCATION && !savebuilding) {
                             search_building_icon.setVisibility(View.GONE);
                             buildingIcon.setVisibility(View.GONE);
@@ -3702,7 +3723,8 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             Log.i("user_role","auto ok ...13");
 //                    autoOk();
         }else */
-        if(!General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+       // if(!General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+        buildingoyeFlag=false;
             openOyeScreen();
             CancelAnimation();
             //AppConstants.GOOGLE_MAP = map;
@@ -3732,7 +3754,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             args.putString("brokerType", brokerType);
             //args.putString("Address", SharedPrefs.getString(getActivity(), SharedPrefs.MY_REGION));
             onOyeClick.onClickButton(args);*/
-        }
+       // }
     }
 
 
@@ -3878,6 +3900,8 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             tvFetchingrates.setVisibility(View.GONE);
             CallButton.setClickable(true);
             txt_info.setVisibility(View.GONE);
+            fr.setVisibility(View.VISIBLE);
+            addlistingText.setVisibility(View.GONE);
             mPhasedSeekBar.setVisibility(View.VISIBLE);
             dispProperty.setVisibility(View.VISIBLE);
             fav.setClickable(true);
@@ -3891,7 +3915,9 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             tvFetchingrates.setVisibility(View.VISIBLE);
             /*tv_building.setText("search or drag on map to set location");
                       tvFetchingrates.setText("Click OYE to reach brokers");*/
-
+            addlistingText.setVisibility(View.VISIBLE);
+            fr.setVisibility(View.GONE);
+            addBText.setText("Find your Base Location on map and click on Save.");
             tv_building.setText(fullAddress);
             txt_info.setVisibility(View.VISIBLE);
             txt_info.setText("Find Your Location on Map & Save");
@@ -4586,7 +4612,7 @@ public int price(String conf,int rate){
     }
 
 public void resetSeekBar(){
-    mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), "Game", getContext().getResources().getString(R.string.Resale)}));
+    mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), "", getContext().getResources().getString(R.string.Resale)}));
 
 }
 
@@ -4840,6 +4866,7 @@ public void resetSeekBar(){
                     ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm(),buildingCacheModels.get(i).getOr_psf());
 //                                    mCustomerMarker[i].setIcon(icon2);buildingCacheModels
                     customMarker.get(i).setIcon(icon2);
+                    //map.moveCamera(new );
                    // SaveBuildingDataToRealm();
 //                                    SendConfigData(config[i]);
 //                                    sendDataToOyeConfirmation(i);
@@ -4856,7 +4883,11 @@ public void resetSeekBar(){
                     tvRate.setVisibility(View.GONE);
                     rupeesymbol.setVisibility(View.GONE);
                     recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
+                    LatLng currentLocation = new LatLng(Double.parseDouble(buildingCacheModels.get(i).getLat())+0.005, Double.parseDouble(buildingCacheModels.get(i).getLng()));
 
+
+                    // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,MAP_ZOOM));
                     mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
                     txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_bg_color_white));
                     String text1;//="<font color=#ffffff size=20> "+rate_growth[i] + " %</font>";
@@ -4981,6 +5012,14 @@ public void resetSeekBar(){
         inn.putExtra("ll_price",price(buildingCacheModels.get(INDEX).getConfig(), buildingCacheModels.get(INDEX).getLl_pm()));
         inn.putExtra("or_price", price(buildingCacheModels.get(INDEX).getConfig(),buildingCacheModels.get(INDEX).getOr_psf()));
         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(inn);
+       // for (int i = 0; i < customMarker.size(); i++) {
+            /*if (buildingCacheModels.get(INDEX).getFlag() == true) {
+                customMarker.get(INDEX).setIcon(icon1);
+                customMarker.get(INDEX).hideInfoWindow();
+                buildingCacheModels.get(INDEX).setFlag(false);
+
+            }*/
+        //}
     }
 
 
