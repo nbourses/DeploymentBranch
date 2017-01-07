@@ -1714,7 +1714,7 @@ if(myRealm.isInTransaction())
 //                Log.i(TAG, "until insideroui4 " + c.getTo());
 //                Log.i(TAG, "until insideroui4 " + c.getImageUrl());
 
-                if (c.getStatus().equalsIgnoreCase("DEFAULT") || c.getStatus().equalsIgnoreCase("SYSTEM") || c.getStatus().equalsIgnoreCase("OYES")){
+                if (c.getStatus().equalsIgnoreCase("DEFAULT") || c.getStatus().equalsIgnoreCase("SYSTEM") || c.getStatus().equalsIgnoreCase("OYES") || c.getStatus().equalsIgnoreCase("OKS")){
                     Log.i("CONVER", "DEFAULT set");
                     userType = ChatMessageUserType.DEFAULT;
                 }
@@ -1765,7 +1765,7 @@ if(myRealm.isInTransaction())
 
 
 
-                Log.i(TAG, "until toro foro loro abcs "+Long.valueOf(c.getTimestamp())/10000);
+                Log.i(TAG, "until toro foro loro abcs ka "+userSubtype+" "+userType);
 
                 message = new ChatMessage();
                 message.setUserName(roleOfUser);
@@ -3234,11 +3234,14 @@ Log.i(TAG,"Caught in exception clearing notification count "+e);
                 @Override
                 public void failure(RetrofitError error) {
                     Log.i("get CALLED","update status failed "+error);
-                    SnackbarManager.show(
-                            Snackbar.with(DealConversationActivity.this)
-                                    .position(Snackbar.SnackbarPosition.TOP)
-                                    .text(error+"")
-                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    try {
+                        SnackbarManager.show(
+                                Snackbar.with(DealConversationActivity.this)
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text("Server Error: " + error.getMessage())
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }
+                    catch(Exception e){}
                 }
             });
 

@@ -63,9 +63,10 @@ private boolean fisrtconf=false;
 
         v = inflater.inflate(R.layout.fragment_any_click, container, false);
        // txtsqft = (TextView) v.findViewById(R.id.txtsqft);
+
+        ButterKnife.bind(this, v);
         Bundle bundle = getArguments();
         selectedPropertyType = bundle.getString("propertyType");
-        ButterKnife.bind(this, v);
         horizontalScrollViewHome=(HorizontalScrollView)v.findViewById(R.id.horizontalScrollView);
         horizontalScrollViewAny=(HorizontalScrollView)v.findViewById(R.id.horizontalScrollView1);
         rk1=(RadioButton) v.findViewById( R.id.rk1 );

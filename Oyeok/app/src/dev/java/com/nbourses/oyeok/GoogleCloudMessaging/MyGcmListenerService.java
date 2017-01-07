@@ -396,7 +396,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 badgeCount++;
                 General.setBadgeCount(getApplicationContext(), AppConstants.BADGE_COUNT, badgeCount);
                 ShortcutBadger.applyCount(this, badgeCount);
-                if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equals("client"))
+                if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
                     message = "We have just assigned a broker to your request.";
                 else
                     message = "We have just created a dealing room on your request.";
@@ -560,6 +560,10 @@ public class MyGcmListenerService extends GcmListenerService {
                 intent.putExtra("desc", data.getString("alert"));
                 intent.putExtra("title", heading);
             }
+        }
+
+        else if(title.equalsIgnoreCase("oyeok")) {
+            intent = new Intent(context, ClientDealsListActivity.class);
         }
         else{
             if(!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&

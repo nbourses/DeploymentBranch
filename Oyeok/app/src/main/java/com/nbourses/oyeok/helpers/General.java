@@ -818,18 +818,16 @@ public static PubNub initPubnub(Context context, String UUID){
                     public void failure(RetrofitError error) {
                         General.slowInternetFlag = false;
                         General.t.interrupt();
-                        Log.e(TAG, "error " + error.getMessage());
-                        if(error.getMessage().equalsIgnoreCase("timeout")){
-
+                        try {
                             SnackbarManager.show(
-                    Snackbar.with(context)
-                            .position(Snackbar.SnackbarPosition.BOTTOM)
-                            .text("Time out, please move to better connectivity area.")
-                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-
+                                    Snackbar.with(context)
+                                            .position(Snackbar.SnackbarPosition.TOP)
+                                            .text("Server Error: " + error.getMessage())
+                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
                         }
+                        catch(Exception e){}
 
-                        Log.i("TRACE", "RetrofitError");
+
                     }
                 });
             }
@@ -1144,6 +1142,15 @@ public static PubNub initPubnub(Context context, String UUID){
                 @Override
                 public void failure(RetrofitError error) {
                     Log.i("BROKER BUILDINGS CALLED","updateStatus failed "+error);
+                    try {
+                        SnackbarManager.show(
+                                Snackbar.with(con)
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text("Server Error: " + error.getMessage())
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }
+                    catch(Exception e){}
+
                 }
             });
 

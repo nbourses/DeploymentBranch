@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -66,12 +67,17 @@ import com.nbourses.oyeok.realmModels.HalfDeals;
 import com.nbourses.oyeok.realmModels.NotifCount;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.pubnub.api.PubNub;
+import com.pubnub.api.callbacks.PNCallback;
+import com.pubnub.api.models.consumer.PNStatus;
+import com.pubnub.api.models.consumer.presence.PNSetStateResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -163,6 +169,7 @@ private int page = 1;
     private ArrayList<BrokerDeals> default_deals_copy;
     private ArrayList<BrokerDeals> unverifiedLL;
     private ArrayList<BrokerDeals> unverifiedOR;
+    private Arrays channel;
     //private BrokerDeals deals;
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private String deals;
@@ -214,7 +221,7 @@ private int page = 1;
     Animation slideDown;
     private ArrayList<BrokerDeals> copy;
     private String сolorString;
-
+    private List<String> allChannels = new ArrayList<String>();
 
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
         @Override
@@ -851,7 +858,7 @@ private int page = 1;
         if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
             loadDefaultDealsNew();
         if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker") && General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")){
-
+        loadingDeals.setVisibility(View.GONE);
         }
         else {
             loadCachedDeals();
@@ -869,6 +876,8 @@ private int page = 1;
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
     }
 
     /*private void dismissProgressBar() {
@@ -962,10 +971,10 @@ private int page = 1;
                     if(preLast!=lastItem && page < maxPages)
                     {
                         //to avoid multiple calls for last item
-                        Log.d("Last", "Last");
+                        /*Log.d("Last", "Last");
                         loadingDeals.setVisibility(View.VISIBLE);
                         loadBrokerDeals(page);
-                        preLast = lastItem;
+                        preLast = lastItem;*/
                     }
                 }
         }
@@ -1030,6 +1039,14 @@ private int page = 1;
 
                     @Override
                     public void failure(RetrofitError error) {
+                        try {
+                            SnackbarManager.show(
+                                    Snackbar.with(ClientDealsListActivity.this)
+                                            .position(Snackbar.SnackbarPosition.TOP)
+                                            .text("Server Error: " + error.getMessage())
+                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                        }
+                        catch(Exception e){}
                         General.slowInternetFlag = false;
                         General.t.interrupt();
                     }
@@ -1214,6 +1231,8 @@ private int page = 1;
                     Log.i(TAG, "tidin tidin tindin 1 " + strResponse);
                     try {
                         page++;
+
+
                         JSONObject jsonObjectServer = new JSONObject(strResponse);
                         Log.i(TAG, "tidin tidin tindin 2" + jsonObjectServer);
                         if (jsonObjectServer.getBoolean("success")) {
@@ -1266,13 +1285,21 @@ private int page = 1;
                                     BrokerDeals deals = it.next();
 
                                     if (deals.getOkId() != null) {
+                                        allChannels.add(deals.getOkId());
+                                        Log.i(TAG,"channels channels channels "+allChannels);
                                         Log.i("TRACE", "dhishoom timestamp 13   "+page+"  "+deals.getLocality()+"   "+deals.getName() +"   "+deals.getSpecCode()+"   " + deals.getLastSeen());
                                         if (deals.getLastSeen().equalsIgnoreCase("default"))
                                             deals.setLastSeen("1480924852933");
                                         else if(deals.getLastSeen().length() == 17)
                                             deals.setLastSeen(deals.getLastSeen().substring(0,13));
+                                        else if(deals.getLastSeen().length() != 13)
+                                         deals.setLastSeen("1480924852933");
+                                           // deals.setLastSeen("1480924852");
+
                                             //deals.setLastSeen("1481701800596");
                                             //deals.setLastSeen("1464922983000");
+
+                                        Log.i(TAG,"timestamp after converting "+deals.getLastSeen());
 
                                         Log.i("TRACE", "dhishoom timestamp 12 "+"page no "+page+"   "+deals.getLocality()+"   " +deals.getName() +"   "+deals.getSpecCode()+"   "  + deals.getLastSeen());
 
@@ -1380,8 +1407,21 @@ private int page = 1;
                                 Collections.sort(total_deals);
 
                                 listAdapter.notifyDataSetChanged();
-                                loadingDeals.setVisibility(View.GONE);
 
+
+                                new Handler().post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // Code here will run in UI thread
+                                        if(page < maxPages) {
+                                            loadBrokerDeals(page);
+                                        }
+                                        else {
+                                            loadingDeals.setVisibility(View.GONE);
+                                           // setOnlineStatus();
+                                        }
+                                    }
+                                });
 
 
 
@@ -1434,15 +1474,26 @@ private int page = 1;
 
 
                             }
+                            else{
+                                loadingDeals.setVisibility(View.GONE);
+                            }
                         }
                     } catch (Exception e) {
                         Log.i("TRACE", "Caught in exception in loadbrokerdeals " + e);
                     }
-                    loadingDeals.setVisibility(View.GONE);
+                    //loadingDeals.setVisibility(View.GONE);
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
+                    try {
+                        SnackbarManager.show(
+                                Snackbar.with(ClientDealsListActivity.this)
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text("Server Error: " + error.getMessage())
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }
+                    catch(Exception e){}
                     General.slowInternetFlag = false;
                     General.t.interrupt();
                     loadingDeals.setVisibility(View.GONE);
@@ -1966,6 +2017,38 @@ Log.i(TAG,"Caught in exception narcos "+e);
         try {
             General.setDealStatus(this, "default", okId, String.valueOf(System.currentTimeMillis()), "");
         }catch(Exception e){}
+
+    }
+
+    private void setOnlineStatus(){
+        Log.i(TAG,"setOnlineStatus called allChannels "+allChannels);
+        PubNub pubnub;
+
+        if(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase(""))
+        pubnub = General.initPubnub(this, General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI));
+        else
+            pubnub = General.initPubnub(this, General.getSharedPreferences(this, AppConstants.USER_ID));
+
+        Map<String, Object> myState = new HashMap<>();
+        myState.put("online", "true");
+
+        pubnub.setPresenceState()
+                .uuid(pubnub.getConfiguration().getUuid())
+                .channels(allChannels)
+                .state(myState).async(new PNCallback<PNSetStateResult>() {
+            @Override
+            public void onResponse(PNSetStateResult result, PNStatus status) {
+                try {
+                    // handle set state response
+                    Log.i(TAG, "zxc" + result);
+                    //getState();
+
+                }catch(Exception e){
+                    Log.i(TAG,"setOnlineStatus called caught "+e);
+                }
+
+            }
+        });
 
     }
 

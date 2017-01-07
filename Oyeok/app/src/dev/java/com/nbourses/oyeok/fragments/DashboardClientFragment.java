@@ -1986,7 +1986,9 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             if(intent.getExtras()!=null && intent.getExtras().getBoolean("buildingoye")==true)
             {
                 Log.i("closeOyeScreenSlide","====onMapclicked===");
-                onMapclicked();
+                try {
+                    onMapclicked();
+                }catch(Exception e){}
             }
             UpdateRatePanel();
             RatePanel = true;
