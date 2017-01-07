@@ -338,7 +338,10 @@ GoogleMap map;
                     }else if (key.equals(AppConstants.MY_BASE_LOCATION)) {
                         tv_change_region.setText(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION));
                     }else if (key.equals(AppConstants.RESETPHASE)) {
-                        ((BrokerPreokFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
+                        try {
+                            ((BrokerPreokFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
+                        }
+                        catch(Exception e){}
                         General.setSharedPreferences(getBaseContext(),AppConstants.RESETPHASE,"false");
                     }
                 }
