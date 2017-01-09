@@ -301,7 +301,7 @@ init();
     private void updateLabel(){
         String myFormat = "dd/MM/yyyy";
         //In which you need put here
-        myCalendar.add(Calendar.DATE,1);
+        //myCalendar.add(Calendar.DATE,1);
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         txtcalendar.setText(sdf.format(myCalendar.getTime()));
 //        PossessionDate=txtcalendar.getText().toString();

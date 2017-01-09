@@ -522,7 +522,7 @@ private void addData(){
         // oyeButtonData = area;
         General.saveBoolean(getContext(), "propertySubtypeFlag", true);
         //setOyeButtonData(oyeButtonData);
-        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,oyeButtonData+" sq.ft");
+        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,area+" sq.ft");
         onFilterValueUpdate(area,bhkNumber+""+bhkNumberValue);
     }
 
