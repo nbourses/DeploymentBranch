@@ -334,6 +334,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
 
                             break;
                         }else{
+                            General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, ids);
                             Intent in = new Intent(getBaseContext(), BrokerMap.class);
                             in.putExtra("id",ids);
                             in.putExtra("Bmarkerflag","true");

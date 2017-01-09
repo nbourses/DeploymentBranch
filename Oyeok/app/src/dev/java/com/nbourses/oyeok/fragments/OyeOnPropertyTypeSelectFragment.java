@@ -90,8 +90,17 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
     b_conf=General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG);
     General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"");
     plotconf(b_conf);
+    if(b_conf==null){
+        b_conf="2bhk";
+    }
+//    AppConstants.letsOye.setPropertySubType("2bhk");
+//    AppConstants.letsOye.setSize("2bhk");
     //plotconf(b_conf);
     //commanbhk=AppConstants.CONFIG;
+}else{
+    AppConstants.letsOye.setPropertySubType("2bhk");
+    AppConstants.letsOye.setSize("2bhk");
+    b_conf="2bhk";
 }
         Log.i("selectedPropertyType","selectedPropertyType================== "+selectedPropertyType+"  AppConstants.CONFIG   : "+AppConstants.CONFIG+" ===== "+General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG)+" ======= "+AppConstants.PROPERTY);
 
@@ -109,6 +118,7 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
                 AppConstants.letsOye.setPropertySubType(b_conf);
                 AppConstants.letsOye.setSize(b_conf);
                 onFilterValueUpdate("950","home");
+
                 plotconf(b_conf);
                 Subproperty="home";
                 break;
@@ -773,6 +783,9 @@ private void addData(){
             }
             fisrtconf=false;
         }*/
+        if(commanbhk==null){
+            commanbhk=txt950h;
+        }
         commanbhk.setChecked(true);
         onFilterValueUpdate(area,AppConstants.CONFIG);
     }

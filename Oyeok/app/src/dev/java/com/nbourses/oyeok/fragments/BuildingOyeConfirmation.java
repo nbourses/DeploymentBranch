@@ -312,20 +312,22 @@ public class BuildingOyeConfirmation extends Fragment {
 
 
     private void   setEMI(){
-        String text1;
-        text1="<html>Connect : <font color=#ff9f1c>32</font> Nearby Brokers</html>";
-        btn_listing.setText(Html.fromHtml(text1));
-            if(AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")){
-                int emi=(formattedPrice*4)/3;
-                sharing.setText(Html.fromHtml("<html>EMI Deposits starts at : <big>"+General.currencyFormat(emi+"")+"<big><html>"));
+        if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            String text1;
+            text1 = "<html>Connect : <font color=#ff9f1c>32</font> Nearby Brokers</html>";
+            btn_listing.setText(Html.fromHtml(text1));
+            if (AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")) {
+                int emi = (formattedPrice * 4) / 3;
+                sharing.setText(Html.fromHtml("<html>EMI Deposits starts at : <big>" + General.currencyFormat(emi + "") + "<big><html>"));
 
-            }else{
-                BigDecimal emi=calcEMI(BigDecimal.valueOf(or_psf*Integer.parseInt(approx_area)),BigDecimal.valueOf(240),BigDecimal.valueOf(10));
-                sharing.setText(Html.fromHtml("<html>EMI starts at : <big>"+General.currencyFormat(emi+"")+"<big><html>"));
+            } else {
+                BigDecimal emi = calcEMI(BigDecimal.valueOf(or_psf * Integer.parseInt(approx_area)), BigDecimal.valueOf(240), BigDecimal.valueOf(9.5));
+                sharing.setText(Html.fromHtml("<html>EMI starts at : <big>" + General.currencyFormat(emi + "") + "<big><html>"));
                 /*text1="<html>Connect : <font color=#ff9f1c>32</font> Nearby Brokers</html>";
                 btn_listing.setText(Html.fromHtml(text1));
 */
             }
+        }
 
     }
 
@@ -529,6 +531,9 @@ public class BuildingOyeConfirmation extends Fragment {
                   }else{
                       AppConstants.CONFIG=approx_area;
                   }
+                  Intent intent=new Intent(AppConstants.DISPLAY_CONFIG_BASED_PRICE);
+                  intent.putExtra("area1",approx_area);
+                  LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                   fisrtconf=false;
               }
 

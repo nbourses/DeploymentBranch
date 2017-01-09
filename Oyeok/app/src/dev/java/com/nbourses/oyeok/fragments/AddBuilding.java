@@ -109,7 +109,6 @@ private TextView Cancel,back,usertext;
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                     ((BrokerMap) getActivity()).closeCardContainer();
                     ((BrokerMap)getActivity()).openAddListing();
@@ -126,6 +125,7 @@ private TextView Cancel,back,usertext;
             @Override
             public void onClick(View v) {
                 AppConstants.PROPERTY="Home";
+
                 if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                     ((BrokerMap) getActivity()).closeCardContainer();
                 }else{

@@ -286,7 +286,18 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
 
 
 
+    private BroadcastReceiver mainScreenBuildingClick=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
 
+            if(intent.getExtras().getString("b_ids")!=null){
+                autoMarkerClick(intent.getExtras().getString("b_ids"));
+            }
+
+
+
+        }
+    };
 
 
 
@@ -1350,6 +1361,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
             searchflag=false;
         }else if( buidingInfoFlag){
            CloseBuildingOyeComfirmation();
+            onMapclicked();
        }else if(Signupflag){
             CloseSignUP();
         }else if(AppConstants.MY_BASE_LOCATION_FLAG){
@@ -1357,7 +1369,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
             //do nothing
         }else{
             General.setSharedPreferences(getBaseContext(), AppConstants.RESETPHASE, "true");
-            this.finish();
+            //this.finish();
+           super.onBackPressed();
         }
         Log.i("onBackPressed ","onBackPressed() =========== "+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
 
@@ -1368,6 +1381,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         super.onPause();
         LocalBroadcastManager.getInstance(getBaseContext()).unregisterReceiver(resetMap);
         LocalBroadcastManager.getInstance(getBaseContext()).unregisterReceiver(phasedSeekBarClicked);
+        LocalBroadcastManager.getInstance(getBaseContext()).unregisterReceiver(mainScreenBuildingClick);
     }
 
     @Override
@@ -1375,6 +1389,9 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         super.onPostResume();
         LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(resetMap, new IntentFilter(AppConstants.RESETMAP));
         LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(phasedSeekBarClicked, new IntentFilter(AppConstants.PHASED_SEEKBAR_CLICKED));
+        LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(mainScreenBuildingClick, new IntentFilter(AppConstants.Main_SCREEN_BUILDING_CLICK));
+
+
     }
 
 
@@ -1382,9 +1399,9 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
     public void oncancelBtnClick(){
 
         if(buidingInfoFlag==true) {
-            Intent in = new Intent(AppConstants.MARKERSELECTED);
+            /*Intent in = new Intent(AppConstants.MARKERSELECTED);
             in.putExtra("markerClicked", "false");
-            LocalBroadcastManager.getInstance(this).sendBroadcast(in);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(in);*/
             CloseBuildingOyeComfirmation();
 
             onMapclicked();
@@ -1587,7 +1604,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                        // txtFilterValue.setText("Home");
                         txtFilterValue.setText(oyetext);
                         txtFilterValue.setBackground(getBaseContext().getResources().getDrawable(R.drawable.oye_button_border));
-                       // ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
+                        if(buidingInfoFlag)
+                        CloseBuildingOyeComfirmation();
                         /*Intent in = new Intent(AppConstants.MARKERSELECTED);
                         in.putExtra("markerClicked", "false");
                         //buildingSelected = true;
@@ -1912,6 +1930,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
 
         if(!General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("")&&!General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("PC")){
             autoMarkerClick(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY));
+            General.setSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY,"");
+
         }
         Intent inn = new Intent(AppConstants.REFRESH_LISTVIEW);
         LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(inn);
@@ -2740,6 +2760,10 @@ public void CloseSignUP(){
                     customMarker.get(i).setIcon(icon2);
                     customMarker.get(i).showInfoWindow();
                     // markerSelected();
+
+                    LatLng currentLocation = new LatLng(Double.parseDouble(buildingCacheModels.get(i).getLat())+0.005, Double.parseDouble(buildingCacheModels.get(i).getLng()));
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,MAP_ZOOM));
+
                     OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig());
                     //SaveBuildingDataToRealm();
                     buildingIcon.setVisibility(View.VISIBLE);
