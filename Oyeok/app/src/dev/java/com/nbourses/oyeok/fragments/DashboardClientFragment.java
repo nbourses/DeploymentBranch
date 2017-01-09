@@ -511,13 +511,26 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         }
     };
 
+    private BroadcastReceiver mainScreenBuildingClick=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(intent.getExtras().getString("c_ids")!=null){
+                autoMarkerClick(intent.getExtras().getString("c_ids"));
+            }
+
+
+
+        }
+    };
+
     private BroadcastReceiver onFilterValueUpdate = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getExtras() != null) {
-                if ((intent.getExtras().getString("filterValue") != null)&&intent.getExtras().getString("subproperty").equalsIgnoreCase("home")) {
-                    Log.i("filtervalue", "filtervalue " + intent.getExtras().getString("filterValue")+"  "+intent.getExtras().getString("area"));
-                   String txt=intent.getExtras().getString("filterValue");
+                if ((intent.getExtras().getString("bhkvalue") != null)&&intent.getExtras().getString("subproperty").equalsIgnoreCase("home")) {
+                    Log.i("filtervalue123", "filtervalue " + intent.getExtras().getString("bhkvalue")+"  "+intent.getExtras().getString("area"));
+                   String txt=intent.getExtras().getString("bhkvalue");
                     txtFilterValue.setText(Html.fromHtml("<html><small>"+txt+"</small></html>"));
                 }
                 if ((intent.getExtras().getString("area") != null)) {
@@ -1622,15 +1635,20 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         }
 
 
-        try {
+        /*try {
             SharedPreferences prefs =
                     PreferenceManager.getDefaultSharedPreferences(getContext());
             listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 
                     if (key.equals(AppConstants.BUILDING_ID)) {
-                        autoMarkerClick(General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID));
-                        Log.i("buildingid","OUTO_CLICK_MARKER  : "+General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID));
+
+                        try {
+                            autoMarkerClick(General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID));
+                            Log.i("buildingid","OUTO_CLICK_MARKER  : "+General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
                     }
                 }
@@ -1642,7 +1660,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         }
         catch (Exception e){
             Log.e("loc", e.getMessage());
-        }
+        }*/
 
         return rootView;
     }
@@ -1993,9 +2011,11 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             if(intent.getExtras()!=null && intent.getExtras().getBoolean("buildingoye")==true)
             {
                 Log.i("closeOyeScreenSlide","====onMapclicked===");
-                try {
-                    onMapclicked();
-                }catch(Exception e){}
+               // try {
+                   // onMapclicked();
+                    //Clearscreen();
+                getPrice();
+                //}catch(Exception e){}
             }
             UpdateRatePanel();
             RatePanel = true;
@@ -2272,6 +2292,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(phasedSeekBarClicked, new IntentFilter(AppConstants.PHASED_SEEKBAR_CLICKED));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(resetMap, new IntentFilter(AppConstants.RESETMAP));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(setLocation, new IntentFilter(AppConstants.SETLOCN));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mainScreenBuildingClick, new IntentFilter(AppConstants.Main_SCREEN_BUILDING_CLICK));
 
 
     }
@@ -2287,6 +2308,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(setLocation);
 
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(DisplayBuildingPrice);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mainScreenBuildingClick);
         // LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(oncheckbeacon);
 
     }
@@ -2406,6 +2428,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                         in.putExtra("markerClicked", "false");
                         buildingSelected = true;
                         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+
 //  END
 
                         if (!AppConstants.SETLOCATION||!savebuilding) {
@@ -3713,10 +3736,11 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                 rupeesymbol.setVisibility(View.VISIBLE);
                 customMarker.get(i).setIcon(icon1);
                 customMarker.get(i).hideInfoWindow();
+                buildingSelected = true;
                 ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                 Intent in = new Intent(AppConstants.MARKERSELECTED);
                 in.putExtra("markerClicked", "false");
-                buildingSelected = true;
+
                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
                 search_building_icon.setVisibility(View.GONE);
                 buildingIcon.setVisibility(View.GONE);
@@ -3790,7 +3814,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         args.putString("brokerType", brokerType);
         args.putString("Address", SharedPrefs.getString(getActivity(), SharedPrefs.MY_REGION));
         onOyeClick.onClickButton(args);
-
+        buildingoyeFlag=false;
         CancelAnimation();
         //AppConstants.GOOGLE_MAP = map;
 //        if (clicked == true) {
@@ -5041,13 +5065,12 @@ public void resetSeekBar(){
        // for (int i = 0; i < customMarker.size(); i++) {
             /*if (buildingCacheModels.get(INDEX).getFlag() == true) {
                 customMarker.get(INDEX).setIcon(icon1);
-                customMarker.get(INDEX).hideInfoWindow();
+                customMarker.get(INDEX) .hideInfoWindow();
                 buildingCacheModels.get(INDEX).setFlag(false);
 
             }*/
         //}
     }
-
 
     public Bundle Brokertype(){
         Bundle args = new Bundle();
@@ -5074,5 +5097,9 @@ public void resetSeekBar(){
             onMapclicked();
         }
     }
+
+public boolean oyeFlagstatus(){
+    return buildingoyeFlag;
+}
 
 }

@@ -191,7 +191,7 @@ public class AppConstants {
 
     public static final String DISPLAY_BUILDING_CONF="displayBuildingConf";
     public static final String DISPLAY_CONFIG_BASED_PRICE="displayConfigBasedPrice";
-
+    public static final String Main_SCREEN_BUILDING_CLICK="mainScreenBuildingClick";
     //Reset PhaseSeekbar Key
     public static final String RESETPHASE = "resetPhase";
     public static final String AUTO_TT_CHANGE = "autoClickMarker";

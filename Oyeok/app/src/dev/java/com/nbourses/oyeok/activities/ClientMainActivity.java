@@ -1206,6 +1206,8 @@ try {
             Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
             intent.putExtra("buildingoye",buildingoye);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            buildingoye=false;
+            //((DashboardClientFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).Clearscreen();
         }
 /*
 if(AppConstants.FAV) {
@@ -1863,7 +1865,17 @@ if(AppConstants.FAV) {
     }
 
     public  void EditOyeDetails(){
-        ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).OnOyeClick1();
+        Log.i("buildingoye","================buildingoye============= : "+buildingoye);
+        buildingoye=((DashboardClientFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).oyeFlagstatus();
+        Log.i("buildingoye","================buildingoye============= : "+buildingoye);
+        if(buildingoye) {
+            openOyeSreen();
+            ((DashboardClientFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).buildingOye();
+        }
+        else {
+            ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).OnOyeClick1();
+        }
+
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).disablepanel(true);
         if(oyeconfirm_flag==true) {
             for(int i=1;i<getSupportFragmentManager().getBackStackEntryCount();i++)

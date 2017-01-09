@@ -15,9 +15,10 @@
 
 
     <activity android:name="com.nbourses.oyeok.activities.BrokerMap" android:label="@string/title_activity_broker_map"
-        android:theme="@style/MyMaterialTheme">
+        android:theme="@style/MyMaterialTheme"
         android:screenOrientation="portrait"
-        android:windowSoftInputMode="adjustNothing"
+        android:windowSoftInputMode="adjustNothing">
+
     </activity>
     <activity android:name="com.nbourses.oyeok.activities.LogActivity" android:label="@string/title_activity_log"
         android:theme="@style/MyMaterialTheme"></activity>
