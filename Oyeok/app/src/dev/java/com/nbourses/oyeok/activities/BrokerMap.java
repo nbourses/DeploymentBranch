@@ -284,7 +284,25 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         }
     };
 
+    private BroadcastReceiver DisplayBuildingPrice=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String area= intent.getExtras().getString("area1");
+            int price = Integer.parseInt(area)*buildingCacheModels.get(INDEX).getLl_pm();
+           /* String text ;//= "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price)).substring(2, General.currencyFormat(String.valueOf(price)).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+            text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price)).substring(2, General.currencyFormat(String.valueOf(price)).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+            tvFetchingrates.setText(Html.fromHtml(text));*/
 
+            if (brokerType.equalsIgnoreCase("rent")) {
+                String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price)).substring(2, General.currencyFormat(String.valueOf(price)).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
+                tvFetchingrates.setText(Html.fromHtml(text));
+            } else {
+                String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).substring(2, General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
+                tvFetchingrates.setText(Html.fromHtml(text));
+            }
+
+        }
+    };
 
     private BroadcastReceiver mainScreenBuildingClick=new BroadcastReceiver() {
         @Override
@@ -1383,6 +1401,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         LocalBroadcastManager.getInstance(getBaseContext()).unregisterReceiver(resetMap);
         LocalBroadcastManager.getInstance(getBaseContext()).unregisterReceiver(phasedSeekBarClicked);
         LocalBroadcastManager.getInstance(getBaseContext()).unregisterReceiver(mainScreenBuildingClick);
+        LocalBroadcastManager.getInstance(getBaseContext()).unregisterReceiver(DisplayBuildingPrice);
+
     }
 
     @Override
@@ -1391,6 +1411,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(resetMap, new IntentFilter(AppConstants.RESETMAP));
         LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(phasedSeekBarClicked, new IntentFilter(AppConstants.PHASED_SEEKBAR_CLICKED));
         LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(mainScreenBuildingClick, new IntentFilter(AppConstants.Main_SCREEN_BUILDING_CLICK));
+        LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(DisplayBuildingPrice, new IntentFilter(AppConstants.DISPLAY_CONFIG_BASED_PRICE));
 
 
     }
