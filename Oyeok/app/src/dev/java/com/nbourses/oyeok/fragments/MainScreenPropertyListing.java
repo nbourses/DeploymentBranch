@@ -889,7 +889,7 @@ try {
                 Searchlist.setHint("Search from " + count + " Building");*/
              //   Log.i("sliding111","==============refreshListView==========onChange========  : "+General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE));
 
-             
+
                 adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSortedAsync("timestamp", false));
 
             }else{

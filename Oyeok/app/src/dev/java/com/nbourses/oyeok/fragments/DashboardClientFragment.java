@@ -32,7 +32,6 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -87,7 +86,6 @@ import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nbourses.oyeok.Database.SharedPrefs;
-//import com.nbourses.oyeok.Firebase.ChatList;
 import com.nbourses.oyeok.GooglePlacesApiServices.GooglePlacesReadTask;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AutoOk;
@@ -160,6 +158,8 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 import static com.nbourses.oyeok.R.id.parent;
 import static java.lang.Math.log10;
+
+//import com.nbourses.oyeok.Firebase.ChatList;
 
 //import com.nbourses.oyeok.Database.DBHelper;
 //import com.nbourses.oyeok.Firebase.DroomChatFirebase;
@@ -770,6 +770,15 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 // Log.i("measurement","frag me========: "+height+"  ; "+width);
                 MainScreenPropertyListing mainScreenPropertyListing= new MainScreenPropertyListing();
                 loadFragmentAnimated(mainScreenPropertyListing,b,R.id.list_container,"");
+                try {
+                    Realm realm1= General.realmconfig(getContext());
+                    long count = realm1.where(BuildingCacheRealm.class).count();
+                    if(count==0){
+                        fr.setVisibility(View.GONE);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             }
         });
@@ -2575,6 +2584,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                             tvRate.setVisibility(View.VISIBLE);
                                             rupeesymbol.setVisibility(View.VISIBLE);
                                             tvFetchingrates.setVisibility(View.GONE);
+
                                             PlotBuilding();
 
                                             //missingArea.setVisibility(View.GONE);
@@ -4821,6 +4831,7 @@ public void resetSeekBar(){
 
       Intent inn = new Intent(AppConstants.REFRESH_LISTVIEW);
       LocalBroadcastManager.getInstance(getContext()).sendBroadcast(inn);
+      fr.setVisibility(View.VISIBLE);
      /* new CountDownTimer(500, 500) {
 
           public void onTick(long millisUntilFinished) {
