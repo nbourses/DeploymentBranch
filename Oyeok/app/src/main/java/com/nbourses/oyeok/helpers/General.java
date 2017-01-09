@@ -32,7 +32,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -166,11 +165,15 @@ public class General extends BroadcastReceiver {
 while(slowInternetFlag) {
     if (((SystemClock.uptimeMillis() - startTime) / 1000.0) > AppConstants.slowInternet) {
         Log.i(TAG, "pokemon Slow net connection ,Please move to better connectivity area.");
-        SnackbarManager.show(
-                Snackbar.with(con)
-                        .position(Snackbar.SnackbarPosition.TOP)
-                        .text("Slow net connection ,Please move to better connectivity area.")
-                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+        try {
+            SnackbarManager.show(
+                    Snackbar.with(con)
+                            .position(Snackbar.SnackbarPosition.TOP)
+                            .text("Slow net connection ,Please move to better connectivity area.")
+                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         slowInternetFlag = false;
         General.t.interrupt();
 
@@ -568,15 +571,15 @@ public static PubNub initPubnub(Context context, String UUID){
             final String price;
             final String speccode;
             final Realm myRealm = realmconfig(context);
-            Log.i("TRACE", "in publishOye");
+            Log.i("TRACE16", "in publishOye");
             //Made gson final to access it in success
             final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
             String json = gson.toJson(AppConstants.letsOye);
 
-            Log.d(TAG, "AppConstants.letsOye " + json);
-            Log.i("TRACE", "Get user Id from model " + AppConstants.letsOye.getUserId());
 
-            Log.i("TRACE", "AppConstants.letsOye from model " + json);
+            Log.i("TRACE16", "Get user Id from model " + AppConstants.letsOye.getUserId());
+
+            Log.i("TRACE16", "AppConstants.letsOye from model " + json);
             JSONObject jsonObj = new JSONObject(json);
             intend = jsonObj.getString("req_avl");
             tt = jsonObj.getString("tt");
@@ -584,15 +587,15 @@ public static PubNub initPubnub(Context context, String UUID){
             pstype = jsonObj.getString("property_subtype");
             price = jsonObj.getString("price");
             speccode = intend.toUpperCase() + "-" + tt + "-" +ptype+ "-" + pstype + "-" + price;
-            Log.i("TRACE", "speccode is" + speccode);
+            Log.i("TRACE16", "speccode is" + speccode);
             General.setSharedPreferences(context, "MY_SPEC_CODE", speccode);
             General.getSharedPreferences(context, "MY_SPEC_CODE");
-            Log.i("TRACE", "Spec code got from shared prefs" + General.getSharedPreferences(context, "MY_SPEC_CODE"));
+            Log.i("TRACE16", "Spec code got from shared prefs" + General.getSharedPreferences(context, "MY_SPEC_CODE"));
                 //set = new HashSet<String>();
-            Log.i("TRACE", "speccode:" + speccode);
+            Log.i("TRACE16", "speccode:" + speccode);
             //set = new HashSet<String>(Arrays.asList("speccode"));
             //  Log.i("TRACE","Okid from shared prefs is " +General.getSharedPreferences(context, "OK_ID"));
-                Log.i("TRACE", "is networking available" + General.getSharedPreferences(context, AppConstants.USER_ID));
+                Log.i("TRACE16", "is networking available" + General.getSharedPreferences(context, AppConstants.USER_ID));
                 //set userId
                 AppConstants.letsOye.setUserId(General.getSharedPreferences(context, AppConstants.USER_ID));
                 //set gcmId
@@ -600,7 +603,7 @@ public static PubNub initPubnub(Context context, String UUID){
                 AppConstants.letsOye.setPossession_date(General.getSharedPreferences(context,AppConstants.POSSESSION_DATE));
                 AppConstants.letsOye.setBuilding_id("");
                 String furnishingStatus="sf",furnishing=General.getSharedPreferences(context,AppConstants.FURNISHING);
-                Log.i(TAG,"oye published r"+General.getSharedPreferences(context,AppConstants.FURNISHING));
+                Log.i("TRACE16","oye published r"+General.getSharedPreferences(context,AppConstants.FURNISHING));
                     if (furnishing.equalsIgnoreCase("Fully-Furnished")){
                         furnishingStatus="ff";
                     }else if (furnishing.equalsIgnoreCase("Un-furnished")){
@@ -608,18 +611,19 @@ public static PubNub initPubnub(Context context, String UUID){
                     }else if (furnishing.equalsIgnoreCase("Semi-furnished")){
                         furnishingStatus="sf";
                     }
-                Log.i(TAG,"oye published r 1 "+furnishingStatus);
+                Log.i("TRACE16","oye published r 1 "+furnishingStatus);
                 AppConstants.letsOye.setFurnishing(furnishingStatus);
                 AppConstants.letsOye.setNo_call(General.getSharedPreferences(context,AppConstants.NO_CALL));
-                Log.i("NO_CALL", "Get Furnishing from model " + AppConstants.letsOye.getFurnishing());
-                Log.i("TRACE", "Get Possession Date from model " + AppConstants.letsOye.getPossession_date());
-                Log.i("TRACE", "GCM id is" + SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
-                Log.i("TRACE", "Get user Id from model " + AppConstants.letsOye.getUserId());
-                Log.i("TRACE", "Get user Id from model " + AppConstants.letsOye.getGcmId());
-                Log.i("TRACE", "AppConstants.letsOye direct" + AppConstants.letsOye);
+                Log.i("TRACE16 NO_CALL", "Get Furnishing from model " + AppConstants.letsOye.getFurnishing());
+                Log.i("TRACE16", "Get Possession Date from model " + AppConstants.letsOye.getPossession_date());
+                Log.i("TRACE16", "GCM id is" + SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
+                Log.i("TRACE16", "Get user Id from model " + AppConstants.letsOye.getUserId());
+                Log.i("TRACE16", "Get user Id from model " + AppConstants.letsOye.getGcmId());
+                Log.i("TRACE16", "Get user Id from model no call " + AppConstants.letsOye.getNo_call() +"  "+General.getSharedPreferences(context,AppConstants.NO_CALL));
+                Log.i("TRACE16", "AppConstants.letsOye direct" + AppConstants.letsOye);
                 final Gson gsona = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
                 String jsona = gsona.toJson(AppConstants.letsOye);
-                Log.i(TAG, "AppConstants.letsOye parsed " + jsona);
+                Log.i("TRACE16", "AppConstants.letsOye parsed " + jsona);
                 RestAdapter restAdapter = new RestAdapter
                         .Builder()
                         .setEndpoint(AppConstants.SERVER_BASE_URL_11)
@@ -631,15 +635,15 @@ public static PubNub initPubnub(Context context, String UUID){
                 oyeokApiService.publishOye(AppConstants.letsOye, new Callback<PublishLetsOye>() {
                     @Override
                     public void success(PublishLetsOye letsOye, Response response) {
-
+                        try {
                         General.slowInternetFlag = false;
                         General.t.interrupt();
 
-                        Log.i("TRACE", "in success" + response);
+                        Log.i("TRACE16", "in success" + response);
                         String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
-                        Log.e(TAG, "RETROFIT SUCCESS " + strResponse);
+                        Log.i("TRACE16", "RETROFIT SUCCESS " + strResponse);
 
-                        Log.i("TRACE", "Response" + strResponse);
+                        Log.i("TRACE16", "Response" + strResponse);
 
                         //now user is logged in user
                         General.setSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER, "yes");
@@ -648,30 +652,30 @@ public static PubNub initPubnub(Context context, String UUID){
                         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String formattedDate = df.format(c.getTime());
 
-                        try {
-                            Log.i("TRACE", "in try toast response");
+
+                            Log.i("TRACE16", "in try toast response");
 
                             JSONObject jsonResponse = new JSONObject(strResponse);
                             JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
-                            Log.i("TRACE", "Response data" + jsonResponse.getString("responseData"));
-                            OKID = jsonResponseData.getString("ok_id");
+                            Log.i("TRACE16", "Response data" + jsonResponse.getString("responseData"));
+
                             //change this msg with error code
-                            if ("Exhausted your daily limit of Oyes today. Pls try tomorrow".equals(jsonResponseData.getString("message"))) {
-                                Log.i("TRACE", "Hello user, " + jsonResponseData.getString("message"));
+                            if ("Exhausted your daily limit of Oyes today. Pls try tomorrow".equalsIgnoreCase(jsonResponseData.getString("message"))) {
+                                Log.i("TRACE16", "Hello user, " + jsonResponseData.getString("message"));
+                              TastyToast.makeText(con,jsonResponseData.getString("message"),TastyToast.LENGTH_LONG,TastyToast.INFO);
 
-                                Toast.makeText(context, "" + jsonResponseData.getString("message"), Toast.LENGTH_LONG).show();
                                 SnackbarManager.show(
-                                        Snackbar.with(context)
+                                        Snackbar.with(con)
                                                 .position(Snackbar.SnackbarPosition.TOP)
-                                                .text("Your old oye with same specs: " + jsonResponseData.getString("message"))
+                                                .text(jsonResponseData.getString("message"))
                                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                return;
                             } else {
-
+                                OKID = jsonResponseData.getString("ok_id");
 
                                 try {
 
                                     if(myRealm.isInTransaction()) {
-                                        Log.i("HOTFIX","is in transaction saving default deal");
 
                                         myRealm.commitTransaction();
                                     }
@@ -687,16 +691,16 @@ public static PubNub initPubnub(Context context, String UUID){
                                     defaultDeals.setPossation_date(AppConstants.letsOye.getPossession_date());
                                     defaultDeals.setBudget(price);
 
-                                    Log.i("locality is thee ","locality is thee " +SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY));
+                                    Log.i("TRACE16","locality is thee " +SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY));
                                     defaultDeals.setLocality(SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY));
                                     myRealm.beginTransaction();
                                     DefaultDeals defaultDeals1 = myRealm.copyToRealmOrUpdate(defaultDeals);
-                                    Log.i("locality is thee ","locality is thee w " +defaultDeals1.getLocality());
+                                    Log.i("TRACE16","locality is thee w " +defaultDeals1.getLocality());
 
                                     myRealm.commitTransaction();
                                 }
                                 catch(Exception e){
-                                    Log.i("Exception","Caught in saving default deal "+e);
+                                    Log.i("TRACE16","Caught in saving default deal "+e.getMessage());
                                 }
 
                                 try{
@@ -705,14 +709,14 @@ public static PubNub initPubnub(Context context, String UUID){
 
                                     for(DefaultDeals r:results1) {
                                         // Log.i(TAG,"insiderro2 ");
-                                        Log.i(TAG, "insiderrou3 " + r.getOk_id());
-                                        Log.i(TAG, "insiderrou4 " + r.getSpec_code());
-                                        Log.i(TAG, "insiderrou5 " + r.getLocality());
-                                        Log.i(TAG, "insiderrou6 " + r.getLastSeen());
-                                        Log.i(TAG, "insiderrou7 " + r.getP_type());
-                                        Log.i(TAG, "insiderrou8 " + r.getPs_type());
-                                        Log.i(TAG, "insiderrou9 " + r.getPossation_date());
-                                        Log.i(TAG, "insiderrou10 " + r.getFurnishing());
+                                        Log.i("TRACE16", "insiderrou3 " + r.getOk_id());
+                                        Log.i("TRACE16", "insiderrou4 " + r.getSpec_code());
+                                        Log.i("TRACE16", "insiderrou5 " + r.getLocality());
+                                        Log.i("TRACE16", "insiderrou6 " + r.getLastSeen());
+                                        Log.i("TRACE16", "insiderrou7 " + r.getP_type());
+                                        Log.i("TRACE16", "insiderrou8 " + r.getPs_type());
+                                        Log.i("TRACE16", "insiderrou9 " + r.getPossation_date());
+                                        Log.i("TRACE16", "insiderrou10 " + r.getFurnishing());
                                     }
 
                                 }
@@ -720,18 +724,12 @@ public static PubNub initPubnub(Context context, String UUID){
 
                                 }
 
-                                Log.i("TRACE", "open intent deal listing "+OKID);
+                                Log.i("TRACE16", "open intent deal listing "+OKID);
                                 //open deals listing
                                 AppConstants.CLIENT_DEAL_FLAG = true;
                                 Intent openDealsListing = new Intent(context, ClientDealsListActivity.class);
                                 openDealsListing.putExtra("oyeok "+AppConstants.OK_ID, OKID);
-                       /* Intent openDealsListing = new Intent(context, DealConversationActivity.class);
 
-                        openDealsListing.putExtra("userRole", "client");
-                        openDealsListing.putExtra("Oyed", "yes");
-                        openDealsListing.putExtra(AppConstants.SPEC_CODE, speccode);
-                        openDealsListing.putExtra(AppConstants.OK_ID, General.getSharedPreferences(context, "OK_ID"));
-                        openDealsListing.putExtra("isDefaultDeal",true);*/
 
                                 openDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 context.startActivity(openDealsListing);
@@ -743,70 +741,12 @@ public static PubNub initPubnub(Context context, String UUID){
 
                                 storeDealTime(OKID,context);
                                 TastyToast.makeText(context, jsonResponseData.getString("message"), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
-//                                AppConstants.letsOye.save();
-
-                                /*Log.i("TRACE", "Ok id from response is " + jsonResponseData.getString("ok_id"));
-                                Log.i("TRACE", "step2");
-                                General.setSharedPreferences(context, "OK_ID", jsonResponseData.getString("ok_id"));
-                                Log.i("TRACE", "json response data" + jsonResponseData);
-                                OKID = jsonResponseData.getString("ok_id");
-                                Log.i("TRACE", "json response data message" + jsonResponseData.getString("message"));
-
-                                TastyToast.makeText(context, jsonResponseData.getString("message"), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
-                                //Toast.makeText(context, "" + jsonResponseData.getString("message"), Toast.LENGTH_LONG).show();
-//                                SnackbarManager.show(
-//                                        Snackbar.with(context)
-//                                                .position(Snackbar.SnackbarPosition.TOP)
-//                                                .text("Your old oye with same specs: " + jsonResponseData.getString("message"))
-//                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-
-
-                                //  if (jsonResponseData.getInt("code") == 1) {
-                                AppConstants.letsOye.setTime(formattedDate);
-
-//                                AppConstants.letsOye.save();
-
-                                //  }
-
-                                // Create default deal here after letsoye success
-
-                                String speccode;
-                                speccode = General.getSharedPreferences(context, "MY_SPEC_CODE");
-                                String deals;
-                                deals = getDefaultDeals(context);
-                                java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
-                                }.getType();
-                                HashMap<String, String> deals1 = gson.fromJson(deals, type);
-
-                                Log.i("TRACE", "hashmap:" + deals1);
-
-                                if (deals1 == null) {
-                                    deals1 = new HashMap<String, String>();
-
-                                }
-
-                                // HashMap<String, String> hashMap = new HashMap<String, String>();
-                                Log.i("TRACE", "hashmap entry" + General.getSharedPreferences(context, "OK_ID"));
-
-                                storeDealTime(jsonResponseData.getString("ok_id"),context);
-
-
-                                deals1.put(General.getSharedPreferences(context, "OK_ID"), speccode);
-                                // Log.i("TRACE", "hashmap" + deals1);
-
-//                                Log.i("TRACE", "step1");
-
-                                //convert to string using gson
-                                Gson g = new Gson();
-                                String hashMapString = g.toJson(deals1);
-                                Log.i("TRACE", "hashmapstring" + hashMapString);
-
-                                saveDefaultDeals(context, hashMapString);
-                                Log.i("TRACE", "Saved");*/
+//                                
 
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
+                            Log.i("TRACE16","Caught in lets oye "+e.getMessage());
                         }
 
 
@@ -837,6 +777,7 @@ public static PubNub initPubnub(Context context, String UUID){
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Log.i("oye","Caught in exception in oye publish "+e.getMessage());
         }
     }
 

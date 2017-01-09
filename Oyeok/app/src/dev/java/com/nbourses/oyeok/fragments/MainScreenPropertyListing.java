@@ -41,7 +41,6 @@ import com.nbourses.oyeok.realmModels.BuildingCacheRealm;
 import java.util.ArrayList;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -862,7 +861,7 @@ try {
             if(params.topMargin<bottom) {
                 /*count = realm.where(BuildingCacheRealm.class).count();
                 Searchlist.setHint("Search from " + count + " Building");*/
-                Log.i("sliding111","==============refreshListView==========onChange========  : "+General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE));
+             //   Log.i("sliding111","==============refreshListView==========onChange========  : "+General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE));
                 adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSortedAsync("timestamp", false));
 
             }else{

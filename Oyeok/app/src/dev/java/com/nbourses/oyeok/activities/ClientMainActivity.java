@@ -643,7 +643,7 @@ try {
         }
 
 
-        try {
+        /*try {
             SharedPreferences prefs =
                     PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -657,6 +657,54 @@ try {
                         else {
                             hdroomsCount.setVisibility(View.VISIBLE);
                             hdroomsCount.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT)));
+
+
+                        }
+
+
+                    }
+                    if (key.equals(AppConstants.EMAIL)) {
+                        emailTxt.setText(General.getSharedPreferences(ClientMainActivity.this, AppConstants.EMAIL));
+                    }
+                }
+            };
+
+            prefs.registerOnSharedPreferenceChangeListener(listener);
+        } catch (Exception e) {
+            Log.e(TAG, "listener shared 1 " + e.getMessage());
+        }*/
+
+        try {
+            SharedPreferences prefs =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+
+
+            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                    Log.i(TAG, "shared listener shared 0 " + key);
+                    if (key.equals(AppConstants.HDROOMS_COUNT)) {
+                        if (General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT) <= 0)
+                            hdroomsCount.setVisibility(View.GONE);
+                        else {
+                            hdroomsCount.setVisibility(View.VISIBLE);
+                            hdroomsCount.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT) + General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT_UV)));
+
+
+                        }
+
+
+                    }
+                    if (key.equals(AppConstants.HDROOMS_COUNT_UV)) {
+                        Log.i(TAG, "shared listener shared 1 " + key);
+                        if (General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT_UV) <= 0) {
+                            Log.i(TAG, "shared listener shared 2 " + General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT_UV));
+                            hdroomsCount.setVisibility(View.GONE);
+                        }else {
+                            Log.i(TAG, "shared listener shared 3 " + String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT) + General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT_UV)));
+                            hdroomsCount.clearAnimation();
+                            hdroomsCount.setVisibility(View.VISIBLE);
+                            // hdroomsCount.setText("1234");
+                            hdroomsCount.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT) + General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT_UV)));
 
 
                         }

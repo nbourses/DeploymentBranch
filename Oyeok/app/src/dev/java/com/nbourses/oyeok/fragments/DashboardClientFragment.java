@@ -1092,6 +1092,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         LatLng currLatLong = new LatLng(lat11, lng11);
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 14));
                     }
+
+
+
+
+
                     VisibleRegion visibleRegion = map.getProjection().getVisibleRegion();
                     Point x1 = map.getProjection().toScreenLocation(visibleRegion.farRight);
                     Point y1 = map.getProjection().toScreenLocation(visibleRegion.nearLeft);
@@ -1110,6 +1115,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             map.getUiSettings().setScrollGesturesEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
             map.getUiSettings().setZoomGesturesEnabled(true);
+           // map.getUiSettings().setAllGesturesEnabled();
+           // mHelperView.setEnabled(true);
             mHelperView = rootView.findViewById(R.id.helperView);
             mHelperView.setOnTouchListener(new View.OnTouchListener() {
                 private float scaleFactor = 1f;
@@ -2121,7 +2128,23 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             if(AppConstants.SETLOCATION)
             {
                 Log.i("user_role","auto ok12334 ...13");
-                autoOk();
+
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        autoOk();
+                    }
+                });
+
+
+
+                Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                AppConstants.SETLOCATION = false;
+                startActivity(inten);
             }
         }
       /*  if(!savebuilding) {
@@ -2329,6 +2352,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         if(General.isNetworkAvailable(getContext())) {
            if (!AppConstants.SETLOCATION && !savebuilding) {
             General.slowInternet(getContext());
+
             MarkerClickEnable = true;
             mVisits.setEnabled(false);
             disablepanel(false);
@@ -4260,13 +4284,13 @@ favOText.getText()*/
 
                             General.setSharedPreferences(getContext(),AppConstants.STOP_CARD,"yes");
 
-                            Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                            /*Intent inten = new Intent(getContext(), ClientMainActivity.class);
                             inten.addFlags(
                                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                             Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                             Intent.FLAG_ACTIVITY_NEW_TASK);
                             AppConstants.SETLOCATION = false;
-                            startActivity(inten);
+                            startActivity(inten);*/
 
                         }
 
