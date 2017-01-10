@@ -3330,7 +3330,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         sequence.addSequenceItem(rootView.findViewById(R.id.phasedSeekBar),
                 "     Property                       Property\n Tenant/Owner             Buyer/Seller\n\n    Choose                            Choose\n    'Rental'                             'Resale'" , "      GOT IT! (Go to next screen)");
         sequence.addSequenceItem(rootView.findViewById(R.id.ic_search),
-                "                   Type Locality\n        1.Close to your Workplace\n  2.Your current/new neighbourhood\n       3.Where you want to Invest\n\n                              OR\n\n                You own a Property ?,\n      you can type name and address\n                of your building.\n", "     GOT IT! (Go to next screen)");
+                "                   Type Locality\n        1.Close to your Workplace\n  2.Your current/new neighbourhood\n       3.Where you want to Invest\n\n                              OR\n\n                You own a Property ?\n      you can type name and address\n                of your building.\n", "     GOT IT! (Go to next screen)");
         sequence.addSequenceItem(rootView.findViewById(R.id.walk),
                 "                   You can find\n          Average rate @ Locality\n       for 2BHK [can be changed]", "       GOT IT! (Go to next screen)");
 

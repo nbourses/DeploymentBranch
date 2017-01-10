@@ -124,7 +124,15 @@ public class MainScreenPropertyListing extends Fragment {
         Log.i("touchcheck", "ACTION_MOVE on create" + params.bottomMargin+"   "+params.topMargin+ "   :  height "+params.height+"  "+params.width+"  :"+height1+" screenheight "+screenheight+"dipToPixels(getContext(),110) "+dipToPixels(getContext(),110));
 
         count = realm.where(BuildingCacheRealm.class).count();
-        Searchlist.setHint("Showing " + count + " Building Near "+General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+        try {
+            if(General.getSharedPreferences(getContext(),AppConstants.LOCALITY).equalsIgnoreCase("")){
+                Searchlist.setHint("Showing " + count + " Nearby Buildings ");
+
+            }else
+            Searchlist.setHint("Showing " + count + " Buildings Near "+General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
        /* realm.addChangeListener(new RealmChangeListener() {
             @Override
             public void onChange() {
@@ -241,25 +249,41 @@ public class MainScreenPropertyListing extends Fragment {
                 //reset search Hint
                 count = realm.where(BuildingCacheRealm.class).count();
                 //Searchlist.setTextSize(12);
-                Searchlist.setHint("Showing " + count + " Building Near "+General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+               // Searchlist.setHint("Showing " + count + " Building Near "+General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+                try {
+                    if(General.getSharedPreferences(getContext(),AppConstants.LOCALITY).equalsIgnoreCase("")){
+                        Searchlist.setHint("Showing " + count + " Nearby Buildings ");
 
+                    }else
+                        Searchlist.setHint("Showing " + count + " Buildings Near "+General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 //ids.add(adapter.getItem(position).getId());
 
                 //Brodacast building id
-                //Strat
-                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
-                    Intent intent = new Intent(AppConstants.Main_SCREEN_BUILDING_CLICK);
-                    intent.putExtra("c_ids", adapter.getItem(position).getId());
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                }else{
-                    Intent intent = new Intent(AppConstants.Main_SCREEN_BUILDING_CLICK);
-                    intent.putExtra("b_ids", adapter.getItem(position).getId());
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                //Start
+                try {
+                    if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+                        Intent intent = new Intent(AppConstants.Main_SCREEN_BUILDING_CLICK);
+                        intent.putExtra("c_ids", adapter.getItem(position).getId());
+                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                    }else{
+                        Intent intent = new Intent(AppConstants.Main_SCREEN_BUILDING_CLICK);
+                        intent.putExtra("b_ids", adapter.getItem(position).getId());
+                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 //End
 
                 //store in sharedpref
-                General.setSharedPreferences(getContext(), AppConstants.BUILDING_ID,adapter.getItem(position).getId());
+                try {
+                    General.setSharedPreferences(getContext(), AppConstants.BUILDING_ID,adapter.getItem(position).getId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 //reset listview
                 params.topMargin = bottom;
@@ -275,9 +299,17 @@ public class MainScreenPropertyListing extends Fragment {
                // if(TT=="LL"){
                     Log.i( "portfolio","onTextChanged  LL : "+cs );
                 if(cs.equals(""))
-                    Searchlist.setHint("Showing " + count + " Building Near "+General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+                   // Searchlist.setHint("Showing " + count + " Building Near "+General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
 
+                    try {
+                        if(General.getSharedPreferences(getContext(),AppConstants.LOCALITY).equalsIgnoreCase("")){
+                            Searchlist.setHint("Showing " + count + " Nearby Buildings ");
 
+                        }else
+                            Searchlist.setHint("Showing " + count + " Buildings Near "+General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 adapter.setResults( realm.where(BuildingCacheRealm.class)
                               //implicit AND
                             .beginGroup()
@@ -881,8 +913,16 @@ try {
         public void onReceive(Context context, Intent intent) {
           //  Log.i("sliding111","==============refreshListView==================  : "+General.getSharedPreferences(getApplicationContext(), AppConstants.AUTO_TT_CHANGE)+ "  slideby : "+slideby+"   params.topMargin  "+params.topMargin+"   :  === : "+bottom);
             count = realm.where(BuildingCacheRealm.class).count();
-            Searchlist.setHint("Showing " + count + " Building Near "+General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+           // Searchlist.setHint("Showing " + count + " Building Near "+General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+            try {
+                if(General.getSharedPreferences(getContext(),AppConstants.LOCALITY).equalsIgnoreCase("")){
+                    Searchlist.setHint("Showing " + count + " Nearby Buildings ");
 
+                }else
+                    Searchlist.setHint("Showing " + count + " Buildings Near "+General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if(params.topMargin<bottom) {
 
                 /*count = realm.where(BuildingCacheRealm.class).count();
