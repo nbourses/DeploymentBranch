@@ -515,8 +515,8 @@ private void addData(){
 
 
     private void addDataAny(){
-        AppConstants.letsOye.setPropertySubType("< " +area);
-        Log.i("retail","==========================="+"< " +area);
+        AppConstants.letsOye.setPropertySubType("<" +area);
+        Log.i("retail","==========================="+"<" +area);
         //  tv_dealinfo.setText(txtPreviousTextView.getText().toString());
         AppConstants.letsOye.setSize(area);
         // oyeButtonData = area;

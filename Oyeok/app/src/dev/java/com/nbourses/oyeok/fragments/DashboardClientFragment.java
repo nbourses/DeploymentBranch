@@ -32,7 +32,6 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -87,7 +86,6 @@ import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nbourses.oyeok.Database.SharedPrefs;
-//import com.nbourses.oyeok.Firebase.ChatList;
 import com.nbourses.oyeok.GooglePlacesApiServices.GooglePlacesReadTask;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AutoOk;
@@ -160,6 +158,8 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 import static com.nbourses.oyeok.R.id.parent;
 import static java.lang.Math.log10;
+
+//import com.nbourses.oyeok.Firebase.ChatList;
 
 //import com.nbourses.oyeok.Database.DBHelper;
 //import com.nbourses.oyeok.Firebase.DroomChatFirebase;
@@ -770,6 +770,15 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 // Log.i("measurement","frag me========: "+height+"  ; "+width);
                 MainScreenPropertyListing mainScreenPropertyListing= new MainScreenPropertyListing();
                 loadFragmentAnimated(mainScreenPropertyListing,b,R.id.list_container,"");
+                try {
+                    Realm realm1= General.realmconfig(getContext());
+                    long count = realm1.where(BuildingCacheRealm.class).count();
+                    if(count==0){
+                        fr.setVisibility(View.GONE);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             }
         });
@@ -1105,6 +1114,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                         LatLng currLatLong = new LatLng(lat11, lng11);
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLatLong, 14));
                     }
+
+
+
+
+
                     VisibleRegion visibleRegion = map.getProjection().getVisibleRegion();
                     Point x1 = map.getProjection().toScreenLocation(visibleRegion.farRight);
                     Point y1 = map.getProjection().toScreenLocation(visibleRegion.nearLeft);
@@ -1123,6 +1137,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             map.getUiSettings().setScrollGesturesEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
             map.getUiSettings().setZoomGesturesEnabled(true);
+           // map.getUiSettings().setAllGesturesEnabled();
+           // mHelperView.setEnabled(true);
             mHelperView = rootView.findViewById(R.id.helperView);
             mHelperView.setOnTouchListener(new View.OnTouchListener() {
                 private float scaleFactor = 1f;
@@ -2141,7 +2157,23 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             if(AppConstants.SETLOCATION)
             {
                 Log.i("user_role","auto ok12334 ...13");
-                autoOk();
+
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        autoOk();
+                    }
+                });
+
+
+
+                Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                AppConstants.SETLOCATION = false;
+                startActivity(inten);
             }
         }
       /*  if(!savebuilding) {
@@ -2351,6 +2383,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         if(General.isNetworkAvailable(getContext())) {
            if (!AppConstants.SETLOCATION && !savebuilding) {
             General.slowInternet(getContext());
+
             MarkerClickEnable = true;
             mVisits.setEnabled(false);
             disablepanel(false);
@@ -2551,6 +2584,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                             tvRate.setVisibility(View.VISIBLE);
                                             rupeesymbol.setVisibility(View.VISIBLE);
                                             tvFetchingrates.setVisibility(View.GONE);
+
                                             PlotBuilding();
 
                                             //missingArea.setVisibility(View.GONE);
@@ -3296,7 +3330,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         sequence.addSequenceItem(rootView.findViewById(R.id.phasedSeekBar),
                 "     Property                       Property\n Tenant/Owner             Buyer/Seller\n\n    Choose                            Choose\n    'Rental'                             'Resale'" , "      GOT IT! (Go to next screen)");
         sequence.addSequenceItem(rootView.findViewById(R.id.ic_search),
-                "                   Type Locality\n        1.Close to your Workplace\n  2.Your current/new neighbourhood\n       3.Where you want to Invest\n\n                              OR\n\n                You own a Property ?,\n      you can type name and address\n                of your building.\n", "     GOT IT! (Go to next screen)");
+                "                   Type Locality\n        1.Close to your Workplace\n  2.Your current/new neighbourhood\n       3.Where you want to Invest\n\n                              OR\n\n                You own a Property ?\n      you can type name and address\n                of your building.\n", "     GOT IT! (Go to next screen)");
         sequence.addSequenceItem(rootView.findViewById(R.id.walk),
                 "                   You can find\n          Average rate @ Locality\n       for 2BHK [can be changed]", "       GOT IT! (Go to next screen)");
 
@@ -4284,13 +4318,13 @@ favOText.getText()*/
 
                             General.setSharedPreferences(getContext(),AppConstants.STOP_CARD,"yes");
 
-                            Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                            /*Intent inten = new Intent(getContext(), ClientMainActivity.class);
                             inten.addFlags(
                                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                             Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                             Intent.FLAG_ACTIVITY_NEW_TASK);
                             AppConstants.SETLOCATION = false;
-                            startActivity(inten);
+                            startActivity(inten);*/
 
                         }
 
@@ -4797,6 +4831,7 @@ public void resetSeekBar(){
 
       Intent inn = new Intent(AppConstants.REFRESH_LISTVIEW);
       LocalBroadcastManager.getInstance(getContext()).sendBroadcast(inn);
+      fr.setVisibility(View.VISIBLE);
      /* new CountDownTimer(500, 500) {
 
           public void onTick(long millisUntilFinished) {

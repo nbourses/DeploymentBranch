@@ -1386,6 +1386,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
             //AppConstants.MY_BASE_LOCATION_FLAG = false;
             //do nothing
         }else{
+           // onBackPressed();
             General.setSharedPreferences(getBaseContext(), AppConstants.RESETPHASE, "true");
             //this.finish();
            super.onBackPressed();
@@ -1756,11 +1757,16 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
 
                                                 String building_count = jsonResponseData.getString("building_count");
                                                 Log.i("Buildingdata", "loc " + building_count + " " + mCustomerMarker.length);
-                                                SnackbarManager.show(
-                                                        Snackbar.with(getBaseContext())
-                                                                .text("Displaying 5 buildings out of " + building_count)
-                                                                .position(Snackbar.SnackbarPosition.TOP)
-                                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+                                                try {
+                                                    SnackbarManager.show(
+                                                            Snackbar.with(getApplicationContext())
+                                                                    .text("Displaying 5 buildings out of " + building_count)
+                                                                    .position(Snackbar.SnackbarPosition.TOP)
+                                                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
                                             } catch (Exception e) {
                                                 Log.i("Price Error", "Caught in exception Building plot success" + e.getMessage());
                                             }

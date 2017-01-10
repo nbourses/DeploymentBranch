@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -29,7 +30,9 @@ import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.sdsmdg.tastytoast.TastyToast;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -183,21 +186,46 @@ public class OyeConfirmation extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 3000) {
+                Log.i("proceed oye ","oye oye oye 1");
+
+               /* if (SystemClock.elapsedRealtime() - mLastClickTime < 3000) {
+                    Log.i("proceed oye ","oye oye oye 2");
                     return;
-                }else{
-                    mLastClickTime = SystemClock.elapsedRealtime();
-                    proceed_to_oye.setEnabled(false);
+                }else{*/
+                    Log.i("proceed oye ","oye oye oye 3");
+                   // mLastClickTime = SystemClock.elapsedRealtime();
+                    //proceed_to_oye.setEnabled(false);
                     if (General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                        Log.i("proceed oye ","oye oye oye 4");
                         //getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
                         ((ClientMainActivity)getActivity()).signUp();
                         ((ClientMainActivity) getActivity()).closeOyeConfirmation();
 
                     }else {
-                        General.publishOye(getContext());
+                        Log.i("proceed oye ","oye oye oye 5");
+
+                        SomeHandler s = new SomeHandler(getContext());
+                        s.handleMessage();
+
+                        Log.i("proceed oye ","oye oye oye 7");
+                        /*View view = getActivity().findViewById(R.id.cancel_btn);
+                        view.performClick();*/
+                        Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                        inten.addFlags(
+                                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                        Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                        startActivity(inten);
+                        try {
+                            TastyToast.makeText(getContext(),"Your request is broadcasted! we are creating one dealing room for you", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
 //                    ((ClientMainActivity) getActivity()).closeOyeConfirmation();
                     }
-                }
+                /*}*/
 //                mLastClickTime = SystemClock.elapsedRealtime();
                 Log.i("TAG","oye oye 2");
 
@@ -351,6 +379,25 @@ public class OyeConfirmation extends Fragment {
     }
 
 
+    public class SomeHandler extends Handler {
+
+        // A weak reference to the enclosing context
+        private WeakReference<Context> mContext;
+
+        public SomeHandler (Context context) {
+            mContext = new WeakReference<Context>(context);
+        }
+
+        public void handleMessage() {
+
+            // Get an actual reference to the DownloadActivity
+            // from the WeakReference.
+            Context context=mContext.get();
+            Log.i("proceed oye ","oye oye oye 8");
+            General.publishOye(context);
+
+        }
+    }
 
 
     String numToVal(int no){

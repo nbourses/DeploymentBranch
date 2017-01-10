@@ -270,26 +270,6 @@ public class MyGcmListenerService extends GcmListenerService {
 
             Log.i(TAG, "msg is " + message + " type of msg is: " + message.getClass().getSimpleName());
 
-           /* try {
-            if(data.containsKey("ok_id")) {
-                JSONObject json = new JSONObject(data.getString("message"));
-
-                okId = json.getString("ok_id");
-                if (!okId.equals("")) {
-                    hdRoomsCount++;
-                    badgeCount++;
-                    Log.i(TAG, "badecount hd rooms badgeCount " + badgeCount);
-                    Log.i(TAG, "badecount hd rooms hdRoomsCount " + hdRoomsCount);
-
-                    ShortcutBadger.applyCount(this, badgeCount);
-                    General.setBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT, hdRoomsCount);
-                    General.setBadgeCount(getApplicationContext(), AppConstants.BADGE_COUNT, badgeCount);
-                }
-
-            }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }*/
 
 
             if (General.getSharedPreferences(getApplicationContext(), AppConstants.ROLE_OF_USER).equals("client")) {
@@ -411,8 +391,11 @@ public class MyGcmListenerService extends GcmListenerService {
         } else {
             try {
                 Log.i(TAG,General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)+" marine    "+data.getString("to"));
-                if ((!General.getSharedPreferences(this, AppConstants.USER_ID).equalsIgnoreCase(data.getString("_from")) || !General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI).equalsIgnoreCase(data.getString("_from"))) && !(General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID).equalsIgnoreCase(data.getString("to"))))
+                if ((!General.getSharedPreferences(this, AppConstants.USER_ID).equalsIgnoreCase(data.getString("_from")) || !General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI).equalsIgnoreCase(data.getString("_from"))))
                 {
+                    if(!General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID).equalsIgnoreCase(data.getString("to"))){
+
+                    Log.i(TAG,"Inside gcm user id "+General.getSharedPreferences(this, AppConstants.USER_ID)+" from "+data.getString("_from")+" ts "+General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI+" open id "+General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)));
                     Log.i(TAG,"muted ok ids "+General.getMutedOKIds(this));
                     if(General.getMutedOKIds(this) != null) {
                         if (!General.getMutedOKIds(this).contains(data.getString("to")))
@@ -467,6 +450,7 @@ public class MyGcmListenerService extends GcmListenerService {
                     } catch (Exception e) {
                         Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 3 1 " + e);
                     }
+                }
                 }
             }
             catch (Exception e) {
@@ -581,7 +565,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification;
         if(data.containsKey("bicon")){
-            Log.i(TAG,"chaniya 1 ");
+            Log.i(TAG,"a 1 ");
             Bitmap b = getBitmapFromURL(data.getString("bicon"));
 
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
