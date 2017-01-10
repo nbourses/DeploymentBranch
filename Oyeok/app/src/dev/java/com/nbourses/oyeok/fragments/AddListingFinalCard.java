@@ -521,11 +521,12 @@ private void init(){
             add_Building.setLl_pm(p);
 
             add_Building.setOr_psf(0);
+            add_Building.setTt("ll");
 
         }else{
             add_Building.setLl_pm(0);
-
             add_Building.setOr_psf(p);
+            add_Building.setTt("or");
         }
 
         if(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY).equalsIgnoreCase(""))

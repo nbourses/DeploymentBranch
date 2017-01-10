@@ -326,8 +326,12 @@ private TextView Cancel,back,usertext;
                             building_names.add(new loadBuildingDataModel(j.getString("name"),lat,longi,j.getString("id"),j.getString("locality"),j.getString("city")));
 
                         }
-                        adapter= new searchBuilding(building_names,getContext());
-                        listView1.setAdapter(adapter);
+                        try {
+                            adapter= new searchBuilding(building_names,getContext());
+                            listView1.setAdapter(adapter);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         progressBar.setVisibility(View.GONE);
                         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override

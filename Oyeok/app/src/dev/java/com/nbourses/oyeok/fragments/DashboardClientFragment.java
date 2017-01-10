@@ -479,18 +479,20 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         public void onReceive(Context context, Intent intent) {
             //if(AppConstants.SEARCHFLAG) {
                 Log.i(TAG,"aalo re ");
+            if(intent.getExtras().getString("c_resetmap")!=null&&intent.getExtras().getString("c_resetmap").equalsIgnoreCase("c_map")) {
                 AppConstants.SEARCHFLAG = false;
-                LatLng currentLocation = new LatLng(AppConstants.MY_LATITUDE,AppConstants.MY_LONGITUDE);
-                SharedPrefs.save(getContext(),SharedPrefs.MY_LAT,AppConstants.MY_LATITUDE+"");
-                SharedPrefs.save(getContext(),SharedPrefs.MY_LNG,AppConstants.MY_LONGITUDE+"");
+                LatLng currentLocation = new LatLng(AppConstants.MY_LATITUDE, AppConstants.MY_LONGITUDE);
+                SharedPrefs.save(getContext(), SharedPrefs.MY_LAT, AppConstants.MY_LATITUDE + "");
+                SharedPrefs.save(getContext(), SharedPrefs.MY_LNG, AppConstants.MY_LONGITUDE + "");
                 // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
 
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,MAP_ZOOM));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, MAP_ZOOM));
                 getRegion();
-                 getPrice();
+                getPrice();
                 new LocationUpdater().execute();
-            if(!AppConstants.SETLOCATION &&!savebuilding) {
-                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                if (!AppConstants.SETLOCATION && !savebuilding) {
+                    buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                }
             }
             //}
         }
@@ -5062,6 +5064,8 @@ public void resetSeekBar(){
         text1="<font color=#2dc4b6>Today's Rate</font>";
         AppConstants.letsOye.setBuilding_id(buildingCacheModels.get(INDEX).getId());
         tv_building.setText(Html.fromHtml(text1));
+        /*mHelperView.setEnabled(false);
+        map.getUiSettings().setAllGesturesEnabled(false);*/
         if (brokerType.equalsIgnoreCase("rent")) {
             String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9<big> " + General.currencyFormat(String.valueOf(price(buildingCacheModels.get(INDEX).getConfig(),buildingCacheModels.get(INDEX).getLl_pm()))).substring(2, General.currencyFormat(String.valueOf(price(buildingCacheModels.get(INDEX).getConfig(),buildingCacheModels.get(INDEX).getLl_pm()))).length()) + "</big></font><b><font color=#b91422><sub>/m</sub></font></br>";
             tvFetchingrates.setText(Html.fromHtml(text));

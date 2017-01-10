@@ -237,22 +237,26 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         public void onReceive(Context context, Intent intent) {
             //if(AppConstants.SEARCHFLAG) {
             Log.i(TAG,"aalo re ");
-            AppConstants.SEARCHFLAG = false;
-            LatLng currentLocation = new LatLng(AppConstants.MY_LATITUDE,AppConstants.MY_LONGITUDE);
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,MAP_ZOOM));
-            General.setSharedPreferences(getBaseContext(),AppConstants.MY_LAT,AppConstants.MY_LATITUDE+"");
-            General.setSharedPreferences(getBaseContext(),AppConstants.MY_LNG,AppConstants.MY_LONGITUDE+"");
-            // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-            /*lat=AppConstants.MY_LATITUDE;
-            lng=AppConstants.MY_LONGITUDE;*/
-            //getRegion();
-            new LocationUpdater().execute();
-            getPrice();
+            if(intent.getExtras().getString("b_resetmap")!=null&&intent.getExtras().getString("b_resetmap").equalsIgnoreCase("b_map")) {
+                AppConstants.SEARCHFLAG = false;
+                LatLng currentLocation = new LatLng(AppConstants.MY_LATITUDE, AppConstants.MY_LONGITUDE);
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, MAP_ZOOM));
+                General.setSharedPreferences(getBaseContext(), AppConstants.MY_LAT, currentLocation.latitude+ "");
+                General.setSharedPreferences(getBaseContext(), AppConstants.MY_LNG, currentLocation.longitude + "");
 
-            if(!AppConstants.SETLOCATION &&!savebuilding) {
-                buildingTextChange(General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY), 950);
+                // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+               /*lat=AppConstants.MY_LATITUDE;
+               lng=AppConstants.MY_LONGITUDE;*/
+                //getRegion();
+                Log.i("savebuilding123","savebuilding11: "+General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY)+"  "+ SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_CITY)+" AppConstants.MY_LATITUDE : "+AppConstants.MY_LATITUDE+"AppConstants.MY_Longitute "+AppConstants.MY_LONGITUDE);
+                searchflag=false;
+                new LocationUpdater().execute();
+                getPrice();
+
+                if (!AppConstants.SETLOCATION && !savebuilding) {
+                    buildingTextChange(General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY), 950);
+                }
             }
-
             //}
         }
     };
@@ -300,6 +304,9 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                 String text = "<font color=#ffffff ><small>" + buildingCacheModels.get(INDEX).getName() + "</small></b></font> <font color=#ffffff> @</font>&nbsp<font color=#b91422>\u20B9 <big>" + General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).substring(2, General.currencyFormat(String.valueOf(buildingCacheModels.get(INDEX).getOr_psf())).length()) + "</big></font><b><font color=#b91422><sub>/sq.ft</sub></font></br>";
                 tvFetchingrates.setText(Html.fromHtml(text));
             }
+
+            General.setSharedPreferences(getBaseContext(),AppConstants.BUILDING_NAME,buildingCacheModels.get(INDEX).getName());
+            General.setSharedPreferences(getBaseContext(),AppConstants.BUILDING_LOCALITY,buildingCacheModels.get(INDEX).getLocality()+"");
 
         }
     };
@@ -474,7 +481,21 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
 
                 enableMyLocation();
                 Log.i("slsl", "location====================: ");
+                /*if(!savebuilding){
                 getLocationActivity = new GetCurrentLocation(getBaseContext(), mcallback);
+                }*/if(!General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LAT).equalsIgnoreCase("")) {
+                    Double lat = Double.parseDouble(General.getSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LAT));
+                    Double lng = Double.parseDouble(General.getSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LNG));
+                    LatLng currentLocation = new LatLng(lat, lng);
+                    General.setSharedPreferences(getBaseContext(), AppConstants.MY_LAT,lat+"");
+                    General.setSharedPreferences(getBaseContext(), AppConstants.MY_LNG,lng+"");
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, MAP_ZOOM));
+                    getPrice();
+                    marquee(2000,1000);
+                   // updateHorizontalPicker();
+                }else{
+                    getLocationActivity = new GetCurrentLocation(getBaseContext(), mcallback);
+                }
                 // map.setPadding(left, top, right, bottom);
                 map.setPadding(0, -10, 0, 0);
 
@@ -597,21 +618,23 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                             fav.setVisibility(View.VISIBLE);
 
                         }*/
-                        txtFilterValue.setTextSize(13);
-                        txtFilterValue.setTextColor(Color.parseColor("white"));
-                        txtFilterValue.setText(oyetext);
-                        //txtFilterValue.setText("Home");
-                        recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-                        map.getUiSettings().setAllGesturesEnabled(true);
-                        buildingTextChange(General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY), 950);
+                        if (!AppConstants.SETLOCATION && !savebuilding) {
+                            txtFilterValue.setTextSize(13);
+                            txtFilterValue.setTextColor(Color.parseColor("white"));
+                            txtFilterValue.setText(oyetext);
+                            //txtFilterValue.setText("Home");
+                            recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                            map.getUiSettings().setAllGesturesEnabled(true);
+                            buildingTextChange(General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY), 950);
 
 
-                        mVisits.setBackground(getBaseContext().getResources().getDrawable(R.drawable.bg_animation));
-                        txtFilterValue.setBackground(getBaseContext().getResources().getDrawable(R.drawable.oye_button_border));
-                        // UpdateRatePanel();
-                        search_building_icon.setVisibility(View.GONE);
-                        buildingIcon.setVisibility(View.GONE);
-                        fav.setVisibility(View.VISIBLE);
+                            mVisits.setBackground(getBaseContext().getResources().getDrawable(R.drawable.bg_animation));
+                            txtFilterValue.setBackground(getBaseContext().getResources().getDrawable(R.drawable.oye_button_border));
+                            // UpdateRatePanel();
+                            search_building_icon.setVisibility(View.GONE);
+                            buildingIcon.setVisibility(View.GONE);
+                            fav.setVisibility(View.VISIBLE);
+                        }
 
                     }
                     public void onFinish() {
@@ -803,10 +826,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         });
 
 
-        if(AppConstants.MY_BASE_LOCATION_FLAG) {
-            Log.i("setBaseRegion","==========================================base Region is not yet set. : ");
-            setBaseRegion();
-        }
+
 
         mcallback = new GetCurrentLocation.CurrentLocationCallback() {
 
@@ -855,7 +875,10 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
             }
         };
 
-
+        if(AppConstants.MY_BASE_LOCATION_FLAG) {
+            Log.i("setBaseRegion","==========================================base Region is not yet set. : ");
+            setBaseRegion();
+        }
     }
 
 
@@ -1035,6 +1058,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
             try {
                 String lat1 = General.getSharedPreferences(getBaseContext(),AppConstants.MY_LAT);
                 String lng1 = General.getSharedPreferences(getBaseContext(),AppConstants.MY_LNG);
+                lat=Double.parseDouble(lat1);
+                lng=Double.parseDouble(lng1);
                 JSONObject jsonObj = getJSONfromURL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat1 + ","
                         + lng1 + "&sensor=true&key=AIzaSyC7aqVbRyNsF1JNgtYbpPDsJAf981dPp5Q");
                 Log.i("chai","Response_chai1");
@@ -1066,9 +1091,9 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                                 Address2 = long_name;
                             } else if (Type.equalsIgnoreCase("sublocality_level_1")) {
                                 Address2 += " " + long_name;
-                                if (this != null) {
+                                if (Address2 != null) {
                                     //SharedPrefs.save(getActivity(), SharedPrefs.MY_LOCALITY, long_name);
-                                   General.setSharedPreferences(getBaseContext(), AppConstants.LOCALITY, long_name);
+                                   General.setSharedPreferences(getBaseContext(), AppConstants.LOCALITY, region);
                                 }
                             } else if (Type.equalsIgnoreCase("locality")) {
                                 // Address2 = Address2 + long_name + ", ";
@@ -1095,7 +1120,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Log.i("savebuilding","savebuilding: "+General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY)+"  "+SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_CITY));
+            Log.i("savebuilding","savebuilding: "+General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY)+"  "+SharedPrefs.getString(getBaseContext(), SharedPrefs.MY_CITY)+"lat : "+lat+"lng : "+lng +" AppConstants.MY_LATITUDE : "+AppConstants.MY_LATITUDE+"AppConstants.MY_Longitute "+AppConstants.MY_LONGITUDE);
             return fullAddress; //address
           //  return address;
         }
@@ -1339,7 +1364,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
             }else
             addBText.setText("To confirm your Building Location click on Done");
         }else if(txtFilterValue.getText().toString().equalsIgnoreCase("Done")){
-            Log.i("user_role","role of user :  " +AppConstants.MY_BASE_LOCATION_FLAG);
+            Log.i("user_role11","role of user :  " +AppConstants.MY_BASE_LOCATION_FLAG+" locality  : "+General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY));
 //           if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                 if(AppConstants.MY_BASE_LOCATION_FLAG) {
                     General.setSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LAT, General.getSharedPreferences(getBaseContext(), AppConstants.MY_LAT));
@@ -1350,7 +1375,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                     AppConstants.MY_BASE_LOCATION_FLAG=false;
                     fav.setClickable(true);
                     fav.setEnabled(true);
-                    onBackPressed();
+//                    onBackPressed();
+                    this.finish();
                     //Reset();
                     //getPrice();
 
@@ -1389,7 +1415,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
            // onBackPressed();
             General.setSharedPreferences(getBaseContext(), AppConstants.RESETPHASE, "true");
             //this.finish();
-           super.onBackPressed();
+            this.finish();
         }
         Log.i("onBackPressed ","onBackPressed() =========== "+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
 
@@ -1700,7 +1726,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
 //                                            Log.i("TRACE", "RESPONSEDATAr" + orMin);
 //                                            Log.i("TRACE", "RESPONSEDATAr" + orMax);
                                            // BroadCastMinMaxValue(llMin, llMax, orMin, orMax);
-                                            updateHorizontalPicker();
+
                                            // marquee(500, 100);
                                             map.clear();
                                             buildingTextChange(General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY), 950);
@@ -1760,7 +1786,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
 
                                                 try {
                                                     SnackbarManager.show(
-                                                            Snackbar.with(getApplicationContext())
+                                                            Snackbar.with(getBaseContext())
                                                                     .text("Displaying 5 buildings out of " + building_count)
                                                                     .position(Snackbar.SnackbarPosition.TOP)
                                                                     .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
@@ -1781,6 +1807,8 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                                             rupeesymbol.setVisibility(View.VISIBLE);
                                             tvFetchingrates.setVisibility(View.GONE);
                                             missingArea.setVisibility(View.GONE);
+                                            marquee(200,50);
+                                            //updateHorizontalPicker();
                                             PlotBuilding();
 
                                             // map.addMarker(new MarkerOptions().title("hey").position(new LatLng(lat,lng)));
@@ -2477,6 +2505,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         containerSignup.setClickable(false);
         card.setClickable(false);
         Reset();
+        onMapclicked();
        // ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
     }
 
@@ -2507,6 +2536,11 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         btn_cancel.setVisibility(View.VISIBLE);*/
         /*getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);*/
+        Double lat=Double.parseDouble(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LAT));
+        Double lng=Double.parseDouble(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LNG));
+        LatLng currentLocation = new LatLng(lat, lng);
+       // map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, MAP_ZOOM));
+        map.addMarker(new MarkerOptions().icon(iconOffice).position(currentLocation));
         property_type_layout.clearAnimation();
         property_type_layout.setVisibility(View.GONE);
         setbaseloc.setVisibility(View.GONE);
@@ -2524,35 +2558,6 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
 
     }
 
-
-   /* public void setLocation11(){
-        Log.i(TAG,"set base region 7");
-
-//        savebuilding=true;
-//        AppConstants.SETLOCATION=true;
-        fav.setClickable(false);
-        map.clear();
-        new LocationUpdater().execute();
-        horizontalPicker.setVisibility(View.GONE);
-        rupeesymbol.setVisibility(View.GONE);
-        tvRate.setVisibility(View.GONE);
-        txtFilterValue.setText("SAVE");
-
-        tv_building.setText(fullAddress);
-        tvFetchingrates.setVisibility(View.VISIBLE);
-
-        //CallButton.setVisibility(View.GONE);
-        addbuilding.setVisibility(View.GONE);
-        mPhasedSeekBar.setVisibility(View.GONE);
-        dispProperty.setVisibility(View.GONE);
-        property_type_layout.clearAnimation();
-        property_type_layout.setVisibility(View.GONE);
-        txt_info.setVisibility(View.VISIBLE);
-        txt_info.setText("Find Your Location on Map & Save");
-        String txt;
-        txt="<font color=#2dc4b6><big>Drag & Save Base Location</big></font>";
-        tvFetchingrates.setText(Html.fromHtml(txt));
-    }*/
 
 
     public void saveBuiding(String b_name){
