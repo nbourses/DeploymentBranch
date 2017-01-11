@@ -32,6 +32,7 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -344,6 +345,10 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     @Bind(R.id.txtFilterValue)
     TextView txtFilterValue;
+
+
+    @Bind(R.id.portfolioCount)
+    TextView portfolioCount;
 
     @Bind(R.id.dateTime)
     TextView dateTime;
@@ -699,6 +704,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 ((ClientMainActivity)getActivity()).openAddListingFinalCard();
             }
         });
+
+
+
+
+
         /*list_container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1341,6 +1351,8 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                 if (buildingCacheModels.get(i).getFlag() == false) {
                                     Log.i("1sushil11", "===========================");
 
+                                    portfolioCount.setVisibility(View.GONE);
+
                                     General.setSharedPreferences(getContext(),AppConstants.BUILDING_NAME,buildingCacheModels.get(i).getName());
                                     General.setSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY,buildingCacheModels.get(i).getLocality()+"");
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LAT,buildingCacheModels.get(i).getLat()+"");
@@ -1440,6 +1452,7 @@ if(!AppConstants.SETLOCATION && !savebuilding) {
                                     ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
                                     customMarker.get(i).setIcon(icon1);
 
+                                    showPortfoliobadge();
 
                                /* m=mCustomerMarker[i];
                                 mCustomerMarker[i].remove();
@@ -1644,17 +1657,33 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         }
 
 
-        /*try {
+        try {
             SharedPreferences prefs =
                     PreferenceManager.getDefaultSharedPreferences(getContext());
             listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 
-                    if (key.equals(AppConstants.BUILDING_ID)) {
+                    if (key.equals(AppConstants.ADDB_COUNT_LL)) {
 
                         try {
-                            autoMarkerClick(General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID));
-                            Log.i("buildingid","OUTO_CLICK_MARKER  : "+General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID));
+                            if((General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_OR)) == 0){
+                                portfolioCount.setVisibility(View.GONE);
+                            }else{
+                            portfolioCount.setText((General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_OR))+"");
+                            portfolioCount.setVisibility(View.VISIBLE);}
+                             } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    if (key.equals(AppConstants.ADDB_COUNT_OR)) {
+
+                        try {
+                            if((General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_OR)) == 0){
+                                portfolioCount.setVisibility(View.GONE);
+                            }
+                            else{portfolioCount.setText((General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_OR))+"");
+                            portfolioCount.setVisibility(View.VISIBLE);}
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -1669,7 +1698,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         }
         catch (Exception e){
             Log.e("loc", e.getMessage());
-        }*/
+        }
 
         return rootView;
     }
@@ -1832,6 +1861,9 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
 
             }
         });
+
+
+        showPortfoliobadge();
 
         /*favRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
@@ -3750,7 +3782,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                 ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                 Intent in = new Intent(AppConstants.MARKERSELECTED);
                 in.putExtra("markerClicked", "false");
-
+                showPortfoliobadge();
                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
                 search_building_icon.setVisibility(View.GONE);
                 buildingIcon.setVisibility(View.GONE);
@@ -4460,8 +4492,11 @@ favOText.getText()*/
         if(brokerType=="rent") {
 
             myPortfolioModel.setTt("ll");
+            General.setBadgeCount(getContext(),AppConstants.ADDB_COUNT_LL,General.getBadgeCount(getContext(),AppConstants.ADDB_COUNT_LL)+1);
+
         }else{
             myPortfolioModel.setTt("or");
+            General.setBadgeCount(getContext(),AppConstants.ADDB_COUNT_OR,General.getBadgeCount(getContext(),AppConstants.ADDB_COUNT_OR)+1);
 
         }
 
@@ -4531,6 +4566,7 @@ public int price(String conf,int rate){
         B_name=b_name;
         savebuilding=true;
         map.clear();
+        portfolioCount.setVisibility(View.GONE);
         addlistingText.setVisibility(View.VISIBLE);
         addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
         new LocationUpdater().execute();
@@ -4568,7 +4604,7 @@ public int price(String conf,int rate){
             addbuilding.setVisibility(View.VISIBLE);
         }
 
-
+       showPortfoliobadge();
       txtFilterValue.setText("2BHK");
       AppConstants.PROPERTY="Home";
         dispProperty.setVisibility(View.VISIBLE);
@@ -4998,6 +5034,7 @@ public void resetSeekBar(){
 //                                txtFilterValue.setTextColor(Color.parseColor("green"));
                     CancelAnimation();
 
+                    portfolioCount.setVisibility(View.GONE);
                     buildingSelected = false;
                     Intent in = new Intent(AppConstants.MARKERSELECTED);
                     in.putExtra("markerClicked", "true");
@@ -5026,6 +5063,7 @@ public void resetSeekBar(){
                     buildingIcon.setVisibility(View.GONE);
                     fav.setVisibility(View.VISIBLE);
                     //flag[i] = false;
+                    showPortfoliobadge();
                     buildingCacheModels.get(i).setFlag(false);
                     horizontalPicker.setVisibility(View.VISIBLE);
                     tvFetchingrates.setVisibility(View.GONE);
@@ -5090,6 +5128,16 @@ public void resetSeekBar(){
         return args;
     }
 
+    private void showPortfoliobadge(){
+        if (General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_LL) > 0 || General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_OR) > 0 ) {
+
+            portfolioCount.setText((General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_OR))+"");
+            portfolioCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            portfolioCount.setVisibility(View.GONE);
+        }
+    }
     public void openSearch(){
         searchFragment c = new searchFragment();
         AppConstants.SEARCHFLAG = true;

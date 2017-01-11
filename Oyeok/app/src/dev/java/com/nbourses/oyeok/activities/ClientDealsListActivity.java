@@ -740,6 +740,18 @@ private int page = 1;
             }
         }
 
+        if ((General.getBadgeCount(this, AppConstants.RENTAL_COUNT) > 0) && General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            rentalCount.setVisibility(View.VISIBLE);
+            rentalCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.RENTAL_COUNT)));
+
+        }
+        if ((General.getBadgeCount(this, AppConstants.RESALE_COUNT) > 0) && General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            resaleCount.setVisibility(View.VISIBLE);
+            resaleCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.RESALE_COUNT)));
+
+        }
+
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -1733,6 +1745,8 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
                     General.setBadgeCount(this, AppConstants.HDROOMS_COUNT_UV, 0);
                     rentalCount.setVisibility(View.GONE);
                 }}
+            General.setBadgeCount(this, AppConstants.RENTAL_COUNT, 0);
+            rentalCount.setVisibility(View.GONE);
 
         } else {
 
@@ -1787,6 +1801,10 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
                     General.setBadgeCount(this, AppConstants.HDROOMS_COUNT_UV, 0);
                     resaleCount.setVisibility(View.GONE);
                 }}
+
+            General.setBadgeCount(this, AppConstants.RESALE_COUNT, 0);
+            resaleCount.setVisibility(View.GONE);
+
         }
 
 

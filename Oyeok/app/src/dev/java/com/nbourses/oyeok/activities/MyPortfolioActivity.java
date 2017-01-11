@@ -75,6 +75,12 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
     @Bind(R.id.confirm_screen_title)
     TextView confirm_screen_title;
 
+    @Bind(R.id.rentalCount)
+    TextView rentalCount;
+
+    @Bind(R.id.resaleCount)
+    TextView resaleCount;
+
     CustomPhasedSeekBar  mPhasedSeekBar;
     int position=0;
     ViewPager viewPager;
@@ -153,6 +159,17 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         usertext=(TextView)findViewById(R.id.usertext);
         add_create=(TextView)findViewById(R.id.add_create);
 
+
+        if ((General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL) > 0) ) {
+            rentalCount.setVisibility(View.VISIBLE);
+            rentalCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL)));
+
+        }
+        if ((General.getBadgeCount(this, AppConstants.ADDB_COUNT_OR) > 0)) {
+            resaleCount.setVisibility(View.VISIBLE);
+            resaleCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.ADDB_COUNT_OR)));
+
+        }
 
         add_build.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -754,6 +771,8 @@ inputSearch.addTextChangedListener(new TextWatcher() {
                     add_create.setText("Add");
 
                 }
+                General.setBadgeCount(this, AppConstants.ADDB_COUNT_LL, 0);
+                rentalCount.setVisibility(View.GONE);
             } else {
                 TT = "OR";
 
@@ -776,6 +795,8 @@ inputSearch.addTextChangedListener(new TextWatcher() {
                     add_create.setText("Add");
 
                 }
+                General.setBadgeCount(this, AppConstants.ADDB_COUNT_OR, 0);
+                resaleCount.setVisibility(View.GONE);
             }
 
 

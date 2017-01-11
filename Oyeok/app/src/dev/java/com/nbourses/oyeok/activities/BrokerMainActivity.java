@@ -31,6 +31,7 @@ import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,6 +45,7 @@ import com.nbourses.oyeok.fragments.AddListing;
 import com.nbourses.oyeok.fragments.AddListingFinalCard;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.BrokerPreokFragment;
+import com.nbourses.oyeok.fragments.PartnerBrokerFragment;
 import com.nbourses.oyeok.fragments.ShareOwnersNo;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -79,6 +81,9 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
     @Bind(R.id.favbroker)
     ImageView favbroker;
 
+    @Bind(R.id.portfolioCount)
+    TextView portfolioCount;
+
 
     @Bind(R.id.setbaseloc)
     LinearLayout setbaseloc;
@@ -86,7 +91,10 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
     @Bind(R.id.tv_change_region)
     TextView tv_change_region;
 
-
+    @Bind(R.id.cardb)
+    FrameLayout cardb;
+    @Bind(R.id.card)
+    FrameLayout card;
 
     //setbaseloc
 //    @Bind(R.id.preok_layout)
@@ -218,6 +226,11 @@ GoogleMap map;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agent_main);
+
+
+
+
+
         AppConstants.CURRENT_USER_ROLE ="broker";
 
        // dbHelper = new DBHelper(getBaseContext());
@@ -225,6 +238,7 @@ GoogleMap map;
         General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
 
         Log.i("uas","yo man 96");
+
 
 
         ButterKnife.bind(this);
@@ -248,6 +262,7 @@ GoogleMap map;
 
         }
 
+       // showCard();
         ShortcutBadger.removeCount(this);
 
 //        IntentFilter iff= new IntentFilter(AppConstants.Broker_Locality_Change);
@@ -342,7 +357,41 @@ GoogleMap map;
                             ((BrokerPreokFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
                         }
                         catch(Exception e){}
-                        General.setSharedPreferences(getBaseContext(),AppConstants.RESETPHASE,"false");
+                        General.setSharedPreferences(BrokerMainActivity.this,AppConstants.RESETPHASE,"false");
+                    }
+                     if (key.equals(AppConstants.ADDB_COUNT_LL)) {
+
+                        try {
+                            if((General.getBadgeCount(BrokerMainActivity.this, AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(BrokerMainActivity.this, AppConstants.ADDB_COUNT_OR)) == 0){
+                                portfolioCount.setVisibility(View.GONE);
+                            } else{
+
+                                portfolioCount.setText((General.getBadgeCount(BrokerMainActivity.this, AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(BrokerMainActivity.this, AppConstants.ADDB_COUNT_OR))+"");
+                            portfolioCount.setVisibility(View.VISIBLE);
+                            }
+
+                            /*portfolioCount.setText((General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_OR))+"");
+                            portfolioCount.setVisibility(View.VISIBLE);*/
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    if (key.equals(AppConstants.ADDB_COUNT_OR)) {
+
+                        try {
+                            if((General.getBadgeCount(BrokerMainActivity.this, AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(BrokerMainActivity.this, AppConstants.ADDB_COUNT_OR)) == 0){
+                                portfolioCount.setVisibility(View.GONE);
+                            }else{
+                                portfolioCount.setText((General.getBadgeCount(BrokerMainActivity.this, AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(BrokerMainActivity.this, AppConstants.ADDB_COUNT_OR))+"");
+                                portfolioCount.setVisibility(View.VISIBLE);
+                            }
+                            /*portfolioCount.setText((General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(getContext(), AppConstants.ADDB_COUNT_OR))+"");
+                            portfolioCount.setVisibility(View.VISIBLE);*/
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 }
 
@@ -526,7 +575,7 @@ GoogleMap map;
             new DownloadImageTask().execute(General.getSharedPreferences(BrokerMainActivity.this, AppConstants.PROMO_IMAGE_URL));
         }*/
 
-
+        showPortfoliobadge();
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -974,8 +1023,56 @@ GoogleMap map;
         loadFragmentAnimated(addListingFinalCard, null, R.id.container_map, "");
 
     }
+    private void showPortfoliobadge(){
+        if (General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL) > 0 || General.getBadgeCount(this, AppConstants.ADDB_COUNT_OR) > 0 ) {
+
+            portfolioCount.setText((General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(this, AppConstants.ADDB_COUNT_OR))+"");
+            portfolioCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            portfolioCount.setVisibility(View.GONE);
+        }
+    }
+
+    public void showCard() {
+
+       /* if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("") &&  !General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+
+            if (AppConstants.cardCounter >3) {*/
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 
 
+                        cardb.setBackgroundColor(Color.parseColor("#CC000000"));
+                        cardb.setClickable(true);
+                        //containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+
+                        PartnerBrokerFragment c = new PartnerBrokerFragment();
+                        //loadFragment(d,null,R.id.container_Signup,"");
+                        c.setArguments(null);
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+                        card.setClickable(true);
+                        fragmentTransaction.addToBackStack("card");
+                        fragmentTransaction.replace(R.id.card, c);
+                        fragmentTransaction.commitAllowingStateLoss();
+
+                        AppConstants.cardCounter = 0;
+
+                    }
+
+                }, 500);
+            /*}
+        }*/
+    }
 
 
 }

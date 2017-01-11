@@ -110,6 +110,8 @@ public class AppConstants {
     public static final String PUBNUB_SUBSCRIBE_KEY = "sub-c-f662fb7c-b5ff-11e5-a916-0619f8945a4f";*/
 
     public static final String PUBNUB_SECRET_KEY = "sec-c-NDUxZWZlNWItMDMxZi00ZjM4LWIyODYtMjE5ODVmNmZhZjBj";
+    public static final String ADDB_COUNT_LL = "addBCountLl";
+    public static final String ADDB_COUNT_OR = "addBCountOr";
     public static final String BADGE_COUNT = "badgeCount";
     public static final String SUPPORT_COUNT = "supportCount";
     public static final String HDROOMS_COUNT = "hdRoomsCount";

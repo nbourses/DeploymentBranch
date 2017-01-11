@@ -391,7 +391,7 @@ public class MyGcmListenerService extends GcmListenerService {
         } else {
             try {
                 Log.i(TAG,General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)+" marine    "+data.getString("to"));
-                if ((!General.getSharedPreferences(this, AppConstants.USER_ID).equalsIgnoreCase(data.getString("_from")) || !General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI).equalsIgnoreCase(data.getString("_from"))))
+                if ((!General.getSharedPreferences(this, AppConstants.USER_ID).equalsIgnoreCase(data.getString("_from"))) && !(General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI).equalsIgnoreCase(data.getString("_from"))))
                 {
                     if(!General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID).equalsIgnoreCase(data.getString("to"))){
 

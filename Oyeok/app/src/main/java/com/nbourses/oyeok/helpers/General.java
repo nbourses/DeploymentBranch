@@ -564,7 +564,7 @@ public static PubNub initPubnub(Context context, String UUID){
                 slowInternet(context);
 
             String intend;
-            String tt;
+
             final String ptype;
             final String pstype;
             //String ptype;
@@ -582,7 +582,7 @@ public static PubNub initPubnub(Context context, String UUID){
             Log.i("TRACE16", "AppConstants.letsOye from model " + json);
             JSONObject jsonObj = new JSONObject(json);
             intend = jsonObj.getString("req_avl");
-            tt = jsonObj.getString("tt");
+                final String tt = jsonObj.getString("tt");
             ptype = jsonObj.getString("property_type");
             pstype = jsonObj.getString("property_subtype");
             price = jsonObj.getString("price");
@@ -726,7 +726,23 @@ public static PubNub initPubnub(Context context, String UUID){
 
                                 Log.i("TRACE16", "open intent deal listing "+OKID);
                                 //open deals listing
-                                AppConstants.CLIENT_DEAL_FLAG = true;
+                                if(tt.equalsIgnoreCase("LL")) {
+                                    try {
+                                        General.setBadgeCount(getApplicationContext(), AppConstants.RENTAL_COUNT, General.getBadgeCount(getApplicationContext(), AppConstants.RENTAL_COUNT) + 1);
+                                    } catch (NumberFormatException e) {
+                                        General.setBadgeCount(getApplicationContext(), AppConstants.RENTAL_COUNT, 1);
+
+                                        e.printStackTrace();
+                                    }
+                                } else if(tt.equalsIgnoreCase("OR")) {
+                                    try {
+                                        General.setBadgeCount(getApplicationContext(), AppConstants.RESALE_COUNT, General.getBadgeCount(getApplicationContext(), AppConstants.RESALE_COUNT) + 1);
+                                    } catch (NumberFormatException e) {
+                                        General.setBadgeCount(getApplicationContext(), AppConstants.RESALE_COUNT, 1);
+
+                                    }
+
+                                }AppConstants.CLIENT_DEAL_FLAG = true;
                                 Intent openDealsListing = new Intent(context, ClientDealsListActivity.class);
                                 openDealsListing.putExtra("oyeok "+AppConstants.OK_ID, OKID);
 

@@ -102,7 +102,7 @@
 
 
 <LinearLayout
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="40dip"
     android:layout_marginLeft="60dip"
     android:orientation="horizontal"
@@ -139,7 +139,29 @@
 </LinearLayout>
 
 
-    <ImageView
+   <!-- <ImageView
+        android:id="@+id/favbroker"
+        android:layout_gravity="center|right"
+        android:src="@drawable/broker_portfolio_icon"
+        android:gravity="center"
+        android:visibility="visible"
+        android:layout_marginRight="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />-->
+
+
+<!--<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:gravity="right">-->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+         <ImageView
         android:id="@+id/favbroker"
         android:layout_gravity="center|right"
         android:src="@drawable/broker_portfolio_icon"
@@ -151,6 +173,26 @@
         android:layout_height="35dp"
         android:focusable="true"
         android:focusableInTouchMode="true" />
+
+
+        <TextView
+
+            android:id="@+id/portfolioCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle_badge"
+            android:text="23"
+            android:paddingEnd="8dp"
+            android:paddingRight="8dp"
+            android:paddingLeft="8dp"
+            android:textColor="#FFF"
+            android:textSize="11sp"
+
+            android:layout_gravity="right"
+            android:visibility="gone" />
+    </FrameLayout>
+<!--</LinearLayout>-->
+
 
     <Button
         android:id="@+id/help"

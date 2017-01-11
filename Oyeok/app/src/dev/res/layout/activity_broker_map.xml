@@ -85,7 +85,7 @@
                     android:id="@+id/favWrapper"
                     android:gravity="center_vertical|center_horizontal"
                     android:orientation="vertical">
-                    <ImageView
+                   <!-- <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/heart"
@@ -97,7 +97,52 @@
                         android:src="@drawable/selected_property"
                         android:clickable="false"
                         android:visibility="gone"
-                        android:id="@+id/buildingIcon" />
+                        android:id="@+id/buildingIcon" />-->
+
+
+
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/heart"
+                            android:clickable="false"
+                            android:layout_gravity="center"
+                            android:id="@+id/fav" />
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/selected_property"
+                            android:layout_gravity="center"
+                            android:clickable="false"
+                            android:visibility="gone"
+                            android:id="@+id/buildingIcon" />
+
+                        <TextView
+
+                            android:id="@+id/portfolioCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/circle_badge"
+                            android:text="23"
+                            android:paddingEnd="8dp"
+                            android:paddingRight="8dp"
+                            android:paddingLeft="8dp"
+                            android:textColor="#FFF"
+                            android:textSize="11sp"
+
+                            android:layout_gravity="left"
+                            android:visibility="gone" />
+                    </FrameLayout>
+
+
+
                 </LinearLayout>
                 <ImageView
                     android:layout_width="1dp"

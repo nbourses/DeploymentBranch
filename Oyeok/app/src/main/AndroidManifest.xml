@@ -231,7 +231,7 @@
         <activity
             android:name=".activities.DealConversationActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
             android:name=".activities.BrokerDealsListActivity"

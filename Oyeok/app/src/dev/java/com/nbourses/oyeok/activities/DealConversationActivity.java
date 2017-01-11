@@ -2194,7 +2194,7 @@ String channel;
         Map message = new HashMap();
 
         message.put("pn_gcm", new HashMap(){{put("data",new HashMap(){{put("message",jsonMsg.getString("message")); put("_from",jsonMsg.getString("_from"));put("to",jsonMsg.getString("to"));put("name",jsonMsg.getString("name")); put("status",jsonMsg.getString("status"));}});}});
-        message.put("pn_apns", new HashMap(){{put("aps",new HashMap(){{put("alert",jsonMsg.getString("message")); put("_from",jsonMsg.getString("_from"));put("to",jsonMsg.getString("to"));put("name",jsonMsg.getString("name")); put("status",jsonMsg.getString("status"));}});}});
+        message.put("pn_apns", new HashMap(){{put("aps",new HashMap(){{put("alert",jsonMsg.getString("message")); put("from",jsonMsg.getString("_from"));put("to",jsonMsg.getString("to"));put("name",jsonMsg.getString("name")); put("status",jsonMsg.getString("status"));}});}});
 
 
               Log.i(TAG,"Message is "+message);

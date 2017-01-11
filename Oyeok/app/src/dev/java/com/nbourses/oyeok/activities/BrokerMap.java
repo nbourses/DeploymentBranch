@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -20,6 +21,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -133,6 +135,9 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
     @Bind(R.id.fav)
     ImageView fav;
 
+    @Bind(R.id.portfolioCount)
+    TextView portfolioCount;
+
     @Bind(R.id.missingArea)
     RelativeLayout missingArea;
 
@@ -216,7 +221,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
     private LinearLayout seekbar_linearlayout;
 
     private static int INDEX=0,width, height;
-
+    SharedPreferences.OnSharedPreferenceChangeListener listener;
 ///init() variables
     Button home,shop,industrial,office,addbuilding;
     String Property_type="Home",oyetext="2BHK";
@@ -382,6 +387,51 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
             }
         });
 
+
+        try {
+            SharedPreferences prefs =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+
+                    if (key.equals(AppConstants.ADDB_COUNT_LL)) {
+
+                        try {
+                            if((General.getBadgeCount(BrokerMap.this, AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(BrokerMap.this, AppConstants.ADDB_COUNT_OR)) == 0){
+                                portfolioCount.setVisibility(View.GONE);
+                            }else {
+                            portfolioCount.setText((General.getBadgeCount(BrokerMap.this, AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(BrokerMap.this, AppConstants.ADDB_COUNT_OR))+"");
+                            portfolioCount.setVisibility(View.VISIBLE);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    if (key.equals(AppConstants.ADDB_COUNT_OR)) {
+
+                        try {
+                            if((General.getBadgeCount(BrokerMap.this, AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(BrokerMap.this, AppConstants.ADDB_COUNT_OR)) == 0){
+                                portfolioCount.setVisibility(View.GONE);
+                            }else {
+                                portfolioCount.setText((General.getBadgeCount(BrokerMap.this, AppConstants.ADDB_COUNT_LL) + General.getBadgeCount(BrokerMap.this, AppConstants.ADDB_COUNT_OR)) + "");
+                                portfolioCount.setVisibility(View.VISIBLE);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+
+            };
+            prefs.registerOnSharedPreferenceChangeListener(listener);
+
+        }
+        catch (Exception e){
+            Log.e("loc", e.getMessage());
+        }
 
         init();
         try {//buildingiconbeforeclick
@@ -2052,8 +2102,11 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         if(brokerType=="rent") {
 
             myPortfolioModel.setTt("ll");
+             General.setBadgeCount(this,AppConstants.ADDB_COUNT_LL,General.getBadgeCount(this,AppConstants.ADDB_COUNT_LL)+1);
+
         }else{
             myPortfolioModel.setTt("or");
+            General.setBadgeCount(this,AppConstants.ADDB_COUNT_OR,General.getBadgeCount(this,AppConstants.ADDB_COUNT_OR)+1);
 
         }
 
@@ -2334,6 +2387,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
             }
         } );
 
+        showPortfoliobadge();
     }
 
     protected void PropertyButtonSlideAnimation() {
@@ -2662,6 +2716,12 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         add_Building.setSublocality( SharedPrefs.getString( getBaseContext(), SharedPrefs.MY_LOCALITY ) );
         add_Building.setLl_pm(0);
         add_Building.setOr_psf(0);
+
+           // General.setBadgeCount(this,AppConstants.ADDB_COUNT_LL,General.getBadgeCount(this,AppConstants.ADDB_COUNT_LL)+1);
+
+
+          //  General.setBadgeCount(this,AppConstants.ADDB_COUNT_OR,General.getBadgeCount(this,AppConstants.ADDB_COUNT_OR)+1);
+
         add_Building.setGrowth_rate(null);
         add_Building.setDisplay_type("both");
         myRealm.beginTransaction();
@@ -2772,7 +2832,16 @@ public void CloseSignUP(){
 //        getSupportActionBar().setTitle(title);
     }
 
+    private void showPortfoliobadge(){
+        if (General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL) > 0 || General.getBadgeCount(this, AppConstants.ADDB_COUNT_OR) > 0 ) {
 
+            portfolioCount.setText((General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL)+General.getBadgeCount(this, AppConstants.ADDB_COUNT_OR))+"");
+            portfolioCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            portfolioCount.setVisibility(View.GONE);
+        }
+    }
     public void autoMarkerClick(String id){
         Log.i("1sushil11", "=============markerClick==============   :  ");
 

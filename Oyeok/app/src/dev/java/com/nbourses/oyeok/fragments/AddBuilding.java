@@ -458,9 +458,12 @@ private TextView Cancel,back,usertext;
                                 add_Building.setOr_psf(Integer.parseInt(building.getString("or_psf")));
                                 if(i==0){
                                     add_Building.setTt("ll");
+                                   // General.setBadgeCount(getContext(),AppConstants.ADDB_COUNT_LL,General.getBadgeCount(getContext(),AppConstants.ADDB_COUNT_LL)+1);
                                 }else{
                                     //add_Building.setId(b_id+"1");
                                     add_Building.setTt("or");
+                                   // General.setBadgeCount(getContext(),AppConstants.ADDB_COUNT_OR,General.getBadgeCount(getContext(),AppConstants.ADDB_COUNT_OR)+1);
+
                                 }
                                 myRealm.beginTransaction();
                                 myRealm.copyToRealmOrUpdate(add_Building);
