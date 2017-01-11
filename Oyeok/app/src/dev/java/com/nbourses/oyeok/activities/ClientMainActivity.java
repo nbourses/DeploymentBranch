@@ -1941,6 +1941,7 @@ if(AppConstants.FAV) {
             hdroomsCount.setVisibility(View.GONE);
         }
 
+        Log.i("backstack count1","   : "+buidingInfoFlag+"  "+getSupportFragmentManager().getBackStackEntryCount());
 
 
         confirm_screen_title.setVisibility(View.GONE);
@@ -1962,6 +1963,8 @@ if(AppConstants.FAV) {
 //            for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
                 getSupportFragmentManager().popBackStack();
         buidingInfoFlag=false;
+        Log.i("backstack count1","   : "+buidingInfoFlag+"  "+getSupportFragmentManager().getBackStackEntryCount());
+
     }
     public  void CloseBuildingOye(){
 

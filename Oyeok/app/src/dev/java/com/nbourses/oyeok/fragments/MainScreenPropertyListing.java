@@ -107,8 +107,11 @@ public class MainScreenPropertyListing extends Fragment {
         listview.setAdapter(adapter);
         realm = General.realmconfig(getContext());
 
-        adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSortedAsync("timestamp",false));
-        adapter.notifyDataSetChanged();
+        try {
+            adapter.setResults(realm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         data=getArguments();
         String height1=data.getString( "height1" );
         height=  Integer.parseInt(height1);

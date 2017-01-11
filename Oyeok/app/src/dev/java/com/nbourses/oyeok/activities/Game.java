@@ -216,7 +216,7 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
         } else {
             Log.i( "balance", "balance :" + SharedPrefs.getString( this, SharedPrefs.My_BALANCE ) );
 
-            balance = 34;
+            balance = 100;
         }
         gm_cashback_btn.setVisibility(View.VISIBLE);
 

@@ -29,6 +29,7 @@ import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.adapters.PlacesAutoCompleteAdapter;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -151,9 +152,11 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
                                      Log.i("TAG","latlong "+String.valueOf(places.get(0).getLatLng().longitude) + " "+String.valueOf(places.get(0).getLatLng().latitude ));
 //                                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LAT,String.valueOf(places.get(0).getLatLng().latitude));
 //                                    SharedPrefs.save(getActivity(), SharedPrefs.MY_LNG, String.valueOf(places.get(0).getLatLng().longitude));
-
+//General.setSharedPreferences(getContext(),AppConstants.MY_LATITUDE,Double.parseDouble(places.get(0).getLatLng().latitude));
                                     AppConstants.MY_LATITUDE=places.get(0).getLatLng().latitude;
                                     AppConstants.MY_LONGITUDE=places.get(0).getLatLng().longitude;
+                                    Log.i("savebuilding123","savebuilding12: "+General.getSharedPreferences(getContext(), AppConstants.LOCALITY)+"  "+ SharedPrefs.getString(getContext(), SharedPrefs.MY_CITY)+" AppConstants.MY_LATITUDE : "+AppConstants.MY_LATITUDE+"AppConstants.MY_Longitute "+AppConstants.MY_LONGITUDE);
+
                                 }else {
                                     try {
                                         Realm myRealm = General.realmconfig(getContext());
@@ -161,6 +164,8 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
 
                                         AppConstants.MY_LATITUDE= Double.parseDouble(results1.getLat());
                                         AppConstants.MY_LONGITUDE= Double.parseDouble(results1.getLng());
+                                        Log.i("savebuilding123","savebuilding1: "+General.getSharedPreferences(getContext(), AppConstants.LOCALITY)+"  "+ SharedPrefs.getString(getContext(), SharedPrefs.MY_CITY)+" AppConstants.MY_LATITUDE : "+AppConstants.MY_LATITUDE+"AppConstants.MY_Longitute "+AppConstants.MY_LONGITUDE);
+
 
 
 
@@ -171,9 +176,21 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
                                    // Toast.makeText(getContext(),AppConstants.SOMETHING_WENT_WRONG,Toast.LENGTH_SHORT).show();
                                 }
                                 saveAddress(item.title+"",item.description+"",AppConstants.MY_LATITUDE,AppConstants.MY_LONGITUDE,item.placeId+"");
+                                General.setSharedPreferences(getContext(), AppConstants.LOCALITY,item.title+"");
+                                General.setSharedPreferences(getContext(), AppConstants.MY_BASE_LAT,AppConstants.MY_LATITUDE+"");
+                                General.setSharedPreferences(getContext(), AppConstants.MY_BASE_LNG,AppConstants.MY_LONGITUDE+"");
+                                General.setSharedPreferences(getContext(), AppConstants.MY_LAT,AppConstants.MY_LATITUDE+"");
+                                General.setSharedPreferences(getContext(), AppConstants.MY_LNG,AppConstants.MY_LONGITUDE+"");
                                 getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.container_Signup)).commit();
-                                Intent intent = new Intent(AppConstants.RESETMAP);
-                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                                    Intent intent = new Intent(AppConstants.RESETMAP);
+                                    intent.putExtra("b_resetmap", "b_map");
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                                }else{
+                                    Intent intent = new Intent(AppConstants.RESETMAP);
+                                    intent.putExtra("c_resetmap", "c_map");
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                                }
 
                             }
                         });

@@ -136,7 +136,7 @@
                             android:layout_width="wrap_content"
                             android:text="@string/Rs"
                             android:clickable="false"
-                            android:layout_marginLeft="98dp"
+                            android:layout_marginLeft="90dp"
                             android:layout_marginBottom="4dp"
                             android:textColor="@color/greenish_blue"
                             android:layout_height="wrap_content"
@@ -821,7 +821,8 @@
             android:layout_gravity="bottom"
             android:id="@+id/list_container"
             android:layout_marginBottom="55dp"
-            android:foregroundGravity="bottom"/>
+            android:foregroundGravity="bottom"
+            android:visibility="gone"/>
 <!--
         <ViewStub
             android:id="@+id/layout_stub"
