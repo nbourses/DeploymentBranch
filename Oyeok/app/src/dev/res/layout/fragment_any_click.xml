@@ -262,7 +262,7 @@
                     android:checked="false"
                     android:background="@drawable/rbtn_selector"
                     android:textColor="@drawable/rbtn_txtcolor_selector"
-                    android:id="@+id/txt1500h"
+                    android:id="@+id/txt1600h"
                     android:text="&lt; 1600"/>
                 <RadioButton
                     android:layout_width="80dip"

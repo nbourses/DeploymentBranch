@@ -719,6 +719,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                                 customMarker.get(i).setIcon(icon2);
                                 customMarker.get(i).showInfoWindow();
                                // markerSelected();
+                               // CloseBuildingOyeComfirmation();
                                 OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig());
                                 SaveBuildingDataToRealm();
                                 buildingIcon.setVisibility(View.VISIBLE);
@@ -1493,7 +1494,7 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
                     }
 
                     SnackbarManager.show(
-                            Snackbar.with( getBaseContext() )
+                            Snackbar.with(BrokerMap.this )
                                     .text( "Rental Property Type set" )
                                     .position( Snackbar.SnackbarPosition.TOP )
                                     .color( Color.parseColor( AppConstants.DEFAULT_SNACKBAR_COLOR ) ) );
@@ -2191,11 +2192,14 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         tv_change_region.setText(SharedPrefs.getString(getBaseContext(),SharedPrefs.MY_CITY));
 
         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
+        Log.i("backstack count1","   : "+buidingInfoFlag+"  "+getSupportFragmentManager().getBackStackEntryCount());
 
-        //if( buidingInfoFlag==true)
+       // if( buidingInfoFlag==true)
 //            for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
           //  getSupportFragmentManager().popBackStack();
-       buidingInfoFlag=false;
+        Log.i("backstack count1","   : "+buidingInfoFlag+"  "+getSupportFragmentManager().getBackStackEntryCount());
+
+        buidingInfoFlag=false;
     }
 
     private void  buildingTextChange(String locality,int area){
@@ -2536,11 +2540,13 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
         btn_cancel.setVisibility(View.VISIBLE);*/
         /*getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);*/
-        Double lat=Double.parseDouble(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LAT));
-        Double lng=Double.parseDouble(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LNG));
-        LatLng currentLocation = new LatLng(lat, lng);
-       // map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, MAP_ZOOM));
-        map.addMarker(new MarkerOptions().icon(iconOffice).position(currentLocation));
+        if(!General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LAT).equalsIgnoreCase("")) {
+            Double lat = Double.parseDouble(General.getSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LAT));
+            Double lng = Double.parseDouble(General.getSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LNG));
+            LatLng currentLocation = new LatLng(lat, lng);
+            // map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, MAP_ZOOM));
+            map.addMarker(new MarkerOptions().icon(iconOffice).position(currentLocation));
+        }
         property_type_layout.clearAnimation();
         property_type_layout.setVisibility(View.GONE);
         setbaseloc.setVisibility(View.GONE);
@@ -2795,7 +2801,7 @@ public void CloseSignUP(){
 
                     LatLng currentLocation = new LatLng(Double.parseDouble(buildingCacheModels.get(i).getLat())+0.005, Double.parseDouble(buildingCacheModels.get(i).getLng()));
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,MAP_ZOOM));
-
+                    //CloseBuildingOyeComfirmation();
                     OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig());
                     //SaveBuildingDataToRealm();
                     buildingIcon.setVisibility(View.VISIBLE);

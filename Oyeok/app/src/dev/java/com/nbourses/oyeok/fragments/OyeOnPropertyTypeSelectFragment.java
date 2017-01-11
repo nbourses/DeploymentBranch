@@ -1,11 +1,15 @@
 package com.nbourses.oyeok.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,13 +35,14 @@ public class OyeOnPropertyTypeSelectFragment extends Fragment {
     private TextView txtPreviousTextView;
     private TextView txtsqft;
     private RadioButton rk1,bhk1,bhk1_5,bhk2,bhk2_5,bhk3,bhk3_5,bhk4,bhk4_5,bhk5,bhk5_5,bhk6,txt950h,commanbhk;
-    private RadioButton txt300h,txt600h,txt800h,txt1300h,txt1600h,txt1800h,txt2100h,txt2300h,txt2500h,txt2700h,txt2900;
+    private RadioButton txt300h,txt600h,txt800h,txt1300h,txt1600h,txt1800h,txt2100h,txt2300h,txt2500h,txt2700h,txt2900h;
     private RadioGroup radioGrouphome,radioGroupany;
 //    TextView tv_dealinfo;
     private static final String propertyTypeDefaultColor = "#FFFFFF";
     private String bhkNumber = "2";
     private String bhkNumberValue = "BHK";
     private String oyeButtonData;
+     int width;
     String grouptype="home",Subproperty="home",b_conf="2BHK";
 private boolean fisrtconf=false;
     HorizontalScrollView horizontalScrollViewAny,horizontalScrollViewHome;
@@ -86,12 +91,18 @@ private boolean fisrtconf=false;
 
         radioGrouphome = (RadioGroup) v.findViewById(R.id.radioGrouphome);
         radioGroupany = (RadioGroup) v.findViewById(R.id.radioGroupany);
+
+        Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+         width = size.x;
+
 if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equalsIgnoreCase("")){
     b_conf=General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG);
     General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,"");
     plotconf(b_conf);
     if(b_conf==null){
-        b_conf="2bhk";
+        b_conf="2BHK";
     }
 //    AppConstants.letsOye.setPropertySubType("2bhk");
 //    AppConstants.letsOye.setSize("2bhk");
@@ -100,7 +111,8 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
 }else{
     AppConstants.letsOye.setPropertySubType("2bhk");
     AppConstants.letsOye.setSize("2bhk");
-    b_conf="2bhk";
+    b_conf="2BHK";
+    onFilterValueUpdate("950","home");
 }
         Log.i("selectedPropertyType","selectedPropertyType================== "+selectedPropertyType+"  AppConstants.CONFIG   : "+AppConstants.CONFIG+" ===== "+General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG)+" ======= "+AppConstants.PROPERTY);
 
@@ -120,7 +132,7 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
                 onFilterValueUpdate("950","home");
 
                 plotconf(b_conf);
-                Subproperty="home";
+                Subproperty="2BHK";
                 break;
             case "Shop":
                 horizontalScrollViewHome.setVisibility(View.GONE);
@@ -319,7 +331,9 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-                // int center = (width - rk1.getWidth())/2;
+
+                final int center = (width - rk1.getWidth())/2;
+               // horizontalScrollViewAny.scrollTo(txt950h.getLeft() - center/2, txt950h.getTop());
                 switch (checkedId)
                 {
                     case R.id.txt300h:
@@ -327,18 +341,23 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
                         bhkNumberValue = "RK";
                         //Subproperty="nonbhk";
                         area="300";
+                        horizontalScrollViewAny.scrollTo(txt300h.getLeft() - center/2, txt300h.getTop());
                         addDataAny();
                         break;
                     case R.id.txt600h:
                         bhkNumber = "1";
                         bhkNumberValue = "BHK";
                         area="600";
+                        horizontalScrollViewAny.scrollTo(txt600h.getLeft() - center/2, txt600h.getTop());
+
                         addDataAny();
                         break;
                     case R.id.txt800h:
                         bhkNumber = "1.5";
                         bhkNumberValue = "BHK";
                         area="800";
+                        horizontalScrollViewAny.scrollTo(txt800h.getLeft() - center/2, txt800h.getTop());
+
                         addDataAny();
                         break;
                     case R.id.txt950h:
@@ -346,41 +365,53 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
                         bhkNumberValue = "BHK";
                         area="950";
                         addDataAny();
+                        horizontalScrollViewAny.scrollTo(txt950h.getLeft() - center/2, txt950h.getTop());
+
                         break;
                     case R.id.txt1300h:
                         bhkNumber = "2.5";
                         bhkNumberValue = "BHK";
                         area="1300";
+                        horizontalScrollViewAny.scrollTo(txt1300h.getLeft() - center/2, txt1300h.getTop());
                         addDataAny();
                         break;
-                    case R.id.txt1500h:
+                    case R.id.txt1600h:
                         bhkNumber = "3";
                         bhkNumberValue = "BHK";
                         area="1600";
+                        horizontalScrollViewAny.scrollTo(txt1600h.getLeft() - center/2, txt1600h.getTop());
                         addDataAny();
                         break;
                     case R.id.txt1800h:
                         bhkNumber = "3.4";
                         bhkNumberValue = "BHK";
                         area="1800";
+                        horizontalScrollViewAny.scrollTo(txt1800h.getLeft() - center/2, txt1800h.getTop());
+
                         addDataAny();
                         break;
                     case R.id.txt2100h:
                         bhkNumber = "4";
                         bhkNumberValue = "BHK";
                         area="2100";
+                        horizontalScrollViewAny.scrollTo(txt2100h.getLeft() - center/2, txt2100h.getTop());
+
                         addDataAny();
                         break;
                     case R.id.txt2300h:
                         bhkNumber = "4.5";
                         bhkNumberValue = "BHK";
                         area="2300";
+                        horizontalScrollViewAny.scrollTo(txt2300h.getLeft() - center/2, txt2300h.getTop());
+
                         addDataAny();
                         break;
                     case R.id.txt2500h:
                         bhkNumber = "5";
                         bhkNumberValue = "BHK";
                         area="2500";
+                        horizontalScrollViewAny.scrollTo(txt2500h.getLeft() - center/2, txt2500h.getTop());
+
                         addDataAny();
                         break;
                     case R.id.txt2700h:
@@ -388,12 +419,16 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
                         bhkNumberValue = "BHK";
                         //hsl.scrollTo(bhk5_5.getLeft() - center/2, bhk5_5.getTop());
                         area="2700";
+                        horizontalScrollViewAny.scrollTo(txt2700h.getLeft() - center/2, txt2700h.getTop());
+
                         addDataAny();
                         break;
                     case R.id.txt2900h:
                         bhkNumber = "6";
                         bhkNumberValue = "BHK";
                         area="2900";
+                        horizontalScrollViewAny.scrollTo(txt2900h.getLeft() - center/2, txt2900h.getTop());
+
                         addDataAny();
                         break;
 
@@ -409,13 +444,16 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
         radioGrouphome.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-
+                final int center = (width - rk1.getWidth())/2;
+               // horizontalScrollViewAny.scrollTo(rk1.getLeft() - center/2, rk1.getTop());
                 switch (checkedId)
                 {
                     case R.id.rk1:
                         bhkNumber = "1";
                         bhkNumberValue = "RK";
                         area="300";
+                        horizontalScrollViewHome.scrollTo(rk1.getLeft() - center, rk1.getTop());
+
                         addData();
                         Log.i("retail","===============rk1============"+"< " +area);
                         break;
@@ -423,6 +461,8 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
                         bhkNumber = "1";
                         bhkNumberValue = "BHK";
                         area="600";
+                        horizontalScrollViewHome.scrollTo(bhk1.getLeft() - center, bhk1.getTop());
+
                         Log.i("retail","===============rk1============"+"< " +area);
                         addData();
                         break;
@@ -430,48 +470,64 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
                         bhkNumber = "1.5";
                         bhkNumberValue = "BHK";
                         area="800";
+                        horizontalScrollViewHome.scrollTo(bhk1_5.getLeft() - center, bhk1_5.getTop());
+
                         addData();
                         break;
                     case R.id.bhk2:
                         bhkNumber = "2";
                         bhkNumberValue = "BHK";
                         area="950";
+                        horizontalScrollViewHome.scrollTo(bhk2.getLeft() - center, bhk2.getTop());
+
                         addData();
                         break;
                     case R.id.bhk2_5:
                         bhkNumber = "2.5";
                         bhkNumberValue = "BHK";
                         area="1300";
+                        horizontalScrollViewHome.scrollTo(bhk2_5.getLeft() - center, bhk2_5.getTop());
+
                         addData();
                         break;
                     case R.id.bhk3:
                         bhkNumber = "3";
                         bhkNumberValue = "BHK";
                         area="1600";
+                        horizontalScrollViewHome.scrollTo(bhk3.getLeft() - center, bhk3.getTop());
+
                         addData();
                         break;
                     case R.id.bhk3_5:
                         bhkNumber = "3.5";
                         bhkNumberValue = "BHK";
                         area="1800";
+                        horizontalScrollViewHome.scrollTo(bhk3_5.getLeft() - center, bhk3_5.getTop());
+
                         addData();
                         break;
                     case R.id.bhk4:
                         bhkNumber = "4";
                         bhkNumberValue = "BHK";
                         area="2100";
+                        horizontalScrollViewHome.scrollTo(bhk4.getLeft() - center, bhk4.getTop());
+
                         addData();
                         break;
                     case R.id.bhk4_5:
                         bhkNumber = "4.5";
                         bhkNumberValue = "BHK";
                         area="2300";
+                        horizontalScrollViewHome.scrollTo(bhk4_5.getLeft() - center, bhk4_5.getTop());
+
                         addData();
                         break;
                     case R.id.bhk5:
                         bhkNumber = "5";
                         bhkNumberValue = "BHK";
                         area="2500";
+                        horizontalScrollViewHome.scrollTo(bhk5.getLeft() - center, bhk5.getTop());
+
                         addData();
                         break;
                     case R.id.bhk5_5:
@@ -480,12 +536,16 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
                         bhkNumber = "5.5";
                         bhkNumberValue = "BHK";
                         area="2700";
+                        horizontalScrollViewHome.scrollTo(bhk5_5.getLeft() - center, bhk5_5.getTop());
+
                         addData();
                         break;
                     case R.id.bhk6:
                         bhkNumber = "6";
                         bhkNumberValue = "BHK";
                         area="2900";
+                        horizontalScrollViewHome.scrollTo(bhk6.getLeft() - center, bhk6.getTop());
+
                         addData();
                         break;
                     /*default:
@@ -631,7 +691,7 @@ private void addData(){
     }*/
 
     void plotconf(String conf){
-
+        final int center = (width - rk1.getWidth())/2;
         Log.i("configdata", "getting and parsing config data 12 : " + conf+"  "+AppConstants.PROPERTY);
         if(conf.equalsIgnoreCase("1rk")){
             area="300";
@@ -765,7 +825,7 @@ private void addData(){
 
             }else{
                 AppConstants.CONFIG=area;
-                commanbhk=txt2900;
+                commanbhk=txt2900h;
 
             }
 
@@ -786,7 +846,19 @@ private void addData(){
         if(commanbhk==null){
             commanbhk=txt950h;
         }
+        Log.i("configdata", "getting and parsing config data 12 : " + conf+"  "+AppConstants.PROPERTY+"  : commanbhk : "+commanbhk);
+
         commanbhk.setChecked(true);
+
+        new CountDownTimer(200, 50) {
+            public void onTick(long millisUntilFinished) {
+
+            }
+            public void onFinish() {
+                horizontalScrollViewHome.scrollTo(commanbhk.getLeft() - center, commanbhk.getTop());
+            }
+        }.start();
+
         onFilterValueUpdate(area,AppConstants.CONFIG);
     }
 
