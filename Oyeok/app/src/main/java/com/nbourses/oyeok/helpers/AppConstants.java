@@ -155,6 +155,7 @@ public class AppConstants {
     public static  String PROPERTY = "Home";
     public static  String CONFIG = "2bhk";
     public static  String CURRENT_DEAL_TYPE = "currentDealType";
+    public static  String TT_TYPE = "ttType";
     public static final String EMAIL_PROFILE = "emailProfile";
     public static final String UPLOADED_IMAGE_PATH = "uploadedImagePath";
     public static final String RECEIVE_PROPERTY_DETAILS = "ReceivePropertyDetails";

@@ -304,7 +304,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
             getSupportActionBar().setTitle("");
             confirm_screen_title.setText("My WatchList");
             inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
-            usertext.setHint("My Watchlist");
+            usertext.setHint("Your Building");
             add_create.setText("Add");
 
         }
@@ -497,7 +497,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
                             }else{
                                 inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
                                 usertext.setText("");
-                                usertext.setHint("My Watchlist");
+                                usertext.setHint("Your Building");
                                 add_create.setText("Add");
 
                             }
@@ -621,17 +621,9 @@ inputSearch.addTextChangedListener(new TextWatcher() {
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         String searchQuery = s.toString().trim();
         Log.i("searcho","s "+searchQuery.length());
-        Log.i("searcho","sb "+portListingCopy);
-        String s1="\""+s+"\"";
-        if(!s1.equalsIgnoreCase(""))
-        usertext.setText(s1);
-        else {
-            if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
-            usertext.setHint("My Watchlist");
-            else
-                usertext.setHint("My Listing");
+        Log.i("searcho","sb "+portListingCopy+" ============ : "+inputSearch.getText().toString().equalsIgnoreCase(""));
 
-        }
+
        if(portListing != null)
            portListing.clear();
         portListing.addAll(portListingCopy);
@@ -665,6 +657,22 @@ inputSearch.addTextChangedListener(new TextWatcher() {
           /*if(portListing != null)
               portListing.clear();
               portListing.addAll(portListingCopy);*/
+        Log.i("search12","sb outside "+s+" ============ : "+inputSearch.getText().toString().equalsIgnoreCase(""));
+        String s1="\""+s+"\"";
+        if(s.toString().equalsIgnoreCase(""))
+        {
+            usertext.setText(s);
+            Log.i("search12","sb inside "+s+" ============ : ");
+            if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                usertext.setHint("Your Building");
+            else
+                usertext.setHint("My Listing");
+        }
+
+        else {
+            usertext.setText(s1);
+
+        }
     }
 });
 
@@ -757,7 +765,7 @@ inputSearch.addTextChangedListener(new TextWatcher() {
                 portListing.addAll(myPortfolioLL);
                 portListingCopy.clear();
                 portListingCopy.addAll(portListing);
-
+                AppConstants.TT_TYPE = "ll";
                 adapter.notifyDataSetChanged();
                 if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
                     inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
@@ -767,7 +775,7 @@ inputSearch.addTextChangedListener(new TextWatcher() {
                 }else{
                     inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
                     usertext.setText("");
-                    usertext.setHint("My Watchlist");
+                    usertext.setHint("Your Building");
                     add_create.setText("Add");
 
                 }
@@ -775,7 +783,7 @@ inputSearch.addTextChangedListener(new TextWatcher() {
                 rentalCount.setVisibility(View.GONE);
             } else {
                 TT = "OR";
-
+                AppConstants.TT_TYPE = "or";
                 Log.i("addbuildingOR", "addbuildingOR 3" + addbuildingOR);
                 portListing.clear();
                 portListing.addAll(addbuildingOR);
@@ -791,7 +799,7 @@ inputSearch.addTextChangedListener(new TextWatcher() {
                 }else{
                     inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
                     usertext.setText("");
-                    usertext.setHint("My Watchlist");
+                    usertext.setHint("Your Building");
                     add_create.setText("Add");
 
                 }

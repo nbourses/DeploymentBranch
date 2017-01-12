@@ -1222,9 +1222,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                                     ((ClientMainActivity) getActivity()).closeOyeConfirmation();
                                 }
-                                txtFilterValue.setTextSize(13);
-                                txtFilterValue.setTextColor(Color.parseColor("white"));
-                                txtFilterValue.setText(oyetext);
+
                                 buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
                                 map.getUiSettings().setAllGesturesEnabled(true);
@@ -1321,11 +1319,11 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 @Override
                 public void onMapClick(LatLng latLng) {
                     Log.i("MA999999 ", "MAP CLICK=========");
-if(!AppConstants.SETLOCATION && !savebuilding) {
-
+                if(!AppConstants.SETLOCATION && !savebuilding) {
+                    onMapclicked();
         /*tvRate.setVisibility(View.VISIBLE);
         rupeesymbol.setVisibility(View.VISIBLE);*/
-    onMapclicked();
+
 }
 
 
@@ -3225,6 +3223,9 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
     public void UpdateRatePanel(){
         try {
             Log.i("Update","UpdateRatePanel:   ");
+            txtFilterValue.setTextSize(13);
+            txtFilterValue.setTextColor(Color.parseColor("white"));
+            txtFilterValue.setText(oyetext);
             horizontalPicker.setVisibility(View.VISIBLE);
             buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
             tvRate.setVisibility(View.VISIBLE);
@@ -3741,14 +3742,19 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
     public void onMapclicked(){
         spanning = false;
         Log.i("onMapclicked","Inside onMapclicked   ");
+
         for (int i = 0; i < customMarker.size(); i++) {
             if (buildingCacheModels.get(i).getFlag() == true) {
                 mVisits.setEnabled(true);
                 txtFilterValue.setEnabled(true);
                 tvRate.setVisibility(View.VISIBLE);
                 rupeesymbol.setVisibility(View.VISIBLE);
-                customMarker.get(i).setIcon(icon1);
-                customMarker.get(i).hideInfoWindow();
+                try {
+                    customMarker.get(i).setIcon(icon1);
+                    customMarker.get(i).hideInfoWindow();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 buildingSelected = true;
                 ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                 Intent in = new Intent(AppConstants.MARKERSELECTED);
@@ -3811,6 +3817,9 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                 MarkerClickEnable=true;
                 clicked = true;
                 UpdateRatePanel();
+//                txtFilterValue.setTextSize(13);
+//                txtFilterValue.setTextColor(Color.parseColor("white"));
+//                txtFilterValue.setText(oyetext);
             }
             /*if (RatePanel == true) {
                 UpdateRatePanel();
@@ -4543,6 +4552,7 @@ public int price(String conf,int rate){
         B_name=b_name;
         savebuilding=true;
         map.clear();
+        fr.setVisibility(View.GONE);
         portfolioCount.setVisibility(View.GONE);
         addlistingText.setVisibility(View.VISIBLE);
         addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
@@ -4574,6 +4584,7 @@ public int price(String conf,int rate){
       rupeesymbol.setVisibility(View.VISIBLE);
       tvRate.setVisibility(View.VISIBLE);
 
+        fr.setVisibility(View.VISIBLE);
         if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")){
             CallButton.setVisibility(View.VISIBLE);
 

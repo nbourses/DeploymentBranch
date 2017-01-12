@@ -166,7 +166,8 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
                                         AppConstants.MY_LONGITUDE= Double.parseDouble(results1.getLng());
                                         Log.i("savebuilding123","savebuilding1: "+General.getSharedPreferences(getContext(), AppConstants.LOCALITY)+"  "+ SharedPrefs.getString(getContext(), SharedPrefs.MY_CITY)+" AppConstants.MY_LATITUDE : "+AppConstants.MY_LATITUDE+"AppConstants.MY_Longitute "+AppConstants.MY_LONGITUDE);
 
-
+                                        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
 
                                     }

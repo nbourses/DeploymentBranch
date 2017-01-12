@@ -1201,14 +1201,14 @@ try {
         Log.i(TAG,"flaga isa "+AppConstants.SIGNUP_FLAG);
 
 
-        if(!BrokerRole.equalsIgnoreCase("broker")){
+       /* if(!BrokerRole.equalsIgnoreCase("broker")){
             Log.i("sushil123"," closing app CLOSE_OYE_SCREEN_SLIDE =================== "+getFragmentManager().getBackStackEntryCount()+"  "+BrokerRole);
             Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
             intent.putExtra("buildingoye",buildingoye);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             buildingoye=false;
             //((DashboardClientFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).Clearscreen();
-        }
+        }*/
 /*
 if(AppConstants.FAV) {
     dashboardClientFragment.hideFav();
@@ -1343,6 +1343,10 @@ if(AppConstants.FAV) {
             }
         } else if (slidingLayout != null && (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
             closeOyeScreen();
+             Intent intent = new Intent(AppConstants.CLOSE_OYE_SCREEN_SLIDE);
+             intent.putExtra("buildingoye",buildingoye);
+             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+             buildingoye=false;
             backpress = 0;
 
         }else if(Myportfolio==true){
@@ -1825,7 +1829,7 @@ if(AppConstants.FAV) {
 
     public void showCard() {
         Log.i(TAG,"in show card "+firstLaunch);
-       if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("") && !firstLaunch &&  !General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+       if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("") && !firstLaunch &&!buidingInfoFlag) {
            firstLaunch=false;
             if (AppConstants.cardCounter >3) {
 
