@@ -16,8 +16,17 @@ public class Message extends RealmObject {
     private String imageUrl;
     private String user_id;
     private String status;
+    private String r_by;
     public Message() { }
 
+
+    public String getR_by() {
+        return r_by;
+    }
+
+    public void setR_by(String r_by) {
+        this.r_by = r_by;
+    }
 
     public String getOk_id() {
         return ok_id;

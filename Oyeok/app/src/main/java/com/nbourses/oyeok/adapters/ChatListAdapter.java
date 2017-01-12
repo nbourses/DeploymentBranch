@@ -612,8 +612,8 @@ public class ChatListAdapter extends BaseAdapter {
 
             }
 
-            Log.i("CONVER","Chat message is self3"+message.getMessageText());
-
+            Log.i("CONVER","Chat message is self3"+message.getMessageText()+"   "+message.getUserName());
+            Log.i("CONVER","Chat message is self9"+message.getMessageText()+"   "+message.getUserName());
             String userName = message.getUserName();
             String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
             holder1.spinnerProgress.setVisibility(View.GONE);

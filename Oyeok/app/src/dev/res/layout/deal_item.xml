@@ -67,6 +67,22 @@
             android:id="@+id/txtTime"
             android:layout_marginRight="8dp"
             android:text=""/>
+        <TextView
+
+            android:id="@+id/supportCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle_badge2"
+            android:text="23"
+            android:paddingEnd="8dp"
+            android:paddingRight="8dp"
+            android:paddingLeft="8dp"
+            android:gravity="center"
+            android:textColor="#FFF"
+            android:textSize="11sp"
+            android:visibility="visible"
+            android:layout_below="@+id/linearLayout3"
+            android:layout_marginRight="8dp" />
 
     </LinearLayout>
 

@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -140,6 +142,9 @@ public class ClientDealsListActivity extends AppCompatActivity implements Custom
     @Bind(R.id.rentalCount)
     TextView rentalCount;
 
+    @Bind(R.id.supportCount)
+    TextView supportCount;
+
     @Bind(R.id.resaleCount)
     TextView resaleCount;
 
@@ -222,7 +227,7 @@ private int page = 1;
     private ArrayList<BrokerDeals> copy;
     private String сolorString;
     private List<String> allChannels = new ArrayList<String>();
-
+    SharedPreferences.OnSharedPreferenceChangeListener listener;
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -888,7 +893,46 @@ private int page = 1;
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
+    supportCount.setText(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) + "");
+    supportCount.setVisibility(View.VISIBLE);
+}else{
+    supportCount.setVisibility(View.GONE);
 
+}
+
+        try {
+            SharedPreferences prefs =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+
+                    if (key.equals(AppConstants.SUPPORT_COUNT)) {
+
+                        try {
+                            if((General.getBadgeCount(ClientDealsListActivity.this, AppConstants.SUPPORT_COUNT) < 1)){
+                                supportCount.setVisibility(View.GONE);
+                            }else{
+                                supportCount.setText(General.getBadgeCount(ClientDealsListActivity.this, AppConstants.SUPPORT_COUNT)+"");
+                                supportCount.setVisibility(View.VISIBLE);
+                                supportCount.clearAnimation();
+                                supportCount.setAnimation(bounce);}
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                }
+
+
+            };
+            prefs.registerOnSharedPreferenceChangeListener(listener);
+
+        }
+        catch (Exception e){
+            Log.e("loc", e.getMessage());
+        }
 
     }
 

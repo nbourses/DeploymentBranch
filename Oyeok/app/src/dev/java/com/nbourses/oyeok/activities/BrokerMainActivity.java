@@ -52,6 +52,7 @@ import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.razorpay.PaymentResultListener;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import butterknife.Bind;
@@ -64,7 +65,7 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 //import com.nbourses.oyeok.Database.DBHelper;
 
-public class BrokerMainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener{
+public class BrokerMainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener, PaymentResultListener {
 
 @Bind(R.id.toolbar)
    Toolbar mToolbar;
@@ -576,6 +577,24 @@ GoogleMap map;
         }*/
 
         showPortfoliobadge();
+    }
+
+    @Override
+    public void onPaymentSuccess(String s) {
+        try {
+            Log.i("RAzorpay","success "+s);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onPaymentError(int i, String s) {
+        try {
+            Log.i("RAzorpay","failure"+s);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

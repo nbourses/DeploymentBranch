@@ -299,6 +299,8 @@ dependencies {
 
     compile 'com.kyleduo.switchbutton:library:1.4.4'
 
+    compile 'com.razorpay:checkout:1.2.0'
+
 
     compile('io.intercom.android:intercom-sdk:1.+@aar') {
         transitive = true

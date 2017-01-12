@@ -660,6 +660,9 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
                 }
             }
         });
+
+        if(channel_name.equalsIgnoreCase(AppConstants.SUPPORT_CHANNEL_NAME) ||channel_name.equalsIgnoreCase(AppConstants.TIME_STAMP_IN_MILLI))
+        General.setBadgeCount(this,AppConstants.SUPPORT_COUNT,0);
     }
 
     private void hideSuggestionBox() {
@@ -1517,6 +1520,8 @@ if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCas
                 FROM = jsonMsg.getString("_from");
             }
 
+            if(jsonMsg.has("r_by"))
+                roleOfUser = jsonMsg.getString("r_by");
             Log.i(TAG," =====  _from "+msgStatus);
 
             if(jsonMsg.has("status"))
@@ -1763,9 +1768,12 @@ if(myRealm.isInTransaction())
                     }
                 }
 
+                if(!c.getR_by().equalsIgnoreCase(null))
+                    roleOfUser = c.getR_by();
 
 
-                Log.i(TAG, "until toro foro loro abcs ka "+userSubtype+" "+userType);
+
+                Log.i(TAG, "until toro foro loro abcs ka "+userSubtype+" "+userType+" "+roleOfUser);
 
                 message = new ChatMessage();
                 message.setUserName(roleOfUser);
@@ -2340,6 +2348,7 @@ String channel;
 
     private void cacheMessages(JSONArray jsonArrayHistory){
         String user_id = null;
+        String r_by = null;
         Log.i(TAG, "until cacheMessages called  "+jsonArrayHistory);
         //JSONArray jsonArrayHistory = loadFinalHistory();
         myRealm = General.realmconfig(this);
@@ -2368,9 +2377,13 @@ String channel;
                     message = myRealm.createObject(Message.class); //new Message();
                     Log.i(TAG, "until here is the cacheMessages 1 2 Tithe");
                     message.setOk_id(channel_name);
+                    if(js.has("r_by")){
+                        r_by = js.getString("r_by");
+                     }
                     message.setMessage(js.getString("message"));
                     message.setTimestamp(js.getString("timetoken"));
                     message.setFrom(js.getString("_from"));
+                    message.setR_by(r_by);
                     message.setTo(js.getString("to"));
                     message.setStatus(js.getString("status"));
 

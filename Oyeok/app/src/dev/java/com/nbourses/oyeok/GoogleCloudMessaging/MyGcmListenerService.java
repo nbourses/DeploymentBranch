@@ -21,7 +21,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.R;
-import com.nbourses.oyeok.activities.BrokerDealsListActivity;
 import com.nbourses.oyeok.activities.BrokerMainActivity;
 import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.activities.ClientMainActivity;
@@ -389,19 +388,35 @@ public class MyGcmListenerService extends GcmListenerService {
 
             // [END_EXCLUDE]
         } else {
-            try {
+    /////        try {
+                Log.i(TAG,"isuue gcm 9 uid "+General.getSharedPreferences(this, AppConstants.USER_ID)+" from "+data.getString("_from")+" tinmilli "+General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI));
+                Log.i(TAG,"isuue gcm 91 uid "+General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)+" to "+data.getString("to"));
+
                 Log.i(TAG,General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)+" marine    "+data.getString("to"));
                 if ((!General.getSharedPreferences(this, AppConstants.USER_ID).equalsIgnoreCase(data.getString("_from"))) && !(General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI).equalsIgnoreCase(data.getString("_from"))))
                 {
+                    Log.i(TAG,"isuue gcm 1 uid "+General.getSharedPreferences(this, AppConstants.USER_ID)+" from "+data.getString("_from")+" tinmilli "+General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI));
                     if(!General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID).equalsIgnoreCase(data.getString("to"))){
+if(General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI).equalsIgnoreCase(data.getString("to")))
+                        {
 
+                            General.setBadgeCount(getApplicationContext(), AppConstants.SUPPORT_COUNT, supportCount+1);
+                        }
+
+                        Log.i(TAG,"isuue gcm 12 openchat "+General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)+" to "+data.getString("to"));
                     Log.i(TAG,"Inside gcm user id "+General.getSharedPreferences(this, AppConstants.USER_ID)+" from "+data.getString("_from")+" ts "+General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI+" open id "+General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)));
                     Log.i(TAG,"muted ok ids "+General.getMutedOKIds(this));
                     if(General.getMutedOKIds(this) != null) {
-                        if (!General.getMutedOKIds(this).contains(data.getString("to")))
+                        if (!General.getMutedOKIds(this).contains(data.getString("to"))) {
+                            Log.i(TAG,"isuue gcm 14");
                             sendNotification("New Message Recieved", data.getString("to") + "@" + data.getString("message"), data);
+
+                        }else{
+                            Log.i(TAG,"isuue gcm 15");
+                        }
                     }
                     else{
+                        Log.i(TAG,"isuue gcm 16");
                         Log.i(TAG,"pushed on drawer");
                         sendNotification("New Message Recieved", data.getString("to") + "@" + data.getString("message"), data);
                     }
@@ -409,7 +424,7 @@ public class MyGcmListenerService extends GcmListenerService {
                     try {
                         Realm myRealm = General.realmconfig(this);
                         NotifCount notifcount = myRealm.where(NotifCount.class).equalTo(AppConstants.OK_ID, data.getString("to")).findFirst();
-                        Log.i(TAG, "Caught in exception notif insiderr cached msgs is the notifcount " + notifcount);
+                        Log.i(TAG, "Caught in exception notif insiderr cached msgs is the chat id "+data.getString("to") + " notifcount " + notifcount);
                         if (notifcount == null) {
                             NotifCount notifCount = new NotifCount();
                             notifCount.setOk_id(data.getString("to"));
@@ -452,10 +467,14 @@ public class MyGcmListenerService extends GcmListenerService {
                     }
                 }
                 }
-            }
-            catch (Exception e) {
+                else{
+                    Log.i(TAG,"isuue gcm 13 ");
+
+                }
+   /////         }
+           /* catch (Exception e) {
                 Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 3 2 " + e);
-            }
+            }*/
 
         }
     }
@@ -488,45 +507,53 @@ public class MyGcmListenerService extends GcmListenerService {
         Intent intent = null;
         if(data.containsKey("to")) {
 
-            Realm myRealm = General.realmconfig(this);
-            HalfDeals halfDeals = myRealm.where(HalfDeals.class).equalTo(AppConstants.OK_ID, data.getString("to")).findFirst();
-            Log.i(TAG, "halfDeals is the " + halfDeals);
-
-
-            if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
-                    General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("broker")) {
-
-                if (halfDeals.equals("") || halfDeals.getSpec_code().isEmpty()) {
-                    Log.i(TAG, "halfDeals is the 1 ");
-                    intent = new Intent(context, BrokerDealsListActivity.class);
-                    intent.putExtra("defaul_deal_flag", "false");
-                } else {
-                    Log.i(TAG, "halfDeals is the 2 ");
-                    intent = new Intent(context, DealConversationActivity.class);
-                    intent.putExtra(AppConstants.OK_ID, data.getString("to"));
-                    intent.putExtra(AppConstants.SPEC_CODE, halfDeals.getSpec_code());
-                    intent.putExtra("userRole", "broker");
-                }
-
-            } else if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
-                    General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("client")) {
-                if (halfDeals.equals("") || halfDeals.getSpec_code().isEmpty()) {
-                    Log.i(TAG, "halfDeals is the 3 ");
-                    intent = new Intent(context, ClientDealsListActivity.class);
-                    intent.putExtra("defaul_deal_flag", "false");
-                } else {
-                    Log.i(TAG, "halfDeals is the 4 ");
-                    intent = new Intent(context, DealConversationActivity.class);
-                    intent.putExtra(AppConstants.OK_ID, data.getString("to"));
-                    intent.putExtra(AppConstants.SPEC_CODE, halfDeals.getSpec_code());
-                    intent.putExtra("userRole", "client");
-                }
-            }
-            else if(General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("")){
+            if(data.getString("to").equalsIgnoreCase(General.getSharedPreferences(context,AppConstants.TIME_STAMP_IN_MILLI))){
                 intent = new Intent(context, DealConversationActivity.class);
                 intent.putExtra(AppConstants.OK_ID, data.getString("to"));
                 //intent.putExtra(AppConstants.SPEC_CODE, halfDeals.getSpec_code());
                 intent.putExtra("userRole", "client");
+            }
+            else {
+
+                Realm myRealm = General.realmconfig(this);
+                HalfDeals halfDeals = myRealm.where(HalfDeals.class).equalTo(AppConstants.OK_ID, data.getString("to")).findFirst();
+                Log.i(TAG, "halfDeals is the " + halfDeals);
+
+
+                if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
+                        General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("broker")) {
+
+                    if (halfDeals.equals("") || halfDeals.getSpec_code().isEmpty()) {
+                        Log.i(TAG, "halfDeals is the 1 ");
+                        intent = new Intent(context, ClientDealsListActivity.class);
+                        intent.putExtra("defaul_deal_flag", "false");
+                    } else {
+                        Log.i(TAG, "halfDeals is the 2 ");
+                        intent = new Intent(context, DealConversationActivity.class);
+                        intent.putExtra(AppConstants.OK_ID, data.getString("to"));
+                        intent.putExtra(AppConstants.SPEC_CODE, halfDeals.getSpec_code());
+                        intent.putExtra("userRole", "broker");
+                    }
+
+                } else if (!General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("") &&
+                        General.getSharedPreferences(context, AppConstants.ROLE_OF_USER).equals("client")) {
+                    if (halfDeals.equals("") || halfDeals.getSpec_code().isEmpty()) {
+                        Log.i(TAG, "halfDeals is the 3 ");
+                        intent = new Intent(context, ClientDealsListActivity.class);
+                        intent.putExtra("defaul_deal_flag", "false");
+                    } else {
+                        Log.i(TAG, "halfDeals is the 4 ");
+                        intent = new Intent(context, DealConversationActivity.class);
+                        intent.putExtra(AppConstants.OK_ID, data.getString("to"));
+                        intent.putExtra(AppConstants.SPEC_CODE, halfDeals.getSpec_code());
+                        intent.putExtra("userRole", "client");
+                    }
+                } else if (General.getSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                    intent = new Intent(context, DealConversationActivity.class);
+                    intent.putExtra(AppConstants.OK_ID, data.getString("to"));
+                    //intent.putExtra(AppConstants.SPEC_CODE, halfDeals.getSpec_code());
+                    intent.putExtra("userRole", "client");
+                }
             }
         }
         else if(data.containsKey("bicon")){
