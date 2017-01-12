@@ -87,7 +87,20 @@ private boolean fisrtconf=false;
         bhk5_5=(RadioButton) v.findViewById( R.id.bhk5_5 );
         bhk6=(RadioButton) v.findViewById( R.id.bhk6 );
        // bhk2=(RadioButton) v.findViewById( R.id.bhk2 );
+
+
+        txt300h=(RadioButton) v.findViewById( R.id.txt300h );
+        txt600h=(RadioButton) v.findViewById( R.id.txt600h );
+        txt800h=(RadioButton) v.findViewById( R.id.txt800h );
         txt950h=(RadioButton) v.findViewById( R.id.txt950h );
+        txt1300h=(RadioButton) v.findViewById( R.id.txt1300h );
+        txt1600h=(RadioButton) v.findViewById( R.id.txt1600h );
+        txt1800h=(RadioButton) v.findViewById( R.id.txt1800h );
+        txt2100h=(RadioButton) v.findViewById( R.id.txt2100h );
+        txt2300h=(RadioButton) v.findViewById( R.id.txt2300h );
+        txt2500h=(RadioButton) v.findViewById( R.id.txt2500h );
+        txt2700h=(RadioButton) v.findViewById( R.id.txt2700h );
+        txt2900h=(RadioButton) v.findViewById( R.id.txt2900h );
 
         radioGrouphome = (RadioGroup) v.findViewById(R.id.radioGrouphome);
         radioGroupany = (RadioGroup) v.findViewById(R.id.radioGroupany);
@@ -856,6 +869,7 @@ private void addData(){
             }
             public void onFinish() {
                 horizontalScrollViewHome.scrollTo(commanbhk.getLeft() - center, commanbhk.getTop());
+
             }
         }.start();
 

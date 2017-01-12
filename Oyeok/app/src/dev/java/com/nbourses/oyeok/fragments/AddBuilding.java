@@ -458,9 +458,9 @@ private TextView Cancel,back,usertext;
                                 add_Building.setGrowth_rate(building.getString("rate_growth"));
                                 add_Building.setDisplay_type(null);
                                 add_Building.setId(b_id);
-                                add_Building.setLl_pm(price(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG),Integer.parseInt(building.getString("ll_pm"))));
+                                add_Building.setLl_pm(Integer.parseInt(building.getString("ll_pm")));
                                 add_Building.setOr_psf(Integer.parseInt(building.getString("or_psf")));
-                                if(i==0){
+                                if(AppConstants.TT_TYPE.equalsIgnoreCase("ll")){
                                     add_Building.setTt("ll");
                                    // General.setBadgeCount(getContext(),AppConstants.ADDB_COUNT_LL,General.getBadgeCount(getContext(),AppConstants.ADDB_COUNT_LL)+1);
                                 }else{
@@ -469,6 +469,8 @@ private TextView Cancel,back,usertext;
                                    // General.setBadgeCount(getContext(),AppConstants.ADDB_COUNT_OR,General.getBadgeCount(getContext(),AppConstants.ADDB_COUNT_OR)+1);
 
                                 }
+                                if(myRealm.isInTransaction())
+                                    myRealm.cancelTransaction();
                                 myRealm.beginTransaction();
                                 myRealm.copyToRealmOrUpdate(add_Building);
                                 myRealm.commitTransaction();

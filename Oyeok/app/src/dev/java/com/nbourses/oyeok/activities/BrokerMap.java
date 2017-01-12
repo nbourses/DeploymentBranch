@@ -1451,13 +1451,27 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
       /*  Intent in =new Intent(AppConstants.RESETPHASE);
         in.putExtra("resetphase",true);
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);*/
-        if(searchflag){
+        if(AppConstants.SIGNUP_FLAG){
+//            if(AppConstants.REGISTERING_FLAG){}else{
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(container_Signup)).commitAllowingStateLoss();
+
+           // getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
+                AppConstants.SIGNUP_FLAG=false;
+            //}
+            Log.i("sushil123"," main activity =================== SIGNUP_FLAGffffffff");
+
+        }else if(searchflag){
+            Log.i("onBackPressed ","onBackPressed()1 searchflag =========== "+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(container_Signup)).commitAllowingStateLoss();
             searchflag=false;
         }else if( buidingInfoFlag){
            CloseBuildingOyeComfirmation();
+            Log.i("onBackPressed ","onBackPressed() =========== buidingInfoFlag"+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
+
             onMapclicked();
        }else if(Signupflag){
+            Log.i("onBackPressed ","onBackPressed() ===========Signupflag "+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
+
             CloseSignUP();
         }else if(AppConstants.MY_BASE_LOCATION_FLAG){
             //AppConstants.MY_BASE_LOCATION_FLAG = false;

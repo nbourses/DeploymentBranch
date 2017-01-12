@@ -18,7 +18,7 @@ public class SharedPrefs {
     public static String MY_LAT = "myLat";
     public static String MY_LNG = "myLong";
     public static String MY_LOCALITY = "myLocality";
-    public static String My_BALANCE= "34";
+    public static String My_BALANCE= "100";
     public static String MY_CITY = "myCity";
     public static String MY_PINCODE = "myPincode";
     public static String MY_REGION = "myRegion";
