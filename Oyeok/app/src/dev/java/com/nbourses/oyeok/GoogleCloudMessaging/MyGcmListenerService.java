@@ -388,7 +388,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
             // [END_EXCLUDE]
         } else {
-    /////        try {
+           try {
                 Log.i(TAG,"isuue gcm 9 uid "+General.getSharedPreferences(this, AppConstants.USER_ID)+" from "+data.getString("_from")+" tinmilli "+General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI));
                 Log.i(TAG,"isuue gcm 91 uid "+General.getSharedPreferences(this, AppConstants.CHAT_OPEN_OK_ID)+" to "+data.getString("to"));
 
@@ -471,10 +471,10 @@ if(General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI).equalsIg
                     Log.i(TAG,"isuue gcm 13 ");
 
                 }
-   /////         }
-           /* catch (Exception e) {
+            }
+            catch (Exception e) {
                 Log.i(TAG, "Caught in exception notif insiderr cached msgs is the 3 2 " + e);
-            }*/
+            }
 
         }
     }

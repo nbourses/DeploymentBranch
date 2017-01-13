@@ -768,7 +768,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         //int height=fr.getHeight();
         //int width=fr.getWidth();
         fr.setVisibility(View.VISIBLE);
-
         ViewTreeObserver vto = fr.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -782,15 +781,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 // Log.i("measurement","frag me========: "+height+"  ; "+width);
                 MainScreenPropertyListing mainScreenPropertyListing= new MainScreenPropertyListing();
                 loadFragmentAnimated(mainScreenPropertyListing,b,R.id.list_container,"");
-                try {
-                    Realm realm1= General.realmconfig(getContext());
-                    long count = realm1.where(BuildingCacheRealm.class).count();
-                    if(count==0){
-                        fr.setVisibility(View.GONE);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
 
             }
         });
@@ -4803,7 +4794,7 @@ public void resetSeekBar(){
         }
 
 
-
+       fr.setVisibility(View.VISIBLE);
 
     }
 
@@ -4826,7 +4817,19 @@ public void resetSeekBar(){
 
       int len =result1.size();
       Log.i("dataformrealm","BuildingCacheRealm entered kamine  "+result1.size());
+      try {
 
+          Realm realm1= General.realmconfig(getContext());
+          long count = realm1.where(BuildingCacheRealm.class).count();
+          if(len==0){
+              fr.setVisibility(View.GONE);
+
+          }else{
+              fr.setVisibility(View.VISIBLE);
+          }
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
       for(BuildingCacheRealm c :result1){
 
           Log.i("dataformrealm","BuildingCacheRealm"+c.getName());
@@ -4855,7 +4858,7 @@ public void resetSeekBar(){
 
       Intent inn = new Intent(AppConstants.REFRESH_LISTVIEW);
       LocalBroadcastManager.getInstance(getContext()).sendBroadcast(inn);
-      fr.setVisibility(View.VISIBLE);
+     // fr.setVisibility(View.VISIBLE);
      /* new CountDownTimer(500, 500) {
 
           public void onTick(long millisUntilFinished) {
