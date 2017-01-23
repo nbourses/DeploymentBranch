@@ -1,19 +1,19 @@
 {
   "project_info": {
-    "project_number": "463092685367",
-    "project_id": "oyeok-1039"
+    "project_number": "474388790743",
+    "project_id": "eternal-bruin-155912"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:463092685367:android:54f47e1587dc180e",
+        "mobilesdk_app_id": "1:474388790743:android:54f47e1587dc180e",
         "android_client_info": {
           "package_name": "com.nbourses.oyeok"
         }
       },
       "oauth_client": [
         {
-          "client_id": "463092685367-gvte720eh0oj83k58jvo14mmgger8or3.apps.googleusercontent.com",
+          "client_id": "474388790743-gl1g2gco5kjqoaet4bvhbgpkskcqa2gu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.nbourses.oyeok",
@@ -21,18 +21,23 @@
           }
         },
         {
-          "client_id": "463092685367-0e8f4k8hg33d9fcvanusgr1hfhlr9ru8.apps.googleusercontent.com",
+          "client_id": "474388790743-fqu4693eg4d6mlr0sbk78t6u5ed09b5v.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCrHBs9SJD_RvGxrqxqlJsmZI3WZ3a7WzQ"
+          "current_key": "AIzaSyCQyZqvzRFy6NW3mVzBQ98yFyVBOykgb4M"
         }
       ],
       "services": {
-        
-       
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
         "ads_service": {
           "status": 1
         }

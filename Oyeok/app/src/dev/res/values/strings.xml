@@ -149,7 +149,7 @@
 
     <string name="type_your_message">Type your message</string>
 
-    <string name="gcm_defaultSenderId">463092685367</string>
+    <string name="gcm_defaultSender_id">463092685367</string>
     <string name="api_key">AIzaSyBbURHypLRkDAI98XiI3MmTArjtKMeItjc</string>
 
 

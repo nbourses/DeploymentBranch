@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "390157416039",
+    "project_id": "firebase-oyeok"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:390157416039:android:54f47e1587dc180e",
+        "android_client_info": {
+          "package_name": "com.nbourses.oyeok"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          //"current_key": ""
+    "current_key": "AIzaSyAa8iPzCiPoMouVAaVoQBvWyrShlepNs08"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-89243453-4"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

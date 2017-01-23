@@ -16,6 +16,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -38,11 +40,31 @@ import com.digits.sdk.android.Digits;
 import com.digits.sdk.android.DigitsAuthButton;
 import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsSession;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-//import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
-//import com.nbourses.oyeok.Firebase.UserProfileFirebase;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
@@ -65,9 +87,11 @@ import com.nispok.snackbar.SnackbarManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import butterknife.Bind;
@@ -78,7 +102,10 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
+//import com.nbourses.oyeok.Database.DBHelper;
+//import com.nbourses.oyeok.Firebase.UserProfileFirebase;
+
+public class SignUpFragment extends Fragment implements OnAcceptOkSuccess, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "SignUpFragment";
     private DigitsAuthButton digitsButton;
     @Bind(R.id.submitprofile)
@@ -109,6 +136,10 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     Boolean success = false, is_role_selected=false, validation_success, email_success;
     String subphone=null;
     LocationManager mLocationManager;
+    private LoginButton loginButton;
+    private CallbackManager callbackManager;
+    private AccessTokenTracker accessTokenTracker;
+    private ProfileTracker profileTracker;
     //SendLocationUpdate sendLocationUpdate;
     //LocationResult locationResult;
     UserProfileViewModel userProfileViewModel;
@@ -148,12 +179,154 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
     UserInfo userInfo = new UserInfo();
 
 
+
+
+
+    public static final int RC_SIGN_IN = 0;
+
+
+
+    private static final int PROFILE_PIC_SIZE = 800;
+
+    private GoogleApiClient mGoogleApiClient;
+
+    private boolean mIntentInProgress;
+
+    private boolean mSignInClicked;
+
+    private ConnectionResult mConnectionResult;
+
+    private SignInButton btnSignIn;
+    private Button gbtnSignOut;
+
+    private Context mContext;
+    private Activity mActivity;
+
+private LinearLayout signinpanel;
+
+
+
+
+    private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+            AccessToken accessToken = loginResult.getAccessToken();
+            Profile profile = Profile.getCurrentProfile();
+
+
+            Log.i(TAG,"facebook 2 "+loginResult);
+          GraphRequest request = GraphRequest.newMeRequest(
+                    loginResult.getAccessToken(),
+                    new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(JSONObject object, GraphResponse response) {
+                            Log.v("LoginActivity", response.toString());
+
+                            // Application code
+                            try {
+                                String email = object.getString("email");
+                                String name = object.getString("name");
+                                Log.i(TAG,"facebook 2 1 "+email);
+
+                                Log.i(TAG,"facebook 2 2 "+name);
+                               setData(name, email);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,email,gender,birthday");
+            request.setParameters(parameters);
+            request.executeAsync();
+
+
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+
+        @Override
+        public void onError(FacebookException e) {
+
+        }
+    };
+
+
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         activity = getActivity();
 
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+
+        mActivity = getActivity();
+        mContext = getActivity().getApplicationContext();
+
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+
+        callbackManager = CallbackManager.Factory.create();
+
+        accessTokenTracker= new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
+                Log.i(TAG,"facebook 18 "+newToken);
+                if (newToken == null) {
+                    //write your code here what to do when user logout
+                    name.setText("");
+                    email.setText("");
+                }
+            }
+        };
+
+        profileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
+                Log.i(TAG,"facebook 1 "+newProfile);
+            }
+        };
+
+        accessTokenTracker.startTracking();
+        profileTracker.startTracking();
+
+       /* AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(
+                    AccessToken oldAccessToken,
+                    AccessToken currentAccessToken) {
+                Log.i(TAG,"facebook currentAccessToken "+currentAccessToken);
+                if (currentAccessToken == null){
+                    name.setText("");
+                    email.setText("");
+                }
+            }
+        };
+        accessTokenTracker.startTracking();*/
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
+        loginButton.setReadPermissions(Arrays.asList(
+                "public_profile", "email", "user_birthday", "user_friends"));
+
+        //loginButton.setReadPermissions("user_friends");
+        loginButton.setFragment(this);
+        loginButton.registerCallback(callbackManager, callback);
+
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -166,6 +339,14 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         Log.i("signup fragment","building listings are "+listings);
         String[] bNames = new String[3];
         int[] bPrice = new int[3];
+
+
+
+
+
+
+
+
 
          try {
              // try catch to handle direct signup from deals button when building data not available
@@ -186,6 +367,18 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 lastFragment=b.getString("lastFragment");
         Log.i(TAG, "lastFragment "+lastFragment);
         View view1 =  inflater.inflate(R.layout.activity_deals_list, container, false);
+
+
+
+
+        //Initializing signinbutton
+
+
+        //Initializing google api client
+
+
+
+
         fragment_container1 = (FrameLayout) view1.findViewById(R.id.fragment_container1);
         supportChat = (LinearLayout) view1.findViewById(R.id.supportChat);
         listViewDeals = (ListView) view1.findViewById(R.id.listViewDeals);
@@ -193,6 +386,48 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 okBroker = true;
             Log.i("Signup called =", "view assigned");
             View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
+        btnSignIn = (SignInButton) view.findViewById(R.id.sign_in_button);
+        gbtnSignOut = (Button) view.findViewById(R.id.g_sign_out_button);
+
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .build();
+
+            mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                    .enableAutoManage(getActivity() /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+
+
+       /* mGoogleApiClient = new GoogleApiClient.Builder(view.getContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this).addApi(Plus.API,Plus.PlusOptions.builder().build())
+                .addScope(Plus.SCOPE_PLUS_LOGIN).addScope(Plus.SCOPE_PLUS_PROFILE).build();*/
+
+
+
+
+
+
+
+        btnSignIn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                signInG();
+             // signInWithGplus();
+
+            }
+        });
+        gbtnSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOutG();
+            }
+        });
+
+
+
             //dbHelper=new DBHelper(getActivity());
             Log.i("Signup called =", "view assigned");
             Digits.getSessionManager().clearActiveSession();
@@ -225,20 +460,41 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 }
             };
 
-        digitsButton = (DigitsAuthButton) view.findViewById(R.id.auth_button);
-        digitsButton.setText("sign me up");
+       //// digitsButton = (DigitsAuthButton) view.findViewById(R.id.auth_button);
+      ////  digitsButton.setText("sign me up");
         profile_pic = (ImageView) view.findViewById(R.id.profile_pic);
         already_registered_tab=(Button) view.findViewById(R.id.already_registered_tab);
         new_user_tab=(Button) view.findViewById(R.id.new_user_tab);
+        signinpanel = (LinearLayout) view.findViewById(R.id.signinpanel);
         name= (EditText) view.findViewById(R.id.etname);
         email= (EditText) view.findViewById(R.id.etemail);
         submit=(Button)view.findViewById(R.id.submitprofile);
         tvheading= (TextView) view.findViewById(R.id.tvheading);
         tvcontent= (TextView) view.findViewById(R.id.tvcontent);
         editProfile_pic = (ImageView) view.findViewById(R.id.editProfile_pic);
+        loginButton = (LoginButton)view.findViewById(R.id.login_button);
         /*  if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client"))*/
         Log.i(TAG,"last fragment narcos "+lastFragment);
-        
+
+        callbackManager = CallbackManager.Factory.create();
+
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+Log.i(TAG, "facebook success "+loginResult);
+            }
+
+            @Override
+            public void onCancel() {
+                Log.i(TAG, "facebook cancel ");
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                Log.i(TAG, "facebook error"+e.getMessage());
+            }
+        });
+
         if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")){
             tvheading.setText(R.string.client_sign_up_heading);
             submit.setText("REGISTER AS A CUSTOMER");
@@ -280,6 +536,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 newUser=false;
                 name.setVisibility(View.GONE);
                 email.setVisibility(View.GONE);
+                signinpanel.setVisibility(View.GONE);
+
                 already_registered_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
                 new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
                 Log.i(TAG,"last fragment narcos 2 "+okBroker);
@@ -316,6 +574,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 newUser=true;
                 name.setVisibility(View.VISIBLE);
                 email.setVisibility(View.VISIBLE);
+                signinpanel.setVisibility(View.VISIBLE);
                 already_registered_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
                 new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
                 if(okBroker==false && General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
@@ -454,6 +713,54 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         return view;
 
     }
+
+
+
+
+
+
+
+    /**
+     * Sign-in into google
+     * */
+
+    private void signInG(){
+
+            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+            startActivityForResult(signInIntent, RC_SIGN_IN);
+
+    }
+    /*private void signInWithGplus() {
+        if (!mGoogleApiClient.isConnecting()) {
+            mSignInClicked = true;
+            resolveSignInError();
+        }
+    }*/
+
+    /**
+     * Method to resolve any signin errors
+     * */
+   /* private void resolveSignInError() {
+
+        if (mConnectionResult.hasResolution()) {
+            try {
+                mIntentInProgress = true;
+                mConnectionResult.startResolutionForResult(mActivity,
+                        RC_SIGN_IN);
+
+            } catch (*//*IntentSender.SendIntentException e*//*Exception e) {
+                mIntentInProgress = false;
+                mGoogleApiClient.connect();
+            }
+        }
+
+    }*/
+
+
+
+
+
+
 
 
     public void submitButton() {
@@ -612,17 +919,17 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                             signup_success();
                                         }
                                     })
-                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    /*.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                         public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                                             dialog.cancel();
-                                            /*Intent intent = new Intent(getContext(), ClientMainActivity.class);
+                                            *//*Intent intent = new Intent(getContext(), ClientMainActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                                     Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            startActivity(intent);*/
+                                            startActivity(intent);*//*
                                             AppConstants.REGISTERING_FLAG=false;
                                         }
-                                    });
+                                    })*/;
                             final AlertDialog alert = builder.create();
                             alert.show();
                             Log.i("TRACE", "message is chal "+signUp.responseData.getMessage());
@@ -811,6 +1118,78 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
 
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.i("google signin", "onConnected");
+      /*  mSignInClicked = false;
+        getProfileInformation();*/
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i("google signin", "onConnected suspende");
+        /*mGoogleApiClient.connect();*/
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+       /* Log.i("google signin", "onConnected failed "+connectionResult.getErrorMessage()+ " "+connectionResult.getErrorCode()+"  "+connectionResult.isSuccess());
+
+            if (!connectionResult.hasResolution()) {
+                GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(),
+                        mActivity, 0).show();
+                Log.e(TAG, "" + connectionResult.getErrorCode());
+                return;
+            }
+
+            if (!mIntentInProgress) {
+
+                mConnectionResult = connectionResult;
+
+                if (mSignInClicked) {
+
+                    Log.e(TAG, "" + connectionResult.getErrorCode());
+                    resolveSignInError();
+                }
+            }
+*/
+        }
+
+
+    private void getProfileInformation() {
+        /*Log.i("google signin", "getProfileInformation");
+        try {
+            if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
+                Person currentPerson = Plus.PeopleApi
+                        .getCurrentPerson(mGoogleApiClient);
+                String personName = currentPerson.getDisplayName();
+                String personPhotoUrl = currentPerson.getImage().getUrl();
+
+               // String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+                String personGooglePlusProfile = currentPerson.getUrl();
+               *//* String email = Plus.AccountApi.getAccountName(mGoogleApiClient);*//*
+
+                Log.i(TAG, "Name: " + personName + ", plusProfile: "
+                        + personGooglePlusProfile + ", email: " + email
+                        + ", Image: " + personPhotoUrl + " user id:"
+                        + currentPerson.getId());
+
+
+
+
+
+
+            } else {
+                Toast.makeText(mContext, "Person information is null",
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+    }
+
+
     public interface ShowChatList
     {
         public void showChatList();
@@ -937,6 +1316,9 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
          fragmentTransaction.commitAllowingStateLoss();*/
      }
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i("google signin", "onActivityResult");
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode != 0) {
             Uri mImageUri = data.getData();
             try {
@@ -956,7 +1338,81 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                 e.printStackTrace();
             }
         }
+        if (requestCode == RC_SIGN_IN) {
+            Log.i("google signin", "onActivityResult 1");
+
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+          /*  if (resultCode != Activity.RESULT_OK) {
+                Log.i("google signin", "onActivityResult 2");
+                mSignInClicked = false;
+            }
+
+            mIntentInProgress = false;
+
+            if (!mGoogleApiClient.isConnecting()) {
+                Log.i("google signin", "onActivityResult 3");
+                mGoogleApiClient.connect();
+
+            }*/
+        }
+
+
     }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInResult 1:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+
+            setData(acct.getDisplayName(), acct.getEmail());
+            btnSignIn.setVisibility(View.GONE);
+            gbtnSignOut.setVisibility(View.VISIBLE);
+
+        } else {
+            // Signed out, show unauthenticated UI.
+           // updateUI(false);
+            Log.d(TAG, "handleSignInResult 3:" + result.isSuccess());
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mGoogleApiClient.stopAutoManage(getActivity());
+        mGoogleApiClient.disconnect();
+        LoginManager.getInstance().logOut();
+        accessTokenTracker.stopTracking();
+        profileTracker.stopTracking();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+     //   mGoogleApiClient.connect();
+    }
+
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        /*if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }*/
+        accessTokenTracker.stopTracking();
+        profileTracker.stopTracking();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+       /* Profile profile = Profile.getCurrentProfile();*/
+        accessTokenTracker.startTracking();
+        profileTracker.startTracking();
+    }
+
 
     public static int getOrientation(Context context, Uri photoUri) {
         Cursor cursor = context.getContentResolver().query(photoUri,
@@ -967,6 +1423,27 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
         }
         cursor.moveToFirst();
         return cursor.getInt(0);
+    }
+
+    private void setData(String name1, String email1){
+        name.setText(name1);
+        email.setText(email1);
+        Digits.authenticate(authCallback, R.style.CustomDigitsTheme);
+
+    }
+
+    private void signOutG() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        Log.i(TAG,"google logout "+status);
+                        name.setText("");
+                        email.setText("");
+                        btnSignIn.setVisibility(View.VISIBLE);
+                        gbtnSignOut.setVisibility(View.GONE);
+                    }
+                });
     }
 
 }

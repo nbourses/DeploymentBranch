@@ -40,6 +40,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         AppEventsLogger.activateApp(this);
 
 
+
         context = this;
         if( SharedPrefs.getString(this,SharedPrefs.PERMISSION).equalsIgnoreCase(""))
         SharedPrefs.save(this,SharedPrefs.PERMISSION,"true");

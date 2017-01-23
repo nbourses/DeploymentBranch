@@ -31,8 +31,16 @@
         }
       ],
       "services": {
-        
-       
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-68173268-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
         "ads_service": {
           "status": 1
         }

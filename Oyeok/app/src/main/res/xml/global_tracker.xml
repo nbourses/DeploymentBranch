@@ -14,4 +14,23 @@
       See Project Structure -> Analytics -> Google Analytics -> Learn More
       to learn more about configuring this file.
     -->
+
+    <string name="ga_trackingId">UA-89243453-4</string>
 </resources>
+
+
+
+ <!--   "oauth_client": [
+    {
+    "client_id": "463092685367-gvte720eh0oj83k58jvo14mmgger8or3.apps.googleusercontent.com",
+    "client_type": 1,
+    "android_info": {
+    "package_name": "com.nbourses.oyeok",
+    "certificate_hash": "2D39F0DA1F8CB21304608F9A5A7B906D296929B8"
+    }
+    },
+    {
+    "client_id": "463092685367-0e8f4k8hg33d9fcvanusgr1hfhlr9ru8.apps.googleusercontent.com",
+    "client_type": 3
+    }
+    ],-->

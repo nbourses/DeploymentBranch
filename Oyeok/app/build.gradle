@@ -42,7 +42,7 @@ android {
         minSdkVersion 16
         multiDexEnabled true
         targetSdkVersion 23
-        versionCode 43
+        versionCode 44
         versionName "1.0"
         manifestPlaceholders = [manifestApplicationId          : "${applicationId}",
                                 onesignal_app_id               : "9e2ab2be-54c5-4981-b15f-fb8dc78b81ee",
@@ -50,9 +50,34 @@ android {
 
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
+
+
+
+    signingConfigs {
+        debug {
+            storeFile file("/Users/shlokmalik/Desktop/oyeok.jks")
+            storePassword "NBAscent@123A"
+            keyAlias "oyeok"
+            keyPassword "NBAscent@123A"
+        }
+    }
+    /*buildTypes {
+        release {
+
+            signingConfig signingConfigs.release
+        }
+    }*/
+
+
+
+
+
+
+
     buildTypes {
         debug {
             debuggable true
+            signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled false
@@ -160,10 +185,10 @@ dependencies {
 dependencies {
     //compile 'com.google.android.gms:play-services-analytics:9.2.0'
 
-    compile 'com.google.android.gms:play-services-ads:9.0.2'
+   compile 'com.google.android.gms:play-services-ads:9.0.2'
 }
 dependencies {
-    compile 'com.google.android.gms:play-services-auth:9.0.2'
+   compile 'com.google.android.gms:play-services-auth:9.0.2'
 }
 
 dependencies {
@@ -175,18 +200,18 @@ dependencies {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services-ads:8.4.0'
+  ////  compile 'com.google.android.gms:play-services-ads:8.4.0'
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services-auth:8.4.0'
+   // compile 'com.google.android.gms:play-services-auth:8.4.0'
 }
 //sus
 dependencies {
     compile 'com.firebase:firebase-client-android:2.3.1'
 }
 dependencies {
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
+   //// compile 'com.google.android.gms:play-services-gcm:8.4.0'
 }
 dependencies {
     compile 'com.android.support:support-v4:23.+'
@@ -214,14 +239,15 @@ dependencies {
         mavenCentral()
     }
 
+
     compile 'com.nineoldandroids:library:2.4.0+'
 
     compile('com.android.support:cardview-v7:21.0.+') {
         exclude module: 'support-v4'
     }
-    compile 'com.google.android.gms:play-services-ads:8.4.0'
-    compile 'com.google.android.gms:play-services-identity:8.4.0'
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
+ ////   compile 'com.google.android.gms:play-services-ads:8.4.0'
+ ////   compile 'com.google.android.gms:play-services-identity:8.4.0'
+ ////   compile 'com.google.android.gms:play-services-gcm:8.4.0'
 
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
@@ -302,6 +328,10 @@ dependencies {
     compile 'com.razorpay:checkout:1.2.0'
 
 
+
+
+
+
     compile('io.intercom.android:intercom-sdk:1.+@aar') {
         transitive = true
     }
@@ -316,9 +346,17 @@ dependencies {
     //compile 'com.google.android.gms:play-services-analytics:9.2.0'
 
     compile 'com.google.android.gms:play-services-analytics:9.0.2'
-}
-//apply plugin: 'com.google.gms.google-services'
-//apply plugin: 'com.google.gms.google-services'
-dependencies {
     compile 'com.android.support:support-v4:23.+'
+    //compile 'com.google.android.gms:play-services-auth:9.2.0'
+    //compile 'com.google.android.gms:play-services-auth:9.2.0'
+
+    compile 'com.google.android.gms:play-services-auth:9.0.2'
+
+
 }
+apply plugin: 'com.google.gms.google-services'
+
+
+
+
+

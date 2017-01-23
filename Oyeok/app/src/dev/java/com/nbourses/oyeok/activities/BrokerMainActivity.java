@@ -34,6 +34,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -75,6 +76,9 @@ public class BrokerMainActivity extends AppCompatActivity implements FragmentDra
 
     @Bind(R.id.editBaseLocation)
     ImageView editBaseLocation;
+
+    @Bind(R.id.basewraper)
+    RelativeLayout basewraper;
 
     @Bind(R.id.DONE)
     Button doneButton;
@@ -249,6 +253,7 @@ GoogleMap map;
         setbaseloc.setVisibility(View.VISIBLE);
         favbroker.setVisibility(View.VISIBLE);
         tv_change_region.setVisibility(View.VISIBLE);
+        basewraper.setVisibility(View.VISIBLE);
         try {
             if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase("") && !General.getSharedPreferences(this, AppConstants.LOCALITY).equalsIgnoreCase("")) {//tv_change_region.setText(General.getSharedPreferences(this, AppConstants.LOCALITY));
                 AppConstants.MY_BASE_LOCATION_FLAG = true;

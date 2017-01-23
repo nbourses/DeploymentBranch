@@ -100,16 +100,23 @@
     <!--android:layout_marginBottom="10dp"-->
     <!--android:layout_marginRight="10dp"-->
 
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"
+    android:id="@+id/basewraper"
+    android:layout_marginLeft="60dip">
 <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="40dip"
-    android:layout_marginLeft="60dip"
     android:orientation="horizontal"
     android:id="@+id/setbaseloc"
     android:visibility="gone"
+    android:layout_alignParentRight="true"
     android:layout_marginRight="50dp"
-    android:gravity="center">
+    android:layout_centerInParent="true"
+    android:gravity="center"
+    >
     <ImageView
         android:id="@+id/editBaseLocation"
         android:layout_gravity="center|right"
@@ -120,6 +127,7 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:padding="8dp"
+        android:layout_marginLeft="-4dp"
         android:focusable="true"
         android:focusableInTouchMode="true" />
     <TextView
@@ -128,7 +136,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="SET LOCATION"
-        android:gravity="center"
+        android:gravity="left|center_vertical"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:layout_marginRight="2dp"
@@ -158,8 +166,12 @@
     android:layout_height="match_parent"
     android:gravity="right">-->
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/frfav"
+        >
 
          <ImageView
         android:id="@+id/favbroker"
@@ -192,7 +204,7 @@
             android:visibility="gone" />
     </FrameLayout>
 <!--</LinearLayout>-->
-
+</RelativeLayout>
 
     <Button
         android:id="@+id/help"
