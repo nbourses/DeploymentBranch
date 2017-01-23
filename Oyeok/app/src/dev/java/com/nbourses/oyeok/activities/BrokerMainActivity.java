@@ -66,7 +66,8 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 //import com.nbourses.oyeok.Database.DBHelper;
 
-public class BrokerMainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener, PaymentResultListener {
+public class
+BrokerMainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener, PaymentResultListener {
 
 @Bind(R.id.toolbar)
    Toolbar mToolbar;
