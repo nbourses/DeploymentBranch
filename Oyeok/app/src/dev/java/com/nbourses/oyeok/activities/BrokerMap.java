@@ -22,18 +22,21 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -49,6 +52,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -121,7 +126,7 @@ import static com.nbourses.oyeok.R.id.container_Signup;
 import static com.nbourses.oyeok.helpers.AppConstants.LOCATION_PERMISSION_REQUEST_CODE;
 
 //implements CustomPhasedListener
-public class BrokerMap extends AppCompatActivity implements CustomPhasedListener,HorizontalPicker.pickerPriceSelected ,AdapterView.OnItemClickListener{
+public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedListener,HorizontalPicker.pickerPriceSelected ,AdapterView.OnItemClickListener{
 
     @Bind(R.id.addressBar1)
     TextView addressBar;
@@ -335,7 +340,26 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_broker_map);
+        //setContentView(R.layout.activity_broker_map);
+        LinearLayout dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent);
+
+//        NestedScrollView dynamicContent = (NestedScrollView) findViewById(R.id.myScrollingContent);
+        // assuming your Wizard content is in content_wizard.xml myScrollingContent
+        View wizard = getLayoutInflater().inflate(R.layout.activity_broker_map, null);
+        // add the inflated View to the layout
+        dynamicContent.addView(wizard);
+        //BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+
+
+        RadioGroup rg=(RadioGroup)findViewById(R.id.radioGroup1);
+        RadioButton rb=(RadioButton)findViewById(R.id.rates);
+        rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_rate) , null, null);
+        rb.setTextColor(Color.parseColor("#2dc4b6"));
+        /*Menu menu = bottomNavigationView.getMenu();
+        menu.findItem(R.id.matching).setChecked(false);
+        // Check the wished first menu item to be shown to the user.
+        menu.findItem(R.id.rates).setChecked(true);*/
+
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -509,9 +533,11 @@ public class BrokerMap extends AppCompatActivity implements CustomPhasedListener
             customMapFragment = ((CustomMapFragment) getSupportFragmentManager().findFragmentById(R.id.g_map));
             map = customMapFragment.getMap();
 
-            final View mMapView = customMapFragment.getView();
-            map.getUiSettings().setRotateGesturesEnabled(false);
 
+
+            final View mMapView = customMapFragment.getView();
+
+            map.getUiSettings().setRotateGesturesEnabled(false);
             map.getUiSettings().setScrollGesturesEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
             map.getUiSettings().setZoomGesturesEnabled(true);

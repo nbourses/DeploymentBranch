@@ -6,9 +6,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -31,6 +35,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
@@ -44,6 +50,8 @@ import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.portListingModel;
 import com.nbourses.oyeok.realmModels.MyPortfolioModel;
 import com.nbourses.oyeok.realmModels.addBuildingRealm;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -60,7 +68,7 @@ import io.realm.RealmResults;
  * Created by sushil on 29/09/16.
  */
 
-public class MyPortfolioActivity extends AppCompatActivity implements CustomPhasedListener {
+public class MyPortfolioActivity extends BrokerMainPageActivity implements CustomPhasedListener {
 
 
     @Bind(R.id.btnMyDeals)
@@ -119,7 +127,26 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
-        setContentView( R.layout.activity_my_portfolio );
+       // setContentView(R.layout.activity_my_portfolio);
+
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            setContentView(R.layout.activity_my_portfolio);
+        }
+      else {
+            LinearLayout dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent);
+
+        //        NestedScrollView dynamicContent = (NestedScrollView) findViewById(R.id.myScrollingContent);
+        // assuming your Wizard content is in content_wizard.xml myScrollingContent
+            View wizard = getLayoutInflater().inflate(R.layout.activity_my_portfolio, null);
+
+        // add the inflated View to the layout
+            dynamicContent.addView(wizard);
+            RadioGroup rg=(RadioGroup)findViewById(R.id.radioGroup1);
+            RadioButton rb=(RadioButton)findViewById(R.id.watchList);
+//            rb.setChecked(true);
+            rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_watchlist) , null, null);
+            rb.setTextColor(Color.parseColor("#2dc4b6"));
+        }
         ButterKnife.bind(this);
         if(portListing != null)
             portListing.clear();
@@ -152,7 +179,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         //Phased seekbar initialisation
         mPhasedSeekBar = (CustomPhasedSeekBar) findViewById(R.id.phasedSeekBar);
         mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(this.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{this.getResources().getString(R.string.Rental), this.getResources().getString(R.string.Resale)}));
-        mPhasedSeekBar.setListener((this));
+        mPhasedSeekBar.setListener(this);
         rental_list=(ListView) findViewById(R.id.Rental_listview);
         inputSearch=(EditText) findViewById( R.id.inputSearch1);
         add_build=(LinearLayout)findViewById(R.id.add_build);
@@ -223,7 +250,6 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
 
 
             portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),c.getTimestamp(),c.getTransactions(),c.getConfig(),null,"ll");
-
             myPortfolioLL.add(portListingModel);
 
 
@@ -253,7 +279,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
 
         }
 
-        RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).equalTo("tt", "ll").findAllSorted("timestamp",false);
+        /*RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).equalTo("tt", "ll").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result1){
 
             Log.i("getLocality","getLocality   : "+c.getLocality());
@@ -262,7 +288,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
             addbuildingLL.add(portListingModel);
 
 
-        }
+        }*/
 
 
 
@@ -270,14 +296,11 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
         RealmResults<addBuildingRealm> result22= realm.where(addBuildingRealm.class).equalTo("display_type", "both").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result22){
 
-
             portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),null);
-
             addbuildingOR.add(portListingModel);
 
-
         }
-        RealmResults<addBuildingRealm> result2= realm.where(addBuildingRealm.class).equalTo("tt", "or").findAllSorted("timestamp",false);
+        /*RealmResults<addBuildingRealm> result2= realm.where(addBuildingRealm.class).equalTo("tt", "or").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result2){
 
 
@@ -286,7 +309,7 @@ public class MyPortfolioActivity extends AppCompatActivity implements CustomPhas
             addbuildingOR.add(portListingModel);
 
 
-        }
+        }*/
 
         Log.i("dataritesh","myPortfolioLL"+myPortfolioLL);
         portListing.addAll(addbuildingLL);
@@ -886,18 +909,6 @@ inputSearch.addTextChangedListener(new TextWatcher() {
             e.printStackTrace();
         }
     }
-
-
-
-    /*private void openScreenshot(File imageFile) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        Uri uri = Uri.fromFile(imageFile);
-        intent.setDataAndType(uri, "image*//*");
-        startActivity(intent);
-    }*/
-
-
 
 
 

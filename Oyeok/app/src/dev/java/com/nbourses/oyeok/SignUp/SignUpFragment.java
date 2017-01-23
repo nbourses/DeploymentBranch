@@ -401,8 +401,10 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                     } else
                         email_success = isEmailValid(Semail);
 
-                    if (email_success)
+                    if (email_success){
+                        Digits.getSessionManager().clearActiveSession();
                         Digits.authenticate(authCallback, R.style.CustomDigitsTheme);
+                    }
                 }else {
 //                    Log.i("mobile no before dc", mobile_number);
                     Digits.getSessionManager().clearActiveSession();
@@ -615,11 +617,11 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess {
                                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                         public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                                             dialog.cancel();
-                                            /*Intent intent = new Intent(getContext(), ClientMainActivity.class);
+                                            Intent intent = new Intent(getContext(), ClientMainActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                                                    Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            startActivity(intent);*/
+                                                    Intent.FLAG_ACTIVITY_NEW_TASK)       ;
+                                            startActivity(intent);
                                             AppConstants.REGISTERING_FLAG=false;
                                         }
                                     });

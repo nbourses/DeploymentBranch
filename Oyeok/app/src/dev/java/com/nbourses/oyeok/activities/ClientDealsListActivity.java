@@ -12,14 +12,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -32,6 +36,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -105,7 +111,7 @@ import retrofit.mime.TypedByteArray;
 
 
 
-public class ClientDealsListActivity extends AppCompatActivity implements CustomPhasedListener, AbsListView.OnScrollListener {
+public class ClientDealsListActivity extends BrokerMainPageActivity implements CustomPhasedListener, AbsListView.OnScrollListener {
 
 
     private List<PublishLetsOye> publishLetsOyes;
@@ -267,7 +273,29 @@ private int page = 1;
 
         IntentFilter filter = new IntentFilter("okeyed");
         LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
-        setContentView(R.layout.activity_deals_list);
+
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+
+            setContentView(R.layout.activity_deals_list);
+        }else {
+
+
+            LinearLayout dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent);
+
+       // NestedScrollView dynamicContent = (NestedScrollView) findViewById(R.id.myScrollingContent);
+            // assuming your Wizard content is in content_wizard.xml myScrollingContent
+            View wizard = getLayoutInflater().inflate(R.layout.activity_deals_list, null);
+
+            // add the inflated View to the layout
+            dynamicContent.addView(wizard);
+
+            RadioGroup rg=(RadioGroup)findViewById(R.id.radioGroup1);
+            RadioButton rb=(RadioButton)findViewById(R.id.deals);
+            rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_deals) , null, null);
+            rb.setTextColor(Color.parseColor("#2dc4b6"));
+
+        }
+
 
 
         listViewDeals = (SwipeMenuListView) findViewById(R.id.listViewDeals);

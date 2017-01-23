@@ -7,7 +7,7 @@
     <bool name="ga_autoActivityTracking">true</bool>
 
     <!--  The property id associated with this analytics tracker -->
-    <string name="ga_trackingId">UA-89243453-4</string>
+    <string name="ga_trackingId">UA-90453985-2</string>
     <bool name="ga_reportUncaughtExceptions">true</bool>
 
     <!--

@@ -84,6 +84,7 @@ import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedByteArray;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static java.lang.Math.log10;
 
 /**
  * Created by rohit on 09/02/16.
@@ -1235,15 +1236,15 @@ public static PubNub initPubnub(Context context, String UUID){
                 price = rate * 2900;
                 break;
         }
-        price=price/500;
-        price=price*500;
+        /*price=price/1000;
+        price=price*1000;*/
         return price;
     }
 
     public static int getFormatedarea(String conf){
 //        Log.i("conf case","conf  : "+conf+"  "+rate);
         int price=0;//=rate*950;
-        switch(conf) {
+        switch(conf.toLowerCase()) {
             case "1rk":
                 price =  300;
                 break;
@@ -1285,6 +1286,65 @@ public static PubNub initPubnub(Context context, String UUID){
         price=price*500;*/
         return price;
     }
+
+
+   public static  String numToVal(int no){
+        String str = "",v = "";
+        int twoWord = 0,val = 1;
+        int c = (no == 0 ? 1 : (int)(log10(no)+1));
+        if (c > 8) {
+            c = 8;
+        }
+        if (c%2 == 1){
+            c--;
+        }
+        c--;
+        switch(c)
+        {
+            case 7:
+                val = no/10000000;
+                no = no%10000000;
+                String formatted = String.format("%07d", no);
+                formatted = formatted.substring(0,1);
+                v = val+"."+formatted;
+                str = v+" cr";
+                twoWord++;
+                break;
+            case 5:
+                val = no/100000;
+                v = val+"";
+                no = no%100000;
+                String s2 = String.format("%05d", no);
+                s2 = s2.substring(0,1);
+
+                if (val != 0){
+                    str = str+v+"."+s2+" lacs";
+                    twoWord++;
+                }
+                break;
+            case 3:
+                /*val = no/1000;
+                v = val+"";
+                no = no%1000;
+                String.format("%05d", no);
+                String s3 = String.format("%03d", no);
+                s3 = s3.substring(0,1);
+                if (val != 0) {*/
+                    //str = str+v+"."+s3+" k";
+                    str=no+"";
+                //}
+                break;
+            default :
+                break;
+        }
+        return str;
+    }
+
+
+
+
+
+
 
 }
 
