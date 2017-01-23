@@ -9,15 +9,16 @@
     <!--android:background="@android:color/primary_text_light"-->
     <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
     <!--<ScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@color/custom_color_darkblue">-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="@color/custom_color_darkblue">-->
     <ScrollView
         android:orientation="vertical"
         android:id="@+id/scrollview"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:isScrollContainer="true">
+        android:fillViewport="true">
+        <!--android:isScrollContainer="true"-->
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
@@ -80,11 +81,11 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="30dp" />-->
             <!--<android.support.v4.view.ViewPager-->
-                <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-                <!--android:id="@+id/pager"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:background="@drawable/gradient_box"-->
-                <!--android:layout_height="match_parent" />-->
+            <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:id="@+id/pager"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:background="@drawable/gradient_box"-->
+            <!--android:layout_height="match_parent" />-->
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -127,15 +128,15 @@
                 android:orientation="vertical"
                 android:visibility="visible"
                 android:layout_marginTop="15dp">
-            <!--<com.rengwuxian.materialedittext.MaterialEditText-->
+                <!--<com.rengwuxian.materialedittext.MaterialEditText-->
                 <EditText
-                android:id="@+id/etname"
-                android:layout_width="280dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/name"
-                android:singleLine="true"
+                    android:id="@+id/etname"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/name"
+                    android:singleLine="true"
 
-                android:background="@drawable/gradient_text"
+                    android:background="@drawable/gradient_text"
                     android:layout_margin="5dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
@@ -147,18 +148,18 @@
 
 
 
-               <!-- app:met_floatingLabel="highlight"
-                app:met_floatingLabelText="Name"
-                app:met_floatingLabelTextSize="15sp"
-                app:met_primaryColor="@color/button_background_pressed_end"-->
-            <!--</com.rengwuxian.materialedittext.MaterialEditText>
-            <com.rengwuxian.materialedittext.MaterialEditText-->
+                <!-- app:met_floatingLabel="highlight"
+                 app:met_floatingLabelText="Name"
+                 app:met_floatingLabelTextSize="15sp"
+                 app:met_primaryColor="@color/button_background_pressed_end"-->
+                <!--</com.rengwuxian.materialedittext.MaterialEditText>
+                <com.rengwuxian.materialedittext.MaterialEditText-->
                 <EditText
-                android:id="@+id/etemail"
-                android:layout_width="280dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/email"
-                android:singleLine="true"
+                    android:id="@+id/etemail"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/email"
+                    android:singleLine="true"
                     android:background="@drawable/gradient_text"
                     android:layout_margin="5dp"
                     android:layout_gravity="center_horizontal"
@@ -197,17 +198,16 @@
                                       app:met_primaryColor="@color/button_background_pressed_end"
                                       app:met_baseColor="@android:color/black"
                                       />
-
                                       -->
 
 
-      <!--    <Button
-                android:id="@+id/sendotp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Continue"
-                android:textColor="@android:color/white"
-                android:background="@color/greenish_blue"/>  -->
+                <!--    <Button
+                          android:id="@+id/sendotp"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:text="Continue"
+                          android:textColor="@android:color/white"
+                          android:background="@color/greenish_blue"/>  -->
             </LinearLayout>
 
 
@@ -252,18 +252,18 @@
                 android:orientation="vertical"
                 android:visibility="visible"
                 android:paddingTop="15dp">
-         <!--      <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/etvcode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="One time password"
-                    android:windowSoftInputMode="stateVisible|adjustPan"
-                    android:inputType="number"
-                    app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="One time password"
-                    app:met_floatingLabelTextSize="15sp"
-                    app:met_primaryColor="@color/button_background_pressed_end"
-                    />  -->
+                <!--      <com.rengwuxian.materialedittext.MaterialEditText
+                           android:id="@+id/etvcode"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:hint="One time password"
+                           android:windowSoftInputMode="stateVisible|adjustPan"
+                           android:inputType="number"
+                           app:met_floatingLabel="highlight"
+                           app:met_floatingLabelText="One time password"
+                           app:met_floatingLabelTextSize="15sp"
+                           app:met_primaryColor="@color/button_background_pressed_end"
+                           />  -->
                 <Button
                     android:id="@+id/submitprofile"
                     android:layout_width="match_parent"
@@ -273,9 +273,325 @@
                     android:layout_alignParentBottom="true"
 
                     android:text="Register as a Customer" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:id="@+id/signinpanel"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <com.facebook.login.widget.LoginButton
+
+                        android:id="@+id/login_button"
+                        android:layout_width="0dp"
+
+                        android:layout_height="60dp"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="30dp"
+                        />
+
+                    <com.google.android.gms.common.SignInButton
+                        android:id="@+id/sign_in_button"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:paddingBottom="5dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginBottom="-3dp"
+                        android:layout_marginLeft="5dp"
+                        android:visibility="visible"/>
+
+
+                    <Button
+                        android:id="@+id/g_sign_out_button"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:text="Sign Out"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:drawableLeft="@drawable/googleplus"
+                        android:textAllCaps="false"
+                        android:paddingBottom="5dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginBottom="-0dp"
+                        android:layout_marginLeft="5dp"
+                        android:visibility="gone"
+                        />
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
-  </ScrollView>
+    </ScrollView>
 </LinearLayout>
+<!--<?xml version="1.0" encoding="utf-8"?>
+&lt;!&ndash;android:background="@android:color/primary_text_light"&ndash;&gt;
+&lt;!&ndash;xmlns:app="http://schemas.android.com/apk/res-auto"&ndash;&gt;
+&lt;!&ndash;<ScrollView&ndash;&gt;
+&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;
+&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;
+&lt;!&ndash;android:background="@color/custom_color_darkblue">&ndash;&gt;
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
 
+    android:orientation="vertical"
+    android:id="@+id/scrollview"
+    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+
+    android:fillViewport ="true"
+    android:background="@color/custom_color_darkblue">
+    &lt;!&ndash;android:isScrollContainer="true"&ndash;&gt;
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+        &lt;!&ndash;android:layout_margin="16dp"&ndash;&gt;
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_up_login"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/greenish_blue"
+            android:layout_marginTop="-5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"/>
+
+
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:id="@+id/profile_pic"
+
+            android:foregroundGravity="center|center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:src="@drawable/ic_profile"
+            android:layout_weight="2"/>
+        &lt;!&ndash;android:background="@drawable/gradient_pic"&ndash;&gt;
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:id="@+id/editProfile_pic"
+            android:foregroundGravity="center|center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/gradient_edit_profile_pic"
+            android:src="@drawable/edit_profile_pic"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="-60dp" />
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1">
+
+            <Button
+                android:layout_width="180dp"
+                android:layout_height="40dp"
+                android:text="@string/new_user"
+
+                android:background="@drawable/gradient_greenish_blue"
+                android:id="@+id/new_user_tab"
+                android:layout_marginRight="-17dp"
+                android:textColor="@color/Black"
+                android:textStyle="bold"
+                android:onClick="onClickNewUser" />
+
+
+            <Button
+                android:layout_width="180dp"
+                android:layout_height="40dp"
+                android:text="@string/already_registered"
+
+                android:id="@+id/already_registered_tab"
+                android:layout_marginLeft="-17dp"
+                android:textColor="@color/Black"
+                android:background="@drawable/gradient_box"
+                android:textStyle="bold"
+                android:onClick="onClickOldUser" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llsignup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible"
+            android:layout_marginTop="15dp">
+
+            <EditText
+                android:id="@+id/etname"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/name"
+                android:singleLine="true"
+
+                android:background="@drawable/gradient_text"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="15dp"
+                android:layout_gravity="center_horizontal" />
+
+
+            <EditText
+                android:id="@+id/etemail"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/email"
+                android:singleLine="true"
+                android:background="@drawable/gradient_text"
+                android:layout_margin="5dp"
+                android:layout_gravity="center_horizontal"
+                android:inputType="textEmailAddress" />
+
+
+
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/digitsFrame"
+                android:visibility="gone">
+
+                <com.digits.sdk.android.DigitsAuthButton
+                    android:id="@+id/auth_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/client_sign_up_heading"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:textColor="@color/greenish_blue"
+                android:textStyle="bold"
+                android:id="@+id/tvheading"
+                android:textSize="20dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:text="@string/client_sign_up_content"
+                android:textColor="@color/white"
+                android:textStyle="bold|italic"
+                android:id="@+id/tvcontent" />
+
+
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/llotp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
+
+                <com.facebook.login.widget.LoginButton
+
+                    android:id="@+id/login_button"
+                    android:layout_width="0dp"
+
+                    android:layout_height="60dp"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="30dp"
+                    />
+
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/sign_in_button"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:paddingBottom="5dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginBottom="-3dp"
+                    android:layout_marginLeft="5dp"
+                    android:visibility="visible"/>
+
+
+                <Button
+                    android:id="@+id/g_sign_out_button"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:text="Sign Out"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/googleplus"
+                    android:textAllCaps="false"
+                    android:paddingBottom="5dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginBottom="-0dp"
+                    android:layout_marginLeft="5dp"
+                    android:visibility="gone"
+                     />
+            </LinearLayout>
+            <Button
+
+                android:id="@+id/submitprofile"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:layout_margin="20dp"
+                android:background="@color/greenish_blue"
+                android:textColor="@android:color/white"
+                android:paddingBottom=""
+
+                android:text="Register as a Customer" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>-->

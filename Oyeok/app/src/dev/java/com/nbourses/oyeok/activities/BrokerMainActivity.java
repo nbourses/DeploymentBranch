@@ -40,8 +40,11 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -86,6 +89,9 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
     @Bind(R.id.editBaseLocation)
     ImageView editBaseLocation;
 
+    @Bind(R.id.basewraper)
+    RelativeLayout basewraper;
+
     @Bind(R.id.DONE)
     Button doneButton;
 
@@ -113,12 +119,12 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
 
 //    @Bind(R.id.buildingSlider)
 //    RelativeLayout buildingSlider;
-boolean setting=false,Owner_detail=false;
+  boolean setting=false,Owner_detail=false;
 
    int backpress;
 
- private boolean gmap=false;
-GoogleMap map;
+  private boolean gmap=false;
+  GoogleMap map;
 
 
     String baseloc;
@@ -252,61 +258,6 @@ GoogleMap map;
         RadioButton rb=(RadioButton)findViewById(R.id.matching);
         rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_matching) , null, null);
         rb.setTextColor(Color.parseColor("#2dc4b6"));
-        /*BottomNavigationView bottomNavigationView = (BottomNavigationView)
-                findViewById(R.id.bottom_navigation);
-        Menu menu = bottomNavigationView.getMenu();
-        menu.findItem(R.id.matching).setChecked(true);*/
-
-        /*Log.i("matching","matching inside1 bro"+bottomNavigationView.getMenu());
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        Intent in;
-                        Log.i("matching","matching inside1 "+item+" "+item.getTitle());
-                        switch (item.getItemId()) {
-                            case R.id.matching:
-                                *//*in=new Intent(getBaseContext(),BrokerMainActivity.class);
-                                startActivity(in);*//*
-                                if (item.isChecked()) item.setChecked(false);
-                                else item.setChecked(true);
-                                break;
-                            case R.id.watchlist:
-                                in=new Intent(getBaseContext(),MyPortfolioActivity.class);
-                                startActivity(in);
-                                if (item.isChecked()) item.setChecked(false);
-                                else item.setChecked(true);
-                                break;
-                            case R.id.rates:
-
-                            case R.id.deals:
-
-                            case R.id.listing:
-
-                        }
-                        return true;
-                    }
-                });*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         AppConstants.CURRENT_USER_ROLE ="broker";
@@ -326,6 +277,7 @@ GoogleMap map;
         setbaseloc.setVisibility(View.VISIBLE);
         favbroker.setVisibility(View.VISIBLE);
         tv_change_region.setVisibility(View.VISIBLE);
+        basewraper.setVisibility(View.VISIBLE);
         try {
             if(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase("") && !General.getSharedPreferences(this, AppConstants.LOCALITY).equalsIgnoreCase("")) {//tv_change_region.setText(General.getSharedPreferences(this, AppConstants.LOCALITY));
                 AppConstants.MY_BASE_LOCATION_FLAG = true;

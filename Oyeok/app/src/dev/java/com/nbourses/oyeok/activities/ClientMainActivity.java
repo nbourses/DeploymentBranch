@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Camera;
@@ -30,6 +32,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -91,6 +94,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Random;
 
@@ -404,6 +409,22 @@ public void signUp(){
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Check status of Google Play Services
+
+        try{
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.nbourses.oyeok", PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.i("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
+        }
+
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 
 // Check Google Play Service Available
@@ -531,6 +552,13 @@ try {
 
 
     }
+
+   /* @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        android.app.Fragment fragment = getFragmentManager().findFragmentById(R.id.container_Signup);
+        fragment.onActivityResult(requestCode, resultCode, data);
+    }*/
 
     @Override
     protected void onPause() {
@@ -2232,6 +2260,18 @@ public void openAddListing(){
         fragmentTransaction.commitAllowingStateLoss();
 //        loadFragmentAnimated(addListingFinalCard, null, R.id.card, "");
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == SignUpFragment.RC_SIGN_IN) {
+            SignUpFragment fragment = (SignUpFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.container_Signup);
+            fragment.onActivityResult(requestCode, resultCode, data);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
 
