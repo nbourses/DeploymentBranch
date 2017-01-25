@@ -51,6 +51,7 @@
             app:itemIconTint="@drawable/nav_item_color_state"
             app:itemTextColor="@drawable/nav_item_color_state"
             app:menu="@menu/menu_main" />-->
+
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
