@@ -198,6 +198,7 @@
             android:layout_below="@id/tabs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="visible"
             android:layout_above="@+id/seekbar_linearlayout">
             <include layout="@layout/fragment_broker_preok_common"/>
 <LinearLayout
@@ -324,7 +325,6 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/badge_navy1"
                     android:text="123"
-
                     android:layout_alignParentRight="true"
                     android:paddingEnd="8dp"
                     android:paddingRight="8dp"

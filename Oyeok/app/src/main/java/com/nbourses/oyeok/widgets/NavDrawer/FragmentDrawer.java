@@ -17,10 +17,14 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 //import com.nbourses.oyeok.Database.DBHelper;
+import com.google.android.gms.vision.text.Line;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.activities.BrokerMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 
@@ -46,6 +50,8 @@ public class FragmentDrawer extends Fragment {
     List<NavDrawerItem> navDrawerItems;
     private Boolean signupSuccessflag = false;
     TextView txtemail;
+    ViewGroup.MarginLayoutParams params;
+    LinearLayout dynamicContent;
     private static TypedArray icons;//={R.drawable.menu_option_icon,R.drawable.menu_option_icon,R.drawable.shareapp,R.drawable.notifications,R.drawable.facebook,R.drawable.aboutusicon,R.drawable.setting1};
 
 
@@ -205,14 +211,22 @@ public class FragmentDrawer extends Fragment {
     public void setUp(int fragmentId, DrawerLayout drawerLayout, final Toolbar toolbar) {
         containerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
+        if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            /*dynamicContent = (LinearLayout) getActivity().findViewById(R.id.dynamicContent);
+            params = (ViewGroup.MarginLayoutParams) dynamicContent.getLayoutParams();*/
 
-
-
+        }
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 getActivity().invalidateOptionsMenu();
+                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                   // ((BrokerMainActivity)getActivity()).HideBottomNavBar();
+                        /*params.bottomMargin=0;
+                        dynamicContent.setLayoutParams(params);*/
+
+                }
                 if(mDrawerListener != null ) {
                     mDrawerListener.drawerOpened();
 //                    signupSuccessflag = true;
@@ -227,6 +241,15 @@ public class FragmentDrawer extends Fragment {
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 getActivity().invalidateOptionsMenu();
+                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                    try {
+                        //((BrokerMainActivity)getActivity()).ShowBottomNavBar();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    /*params.bottomMargin=56;
+                    dynamicContent.setLayoutParams(params);*/
+                }
                 if(mDrawerListener != null ) {
                     mDrawerListener.drawerOpened();
                 }
@@ -236,6 +259,16 @@ public class FragmentDrawer extends Fragment {
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
                 toolbar.setAlpha(1 - slideOffset / 2);
+                try {
+                   // ((BrokerMainActivity)getActivity()).HideBottomNavBar();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+               /* if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                    params.setMargins(0, 0, 0, 0);
+                    dynamicContent.setLayoutParams(params);
+                }*/
             }
         };
 
@@ -258,6 +291,9 @@ public class FragmentDrawer extends Fragment {
 
 
     }
+
+
+
 
     public boolean handle(MenuItem item) {
         return mDrawerToggle.onOptionsItemSelected(item);

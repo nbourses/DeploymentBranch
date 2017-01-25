@@ -62,6 +62,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
+import com.nbourses.oyeok.activities.BrokerMainActivity;
 import com.nbourses.oyeok.activities.BrokerMap;
 import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.activities.ProfileActivity;
@@ -126,7 +127,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     @Bind(R.id.okButton)
     Button okButton;
 
-    @Bind(R.id.deal)
+    @Bind(R.id.deals1)
     Button deal;
     @Bind(R.id.hdroomsCount)
     TextView hdroomsCount;
@@ -373,7 +374,7 @@ private String transaction_type="Rental";
             }
             beacon="false";
         }
-        resetSeekBar();
+       // resetSeekBar();
         return v;
     }
 
@@ -462,10 +463,12 @@ private String transaction_type="Rental";
                 new String[]{getContext().getResources().getString(R.string.Rental), getContext().getResources().getString(R.string.Resale)
                 }));*/
 
-        mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector,
+       /* mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector,
                 R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental), "Add Listing", getContext().getResources().getString(R.string.Resale)}));
+        mCustomPhasedSeekbar.setListener(this);*/
+        mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector,
+                R.drawable.broker_type2_selector}, new String[]{"30","15"}, new String[]{getContext().getResources().getString(R.string.Rental),getContext().getResources().getString(R.string.Resale)}));
         mCustomPhasedSeekbar.setListener(this);
-
         Log.i("PHASE","after adapter set");
 
         txtPreviouslySelectedOption = txtOption1;
@@ -850,125 +853,77 @@ private String transaction_type="Rental";
     }
 
 
-    @OnClick({R.id.okButton, R.id.deal})
+   @OnClick({R.id.okButton, R.id.deals1})
     public void onButtonsClick(View v) {
-        if (okButton.getId() == v.getId()) {
-            long now = SystemClock.elapsedRealtime();
-            if (now - lastClickMillis > THRESHOLD_MILLIS) {
-                listings = new HashMap<String, Float>();
-                listings.put("building1", 1f);
-                listings.put("building2", 2f);
-                listings.put("building3", 3f);
-
-                Log.i("GRAPH", "jsonObjectArray is " + jsonObjectArray);
-
-
-                if (jsonObjectArray == null) {
-
-
-                    SnackbarManager.show(
-                            com.nispok.snackbar.Snackbar.with(getContext())
-                                    .position(Snackbar.SnackbarPosition.BOTTOM)
-                                    .text("Please select a Lead and then press OK.")
-                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-                } else {
-                    if (!General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes")) {
-
-                        //dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
-                        General.setSharedPreferences(getContext(), AppConstants.ROLE_OF_USER, "broker");
-                        //show sign up screen if broker is not registered
-                        Bundle bundle = new Bundle();
-                        //bundle.putString("lastFragment", "BrokerPreokFragment");
-                        bundle.putString("JsonArray", jsonObjectArray.toString());
-                        bundle.putInt("Position", selectedItemPosition);
-                        String[] bNames = new String[]{"building1", "building2", "building3"};
-                        int[] bPrice = new int[]{1, 2, 3};
-                        bundle.putIntArray("bPrice", bPrice);
-                        bundle.putStringArray("bNames", bNames);
-                        bundle.putString("lastFragment", "okyed");
-                        bundle.putSerializable("listings", listings);
-                        Fragment fragment = null;
-                        fragment = new SignUpFragment();
-                        fragment.setArguments(bundle);
-                        FragmentManager fragmentManager = getFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-                        fragmentTransaction.replace(R.id.container_sign, fragment);
-                        // fragmentTransaction.replace(R.id.container_map, fragment);
-                        fragmentTransaction.commit();
-                        AppConstants.SIGNUP_FLAG = true;
-
-                    } else {
-                        //here broker is registered
-                        AcceptOkCall a = new AcceptOkCall();
-                        a.setmCallBack(BrokerPreokFragment.this);
-                        a.acceptOk(listings, jsonObjectArray, selectedItemPosition, getActivity());
-                        General.setBadgeCount(getContext(), AppConstants.RENTAL_COUNT, 0);
-                        General.setBadgeCount(getContext(), AppConstants.RESALE_COUNT, 0);
-                        General.setBadgeCount(getContext(), AppConstants.TENANTS_COUNT, 0);
-                        General.setBadgeCount(getContext(), AppConstants.OWNERS_COUNT, 0);
-                        General.setBadgeCount(getContext(), AppConstants.BUYER_COUNT, 0);
-                        General.setBadgeCount(getContext(), AppConstants.SELLER_COUNT, 0);
-                    }
-                    //show buildings
-                /*//buildings removed// buildingSlider.startAnimation(slide_up);
-                buildingSlider.setVisibility(View.VISIBLE);
-                buildingSliderflag = true;
-                float fr = buildingNames.size() * 0.33f;
-               //chart.fitScreen();
-               chart.zoomAndCenterAnimated(fr,1f,0,0, YAxis.AxisDependency.LEFT ,2000);
-                Log.i("brokerpreok","buildingSliderflag "+buildingSliderflag);
-                Intent intent = new Intent(AppConstants.BUILDINGSLIDERFLAG);
-                intent.putExtra("buildingSliderFlag",buildingSliderflag);
-                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                /////okBtn.setEnabled(false);
-                //okBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
-                okBtn.setText("Choose 3 Buildings");*/
-                }
-//            else {
-//                if (!General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-//                    dbHelper.save(DatabaseConstants.userRole, "Broker");
-//                    //show sign up screen if broker is not registered
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("lastFragment", "BrokerPreokFragment");
-//                    bundle.putString("JsonArray", jsonObjectArray.toString());
-//                    bundle.putInt("Position", selectedItemPosition);
-//                    Fragment fragment = null;
-//                    fragment = new SignUpFragment();
-//                    fragment.setArguments(bundle);
-//
-//                    FragmentManager fragmentManager = getFragmentManager();
-//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                    fragmentTransaction.replace(R.id.container_map, fragment);
-//                    fragmentTransaction.commit();
-//                } else {
-//                    //here broker is registered  show buildings
-//
-//                    buildingSlider.startAnimation(slide_up);
-//                    buildingSlider.setVisibility(View.VISIBLE);
-//
-//                }
-//            }
-                lastClickMillis = now;
-            }
-            }
-        else if (deal.getId() == v.getId()) {
-            if (General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT) > 0) {
-                General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT,0);
-                hdroomsCount.setVisibility(View.GONE);
-            }
-
-            //open deals listing
-            Intent openDealsListing = new Intent(getActivity(), ClientDealsListActivity.class);
-            /*openDealsListing.addFlags(
-                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);*/
-            startActivity(openDealsListing);
-        }
-//        else if (pickContact.getId() == v.getId()) {
-//            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-//            getActivity().startActivityFromFragment(this, intent, REQUEST_CODE_TO_SELECT_CLIENT);
-//        }
-    }
+       Log.i("CHARTid", "clickeda "+v.getId()+"deal.getId()  "+deal.getId()+ " okButton.getId() "+okButton.getId());
+       if (okButton.getId() == v.getId()) {
+           long now = SystemClock.elapsedRealtime();
+           if (now - lastClickMillis > THRESHOLD_MILLIS) {
+               listings = new HashMap<String, Float>();
+               listings.put("building1", 1f);
+               listings.put("building2", 2f);
+               listings.put("building3", 3f);
+               Log.i("GRAPH", "jsonObjectArray is " + jsonObjectArray);
+               if (jsonObjectArray == null) {
+                   SnackbarManager.show(
+                           com.nispok.snackbar.Snackbar.with(getContext())
+                                   .position(Snackbar.SnackbarPosition.BOTTOM)
+                                   .text("Please select a Lead and then press OK.")
+                                   .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+               } else {
+                   if (!General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes")) {
+                       //dbHelper.save(DatabaseConstants.userRole, "Broker");  //to show userr that he is logging is as user
+                       General.setSharedPreferences(getContext(), AppConstants.ROLE_OF_USER, "broker");
+                       //show sign up screen if broker is not registered
+                       Bundle bundle = new Bundle();
+                       //bundle.putString("lastFragment", "BrokerPreokFragment");
+                       bundle.putString("JsonArray", jsonObjectArray.toString());
+                       bundle.putInt("Position", selectedItemPosition);
+                       String[] bNames = new String[]{"building1", "building2", "building3"};
+                       int[] bPrice = new int[]{1, 2, 3};
+                       bundle.putIntArray("bPrice", bPrice);
+                       bundle.putStringArray("bNames", bNames);
+                       bundle.putString("lastFragment", "okyed");
+                       bundle.putSerializable("listings", listings);
+                       Fragment fragment = null;
+                       fragment = new SignUpFragment();
+                       fragment.setArguments(bundle);
+                       FragmentManager fragmentManager = getFragmentManager();
+                       FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                       fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+                       fragmentTransaction.replace(R.id.container_sign, fragment);
+                       // fragmentTransaction.replace(R.id.container_map, fragment);
+                       fragmentTransaction.commit();
+                       AppConstants.SIGNUP_FLAG = true;
+                       ((BrokerMainActivity) getActivity()).HideBottomNavBar();
+                   } else {
+                       //here broker is registered
+                       AcceptOkCall a = new AcceptOkCall();
+                       a.setmCallBack(BrokerPreokFragment.this);
+                       a.acceptOk(listings, jsonObjectArray, selectedItemPosition, getActivity());
+                       General.setBadgeCount(getContext(), AppConstants.RENTAL_COUNT, 0);
+                       General.setBadgeCount(getContext(), AppConstants.RESALE_COUNT, 0);
+                       General.setBadgeCount(getContext(), AppConstants.TENANTS_COUNT, 0);
+                       General.setBadgeCount(getContext(), AppConstants.OWNERS_COUNT, 0);
+                       General.setBadgeCount(getContext(), AppConstants.BUYER_COUNT, 0);
+                       General.setBadgeCount(getContext(), AppConstants.SELLER_COUNT, 0);
+                   }
+                   lastClickMillis = now;
+               }
+           }
+       }else if (deal.getId() == v.getId()) {
+           Log.i("CHARTid","==================== ");
+           if (General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT) > 0) {
+               General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT, 0);
+               hdroomsCount.setVisibility(View.GONE);
+           }
+           //open deals listing
+           Intent openDealsListing = new Intent(getActivity(), ClientDealsListActivity.class);
+           openDealsListing.addFlags(
+                   Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+           startActivity(openDealsListing);
+       }
+   }
 
 
     @OnClick(R.id.okBtn)
@@ -1259,7 +1214,7 @@ private String transaction_type="Rental";
     public void onPositionSelected(int position, int count) {
         circularSeekbar.onTabclick();
         currentSeekbarPosition = position;
-        Log.i("PREOK CALLED","currentSeekbarPosition"+currentSeekbarPosition);
+        Log.i("PREOKCALLED","currentSeekbarPosition=============================rent "+currentSeekbarPosition);
         if (position == 0) {
             General.setSharedPreferences(getContext(),AppConstants.TT,"RENTAL");
             transaction_type="RENTAL";
@@ -1356,7 +1311,7 @@ private String transaction_type="Rental";
          Log.i("ja munna ja"," agaya beta tu : "+General.getSharedPreferences(getContext(),AppConstants.TT)+"   "+transaction_type);
 //            txtPreviouslySelectedOption = txtOption1;
 
-        }else  if(position==1){
+        }/*else  if(position==2){
 
             try {
                 new CountDownTimer(1000, 1000) {
@@ -1371,8 +1326,10 @@ private String transaction_type="Rental";
                 }.start();
             } catch (Exception e) {}
 
-        } else if (position == 2) {
+        } */else if (position == 1) {
 //            txtPreviouslySelectedOption = txtOption1;
+            Log.i("PREOKCALLED","current Seekbar Position++++++++++++++++++++++++++ : ");
+
             General.setSharedPreferences(getContext(),AppConstants.TT,"RESALE");
             transaction_type="RESALE";
 
@@ -1492,8 +1449,12 @@ private String transaction_type="Rental";
 
     @Override
     public void onclick(int position, JSONArray m, String show, int x_c, int y_c) {
-        deal.setEnabled(true);
-        deal.setBackground(getResources().getDrawable(R.drawable.deals_button_background));
+        //sus
+        //start deals changed
+
+//        deal.setEnabled(true);
+//        deal.setBackground(getResources().getDrawable(R.drawable.deals_button_background));
+        //end
         try {
             leadPrompt.setVisibility(View.VISIBLE);
             leadPrompt.setText("Please select a Lead and press OK.");
@@ -1555,8 +1516,10 @@ private String transaction_type="Rental";
                 texPtype.setVisibility(View.VISIBLE);
                 texPstype.setVisibility(View.VISIBLE);
                 rentText.startAnimation(bounce);
-                deal.setEnabled(false);
-                deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
+                //sus start deals changes
+//                deal.setEnabled(false);
+//                deal.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey));
+                //end
             }
             else if(show.equals("hide")) {
                 jsonObjectArray = null;

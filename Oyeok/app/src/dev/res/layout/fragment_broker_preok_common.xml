@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker"
     android:background="@color/dark_white">
+    <!--tools:context="com.nbourses.oyeok.RPOT.OkBroker.UI.Ok_Broker"-->
 
     <LinearLayout
         android:orientation="horizontal"
@@ -145,7 +145,7 @@
             android:visibility="gone" />
 
         <Button
-            android:id="@+id/deal"
+            android:id="@+id/deals1"
             android:textColor="@color/white"
             android:text="Deals"
             android:background="@drawable/deals_button_background"

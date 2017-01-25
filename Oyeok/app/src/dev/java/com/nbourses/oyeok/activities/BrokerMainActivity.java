@@ -97,8 +97,8 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
     @Bind(R.id.DONE)
     Button doneButton;
 
-    @Bind(R.id.favbroker)
-    ImageView favbroker;
+//    @Bind(R.id.favbroker)
+//    ImageView favbroker;
 
     @Bind(R.id.portfolioCount)
     TextView portfolioCount;
@@ -149,12 +149,12 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
     private String description;
     private String heading;
 
-
+    RelativeLayout.LayoutParams params;
 
     //DBHelper dbHelper;
     private FragmentDrawer drawerFragment;
     private WebView webView;
-
+    LinearLayout dynamicContent,bottonNavBar;
 
     SharedPreferences.OnSharedPreferenceChangeListener listener;
 
@@ -247,8 +247,8 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
         //setContentView(R.layout.activity_agent_main);
 
 
-        LinearLayout dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent);
-
+         dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent);
+        bottonNavBar= (LinearLayout) findViewById(R.id.bottonNavBar);
 //        NestedScrollView dynamicContent = (NestedScrollView) findViewById(R.id.myScrollingContent);
 // assuming your Wizard content is in content_wizard.xml myScrollingContent
         View wizard = getLayoutInflater().inflate(R.layout.activity_agent_main, null);
@@ -261,9 +261,18 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
         rb.setCompoundDrawablesWithIntrinsicBounds( 0,R.drawable.ic_matching_clicked, 0,0);
        // rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_matching) , null, null);
         rb.setTextColor(Color.parseColor("#2dc4b6"));
-
+       // LinearLayout l_container=(LinearLayout)findViewById(R.id.);
 
         AppConstants.CURRENT_USER_ROLE ="broker";
+
+       // RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT); //Parent Params
+        //linearLayout.setLayoutParmas(params);
+       // params = (LinearLayout.LayoutParams)dynamicContent.getLayoutParams();
+    //  params.setMargins(0, 0, 0, 56);
+        //params.setMargins(left, top, right, bottom);
+        //dynamicContent.setLayoutParams(params);
+
+
 
        // dbHelper = new DBHelper(getBaseContext());
        // dbHelper.save(DatabaseConstants.userRole,"Broker");
@@ -278,7 +287,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
         //tv_change_region=(TextView) findViewById(R.id.tv_change_region);
        // editBaseLocation=(ImageView) findViewById(R.id.editBaseLocation);
         setbaseloc.setVisibility(View.VISIBLE);
-        favbroker.setVisibility(View.VISIBLE);
+        //favbroker.setVisibility(View.VISIBLE);
         tv_change_region.setVisibility(View.VISIBLE);
         basewraper.setVisibility(View.VISIBLE);
         try {
@@ -328,13 +337,13 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
 //        General.setSharedPreferences(this,AppConstants.USER_ID, "krve2cnz03rc1hfi06upjpnoh9hrrtsy");
 //        General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
 
-        favbroker.setOnClickListener(new View.OnClickListener() {
+       /* favbroker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent in=new Intent(getBaseContext(),MyPortfolioActivity.class);
                 startActivity(in);
             }
-        });
+        });*/
 
         init();
     }
@@ -342,7 +351,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
     protected void onResume() {
         super.onResume();
         // Register mMessageReceiver to receive messages.
-        ((BrokerPreokFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
+       // ((BrokerPreokFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(localityBroadcast, new IntentFilter(AppConstants.LOCALITY_BROADCAST));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(buildingSliderFlag, new IntentFilter(AppConstants.BUILDINGSLIDERFLAG));
@@ -385,13 +394,13 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
                         emailTxt.setText(General.getSharedPreferences(BrokerMainActivity.this,AppConstants.EMAIL));
                     }else if (key.equals(AppConstants.MY_BASE_LOCATION)) {
                         tv_change_region.setText(General.getSharedPreferences(getBaseContext(),AppConstants.MY_BASE_LOCATION));
-                    }else if (key.equals(AppConstants.RESETPHASE)) {
+                    }/*else if (key.equals(AppConstants.RESETPHASE)) {
                         try {
                             ((BrokerPreokFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
                         }
                         catch(Exception e){}
                         General.setSharedPreferences(BrokerMainActivity.this,AppConstants.RESETPHASE,"false");
-                    }
+                    }*/
                      if (key.equals(AppConstants.ADDB_COUNT_LL)) {
 
                         try {
@@ -818,6 +827,27 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
 
 
 
+    /*@Override
+    public void onDrawerClosed(View view) {
+        super.onDrawerClosed(view);
+        isopen = false;
+    }
+
+    *//** Called when a drawer has settled in a completely open state. *//*
+    public void onDrawerOpened(View drawerView) {
+        super.onDrawerOpened(drawerView);
+        isopen = true;
+    }
+    public void onDrawerSlide(View drawerView,float slideOffset){
+        super.onDrawerSlide(drawerView,slideOffset);
+        if(!isopen){
+            setStatusBarColor("#00102b");
+        }
+        if(isopen){
+            setStatusBarColor("#EFEFF0");
+        }
+    }*/
+
 
 
     private void shareReferralLink() {
@@ -880,6 +910,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
                 //getSupportFragmentManager().popBackStackImmediate();
                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
             AppConstants.SIGNUP_FLAG=false;
+               ShowBottomNavBar();
             backpress = 0;}
         }else
         if(webView != null){
@@ -1125,5 +1156,20 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
         }*/
     }
 
+    public void HideBottomNavBar(){
+        Log.i("HideBottomNavBar","HideBottomNavBar");
+        params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        params.setMargins(0, 0, 0, 0);
+        dynamicContent.setLayoutParams(params);
+        Log.i("HideBottomNavBar","HideBottomNavBar"+dynamicContent.getBottom());
+        bottonNavBar.setVisibility(View.GONE);
+    }
+    public void ShowBottomNavBar(){
+        Log.i("HideBottomNavBar","HideBottomNavBar"+dynamicContent.getBottom());
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        params.setMargins(0, 0, 0,156);
+        dynamicContent.setLayoutParams(params);
+        bottonNavBar.setVisibility(View.VISIBLE);
+    }
 
 }
