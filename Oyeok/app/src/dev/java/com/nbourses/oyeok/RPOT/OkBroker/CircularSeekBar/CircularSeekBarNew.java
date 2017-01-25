@@ -14,7 +14,9 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.PopupWindow;
@@ -415,8 +417,8 @@ public class CircularSeekBarNew extends View {
 //        canvas.drawText("Min: ₹ " + formatter.format(minValue), mCircleRectF.left * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
 //        canvas.drawText("Max: ₹ " + formatter.format(maxvalue), mCircleRectF.right - 120 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
 
-        canvas.drawText("Min: " + General.currencyFormat(minValue+""), mCircleRectF.left * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
-        canvas.drawText("Max: " + General.currencyFormat(maxvalue+""), mCircleRectF.right - 120 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("Min: " + General.currencyFormat(minValue+""), mCircleRectF.left * DPTOPX_SCALE-dipToPixels(getContext(),85), mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("Max: " + General.currencyFormat(maxvalue+""), mCircleRectF.right - dipToPixels(getContext(),30) * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
 
 
     }
@@ -764,17 +766,14 @@ public class CircularSeekBarNew extends View {
         }
         Arrays.sort(priceArray);
 
-        if(General.getSharedPreferences(getContext(),"TT").equals("RENTAL")) {
-
-
+        if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")) {
 
             minValue = 15000;
             maxvalue =   12000000;
             difference = 1000000;
 
 
-        }else if(General.getSharedPreferences(getContext(),"TT").equals("RESALE")) {
-
+        }else if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RESALE")) {
             minValue = 7000000;
             maxvalue =   1000000000;
             difference = 100000000;
@@ -1088,6 +1087,12 @@ public class CircularSeekBarNew extends View {
             }
         }
     }
+
+    public static float dipToPixels(Context context, int dipValue) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
+    }
+
 
 
 }
