@@ -214,20 +214,19 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
             balance = Integer.parseInt( SharedPrefs.getString( this, SharedPrefs.My_BALANCE ) );
             balance1.setText( String.valueOf( balance ) );
         } else {
-            Log.i( "balance", "balance :" + SharedPrefs.getString( this, SharedPrefs.My_BALANCE ) );
-
+            Log.i( "balance", "balance :" + SharedPrefs.getString(this, SharedPrefs.My_BALANCE));
+            SharedPrefs.save(this,SharedPrefs.My_BALANCE,100+"");
             balance = 100;
+            balance1.setText(String.valueOf(balance ));
         }
         gm_cashback_btn.setVisibility(View.VISIBLE);
-
         myaccount.setVisibility( View.VISIBLE );
-//        balance1=(TextView) findViewById( R.id.balance1 );
+//      balance1=(TextView) findViewById( R.id.balance1 );
         final Toolbar toolbar = (Toolbar) findViewById( R.id.toolbar );
         setSupportActionBar( toolbar );
         getSupportActionBar().setDisplayShowHomeEnabled( true );
         getSupportActionBar().setDisplayHomeAsUpEnabled( true );
         getSupportActionBar().setTitle( "" );
-
 
         autoCompView.setAdapter( new AutoCompletePlaces.GooglePlacesAutocompleteAdapter( this, R.layout.list_item1 ) );
         autoCompView.setOnItemClickListener( this );

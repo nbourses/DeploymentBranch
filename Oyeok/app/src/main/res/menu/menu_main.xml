@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+   <!-- <item
+        android:id="@+id/matching"
+        android:enabled="true"
+        android:icon="@drawable/ic_broker"
+        android:title="Matching"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/watchlist"
+        android:enabled="true"
+        android:icon="@drawable/ic_watchlist"
+        android:title="Watchlist"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/rates"
+        android:enabled="true"
+        android:icon="@drawable/ic_rates"
+        android:title="Rates"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/listing"
+        android:enabled="true"
+        android:icon="@drawable/ic_listing"
+        android:title="Listing"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/deals"
+        android:enabled="true"
+        android:icon="@drawable/ic_deal"
+        android:title="Deals"
+        app:showAsAction="ifRoom" />-->
+</menu>

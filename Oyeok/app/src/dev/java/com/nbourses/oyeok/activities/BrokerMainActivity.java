@@ -3,6 +3,7 @@ package com.nbourses.oyeok.activities;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,6 +15,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,9 +25,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -34,7 +40,11 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -54,6 +64,8 @@ import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.razorpay.PaymentResultListener;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import butterknife.Bind;
@@ -66,8 +78,9 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 //import com.nbourses.oyeok.Database.DBHelper;
 
-public class
-BrokerMainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener, PaymentResultListener {
+
+public class BrokerMainActivity extends BrokerMainPageActivity implements FragmentDrawer.FragmentDrawerListener, PaymentResultListener {
+
 
 @Bind(R.id.toolbar)
    Toolbar mToolbar;
@@ -108,12 +121,12 @@ BrokerMainActivity extends AppCompatActivity implements FragmentDrawer.FragmentD
 
 //    @Bind(R.id.buildingSlider)
 //    RelativeLayout buildingSlider;
-boolean setting=false,Owner_detail=false;
+  boolean setting=false,Owner_detail=false;
 
    int backpress;
 
- private boolean gmap=false;
-GoogleMap map;
+  private boolean gmap=false;
+  GoogleMap map;
 
 
     String baseloc;
@@ -231,10 +244,23 @@ GoogleMap map;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_agent_main);
+        //setContentView(R.layout.activity_agent_main);
 
 
+        LinearLayout dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent);
 
+//        NestedScrollView dynamicContent = (NestedScrollView) findViewById(R.id.myScrollingContent);
+// assuming your Wizard content is in content_wizard.xml myScrollingContent
+        View wizard = getLayoutInflater().inflate(R.layout.activity_agent_main, null);
+
+// add the inflated View to the layout
+        dynamicContent.addView(wizard);
+
+        RadioGroup rg=(RadioGroup)findViewById(R.id.radioGroup1);
+        RadioButton rb=(RadioButton)findViewById(R.id.matching);
+        rb.setCompoundDrawablesWithIntrinsicBounds( 0,R.drawable.ic_matching_clicked, 0,0);
+       // rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_matching) , null, null);
+        rb.setTextColor(Color.parseColor("#2dc4b6"));
 
 
         AppConstants.CURRENT_USER_ROLE ="broker";

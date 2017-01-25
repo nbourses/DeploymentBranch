@@ -12,14 +12,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -32,6 +36,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -105,7 +111,7 @@ import retrofit.mime.TypedByteArray;
 
 
 
-public class ClientDealsListActivity extends AppCompatActivity implements CustomPhasedListener, AbsListView.OnScrollListener {
+public class ClientDealsListActivity extends BrokerMainPageActivity implements CustomPhasedListener, AbsListView.OnScrollListener {
 
 
     private List<PublishLetsOye> publishLetsOyes;
@@ -267,7 +273,30 @@ private int page = 1;
 
         IntentFilter filter = new IntentFilter("okeyed");
         LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
-        setContentView(R.layout.activity_deals_list);
+
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+
+            setContentView(R.layout.activity_deals_list);
+        }else {
+
+
+            LinearLayout dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent);
+
+       // NestedScrollView dynamicContent = (NestedScrollView) findViewById(R.id.myScrollingContent);
+            // assuming your Wizard content is in content_wizard.xml myScrollingContent
+            View wizard = getLayoutInflater().inflate(R.layout.activity_deals_list, null);
+
+            // add the inflated View to the layout
+            dynamicContent.addView(wizard);
+
+            RadioGroup rg=(RadioGroup)findViewById(R.id.radioGroup1);
+            RadioButton rb=(RadioButton)findViewById(R.id.deals);
+            rb.setCompoundDrawablesWithIntrinsicBounds( 0,R.drawable.ic_deals_clicked, 0,0);
+            //rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_deals) , null, null);
+            rb.setTextColor(Color.parseColor("#2dc4b6"));
+
+        }
+
 
 
         listViewDeals = (SwipeMenuListView) findViewById(R.id.listViewDeals);
@@ -945,7 +974,7 @@ if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
 
 
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -958,15 +987,18 @@ if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
         return super.onOptionsItemSelected(item);
 
     }
-
+*/
     @Override
     public void onBackPressed() {
-
+        super.onBackPressed();
+        Log.i(TAG, "onback client deal 0 ");
         if (signUpCardFlag) {
+            Log.i(TAG, "onback client deal 1 ");
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.fragment_container1)).commit();
             signUpCardFlag = false;
             AppConstants.SIGNUP_FLAG = false;
         } else {
+            Log.i(TAG, "onback client deal 2 ");
 //        if(AppConstants.SIGNUP_FLAG){
 //            if(AppConstants.REGISTERING_FLAG){}else{
 //            getSupportFragmentManager().popBackStackImmediate();
@@ -976,6 +1008,7 @@ if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
 //            AppConstants.SIGNUP_FLAG=false;}
 //
 //        }else {
+            setOnlineStatus("false");
             Log.i(TAG, "onback client deal " + General.getSharedPreferences(this, AppConstants.ROLE_OF_USER));
             Intent intent;
             if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
@@ -993,6 +1026,7 @@ if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
                                 Intent.FLAG_ACTIVITY_NEW_TASK);*/
                 startActivity(intent);
             }
+
 
             finish();
         }
@@ -1468,13 +1502,12 @@ if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
                                 new Handler().post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        // Code here will run in UI thread
                                         if(page < maxPages) {
                                             loadBrokerDeals(page);
                                         }
                                         else {
                                             loadingDeals.setVisibility(View.GONE);
-                                           // setOnlineStatus();
+                                            setOnlineStatus("true");
                                         }
                                     }
                                 });
@@ -2082,8 +2115,8 @@ Log.i(TAG,"Caught in exception narcos "+e);
 
     }
 
-    private void setOnlineStatus(){
-        Log.i(TAG,"setOnlineStatus called allChannels "+allChannels);
+    private void setOnlineStatus(String state){
+        Log.i(TAG,"setOnlineStatus called allChannels zxc "+allChannels);
         PubNub pubnub;
 
         if(General.getSharedPreferences(this,AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase(""))
@@ -2092,7 +2125,7 @@ Log.i(TAG,"Caught in exception narcos "+e);
             pubnub = General.initPubnub(this, General.getSharedPreferences(this, AppConstants.USER_ID));
 
         Map<String, Object> myState = new HashMap<>();
-        myState.put("online", "true");
+        myState.put("online", state);
 
         pubnub.setPresenceState()
                 .uuid(pubnub.getConfiguration().getUuid())
@@ -2102,11 +2135,11 @@ Log.i(TAG,"Caught in exception narcos "+e);
             public void onResponse(PNSetStateResult result, PNStatus status) {
                 try {
                     // handle set state response
-                    Log.i(TAG, "zxc" + result);
+                    Log.i(TAG, "zxc" + result.getState());
                     //getState();
 
                 }catch(Exception e){
-                    Log.i(TAG,"setOnlineStatus called caught "+e);
+                    Log.i(TAG,"zxc setOnlineStatus called caught "+e);
                 }
 
             }

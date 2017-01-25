@@ -17,7 +17,6 @@ public class addBuildingRealm extends RealmObject{
     private String locality;
     private String lat;
     private String lng;
-
     private String sublocality;
     private String listing_date;
     private String tt;
@@ -28,6 +27,25 @@ public class addBuildingRealm extends RealmObject{
     private String address;
     private String growth_rate;
     private String display_type;
+    private String req_avl;
+    private String furnishing;
+
+
+    public String getReq_avl() {
+        return req_avl;
+    }
+
+    public void setReq_avl(String req_avl) {
+        this.req_avl = req_avl;
+    }
+
+    public String getFurnishing() {
+        return furnishing;
+    }
+
+    public void setFurnishing(String furnishing) {
+        this.furnishing = furnishing;
+    }
 
     public String getDisplay_type() {
         return display_type;

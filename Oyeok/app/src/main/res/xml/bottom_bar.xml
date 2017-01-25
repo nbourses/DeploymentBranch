@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <!--<tab
+        id="@+id/matching"
+        icon="@drawable/ic_broker"
+        title="Maching"/>
+    <tab
+        id="@+id/watchlist"
+        icon="@drawable/ic_watchlist"
+        title="Watchlist" />
+    <tab
+        id="@+id/rates"
+        icon="@drawable/ic_rates"
+
+        title="Rates" />
+    <tab
+        id="@+id/deals"
+        icon="@drawable/ic_deal"
+
+        title="Deals" />-->
+    <!--<tab-->
+        <!--id="@+id/listing"-->
+        <!--icon="@drawable/ic_listing"-->
+        <!--title="listing" />-->
+</tabs>
+
+    <!--icon="@drawable/ic_friends"-->

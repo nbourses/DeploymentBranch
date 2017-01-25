@@ -8,7 +8,7 @@
 
     <!--  The property id associated with this analytics tracker -->
     <!--<string name="ga_trackingId">UA-27271606-1</string>-->
-    <string name="ga_trackingId">UA-89243453-4</string>
+    <string name="ga_trackingId">UA-90453985-2</string>
 
     <!--
       See Project Structure -> Analytics -> Google Analytics -> Learn More

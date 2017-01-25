@@ -3093,7 +3093,7 @@ Log.i(TAG,"Caught in exception clearing notification count "+e);
 
     @Override
     public void onBackPressed() {
-        setState("online", "false");
+       /// setState("online", "false");    //// moved to dealslist
         General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,null);
 
     Log.i(TAG,"back clicked");

@@ -424,7 +424,7 @@ private void init(){
        addListingBorker.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
         carpet_area=Integer.parseInt(approx_area.getText().toString());
        addListingBorker.setCarpet_area(carpet_area);
-       Log.i("Reqstatus","Reqstatus 1 : "+Avail.isChecked()+ " "+Req.isChecked());
+       Log.i("Reqstatus","Reqstatus 1 : "+Avail.isChecked()+ " "+Req.isChecked()+"numberAsString : "+numberAsString);
        if(Avail.isChecked()){
            Log.i("Reqstatus","Reqstatus 1 inside: "+Avail.isChecked()+ " "+Req.isChecked());
 
@@ -513,22 +513,39 @@ private void init(){
         add_Building.setDisplay_type(null);
         int area=carpet_area;
         Log.i("magic","reached "+numberAsString+"  area : "+area);
-        int p=Integer.parseInt(numberAsString)/area;
-        Log.i("magic","reached "+p);
+
+
+        //Log.i("magic","reached "+p);
 
         if(tt.equalsIgnoreCase("ll")){
            // int p=Integer.parseInt(numberAsString)/area;
-            add_Building.setLl_pm(p);
-
+            add_Building.setLl_pm(Integer.parseInt(numberAsString));
             add_Building.setOr_psf(0);
             add_Building.setTt("ll");
 
         }else{
+            //int p=Integer.parseInt(numberAsString)/area;
             add_Building.setLl_pm(0);
-            add_Building.setOr_psf(p);
+            add_Building.setOr_psf(Integer.parseInt(numberAsString));
             add_Building.setTt("or");
         }
+        if(Avail.isChecked()){
+            Log.i("Reqstatus","Reqstatus 1 inside: "+Avail.isChecked()+ " "+Req.isChecked());
 
+            add_Building.setReq_avl("Avail.");
+        }else{
+            add_Building.setReq_avl("Req.");
+        }
+
+        if(Furnishing.equalsIgnoreCase("fully-furnished")){
+            add_Building.setFurnishing("FF");
+        }else  if(Furnishing.equalsIgnoreCase("un-furnished")) {
+            add_Building.setFurnishing("UF");
+
+        }else{
+            add_Building.setFurnishing("SF");
+
+        }
         if(General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY).equalsIgnoreCase(""))
         {
             Log.i("AddListingBorker","myCalendar current date  12"+General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));

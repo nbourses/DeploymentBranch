@@ -55,6 +55,14 @@ public class portListingModel {
     @Expose
     @SerializedName("tt")
     private String tt;
+
+    @Expose
+    @SerializedName("req_avl")
+    private String req_avl;
+
+    @Expose
+    @SerializedName("furnishing")
+    private String furnishing;
     /*@Expose
     @SerializedName("display_type")
     private String display_type;
@@ -99,6 +107,42 @@ public class portListingModel {
         this.config = config;
         this.display_type = display_type;
         this.tt = tt;
+    }
+
+    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config, String display_type, String tt, String req_avl, String furnishing) {
+        this.id = id;
+        this.name = name;
+        this.locality = locality;
+        this.growth_rate = growth_rate;
+        this.ll_pm = ll_pm;
+        this.or_psf = or_psf;
+        this.timpstamp = timpstamp;
+        this.transaction = transaction;
+        this.config = config;
+        this.display_type = display_type;
+        this.tt = tt;
+        this.req_avl = req_avl;
+        this.furnishing = furnishing;
+    }
+
+    public portListingModel(String name, String locality, int ll_pm, int or_psf, String timpstamp, String growth_rate, String display_type) {
+
+        this.name = name;
+        this.locality = locality;
+        this.growth_rate = growth_rate;
+        this.ll_pm = ll_pm;
+        this.or_psf = or_psf;
+        this.timpstamp = timpstamp;
+
+        this.display_type=display_type;
+    }
+
+    public String getReq_avl() {
+        return req_avl;
+    }
+
+    public String getFurnishing() {
+        return furnishing;
     }
 
     public String getId() {

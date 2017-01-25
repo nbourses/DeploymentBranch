@@ -168,6 +168,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess, Googl
     ImageView profile_pic;
     private String oldRole,UserOldRole,reqRole;
     private Realm myRealm;
+   // private boolean mClearDefaultAccount;
     ////////////////////////////////////////////////////
     // Variables defined for digits authentication
 ////////////////////////////////////////////////////
@@ -229,6 +230,11 @@ private LinearLayout signinpanel;
                                 Log.i(TAG,"facebook 2 1 "+email);
 
                                 Log.i(TAG,"facebook 2 2 "+name);
+                                if (mGoogleApiClient.isConnected()) {
+                                    Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                                    btnSignIn.setVisibility(View.VISIBLE);
+                                    gbtnSignOut.setVisibility(View.GONE);
+                                }
                                setData(name, email);
 
                             } catch (JSONException e) {
@@ -389,14 +395,20 @@ private LinearLayout signinpanel;
         btnSignIn = (SignInButton) view.findViewById(R.id.sign_in_button);
         gbtnSignOut = (Button) view.findViewById(R.id.g_sign_out_button);
 
+        gbtnSignOut.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_google, 0, 0, 0);
+
+        try {
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestEmail()
                     .build();
 
             mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-                    .enableAutoManage(getActivity() /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                    .enableAutoManage(getActivity() , this )
                     .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                     .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
        /* mGoogleApiClient = new GoogleApiClient.Builder(view.getContext())
@@ -414,6 +426,7 @@ private LinearLayout signinpanel;
 
             @Override
             public void onClick(View v) {
+               // mClearDefaultAccount = true;
                 signInG();
              // signInWithGplus();
 
@@ -481,7 +494,7 @@ private LinearLayout signinpanel;
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-Log.i(TAG, "facebook success "+loginResult);
+            Log.i(TAG, "facebook success "+loginResult);
             }
 
             @Override
@@ -660,8 +673,10 @@ Log.i(TAG, "facebook success "+loginResult);
                     } else
                         email_success = isEmailValid(Semail);
 
-                    if (email_success)
+                    if (email_success){
+                        Digits.getSessionManager().clearActiveSession();
                         Digits.authenticate(authCallback, R.style.CustomDigitsTheme);
+                    }
                 }else {
 //                    Log.i("mobile no before dc", mobile_number);
                     Digits.getSessionManager().clearActiveSession();
@@ -726,8 +741,12 @@ Log.i(TAG, "facebook success "+loginResult);
 
     private void signInG(){
 
+        try {
             Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
             startActivityForResult(signInIntent, RC_SIGN_IN);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
     /*private void signInWithGplus() {
@@ -919,17 +938,19 @@ Log.i(TAG, "facebook success "+loginResult);
                                             signup_success();
                                         }
                                     })
-                                    /*.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                         public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                                             dialog.cancel();
-                                            *//*Intent intent = new Intent(getContext(), ClientMainActivity.class);
+
+                                            Intent intent = new Intent(getContext(), ClientMainActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                                                    Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            startActivity(intent);*//*
+                                                    Intent.FLAG_ACTIVITY_NEW_TASK)       ;
+                                            startActivity(intent);
+
                                             AppConstants.REGISTERING_FLAG=false;
                                         }
-                                    })*/;
+                                    });
                             final AlertDialog alert = builder.create();
                             alert.show();
                             Log.i("TRACE", "message is chal "+signUp.responseData.getMessage());
@@ -1124,6 +1145,12 @@ Log.i(TAG, "facebook success "+loginResult);
       /*  mSignInClicked = false;
         getProfileInformation();*/
 
+          /*  if (mClearDefaultAccount) {
+                mClearDefaultAccount = false;
+                mGoogleApiClient.clearDefaultAccountAndReconnect();
+                return;
+            }*/
+
     }
 
     @Override
@@ -1154,6 +1181,7 @@ Log.i(TAG, "facebook success "+loginResult);
                 }
             }
 */
+     //   mClearDefaultAccount = false;
         }
 
 
@@ -1369,6 +1397,11 @@ Log.i(TAG, "facebook success "+loginResult);
             setData(acct.getDisplayName(), acct.getEmail());
             btnSignIn.setVisibility(View.GONE);
             gbtnSignOut.setVisibility(View.VISIBLE);
+            try {
+                LoginManager.getInstance().logOut();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         } else {
             // Signed out, show unauthenticated UI.
@@ -1401,6 +1434,10 @@ Log.i(TAG, "facebook success "+loginResult);
         /*if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }*/
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.stopAutoManage(getActivity());
+            mGoogleApiClient.disconnect();
+        }
         accessTokenTracker.stopTracking();
         profileTracker.stopTracking();
     }

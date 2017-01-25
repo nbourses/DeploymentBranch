@@ -52,7 +52,7 @@ import static com.nbourses.oyeok.helpers.AppConstants.LOCATION_PERMISSION_REQUES
 public class IntroActivity extends ActionBarActivity {
 
     private ViewPager mViewPager;
-    private TabLayout tabLayout;
+    //private TabLayout tabLayout;
     private Button btnC;
     private Button btnB;
     private Button playgame;
@@ -193,7 +193,7 @@ btnC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("TG","ithe tithe 3");
-                playgame.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                //playgame.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
                 General.setSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER, "client");
                 General.setSharedPreferences(getBaseContext(),AppConstants.ROLE_GAMER,"gamer");
                 Intent intent = new Intent(getBaseContext(), ClientMainActivity.class);
@@ -211,7 +211,6 @@ btnC.setOnClickListener(new View.OnClickListener() {
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playgame.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
                 Intent intent = new Intent(getApplicationContext(), ClientMainActivity.class);
                 intent.addFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -227,8 +226,8 @@ btnC.setOnClickListener(new View.OnClickListener() {
         // Set an Adapter on the ViewPager
         mViewPager.setAdapter(new IntroAdapter(getSupportFragmentManager()));
 
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(mViewPager);
+       // tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+       // tabLayout.setupWithViewPager(mViewPager);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

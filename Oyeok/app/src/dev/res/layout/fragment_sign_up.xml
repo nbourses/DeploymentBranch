@@ -317,7 +317,6 @@
                         android:text="Sign Out"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:drawableLeft="@drawable/googleplus"
                         android:textAllCaps="false"
                         android:paddingBottom="5dp"
                         android:layout_marginRight="30dp"
