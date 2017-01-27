@@ -280,7 +280,7 @@ private int page = 1;
         }else {
 
 
-            LinearLayout dynamicContent = (LinearLayout) findViewById(R.id.3);
+            LinearLayout dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent );
 
        // NestedScrollView dynamicContent = (NestedScrollView) findViewById(R.id.myScrollingContent);
             // assuming your Wizard content is in content_wizard.xml myScrollingContent
