@@ -168,6 +168,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess, Googl
     ImageView profile_pic;
     private String oldRole,UserOldRole,reqRole;
     private Realm myRealm;
+   // private boolean mClearDefaultAccount;
     ////////////////////////////////////////////////////
     // Variables defined for digits authentication
 ////////////////////////////////////////////////////
@@ -229,6 +230,11 @@ private LinearLayout signinpanel;
                                 Log.i(TAG,"facebook 2 1 "+email);
 
                                 Log.i(TAG,"facebook 2 2 "+name);
+                                if (mGoogleApiClient.isConnected()) {
+                                    Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                                    btnSignIn.setVisibility(View.VISIBLE);
+                                    gbtnSignOut.setVisibility(View.GONE);
+                                }
                                setData(name, email);
 
                             } catch (JSONException e) {
@@ -389,14 +395,20 @@ private LinearLayout signinpanel;
         btnSignIn = (SignInButton) view.findViewById(R.id.sign_in_button);
         gbtnSignOut = (Button) view.findViewById(R.id.g_sign_out_button);
 
+        gbtnSignOut.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_google, 0, 0, 0);
+
+        try {
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestEmail()
                     .build();
 
             mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-                    .enableAutoManage(getActivity() /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                    .enableAutoManage(getActivity() , this )
                     .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                     .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
        /* mGoogleApiClient = new GoogleApiClient.Builder(view.getContext())
@@ -414,6 +426,7 @@ private LinearLayout signinpanel;
 
             @Override
             public void onClick(View v) {
+               // mClearDefaultAccount = true;
                 signInG();
              // signInWithGplus();
 
@@ -728,8 +741,12 @@ private LinearLayout signinpanel;
 
     private void signInG(){
 
+        try {
             Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
             startActivityForResult(signInIntent, RC_SIGN_IN);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
     /*private void signInWithGplus() {
@@ -1128,6 +1145,12 @@ private LinearLayout signinpanel;
       /*  mSignInClicked = false;
         getProfileInformation();*/
 
+          /*  if (mClearDefaultAccount) {
+                mClearDefaultAccount = false;
+                mGoogleApiClient.clearDefaultAccountAndReconnect();
+                return;
+            }*/
+
     }
 
     @Override
@@ -1158,6 +1181,7 @@ private LinearLayout signinpanel;
                 }
             }
 */
+     //   mClearDefaultAccount = false;
         }
 
 
@@ -1373,6 +1397,11 @@ private LinearLayout signinpanel;
             setData(acct.getDisplayName(), acct.getEmail());
             btnSignIn.setVisibility(View.GONE);
             gbtnSignOut.setVisibility(View.VISIBLE);
+            try {
+                LoginManager.getInstance().logOut();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         } else {
             // Signed out, show unauthenticated UI.
@@ -1405,6 +1434,10 @@ private LinearLayout signinpanel;
         /*if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }*/
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.stopAutoManage(getActivity());
+            mGoogleApiClient.disconnect();
+        }
         accessTokenTracker.stopTracking();
         profileTracker.stopTracking();
     }

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.nbourses.oyeok.R;
@@ -17,15 +18,19 @@ import com.nbourses.oyeok.helpers.General;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
-public class BrokerMainPageActivity extends AppCompatActivity {
+public class BrokerMainPageActivity extends AppCompatActivity  {
 
 
     RadioGroup radioGroup1;
+    RadioButton deals;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_broker_main_page);
         radioGroup1=(RadioGroup)findViewById(R.id.radioGroup1);
+        deals = (RadioButton)findViewById(R.id.deals);
+      //  deals.setButtonDrawable(R.drawable.ic_deals_unclicked);
         radioGroup1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override

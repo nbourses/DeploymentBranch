@@ -92,7 +92,26 @@ public class porfolioAdapter extends BaseAdapter {
             }
             holder.description.setText(listing.getLocality());
             setIcon(listing, holder);
-        }else{
+        }
+
+        else if(listing.getDisplay_type().equalsIgnoreCase("LOCALITIES")){
+            holder.heading.setText(listing.getName());
+            holder.description.setText(listing.getLocality());
+            if(listing.getLl_pm()==0)
+                holder.ActualPrice.setText(General.currencyFormatWithoutRupeeSymbol(listing.getOr_psf()+"") + "/sq-ft" );
+            else
+                holder.ActualPrice.setText(General.currencyFormatWithoutRupeeSymbol(listing.getLl_pm()+"")+"/month");
+
+            float scale = context.getResources().getDisplayMetrics().density;
+            int dpAsPixels = (int) (10*scale + 0.5f);
+            holder.B_image.setPadding(dpAsPixels,dpAsPixels,dpAsPixels,dpAsPixels);
+            holder.B_image.setImageResource(R.drawable.s_marker);
+            holder.B_image.setBackground(null);
+            setIcon(listing, holder);
+
+        }
+
+        else{
             holder.heading.setText(listing.getName()+" ("+listing.getConfig()+")");
             holder.ActualPrice.setText("Rates will be updated soon.");
             holder.B_image.setImageResource(R.drawable.asset_add_listing);

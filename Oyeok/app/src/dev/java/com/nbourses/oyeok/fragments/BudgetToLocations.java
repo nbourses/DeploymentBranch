@@ -1,8 +1,11 @@
 package com.nbourses.oyeok.fragments;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +19,22 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
+import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.AutoOkCall;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.GetLocality;
+import com.nbourses.oyeok.realmModels.Localities;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -33,6 +43,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -82,7 +94,7 @@ public class BudgetToLocations extends Fragment {
     @Bind(R.id.bhk6)
     Button bhk6;*/
 
-private RadioGroup rg;
+    private RadioGroup rg;
     private Button rk1;
     private Button bhk1;
     private Button bhk1_5;
@@ -101,17 +113,17 @@ private RadioGroup rg;
 
     Calendar myCalendar = Calendar.getInstance();
 
-private String configArea = "600";
+    private String configArea = "600";
 
 
 
-private Spinner spinner;
+    private Spinner spinner;
     private DiscreteSeekBar seekBar;
 
     private String Furnishing;
     private int minvalue=20000,maxvalue=120000;
     private String Property;
-private String TT;
+    private String TT;
     private TextView budget;
     private TextView min;
     private TextView max;
@@ -119,8 +131,11 @@ private String TT;
     private TextView shop;
     private TextView office;
     private TextView industry;
-private TextView ptype;
+    private TextView ptype;
+    private boolean newtouch = false;
     private int mean;
+    private int maxi = 100000;
+    private int mini = 10000;
 
 
     public BudgetToLocations() {
@@ -171,7 +186,7 @@ private TextView ptype;
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             if(bundle.containsKey(AppConstants.TT)) {
-               TT = bundle.getString(AppConstants.TT);
+                TT = bundle.getString(AppConstants.TT);
             }
         }
 
@@ -306,18 +321,21 @@ private TextView ptype;
             }
         });
 
-submitb.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        getLocalities();
-    }
-});
+        submitb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getLocalities();
+            }
+        });
         budget.setText(General.currencyFormat(10000+"").substring(2, General.currencyFormat(10000+"").length()));
 
 
         seekBar.setMax(100000);
         seekBar.setMin(10000);
-        seekBar.setProgress(10000);
+        mean = 55000;
+        seekBar.setProgress(55000);
+        budget.setText(General.currencyFormat(55000+"").substring(2, General.currencyFormat(55000+"").length()));
         seekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar1, int value, boolean fromUser) {
@@ -326,13 +344,14 @@ submitb.setOnClickListener(new View.OnClickListener() {
                 //budget.setText(General.currencyFormat(value+"").substring(2, General.currencyFormat(value+"").length()));
                 Log.i("btol","value is the budget "+value+" "+seekBar.getMax()+" "+seekBar.getMin());
 
-                mean = (seekBar.getMax() - seekBar.getMin())/2;
+                // mean = (seekBar.getMax() + seekBar.getMin())/2;
                 Log.i("btol","value is the budget 1 "+mean);
-                if(value > mean && value <100000000){
+              /*  if(value > mean  && newtouch){
+                    newtouch = false;
                     int newMin = mean;
                     int newMax = seekBar.getMax()+mean;
                     Log.i("btol","value is the budget 2 "+newMin+" "+newMax);
-
+                    seekBar.setClickable(false);
                     seekBar.setMax(newMax);
                     max.setText(newMax+"");
                     seekBar.setMin(newMin);
@@ -340,12 +359,13 @@ submitb.setOnClickListener(new View.OnClickListener() {
                     seekBar.setProgress(seekBar.getMin());
                     budget.setText(General.currencyFormat(seekBar.getMin()+"").substring(2, General.currencyFormat(seekBar.getMin()+"").length()));
                     mean = (seekBar.getMax() - seekBar.getMin())/2;
+
                 }else{
 
                     budget.setText(General.currencyFormat(value+"").substring(2, General.currencyFormat(value+"").length()));
-                }
+                }*/
 
-
+                budget.setText(General.currencyFormat(value+"").substring(2, General.currencyFormat(value+"").length()));
               /* value=value/1000;
                 value=value*1000;
                 String val=String.valueOf(value);
@@ -358,11 +378,77 @@ submitb.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
-
             }
 
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+                //  mean = (maxi + seekBar.getMin())/2;
+                Log.i("TAG","jarm mini  "+mini+" maxi  "+maxi+" mean  "+mean+" progress  "+seekBar.getProgress());
+                if(seekBar.getProgress() > mean ) {
+                    if(mean < 2450000) {
+
+                        mini = mean;
+                        maxi = maxi + mean;
+
+
+                        Log.i("btol", "value is the budget 2 " + mini + " " + maxi);
+                        //seekBar.setClickable(false);
+                        seekBar.setMax(maxi);
+                        max.setText(maxi + "");
+                        seekBar.setMin(mini);
+                        min.setText(mini + "");
+
+                        mean = (maxi + mini) / 2;
+                        seekBar.setProgress(mean);
+                        budget.setText(General.currencyFormat(mean + "").substring(2, General.currencyFormat(mean + "").length()));
+                    }else{
+                        maxi = 2500000;
+                        mini = 2400000;
+                        seekBar.setMax(maxi);
+                        max.setText(maxi + "");
+                        seekBar.setMin(mini);
+                        min.setText(mini + "");
+
+                        mean = (maxi + mini) / 2;
+                        seekBar.setProgress(mean);
+                        budget.setText(General.currencyFormat(mean + "").substring(2, General.currencyFormat(mean + "").length()));
+
+
+                    }
+                }
+                else if(seekBar.getProgress() < mean){
+                    if(mean > 55000){
+
+                        mini = mean - mini;
+                        maxi = maxi - mini;
+
+
+
+                        seekBar.setMax(maxi);
+                        max.setText(maxi+"");
+                        seekBar.setMin(mini);
+                        min.setText(mini+"");
+
+                        mean = (maxi + mini)/2;
+                        seekBar.setProgress(mean);
+                        budget.setText(General.currencyFormat(mean+"").substring(2, General.currencyFormat(mean+"").length()));
+
+                    }
+                    else{
+                        mini = 10000;
+                        maxi = 100000;
+
+                        seekBar.setMax(maxi);
+                        max.setText(maxi+"");
+                        seekBar.setMin(mini);
+                        min.setText(mini+"");
+
+                        mean = (maxi + mini)/2;
+                        seekBar.setProgress(mean);
+                        budget.setText(General.currencyFormat(mean+"").substring(2, General.currencyFormat(mean+"").length()));
+
+                    }
+                }
 
             }
         });
@@ -405,6 +491,11 @@ submitb.setOnClickListener(new View.OnClickListener() {
 
 
     }
+
+
+
+
+
 
 
 
@@ -470,23 +561,23 @@ submitb.setOnClickListener(new View.OnClickListener() {
     private void getLocalities(){
 
         try {
-        GetLocality g = new GetLocality();
-        g.setCity("mumbai");
-        g.setGcm_id(General.getSharedPreferences(getContext(),AppConstants.GCM_ID));
-        g.setTt(TT);
-        g.setPrice(seekBar.getProgress()+"");
-        g.setConfig_area(configArea);
-        g.setProperty_type("home");
-           // g.setProperty_type(ptype.getText().toString());
+            GetLocality g = new GetLocality();
+            g.setCity("mumbai");
+            g.setGcm_id(General.getSharedPreferences(getContext(),AppConstants.GCM_ID));
+            g.setTt(AppConstants.Card_TT);
+            g.setPrice(seekBar.getProgress()+"");
+            g.setConfig_area(configArea);
+            g.setProperty_type("home");
+            // g.setProperty_type(ptype.getText().toString());
 
-            /*Gson gson = new Gson();
+            Gson gson = new Gson();
             String json = gson.toJson(g);
-            Log.i("magic","getLocality  json "+json);*/
+            Log.i("magic","getLocality  json "+json);
 
             Log.i("magic","getLocality 1");
-        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_11).build();
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_11).build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+            OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
             Log.i("magic","getLocality 2");
 
             oyeokApiService.getLocality(g, new Callback<JsonElement>() {
@@ -496,8 +587,68 @@ submitb.setOnClickListener(new View.OnClickListener() {
                         Log.i("magic","getLocality3");
                         String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                         JSONObject jsonResponse = new JSONObject(strResponse);
+
                         Log.i("magic","getLocality3 "+jsonResponse);
+
                         Log.i("magic","getLocality success "+jsonResponse.getJSONArray("responseData"));
+
+                        JSONArray j = jsonResponse.getJSONArray("responseData");
+
+                        Realm myRealm = General.realmconfig(getContext());
+
+                        Log.i("magic","getLocality7 "+j.length());
+
+
+
+                        for(int i =0;i<j.length();i++){
+                            Log.i("magic","getLocality8 ");
+                            JSONObject jo = j.getJSONObject(i);
+
+                            Log.i("magic","getLocality4 "+jo.getJSONArray("loc").get(0).toString());
+
+                            myRealm.beginTransaction();
+                            Localities l = new Localities();
+                            l.setLocality(jo.getString("locality"));
+                            l.setGrowthRate(jo.getString("rate_growth"));
+                            l.setLlMin(jo.getString("ll_min"));
+                            l.setLlMax(jo.getString("ll_max"));
+                            l.setOrMin(jo.getString("or_min"));
+                            l.setOrMax(jo.getString("or_max"));
+                            l.setLat(jo.getJSONArray("loc").get(1).toString());
+                            l.setLng(jo.getJSONArray("loc").get(0).toString());
+                            l.setTimestamp(System.currentTimeMillis()+"");
+
+                            myRealm.copyToRealm(l);
+                            myRealm.commitTransaction();
+
+                            AutoOkCall runner = new AutoOkCall(getContext());
+
+                            runner.execute(jo.getJSONArray("loc").get(1).toString(),jo.getJSONArray("loc").get(0).toString(),jo.getString("locality"));
+                        }
+
+
+                        RealmResults<Localities> results1 =
+                                myRealm.where(Localities.class).findAll();
+
+                        for (Localities c : results1) {
+
+                            Log.i("results1", "getLocality5 " + c.getLocality());
+                            Log.i("results1", "getLocality5 " + c.getLng());
+                        }
+
+
+
+                        General.setBadgeCount(getContext(), AppConstants.PORTFOLIO_COUNT,General.getBadgeCount(getContext(),AppConstants.PORTFOLIO_COUNT) + j.length());
+                        getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+                        View containerSignup  = getActivity().findViewById(R.id.container_Signup);
+                        View card  = getActivity().findViewById(R.id.card);
+                        containerSignup.setBackgroundColor(Color.parseColor("#00000000"));
+                        containerSignup.setClickable(false);
+                        card.setClickable(false);
+
+                        Intent intent = new Intent(AppConstants.DOSIGNUP);
+                        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+
 
                     } catch (Exception e) {
                         Log.e("TAG", "Caught in the exception getLocality 1"+ e.getMessage());
@@ -505,13 +656,20 @@ submitb.setOnClickListener(new View.OnClickListener() {
                     }
 
 
-
-
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
                     Log.i("magic","getLocality failed "+error);
+                    try {
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text("Server Error: " + error.getMessage())
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }
+                    catch(Exception e){}
+
                 }
             });
 
@@ -525,4 +683,10 @@ submitb.setOnClickListener(new View.OnClickListener() {
 
 
 
+
+
+
 }
+
+
+

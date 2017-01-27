@@ -125,6 +125,18 @@ public class portListingModel {
         this.furnishing = furnishing;
     }
 
+    public portListingModel(String name, String locality, int ll_pm, int or_psf, String timpstamp, String growth_rate, String display_type) {
+
+        this.name = name;
+        this.locality = locality;
+        this.growth_rate = growth_rate;
+        this.ll_pm = ll_pm;
+        this.or_psf = or_psf;
+        this.timpstamp = timpstamp;
+
+        this.display_type=display_type;
+    }
+
     public String getReq_avl() {
         return req_avl;
     }

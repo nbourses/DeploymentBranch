@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-   android:orientation="vertical"
+    android:orientation="vertical"
     android:layout_height="match_parent"
 
     >
@@ -12,52 +12,49 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        &lt;!&ndash; Your loooooong scrolling content here. &ndash;&gt;
-
+     &lt;!&ndash;Your loooooong scrolling content here. &ndash;&gt;
     </android.support.v4.widget.NestedScrollView>-->
-    <LinearLayout
-        android:id="@+id/dynamicContent"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:gravity="bottom"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+
+
+
+     <!--<com.roughike.bottombar.BottomBar
+    android:id="@+id/bottomBar"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:layout_gravity="bottom"
+    app:bb_tabXmlResource="@xml/bottom_bar"
+    app:bb_behavior="underNavbar"/>-->
+
+    <!-- <android.support.design.widget.BottomNavigationView
+         android:id="@+id/bottom_navigation"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         app:itemBackground="@color/white"
+         app:itemIconTint="@drawable/nav_item_color_state"
+         app:itemTextColor="@drawable/nav_item_color_state"
+         app:menu="@menu/menu_main" />-->
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:elevation="4dp"
+            android:elevation="10dp"
             android:background="@color/white"
             android:id="@+id/bottonNavBar"
-            android:layout_gravity="bottom"
+            android:paddingTop="5dp"
+            android:layout_alignParentBottom="true"
             android:foregroundGravity="bottom">
 
-        <!--<com.roughike.bottombar.BottomBar-->
-            <!--android:id="@+id/bottomBar"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="56dp"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--app:bb_tabXmlResource="@xml/bottom_bar"-->
-            <!--app:bb_behavior="underNavbar"/>-->
-
-       <!-- <android.support.design.widget.BottomNavigationView
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            app:itemBackground="@color/white"
-            app:itemIconTint="@drawable/nav_item_color_state"
-            app:itemTextColor="@drawable/nav_item_color_state"
-            app:menu="@menu/menu_main" />-->
 
             <RadioGroup
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:id="@+id/radioGroup1"
                 android:gravity="center"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
                 android:orientation="horizontal"
+
                 android:baselineAligned="false">
 
                 <RadioButton
@@ -128,6 +125,14 @@
 
             </RadioGroup>
         </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/dynamicContent"
+        android:layout_marginBottom="@dimen/dp_56"
+        android:background="@color/dark_white"
+        android:layout_gravity="bottom">
     </LinearLayout>
 </RelativeLayout>
     <!--tools:context="com.nbourses.oyeok.activities.BrokerMainPageActivity"-->

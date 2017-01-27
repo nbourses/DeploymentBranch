@@ -353,7 +353,8 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
 
         RadioGroup rg=(RadioGroup)findViewById(R.id.radioGroup1);
         RadioButton rb=(RadioButton)findViewById(R.id.rates);
-        rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_rate) , null, null);
+        rb.setCompoundDrawablesWithIntrinsicBounds( 0,R.drawable.ic_rate_clicked, 0,0);
+       // rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_rate) , null, null);
         rb.setTextColor(Color.parseColor("#2dc4b6"));
         /*Menu menu = bottomNavigationView.getMenu();
         menu.findItem(R.id.matching).setChecked(false);

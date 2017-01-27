@@ -128,7 +128,8 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
         RadioGroup rg=(RadioGroup)findViewById(R.id.radioGroup1);
         RadioButton rb=(RadioButton)findViewById(R.id.listing);
-        rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_listing) , null, null);
+        rb.setCompoundDrawablesWithIntrinsicBounds( 0,R.drawable.ic_listing_clicked, 0,0);
+        //rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_listing) , null, null);
         rb.setTextColor(Color.parseColor("#2dc4b6"));
         ButterKnife.bind(this);
 

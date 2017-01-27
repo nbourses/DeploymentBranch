@@ -74,6 +74,7 @@ import com.nbourses.oyeok.fragments.BuildingOyeConfirmation;
 import com.nbourses.oyeok.fragments.CardFragment;
 import com.nbourses.oyeok.fragments.DFragment;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
+import com.nbourses.oyeok.fragments.InitialCard;
 import com.nbourses.oyeok.fragments.OyeConfirmation;
 import com.nbourses.oyeok.fragments.OyeScreenFragment;
 import com.nbourses.oyeok.fragments.gameCardView;
@@ -835,11 +836,30 @@ try {
         }
         catch(Exception e){}
 
+
+        Bundle bundle = getIntent().getExtras();
+
+        try {
+            if (bundle != null) {
+
+                if(bundle.containsKey(AppConstants.RESETMAP)){
+                    if(bundle.getString(AppConstants.RESETMAP).equalsIgnoreCase("yes")){
+
+
+                        bundle1.putString(AppConstants.RESETMAP,"yes");
+
+
+                    }
+                }
+
+            }}
+        catch(Exception e){}
+
         loadFragment(dashboardClientFragment, bundle1, R.id.container_map, "Client Dashboard");
 
 
 
-        Bundle bundle = getIntent().getExtras();
+
 
         try {
             if (bundle != null) {
@@ -849,7 +869,27 @@ try {
                     Log.i("TRACE", " toto "+bundle.getString("bicon"));
                     Log.i("TRACE", " toto 1 "+bundle.getString("bicon"));
                     new DownloadImageTask().execute(bundle.getString("bicon"));
-                }}}
+                }
+                /*if(bundle.containsKey(AppConstants.RESETMAP)){
+                    if(bundle.getString(AppConstants.RESETMAP).equalsIgnoreCase("yes")){
+
+
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                Intent intent = new Intent(AppConstants.RESETMAP);
+                                LocalBroadcastManager.getInstance(ClientMainActivity.this).sendBroadcast(intent);
+
+                            }
+
+                        }, 600);
+                    }
+                }*/
+
+
+            }}
         catch(Exception e){}
 
         /*if(General.getSharedPreferences(ClientMainActivity.this,AppConstants.PROMO_IMAGE_URL) != "") {
@@ -1875,8 +1915,8 @@ if(AppConstants.FAV) {
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
 
-
-                     CardFragment c = new CardFragment();
+                        InitialCard c = new InitialCard();
+                     //CardFragment c = new CardFragment();
                         //loadFragment(d,null,R.id.container_Signup,"");
                         c.setArguments(null);
 //                FragmentManager fragmentManager = getSupportFragmentManager();

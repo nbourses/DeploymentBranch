@@ -165,6 +165,7 @@ public class InitialCard  extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     //resale
+                    AppConstants.Card_TT = "OR";
                     userType.setText("BUY/SELL");
                     rent = false;
                     seller.setChecked(false);
@@ -189,6 +190,7 @@ public class InitialCard  extends Fragment {
                     setOwner();
 
                 } else {
+                    AppConstants.Card_TT = "LL";
                     userType.setText("RENT");
                     rent = true;
                     tagline.setText("I am Searching Property...");
@@ -223,6 +225,7 @@ public class InitialCard  extends Fragment {
                                               @Override
                                               public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                                   if (isChecked) {
+                                                      AppConstants.Card_REQ_AVL = "req";
                                                       tagline.setText("I am Searching Property...");
                                                       tagline1.setText(Html.fromHtml("<b>Tenant</b> you are 3 clicks away"));
                                                       owner.setChecked(false);
@@ -249,6 +252,7 @@ public class InitialCard  extends Fragment {
                                              @Override
                                              public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                                  if (isChecked) {
+                                                     AppConstants.Card_REQ_AVL = "avl";
                                                      tagline.setText("I own Property, it earns rent...");
                                                      tagline1.setText(Html.fromHtml("<b>Owner</b> you are 3 clicks away"));
                                                      tenant.setChecked(false);
@@ -273,6 +277,7 @@ public class InitialCard  extends Fragment {
                                               @Override
                                               public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                                   if (isChecked) {
+                                                      AppConstants.Card_REQ_AVL = "avl";
                                                       tagline.setText("I own property, want to sell...");
                                                       tagline1.setText(Html.fromHtml("<b>Seller</b> you are 3 clicks away"));
                                                       buyer.setChecked(false);
@@ -297,6 +302,7 @@ public class InitialCard  extends Fragment {
                                              @Override
                                              public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                                  if (isChecked) {
+                                                     AppConstants.Card_REQ_AVL = "req";
                                                      tagline.setText("I am looking to buy, compare...");
                                                      tagline1.setText(Html.fromHtml("<b>Buyer</b> you are 3 clicks away"));
                                                      seller.setChecked(false);
@@ -321,18 +327,18 @@ public class InitialCard  extends Fragment {
         q1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TastyToast.makeText(getContext(),q1.getText().toString(),TastyToast.LENGTH_SHORT,TastyToast.SUCCESS);
+                //TastyToast.makeText(getContext(),q1.getText().toString(),TastyToast.LENGTH_SHORT,TastyToast.SUCCESS);
                 if(selection == 0){
 
                     Bundle b = new Bundle();
                     if(rent)
-                    b.putString(AppConstants.TT,"LL");
+                        b.putString(AppConstants.TT,"LL");
                     else
-                    b.putString(AppConstants.TT,"OR");
+                        b.putString(AppConstants.TT,"OR");
 
 
                     BudgetToLocations budgetToLocations = new BudgetToLocations();
-                loadFragmentAnimated(budgetToLocations,b,R.id.card,"");
+                    loadFragmentAnimated(budgetToLocations,b,R.id.card,"");
                 }
             }
         });
@@ -340,7 +346,19 @@ public class InitialCard  extends Fragment {
         q2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TastyToast.makeText(getContext(),q2.getText().toString(),TastyToast.LENGTH_SHORT,TastyToast.SUCCESS);
+                //TastyToast.makeText(getContext(),q2.getText().toString(),TastyToast.LENGTH_SHORT,TastyToast.SUCCESS);
+                if(selection == 0){
+
+                    Bundle b = new Bundle();
+                    if(rent)
+                        b.putString(AppConstants.TT,"LL");
+                    else
+                        b.putString(AppConstants.TT,"OR");
+
+
+                    DepositeAsEmi depositeAsEmi = new DepositeAsEmi();
+                    loadFragmentAnimated(depositeAsEmi,b,R.id.card,"");
+                }
             }
         });
 
@@ -382,19 +400,19 @@ public class InitialCard  extends Fragment {
             }
         });
 
-chat.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        Intent intent = new Intent(getContext(), DealConversationActivity.class);
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), DealConversationActivity.class);
 
-            intent.putExtra("userRole", "client");
-            AppConstants.CLIENT_DEAL_FLAG = true;
+                intent.putExtra("userRole", "client");
+                AppConstants.CLIENT_DEAL_FLAG = true;
 
 
-        intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
-        startActivity(intent);
-    }
-});
+                intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
+                startActivity(intent);
+            }
+        });
     }
 
     private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)

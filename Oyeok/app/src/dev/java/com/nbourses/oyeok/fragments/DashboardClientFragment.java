@@ -77,6 +77,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -109,9 +110,11 @@ import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.interfaces.OnOyeClick;
 import com.nbourses.oyeok.models.AddBuildingModel;
 import com.nbourses.oyeok.models.buildingCacheModel;
+import com.nbourses.oyeok.models.portListingModel;
 import com.nbourses.oyeok.realmModels.BuildingCacheRealm;
 import com.nbourses.oyeok.realmModels.Favourites;
 import com.nbourses.oyeok.realmModels.LatiLongi;
+import com.nbourses.oyeok.realmModels.Localities;
 import com.nbourses.oyeok.realmModels.MyPortfolioModel;
 import com.nbourses.oyeok.realmModels.addBuildingRealm;
 import com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker;
@@ -336,6 +339,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private ViewGroup mRrootLayout;
     private int _xDelta;
     private int _yDelta;
+    private Boolean mapReset = false;
     SharedPreferences.OnSharedPreferenceChangeListener listener;
 //    @Bind(R.id.seekbar_linearlayout)
 //    LinearLayout seekbarLinearLayout;
@@ -483,14 +487,33 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
         @Override
         public void onReceive(Context context, Intent intent) {
             //if(AppConstants.SEARCHFLAG) {
-                Log.i(TAG,"aalo re ");
-            if(intent.getExtras().getString("c_resetmap")!=null&&intent.getExtras().getString("c_resetmap").equalsIgnoreCase("c_map")) {
+            Log.i(TAG, "resett 1 zyzz aalo re "+intent.getExtras());
+if(intent.getExtras() != null) {
+    if (intent.getExtras().containsKey("c_resetmap")) {
+        if (intent.getExtras().getString("c_resetmap").equalsIgnoreCase("c_map")) {
+            AppConstants.SEARCHFLAG = false;
+            LatLng currentLocation = new LatLng(AppConstants.MY_LATITUDE, AppConstants.MY_LONGITUDE);
+            SharedPrefs.save(getContext(), SharedPrefs.MY_LAT, AppConstants.MY_LATITUDE + "");
+            SharedPrefs.save(getContext(), SharedPrefs.MY_LNG, AppConstants.MY_LONGITUDE + "");
+            // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, MAP_ZOOM));
+            getRegion();
+            getPrice();
+            new LocationUpdater().execute();
+            if (!AppConstants.SETLOCATION && !savebuilding) {
+                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+            }
+        }
+    }
+}
+
+else {
                 AppConstants.SEARCHFLAG = false;
                 LatLng currentLocation = new LatLng(AppConstants.MY_LATITUDE, AppConstants.MY_LONGITUDE);
                 SharedPrefs.save(getContext(), SharedPrefs.MY_LAT, AppConstants.MY_LATITUDE + "");
                 SharedPrefs.save(getContext(), SharedPrefs.MY_LNG, AppConstants.MY_LONGITUDE + "");
                 // map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, MAP_ZOOM));
                 getRegion();
                 getPrice();
@@ -498,7 +521,9 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
                 if (!AppConstants.SETLOCATION && !savebuilding) {
                     buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                 }
+
             }
+
             //}
         }
     };
@@ -675,6 +700,16 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
          rootView = inflater.inflate(R.layout.rex_fragment_home, container, false);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         ButterKnife.bind(this, rootView);
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            if(bundle.containsKey(AppConstants.RESETMAP)) {
+                Log.i("resetting ", "resett 1" + bundle.getString(AppConstants.RESETMAP));
+                mapReset = true;
+                Log.i("resetting ", "resett 1" + bundle.getString(AppConstants.RESETMAP)+"   "+mapReset);
+            }
+        }
+
         hideOnSearch = (FrameLayout) rootView.findViewById(R.id.hideOnSearch);
         seekbar_linearlayout = (LinearLayout) rootView.findViewById(R.id.seekbar_linearlayout);
         topView = (RelativeLayout) rootView.findViewById(R.id.top);
@@ -1104,6 +1139,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
             //if (isNetworkAvailable())
             customMapFragment = ((CustomMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
             map= customMapFragment.getMap();
+
+
             customMapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
@@ -1691,6 +1728,22 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             Log.e("loc", e.getMessage());
         }
 
+        if (mapReset){
+            Log.i(TAG,"resett 1 retett");
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    Intent intent = new Intent(AppConstants.RESETMAP);
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+
+                }
+
+            }, 600);
+        }
+
+
         return rootView;
     }
 
@@ -1937,6 +1990,8 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
     }.start();
 
 }*/
+
+
 
 
     }
@@ -2568,6 +2623,8 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                             }
 
                                             showFavourites();
+                                           // drawLocalities();
+                                           // drawCircle();
                                             mHelperView.setEnabled(true);
                                             map.getUiSettings().setAllGesturesEnabled(true);
                                             disablepanel(true);
@@ -2579,7 +2636,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                             mVisits.setEnabled(true);
                                             txtFilterValue.setEnabled(true);
                                             PlotBuilding();
-
+                                            drawLocalities();
                                             //missingArea.setVisibility(View.GONE);
 
                                         } else {
@@ -2650,6 +2707,10 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             General.internetConnectivityMsg(getContext());
 
         }
+
+
+
+
     }
 
 
@@ -5156,4 +5217,60 @@ public boolean oyeFlagstatus(){
     return buildingoyeFlag;
 }
 
-}
+    private void drawLocalities(){
+        try {
+            Log.i(TAG,"draw localities 1 ");
+
+            Realm myRealm = General.realmconfig( getContext());
+            RealmResults<Localities> results2 = myRealm.where(Localities.class).findAllSorted("timestamp", false);
+
+            Log.i(TAG,"draw localities 2 "+results2);
+            for (Localities c : results2) {
+
+
+                portListingModel portListingModel = new portListingModel(c.getLocality(), "budget based suggestion", ((Integer.parseInt(c.getLlMin()) + Integer.parseInt(c.getLlMax())) / 2), 0, c.getTimestamp(), c.getGrowthRate(), "LOCALITIES");
+
+                // portListingModel portListingModel1 = new  portListingModel(c.getLocality(),"budget based suggestion",0,((Integer.parseInt(c.getOrMin()) + Integer.parseInt(c.getOrMax()))/2),c.getTimestamp(),c.getGrowthRate(),"LOCALITIES");
+
+                //myLocalitiesOR.add(portListingModel1);
+                try {
+                    drawCircle(new LatLng(Double.parseDouble(c.getLat()), Double.parseDouble(c.getLng())));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }catch(Exception e){
+            Log.i(TAG,"draw localities 3 "+e.getMessage());
+        }
+    }
+
+    private void drawCircle(LatLng l) {
+        try {
+            // LatLng l = new LatLng(19.1195,72.8202);
+            // LatLng l = map.getProjection().fromScreenLocation(centerPoint);
+            Log.i(TAG, "zasdfg " + l);
+            CircleOptions circleOptions1 = new CircleOptions().center(l)
+                    .strokeColor(Color.RED)
+                    .strokeWidth(10)
+                    .fillColor(Color.RED)
+                    .radius(70); // In meters
+
+            Log.i(TAG, "zasdfgfd " + circleOptions1.getRadius());
+            map.addCircle(circleOptions1);
+
+
+            CircleOptions circleOptions = new CircleOptions().center(l)
+                    .strokeColor(0x1AFF0000)
+                    .fillColor(0x1AFF0000)
+                    .radius(700); // In meters
+
+            Log.i(TAG, "zasdfgfd " + circleOptions.getRadius());
+            map.addCircle(circleOptions);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG, "zasdfgfd caught in the exception " + e.getMessage());
+        }
+
+    }
+    }

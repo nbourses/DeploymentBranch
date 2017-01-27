@@ -78,7 +78,9 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 //import com.nbourses.oyeok.Database.DBHelper;
 
+
 public class BrokerMainActivity extends BrokerMainPageActivity implements FragmentDrawer.FragmentDrawerListener, PaymentResultListener {
+
 
 @Bind(R.id.toolbar)
    Toolbar mToolbar;
@@ -256,7 +258,8 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
 
         RadioGroup rg=(RadioGroup)findViewById(R.id.radioGroup1);
         RadioButton rb=(RadioButton)findViewById(R.id.matching);
-        rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_matching) , null, null);
+        rb.setCompoundDrawablesWithIntrinsicBounds( 0,R.drawable.ic_matching_clicked, 0,0);
+       // rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_matching) , null, null);
         rb.setTextColor(Color.parseColor("#2dc4b6"));
        // LinearLayout l_container=(LinearLayout)findViewById(R.id.);
 
