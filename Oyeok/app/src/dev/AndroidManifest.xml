@@ -11,9 +11,8 @@
 
     </activity>
 
-
     <activity android:name="com.nbourses.oyeok.activities.BrokerMap" android:label="@string/title_activity_broker_map"
-        android:theme="@style/MyMaterialTheme"
+        android:theme="@style/AppTheme1"
         android:screenOrientation="portrait" android:windowSoftInputMode="adjustNothing">
 
     </activity>
@@ -28,4 +27,4 @@
 </application>
 </manifest>
 
-
+    <!--android:theme="@style/AppTheme1"-->

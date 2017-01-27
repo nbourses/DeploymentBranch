@@ -73,6 +73,10 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.util.LinkProperties;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
@@ -1341,6 +1345,49 @@ public static PubNub initPubnub(Context context, String UUID){
     }
 
 
+
+
+
+    public static void shareReferralLink(final Context context) {
+        String user_id = General.getSharedPreferences(context, AppConstants.USER_ID);
+
+        Branch branch = Branch.getInstance(getApplicationContext());
+
+        String mob_no = General.getSharedPreferences(context, AppConstants.MOBILE_NUMBER);
+        Log.i("mob_no", "mob_no " + mob_no);
+
+        branch.setIdentity(mob_no);
+
+        BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
+                // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
+                .setTitle("OYEOK")
+                .setContentDescription("Get property at right price. ")
+                .setCanonicalIdentifier(mob_no);
+
+
+        LinkProperties linkProperties = new LinkProperties()
+                .setChannel("android")
+                .setFeature("share")
+                .addControlParameter("user_name", user_id)
+                .addControlParameter("$android_url", AppConstants.GOOGLE_PLAY_STORE_APP_URL)
+                .addControlParameter("$always_deeplink", "true");
+
+
+        branchUniversalObject.generateShortUrl(getApplicationContext(), linkProperties, new Branch.BranchLinkCreateListener() {
+            @Override
+            public void onLinkCreate(String url, BranchError error) {
+                if (error == null) {
+                    Log.i("MyApp", "got my Branch link to share: " + url);
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, url);
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Hey check this out!");
+                    context.startActivity(Intent.createChooser(intent, "Share link via"));
+                }
+            }
+        });
+    }
 
 
 

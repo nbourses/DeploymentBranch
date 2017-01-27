@@ -18,6 +18,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +29,8 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -39,18 +42,22 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.adapters.porfolioAdapter;
+import com.nbourses.oyeok.fragments.AppSetting;
+import com.nbourses.oyeok.fragments.ShareOwnersNo;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.portListingModel;
 import com.nbourses.oyeok.realmModels.Localities;
 import com.nbourses.oyeok.realmModels.MyPortfolioModel;
 import com.nbourses.oyeok.realmModels.addBuildingRealm;
+import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -62,6 +69,10 @@ import java.util.Date;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.util.LinkProperties;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -69,8 +80,10 @@ import io.realm.RealmResults;
  * Created by sushil on 29/09/16.
  */
 
-public class MyPortfolioActivity extends BrokerMainPageActivity implements CustomPhasedListener {
+public class MyPortfolioActivity extends BrokerMainPageActivity implements CustomPhasedListener,FragmentDrawer.FragmentDrawerListener {
 
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
 
     @Bind(R.id.btnMyDeals)
     Button btnMyDeals;
@@ -90,26 +103,26 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
     @Bind(R.id.resaleCount)
     TextView resaleCount;
 
-    CustomPhasedSeekBar  mPhasedSeekBar;
-    int position=0;
+    CustomPhasedSeekBar mPhasedSeekBar;
+    int position = 0;
     ViewPager viewPager;
     private Realm realm;
     ListView rental_list;
     MyPortfolioModel results;
-//    myPortfolioAdapter adapter;
-     porfolioAdapter adapter;
-    ArrayList<String> ids =new ArrayList<>(  );
-    private static ArrayList<portListingModel> myPortfolioOR=new ArrayList<>();
-//    private static ArrayList<addBuildingRealm> addBuildingLL=new ArrayList<>();
-private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
-    private static ArrayList<portListingModel> myLocalitiesOR=new ArrayList<>();
-    private static ArrayList<portListingModel> myPortfolioLL=new ArrayList<>();
-    private static ArrayList<portListingModel> portListing=new ArrayList<>();
-    private static ArrayList<portListingModel> portListingCopy=new ArrayList<>();
-    private static ArrayList<portListingModel> addbuildingLL=new ArrayList<>();
-    private static ArrayList<portListingModel> addbuildingOR=new ArrayList<>();
-    private static ArrayList<portListingModel> deletelist=new ArrayList<>();
-    private static ArrayList<portListingModel> item=new ArrayList<>();
+    //    myPortfolioAdapter adapter;
+    porfolioAdapter adapter;
+    ArrayList<String> ids = new ArrayList<>();
+    private static ArrayList<portListingModel> myPortfolioOR = new ArrayList<>();
+    //    private static ArrayList<addBuildingRealm> addBuildingLL=new ArrayList<>();
+    private static ArrayList<portListingModel> myLocalitiesLL = new ArrayList<>();
+    private static ArrayList<portListingModel> myLocalitiesOR = new ArrayList<>();
+    private static ArrayList<portListingModel> myPortfolioLL = new ArrayList<>();
+    private static ArrayList<portListingModel> portListing = new ArrayList<>();
+    private static ArrayList<portListingModel> portListingCopy = new ArrayList<>();
+    private static ArrayList<portListingModel> addbuildingLL = new ArrayList<>();
+    private static ArrayList<portListingModel> addbuildingOR = new ArrayList<>();
+    private static ArrayList<portListingModel> deletelist = new ArrayList<>();
+    private static ArrayList<portListingModel> item = new ArrayList<>();
 
     /*RealmResults<MyPortfolioModel> results1; if(myLocalitiesLL != null)
             myLocalitiesLL.clear();
@@ -121,8 +134,7 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
     private String TT = "LL";
     LinearLayout add_build;
     private String matchedId;
-    TextView usertext,add_create;
-
+    TextView usertext, add_create;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -132,51 +144,55 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate( savedInstanceState );
-       // setContentView(R.layout.activity_my_portfolio);
+        super.onCreate(savedInstanceState);
+        // setContentView(R.layout.activity_my_portfolio);
 
-        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+        if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
             setContentView(R.layout.activity_my_portfolio);
-        }
-      else {
+        } else {
             LinearLayout dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent);
 
-        //        NestedScrollView dynamicContent = (NestedScrollView) findViewById(R.id.myScrollingContent);
-        // assuming your Wizard content is in content_wizard.xml myScrollingContent
+            //        NestedScrollView dynamicContent = (NestedScrollView) findViewById(R.id.myScrollingContent);
+            // assuming your Wizard content is in content_wizard.xml myScrollingContent
             View wizard = getLayoutInflater().inflate(R.layout.activity_my_portfolio, null);
 
-        // add the inflated View to the layout
+            // add the inflated View to the layout
             dynamicContent.addView(wizard);
-            RadioGroup rg=(RadioGroup)findViewById(R.id.radioGroup1);
-            RadioButton rb=(RadioButton)findViewById(R.id.watchList);
-            rb.setCompoundDrawablesWithIntrinsicBounds( 0,R.drawable.ic_watchlist_clicked, 0,0);
+            RadioGroup rg = (RadioGroup) findViewById(R.id.radioGroup1);
+            RadioButton rb = (RadioButton) findViewById(R.id.watchList);
+            rb.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_watchlist_clicked, 0, 0);
 //            rb.setChecked(true);
-           // rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_watchlist) , null, null);
+            // rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_watchlist) , null, null);
             rb.setTextColor(Color.parseColor("#2dc4b6"));
+
+            drawerFragment = (FragmentDrawer)
+                    getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+            drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
+            drawerFragment.setDrawerListener(this);
         }
         ButterKnife.bind(this);
-        if(portListing != null)
+        if (portListing != null)
             portListing.clear();
-        if(myPortfolioLL != null)
+        if (myPortfolioLL != null)
             myPortfolioLL.clear();
-        if(myPortfolioOR != null)
+        if (myPortfolioOR != null)
             myPortfolioOR.clear();
-        if(addbuildingLL != null)
+        if (addbuildingLL != null)
             addbuildingLL.clear();
-        if(addbuildingOR != null)
+        if (addbuildingOR != null)
             addbuildingOR.clear();
-        if(portListingCopy != null)
+        if (portListingCopy != null)
             portListingCopy.clear();
-        if(addbuildingLL != null)
+        if (addbuildingLL != null)
             addbuildingLL.clear();
-        if(addbuildingOR != null)
+        if (addbuildingOR != null)
             addbuildingOR.clear();
 
-        Log.i("port","portListing "+portListing);
-        Log.i("port","portListing "+portListing);
-        Log.i("port","myPortfolioLL "+myPortfolioLL);
-        Log.i("port","addbuildingLL "+addbuildingLL);
-       final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Log.i("port", "portListing " + portListing);
+        Log.i("port", "portListing " + portListing);
+        Log.i("port", "myPortfolioLL " + myPortfolioLL);
+        Log.i("port", "addbuildingLL " + addbuildingLL);
+        //final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setActionBar(toolbar); only for above 21 API
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -191,14 +207,14 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
         mPhasedSeekBar = (CustomPhasedSeekBar) findViewById(R.id.phasedSeekBar);
         mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(this.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"30", "15"}, new String[]{this.getResources().getString(R.string.Rental), this.getResources().getString(R.string.Resale)}));
         mPhasedSeekBar.setListener(this);
-        rental_list=(ListView) findViewById(R.id.Rental_listview);
-        inputSearch=(EditText) findViewById( R.id.inputSearch1);
-        add_build=(LinearLayout)findViewById(R.id.add_build);
-        usertext=(TextView)findViewById(R.id.usertext);
-        add_create=(TextView)findViewById(R.id.add_create);
+        rental_list = (ListView) findViewById(R.id.Rental_listview);
+        inputSearch = (EditText) findViewById(R.id.inputSearch1);
+        add_build = (LinearLayout) findViewById(R.id.add_build);
+        usertext = (TextView) findViewById(R.id.usertext);
+        add_create = (TextView) findViewById(R.id.add_create);
 
 
-        if ((General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL) > 0) ) {
+        if ((General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL) > 0)) {
             rentalCount.setVisibility(View.VISIBLE);
             rentalCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL)));
 
@@ -217,8 +233,8 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
 //                    General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
                     SignUpFragment d = new SignUpFragment();
                     Bundle bundle = new Bundle();
-                    if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
-                    bundle.putString("lastFragment", "clientDrawer");
+                    if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                        bundle.putString("lastFragment", "clientDrawer");
                     else
                         bundle.putString("lastFragment", "brokerDrawer");
 //                    loadFragment(signUpFragment, bundle, R.id.container_Signup1, "");
@@ -229,19 +245,19 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
                     fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
 
                     fragmentTransaction.addToBackStack("cardSignUp1");
-                    container_Signup1.setVisibility(View.VISIBLE);
-                    fragmentTransaction.replace(R.id.container_Signup1, d);
+                    //container_Signup1.setVisibility(View.VISIBLE);
+                    fragmentTransaction.replace(R.id.container_sign, d);
 //                    signUpCardFlag = true;
                     fragmentTransaction.commitAllowingStateLoss();
 //                    AppConstants.SIGNUP_FLAG = true;
 
-                }else if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")){
+                } else if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
                     General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
                     Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
                 /*in.putExtra("data","portfolio");
                 in.putExtra("role","");*/
                     startActivity(in);
-              }else{
+                } else {
                     General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
                     Intent in = new Intent(getBaseContext(), BrokerMap.class);
                 /*in.putExtra("data","portfolio");
@@ -252,16 +268,16 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
             }
         });
 
-         realm= General.realmconfig( getBaseContext() );
-         adapter=new porfolioAdapter(getBaseContext(),portListing);
+        realm = General.realmconfig(getBaseContext());
+        adapter = new porfolioAdapter(getBaseContext(), portListing);
         rental_list.setAdapter(adapter);
 
-        RealmResults<Localities> results2= realm.where(Localities.class).findAllSorted("timestamp",false);
+        RealmResults<Localities> results2 = realm.where(Localities.class).findAllSorted("timestamp", false);
 
-        for(Localities c :results2){
+        for (Localities c : results2) {
 
 
-            portListingModel portListingModel = new  portListingModel(c.getLocality(),"budget based suggestion",((Integer.parseInt(c.getLlMin()) + Integer.parseInt(c.getLlMax()))/2),0,c.getTimestamp(),c.getGrowthRate(),"LOCALITIES");
+            portListingModel portListingModel = new portListingModel(c.getLocality(), "budget based suggestion", ((Integer.parseInt(c.getLlMin()) + Integer.parseInt(c.getLlMax())) / 2), 0, c.getTimestamp(), c.getGrowthRate(), "LOCALITIES");
 
             myLocalitiesLL.add(portListingModel);
             // portListingModel portListingModel1 = new  portListingModel(c.getLocality(),"budget based suggestion",0,((Integer.parseInt(c.getOrMin()) + Integer.parseInt(c.getOrMax()))/2),c.getTimestamp(),c.getGrowthRate(),"LOCALITIES");
@@ -271,23 +287,23 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
 
         }
 
-        RealmResults<MyPortfolioModel> results= realm.where(MyPortfolioModel.class).equalTo("tt", "ll").findAllSorted("timestamp",false);
+        RealmResults<MyPortfolioModel> results = realm.where(MyPortfolioModel.class).equalTo("tt", "ll").findAllSorted("timestamp", false);
 
-        for(MyPortfolioModel c :results){
+        for (MyPortfolioModel c : results) {
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),c.getTimestamp(),c.getTransactions(),c.getConfig(),null,"ll");
+            portListingModel portListingModel = new portListingModel(c.getId(), c.getName(), c.getLocality(), c.getRate_growth(), c.getLl_pm(), c.getOr_psf(), c.getTimestamp(), c.getTransactions(), c.getConfig(), null, "ll");
             myPortfolioLL.add(portListingModel);
 
 
         }
 
 
-        RealmResults<MyPortfolioModel> results1= realm.where(MyPortfolioModel.class).equalTo("tt", "or").findAllSorted("timestamp",false);
-        for(MyPortfolioModel c :results1){
+        RealmResults<MyPortfolioModel> results1 = realm.where(MyPortfolioModel.class).equalTo("tt", "or").findAllSorted("timestamp", false);
+        for (MyPortfolioModel c : results1) {
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),c.getTimestamp(),c.getTransactions(),c.getConfig(),null,"or");
+            portListingModel portListingModel = new portListingModel(c.getId(), c.getName(), c.getLocality(), c.getRate_growth(), c.getLl_pm(), c.getOr_psf(), c.getTimestamp(), c.getTransactions(), c.getConfig(), null, "or");
 
             myPortfolioOR.add(portListingModel);
 
@@ -295,11 +311,11 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
         }
 
 
-        RealmResults<addBuildingRealm> result11= realm.where(addBuildingRealm.class).equalTo("display_type","both").findAllSorted("timestamp",false);
-        for(addBuildingRealm c :result11){
+        RealmResults<addBuildingRealm> result11 = realm.where(addBuildingRealm.class).equalTo("display_type", "both").findAllSorted("timestamp", false);
+        for (addBuildingRealm c : result11) {
 
-            Log.i("getLocality","getLocality   : "+c.getLocality());
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),null);
+            Log.i("getLocality", "getLocality   : " + c.getLocality());
+            portListingModel portListingModel = new portListingModel(c.getId(), c.getBuilding_name(), c.getSublocality(), c.getGrowth_rate(), c.getLl_pm(), 0, c.getTimestamp(), null, c.getConfig(), c.getDisplay_type(), null);
 
             addbuildingLL.add(portListingModel);
 
@@ -318,12 +334,11 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
         }*/
 
 
-
 //    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config) {
-        RealmResults<addBuildingRealm> result22= realm.where(addBuildingRealm.class).equalTo("display_type", "both").findAllSorted("timestamp",false);
-        for(addBuildingRealm c :result22){
+        RealmResults<addBuildingRealm> result22 = realm.where(addBuildingRealm.class).equalTo("display_type", "both").findAllSorted("timestamp", false);
+        for (addBuildingRealm c : result22) {
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),null);
+            portListingModel portListingModel = new portListingModel(c.getId(), c.getBuilding_name(), c.getSublocality(), c.getGrowth_rate(), 0, c.getOr_psf(), c.getTimestamp(), null, c.getConfig(), c.getDisplay_type(), null);
             addbuildingOR.add(portListingModel);
 
         }
@@ -338,29 +353,29 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
 
         }*/
 
-        Log.i("dataritesh","myPortfolioLL"+myPortfolioLL);
+        Log.i("dataritesh", "myPortfolioLL" + myPortfolioLL);
         portListing.addAll(myLocalitiesLL);
         portListing.addAll(addbuildingLL);
         portListing.addAll(myPortfolioLL);
         portListingCopy.addAll(portListing);
 
         adapter.notifyDataSetChanged();
-        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+        if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
             getSupportActionBar().setTitle("");
             confirm_screen_title.setText("My Advertised \nListings");
-            inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
+            inputSearch.setHint("Search " + portListing.size() + " Building in Listings");
             usertext.setHint("\"My Listing\"");
             add_create.setText("Create");
-        }else{
+        } else {
             getSupportActionBar().setTitle("");
             confirm_screen_title.setText("My WatchList");
-            inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
+            inputSearch.setHint("Search " + portListing.size() + " Building in Watchlist");
             usertext.setHint("Your Building");
             add_create.setText("Add");
 
         }
-       // inputSearch.setHint("Search My "+portListing.size()+" Listings");
-        Log.i("dataritesh","myPortfolioLL"+portListing);
+        // inputSearch.setHint("Search My "+portListing.size()+" Listings");
+        Log.i("dataritesh", "myPortfolioLL" + portListing);
 //        portListing.addAll(myPortfolioLL);
 
        /* adapter = new myPortfolioAdapter(this,1);
@@ -374,21 +389,18 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
         } );*/
 
 
-
-
-
         rental_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("zyzz","zyzz 1");
-                if(myLocalitiesLL.contains(portListing.get(position))){
-                    Log.i("zyzz","zyzz 2");
+                Log.i("zyzz", "zyzz 1");
+                if (myLocalitiesLL.contains(portListing.get(position))) {
+                    Log.i("zyzz", "zyzz 2");
                     Realm myRealm = General.realmconfig(MyPortfolioActivity.this);
                     Localities result = myRealm.where(Localities.class).equalTo("timestamp", portListing.get(position).getTimpstamp()).findFirst();
                     AppConstants.MY_LATITUDE = Double.parseDouble(result.getLat());
                     AppConstants.MY_LONGITUDE = Double.parseDouble(result.getLng());
-                    Intent in = new Intent(getBaseContext(),ClientMainActivity.class);
-                    in.putExtra(AppConstants.RESETMAP,"yes");
+                    Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
+                    in.putExtra(AppConstants.RESETMAP, "yes");
                     in.addFlags(
                             Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
@@ -396,9 +408,7 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
                     startActivity(in);
                 /*Intent intent = new Intent(AppConstants.RESETMAP);
                 LocalBroadcastManager.getInstance(MyPortfolioActivity.this).sendBroadcast(intent);*/
-                }
-
-               else {
+                } else {
                     if (item != null)
                         item.clear();
                     item.add((portListingModel) adapter.getItem(position));
@@ -440,46 +450,41 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
                 }
 
 
-
-
-
-
-
             }
         });
 
 
-                rental_list.setChoiceMode( ListView.CHOICE_MODE_MULTIPLE_MODAL);
-                   rental_list.setMultiChoiceModeListener( new AbsListView.MultiChoiceModeListener() {
-                    @Override
-                    public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-                        // Prints the count of selected Items in title
-                        mode.setTitle(rental_list.getCheckedItemCount() + " Selected");
+        rental_list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        rental_list.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                // Prints the count of selected Items in title
+                mode.setTitle(rental_list.getCheckedItemCount() + " Selected");
 
 
-                        Log.i( "portfolio1","onItemCheckedStateChanged   : "+position+" "+id+" "+portListing.contains(adapter.getItem(position)));
+                Log.i("portfolio1", "onItemCheckedStateChanged   : " + position + " " + id + " " + portListing.contains(adapter.getItem(position)));
 //                        portListing.contains(adapter.getItem(position));
 //                        ids.add(adapter.getItem(position));
 
-                        deletelist.add((portListingModel) adapter.getItem(position));
+                deletelist.add((portListingModel) adapter.getItem(position));
 
-                    }
+            }
 
-                    @Override
-                    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 //                        toolbar.setVisibility(View.GONE);
-                        mode.getMenuInflater().inflate(R.menu.main1, menu);
+                mode.getMenuInflater().inflate(R.menu.main1, menu);
 
-                        return true;
-                    }
+                return true;
+            }
 
-                    @Override
-                    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                        return false;
-                    }
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
 
-                    @Override
-                    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                         /*if (item.getItemId() == R.id.delete){
                                 adapter.removeSelection(ids);
                             ids.clear();
@@ -491,99 +496,96 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
                               }
 
                         }*/
-                        if (item.getItemId() == R.id.delete){
+                if (item.getItemId() == R.id.delete) {
 
-                            for (final portListingModel d : deletelist) {
+                    for (final portListingModel d : deletelist) {
 
-                                // Here your room is available
-                                Log.i("portfolio1","deletelist"+portListing.contains(d)+" "+d.getName());
-                                Log.i("addbuildingOR","addbuildingOR 1"+addbuildingOR.contains(d));
-                                portListing.remove(d);
-                                myPortfolioLL.remove(d);
-                                myPortfolioOR.remove(d);
-                                portListingCopy.remove(d);
-                                myLocalitiesLL.remove(d);
-                                myLocalitiesOR.remove(d);
-                                if(addbuildingLL.contains(d)){
-                                    addbuildingLL.remove(d);
-                                    matchedId = d.getId();
-                                    Log.i("portfolio1","deletelist 23 "+matchedId);
+                        // Here your room is available
+                        Log.i("portfolio1", "deletelist" + portListing.contains(d) + " " + d.getName());
+                        Log.i("addbuildingOR", "addbuildingOR 1" + addbuildingOR.contains(d));
+                        portListing.remove(d);
+                        myPortfolioLL.remove(d);
+                        myPortfolioOR.remove(d);
+                        portListingCopy.remove(d);
+                        myLocalitiesLL.remove(d);
+                        myLocalitiesOR.remove(d);
+                        if (addbuildingLL.contains(d)) {
+                            addbuildingLL.remove(d);
+                            matchedId = d.getId();
+                            Log.i("portfolio1", "deletelist 23 " + matchedId);
 
 
-                                    for (final portListingModel l : addbuildingOR) {
-                                        Log.i("portfolio1","deletelist 25 "+l.getId());
-                                        if(l.getId().equalsIgnoreCase(matchedId)){
-                                            addbuildingOR.remove(l);
-                                            break;
-                                        }
-                                    }
-
+                            for (final portListingModel l : addbuildingOR) {
+                                Log.i("portfolio1", "deletelist 25 " + l.getId());
+                                if (l.getId().equalsIgnoreCase(matchedId)) {
+                                    addbuildingOR.remove(l);
+                                    break;
                                 }
+                            }
 
-                                if(addbuildingOR.contains(d)){
-                                    addbuildingOR.remove(d);
-                                    matchedId = d.getId();
-                                    Log.i("portfolio1","deletelist 33 "+matchedId);
+                        }
 
-
-                                    for (final portListingModel l : addbuildingLL) {
-                                        Log.i("portfolio1","deletelist 35 "+l.getId());
-                                        if(l.getId().equalsIgnoreCase(matchedId)){
-                                            addbuildingLL.remove(l);
-                                            break;
-                                        }
-                                    }
+                        if (addbuildingOR.contains(d)) {
+                            addbuildingOR.remove(d);
+                            matchedId = d.getId();
+                            Log.i("portfolio1", "deletelist 33 " + matchedId);
 
 
-
+                            for (final portListingModel l : addbuildingLL) {
+                                Log.i("portfolio1", "deletelist 35 " + l.getId());
+                                if (l.getId().equalsIgnoreCase(matchedId)) {
+                                    addbuildingLL.remove(l);
+                                    break;
                                 }
+                            }
 
 
-                                Log.i("addbuildingOR","addbuildingOR 2"+addbuildingOR);
+                        }
 
 
-                                try {
-                                    Realm myRealm = General.realmconfig(MyPortfolioActivity.this);
-                                    MyPortfolioModel result = myRealm.where(MyPortfolioModel.class).equalTo("id", d.getId()).findFirst();
-                                    if(myRealm.isInTransaction())
-                                        myRealm.cancelTransaction();
-                                    myRealm.beginTransaction();
-                                    result.removeFromRealm();
-                                    myRealm.commitTransaction();
-                                } catch (Exception e) {
-                                    Log.i("TAG", "caught in exception deleting default droom 21 "+e);
-                                }
-                                try {
-                                    Realm myRealm = General.realmconfig(MyPortfolioActivity.this);
-                                    addBuildingRealm result = myRealm.where(addBuildingRealm.class).equalTo("id", d.getId()).findFirst();
-                               if(myRealm.isInTransaction())
+                        Log.i("addbuildingOR", "addbuildingOR 2" + addbuildingOR);
+
+
+                        try {
+                            Realm myRealm = General.realmconfig(MyPortfolioActivity.this);
+                            MyPortfolioModel result = myRealm.where(MyPortfolioModel.class).equalTo("id", d.getId()).findFirst();
+                            if (myRealm.isInTransaction())
                                 myRealm.cancelTransaction();
-                                    myRealm.beginTransaction();
-                                    result.removeFromRealm();
-                                    myRealm.commitTransaction();
-                                } catch (Exception e) {
-                                    Log.i("TAG", "caught in exception deleting default droom 31 "+e);
-                                }
+                            myRealm.beginTransaction();
+                            result.removeFromRealm();
+                            myRealm.commitTransaction();
+                        } catch (Exception e) {
+                            Log.i("TAG", "caught in exception deleting default droom 21 " + e);
+                        }
+                        try {
+                            Realm myRealm = General.realmconfig(MyPortfolioActivity.this);
+                            addBuildingRealm result = myRealm.where(addBuildingRealm.class).equalTo("id", d.getId()).findFirst();
+                            if (myRealm.isInTransaction())
+                                myRealm.cancelTransaction();
+                            myRealm.beginTransaction();
+                            result.removeFromRealm();
+                            myRealm.commitTransaction();
+                        } catch (Exception e) {
+                            Log.i("TAG", "caught in exception deleting default droom 31 " + e);
+                        }
 
 
+                    }
+                    mode.finish();
+                    adapter.notifyDataSetChanged();
+                    if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                        inputSearch.setHint("Search " + portListing.size() + " Building in Listings");
+                        usertext.setText("");
+                        usertext.setHint("\"My Listing\"");
+                        add_create.setText("Create");
+                    } else {
+                        inputSearch.setHint("Search " + portListing.size() + " Building in Watchlist");
+                        usertext.setText("");
+                        usertext.setHint("Your Building");
+                        add_create.setText("Add");
 
-
-                            }
-                            mode.finish();
-                            adapter.notifyDataSetChanged();
-                            if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
-                                inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
-                                usertext.setText("");
-                                usertext.setHint("\"My Listing\"");
-                                add_create.setText("Create");
-                            }else{
-                                inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
-                                usertext.setText("");
-                                usertext.setHint("Your Building");
-                                add_create.setText("Add");
-
-                            }
-                            return true;
+                    }
+                    return true;
 
                             /*for(deletelist.size()
                             adapter.removeSelection(ids);
@@ -595,16 +597,16 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
                                 ids.add( adapter.getItem( position ).getId() );
                             }*/
 
-                        }
+                }
 
-                        return false;
-                    }
+                return false;
+            }
 
-                    @Override
-                    public void onDestroyActionMode(ActionMode mode) {
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
 //                        toolbar.setVisibility(View.VISIBLE);
-                    }
-       });
+            }
+        });
 
 
 
@@ -691,77 +693,185 @@ private static ArrayList<portListingModel> myLocalitiesLL=new ArrayList<>();
             }
         });*/
 
-inputSearch.addTextChangedListener(new TextWatcher() {
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        String searchQuery = s.toString().trim();
-        Log.i("searcho","s "+searchQuery.length());
-        Log.i("searcho","sb "+portListingCopy+" ============ : "+inputSearch.getText().toString().equalsIgnoreCase(""));
-
-
-       if(portListing != null)
-           portListing.clear();
-        portListing.addAll(portListingCopy);
-        Log.i("searcho","sc "+portListing);
-        for(portListingModel c :portListingCopy){
-            Log.i("searcho", "sd " + c.getLl_pm() + " "+ c.getOr_psf() +" ");
-            if(!c.getName().toLowerCase().contains(searchQuery.toLowerCase())){
-                portListing.remove(c);
-            } else if(c.getLl_pm() != 0 && c.getOr_psf() != 0) {
-                if (TT.equalsIgnoreCase("LL")) {
-                    if (c.getLl_pm() == 0) {
-                        portListing.remove(c);
-                    }
-                } else if (TT.equalsIgnoreCase("OR")) {
-                    if (c.getOr_psf() == 0) {
-                        portListing.remove(c);
-                    }
-                }
-
+        inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
 
             }
-            Log.i("searcho", "sd " + portListing);
-            adapter.notifyDataSetChanged();
 
-        }
-    }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String searchQuery = s.toString().trim();
+                Log.i("searcho", "s " + searchQuery.length());
+                Log.i("searcho", "sb " + portListingCopy + " ============ : " + inputSearch.getText().toString().equalsIgnoreCase(""));
 
-    @Override
-    public void afterTextChanged(Editable s) {
+
+                if (portListing != null)
+                    portListing.clear();
+                portListing.addAll(portListingCopy);
+                Log.i("searcho", "sc " + portListing);
+                for (portListingModel c : portListingCopy) {
+                    Log.i("searcho", "sd " + c.getLl_pm() + " " + c.getOr_psf() + " ");
+                    if (!c.getName().toLowerCase().contains(searchQuery.toLowerCase())) {
+                        portListing.remove(c);
+                    } else if (c.getLl_pm() != 0 && c.getOr_psf() != 0) {
+                        if (TT.equalsIgnoreCase("LL")) {
+                            if (c.getLl_pm() == 0) {
+                                portListing.remove(c);
+                            }
+                        } else if (TT.equalsIgnoreCase("OR")) {
+                            if (c.getOr_psf() == 0) {
+                                portListing.remove(c);
+                            }
+                        }
+
+
+                    }
+                    Log.i("searcho", "sd " + portListing);
+                    adapter.notifyDataSetChanged();
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
           /*if(portListing != null)
               portListing.clear();
               portListing.addAll(portListingCopy);*/
-        Log.i("search12","sb outside "+s+" ============ : "+inputSearch.getText().toString().equalsIgnoreCase(""));
-        String s1="\""+s+"\"";
-        if(s.toString().equalsIgnoreCase(""))
-        {
-            usertext.setText(s);
-            Log.i("search12","sb inside "+s+" ============ : ");
-            if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
-                usertext.setHint("Your Building");
-            else
-                usertext.setHint("My Listing");
-        }
+                Log.i("search12", "sb outside " + s + " ============ : " + inputSearch.getText().toString().equalsIgnoreCase(""));
+                String s1 = "\"" + s + "\"";
+                if (s.toString().equalsIgnoreCase("")) {
+                    usertext.setText(s);
+                    Log.i("search12", "sb inside " + s + " ============ : ");
+                    if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                        usertext.setHint("Your Building");
+                    else
+                        usertext.setHint("My Listing");
+                } else {
+                    usertext.setText(s1);
 
-        else {
-            usertext.setText(s1);
+                }
+            }
+        });
 
-        }
+
     }
-});
 
 
-}
+    @Override
+    public void onDrawerItemSelected(View view, int position, String itemTitle) {
+        Fragment fragment = null;
+        String title = getString(R.string.app_name);
+
+        if (itemTitle.equals(getString(R.string.useAsClient))) {
+            // dbHelper = new DBHelper(getBaseContext());
+            //dbHelper.save(DatabaseConstants.userRole,"client");
+            General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
+            Intent openDashboardActivity = new Intent(this, ClientMainActivity.class);
+            openDashboardActivity.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(openDashboardActivity);
+        } else if (itemTitle.equals(getString(R.string.profile))) {
+            Intent openProfileActivity = new Intent(this, ProfileActivity.class);
+            startActivity(openProfileActivity);
+        } else if (itemTitle.equals(getString(R.string.brokerOk))) {
+            //don't do anything
+        } else if (itemTitle.equals(getString(R.string.shareApp))) {
+            if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")) {
+                SignUpFragment signUpFragment = new SignUpFragment();
+                // signUpFragment.getView().bringToFront();
+                Bundle bundle = new Bundle();
+                bundle.putStringArray("Chat", null);
+                bundle.putString("lastFragment", "brokerDrawer");
+                loadFragmentAnimated(signUpFragment, bundle, R.id.container_sign, "");
+            } else
+                shareReferralLink();
+        }
+        else if (itemTitle.equals(getString(R.string.supportChat))) {
+            //TODO: integration is pending
+        }
+
+        else if (itemTitle.equals(getString(R.string.notifications))) {
+            AppConstants.BROKER_DEAL_FLAG = true;
+            Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+            intent.putExtra("userRole", "client");
+            intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
+            startActivity(intent);
+        } else if (itemTitle.equals(getString(R.string.likeOnFb))) {
+            // setContentView(R.layout.browser);
+            webView = (WebView) findViewById(R.id.webView);
+            webView.setVisibility(View.VISIBLE);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.loadUrl("http://www.facebook.com/hioyeok");
 
 
+        } else if (itemTitle.equals(getString(R.string.aboutUs))) {
+            //setContentView(R.layout.browser);
+            webView = (WebView) findViewById(R.id.webView);
+            webView.setVisibility(View.VISIBLE);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.loadUrl("http://www.hioyeok.com/blog");
+
+
+        } else if (itemTitle.equals(getString(R.string.settings))) {
+            AppSetting appSetting = new AppSetting();
+            setting = true;
+            loadFragmentAnimated(appSetting, null, R.id.container_sign, "");
+
+
+        } else if (itemTitle.equals(getString(R.string.RegisterSignIn))) {
+            SignUpFragment signUpFragment = new SignUpFragment();
+            // signUpFragment.getView().bringToFrFont();
+            Bundle bundle = new Bundle();
+            bundle.putStringArray("Chat", null);
+            bundle.putString("lastFragment", "brokerDrawer");
+            loadFragmentAnimated(signUpFragment, bundle, R.id.container_sign, "");
+        }
+        else if(itemTitle.equals(getString(R.string.shareNo))){
+            ShareOwnersNo shareOwnersNo = new ShareOwnersNo();
+
+            loadFragment(shareOwnersNo, null, R.id.container_sign, "");
+            //Owner_detail=true;
+        }
+        else if (itemTitle.equals(getString(R.string.Listing))) {
+            Log.i("myWatchList", "itemTitle 1 " + itemTitle + R.string.Listing);
+            Intent intent = new Intent(this, MyPortfolioActivity.class);
+            startActivity(intent);
+            /*MainScreenPropertyListing my_portfolio = new MainScreenPropertyListing();
+            loadFragment(my_portfolio, null, R.id.container_Signup, "");
+            Myportfolio=true;*/
+
+        }
+
+
+//       if (fragment != null && !itemTitle.equals(getString(R.string.settings))) {
+//
+//            loadFragment(fragment, null, R.id.container_map, title);
+//           Log.i("ONBACKPRESSED","broker main activity "+setting);
+//
+//           Log.i("ONBACKPRESSED","broker main activity "+setting);
+//        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            if (drawerFragment.handle(item))
+                return true;
+        }else{
+            onBackPressed();
+            return true;
+        }
+        return false;
+    }
 
 
     @OnClick(R.id.btnMyDeals1)
@@ -778,7 +888,7 @@ inputSearch.addTextChangedListener(new TextWatcher() {
         } else {
             //dashboardClientFragment.screenShot();
 
-            if(portListing.size()==0) {
+            if (portListing.size() == 0) {
                 new AlertDialog.Builder(this)
                         .setTitle("Empty List")
                         .setMessage("Please add building to take Snapshot!")
@@ -795,101 +905,116 @@ inputSearch.addTextChangedListener(new TextWatcher() {
                         })*/
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
-            }else
-            takeScreenshot();
+            } else
+                takeScreenshot();
         }
 
     }
 
-    @Override
+   /* @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         onBackPressed();
         return true;
 
-    }
+    }*/
 
+    private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
     @Override
     public void onBackPressed() {
-        if(AppConstants.SIGNUP_FLAG){
-            //Log.i(TAG,"flaga isa 6 ");
 
-            if(AppConstants.REGISTERING_FLAG){}else{
+        if (AppConstants.SIGNUP_FLAG) {
+            //Log.i(TAG,"flaga isa 6 ");
+            if (AppConstants.REGISTERING_FLAG) {
+            } else {
                 // getSupportFragmentManager().popBackStack();
 //                getSupportFragmentManager().
-                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
-                AppConstants.SIGNUP_FLAG=false;
-                }
-            Log.i("sushil123"," main activity =================== SIGNUP_FLAGffffffff");
+                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+                AppConstants.SIGNUP_FLAG = false;
+            }
+            Log.i("sushil123", " main activity =================== SIGNUP_FLAGffffffff");
+        } else if(setting==true){
+            Log.i("BACKsPRESSED"," =================== setting portfolio"+setting);
 
-        }else
-       if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
-           Intent in = new Intent(getBaseContext(),BrokerMainActivity.class);
-           in.addFlags(
-                   Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                           Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                           Intent.FLAG_ACTIVITY_NEW_TASK);
-           startActivity(in);
-       } else
-        super.onBackPressed();
+                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+
+            Log.i("BACKsPRESSED", "loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
+                setting = false;
+
+
+        }else if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            Intent in = new Intent(getBaseContext(), BrokerMainActivity.class);
+            in.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(in);
+        } else
+            super.onBackPressed();
     }
 
 
-
-
     @Override
-    public void onPositionSelected(int position, int count){
-            inputSearch.setText("");
-            if (position == 0) {
-                TT = "LL";
-                portListing.clear();
-                portListing.addAll(addbuildingLL);
-                portListing.addAll(myPortfolioLL);
-                portListing.addAll(myLocalitiesLL);
-                portListingCopy.clear();
-                portListingCopy.addAll(portListing);
-                AppConstants.TT_TYPE = "ll";
-                adapter.notifyDataSetChanged();
-                if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
-                    inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
-                    usertext.setText("");
-                    usertext.setHint("\"My Listing\"");
-                    add_create.setText("Create");
-                }else{
-                    inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
-                    usertext.setText("");
-                    usertext.setHint("Your Building");
-                    add_create.setText("Add");
-
-                }
-                General.setBadgeCount(this, AppConstants.ADDB_COUNT_LL, 0);
-                rentalCount.setVisibility(View.GONE);
+    public void onPositionSelected(int position, int count) {
+        inputSearch.setText("");
+        if (position == 0) {
+            TT = "LL";
+            portListing.clear();
+            portListing.addAll(addbuildingLL);
+            portListing.addAll(myPortfolioLL);
+            portListing.addAll(myLocalitiesLL);
+            portListingCopy.clear();
+            portListingCopy.addAll(portListing);
+            AppConstants.TT_TYPE = "ll";
+            adapter.notifyDataSetChanged();
+            if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                inputSearch.setHint("Search " + portListing.size() + " Building in Listings");
+                usertext.setText("");
+                usertext.setHint("\"My Listing\"");
+                add_create.setText("Create");
             } else {
-                TT = "OR";
-                AppConstants.TT_TYPE = "or";
-                Log.i("addbuildingOR", "addbuildingOR 3" + addbuildingOR);
-                portListing.clear();
-                portListing.addAll(myLocalitiesOR);
-                portListing.addAll(addbuildingOR);
-                portListing.addAll(myPortfolioOR);
-                portListingCopy.clear();
-                portListingCopy.addAll(portListing);
-                adapter.notifyDataSetChanged();
-                if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
-                    inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
-                    usertext.setText("");
-                    usertext.setHint("\"My Listing\"");
-                    add_create.setText("Create");
-                }else{
-                    inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
-                    usertext.setText("");
-                    usertext.setHint("Your Building");
-                    add_create.setText("Add");
+                inputSearch.setHint("Search " + portListing.size() + " Building in Watchlist");
+                usertext.setText("");
+                usertext.setHint("Your Building");
+                add_create.setText("Add");
 
-                }
-                General.setBadgeCount(this, AppConstants.ADDB_COUNT_OR, 0);
-                resaleCount.setVisibility(View.GONE);
             }
+            General.setBadgeCount(this, AppConstants.ADDB_COUNT_LL, 0);
+            rentalCount.setVisibility(View.GONE);
+        } else {
+            TT = "OR";
+            AppConstants.TT_TYPE = "or";
+            Log.i("addbuildingOR", "addbuildingOR 3" + addbuildingOR);
+            portListing.clear();
+            portListing.addAll(myLocalitiesOR);
+            portListing.addAll(addbuildingOR);
+            portListing.addAll(myPortfolioOR);
+            portListingCopy.clear();
+            portListingCopy.addAll(portListing);
+            adapter.notifyDataSetChanged();
+            if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                inputSearch.setHint("Search " + portListing.size() + " Building in Listings");
+                usertext.setText("");
+                usertext.setHint("\"My Listing\"");
+                add_create.setText("Create");
+            } else {
+                inputSearch.setHint("Search " + portListing.size() + " Building in Watchlist");
+                usertext.setText("");
+                usertext.setHint("Your Building");
+                add_create.setText("Add");
+
+            }
+            General.setBadgeCount(this, AppConstants.ADDB_COUNT_OR, 0);
+            resaleCount.setVisibility(View.GONE);
+        }
 
 
 
@@ -929,8 +1054,7 @@ inputSearch.addTextChangedListener(new TextWatcher() {
         fragmentTransaction.commitAllowingStateLoss();
     }*/
 
-    private void loadFragment(Fragment fragment, Bundle args, int containerId, String title)
-    {
+    private void loadFragment(Fragment fragment, Bundle args, int containerId, String title) {
         fragment.setArguments(args);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -938,8 +1062,6 @@ inputSearch.addTextChangedListener(new TextWatcher() {
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
-
-
 
 
     private void takeScreenshot() {
@@ -972,9 +1094,8 @@ inputSearch.addTextChangedListener(new TextWatcher() {
     }
 
 
-
     private void openScreenshot(File imageFile) {
-       // Log.i(TAG,"persy 1234");
+        // Log.i(TAG,"persy 1234");
         int permission = ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
        /* if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -985,7 +1106,7 @@ inputSearch.addTextChangedListener(new TextWatcher() {
                     REQUEST_EXTERNAL_STORAGE
             );
         }*/
-       // Log.i(TAG,"persy 12346");
+        // Log.i(TAG,"persy 12346");
 
         Uri uri = Uri.fromFile(imageFile);
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -1001,7 +1122,7 @@ inputSearch.addTextChangedListener(new TextWatcher() {
 
 
 
-}
+
 
 
 
@@ -1051,3 +1172,47 @@ inputSearch.addTextChangedListener(new TextWatcher() {
         });*/
 
 
+    private void shareReferralLink() {
+        //DBHelper dbHelper=new DBHelper(getApplicationContext());
+        //String user_id = dbHelper.getValue(DatabaseConstants.userId);
+        String user_id = General.getSharedPreferences(getBaseContext(), AppConstants.USER_ID);
+
+        Branch branch = Branch.getInstance(getApplicationContext());
+
+        String mob_no = General.getSharedPreferences(this, AppConstants.MOBILE_NUMBER);
+        Log.i("mob_no", "mob_no " + mob_no);
+
+        branch.setIdentity(mob_no);
+
+        BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
+                // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
+                .setTitle("OYEOK")
+                .setContentDescription("Get property at right price. ")
+                .setCanonicalIdentifier(mob_no);
+
+
+        LinkProperties linkProperties = new LinkProperties()
+                .setChannel("android")
+                .setFeature("share")
+                .addControlParameter("user_name", user_id)
+                .addControlParameter("$android_url", AppConstants.GOOGLE_PLAY_STORE_APP_URL)
+                .addControlParameter("$always_deeplink", "true");
+
+
+        branchUniversalObject.generateShortUrl(getApplicationContext(), linkProperties, new Branch.BranchLinkCreateListener() {
+            @Override
+            public void onLinkCreate(String url, BranchError error) {
+                if (error == null) {
+                    Log.i("MyApp", "got my Branch link to share: " + url);
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, url);
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Hey check this out!");
+                    startActivity(Intent.createChooser(intent, "Share link via"));
+                }
+            }
+        });
+    }
+
+}

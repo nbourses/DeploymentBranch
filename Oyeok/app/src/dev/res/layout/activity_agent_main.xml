@@ -4,8 +4,35 @@
     android:id="@+id/wrapper"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/container_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <android.support.v4.widget.DrawerLayout
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+    </LinearLayout>
+
+    <!--<FrameLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+    <FrameLayout
+        android:id="@+id/container_map"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"/>
+
+
+    <!--</FrameLayout>-->
+
+
+</LinearLayout>
+   <!-- <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -26,16 +53,16 @@
                     layout="@layout/toolbar" />
             </LinearLayout>
 
-            <!--<FrameLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent">-->
+            &lt;!&ndash;<FrameLayout&ndash;&gt;
+                &lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;
+                &lt;!&ndash;android:layout_height="match_parent">&ndash;&gt;
                 <FrameLayout
                     android:id="@+id/container_map"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"/>
 
 
-            <!--</FrameLayout>-->
+            &lt;!&ndash;</FrameLayout>&ndash;&gt;
 
 
         </LinearLayout>
@@ -49,14 +76,14 @@
             app:layout="@layout/fragment_navigation_drawer"
             tools:layout="@layout/fragment_navigation_drawer" />
 
-    </android.support.v4.widget.DrawerLayout>
+    </android.support.v4.widget.DrawerLayout>-->
 
 
 
-    <FrameLayout
+    <!--<FrameLayout
         android:id="@+id/container_sign"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"/>-->
     <FrameLayout
         android:id="@+id/cardb"
         android:layout_width="fill_parent"
@@ -70,11 +97,11 @@
     </FrameLayout>
 
 
-    <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+    <!--<WebView  xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/webView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:visibility="invisible" />
+        android:visibility="invisible" />-->
 
 
     <!--<FrameLayout
