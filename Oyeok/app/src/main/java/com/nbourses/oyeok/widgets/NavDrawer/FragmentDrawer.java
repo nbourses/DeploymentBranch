@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.google.android.gms.vision.text.Line;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.activities.BrokerMainActivity;
+import com.nbourses.oyeok.activities.MyPortfolioActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 
@@ -58,6 +59,8 @@ public class FragmentDrawer extends Fragment {
     public void setmDrawerListener(MDrawerListener mDrawerListener) {
         this.mDrawerListener = mDrawerListener;
     }
+
+
 
     public interface MDrawerListener {
         public void drawerOpened();
@@ -258,9 +261,10 @@ public class FragmentDrawer extends Fragment {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                toolbar.setAlpha(1 - slideOffset / 2);
                 try {
-                   // ((BrokerMainActivity)getActivity()).HideBottomNavBar();
+                    toolbar.setAlpha(1 - slideOffset / 2);
+
+                    // ((BrokerMainActivity)getActivity()).HideBottomNavBar();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

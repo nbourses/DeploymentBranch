@@ -566,7 +566,7 @@ private void init(){
         myRealm.commitTransaction();
         Log.i("magic","reached "+General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
         if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
-            Intent in = new Intent(getContext(), MyPortfolioActivity.class);
+            Intent in = new Intent(getContext(), BrokerListingActivity.class);
             in.addFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP /*|
                             Intent.FLAG_ACTIVITY_CLEAR_TASK |

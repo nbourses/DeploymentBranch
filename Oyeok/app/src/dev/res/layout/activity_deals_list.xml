@@ -51,15 +51,16 @@
             android:id="@+id/sufil"
             android:layout_below="@+id/container_toolbar"
             android:visibility="visible"
+            android:focusableInTouchMode="true"
             android:clickable="true">
 
             <SearchView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:queryHint="Search deals..."
-                android:iconifiedByDefault="false"
                 android:layout_gravity="right"
                 android:id="@+id/searchView"
+                android:iconifiedByDefault="false"
                 android:visibility="visible"
                 android:background="@drawable/filter_border"
                 android:layout_marginTop="3dp"
@@ -68,6 +69,7 @@
                 android:layout_marginLeft="3dp" />
 
             <!--<RelativeLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/filterContainer"

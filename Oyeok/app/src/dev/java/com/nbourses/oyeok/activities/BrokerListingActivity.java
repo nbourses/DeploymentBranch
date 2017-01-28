@@ -10,9 +10,11 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +26,8 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -41,11 +45,14 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.adapters.BrokerListingListView;
+import com.nbourses.oyeok.fragments.AppSetting;
+import com.nbourses.oyeok.fragments.ShareOwnersNo;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.portListingModel;
 import com.nbourses.oyeok.realmModels.MyPortfolioModel;
 import com.nbourses.oyeok.realmModels.addBuildingRealm;
+import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -58,7 +65,12 @@ import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class BrokerListingActivity extends BrokerMainPageActivity implements CustomPhasedListener {
+public class BrokerListingActivity extends BrokerMainPageActivity implements CustomPhasedListener ,FragmentDrawer.FragmentDrawerListener{
+
+
+
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
 
     @Bind(R.id.btnMyDeals)
     Button btnMyDeals;
@@ -131,6 +143,10 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         rb.setCompoundDrawablesWithIntrinsicBounds( 0,R.drawable.ic_listing_clicked, 0,0);
         //rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_listing) , null, null);
         rb.setTextColor(Color.parseColor("#2dc4b6"));
+        drawerFragment = (FragmentDrawer)
+                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+        drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
+        drawerFragment.setDrawerListener(this);
         ButterKnife.bind(this);
 
         if(portListing != null)
@@ -147,7 +163,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
             portListingCopy.clear();
 
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setActionBar(toolbar); only for above 21 API
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -650,12 +666,112 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
     }
 
-    @Override
+   /* @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         onBackPressed();
         return true;
 
+    }*/
+
+    @Override
+    public void onDrawerItemSelected(View view, int position, String itemTitle) {
+        Fragment fragment = null;
+        String title = getString(R.string.app_name);
+
+        if (itemTitle.equals(getString(R.string.useAsClient))) {
+            // dbHelper = new DBHelper(getBaseContext());
+            //dbHelper.save(DatabaseConstants.userRole,"client");
+            General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
+            Intent openDashboardActivity = new Intent(this, ClientMainActivity.class);
+            openDashboardActivity.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(openDashboardActivity);
+        } else if (itemTitle.equals(getString(R.string.profile))) {
+            Intent openProfileActivity = new Intent(this, ProfileActivity.class);
+            startActivity(openProfileActivity);
+        } else if (itemTitle.equals(getString(R.string.brokerOk))) {
+            //don't do anything
+        } else if (itemTitle.equals(getString(R.string.shareApp))) {
+            if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")) {
+                SignUpFragment signUpFragment = new SignUpFragment();
+                // signUpFragment.getView().bringToFront();
+                Bundle bundle = new Bundle();
+                bundle.putStringArray("Chat", null);
+                bundle.putString("lastFragment", "brokerDrawer");
+                loadFragmentAnimated(signUpFragment, bundle, R.id.container_sign, "");
+            } else
+                General.shareReferralLink(getBaseContext());
+        }
+        else if (itemTitle.equals(getString(R.string.supportChat))) {
+            //TODO: integration is pending
+        }
+
+        else if (itemTitle.equals(getString(R.string.notifications))) {
+            AppConstants.BROKER_DEAL_FLAG = true;
+            Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+            intent.putExtra("userRole", "client");
+            intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
+            startActivity(intent);
+        } else if (itemTitle.equals(getString(R.string.likeOnFb))) {
+            // setContentView(R.layout.browser);
+            webView = (WebView) findViewById(R.id.webView);
+            webView.setVisibility(View.VISIBLE);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.loadUrl("http://www.facebook.com/hioyeok");
+
+
+        } else if (itemTitle.equals(getString(R.string.aboutUs))) {
+            //setContentView(R.layout.browser);
+            webView = (WebView) findViewById(R.id.webView);
+            webView.setVisibility(View.VISIBLE);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.loadUrl("http://www.hioyeok.com/blog");
+
+
+        } else if (itemTitle.equals(getString(R.string.settings))) {
+            AppSetting appSetting = new AppSetting();
+            setting = true;
+            loadFragmentAnimated(appSetting, null, R.id.container_sign, "");
+
+
+        } else if (itemTitle.equals(getString(R.string.RegisterSignIn))) {
+            SignUpFragment signUpFragment = new SignUpFragment();
+            // signUpFragment.getView().bringToFrFont();
+            Bundle bundle = new Bundle();
+            bundle.putStringArray("Chat", null);
+            bundle.putString("lastFragment", "brokerDrawer");
+            loadFragmentAnimated(signUpFragment, bundle, R.id.container_sign, "");
+        }
+        else if(itemTitle.equals(getString(R.string.shareNo))){
+            ShareOwnersNo shareOwnersNo = new ShareOwnersNo();
+
+            loadFragment(shareOwnersNo, null, R.id.container_sign, "");
+            //Owner_detail=true;
+        }
+        else if (itemTitle.equals(getString(R.string.Listing))) {
+            Log.i("myWatchList", "itemTitle 1 " + itemTitle + R.string.Listing);
+            Intent intent = new Intent(this, MyPortfolioActivity.class);
+            startActivity(intent);
+            /*MainScreenPropertyListing my_portfolio = new MainScreenPropertyListing();
+            loadFragment(my_portfolio, null, R.id.container_Signup, "");
+            Myportfolio=true;*/
+
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (drawerFragment.handle(item))
+            return true;
+
+        return false;
     }
 
     @Override
@@ -671,8 +787,32 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
             }
             Log.i("sushil123"," main activity =================== SIGNUP_FLAGffffffff");
 
-        }else
-        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+        }else if(setting==true){
+            Log.i("BACKsPRESSED"," =================== setting portfolio"+setting);
+
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+
+            Log.i("BACKsPRESSED", "loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
+            setting = false;
+
+
+        }else if(webView != null){
+            if (webView.canGoBack()) {
+                webView.goBack();
+            }
+            else {
+                webView = null;
+                Intent inten = new Intent(this, BrokerListingActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(inten);
+                finish();
+
+                //backpress = 0;
+            }
+        }else if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
             Intent in = new Intent(getBaseContext(),BrokerMainActivity.class);
             in.addFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -826,7 +966,24 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
 
 
+ private void loadFragment(Fragment fragment, Bundle args, int containerId, String title) {
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
 
+    private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
 
 
 

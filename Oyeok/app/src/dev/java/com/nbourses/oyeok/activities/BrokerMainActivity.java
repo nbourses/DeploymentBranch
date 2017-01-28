@@ -56,6 +56,7 @@ import com.nbourses.oyeok.fragments.AddListing;
 import com.nbourses.oyeok.fragments.AddListingFinalCard;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.BrokerPreokFragment;
+import com.nbourses.oyeok.fragments.MainScreenPropertyListing;
 import com.nbourses.oyeok.fragments.PartnerBrokerFragment;
 import com.nbourses.oyeok.fragments.ShareOwnersNo;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -740,9 +741,9 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
             else
                 shareReferralLink();
         }
-     /*   else if (itemTitle.equals(getString(R.string.supportChat))) {
+        else if (itemTitle.equals(getString(R.string.supportChat))) {
             //TODO: integration is pending
-        } */
+        }
 
         else if (itemTitle.equals(getString(R.string.notifications))) {
             AppConstants.BROKER_DEAL_FLAG = true;
@@ -911,7 +912,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
                 //getSupportFragmentManager().popBackStackImmediate();
                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
             AppConstants.SIGNUP_FLAG=false;
-               ShowBottomNavBar();
+               //ShowBottomNavBar();
             backpress = 0;}
         }else
         if(webView != null){
@@ -1157,7 +1158,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
         }*/
     }
 
-    public void HideBottomNavBar(){
+    /*public void HideBottomNavBar(){
         Log.i("HideBottomNavBar","HideBottomNavBar");
         params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         params.setMargins(0, 0, 0, 0);
@@ -1171,6 +1172,6 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
         params.setMargins(0, 0, 0,156);
         dynamicContent.setLayoutParams(params);
         bottonNavBar.setVisibility(View.VISIBLE);
-    }
+    }*/
 
 }

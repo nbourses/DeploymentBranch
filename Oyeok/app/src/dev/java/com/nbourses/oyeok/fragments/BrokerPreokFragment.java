@@ -895,7 +895,7 @@ private String transaction_type="Rental";
                        // fragmentTransaction.replace(R.id.container_map, fragment);
                        fragmentTransaction.commit();
                        AppConstants.SIGNUP_FLAG = true;
-                       ((BrokerMainActivity) getActivity()).HideBottomNavBar();
+                      // ((BrokerMainActivity) getActivity()).HideBottomNavBar();
                    } else {
                        //here broker is registered
                        AcceptOkCall a = new AcceptOkCall();

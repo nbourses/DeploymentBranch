@@ -2,41 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_height="match_parent"
 
     >
 
-    <!--<android.support.v4.widget.NestedScrollView
-        android:id="@+id/myScrollingContent"
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-     &lt;!&ndash;Your loooooong scrolling content here. &ndash;&gt;
-    </android.support.v4.widget.NestedScrollView>-->
-
-
-
-     <!--<com.roughike.bottombar.BottomBar
-    android:id="@+id/bottomBar"
+<RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="56dp"
-    android:layout_gravity="bottom"
-    app:bb_tabXmlResource="@xml/bottom_bar"
-    app:bb_behavior="underNavbar"/>-->
-
-    <!-- <android.support.design.widget.BottomNavigationView
-         android:id="@+id/bottom_navigation"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_alignParentBottom="true"
-         app:itemBackground="@color/white"
-         app:itemIconTint="@drawable/nav_item_color_state"
-         app:itemTextColor="@drawable/nav_item_color_state"
-         app:menu="@menu/menu_main" />-->
-
-
-
+    android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
@@ -89,7 +67,10 @@
                     android:layout_height="match_parent"
                     android:id="@+id/rates"
                     android:button="@null"
-                    android:padding="2dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="2dp"
+                    android:paddingRight="2dp"
                     android:layout_weight="1"
                     android:checked="false"
                     android:textSize="12sp"
@@ -126,15 +107,66 @@
 
             </RadioGroup>
         </LinearLayout>
-    <LinearLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/dynamicContent"
+            android:orientation="vertical"
+            android:layout_marginBottom="56dp"
+            android:background="@color/white"
+            android:layout_gravity="bottom">
+        </LinearLayout>
+</RelativeLayout>
+        <fragment
+            android:id="@+id/fragment_navigation_drawer"
+            android:name="com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer"
+            android:layout_width="@dimen/nav_drawer_width"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            app:layout="@layout/fragment_navigation_drawer"
+            tools:layout="@layout/fragment_navigation_drawer" />
+
+    </android.support.v4.widget.DrawerLayout>
+    <FrameLayout
+        android:id="@+id/container_sign"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"/>
+    <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/webView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="invisible" />
+    <!--<android.support.v4.widget.NestedScrollView
+        android:id="@+id/myScrollingContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/dynamicContent"
-        android:orientation="vertical"
-        android:layout_marginBottom="56dp"
-        android:background="@color/white"
-        android:layout_gravity="bottom">
-    </LinearLayout>
+        android:layout_height="match_parent">
+
+     &lt;!&ndash;Your loooooong scrolling content here. &ndash;&gt;
+    </android.support.v4.widget.NestedScrollView>-->
+
+
+
+     <!--<com.roughike.bottombar.BottomBar
+    android:id="@+id/bottomBar"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:layout_gravity="bottom"
+    app:bb_tabXmlResource="@xml/bottom_bar"
+    app:bb_behavior="underNavbar"/>-->
+
+    <!-- <android.support.design.widget.BottomNavigationView
+         android:id="@+id/bottom_navigation"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         app:itemBackground="@color/white"
+         app:itemIconTint="@drawable/nav_item_color_state"
+         app:itemTextColor="@drawable/nav_item_color_state"
+         app:menu="@menu/menu_main" />-->
+
+
+
+
 </RelativeLayout>
     <!--tools:context="com.nbourses.oyeok.activities.BrokerMainPageActivity"-->
     <!--app:itemIconTint="@drawable/nav_item_color_state"-->

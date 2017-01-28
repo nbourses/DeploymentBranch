@@ -29,6 +29,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -46,6 +47,8 @@ import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -82,8 +85,10 @@ import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AddBuilding;
 import com.nbourses.oyeok.fragments.AddListing;
 import com.nbourses.oyeok.fragments.AddListingFinalCard;
+import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.BuildingOyeConfirmation;
 import com.nbourses.oyeok.fragments.MainScreenPropertyListing;
+import com.nbourses.oyeok.fragments.ShareOwnersNo;
 import com.nbourses.oyeok.fragments.searchFragment;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -93,6 +98,7 @@ import com.nbourses.oyeok.realmModels.BuildingCacheRealm;
 import com.nbourses.oyeok.realmModels.MyPortfolioModel;
 import com.nbourses.oyeok.realmModels.addBuildingRealm;
 import com.nbourses.oyeok.widgets.HorizontalPicker.HorizontalPicker;
+import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
@@ -122,11 +128,14 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 
-import static com.nbourses.oyeok.R.id.container_Signup;
+import static com.nbourses.oyeok.R.id.container_sign;
 import static com.nbourses.oyeok.helpers.AppConstants.LOCATION_PERMISSION_REQUEST_CODE;
 
 //implements CustomPhasedListener
-public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedListener,HorizontalPicker.pickerPriceSelected ,AdapterView.OnItemClickListener{
+public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedListener,HorizontalPicker.pickerPriceSelected ,AdapterView.OnItemClickListener,FragmentDrawer.FragmentDrawerListener{
+
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
 
     @Bind(R.id.addressBar1)
     TextView addressBar;
@@ -155,8 +164,8 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
     @Bind(R.id.btnMyDeals)
     Button btnMyDeals;
 
-    @Bind(container_Signup)
-    FrameLayout containerSignup;
+    @Bind(R.id.container_sign)
+    FrameLayout container_sign;
 
     @Bind(R.id.card)
     FrameLayout card;
@@ -237,8 +246,11 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
     ///Animation variable
     Animation zoomout_right, slide_up, zoomout_left, ani, zoomin_zoomout,slide_up1,slide_left,slideDown,slideUp,bounce;
     FrameLayout map_parent,fr;
-
-
+    LinearLayout dynamicContent,bottonNavBar;
+    RelativeLayout.LayoutParams params;
+    /*private FragmentDrawer drawerFragment;
+    private WebView webView;
+    boolean setting=false;*/
     //String   listing,transaction,portal,config;
 
 
@@ -341,28 +353,32 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_broker_map);
-        LinearLayout dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent);
-
+         dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent);
+         bottonNavBar= (LinearLayout) findViewById(R.id.bottonNavBar);
 //        NestedScrollView dynamicContent = (NestedScrollView) findViewById(R.id.myScrollingContent);
         // assuming your Wizard content is in content_wizard.xml myScrollingContent
         View wizard = getLayoutInflater().inflate(R.layout.activity_broker_map, null);
         // add the inflated View to the layout
         dynamicContent.addView(wizard);
         //BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         RadioGroup rg=(RadioGroup)findViewById(R.id.radioGroup1);
         RadioButton rb=(RadioButton)findViewById(R.id.rates);
         rb.setCompoundDrawablesWithIntrinsicBounds( 0,R.drawable.ic_rate_clicked, 0,0);
        // rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_rate) , null, null);
         rb.setTextColor(Color.parseColor("#2dc4b6"));
+        drawerFragment = (FragmentDrawer)
+                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+        drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
+        drawerFragment.setDrawerListener(this);
         /*Menu menu = bottomNavigationView.getMenu();
         menu.findItem(R.id.matching).setChecked(false);
         // Check the wished first menu item to be shown to the user.
         menu.findItem(R.id.rates).setChecked(true);*/
 
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
         btnMyDeals.setVisibility(View.GONE);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -662,7 +678,8 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
             @Override
             public void onClick(View v) {
                 searchFragment c1 = new searchFragment();
-                loadFragmentAnimated(c1, null, R.id.container_Signup, "Search1");
+                loadFragmentAnimated(c1, null, R.id.container_sign, "Search1");
+                //HideBottomNavBar();
                 searchflag=true;
             }
         });
@@ -965,8 +982,8 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
         public void onOptionClickS (View v){
             searchFragment c1 = new searchFragment();
            // AppConstants.SEARCHFLAG = true;
-
-            loadFragmentAnimated(c1, null, R.id.container_Signup, "Search1");
+            //HideBottomNavBar();
+            loadFragmentAnimated(c1, null, R.id.container_sign, "Search1");
             searchflag=true;
             /*Intent in = new Intent(AppConstants.MARKERSELECTED);
             in.putExtra("markerClicked", "false");
@@ -1052,8 +1069,6 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
         seekbar_linearlayout.setAlpha(1);
         InputMethodManager imm = (InputMethodManager)getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(autoCompView.getWindowToken(), 0);
-
-
 
         mPhasedSeekBar.setVisibility(View.VISIBLE);
         map.animateCamera(CameraUpdateFactory.zoomTo(12));
@@ -1480,17 +1495,44 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);*/
         if(AppConstants.SIGNUP_FLAG){
 //            if(AppConstants.REGISTERING_FLAG){}else{
-            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(container_Signup)).commitAllowingStateLoss();
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commitAllowingStateLoss();
 
            // getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
                 AppConstants.SIGNUP_FLAG=false;
+            ////ShowBottomNavBar();
             //}
             Log.i("sushil123"," main activity =================== SIGNUP_FLAGffffffff");
 
+        }else if(setting==true){
+            Log.i("BACKsPRESSED"," =================== setting portfolio"+setting);
+
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+
+            Log.i("BACKsPRESSED", "loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
+            setting = false;
+
+
+        }if(webView != null){
+            if (webView.canGoBack()) {
+                webView.goBack();
+            }
+            else {
+                webView = null;
+                Intent inten = new Intent(this, MyPortfolioActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(inten);
+                finish();
+
+                //backpress = 0;
+            }
         }else if(searchflag){
             Log.i("onBackPressed ","onBackPressed()1 searchflag =========== "+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
-            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(container_Signup)).commitAllowingStateLoss();
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commitAllowingStateLoss();
             searchflag=false;
+            //ShowBottomNavBar();
         }else if( buidingInfoFlag){
            CloseBuildingOyeComfirmation();
             Log.i("onBackPressed ","onBackPressed() =========== buidingInfoFlag"+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
@@ -1498,8 +1540,8 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
             onMapclicked();
        }else if(Signupflag){
             Log.i("onBackPressed ","onBackPressed() ===========Signupflag "+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
-
             CloseSignUP();
+            Signupflag=false;
         }else if(AppConstants.MY_BASE_LOCATION_FLAG){
             //AppConstants.MY_BASE_LOCATION_FLAG = false;
             //do nothing
@@ -1507,7 +1549,16 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
            // onBackPressed();
             General.setSharedPreferences(getBaseContext(), AppConstants.RESETPHASE, "true");
             //this.finish();
-            this.finish();
+            /*Intent in = new Intent(getBaseContext(),BrokerMainActivity.class);
+            in.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(in);*/
+            startActivity(new Intent(getBaseContext(),BrokerMainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                    /*Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                    Intent.FLAG_ACTIVITY_NEW_TASK) */
+           // this.finish();
         }
         Log.i("onBackPressed ","onBackPressed() =========== "+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
 
@@ -1548,13 +1599,114 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
         }
 
     }
+
+
     @Override
+    public void onDrawerItemSelected(View view, int position, String itemTitle) {
+        Fragment fragment = null;
+        String title = getString(R.string.app_name);
+
+        if (itemTitle.equals(getString(R.string.useAsClient))) {
+            // dbHelper = new DBHelper(getBaseContext());
+            //dbHelper.save(DatabaseConstants.userRole,"client");
+            General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
+            Intent openDashboardActivity = new Intent(this, ClientMainActivity.class);
+            openDashboardActivity.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(openDashboardActivity);
+        } else if (itemTitle.equals(getString(R.string.profile))) {
+            Intent openProfileActivity = new Intent(this, ProfileActivity.class);
+            startActivity(openProfileActivity);
+        } else if (itemTitle.equals(getString(R.string.brokerOk))) {
+            //don't do anything
+        } else if (itemTitle.equals(getString(R.string.shareApp))) {
+            if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")) {
+                SignUpFragment signUpFragment = new SignUpFragment();
+                // signUpFragment.getView().bringToFront();
+                Bundle bundle = new Bundle();
+                bundle.putStringArray("Chat", null);
+                bundle.putString("lastFragment", "brokerDrawer");
+                loadFragmentAnimated(signUpFragment, bundle, R.id.container_sign, "");
+            } else
+                General.shareReferralLink(getBaseContext());
+        }
+        else if (itemTitle.equals(getString(R.string.supportChat))) {
+            //TODO: integration is pending
+        }
+
+        else if (itemTitle.equals(getString(R.string.notifications))) {
+            AppConstants.BROKER_DEAL_FLAG = true;
+            Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
+            intent.putExtra("userRole", "client");
+            intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
+            startActivity(intent);
+        } else if (itemTitle.equals(getString(R.string.likeOnFb))) {
+            // setContentView(R.layout.browser);
+            webView = (WebView) findViewById(R.id.webView);
+            webView.setVisibility(View.VISIBLE);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.loadUrl("http://www.facebook.com/hioyeok");
+
+
+        } else if (itemTitle.equals(getString(R.string.aboutUs))) {
+            //setContentView(R.layout.browser);
+            webView = (WebView) findViewById(R.id.webView);
+            webView.setVisibility(View.VISIBLE);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.loadUrl("http://www.hioyeok.com/blog");
+
+
+        } else if (itemTitle.equals(getString(R.string.settings))) {
+            AppSetting appSetting = new AppSetting();
+            setting = true;
+            loadFragmentAnimated(appSetting, null, R.id.container_sign, "");
+
+
+        } else if (itemTitle.equals(getString(R.string.RegisterSignIn))) {
+            SignUpFragment signUpFragment = new SignUpFragment();
+            // signUpFragment.getView().bringToFrFont();
+            Bundle bundle = new Bundle();
+            bundle.putStringArray("Chat", null);
+            bundle.putString("lastFragment", "brokerDrawer");
+            loadFragmentAnimated(signUpFragment, bundle, R.id.container_sign, "");
+        }
+        else if(itemTitle.equals(getString(R.string.shareNo))){
+            ShareOwnersNo shareOwnersNo = new ShareOwnersNo();
+
+            loadFragment(shareOwnersNo, null, R.id.container_sign, "");
+            //Owner_detail=true;
+        }
+        else if (itemTitle.equals(getString(R.string.Listing))) {
+            Log.i("myWatchList", "itemTitle 1 " + itemTitle + R.string.Listing);
+            Intent intent = new Intent(this, MyPortfolioActivity.class);
+            startActivity(intent);
+            /*MainScreenPropertyListing my_portfolio = new MainScreenPropertyListing();
+            loadFragment(my_portfolio, null, R.id.container_Signup, "");
+            Myportfolio=true;*/
+
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+            if (drawerFragment.handle(item))
+                return true;
+
+        return false;
+    }
+   /* @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         onBackPressed();
         return true;
 
-    }
+    }*/
     @Override
     public void onPositionSelected(int position, int count) {
         //p=position;
@@ -2451,8 +2603,9 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
                     SignUpFragment signUpFragment = new SignUpFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("lastFragment", "brokerDrawer");
-                    loadFragmentAnimated(signUpFragment, bundle, container_Signup, "");
+                    loadFragmentAnimated(signUpFragment, bundle, R.id.container_sign, "");
                     AppConstants.SIGNUP_FLAG = true;
+                    //HideBottomNavBar();
                 }else {
                     openAddListing();
                 }
@@ -2549,8 +2702,9 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
     }
 
     public void openAddListing(){
-        containerSignup.setBackgroundColor(Color.parseColor("#CC000000"));
-        containerSignup.setClickable(true);
+        //HideBottomNavBar();
+        container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
+        container_sign.setClickable(true);
         AddListing addBuildingCardView = new AddListing();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -2567,8 +2721,8 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
 
     public void openAddBuilding(){
 
-        containerSignup.setBackgroundColor(Color.parseColor("#CC000000"));
-        containerSignup.setClickable(true);
+        container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
+        container_sign.setClickable(true);
 
         AddBuilding addBuilding= new AddBuilding();
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -2584,8 +2738,8 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
 
     public void openAddListingFinalCard(){
 
-        containerSignup.setBackgroundColor(Color.parseColor("#CC000000"));
-        containerSignup.setClickable(true);
+        container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
+        container_sign.setClickable(true);
         AddListingFinalCard addListingFinalCard= new AddListingFinalCard();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -2600,8 +2754,8 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
     public void closeCardContainer(){
 
         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
-        containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
-        containerSignup.setClickable(false);
+        container_sign.setBackgroundColor(getResources().getColor(R.color.transparent));
+        container_sign.setClickable(false);
         card.setClickable(false);
         Reset();
         onMapclicked();
@@ -2620,8 +2774,8 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
         getSupportActionBar().setTitle("");
         setbaseloc.setVisibility(View.GONE);
         closeCardContainer();
-        containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
-        containerSignup.setClickable(false);
+        container_sign.setBackgroundColor(getResources().getColor(R.color.transparent));
+        container_sign.setClickable(false);
         card.setClickable(false);
         saveBuiding(b_name);
        // hdroomsCount.setVisibility(View.GONE);
@@ -2630,6 +2784,7 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
     public  void setBaseRegion(){
         btnMyDeals.setVisibility(View.GONE);
         fav.setEnabled(false);
+        //HideBottomNavBar();
         fr.setVisibility(View.GONE);
         /*btn_back.setVisibility(View.VISIBLE);
         btn_cancel.setVisibility(View.VISIBLE);*/
@@ -2662,7 +2817,7 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
 
 
     public void saveBuiding(String b_name){
-
+        //HideBottomNavBar();
          B_name=b_name;
         addlistingText.setVisibility(View.VISIBLE);
         String txt;
@@ -2725,6 +2880,7 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
         btn_back.setVisibility(View.GONE);
         btn_cancel.setVisibility(View.GONE);
         savebuilding=false;
+        //ShowBottomNavBar();
         fr.setVisibility(View.VISIBLE);
         setbaseloc.setVisibility(View.VISIBLE);
         txt_info.setVisibility(View.GONE);
@@ -2855,14 +3011,16 @@ public void OpenSignUpFrag(){
     Bundle bundle = new Bundle();
     bundle.putStringArray("Chat", null);
     bundle.putString("lastFragment", "brokermap");
-    loadFragmentAnimated(signUpFragment, bundle,R.id.container_Signup, "");
+    loadFragmentAnimated(signUpFragment, bundle,R.id.container_sign, "");
+    //HideBottomNavBar();
     Signupflag=true;
 
 }
 
 public void CloseSignUP(){
-    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(container_Signup)).commitAllowingStateLoss();
+    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commitAllowingStateLoss();
     OpenBuildingOyeConfirmation(buildingCacheModels.get(INDEX).getListing(),buildingCacheModels.get(INDEX).getTransactions(),buildingCacheModels.get(INDEX).getPortals(),buildingCacheModels.get(INDEX).getConfig());
+    //ShowBottomNavBar();
     Signupflag=false;
 
 
@@ -3014,6 +3172,33 @@ public void CloseSignUP(){
             }
         }
     }
+
+
+
+
+    /*public void HideBottomNavBar(){
+        Log.i("HideBottomNavBar","HideBottomNavBar");
+        params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        params.setMargins(0, 0, 0, 0);
+        dynamicContent.setLayoutParams(params);
+        Log.i("HideBottomNavBar","HideBottomNavBar"+dynamicContent.getBottom());
+        bottonNavBar.setVisibility(View.GONE);
+    }
+    public void ShowBottomNavBar(){
+        Log.i("HideBottomNavBar","HideBottomNavBar"+dynamicContent.getBottom());
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        params.setMargins(0, 0, 0,156);
+        dynamicContent.setLayoutParams(params);
+        bottonNavBar.setVisibility(View.VISIBLE);
+    }*/
+
+
+
+
+
+
+
+
 
 
 }
