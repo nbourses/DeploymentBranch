@@ -12,9 +12,11 @@
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
@@ -48,6 +50,7 @@
                     android:drawableTop="@drawable/selector_matching"
                     android:textColor="@drawable/selector_nav_text"
                     android:id="@+id/matching"/>
+
                 <RadioButton
                     android:layout_width="match_parent"
                     android:gravity="center"
@@ -61,6 +64,7 @@
                     android:textColor="@drawable/selector_nav_text"
                     android:id="@+id/watchList"
                     android:text="WatchList"/>
+
                 <RadioButton
                     android:layout_width="match_parent"
                     android:gravity="center"
@@ -105,7 +109,29 @@
                     android:text="Deals"/>
 
             </RadioGroup>
+            <FrameLayout
+                android:layout_width="45dp"
+                android:layout_height="56dp"
+                android:layout_marginLeft="-250dp"
+                android:id="@+id/frfav"
+                >
+            <TextView
+                android:id="@+id/portfolioCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle_badge"
+                android:text="23"
+                android:paddingEnd="8dp"
+                android:paddingRight="8dp"
+                android:paddingLeft="8dp"
+                android:textColor="#FFF"
+                android:textSize="11sp"
+                android:layout_gravity="right"
+                android:visibility="gone" />
+        </FrameLayout>
         </LinearLayout>
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -115,7 +141,10 @@
             android:background="@color/white"
             android:layout_gravity="bottom">
         </LinearLayout>
+
 </RelativeLayout>
+
+
         <fragment
             android:id="@+id/fragment_navigation_drawer"
             android:name="com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer"
@@ -130,6 +159,12 @@
         android:id="@+id/container_sign"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"/>
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/card"
+        android:layout_margin="40dp">
+    </FrameLayout>
     <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/webView"
         android:layout_width="fill_parent"

@@ -148,7 +148,7 @@ private TextView Cancel,back,usertext;
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
 //                if(TT=="LL"){
                     Log.i( "portfolio","onTextChanged  LL : "+cs );
-
+                name=String.valueOf(cs);
                     usertext.setText("'"+cs+"'");
                     /*adapter.setResults( realm.where(addBuildingRealm.class) //implicit AND
                             .beginGroup()

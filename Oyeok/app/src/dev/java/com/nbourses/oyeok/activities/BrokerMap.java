@@ -2767,12 +2767,15 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
         btn_back.setVisibility(View.VISIBLE);
         btn_cancel.setVisibility(View.VISIBLE);
         fr.setVisibility(View.GONE);
+        HideBottomNavBar();
+        setbaseloc.setVisibility(View.GONE);
         /*getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);*/
         confirm_screen_title.setVisibility(View.VISIBLE);
+        Log.i("sushil","Building name "+b_name+"visibility : "+confirm_screen_title.getVisibility());
         confirm_screen_title.setText(b_name);
+        //confirm_screen_title.setTextColor(Color.WHITE);
         getSupportActionBar().setTitle("");
-        setbaseloc.setVisibility(View.GONE);
         closeCardContainer();
         container_sign.setBackgroundColor(getResources().getColor(R.color.transparent));
         container_sign.setClickable(false);
@@ -2784,7 +2787,7 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
     public  void setBaseRegion(){
         btnMyDeals.setVisibility(View.GONE);
         fav.setEnabled(false);
-        //HideBottomNavBar();
+        HideBottomNavBar();
         fr.setVisibility(View.GONE);
         /*btn_back.setVisibility(View.VISIBLE);
         btn_cancel.setVisibility(View.VISIBLE);*/
@@ -3176,7 +3179,7 @@ public void CloseSignUP(){
 
 
 
-    /*public void HideBottomNavBar(){
+    public void HideBottomNavBar(){
         Log.i("HideBottomNavBar","HideBottomNavBar");
         params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         params.setMargins(0, 0, 0, 0);
@@ -3190,7 +3193,7 @@ public void CloseSignUP(){
         params.setMargins(0, 0, 0,156);
         dynamicContent.setLayoutParams(params);
         bottonNavBar.setVisibility(View.VISIBLE);
-    }*/
+    }
 
 
 
