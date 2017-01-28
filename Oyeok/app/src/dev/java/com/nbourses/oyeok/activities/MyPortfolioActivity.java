@@ -950,6 +950,23 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
                 setting = false;
 
 
+        }else
+        if(webView != null){
+            if (webView.canGoBack()) {
+                webView.goBack();
+            }
+            else {
+                webView = null;
+                Intent inten = new Intent(this, MyPortfolioActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(inten);
+                finish();
+
+                //backpress = 0;
+            }
         }else if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
             Intent in = new Intent(getBaseContext(), BrokerMainActivity.class);
             in.addFlags(

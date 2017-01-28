@@ -1070,8 +1070,6 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
         InputMethodManager imm = (InputMethodManager)getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(autoCompView.getWindowToken(), 0);
 
-
-
         mPhasedSeekBar.setVisibility(View.VISIBLE);
         map.animateCamera(CameraUpdateFactory.zoomTo(12));
         autoCompView.clearListSelection();
@@ -1514,6 +1512,22 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
             setting = false;
 
 
+        }if(webView != null){
+            if (webView.canGoBack()) {
+                webView.goBack();
+            }
+            else {
+                webView = null;
+                Intent inten = new Intent(this, MyPortfolioActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(inten);
+                finish();
+
+                //backpress = 0;
+            }
         }else if(searchflag){
             Log.i("onBackPressed ","onBackPressed()1 searchflag =========== "+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commitAllowingStateLoss();

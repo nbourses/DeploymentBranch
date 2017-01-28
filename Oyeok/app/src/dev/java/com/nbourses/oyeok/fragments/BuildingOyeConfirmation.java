@@ -321,8 +321,15 @@ public class BuildingOyeConfirmation extends Fragment {
                 sharing.setText(Html.fromHtml("<html>EMI Deposits starts at : <big>" + General.currencyFormat(emi + "") + "<big><html>"));
 
             } else {
-                BigDecimal emi = calcEMI(BigDecimal.valueOf(or_psf * Integer.parseInt(approx_area)), BigDecimal.valueOf(240), BigDecimal.valueOf(9.5));
-                sharing.setText(Html.fromHtml("<html>EMI starts at : <big>" + General.currencyFormat(emi + "") + "<big><html>"));
+                if(approx_area==null){
+                    approx_area="950";
+                }
+                try {
+                    BigDecimal emi = calcEMI(BigDecimal.valueOf(or_psf * Integer.parseInt(approx_area)), BigDecimal.valueOf(240), BigDecimal.valueOf(9.5));
+                    sharing.setText(Html.fromHtml("<html>EMI starts at : <big>" + General.currencyFormat(emi + "") + "<big><html>"));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
                 /*text1="<html>Connect : <font color=#ff9f1c>32</font> Nearby Brokers</html>";
                 btn_listing.setText(Html.fromHtml(text1));
 */

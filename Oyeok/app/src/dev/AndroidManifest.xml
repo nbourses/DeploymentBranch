@@ -2,7 +2,8 @@
 
 <application>
     <activity android:name="com.nbourses.oyeok.activities.MyPortfolioActivity" android:label="@string/MyPortfolio"
-        android:screenOrientation="portrait" android:theme="@style/AppTheme1"
+        android:screenOrientation="portrait"
+        android:theme="@style/AppTheme1"
         android:windowSoftInputMode="adjustNothing">
 
     </activity>
@@ -12,7 +13,7 @@
     </activity>
 
     <activity android:name="com.nbourses.oyeok.activities.BrokerMap" android:label="@string/title_activity_broker_map"
-        android:theme="@style/AppTheme1"
+        android:theme="@style/MyMaterialTheme"
         android:screenOrientation="portrait" android:windowSoftInputMode="adjustNothing">
 
     </activity>

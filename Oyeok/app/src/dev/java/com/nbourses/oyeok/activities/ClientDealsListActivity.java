@@ -137,6 +137,10 @@ public class ClientDealsListActivity extends BrokerMainPageActivity implements C
     @Bind(R.id.fragment_container1)
     FrameLayout fragment_container1;
 
+
+    //@Bind(R.id.container_sign)
+    FrameLayout container_sign;
+
     @Bind(R.id.view)
     View view;
 
@@ -241,6 +245,14 @@ private int page = 1;
     private String сolorString;
     private List<String> allChannels = new ArrayList<String>();
     SharedPreferences.OnSharedPreferenceChangeListener listener;
+
+    FragmentDrawer drawerFragment;
+    WebView webView;
+    boolean setting=false;
+
+RelativeLayout sufil;
+
+
     private BroadcastReceiver networkConnectivity = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -281,14 +293,13 @@ private int page = 1;
         IntentFilter filter = new IntentFilter("okeyed");
         LocalBroadcastManager.getInstance(this).registerReceiver(handlePushNewMessage, filter);
 
-        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
-
+        if(!General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            Log.i("parcy","I am client ");
             setContentView(R.layout.activity_deals_list);
         }else {
-
-
+            Log.i("parcy","I am broker.... ");
             LinearLayout dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent );
-
+            container_sign = (FrameLayout) findViewById(R.id.container_sign);
        // NestedScrollView dynamicContent = (NestedScrollView) findViewById(R.id.myScrollingContent);
             // assuming your Wizard content is in content_wizard.xml myScrollingContent
             View wizard = getLayoutInflater().inflate(R.layout.activity_deals_list, null);
@@ -309,10 +320,11 @@ private int page = 1;
         }
 
 
-
+        sufil=(RelativeLayout)findViewById(R.id.sufil);
         listViewDeals = (SwipeMenuListView) findViewById(R.id.listViewDeals);
         supportChat = (LinearLayout) findViewById(R.id.supportChat);
         fragment_container1 = (FrameLayout) findViewById(R.id.fragment_container1);
+       //
         //  listViewDeals.setAdapter(new SearchingBrokersAdapter(this));
         signUpCard = (LinearLayout) findViewById(R.id.signUpCard);
         signUp = (Button) findViewById(R.id.signUp);
@@ -717,8 +729,9 @@ private int page = 1;
     protected void onResume() {
         super.onResume();
         // Register mMessageReceiver to receive messages.
+        /*searchView.setQuery("", false);
+        sufil.requestFocus();*/
         LocalBroadcastManager.getInstance(this).registerReceiver(badgeCountBroadcast, new IntentFilter(AppConstants.BADGE_COUNT_BROADCAST));
-
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
     }
 
@@ -769,7 +782,8 @@ private int page = 1;
         int labelColor = getResources().getColor(R.color.greenish_blue);
         сolorString = String.format("%X", labelColor).substring(2);
         searchView = (SearchView) findViewById(R.id.searchView);
-        searchView.setIconified(false);
+        //searchView.setIconified(false);
+        //this.getCurrentFocus().clearFocus();
         searchView.clearFocus();
 
         if ((General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) <= 0) || General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
@@ -1001,22 +1015,45 @@ if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
 */
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
         Log.i(TAG, "onback client deal 0 ");
         if (signUpCardFlag) {
             Log.i(TAG, "onback client deal 1 ");
-            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.fragment_container1)).commit();
-            signUpCardFlag = false;
-            AppConstants.SIGNUP_FLAG = false;
+            if(!General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.fragment_container1)).commit();
+                Log.i("parcy","I am client.... ");
+                signUpCardFlag = false;
+                AppConstants.SIGNUP_FLAG = false;
+            }
+                else {
+                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+                Log.i("parcy","I am broker.... ");
+                signUpCardFlag = false;
+                AppConstants.SIGNUP_FLAG = false;
+            }
+
         } else if(setting==true){
             Log.i("BACKsPRESSED"," =================== setting portfolio"+setting);
-
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
-
             Log.i("BACKsPRESSED", "loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
             setting = false;
+        }else
+        if(webView != null){
+            if (webView.canGoBack()) {
+                webView.goBack();
+            }
+            else {
+                webView = null;
+                Intent inten = new Intent(this, ClientDealsListActivity.class);
+                inten.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(inten);
+                finish();
 
-
+                //backpress = 0;
+            }
         }else {
             Log.i(TAG, "onback client deal 2 ");
 //        if(AppConstants.SIGNUP_FLAG){
@@ -1723,8 +1760,16 @@ if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
 
         fragmentTransaction.addToBackStack("cardSignUp");
-        fragment_container1.setVisibility(View.VISIBLE);
-        fragmentTransaction.replace(R.id.fragment_container1, d);
+
+        if(!General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            fragmentTransaction.replace(R.id.fragment_container1, d);
+            fragment_container1.setVisibility(View.VISIBLE);
+        }
+        else {
+            fragmentTransaction.replace(R.id.container_sign, d);
+        }
+
+
         signUpCardFlag = true;
         fragmentTransaction.commitAllowingStateLoss();
 
@@ -2261,10 +2306,13 @@ Log.i(TAG,"Caught in exception narcos "+e);
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (drawerFragment.handle(item))
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            if (drawerFragment.handle(item))
+                return true;
+        }else{
+            onBackPressed();
             return true;
-
+        }
         return false;
     }
 

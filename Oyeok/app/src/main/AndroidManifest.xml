@@ -217,7 +217,6 @@
         <activity
             android:name=".activities.ClientDealsListActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme1"
             android:windowSoftInputMode="adjustPan">
         </activity>
 
