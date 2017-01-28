@@ -227,7 +227,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
                     fragmentTransaction.addToBackStack("cardSignUp1");
                     container_Signup1.setVisibility(View.VISIBLE);
-                    fragmentTransaction.replace(R.id.container_Signup1, d);
+                    fragmentTransaction.replace(R.id.container_sign, d);
 //                    signUpCardFlag = true;
                     fragmentTransaction.commitAllowingStateLoss();
 //                    AppConstants.SIGNUP_FLAG = true;
@@ -782,7 +782,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
             if(AppConstants.REGISTERING_FLAG){}else{
                 // getSupportFragmentManager().popBackStack();
 //                getSupportFragmentManager().
-                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
+                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
                 AppConstants.SIGNUP_FLAG=false;
             }
             Log.i("sushil123"," main activity =================== SIGNUP_FLAGffffffff");

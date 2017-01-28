@@ -165,7 +165,10 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:gravity="right">-->
-    <FrameLayout
+
+    <!--sushil fav with badge-->
+    <!--start-->
+   <!-- <FrameLayout
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_alignParentRight="true"
@@ -178,7 +181,7 @@
         android:layout_gravity="center|right"
         android:src="@drawable/broker_portfolio_icon"
         android:gravity="center"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_marginRight="2dp"
         android:layout_marginLeft="2dp"
         android:layout_width="35dp"
@@ -202,7 +205,8 @@
 
             android:layout_gravity="right"
             android:visibility="gone" />
-    </FrameLayout>
+    </FrameLayout>-->
+    <!--end-->
 <!--</LinearLayout>-->
 </RelativeLayout>
 
