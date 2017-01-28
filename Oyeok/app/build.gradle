@@ -55,7 +55,7 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file("/Users/sushil/Desktop/oyeok.jks")
+            storeFile file("/Users/shlokmalik/Desktop/oyeok.jks")
             storePassword "NBAscent@123A"
             keyAlias "oyeok"
             keyPassword "NBAscent@123A"

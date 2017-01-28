@@ -6,6 +6,7 @@
     android:layout_height="fill_parent"
     android:clickable="true"
     android:background="@color/custom_color_darkblue">
+   <!-- android:background="@color/custom_color_darkblue"-->
     <!--android:background="@android:color/primary_text_light"-->
     <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
     <!--<ScrollView-->
@@ -15,7 +16,7 @@
     <ScrollView
         android:orientation="vertical"
         android:id="@+id/scrollview"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="fill_parent"
         android:fillViewport="true">
         <!--android:isScrollContainer="true"-->
@@ -247,11 +248,12 @@
             <LinearLayout
                 android:id="@+id/llotp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:orientation="vertical"
                 android:visibility="visible"
-                android:paddingTop="15dp">
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp">
                 <!--      <com.rengwuxian.materialedittext.MaterialEditText
                            android:id="@+id/etvcode"
                            android:layout_width="match_parent"

@@ -1761,11 +1761,14 @@ if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
 
         fragmentTransaction.addToBackStack("cardSignUp");
 
+        Log.i(TAG,"swat 23 ");
         if(!General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            Log.i(TAG,"swat 24 ");
             fragmentTransaction.replace(R.id.fragment_container1, d);
             fragment_container1.setVisibility(View.VISIBLE);
         }
         else {
+            Log.i(TAG,"swat 25 ");
             fragmentTransaction.replace(R.id.container_sign, d);
         }
 
