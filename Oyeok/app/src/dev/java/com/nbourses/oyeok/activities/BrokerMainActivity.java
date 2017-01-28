@@ -853,7 +853,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
     private void shareReferralLink() {
         //DBHelper dbHelper=new DBHelper(getApplicationContext());
         //String user_id = dbHelper.getValue(DatabaseConstants.userId);
-        String user_id = General.getSharedPreferences(getBaseContext(),AppConstants.USER_ID);
+        String user_id = General.getSharedPreferences(this,AppConstants.USER_ID);
 
         Branch branch = Branch.getInstance(getApplicationContext());
 
@@ -866,6 +866,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
                 // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
                 .setTitle("OYEOK")
                 .setContentDescription("Get property at right price. ")
+                .addContentMetadata("user_id",user_id)
                 .setCanonicalIdentifier(mob_no);
 
 

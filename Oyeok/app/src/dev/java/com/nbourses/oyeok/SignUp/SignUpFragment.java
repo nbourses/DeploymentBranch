@@ -137,6 +137,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess, Googl
     String subphone=null;
     LocationManager mLocationManager;
     private LoginButton loginButton;
+    private LinearLayout fconnect;
+    private LinearLayout gconnect;
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
     private ProfileTracker profileTracker;
@@ -168,6 +170,8 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess, Googl
     ImageView profile_pic;
     private String oldRole,UserOldRole,reqRole;
     private Realm myRealm;
+    private TextView txtfconnect;
+    private TextView txtgconnect;
    // private boolean mClearDefaultAccount;
     ////////////////////////////////////////////////////
     // Variables defined for digits authentication
@@ -202,6 +206,10 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess, Googl
 
     private Context mContext;
     private Activity mActivity;
+    private  Profile profile;
+    private TextView signinOR;
+
+    private Boolean gcon =  false;
 
 private LinearLayout signinpanel;
 
@@ -221,25 +229,7 @@ private LinearLayout signinpanel;
                     new GraphRequest.GraphJSONObjectCallback() {
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
-                            Log.v("LoginActivity", response.toString());
-
-                            // Application code
-                            try {
-                                String email = object.getString("email");
-                                String name = object.getString("name");
-                                Log.i(TAG,"facebook 2 1 "+email);
-
-                                Log.i(TAG,"facebook 2 2 "+name);
-                                if (mGoogleApiClient.isConnected()) {
-                                    Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-                                    btnSignIn.setVisibility(View.VISIBLE);
-                                    gbtnSignOut.setVisibility(View.GONE);
-                                }
-                               setData(name, email);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            facebookConnected(object);
 
                         }
                     });
@@ -289,8 +279,7 @@ private LinearLayout signinpanel;
                 Log.i(TAG,"facebook 18 "+newToken);
                 if (newToken == null) {
                     //write your code here what to do when user logout
-                    name.setText("");
-                    email.setText("");
+                    fbdisconnected();
                 }
             }
         };
@@ -301,6 +290,8 @@ private LinearLayout signinpanel;
                 Log.i(TAG,"facebook 1 "+newProfile);
             }
         };
+
+        profile = Profile.getCurrentProfile();
 
         accessTokenTracker.startTracking();
         profileTracker.startTracking();
@@ -397,6 +388,7 @@ private LinearLayout signinpanel;
 
         gbtnSignOut.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_google, 0, 0, 0);
 
+
         try {
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestEmail()
@@ -480,17 +472,24 @@ private LinearLayout signinpanel;
         new_user_tab=(Button) view.findViewById(R.id.new_user_tab);
         signinpanel = (LinearLayout) view.findViewById(R.id.signinpanel);
         name= (EditText) view.findViewById(R.id.etname);
+        txtfconnect = (TextView) view.findViewById(R.id.txtfconnect);
+        txtgconnect = (TextView) view.findViewById(R.id.txtgconnect);
         email= (EditText) view.findViewById(R.id.etemail);
         submit=(Button)view.findViewById(R.id.submitprofile);
+        fconnect=(LinearLayout) view.findViewById(R.id.fconnect);
+        gconnect=(LinearLayout) view.findViewById(R.id.gconnect);
         tvheading= (TextView) view.findViewById(R.id.tvheading);
         tvcontent= (TextView) view.findViewById(R.id.tvcontent);
         editProfile_pic = (ImageView) view.findViewById(R.id.editProfile_pic);
         loginButton = (LoginButton)view.findViewById(R.id.login_button);
+        signinOR = (TextView) view.findViewById(R.id.signinOR);
         /*  if(okBroker==false && AppConstants.CURRENT_USER_ROLE.equalsIgnoreCase("client"))*/
         Log.i(TAG,"last fragment narcos "+lastFragment);
+        //gconnect.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_google, 0, 0, 0);
+        //fconnect.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_facebook, 0, 0, 0);
+
 
         callbackManager = CallbackManager.Factory.create();
-
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -550,6 +549,7 @@ private LinearLayout signinpanel;
                 name.setVisibility(View.GONE);
                 email.setVisibility(View.GONE);
                 signinpanel.setVisibility(View.GONE);
+                signinOR.setVisibility(View.GONE);
 
                 already_registered_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
                 new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
@@ -588,6 +588,7 @@ private LinearLayout signinpanel;
                 name.setVisibility(View.VISIBLE);
                 email.setVisibility(View.VISIBLE);
                 signinpanel.setVisibility(View.VISIBLE);
+                signinOR.setVisibility(View.GONE);
                 already_registered_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
                 new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
                 if(okBroker==false && General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
@@ -725,6 +726,51 @@ private LinearLayout signinpanel;
 
             }
         });
+
+        fconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (gcon) {
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Already connected with Google.")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                } else {
+                    loginButton.performClick();
+
+                }
+            }
+        });
+
+        gconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               // btnSignIn.performClick();
+
+                if (isLoggedInfb()) {
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Already connected with Facebook.")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }
+
+                /*if(LoginManager.getInstance() != null){
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Already connected with Facebook.")
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }else*/ else if(txtgconnect.getText().toString().equalsIgnoreCase("connect"))
+                    signInG();
+                else
+                    signOutG();
+
+            }
+        });
+
         return view;
 
     }
@@ -745,6 +791,7 @@ private LinearLayout signinpanel;
             Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
             startActivityForResult(signInIntent, RC_SIGN_IN);
         } catch (Exception e) {
+            Log.i(TAG,"connecto 123 "+e.getMessage());
             e.printStackTrace();
         }
 
@@ -1389,24 +1436,37 @@ private LinearLayout signinpanel;
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult 1:" + result.isSuccess());
-        if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
+        try {
+            Log.i(TAG, "handleSignInResult 1:" + result.isSuccess());
+            if (result.isSuccess()) {
+                // Signed in successfully, show authenticated UI.
+                GoogleSignInAccount acct = result.getSignInAccount();
+                Log.i(TAG, "handleSignInResult 2:" + acct.getDisplayName()+"   "+acct.getEmail());
 
-            setData(acct.getDisplayName(), acct.getEmail());
-            btnSignIn.setVisibility(View.GONE);
-            gbtnSignOut.setVisibility(View.VISIBLE);
-            try {
-                LoginManager.getInstance().logOut();
-            } catch (Exception e) {
-                e.printStackTrace();
+                btnSignIn.setVisibility(View.GONE);
+                gbtnSignOut.setVisibility(View.VISIBLE);
+
+
+
+                /*try {
+                   LoginManager.getInstance().logOut();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }*/
+                setData(acct.getDisplayName(), acct.getEmail());
+                txtgconnect.setText("Remove");
+
+                gcon = true;
+            } else {
+                // Signed out, show unauthenticated UI.
+               // updateUI(false);
+
+
+                gcon = false;
+                Log.i(TAG, "handleSignInResult 3:" + result.isSuccess());
             }
-
-        } else {
-            // Signed out, show unauthenticated UI.
-           // updateUI(false);
-            Log.d(TAG, "handleSignInResult 3:" + result.isSuccess());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -1463,6 +1523,7 @@ private LinearLayout signinpanel;
     }
 
     private void setData(String name1, String email1){
+        Log.i(TAG,"handleSignInResult 4 "+name1+"  "+email1);
         name.setText(name1);
         email.setText(email1);
         Digits.authenticate(authCallback, R.style.CustomDigitsTheme);
@@ -1470,17 +1531,72 @@ private LinearLayout signinpanel;
     }
 
     private void signOutG() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        Log.i(TAG,"google logout "+status);
-                        name.setText("");
-                        email.setText("");
-                        btnSignIn.setVisibility(View.VISIBLE);
-                        gbtnSignOut.setVisibility(View.GONE);
-                    }
-                });
+        try {
+            if(mGoogleApiClient != null && mGoogleApiClient.isConnected()){
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            Log.i(TAG,"google logout "+status);
+                            name.setText("");
+                            email.setText("");
+                            btnSignIn.setVisibility(View.VISIBLE);
+                            gbtnSignOut.setVisibility(View.GONE);
+                            txtgconnect.setText("Connect");
+                            gcon = false;
+
+                        }
+                    });
+        }else{
+                name.setText("");
+                email.setText("");
+                txtgconnect.setText("Connect");
+                gcon = false;
+            }
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    private void facebookConnected(JSONObject object){
+        try {
+
+            // Application code
+
+            String email = object.getString("email");
+            String name = object.getString("name");
+            Log.i(TAG,"facebook 2 1 "+email);
+
+            Log.i(TAG,"facebook 2 2 "+name);
+            /*if (mGoogleApiClient.isConnected()) {
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                btnSignIn.setVisibility(View.VISIBLE);
+                gbtnSignOut.setVisibility(View.GONE);
+                txtgconnect.setText("Connect");
+            }*/
+            txtfconnect.setText("Remove");
+           // txtgconnect.setText("Connect");
+
+            setData(name, email);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.i(TAG,"facebook connected "+e.getMessage());
+        }
+    }
+
+    private void fbdisconnected(){
+        txtfconnect.setText("Connect");
+
+            name.setText("");
+            email.setText("");
+
+    }
+
+    public boolean isLoggedInfb() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
     }
 
 }

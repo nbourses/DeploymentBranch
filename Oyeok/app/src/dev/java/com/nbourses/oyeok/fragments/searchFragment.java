@@ -50,8 +50,9 @@ import io.realm.Realm;
 public class searchFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     protected GoogleApiClient mGoogleApiClient;
 
-    private static final LatLngBounds BOUNDS_INDIA = new LatLngBounds(
-            new LatLng(-0, 0), new LatLng(0, 0));
+    /*private static final LatLngBounds BOUNDS_INDIA = new LatLngBounds(
+            new LatLng(-0, 0), new LatLng(0, 0));*/
+    private static final LatLngBounds BOUNDS_INDIA = new LatLngBounds(new LatLng(23.63936, 68.14712), new LatLng(28.20453, 97.34466));
 
     private EditText mAutocompleteView;
     private RecyclerView mRecyclerView;

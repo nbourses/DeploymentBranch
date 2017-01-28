@@ -1915,8 +1915,8 @@ if(AppConstants.FAV) {
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
 
-                        InitialCard c = new InitialCard();
-                     //CardFragment c = new CardFragment();
+                        //InitialCard c = new InitialCard();
+                     CardFragment c = new CardFragment();
                         //loadFragment(d,null,R.id.container_Signup,"");
                         c.setArguments(null);
 //                FragmentManager fragmentManager = getSupportFragmentManager();

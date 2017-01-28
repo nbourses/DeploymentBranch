@@ -1,9 +1,11 @@
 package com.nbourses.oyeok.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -97,18 +99,69 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void onInitFinished(BranchUniversalObject branchUniversalObject, LinkProperties linkProperties, BranchError error) {
                 if (error == null && branchUniversalObject != null) {
+
+
+                    try {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(SplashScreenActivity.this);
+                        dialog.setCancelable(false);
+                        dialog.setTitle("You are refered by "+branchUniversalObject.toString());
+                        dialog.setMessage("Are you sure you want to delete this entry?" );
+                        dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                //Action for "Delete".
+                            }
+                        })
+                                .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //Action for "Cancel".
+                                    }
+                                });
+
+                        final AlertDialog alert = dialog.create();
+                        alert.show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(SplashScreenActivity.this);
+                        dialog.setCancelable(false);
+                        dialog.setTitle("You are refered by. "+branchUniversalObject.getMetadata().get("user_id"));
+                        dialog.setMessage("Are you sure you want to delete this entry?" );
+                        dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                //Action for "Delete".
+                            }
+                        })
+                                .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //Action for "Cancel".
+                                    }
+                                });
+
+                        final AlertDialog alert = dialog.create();
+                        alert.show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
                     // This code will execute when your app is opened from a Branch deep link, which
                     // means that you can route to a custom activity depending on what they clicked.
                     // In this example, we'll just print out the data from the link that was clicked.
 
-                    Log.i("BranchTestBed", "referring Branch Universal Object: " + branchUniversalObject.toString());
+                   // Log.i("BranchTestBed", "referring Branch Universal Object: " + branchUniversalObject.toString());
 
                     // check if the item is contained in the metadata
-                    if (branchUniversalObject.getMetadata().containsKey("item_id")) {
+                    /*if (branchUniversalObject.getMetadata().containsKey("item_id")) {
                         Intent i = new Intent(getApplicationContext(), ClientMainActivity.class);
                         i.putExtra("picture_id", branchUniversalObject.getMetadata().get("item_id"));
                         startActivity(i);
-                    }
+                    }*/
 
                 }
             }
