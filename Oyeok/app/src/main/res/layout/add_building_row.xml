@@ -4,6 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
+    android:background="?android:attr/activatedBackgroundIndicator"
+    android:backgroundTint="#B2DFDB"
     android:layout_height="60dp"
     >
     <ImageView

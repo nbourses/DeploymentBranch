@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.IdRes;
@@ -42,24 +43,39 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.gson.JsonElement;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.adapters.porfolioAdapter;
 import com.nbourses.oyeok.fragments.AppSetting;
+import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.fragments.ShareOwnersNo;
+import com.nbourses.oyeok.fragments.WatchlistDisplayBuilding;
+import com.nbourses.oyeok.fragments.WatchlistExplorer;
+import com.nbourses.oyeok.fragments.WatchlistTitle;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.models.ReadWatchlistAPI;
+import com.nbourses.oyeok.models.loadBuildingDataModel;
 import com.nbourses.oyeok.models.portListingModel;
 import com.nbourses.oyeok.realmModels.Localities;
 import com.nbourses.oyeok.realmModels.MyPortfolioModel;
+import com.nbourses.oyeok.realmModels.WatchListRealmModel;
+import com.nbourses.oyeok.realmModels.WatchlistBuildingRealm;
 import com.nbourses.oyeok.realmModels.addBuildingRealm;
+import com.nbourses.oyeok.realmModels.loadBuildingdataModelRealm;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -74,7 +90,12 @@ import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.branch.referral.util.LinkProperties;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 
 /**
  * Created by sushil on 29/09/16.
@@ -112,6 +133,11 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
     //    myPortfolioAdapter adapter;
     porfolioAdapter adapter;
     ArrayList<String> ids = new ArrayList<>();
+
+    private static RealmList<loadBuildingdataModelRealm> realmsids=new RealmList<>();
+    private static RealmList<WatchlistBuildingRealm> watchcontent=new RealmList<>();
+
+
     private static ArrayList<portListingModel> myPortfolioOR = new ArrayList<>();
     //    private static ArrayList<addBuildingRealm> addBuildingLL=new ArrayList<>();
     private static ArrayList<portListingModel> myLocalitiesLL = new ArrayList<>();
@@ -122,6 +148,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
     private static ArrayList<portListingModel> addbuildingLL = new ArrayList<>();
     private static ArrayList<portListingModel> addbuildingOR = new ArrayList<>();
     private static ArrayList<portListingModel> deletelist = new ArrayList<>();
+    private static ArrayList<portListingModel> watchlist = new ArrayList<>();
     private static ArrayList<portListingModel> item = new ArrayList<>();
 
     /*RealmResults<MyPortfolioModel> results1; if(myLocalitiesLL != null)
@@ -129,13 +156,14 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
     if(myLocalitiesOR != null)
             myLocalitiesOR.clear();
     RealmResults<addBuildingRealm> results2;*/
-
+    private static ArrayList<loadBuildingDataModel> selectedlist = new ArrayList<>();
     EditText inputSearch;
     private String TT = "LL";
-    LinearLayout add_build;
+    //LinearLayout add_build;
     private String matchedId;
-    TextView usertext, add_create;
-
+    TextView  add_catalog,add_building;
+    String watchlist_id;
+    ArrayList<String> Listwatchlist_id=new ArrayList<>();
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -171,6 +199,8 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             drawerFragment.setDrawerListener(this);
         }
         ButterKnife.bind(this);
+        if (watchlist != null)
+            watchlist.clear();
         if (portListing != null)
             portListing.clear();
         if (myPortfolioLL != null)
@@ -188,6 +218,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         if (addbuildingOR != null)
             addbuildingOR.clear();
 
+        Log.i("port", "portListing " + watchlist);
         Log.i("port", "portListing " + portListing);
         Log.i("port", "portListing " + portListing);
         Log.i("port", "myPortfolioLL " + myPortfolioLL);
@@ -209,9 +240,10 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         mPhasedSeekBar.setListener(this);
         rental_list = (ListView) findViewById(R.id.Rental_listview);
         inputSearch = (EditText) findViewById(R.id.inputSearch1);
-        add_build = (LinearLayout) findViewById(R.id.add_build);
-        usertext = (TextView) findViewById(R.id.usertext);
-        add_create = (TextView) findViewById(R.id.add_create);
+        add_building = (TextView) findViewById(R.id.add_building);
+        add_catalog = (TextView) findViewById(R.id.add_catalog);
+        //usertext = (TextView) findViewById(R.id.usertext);
+       // add_create = (TextView) findViewById(R.id.add_create);
 
 
         if ((General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL) > 0)) {
@@ -225,7 +257,16 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
         }
 
-        add_build.setOnClickListener(new View.OnClickListener() {
+
+
+
+        Loadwatchlist();
+
+
+
+
+
+        add_catalog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
@@ -246,22 +287,71 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
                     fragmentTransaction.addToBackStack("cardSignUp1");
                     //container_Signup1.setVisibility(View.VISIBLE);
-                    fragmentTransaction.replace(R.id.container_sign, d);
+                    if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                        fragmentTransaction.replace(R.id.container_Signup1, d);
+                    else
+                        fragmentTransaction.replace(R.id.container_sign, d);
 //                    signUpCardFlag = true;
                     fragmentTransaction.commitAllowingStateLoss();
-//                    AppConstants.SIGNUP_FLAG = true;
+                    AppConstants.SIGNUP_FLAG = true;
+
+                } else if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+                    WatchlistExplorer watchlistExplorer=new WatchlistExplorer();
+                    loadFragmentAnimated(watchlistExplorer,null,R.id.container_Signup1,"");
+                    /*General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
+                    Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
+                    startActivity(in);*/
+
+
+
+
+                } else {
+                    /*General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
+                    Intent in = new Intent(getBaseContext(), BrokerMap.class);
+                    startActivity(in);*/
+
+                    WatchlistExplorer watchlistExplorer=new WatchlistExplorer();
+                    loadFragmentAnimated(watchlistExplorer,null,R.id.container_sign,"");
+                }
+
+            }
+        });
+
+
+
+        add_building.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                    SignUpFragment d = new SignUpFragment();
+                    Bundle bundle = new Bundle();
+                    if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                        bundle.putString("lastFragment", "clientDrawer");
+                    else
+                        bundle.putString("lastFragment", "brokerDrawer");
+                    d.setArguments(bundle);
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+                    fragmentTransaction.addToBackStack("cardSignUp1");
+                    //container_Signup1.setVisibility(View.VISIBLE);
+                    if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                        fragmentTransaction.replace(R.id.container_Signup1, d);
+                    else
+                        fragmentTransaction.replace(R.id.container_sign, d);
+//                    signUpCardFlag = true;
+                    fragmentTransaction.commitAllowingStateLoss();
+                    AppConstants.SIGNUP_FLAG = true;
 
                 } else if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
                     General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
                     Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
-                /*in.putExtra("data","portfolio");
-                in.putExtra("role","");*/
                     startActivity(in);
+
                 } else {
                     General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
                     Intent in = new Intent(getBaseContext(), BrokerMap.class);
-                /*in.putExtra("data","portfolio");
-                in.putExtra("role","");*/
                     startActivity(in);
                 }
 
@@ -271,6 +361,21 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         realm = General.realmconfig(getBaseContext());
         adapter = new porfolioAdapter(getBaseContext(), portListing);
         rental_list.setAdapter(adapter);
+
+
+        RealmResults<WatchListRealmModel> watch = realm.where(WatchListRealmModel.class).findAll();
+
+        for (WatchListRealmModel c : watch) {
+
+            portListingModel portListingModel = new portListingModel(c.getWatchlist_id(),c.getWatchlist_name(),c.getImageuri(),"watchlist");
+            watchlist.add(portListingModel);
+
+        }
+
+
+
+
+
 
         RealmResults<Localities> results2 = realm.where(Localities.class).findAllSorted("timestamp", false);
 
@@ -353,7 +458,9 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
         }*/
 
-        Log.i("dataritesh", "myPortfolioLL" + myPortfolioLL);
+        Log.i("dataritesh", "myPortfolioLL" + myPortfolioLL);//watchlist
+
+        portListing.addAll(watchlist);
         portListing.addAll(myLocalitiesLL);
         portListing.addAll(addbuildingLL);
         portListing.addAll(myPortfolioLL);
@@ -362,16 +469,16 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         adapter.notifyDataSetChanged();
         if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
             getSupportActionBar().setTitle("");
-            confirm_screen_title.setText("My Advertised \nListings");
-            inputSearch.setHint("Search " + portListing.size() + " Building in Listings");
-            usertext.setHint("\"My Listing\"");
-            add_create.setText("Create");
+            confirm_screen_title.setText("My Marketing \nCatalog");
+            inputSearch.setHint("Search " + portListing.size() + " Catalog");
+           // usertext.setHint("\"My Listing\"");
+           // add_create.setText("Create");
         } else {
             getSupportActionBar().setTitle("");
             confirm_screen_title.setText("My WatchList");
             inputSearch.setHint("Search " + portListing.size() + " Building in Watchlist");
-            usertext.setHint("Your Building");
-            add_create.setText("Add");
+            //usertext.setHint("Your Building");
+           // add_create.setText("Add");
 
         }
         // inputSearch.setHint("Search My "+portListing.size()+" Listings");
@@ -393,7 +500,19 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i("zyzz", "zyzz 1");
-                if (myLocalitiesLL.contains(portListing.get(position))) {
+                if (watchlist.contains(portListing.get(position))) {
+                    Bundle b=new Bundle();
+                    b.putString("watchlist_id",portListing.get(position).getWatchlist_id()+"");
+                    Log.i("datafromraelm1", "realm data 1  :"+ portListing.get(position).getWatchlist_id()+"");
+                    WatchlistDisplayBuilding watchlistDisplayBuilding=new WatchlistDisplayBuilding();
+
+                    if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+                        loadFragmentAnimated(watchlistDisplayBuilding,b,R.id.container_Signup1,"");
+                    }else {
+                        loadFragmentAnimated(watchlistDisplayBuilding,b,R.id.container_sign,"");
+                    }
+
+                }else if (myLocalitiesLL.contains(portListing.get(position))) {
                     Log.i("zyzz", "zyzz 2");
                     Realm myRealm = General.realmconfig(MyPortfolioActivity.this);
                     Localities result = myRealm.where(Localities.class).equalTo("timestamp", portListing.get(position).getTimpstamp()).findFirst();
@@ -504,6 +623,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
                         Log.i("portfolio1", "deletelist" + portListing.contains(d) + " " + d.getName());
                         Log.i("addbuildingOR", "addbuildingOR 1" + addbuildingOR.contains(d));
                         portListing.remove(d);
+
                         myPortfolioLL.remove(d);
                         myPortfolioOR.remove(d);
                         portListingCopy.remove(d);
@@ -543,6 +663,19 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
                         }
 
 
+                        if(watchlist.contains(d)){
+
+                            matchedId = d.getWatchlist_id();
+                            for (final portListingModel l : watchlist) {
+                                Log.i("portfolio11", "deletelist 35  watchlist" + l.getWatchlist_id());
+                                if (l.getWatchlist_id().equalsIgnoreCase(matchedId)) {
+                                    watchlist.remove(l);
+                                    break;
+                                }
+                            }
+                            watchlist_id=d.getWatchlist_id();
+                            new RemoveWatchlist().execute();
+                        }
                         Log.i("addbuildingOR", "addbuildingOR 2" + addbuildingOR);
 
 
@@ -568,21 +701,32 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
                         } catch (Exception e) {
                             Log.i("TAG", "caught in exception deleting default droom 31 " + e);
                         }
+                        try {
+                            Realm myRealm = General.realmconfig(MyPortfolioActivity.this);
+                            WatchListRealmModel result = myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id", d.getWatchlist_id()).findFirst();
+                            if (myRealm.isInTransaction())
+                                myRealm.cancelTransaction();
+                            myRealm.beginTransaction();
+                            result.removeFromRealm();
+                            myRealm.commitTransaction();
 
+                        } catch (Exception e) {
+                            Log.i("TAG", "caught in exception deleting default droom 31 " + e);
+                        }
 
                     }
                     mode.finish();
                     adapter.notifyDataSetChanged();
                     if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-                        inputSearch.setHint("Search " + portListing.size() + " Building in Listings");
-                        usertext.setText("");
-                        usertext.setHint("\"My Listing\"");
-                        add_create.setText("Create");
+                        inputSearch.setHint("Search " + portListing.size() + " Catalog");
+                       // usertext.setText("");
+                       // usertext.setHint("\"My Listing\"");
+                       // add_create.setText("Create");
                     } else {
                         inputSearch.setHint("Search " + portListing.size() + " Building in Watchlist");
-                        usertext.setText("");
-                        usertext.setHint("Your Building");
-                        add_create.setText("Add");
+                       // usertext.setText("");
+                       // usertext.setHint("Your Building");
+                       // add_create.setText("Add");
 
                     }
                     return true;
@@ -707,32 +851,33 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
                 Log.i("searcho", "s " + searchQuery.length());
                 Log.i("searcho", "sb " + portListingCopy + " ============ : " + inputSearch.getText().toString().equalsIgnoreCase(""));
 
+               if(!searchQuery.equalsIgnoreCase("")) {
+                   if (portListing != null)
+                       portListing.clear();
+                   portListing.addAll(portListingCopy);
+                   Log.i("searcho", "sc " + portListing);
+                   for (portListingModel c : portListingCopy) {
+                       Log.i("searcho", "sd " + c.getLl_pm() + " " + c.getOr_psf() + " ");
+                       if (!c.getName().toLowerCase().contains(searchQuery.toLowerCase())) {
+                           portListing.remove(c);
+                       } else if (c.getLl_pm() != 0 && c.getOr_psf() != 0) {
+                           if (TT.equalsIgnoreCase("LL")) {
+                               if (c.getLl_pm() == 0) {
+                                   portListing.remove(c);
+                               }
+                           } else if (TT.equalsIgnoreCase("OR")) {
+                               if (c.getOr_psf() == 0) {
+                                   portListing.remove(c);
+                               }
+                           }
 
-                if (portListing != null)
-                    portListing.clear();
-                portListing.addAll(portListingCopy);
-                Log.i("searcho", "sc " + portListing);
-                for (portListingModel c : portListingCopy) {
-                    Log.i("searcho", "sd " + c.getLl_pm() + " " + c.getOr_psf() + " ");
-                    if (!c.getName().toLowerCase().contains(searchQuery.toLowerCase())) {
-                        portListing.remove(c);
-                    } else if (c.getLl_pm() != 0 && c.getOr_psf() != 0) {
-                        if (TT.equalsIgnoreCase("LL")) {
-                            if (c.getLl_pm() == 0) {
-                                portListing.remove(c);
-                            }
-                        } else if (TT.equalsIgnoreCase("OR")) {
-                            if (c.getOr_psf() == 0) {
-                                portListing.remove(c);
-                            }
-                        }
 
+                       }
+                       Log.i("searcho", "sd " + portListing);
+                       adapter.notifyDataSetChanged();
 
-                    }
-                    Log.i("searcho", "sd " + portListing);
-                    adapter.notifyDataSetChanged();
-
-                }
+                   }
+               }
             }
 
             @Override
@@ -741,9 +886,9 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
               portListing.clear();
               portListing.addAll(portListingCopy);*/
                 Log.i("search12", "sb outside " + s + " ============ : " + inputSearch.getText().toString().equalsIgnoreCase(""));
-                String s1 = "\"" + s + "\"";
+                /*String s1 = "\"" + s + "\"";
                 if (s.toString().equalsIgnoreCase("")) {
-                    usertext.setText(s);
+                   // usertext.setText(s);
                     Log.i("search12", "sb inside " + s + " ============ : ");
                     if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
                         usertext.setHint("Your Building");
@@ -752,7 +897,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
                 } else {
                     usertext.setText(s1);
 
-                }
+                }*/
             }
         });
 
@@ -937,15 +1082,17 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             } else {
                 // getSupportFragmentManager().popBackStack();
 //                getSupportFragmentManager().
-                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+                if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+                }else {
+                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
+                }
                 AppConstants.SIGNUP_FLAG = false;
             }
             Log.i("sushil123", " main activity =================== SIGNUP_FLAGffffffff");
         } else if(setting==true){
             Log.i("BACKsPRESSED"," =================== setting portfolio"+setting);
-
                 getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
-
             Log.i("BACKsPRESSED", "loadFragment setting client4 " + getFragmentManager().getBackStackEntryCount());
                 setting = false;
 
@@ -974,8 +1121,14 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
                             Intent.FLAG_ACTIVITY_CLEAR_TASK |
                             Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(in);
-        } else
-            super.onBackPressed();
+        } else {
+            Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
+            in.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(in);
+        }
     }
 
 
@@ -985,23 +1138,25 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         if (position == 0) {
             TT = "LL";
             portListing.clear();
+            portListing.addAll(watchlist);
             portListing.addAll(addbuildingLL);
             portListing.addAll(myPortfolioLL);
             portListing.addAll(myLocalitiesLL);
             portListingCopy.clear();
             portListingCopy.addAll(portListing);
             AppConstants.TT_TYPE = "ll";
+
             adapter.notifyDataSetChanged();
             if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-                inputSearch.setHint("Search " + portListing.size() + " Building in Listings");
-                usertext.setText("");
-                usertext.setHint("\"My Listing\"");
-                add_create.setText("Create");
+                inputSearch.setHint("Search " + portListing.size() + " Catalog");
+                /*usertext.setText("");
+                usertext.setHint("\"My Listing\"");*/
+//                add_create.setText("Create");
             } else {
                 inputSearch.setHint("Search " + portListing.size() + " Building in Watchlist");
-                usertext.setText("");
-                usertext.setHint("Your Building");
-                add_create.setText("Add");
+                /*usertext.setText("");
+                usertext.setHint("Your Building");*/
+//                add_create.setText("Add");
 
             }
             General.setBadgeCount(this, AppConstants.ADDB_COUNT_LL, 0);
@@ -1011,6 +1166,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             AppConstants.TT_TYPE = "or";
             Log.i("addbuildingOR", "addbuildingOR 3" + addbuildingOR);
             portListing.clear();
+            portListing.addAll(watchlist);
             portListing.addAll(myLocalitiesOR);
             portListing.addAll(addbuildingOR);
             portListing.addAll(myPortfolioOR);
@@ -1018,16 +1174,15 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             portListingCopy.addAll(portListing);
             adapter.notifyDataSetChanged();
             if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-                inputSearch.setHint("Search " + portListing.size() + " Building in Listings");
-                usertext.setText("");
-                usertext.setHint("\"My Listing\"");
-                add_create.setText("Create");
+                inputSearch.setHint("Search " + portListing.size() + " Catalog");
+                /*usertext.setText("");
+                usertext.setHint("\"My Listing\"");*/
+//                add_create.setText("Create");
             } else {
                 inputSearch.setHint("Search " + portListing.size() + " Building in Watchlist");
-                usertext.setText("");
-                usertext.setHint("Your Building");
-                add_create.setText("Add");
-
+                /*usertext.setText("");
+                usertext.setHint("Your Building");*/
+//                add_create.setText("Add");
             }
             General.setBadgeCount(this, AppConstants.ADDB_COUNT_OR, 0);
             resaleCount.setVisibility(View.GONE);
@@ -1231,5 +1386,314 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             }
         });
     }
+
+
+   public void closeWatchlistFragment(){
+       if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+           getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
+
+       }else {
+           getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+       }
+   }
+
+
+    public ArrayList<loadBuildingDataModel> passingListActivity(){
+       // ArrayList<loadBuildingDataModel> selectedlist = new ArrayList<>();
+        //selectedlist.addAll(((WatchlistExplorer) getSupportFragmentManager().findFragmentById(R.id.container_map)).passingListFragA());
+        return (selectedlist);
+    }
+
+    public void OpenFrag(ArrayList<loadBuildingDataModel> selectedlist1 ){
+        for(int i=0;i<selectedlist.size();i++){
+            Log.i("selected111","selected building init : "+selectedlist.size()+"   === "+selectedlist.get(i).getName() );
+
+        }
+        selectedlist.clear();
+        selectedlist.addAll(selectedlist1);
+        Log.i("selected111","selected building init : "+selectedlist.size() );
+        if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
+            WatchlistTitle watchlistTitle=new WatchlistTitle();
+            loadFragmentAnimated(watchlistTitle,null,R.id.container_Signup1,"");
+        }else {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+            WatchlistTitle watchlistTitle=new WatchlistTitle();
+            loadFragmentAnimated(watchlistTitle,null,R.id.container_sign,"");
+        }
+
+
+
+
+    }
+
+
+    public void Back(String edit){
+        Bundle b=new Bundle();
+        b.putString("edit",edit);
+        if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
+            WatchlistExplorer watchlistExplorer=new WatchlistExplorer();
+            if(edit.equalsIgnoreCase(""))
+            loadFragmentAnimated(watchlistExplorer,null,R.id.container_Signup1,"");
+            else
+                loadFragmentAnimated(watchlistExplorer,b,R.id.container_Signup1,"");
+        }else {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+            WatchlistExplorer watchlistExplorer=new WatchlistExplorer();
+            if(edit.equalsIgnoreCase(""))
+            loadFragmentAnimated(watchlistExplorer,null,R.id.container_sign,"");
+            else
+                loadFragmentAnimated(watchlistExplorer,b,R.id.container_sign,"");
+
+        }
+        adapter.notifyDataSetChanged();
+
+    }
+
+    public void Refresh(String read){
+        Bundle b=new Bundle();
+        b.putString("read",read);
+        if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
+            WatchlistDisplayBuilding watchlistDisplayBuilding=new WatchlistDisplayBuilding();
+            loadFragmentAnimated(watchlistDisplayBuilding,b,R.id.container_Signup1,"");
+        }else {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+            WatchlistDisplayBuilding watchlistDisplayBuilding=new WatchlistDisplayBuilding();
+            loadFragmentAnimated(watchlistDisplayBuilding,b,R.id.container_sign,"");
+        }
+        recreate();
+        /*WatchlistExplorer watchlistExplorer=new WatchlistExplorer();
+        loadFragmentAnimated(watchlistExplorer,null,R.id.container_sign,"");*/
+    }
+
+    public void Close(){
+        if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
+
+        }else {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+        }
+
+        recreate();
+
+        /*WatchlistExplorer watchlistExplorer=new WatchlistExplorer();
+        loadFragmentAnimated(watchlistExplorer,null,R.id.container_sign,"");*/
+    }
+
+    protected class RemoveWatchlist extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            ReadWatchlistAPI readWatchlistAPI=new ReadWatchlistAPI();
+            readWatchlistAPI.setUser_id(General.getSharedPreferences(getBaseContext(), AppConstants.USER_ID));
+            readWatchlistAPI.setAction("remove");
+            readWatchlistAPI.setCity("mumbai");
+            readWatchlistAPI.setTt("ll");
+            //readWatchlistAPI.setBuild_list(ids);
+            Log.i("magic111","addBuildingRealm success response "+watchlist_id);
+            readWatchlistAPI.setWatchlist_id(watchlist_id);
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+            OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+            oyeokApiService.ReadWatchlist(readWatchlistAPI, new retrofit.Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+
+                    String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+
+                    try {
+                        JSONObject jsonResponse = new JSONObject(strResponse);
+                        Log.i("magic111","addBuildingRealm success response "+response+"\n"+jsonResponse);
+                        JSONObject building = new JSONObject(jsonResponse.getString("responseData"));
+                        Log.i("magic111","addBuildingRealm success response "+building);
+                        //watchlist_id=building.getString("watchlist_id");
+                        JSONArray buildingdata=new JSONArray(building.getString("buildings"));
+                        Log.i("magic111","addBuildingRealm success response1 "+buildingdata);
+                        Log.i("magic111","addBuildingRealm success response2 "+buildingdata.getString(0));
+                        // AddDataToRealm(watchlist_id);
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+
+
+            return null;
+        }
+
+
+    }
+    /*private void RemoveWatchlist(){
+        ReadWatchlistAPI readWatchlistAPI=new ReadWatchlistAPI();
+        readWatchlistAPI.setUser_id(General.getSharedPreferences(getBaseContext(), AppConstants.USER_ID));
+        readWatchlistAPI.setAction("remove");
+        readWatchlistAPI.setCity("mumbai");
+        readWatchlistAPI.setTt("ll");
+        //readWatchlistAPI.setBuild_list(ids);
+        Log.i("magic111","addBuildingRealm success response "+watchlist_id);
+        readWatchlistAPI.setWatchlist_id(watchlist_id);
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+        oyeokApiService.ReadWatchlist(readWatchlistAPI, new retrofit.Callback<JsonElement>() {
+            @Override
+            public void success(JsonElement jsonElement, Response response) {
+
+                String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+
+                try {
+                    JSONObject jsonResponse = new JSONObject(strResponse);
+                    Log.i("magic111","addBuildingRealm success response "+response+"\n"+jsonResponse);
+                    JSONObject building = new JSONObject(jsonResponse.getString("responseData"));
+                    Log.i("magic111","addBuildingRealm success response "+building);
+                    //watchlist_id=building.getString("watchlist_id");
+                    JSONArray buildingdata=new JSONArray(building.getString("buildings"));
+                    Log.i("magic111","addBuildingRealm success response1 "+buildingdata);
+                    Log.i("magic111","addBuildingRealm success response2 "+buildingdata.getString(0));
+                    // AddDataToRealm(watchlist_id);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+
+
+    }*/
+
+
+
+    protected class DetailWatchlist extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+//    private void DetailWatchlist(){
+            ids.clear();
+            Log.i("magic1112", "addBuildingRealm success response " + ids);
+            ReadWatchlistAPI readWatchlistAPI = new ReadWatchlistAPI();
+            readWatchlistAPI.setUser_id(General.getSharedPreferences(getBaseContext(), AppConstants.USER_ID));
+            readWatchlistAPI.setAction("details");
+            readWatchlistAPI.setCity("mumbai");
+            readWatchlistAPI.setTt("ll");
+        /*
+        readWatchlistAPI.setBuild_list(ids);
+        readWatchlistAPI.setWatchlist_id("");*/
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+            OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+            oyeokApiService.ReadWatchlist(readWatchlistAPI, new retrofit.Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+
+                    String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+
+                    try {
+                        JSONObject jsonResponse = new JSONObject(strResponse);
+                        Log.i("magic1112", "addBuildingRealm success response " + response + "\n" + jsonResponse);
+                        JSONArray building = new JSONArray(jsonResponse.getString("responseData"));
+                        Log.i("magic1112", "addBuildingRealm success response " + building.length() + "\n" + building);
+                        int size = building.length();
+                        if (realmsids != null)
+                            realmsids.clear();
+                        for (int i = 0; i < size; i++) {
+                            JSONObject j = new JSONObject(building.get(i).toString());
+                            Log.i("magic1112", "addBuildingRealm success response  :::::  " + j.getJSONArray("build_list").get(i) + " ::\n " + j.getString("title"));
+
+                            Log.i("magic1112", "addBuildingRealm success response  :::::  " + j.getJSONArray("build_list").length());
+
+
+                            int size1 = j.getJSONArray("build_list").length();
+                            for (int k = 0; k < size1; k++) {
+                                loadBuildingdataModelRealm loadBuildingdataModelRealm1 = new loadBuildingdataModelRealm(j.getJSONArray("build_list").get(k)+"");
+                                realmsids.add(loadBuildingdataModelRealm1);
+                                Log.i("magic1112", "addBuildingRealm success response  :::::  " +j.getJSONArray("build_list").get(k));
+                            }
+
+                            Log.i("magic1112", "addBuildingRealm success response  :::::  " + j.getString("title"));
+
+                            AddDataToRealm(j.getString("title"), j.getString("watchlist_id"), j.getString("city"), j.getString("tt"), j.getString("user_id"), j.getString("user_role"), j.getString("user_name"));
+                        }
+                        //watchlist_id=building.getString("watchlist_id");
+                    /*JSONArray buildingdata=new JSONArray(building.getString("buildings"));
+                    Log.i("magic111","addBuildingRealm success response1 "+buildingdata);
+                    Log.i("magic111","addBuildingRealm success response2 "+buildingdata.getString(0));*/
+                        // AddDataToRealm(watchlist_id);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+
+
+            return null;
+        }
+    }
+
+    void Loadwatchlist(){
+
+        Log.i("magic1112","  Loadwatchlist =======================:  "+General.getSharedPreferences(getBaseContext(),AppConstants.IS_SIGNUP));
+
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.IS_SIGNUP).equalsIgnoreCase("true")){
+            new DetailWatchlist().execute();
+          General.setSharedPreferences(getBaseContext(),AppConstants.IS_SIGNUP,"false");
+        }
+
+
+
+
+
+
+    }
+
+
+
+    private  void AddDataToRealm(String watchlist_name,String watchlist_id,String city,String tt,String user_id,String user_role,String  user_name){
+       // WatchListRealmModel results2 = realm.where(WatchListRealmModel.class).equalTo("watchlist_id", watchlist_id).findFirst();
+        WatchListRealmModel watchListRealmModel=new WatchListRealmModel();
+        watchListRealmModel.setWatchlist_id(watchlist_id);
+        watchListRealmModel.setBuildingids(realmsids);
+        watchListRealmModel.setWatchlist_name(watchlist_name);
+        watchListRealmModel.setCity(city);
+        watchListRealmModel.setTt(tt);
+        watchListRealmModel.setUser_id(user_id);
+        watchListRealmModel.setUser_name(user_name);
+        watchListRealmModel.setUser_role(user_role);//watchcontent
+        watchListRealmModel.setDisplayBuildinglist(watchcontent);
+        realm.beginTransaction();
+        // WatchListRealmModel watchListRealmModel=myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id",watchlist_id).findFirst();
+        realm.copyToRealmOrUpdate(watchListRealmModel);
+        realm.commitTransaction();
+
+    }
+
+
+
+
 
 }

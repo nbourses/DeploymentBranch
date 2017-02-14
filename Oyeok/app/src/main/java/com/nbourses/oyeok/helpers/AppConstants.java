@@ -201,5 +201,9 @@ public class AppConstants {
     public static final String AUTO_TT_CHANGE = "autoClickMarker";
     public static  String BUILDING_ID = "buildingId";
     public static final String BUILDING_OYE_MIN_MAX = "buildingOyeMinMax";
-    public static final String REFRESH_LISTVIEW = "refreshListView";
+    public static final String REFRESH_LISTVIEW = "refreshListView";//MARKET_RATE
+    public static final String MARKET_RATE = "market_rate";
+    public static final String LL_PM = "ll_pm";
+    public static final String OR_PSF = "or_psf";
+    public static final String IS_SIGNUP = "is_signup";
 }

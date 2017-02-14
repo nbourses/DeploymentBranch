@@ -24,6 +24,7 @@
             android:background="@color/white"
             android:id="@+id/bottonNavBar"
             android:paddingTop="5dp"
+            android:orientation="horizontal"
             android:layout_alignParentBottom="true"
             android:foregroundGravity="bottom">
 
@@ -111,8 +112,9 @@
             </RadioGroup>
             <FrameLayout
                 android:layout_width="45dp"
-                android:layout_height="56dp"
-                android:layout_marginLeft="-250dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="-270dp"
+                android:layout_marginTop="0dp"
                 android:id="@+id/frfav"
                 >
             <TextView
@@ -170,6 +172,27 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:visibility="invisible" />
+
+<!--<
+    >-->
+   <!-- <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    &lt;!&ndash; sign-out button &ndash;&gt;
+
+    <Button
+        android:id="@+id/sign_out_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Out"
+        android:visibility="gone" />-->
+
+
+
+
+
     <!--<android.support.v4.widget.NestedScrollView
         android:id="@+id/myScrollingContent"
         android:layout_width="match_parent"

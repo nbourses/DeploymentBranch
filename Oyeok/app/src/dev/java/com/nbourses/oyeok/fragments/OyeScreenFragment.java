@@ -721,7 +721,7 @@ public class OyeScreenFragment extends Fragment {
 
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.add(Calendar.DATE,1);
+           // myCalendar.add(Calendar.DATE,1);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
 
@@ -756,11 +756,11 @@ public class OyeScreenFragment extends Fragment {
 
 
             d  = sdf.parse(sdf.format(now1.getTime()));
-            now.add(Calendar.MONTH,6);
+            now.add(Calendar.MONTH,7);
            // now.add(Calendar.DATE,1);
 
             Date dd = sdf.parse(  now.get(Calendar.DATE)
-                    + "/"+ (now.get(Calendar.MONTH) + 1)
+                    + "/"+ (now.get(Calendar.MONTH))
                     + "/"
 
                     + now.get(Calendar.YEAR));

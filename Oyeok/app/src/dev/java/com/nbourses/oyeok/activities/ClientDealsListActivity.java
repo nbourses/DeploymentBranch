@@ -181,8 +181,8 @@ public class ClientDealsListActivity extends BrokerMainPageActivity implements C
 
 //    @Bind(R.id.searchView)
 //    SearchView searchView;
-private int maxPages = 1;
-private int page = 1;
+    private int maxPages = 1;
+    private int page = 1;
     private int preLast;
     private boolean default_deal_flag;
     private ArrayList<BrokerDeals> default_deals;

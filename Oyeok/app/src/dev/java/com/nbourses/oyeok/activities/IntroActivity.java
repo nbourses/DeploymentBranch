@@ -81,6 +81,7 @@ public class IntroActivity extends ActionBarActivity {
             Log.i("TIMESTAMP", "millis " + System.currentTimeMillis());
         }
 
+        General.setSharedPreferences(getBaseContext(),AppConstants.IS_SIGNUP,"false");
         mcallback = new GetCurrentLocation.CurrentLocationCallback() {
             @Override
             public void onComplete(Location location) {

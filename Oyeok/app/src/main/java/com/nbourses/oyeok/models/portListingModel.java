@@ -1,5 +1,7 @@
 package com.nbourses.oyeok.models;
 
+import android.net.Uri;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -8,8 +10,6 @@ import com.google.gson.annotations.SerializedName;
  */
 //implements Comparable<portListingModel>
 public class portListingModel {
-
-
 
     @Expose
     @SerializedName("id")
@@ -63,13 +63,61 @@ public class portListingModel {
     @Expose
     @SerializedName("furnishing")
     private String furnishing;
+
+    @Expose
+    @SerializedName("market_rate")
+    private int market_rate;
+    @Expose
+    @SerializedName("possession_date")
+    private String possession_date;
+
+    @Expose
+    @SerializedName("watchlist_id")
+    private String watchlist_id;
+
+    @Expose
+    @SerializedName("imageUri")
+    private String imageUri;
+
+    @Expose
+    @SerializedName("city")
+    private String city;
+
+
+
     /*@Expose
     @SerializedName("display_type")
-    private String display_type;
+    private String display_type;   watchlist_name
 
     @Expose
     @SerializedName("display_type")
     private String display_type;*/
+
+    public String getPossession_date() {
+        return possession_date;
+    }
+
+    public void setPossession_date(String possession_date) {
+        this.possession_date = possession_date;
+    }
+
+    public int getMarket_rate() {
+        return market_rate;
+    }
+
+    public void setMarket_rate(int market_rate) {
+        this.market_rate = market_rate;
+    }
+
+    public void setReq_avl(String req_avl) {
+        this.req_avl = req_avl;
+    }
+
+    public void setFurnishing(String furnishing) {
+        this.furnishing = furnishing;
+    }
+
+
 
     public void setDisplay_type(String display_type) {
         this.display_type = display_type;
@@ -109,6 +157,24 @@ public class portListingModel {
         this.tt = tt;
     }
 
+    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config, String display_type, String tt, String req_avl, String furnishing, int market_rate, String possession_date) {
+        this.id = id;
+        this.name = name;
+        this.locality = locality;
+        this.growth_rate = growth_rate;
+        this.ll_pm = ll_pm;
+        this.or_psf = or_psf;
+        this.timpstamp = timpstamp;
+        this.transaction = transaction;
+        this.config = config;
+        this.display_type = display_type;
+        this.tt = tt;
+        this.req_avl = req_avl;
+        this.furnishing = furnishing;
+        this.market_rate = market_rate;
+        this.possession_date = possession_date;
+    }
+
     public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config, String display_type, String tt, String req_avl, String furnishing) {
         this.id = id;
         this.name = name;
@@ -136,6 +202,15 @@ public class portListingModel {
 
         this.display_type=display_type;
     }
+
+    public portListingModel(String watchlist_id, String name,String imageUri, String display_type) {
+        this.watchlist_id = watchlist_id;
+        this.name = name;
+        this.imageUri = imageUri;
+        this.display_type = display_type;
+    }
+
+
 
     public String getReq_avl() {
         return req_avl;
@@ -207,7 +282,34 @@ public class portListingModel {
     public void setTransaction(String transaction) {
         this.transaction = transaction;
     }
-/*
+
+    public String getWatchlist_id() {
+        return watchlist_id;
+    }
+
+    public void setWatchlist_id(String watchlist_id) {
+        this.watchlist_id = watchlist_id;
+    }
+
+
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
+    }
+
+    /*
     @Override
     public int compareTo(portListingModel another) {
         return 0;

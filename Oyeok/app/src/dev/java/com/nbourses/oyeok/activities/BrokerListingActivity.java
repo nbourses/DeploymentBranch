@@ -291,7 +291,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         for(addBuildingRealm c :result1){
 
             Log.i("getLocality","getLocality   : "+c.getLocality());
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),"ll",c.getReq_avl(),c.getFurnishing());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),"ll",c.getReq_avl(),c.getFurnishing(),c.getMarket_rate(),c.getPossession_date());
 
             addbuildingLL.add(portListingModel);
 
@@ -315,7 +315,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         for(addBuildingRealm c :result2){
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),"or",c.getReq_avl(),c.getFurnishing());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),"or",c.getReq_avl(),c.getFurnishing(),c.getMarket_rate(),c.getPossession_date());
 
             addbuildingOR.add(portListingModel);
 
@@ -329,7 +329,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
             adapter.notifyDataSetChanged();
             getSupportActionBar().setTitle("");
-            confirm_screen_title.setText("My Listings");
+            confirm_screen_title.setText("My Advertised\nListings");
             inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
             usertext.setHint("\"My Listing\"");
             add_create.setText("Create");

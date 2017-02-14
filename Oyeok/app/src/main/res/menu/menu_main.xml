@@ -8,7 +8,7 @@
         android:title="Matching"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/watchlist"
+        android:id="@+id/watchlistAdapter"
         android:enabled="true"
         android:icon="@drawable/ic_watchlist"
         android:title="Watchlist"

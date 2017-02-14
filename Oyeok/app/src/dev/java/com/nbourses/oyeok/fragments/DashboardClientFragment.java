@@ -616,74 +616,6 @@ else {
                         // }
                 }
 
-                /*if ((intent.getExtras().getString("filterValue") != null)) {
-                    bhk = intent.getExtras().getString("bhk");
-                    Log.i("bhk", "=================  " + bhk);r
-                    if (bhk.equalsIgnoreCase("1bhk") || bhk.equalsIgnoreCase("<600")) {
-                        filterValueMultiplier = 600;
-                        updateHorizontalPicker();
-                        BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
-                        if (brokerType.equals("rent"))
-                            if (bhk.equalsIgnoreCase("1bhk"))
-                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
-                            else
-                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
-                        else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
-                    } else if (bhk.equalsIgnoreCase("2bhk") || bhk.equalsIgnoreCase("<950")|| bhk.equalsIgnoreCase("default")) {
-                        filterValueMultiplier = 950;
-                        updateHorizontalPicker();
-                        BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
-                        if (brokerType.equals("rent"))
-                            if (bhk.equalsIgnoreCase("2bhk"))
-                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
-                            else
-                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
-                        else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
-                    } else if (bhk.equalsIgnoreCase("3bhk") || bhk.equalsIgnoreCase("<1600")) {
-                        filterValueMultiplier = 1600;
-                        updateHorizontalPicker();
-                        BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
-                        if (brokerType.equals("rent"))
-                            if (bhk.equalsIgnoreCase("3bhk"))
-                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
-                            else
-                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
-                        else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
-                    } else if (bhk.equalsIgnoreCase("4bhk") || bhk.equalsIgnoreCase("<2100")) {
-                        filterValueMultiplier = 2100;
-                        updateHorizontalPicker();
-                        BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
-                        if (brokerType.equals("rent"))
-                            if (bhk.equalsIgnoreCase("4bhk"))
-                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
-                            else
-                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
-                        else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
-                    } else if (bhk.equalsIgnoreCase("4+bhk") || bhk.equalsIgnoreCase("<3000")) {
-                        filterValueMultiplier = 3000;
-                        updateHorizontalPicker();
-                        BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
-                        if (brokerType.equals("rent"))
-                            if (bhk.equalsIgnoreCase("4+bhk"))
-                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
-                            else
-                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
-                        else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
-                    } else if (bhk.equalsIgnoreCase("<300") ) {
-                        filterValueMultiplier = 300;
-                        updateHorizontalPicker();
-                        BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
-                        if (brokerType.equals("rent"))
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
-                        else
-                            onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
-                    }
-                }*/
             }
         }
     };
@@ -1406,16 +1338,13 @@ else {
                                     tvRate.setVisibility(View.GONE);
                                     rupeesymbol.setVisibility(View.GONE);
                                     recordWorkout.setBackgroundColor(Color.parseColor("#ff9f1c"));
-
                                     mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.oyebutton_bg_color_yellow));
                                     txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_bg_color_white));
                                     String text1;//="<font color=#ffffff size=20> "+rate_growth[i] + " %</font>";
-
                                     /*text1 = "<font color=#ffffff>Observed </font><font color=#ff9f1c> "+buildingCacheModels.get(i).getListing()+" </font> <font color=#ffffff>online listing in last 1 WEEK</font>";
                                     tv_building.setText(Html.fromHtml(text1));*/
                                     text1="<font color=#2dc4b6>Today's Rate</font>";
                                     tv_building.setText(Html.fromHtml(text1));
-
                                     txtFilterValue.setText(buildingCacheModels.get(i).getRate_growth() + " %");
                                     txtFilterValue.setTextSize(12);
                                     txtFilterValue.setTypeface(Typeface.DEFAULT_BOLD);
@@ -1454,9 +1383,8 @@ else {
                                     ll_marker.setEnabled(false);
                                     mVisits.setEnabled(false);
                                     txtFilterValue.setEnabled(false);
-//                                txtFilterValue.setTextColor(Color.parseColor("green"));
+//                                  txtFilterValue.setTextColor(Color.parseColor("green"));
                                     CancelAnimation();
-
                                     buildingSelected = false;
                                     Intent in = new Intent(AppConstants.MARKERSELECTED);
                                     in.putExtra("markerClicked", "true");
@@ -1508,24 +1436,22 @@ else {
                                     mVisits.setEnabled(true);
                                     txtFilterValue.setEnabled(true);
                                     ll_marker.setEnabled(true);
-//                                StartAnimation();
-                                    //intent.putExtra("client_heading", "Live Region Rates");
                                     Intent in = new Intent(AppConstants.MARKERSELECTED);
                                     in.putExtra("markerClicked", "false");
                                     buildingSelected = true;
                                     buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                                     LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
-//                                Log.i("coming soon", "coming soon :" + marker.getTitle().toString() + recordWorkout);
-
                                     tvRate.setVisibility(View.VISIBLE);
                                     rupeesymbol.setVisibility(View.VISIBLE);
                                     tv_building.setVisibility(View.VISIBLE);
-//                                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
 
-                                    //tv_building.setText("Average Rate @ this Locality");
 
                                 }
                             } else {
+                                if (buildingCacheModels.get(i).getFlag() == true) {
+                                    ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+                                    buildingCacheModels.get(i).setFlag(false);
+                                }
                                 customMarker.get(i).setIcon(icon1);
 
                             }

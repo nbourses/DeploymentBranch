@@ -30,7 +30,7 @@ import retrofit.client.Response;
 public class AutoOkCall extends AsyncTask<String, String, String> {
     private Context mContext;
     public AutoOkCall(Context context){
-this.mContext = context;
+    this.mContext = context;
     }
 
 

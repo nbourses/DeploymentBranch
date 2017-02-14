@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:id="@+id/rows"
+    android:background="@color/white"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <CheckBox
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".12"
+            android:layout_gravity="center"
+            android:id="@+id/checkBox"
+            android:theme="@style/checkBoxStyle"
+            android:focusable="false"
+            android:visibility="gone"
+            android:focusableInTouchMode="false"
+            />
+        <ImageView
+            android:layout_width="0dip"
+            android:layout_height="60dp"
+            android:layout_weight=".20"
+            android:id="@+id/B_img"
+            android:layout_gravity="center"
+            android:layout_margin="3dp"
+            android:src="@drawable/buildingiconbeforeclick"
+            android:background="@drawable/custom_img_bg"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="2dip"
+            android:layout_marginRight="2dip"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginLeft="1dip"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:id="@+id/heading"
+                    android:textColor="@color/black"
+                    android:gravity="left|center_vertical"
+                    android:text="Bhakti Park"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.25"
+                    android:orientation="horizontal"
+                    android:layout_gravity="right"
+                    android:gravity="right">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textStyle="bold|italic"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:paddingTop="0.0dip"
+                        android:id="@+id/percentChange"
+                        android:textColor="@color/black"
+                        android:layout_marginRight="0dip"
+                        android:text="0 %"/>
+                    <ImageView
+                        android:layout_width="30dip"
+                        android:layout_height="30dip"
+                        android:id="@+id/RateIndicator"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:src="@drawable/sort_up_green"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:layout_marginTop="5dip"
+                android:id="@+id/description"
+                android:gravity="left|center_vertical"
+                android:textColor="@color/gray"
+                android:text="Near Imax Adlebs"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:textStyle="bold|italic"
+                    android:id="@+id/ActualPrice"
+                    android:textColor="@color/greenish_blue"
+                    android:gravity="right|center_vertical"
+                    android:textSize="14dip"
+                    android:text="₹.42/sq-ft"/>
+            </LinearLayout>
+            </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
