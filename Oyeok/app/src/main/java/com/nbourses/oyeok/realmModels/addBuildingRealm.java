@@ -29,7 +29,15 @@ public class addBuildingRealm extends RealmObject{
     private String display_type;
     private String req_avl;
     private String furnishing;
+    private int market_rate;
 
+    public int getMarket_rate() {
+        return market_rate;
+    }
+
+    public void setMarket_rate(int market_rate) {
+        this.market_rate = market_rate;
+    }
 
     public String getReq_avl() {
         return req_avl;

@@ -5,7 +5,7 @@
         icon="@drawable/ic_broker"
         title="Maching"/>
     <tab
-        id="@+id/watchlist"
+        id="@+id/watchlistAdapter"
         icon="@drawable/ic_watchlist"
         title="Watchlist" />
     <tab

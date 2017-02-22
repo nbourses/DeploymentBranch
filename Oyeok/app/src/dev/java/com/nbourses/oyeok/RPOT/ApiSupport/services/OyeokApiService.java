@@ -12,11 +12,13 @@ import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.deleteHDroom;
 import com.nbourses.oyeok.models.AddBuildingModel;
 import com.nbourses.oyeok.models.AddListingBorker;
+import com.nbourses.oyeok.models.CreateWatchlistAPI;
 import com.nbourses.oyeok.models.GetLocality;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.MatchingOK;
 import com.nbourses.oyeok.models.PreOk;
 import com.nbourses.oyeok.models.PublishLetsOye;
+import com.nbourses.oyeok.models.ReadWatchlistAPI;
 import com.nbourses.oyeok.models.SearchBuildingModel;
 import com.nbourses.oyeok.models.UpdateBuildingRateModel;
 
@@ -96,6 +98,12 @@ public interface OyeokApiService {
 
     @POST("/get/locality")
     void getLocality(@Body GetLocality getLocality, Callback<JsonElement> callback);
+
+    @POST("/watch/list")
+    void CreateWatchlist(@Body CreateWatchlistAPI createWatchlistAPI, Callback<JsonElement> callback);
+
+    @POST("/watch/list")
+    void ReadWatchlist(@Body ReadWatchlistAPI readWatchlistAPI, Callback<JsonElement> callback);
 
 }
 

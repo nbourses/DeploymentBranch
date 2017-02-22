@@ -97,14 +97,11 @@ private TextView Cancel,back,usertext;
         listView1=(ListView) v.findViewById(R.id.listView1);
         inputSearch1=(EditText)v.findViewById(R.id.inputSearch1);
         add=(ImageView) v.findViewById(R.id.add);
-//        adapter = new addBuildingAdapter(getContext(),1);
-        /*listView1.setAdapter(adapter);
-        realm = General.realmconfig(getContext());
-        adapter.setResults(realm.where(addBuildingRealm.class).findAll());*/
         add_b=(LinearLayout)v.findViewById(R.id.add_b);
         usertext=(TextView)v.findViewById(R.id.usertext);
         progressBar=(ProgressBar)v.findViewById(R.id.loadbuilding);
         building_names= new ArrayList<>();
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,14 +109,14 @@ private TextView Cancel,back,usertext;
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
 
-                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+              /*  if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                     ((BrokerMap) getActivity()).closeCardContainer();
                     ((BrokerMap)getActivity()).openAddListing();
                 }else{
 
                     ((ClientMainActivity)getActivity()).closeAddBuilding();
                     ((ClientMainActivity)getActivity()).openAddListing();
-                }
+                }*/
 
 
             }
@@ -131,13 +128,13 @@ private TextView Cancel,back,usertext;
                 imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
                 AppConstants.PROPERTY="Home";
 
-                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+               /* if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                     ((BrokerMap) getActivity()).closeCardContainer();
                 }else{
 
                     ((ClientMainActivity)getActivity()).closeAddBuilding();
 
-                }
+                }*/
             }
         });
 
@@ -150,23 +147,9 @@ private TextView Cancel,back,usertext;
                     Log.i( "portfolio","onTextChanged  LL : "+cs );
                 name=String.valueOf(cs);
                     usertext.setText("'"+cs+"'");
-                    /*adapter.setResults( realm.where(addBuildingRealm.class) //implicit AND
-                            .beginGroup()
-                            .contains("Building_name", cs.toString(),false)
-                            .endGroup()
-                            .findAll() );*/
+
                 count=3;
-               /* }else{
 
-                    adapter.setResults( realm.where(MyPortfolioModel.class)
-                            .greaterThan("or_psf", 0)  //implicit AND
-                            .beginGroup()
-                            .contains("name", cs.toString(),false)
-                            .endGroup()
-                            .findAll() );
-                    Log.i( "portfolio","onTextChanged  LL : ");
-
-                }*/
 
             }
 
@@ -183,8 +166,6 @@ private TextView Cancel,back,usertext;
             public void afterTextChanged(Editable arg0) {
                 // TODO Auto-generated method stub
                 name=String.valueOf(arg0);
-//                if(count==3)
-//                lockedTimer();
                 progressBar.setVisibility(View.VISIBLE);
                 SearchBuilding();
 
@@ -229,27 +210,6 @@ private TextView Cancel,back,usertext;
                 General.setSharedPreferences(getContext(), AppConstants.BUILDING_NAME,name);
             }
         });
-
-
-
-
- /*       sideBar = (SideBar) v.findViewById(R.id.sideIndex);
-//        dialog = (TextView) v.findViewById(R.id.dialog);
-        sideBar.setTextView(dialog);
-
-        //Set the right touch monitor
-        sideBar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
-
-            @Override
-            public void onTouchingLetterChanged(String s) {
-                //The position of the first occurrence of the letter
-                *//*int position = adapter.getPositionForSection(s.charAt(0));
-                if(position != -1){
-                    sortListView.setSelection(position);
-                }*//*
-
-            }
-        });*/
 
 
          init();
@@ -323,7 +283,7 @@ private TextView Cancel,back,usertext;
 
                             double longi = Double.parseDouble(j.getJSONArray("loc").get(0).toString());
                             Log.i("Buildingdata", "lat " + lat+"longi:  "+longi+"id:  "+j.getString("id")+"name: "+j.getString("name"));
-                            building_names.add(new loadBuildingDataModel(j.getString("name"),lat,longi,j.getString("id"),j.getString("locality"),j.getString("city")));
+                            building_names.add(new loadBuildingDataModel(j.getString("name"),lat,longi,j.getString("id"),j.getString("locality"),j.getString("city"),j.getString("ll_pm"),j.getString("or_psf")));
 
                         }
                         try {
@@ -343,6 +303,9 @@ private TextView Cancel,back,usertext;
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LAT,adapter.getItem(position).getLat()+"");
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LNG,adapter.getItem(position).getLng()+"");
                                     General.setSharedPreferences(getContext(), AppConstants.MY_CITY,adapter.getItem(position).getCity());
+                                    General.setSharedPreferences(getContext(), AppConstants.LL_PM,adapter.getItem(position).getLl_pm());
+                                    General.setSharedPreferences(getContext(), AppConstants.OR_PSF,adapter.getItem(position).getOr_psf());
+                                    Log.i("Buildingdata", "lat " +adapter.getItem(position).getLl_pm()+" ====== "+adapter.getItem(position).getOr_psf());
                                     //General.setSharedPreferences(getContext(),AppConstants.PROPERTY,adapter.getItem(position).getProperty_type());
                                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                                     imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
@@ -353,16 +316,6 @@ private TextView Cancel,back,usertext;
 
                             }
                         });
-
-                        /*ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                                getContext(),
-                                android.R.layout.simple_list_item_1, building_names );*/
-
-//                        listView1.setAdapter(arrayAdapter);
-//                        JSONObject re = new JSONObject(jsonResponse.getString("responseData"));
-                        /*Log.i("magic","addBuildingRealm success re data "+re);
-                        Log.i("magic","addBuildingRealm success re "+re.length());*/
-
 
 
                     }
@@ -389,28 +342,6 @@ private TextView Cancel,back,usertext;
         }
 
     }
-
-
-
-    /*public void AddBuildingDataToRealm(String id) {
-
-        Realm myRealm = General.realmconfig(getContext());
-        addBuildingRealm add_Building = new addBuildingRealm();
-        add_Building.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
-        add_Building.setBuilding_name(B_name);
-        add_Building.setType("ADD");
-        add_Building.setAddress(fullAddress);
-        add_Building.setConfig(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG));
-        add_Building.setProperty_type(AppConstants.PROPERTY);
-        add_Building.setLat(lat + "");
-        add_Building.setLng(lng + "");
-        add_Building.setId(id);
-        add_Building.setSublocality(SharedPrefs.getString(getContext(), SharedPrefs.MY_LOCALITY));
-        myRealm.beginTransaction();
-        myRealm.copyToRealmOrUpdate(add_Building);
-//        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
-        myRealm.commitTransaction();
-    }*/
 
 
 
@@ -526,7 +457,7 @@ private TextView Cancel,back,usertext;
 
     }
 
- public int price(String conf,int rate){
+ /*public int price(String conf,int rate){
     Log.i("conf case","conf  : "+conf+"  "+rate);
     int price=rate*950;
     switch(conf) {
@@ -570,5 +501,10 @@ private TextView Cancel,back,usertext;
     price=price/500;
     price=price*500;
     return price;
- }
+ }*/
+
+
+
+
+
 }

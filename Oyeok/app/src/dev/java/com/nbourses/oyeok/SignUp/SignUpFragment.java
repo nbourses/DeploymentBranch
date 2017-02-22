@@ -998,7 +998,6 @@ private LinearLayout signinpanel;
                                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                                     Intent.FLAG_ACTIVITY_NEW_TASK)       ;
                                             startActivity(intent);
-
                                             AppConstants.REGISTERING_FLAG=false;
                                         }
                                     });
@@ -1041,6 +1040,7 @@ private LinearLayout signinpanel;
                         //store user_id in shared preferences
                         General.setSharedPreferences(getActivity(), AppConstants.USER_ID, my_user_id);
                         General.setSharedPreferences(context, AppConstants.IS_LOGGED_IN_USER, "yes");
+                        General.setSharedPreferences(context, AppConstants.IS_SIGNUP,"true");
                         General.setSharedPreferences(context, AppConstants.ROLE_OF_USER, role_of_user.toLowerCase());
                         try {
                             userInfo.setUserId(my_user_id);

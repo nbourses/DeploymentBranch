@@ -1,0 +1,137 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    tools:context="com.nbourses.oyeok.fragments.WatchlistExplorer">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="0.25"
+                android:background="@color/colorPrimaryDark"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="5dip"
+                    android:gravity="center"
+                    android:id="@+id/back"
+                    android:layout_weight="0.5"
+                    android:layout_marginRight="2dp"
+                    android:layout_gravity="left|center"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Choose Building"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dip"
+                    android:gravity="center"
+                    android:layout_weight="1.5"
+                    android:textSize="20dip"
+                    android:textStyle="bold"
+                    android:id="@+id/textView7"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Next"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="2dip"
+                    android:gravity="center"
+                    android:layout_weight="0.5"
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/Cancel"
+                    android:layout_gravity="right|center"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Done"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="2dip"
+                    android:gravity="center"
+                    android:layout_weight="0.5"
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/done"
+                    android:layout_gravity="right|center"
+                    android:visibility="gone"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+
+
+
+            <EditText android:id="@+id/inputSearch1"
+                android:layout_width="fill_parent"
+                android:layout_height="0dip"
+                android:layout_weight="0.15"
+                android:hint="Search Building.."
+                android:gravity="center_horizontal|center_vertical"
+                android:background="@drawable/greenishblue_border_grey_solid"
+                android:layout_margin="4dip"
+                android:textColorHint="@color/gray"
+                android:textColor="@color/black"
+                android:layout_below="@+id/container_toolbar"
+                android:inputType="textVisiblePassword"/>
+            <!-- <SearchView
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_gravity="center"
+                 android:animateLayoutChanges="true"
+                 android:showDividers="beginning"
+                 android:focusableInTouchMode="true"
+                 ></SearchView>-->
+            <!--<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="1.5"
+                android:orientation="vertical">-->
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dip"
+                    android:layout_weight="1.5"
+                    android:layout_marginTop="5dp"
+                    android:divider="@color/grey"
+                    android:dividerHeight="1dp"
+
+                    android:id="@+id/listView1"/>
+            <!--</LinearLayout>-->
+            <!--<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="0.25"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/dark_grey">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Select Minimum 3 Building click Next"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:gravity="center"/>
+            </LinearLayout>-->
+        </LinearLayout>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="-1dp"
+            android:id="@+id/loadbuilding"
+            android:visibility="gone"/>
+
+</FrameLayout>

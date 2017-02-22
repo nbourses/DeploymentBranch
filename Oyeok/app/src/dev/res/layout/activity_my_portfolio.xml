@@ -32,7 +32,7 @@
               android:inputType="textVisiblePassword"/>
 
 
-    <LinearLayout
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/add_build"
@@ -73,7 +73,35 @@
             android:text=""/>
 
 
-    </LinearLayout>
+    </LinearLayout>-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/add_build"
+        android:orientation="horizontal"
+        android:layout_below="@+id/inputSearch1"
+        android:layout_marginTop="3dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".5"
+            android:text="Create New Catalog"
+            android:background="@color/greenish_blue"
+            android:textColor="@color/white"
+            android:layout_margin="2dp"
+            android:id="@+id/add_catalog"
+            android:gravity="center"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".5"
+            android:text="Add New Building"
+            android:textColor="@color/white"
+            android:layout_margin="2dp"
+            android:id="@+id/add_building"
+            android:background="@color/greenish_blue"
+            android:gravity="center"/>
+        </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -96,6 +124,7 @@
         android:layout_marginTop="4dp"
         android:dividerHeight="4px"
         android:stateListAnimator="@anim/zoomout"
+
         />
 
     <!--
@@ -125,7 +154,6 @@
         android:layout_width="match_parent"
         android:layout_height="75dp"
         android:layout_gravity="bottom"
-
         android:layout_alignParentBottom="true"
         android:id="@+id/phaseSeekbar1"
         android:gravity="bottom">
@@ -140,7 +168,6 @@
             android:background="@drawable/filter_border"
             android:visibility="visible"
             android:gravity="bottom"
-
             android:layout_alignParentBottom="true"
             android:layout_margin="3dp">
 
@@ -196,7 +223,6 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/circle_badge2"
                 android:text="3"
-
                 android:layout_alignParentRight="true"
                 android:paddingEnd="8dp"
                 android:paddingRight="8dp"
@@ -210,7 +236,6 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-
         android:id="@+id/container_Signup1">
     </FrameLayout>
 </RelativeLayout>

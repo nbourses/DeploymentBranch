@@ -1,14 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
 <application>
 
     <activity android:name="com.nbourses.oyeok.activities.MyPortfolioActivity" android:label="@string/MyPortfolio"
         android:screenOrientation="portrait"
+
         android:theme="@style/AppTheme1"
 
         android:windowSoftInputMode="adjustNothing">
 
+
     </activity>
+
     <activity android:name="com.nbourses.oyeok.activities.Game" android:screenOrientation="portrait"
         android:theme="@style/AppTheme1" android:windowSoftInputMode="adjustNothing">
 
@@ -19,10 +23,16 @@
 
     </activity>
 
+
     <activity android:name="com.nbourses.oyeok.activities.BrokerMainPageActivity"></activity>
+
+
     <activity android:name="com.nbourses.oyeok.activities.BrokerListingActivity"
         android:screenOrientation="portrait" android:theme="@style/AppTheme1"
         android:windowSoftInputMode="adjustNothing"></activity>
 
+    <activity android:name="com.nbourses.oyeok.activities.WatchlistExplorerActivity"></activity>
+
 </application>
 </manifest>
+

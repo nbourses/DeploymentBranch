@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="?android:attr/activatedBackgroundIndicator"
+    android:layout_marginLeft="5dip"
+    android:layout_marginTop="2dp">
+
+
+    <com.github.siyamed.shapeimageview.CircularImageView
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_weight="0.30"
+        android:id="@+id/watchlist_dp"
+        android:src="@drawable/ic_profile"
+        android:layout_marginLeft="5dp"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/gradient_edit_profile_pic"
+        android:backgroundTint="@color/grey"
+        app:siBorderWidth="1dp"
+        android:padding="20dp"
+        app:siBorderColor="@color/darkgray"
+        />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:text="Watchlist Name"
+        android:layout_weight="1.5"
+        android:textStyle="bold"
+        android:id="@+id/watch_name"
+        android:gravity="center_vertical"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginLeft="5dip"
+        android:layout_marginTop="5dp"/>
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:layout_weight=".20"
+        android:layout_gravity="center_vertical|right"
+        android:src="@drawable/forward"/>
+
+</LinearLayout>

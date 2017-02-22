@@ -46,7 +46,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="5dp"
                 android:src="@drawable/ic_profile"/>
-            android:background="@drawable/gradient_pic"
+            <!--android:background="@drawable/gradient_pic"-->
 
             <ImageView
                 android:layout_width="35dp"

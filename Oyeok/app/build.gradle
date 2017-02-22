@@ -330,6 +330,9 @@ dependencies {
 
 
 
+    compile 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
+
+
     compile('io.intercom.android:intercom-sdk:1.+@aar') {
         transitive = true
     }
@@ -359,7 +362,6 @@ apply plugin: 'com.google.gms.google-services'
 dependencies {
     compile 'com.android.support:support-v4:25.+'
 }
-
 
 
 

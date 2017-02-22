@@ -14,7 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -78,6 +80,8 @@ public class AddListingFinalCard extends Fragment {
     String numberAsString;
     private int llMin, llMax, orMin, orMax,area;
     TextView txt_req_aval;
+    FrameLayout fr_pgbar;
+    ProgressBar pg_bar;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -93,7 +97,8 @@ public class AddListingFinalCard extends Fragment {
 
         toggleBtn1 = (SwitchButton) v.findViewById(toggleBtn);
 
-
+        fr_pgbar=(FrameLayout)v.findViewById(R.id.fr_pgBar);
+        pg_bar=(ProgressBar)v.findViewById(R.id.pg_bar);
         txtcalendar=(TextView)v.findViewById(R.id.txtcalendar1);
         transaction_type=(TextView)v.findViewById(R.id.transaction_type);
         updateLabel();
@@ -125,7 +130,24 @@ public class AddListingFinalCard extends Fragment {
         building_locality.setText(General.getSharedPreferences(getContext(), AppConstants.BUILDING_LOCALITY).toString());
          area=Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.APPROX_AREA));
         seekBar.setMax(maxvalue);
-        getprice();
+        if(General.getSharedPreferences(getContext(),AppConstants.LL_PM).equalsIgnoreCase("")) {
+            getprice();
+        }else{
+
+                int llvalue= Integer.parseInt(General.getSharedPreferences(getContext(),AppConstants.LL_PM));
+            minvalue=(llvalue*area)-((llvalue*area)/2);
+            maxvalue=(llvalue*area)+((llvalue*area)/2);
+            minvalue=minvalue/1000;
+            minvalue=minvalue*1000;
+            maxvalue=maxvalue/1000;
+            maxvalue=maxvalue*1000;
+            min.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue)+"")));
+            max.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((maxvalue)+"")));
+            selected_rate.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue)+"")));
+            seekBar.setMax(maxvalue);
+            seekBar.setMin(minvalue);
+            numberAsString=minvalue+"";
+        }
 
         //deafault values
         toggleBtn1.toggle();
@@ -165,6 +187,7 @@ public class AddListingFinalCard extends Fragment {
                     transaction_type.setText("RESALE");
                     tt="or";
                     tv_rate.setText("");
+                    if(General.getSharedPreferences(getContext(),AppConstants.OR_PSF).equalsIgnoreCase("")){
                     minvalue=orMin*area;
                     maxvalue=orMax*area;
                     minvalue=minvalue/1000;
@@ -177,24 +200,31 @@ public class AddListingFinalCard extends Fragment {
                     selected_rate.setText(General.currencyFormat(String.valueOf(minvalue)).substring(2, General.currencyFormat(String.valueOf(minvalue)).length()));
                     seekBar.setMax(maxvalue);
                     seekBar.setMin(minvalue);
+                    }else{
+                        setMinMaxValue();
+                    }
                 }
                 else{
                     transaction_type.setText("RENT");
                     tt="ll";
                     tv_rate.setText("/month");
-                    int price =llMin*area;
-                    minvalue=llMin*area;
-                    maxvalue=llMax*area;
-                    minvalue=minvalue/1000;
-                    minvalue=minvalue*1000;
-                    maxvalue=maxvalue/1000;
-                    maxvalue=maxvalue*1000;
-                    min.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue)+"")));
-                    max.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((maxvalue)+"")));
+                    if(General.getSharedPreferences(getContext(),AppConstants.LL_PM).equalsIgnoreCase("")) {
+                        int price = llMin * area;
+                        minvalue = llMin * area;
+                        maxvalue = llMax * area;
+                        minvalue = minvalue / 1000;
+                        minvalue = minvalue * 1000;
+                        maxvalue = maxvalue / 1000;
+                        maxvalue = maxvalue * 1000;
+                        min.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue) + "")));
+                        max.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((maxvalue) + "")));
 //                    selected_rate.setText(String.valueOf(General.currencyFormat((llMin*area)+"")));
-                    selected_rate.setText(General.currencyFormat(String.valueOf(minvalue)).substring(2, General.currencyFormat(String.valueOf(minvalue)).length()));
-                    seekBar.setMax(maxvalue);
-                    seekBar.setMin(minvalue);
+                        selected_rate.setText(General.currencyFormat(String.valueOf(minvalue)).substring(2, General.currencyFormat(String.valueOf(minvalue)).length()));
+                        seekBar.setMax(maxvalue);
+                        seekBar.setMin(minvalue);
+                    }else{
+                        setMinMaxValue();
+                    }
                 }
             }
         });
@@ -202,7 +232,6 @@ public class AddListingFinalCard extends Fragment {
         seekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-
                 value=value/1000;
                 value=value*1000;
                 String val=String.valueOf(value);
@@ -221,9 +250,9 @@ public class AddListingFinalCard extends Fragment {
 
             }
         });
+
+
         /*seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-
             int  p=0;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -270,7 +299,7 @@ public class AddListingFinalCard extends Fragment {
             }
         });
 
-init();
+        init();
 
         return v;
     }
@@ -288,10 +317,12 @@ init();
                               int dayOfMonth) {
 
             myCalendar.set(Calendar.YEAR, year);
+            Log.i("datecheck ","Calendar  before == "+Calendar.MONTH+"   monthOfYear : "+monthOfYear+" Calendar.DATE " +Calendar.DATE+"Calendar.DAY_OF_MONTH "+Calendar.DAY_OF_MONTH+" dayOfMonth "+dayOfMonth);
             myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.add(Calendar.DATE,1);
+            //myCalendar.add(Calendar.DATE,1);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
+           // myCalendar.add(Calendar.DAY_OF_MONTH,1);
+            Log.i("datecheck ","Calendar after   == "+Calendar.MONTH+"   monthOfYear : "+monthOfYear+" Calendar.DATE " +Calendar.DATE+"Calendar.DAY_OF_MONTH "+Calendar.DAY_OF_MONTH+" dayOfMonth "+dayOfMonth);
 
             updateLabel();
 
@@ -323,11 +354,11 @@ init();
 
 
             d  = sdf.parse(sdf.format(now1.getTime()));
-            now.add(Calendar.MONTH,6);
+            now.add(Calendar.MONTH,7);
             // now.add(Calendar.DATE,1);
 
             Date dd = sdf.parse(  now.get(Calendar.DATE)
-                    + "/"+ (now.get(Calendar.MONTH) + 1)
+                    + "/"+ (now.get(Calendar.MONTH))
                     + "/"
 
                     + now.get(Calendar.YEAR));
@@ -389,7 +420,11 @@ private void init(){
     submit_listing.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+           // fr_pgbar.setVisibility(View.VISIBLE);
             addListing();
+
+            submit_listing.setClickable(false);
+            submit_listing.setBackgroundColor(getResources().getColor(R.color.grey));
         }
     });
 }
@@ -401,7 +436,7 @@ private void init(){
        AddListingBorker addListingBorker=new AddListingBorker();
        addListingBorker.setProperty_type(General.getSharedPreferences(getContext(),AppConstants.PROPERTY));
        addListingBorker.setConfig(General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
-       addListingBorker.setListing_date(myCalendar+"");
+       addListingBorker.setListing_date(myCalendar.getTime()+"");
        Log.i("AddListingBorker","myCalendar current date"+General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
        addListingBorker.setCity("Mumbai");
        if(Furnishing.equalsIgnoreCase("fully-furnished")){
@@ -413,7 +448,7 @@ private void init(){
            addListingBorker.setFurnishing("sf");
 
        }
-           addListingBorker.setBuilding_name(General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
+       addListingBorker.setBuilding_name(General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
        addListingBorker.setPossession_date(txtcalendar.getText().toString());
        addListingBorker.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
        addListingBorker.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
@@ -428,7 +463,7 @@ private void init(){
        if(Avail.isChecked()){
            Log.i("Reqstatus","Reqstatus 1 inside: "+Avail.isChecked()+ " "+Req.isChecked());
 
-           addListingBorker.setReq_avl("avail");
+           addListingBorker.setReq_avl("avl");
        }else{
            addListingBorker.setReq_avl("req");
        }
@@ -453,7 +488,7 @@ private void init(){
 
 
 
-       RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
+       RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_11).build();
        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
 
@@ -514,21 +549,39 @@ private void init(){
         int area=carpet_area;
         Log.i("magic","reached "+numberAsString+"  area : "+area);
 
-
+       String growthrate=null;
         //Log.i("magic","reached "+p);
-
+       // percentageCalculator
         if(tt.equalsIgnoreCase("ll")){
-           // int p=Integer.parseInt(numberAsString)/area;
+            int p= 0;
+
+                p = Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.LL_PM));
+                growthrate= percentageCalculator(Integer.parseInt(numberAsString),p*area);
+                add_Building.setMarket_rate(p);
+             add_Building.setGrowth_rate(growthrate);
+
             add_Building.setLl_pm(Integer.parseInt(numberAsString));
+
             add_Building.setOr_psf(0);
             add_Building.setTt("ll");
 
         }else{
             //int p=Integer.parseInt(numberAsString)/area;
+                int p= 0;
+
+                p = Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.OR_PSF));
+                growthrate= percentageCalculator(Integer.parseInt(numberAsString),p*area);
+                add_Building.setMarket_rate(p);
+            add_Building.setGrowth_rate(growthrate);
             add_Building.setLl_pm(0);
             add_Building.setOr_psf(Integer.parseInt(numberAsString));
             add_Building.setTt("or");
+
+
         }
+        Log.i("percent","growthrate : "+growthrate);
+       // add_Building.setGrowth_rate(growthrate);
+        add_Building.setPossession_date(txtcalendar.getText().toString());
         if(Avail.isChecked()){
             Log.i("Reqstatus","Reqstatus 1 inside: "+Avail.isChecked()+ " "+Req.isChecked());
 
@@ -723,5 +776,68 @@ private  void getprice()
     }
 
  }
+
+
+    String percentageCalculator(int selectedRate,int MarketRate){
+        int Percentage;
+        int diff;
+        String str="";
+
+
+       // Log.i("percent","selectedRate : "+selectedRate+"MarketRate : "+MarketRate+"Percentage : "+Percentage);
+        if(selectedRate>MarketRate){
+            str="+";
+            diff=selectedRate-MarketRate;
+
+        }else{
+            str="-";
+            diff=MarketRate-selectedRate;
+        }
+        Percentage=(diff*100)/MarketRate;
+        Log.i("percent","selectedRate : "+selectedRate+"MarketRate : "+MarketRate+"Percentage : "+Percentage+"str : "+str);
+        return str+Percentage+"";
+    }
+
+
+private void  setMinMaxValue(){
+/*
+    if(General.getSharedPreferences(getContext(),AppConstants.LL_PM).equalsIgnoreCase("")) {
+        getprice();
+    }else{
+*/
+
+        if(tt.equalsIgnoreCase("ll")) {
+            int llvalue = Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.LL_PM));
+            minvalue = (llvalue * area) - ((llvalue * area) / 2);
+            maxvalue = (llvalue * area) + ((llvalue * area) / 2);
+            minvalue = minvalue / 1000;
+            minvalue = minvalue * 1000;
+            maxvalue = maxvalue / 1000;
+            maxvalue = maxvalue * 1000;
+            min.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue) + "")));
+            max.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((maxvalue) + "")));
+            selected_rate.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue) + "")));
+            seekBar.setMax(maxvalue);
+            seekBar.setMin(minvalue);
+            numberAsString = minvalue + "";
+        }else{
+            int llvalue = Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.OR_PSF));
+            minvalue = (llvalue * area) - ((llvalue * area) / 2);
+            maxvalue = (llvalue * area) + ((llvalue * area) / 2);
+            minvalue = minvalue / 1000;
+            minvalue = minvalue * 1000;
+            maxvalue = maxvalue / 1000;
+            maxvalue = maxvalue * 1000;
+            min.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue) + "")));
+            max.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((maxvalue) + "")));
+            selected_rate.setText(String.valueOf(General.currencyFormatWithoutRupeeSymbol((minvalue) + "")));
+            seekBar.setMax(maxvalue);
+            seekBar.setMin(minvalue);
+            numberAsString = minvalue + "";
+        }
+    //}
+}
+
+
 
 }

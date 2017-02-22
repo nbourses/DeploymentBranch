@@ -721,7 +721,7 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
                             map.getUiSettings().setAllGesturesEnabled(true);
                             buildingTextChange(General.getSharedPreferences(getBaseContext(), AppConstants.LOCALITY), 950);
 
-
+                            addbuilding.setVisibility(View.VISIBLE);
                             mVisits.setBackground(getBaseContext().getResources().getDrawable(R.drawable.bg_animation));
                             txtFilterValue.setBackground(getBaseContext().getResources().getDrawable(R.drawable.oye_button_border));
                             // UpdateRatePanel();
@@ -814,6 +814,9 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
                                 customMarker.get(i).showInfoWindow();
                                // markerSelected();
                                // CloseBuildingOyeComfirmation();
+                                addbuilding.setVisibility(View.GONE);
+                                General.setSharedPreferences(getBaseContext(), AppConstants.LL_PM,buildingCacheModels.get(i).getLl_pm()+"");
+                                General.setSharedPreferences(getBaseContext(), AppConstants.OR_PSF,buildingCacheModels.get(i).getOr_psf()+"");
                                 OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig());
                                 SaveBuildingDataToRealm();
                                 buildingIcon.setVisibility(View.VISIBLE);
@@ -887,6 +890,7 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
                                 Log.i("mm_mithai", "marker draw");
                                 CloseBuildingOyeComfirmation();
                                // markerDeselected();
+                                addbuilding.setVisibility(View.VISIBLE);
                                 search_building_icon.setVisibility(View.GONE);
                                 buildingIcon.setVisibility(View.GONE);
                                 fav.setVisibility(View.VISIBLE);
@@ -2359,6 +2363,7 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
                 customMarker.get(i).setIcon(icon1);
                 customMarker.get(i).hideInfoWindow();
                 CloseBuildingOyeComfirmation();
+                addbuilding.setVisibility(View.VISIBLE);
                // markerDeselected();
                // ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
                 /*Intent in = new Intent(AppConstants.MARKERSELECTED);

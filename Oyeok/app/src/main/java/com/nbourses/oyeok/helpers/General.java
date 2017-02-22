@@ -1353,7 +1353,7 @@ catch(Exception e){}
             case 7:
                 val = no/10000000;
                 no = no%10000000;
-                String formatted = String.format("%07d", no);
+                String formatted = String.format("%06d", no);
                 formatted = formatted.substring(0,1);
                 v = val+"."+formatted;
                 str = v+" cr";
@@ -1363,7 +1363,7 @@ catch(Exception e){}
                 val = no/100000;
                 v = val+"";
                 no = no%100000;
-                String s2 = String.format("%05d", no);
+                String s2 = String.format("%04d", no);
                 s2 = s2.substring(0,1);
 
                 if (val != 0){
@@ -1380,7 +1380,7 @@ catch(Exception e){}
                 s3 = s3.substring(0,1);
                 if (val != 0) {*/
                     //str = str+v+"."+s3+" k";
-                    str=no+"";
+                    str=General.currencyFormatWithoutRupeeSymbol(no+"");
                 //}
                 break;
             default :
