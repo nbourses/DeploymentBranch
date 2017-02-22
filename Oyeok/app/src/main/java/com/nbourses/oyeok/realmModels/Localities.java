@@ -15,9 +15,17 @@ public class Localities extends RealmObject{
     private String orMax;
     private String lat;
     private String lng;
+    private String type;
     private String timestamp;
     private String growthRate;
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getGrowthRate() {
         return growthRate;

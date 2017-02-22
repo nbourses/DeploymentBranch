@@ -14,6 +14,8 @@ import com.nbourses.oyeok.models.AddBuildingModel;
 import com.nbourses.oyeok.models.AddListingBorker;
 import com.nbourses.oyeok.models.GetLocality;
 import com.nbourses.oyeok.models.HdRooms;
+import com.nbourses.oyeok.models.MatchingOK;
+import com.nbourses.oyeok.models.PreOk;
 import com.nbourses.oyeok.models.PublishLetsOye;
 import com.nbourses.oyeok.models.SearchBuildingModel;
 import com.nbourses.oyeok.models.UpdateBuildingRateModel;
@@ -28,6 +30,8 @@ import retrofit.http.POST;
 public interface OyeokApiService {
 
 
+    @POST("/matching/ok")
+    void matchingOk(@Body MatchingOK m, Callback<JsonElement> callback);
 
     @POST("/1/oyeok/brokers")
     void bboxneighbours(@Body Oyeok oyeok , Callback<Oyeok> callBack);
@@ -36,7 +40,7 @@ public interface OyeokApiService {
     void giveUserRoleRating(@Body Oyeok oyeok, Callback<Oyeok> callback);
 
     @POST("/pre/ok")
-    void preOk(@Body Oyeok oyeok, Callback<JsonElement> callback);
+    void preOk(@Body PreOk preok, Callback<JsonElement> callback);
 
     @POST("/1/lets/oye")
     void letsOye(@Body Oyeok oyeok, Callback<LetsOye> callback);

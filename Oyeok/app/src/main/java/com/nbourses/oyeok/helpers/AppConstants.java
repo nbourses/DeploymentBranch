@@ -8,15 +8,24 @@ import com.google.android.gms.maps.GoogleMap;
 
 import com.nbourses.oyeok.models.PublishLetsOye;
 
+import java.util.ArrayList;
+
 /**
  * Created by rohit on 09/02/16.
  */
 public class AppConstants {
+
+
+    public static ArrayList oyeIdsForOk = new ArrayList();
     public static final String API_NOT_CONNECTED = "Google API not connected";
     public static final String SOMETHING_WENT_WRONG = "OOPs!!! Something went wrong...";
     public static String PlacesTag = "Google Places Auto Complete";
     public static boolean cardNotif = false;
     public static boolean SETLOCATION = false;
+    public static boolean SETLOCATIONLTOP = false;
+    public static boolean SETLOCATIONBTOL = false;
+    public static boolean SETLOCATIONTRAVELT = false;
+    public static boolean PARTNERBROKERCARD = false;
     public static boolean FAV = false;
     public static  int MSG_COUNT = 100;
     public static  int minRent = 35000;
@@ -24,7 +33,7 @@ public class AppConstants {
     public static Boolean SEARCHFLAG = false;
     public static  int minSale = 21500;
     public static  int maxSale = 27000;
-    public static final int slowInternet = 5;
+    public static final int slowInternet = 10;
     public static int cardCounter = 4;
     public static int favCounter = 0;
     public static double MY_LATITUDE = 0.0;
@@ -70,10 +79,13 @@ public class AppConstants {
 
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     public static final String SERVER_BASE_URL = "https://ssl.hailyo.com/1";
-
+    public static final String SERVER_BASE_URL_1 = "https://test.hailyo.com/1";
     public static final String SERVER_BASE_URL_101 = "https://ssl.hailyo.com/1.01";
     public static final String SERVER_BASE_URL_11 = "https://ssl.hailyo.com/1.1";
     public static final String SERVER_BASE_URL_102 = "https://ssl.hailyo.com/1.02";
+    public static final String SERVER_BASE_URL_12 = "https://test.hailyo.com/1.2";
+    public static final String MASTER_ACTIVITY_LOG_ID = "14dlr9x50bbuq1ptgkbb0lfh26f7y6no";
+    public static final String REFERING_ACTIVITY_LOG_ID = "ref_act_log_id";
 
     /*public static final String SERVER_BASE_URL_103 = "https://test.hailyo.com/1";
     public static final String SERVER_BASE_URL_TEST = "https://test.hailyo.com/1";

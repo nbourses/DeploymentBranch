@@ -153,13 +153,13 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:gravity="center"
-        android:text="bhbbfebfbhjfhjbfvrjvfrbjfb"
+        android:text=""
         android:foregroundGravity="center"
         android:layout_marginLeft="30dp"
         android:id="@+id/confirm_screen_title"
         android:textStyle="bold"
         android:textSize="18dp"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dip"

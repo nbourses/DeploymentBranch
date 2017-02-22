@@ -23,7 +23,16 @@ public class BuildingCacheRealm extends RealmObject {
     private  String transactions;
     private String  locality;
     private String  city;
+    private String ptype;
 
+
+    public String getPtype() {
+        return ptype;
+    }
+
+    public void setPtype(String ptype) {
+        this.ptype = ptype;
+    }
 
     public String getCity() {
         return city;

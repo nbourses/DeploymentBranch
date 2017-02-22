@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -32,6 +34,7 @@ import com.nbourses.oyeok.models.GetLocality;
 import com.nbourses.oyeok.realmModels.Localities;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONArray;
@@ -110,6 +113,7 @@ public class BudgetToLocations extends Fragment {
     private TextView calender;
     private LinearLayout submitb;
     private SwitchButton toggleBtn;
+    private TextView cancel;
 
     Calendar myCalendar = Calendar.getInstance();
 
@@ -134,7 +138,7 @@ public class BudgetToLocations extends Fragment {
     private TextView ptype;
     private boolean newtouch = false;
     private int mean;
-    private int maxi = 100000;
+    private int maxi = 110000;
     private int mini = 10000;
 
 
@@ -180,6 +184,7 @@ public class BudgetToLocations extends Fragment {
         bhk6 = (Button) rootView.findViewById(R.id.bhk6);
         calender = (TextView) rootView.findViewById(R.id.cal);
         submitb = (LinearLayout) rootView.findViewById(R.id.submitb);
+        cancel = (TextView) rootView.findViewById(R.id.Cancel_add_building);
 
 
 
@@ -202,6 +207,21 @@ public class BudgetToLocations extends Fragment {
             @Override
             public void onClick(View v) {
                 displayDatePicker();
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(fragmentManager.findFragmentById(R.id.card)).commit();
+                //getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_up, R.animator.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+               // getActivity().cardFlag = false;
+               View f = getActivity().findViewById(R.id.container_Signup);
+                View c = getActivity().findViewById(R.id.card);
+                f.setBackgroundColor(getResources().getColor(R.color.transparent));
+                f.setClickable(false);
+                c.setClickable(false);
             }
         });
 
@@ -331,11 +351,11 @@ public class BudgetToLocations extends Fragment {
         budget.setText(General.currencyFormat(10000+"").substring(2, General.currencyFormat(10000+"").length()));
 
 
-        seekBar.setMax(100000);
+        seekBar.setMax(110000);
         seekBar.setMin(10000);
-        mean = 55000;
-        seekBar.setProgress(55000);
-        budget.setText(General.currencyFormat(55000+"").substring(2, General.currencyFormat(55000+"").length()));
+        mean = 60000;
+        seekBar.setProgress(mean);
+        budget.setText(General.currencyFormat(mean+"").substring(2, General.currencyFormat(mean+"").length()));
         seekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar1, int value, boolean fromUser) {
@@ -384,7 +404,97 @@ public class BudgetToLocations extends Fragment {
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
                 //  mean = (maxi + seekBar.getMin())/2;
                 Log.i("TAG","jarm mini  "+mini+" maxi  "+maxi+" mean  "+mean+" progress  "+seekBar.getProgress());
-                if(seekBar.getProgress() > mean ) {
+                if(seekBar.getProgress() == maxi && maxi < 2500000){
+                    Log.i("TAG","jarm mini 1");
+                   // int temp = maxi;
+                    mini = mean;
+
+                    maxi = maxi + 50000;
+                    mean = mean + 50000;
+
+                    if(maxi > 2500000){
+                        Log.i("TAG","jarm mini 2");
+                        mini = 2360000;
+                        maxi = 2460000;
+                        mean = 2410000;
+
+                        seekBar.setMax(maxi);
+                        max.setText(maxi+"");
+                        seekBar.setMin(mini);
+                        min.setText(mini+"");
+
+                       //mean = (maxi + mini)/2;
+                        seekBar.setProgress(maxi);
+                        budget.setText(General.currencyFormat(mean+"").substring(2, General.currencyFormat(mean+"").length()));
+
+                    }
+                    else {
+
+                        //seekBar.setClickable(false);
+                        seekBar.setMax(maxi);
+                        max.setText(maxi + "");
+                        seekBar.setMin(mini);
+                        min.setText(mini + "");
+                        Log.i("TAG","jarm mini 3 "+maxi+"  "+mini+"   "+mean);
+                       // mean = (maxi + mini) / 2;
+                        seekBar.setProgress(mean);
+                    seekBar.setProgress(mini);
+                    seekBar.setProgress(mean);
+                        budget.setText(General.currencyFormat(mean + "").substring(2, General.currencyFormat(mean + "").length()));
+
+                   }
+
+                }
+                else if(seekBar.getProgress() == mini && mini > 10000 && mean > 60000){
+
+                    maxi = mean;
+
+                    mini = mini - 50000;
+                    mean = mean - 50000;
+
+                    seekBar.setMax(maxi);
+                    max.setText(maxi+"");
+                    seekBar.setMin(mini);
+                    min.setText(mini+"");
+
+                    seekBar.setProgress(mean);
+                    seekBar.setProgress(maxi);
+                    seekBar.setProgress(mean);
+                    budget.setText(General.currencyFormat(mean+"").substring(2, General.currencyFormat(mean+"").length()));
+
+                    /*Log.i("TAG","jarm mini 4  "+mini+" maxi  "+maxi+" mean  "+mean+" progress  "+seekBar.getProgress());
+                    mini = mini - (maxi-mean);
+                    maxi = maxi + (maxi-mean);
+
+
+
+                    seekBar.setMax(maxi);
+                    max.setText(maxi+"");
+                    seekBar.setMin(mini);
+                    min.setText(mini+"");
+
+                    mean = (maxi + mini)/2;
+                    seekBar.setProgress(mean);
+                    budget.setText(General.currencyFormat(mean+"").substring(2, General.currencyFormat(mean+"").length()));
+              */  }
+                else if(mean < 60000){
+                    Log.i("TAG","jarm mini 5");
+                    mini = 10000;
+                    maxi = 110000;
+                    mean = 60000;
+
+
+                    seekBar.setMax(maxi);
+                    max.setText(maxi+"");
+                    seekBar.setMin(mini);
+                    min.setText(mini+"");
+
+
+                    seekBar.setProgress(mean);
+                    budget.setText(General.currencyFormat(mean+"").substring(2, General.currencyFormat(mean+"").length()));
+                }
+
+               /* if(seekBar.getProgress() > mean ) {
                     if(mean < 2450000) {
 
                         mini = mean;
@@ -448,7 +558,7 @@ public class BudgetToLocations extends Fragment {
                         budget.setText(General.currencyFormat(mean+"").substring(2, General.currencyFormat(mean+"").length()));
 
                     }
-                }
+                }*/
 
             }
         });
@@ -584,76 +694,86 @@ public class BudgetToLocations extends Fragment {
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
                     try {
-                        Log.i("magic","getLocality3");
+                        Log.i("magic", "getLocality3");
                         String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                         JSONObject jsonResponse = new JSONObject(strResponse);
 
-                        Log.i("magic","getLocality3 "+jsonResponse);
-
-                        Log.i("magic","getLocality success "+jsonResponse.getJSONArray("responseData"));
-
-                        JSONArray j = jsonResponse.getJSONArray("responseData");
-
-                        Realm myRealm = General.realmconfig(getContext());
-
-                        Log.i("magic","getLocality7 "+j.length());
+                        Log.i("magic", "getLocality3 " + jsonResponse);
 
 
+                        if (jsonResponse.getString("success").equalsIgnoreCase("false")) {
 
-                        for(int i =0;i<j.length();i++){
-                            Log.i("magic","getLocality8 ");
-                            JSONObject jo = j.getJSONObject(i);
+                            if (jsonResponse.getJSONObject("responseData").getString("message").equalsIgnoreCase("No Data Available For This Query")) {
 
-                            Log.i("magic","getLocality4 "+jo.getJSONArray("loc").get(0).toString());
+                                TastyToast.makeText(getContext(), "No data available with your selected config, try adjusting budget.", TastyToast.LENGTH_LONG, TastyToast.INFO);
 
-                            myRealm.beginTransaction();
-                            Localities l = new Localities();
-                            l.setLocality(jo.getString("locality"));
-                            l.setGrowthRate(jo.getString("rate_growth"));
-                            l.setLlMin(jo.getString("ll_min"));
-                            l.setLlMax(jo.getString("ll_max"));
-                            l.setOrMin(jo.getString("or_min"));
-                            l.setOrMax(jo.getString("or_max"));
-                            l.setLat(jo.getJSONArray("loc").get(1).toString());
-                            l.setLng(jo.getJSONArray("loc").get(0).toString());
-                            l.setTimestamp(System.currentTimeMillis()+"");
+                            }
 
-                            myRealm.copyToRealm(l);
-                            myRealm.commitTransaction();
 
-                            AutoOkCall runner = new AutoOkCall(getContext());
+                        } else {
+                            Log.i("magic", "getLocality success " + jsonResponse.getJSONArray("responseData"));
+                            JSONArray j = jsonResponse.getJSONArray("responseData");
 
-                            runner.execute(jo.getJSONArray("loc").get(1).toString(),jo.getJSONArray("loc").get(0).toString(),jo.getString("locality"));
+
+                            Realm myRealm = General.realmconfig(getContext());
+
+                            Log.i("magic", "getLocality7 " + j.length());
+
+
+                            for (int i = 0; i < j.length(); i++) {
+                                Log.i("magic", "getLocality8 ");
+                                JSONObject jo = j.getJSONObject(i);
+
+                                Log.i("magic", "getLocality4 " + jo.getJSONArray("loc").get(0).toString());
+
+                                myRealm.beginTransaction();
+                                Localities l = new Localities();
+                                l.setLocality(jo.getString("locality"));
+                                l.setGrowthRate(jo.getString("rate_growth"));
+                                l.setLlMin(jo.getString("ll_min"));
+                                l.setLlMax(jo.getString("ll_max"));
+                                l.setOrMin(jo.getString("or_min"));
+                                l.setType("budget based search");
+                                l.setOrMax(jo.getString("or_max"));
+                                l.setLat(jo.getJSONArray("loc").get(1).toString());
+                                l.setLng(jo.getJSONArray("loc").get(0).toString());
+                                l.setTimestamp(System.currentTimeMillis() + "");
+
+                                myRealm.copyToRealm(l);
+                                myRealm.commitTransaction();
+
+                                AutoOkCall runner = new AutoOkCall(getContext());
+
+                                runner.execute(jo.getJSONArray("loc").get(1).toString(), jo.getJSONArray("loc").get(0).toString(), jo.getString("locality"));
+                            }
+
+
+                            RealmResults<Localities> results1 =
+                                    myRealm.where(Localities.class).findAll();
+
+                            for (Localities c : results1) {
+
+                                Log.i("results1", "getLocality5 " + c.getLocality());
+                                Log.i("results1", "getLocality5 " + c.getLng());
+                            }
+
+
+                            General.setBadgeCount(getContext(), AppConstants.PORTFOLIO_COUNT, General.getBadgeCount(getContext(), AppConstants.PORTFOLIO_COUNT) + j.length());
+                            getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+                            View containerSignup = getActivity().findViewById(R.id.container_Signup);
+                            View card = getActivity().findViewById(R.id.card);
+                            containerSignup.setBackgroundColor(Color.parseColor("#00000000"));
+                            containerSignup.setClickable(false);
+                            card.setClickable(false);
+
+                            Intent intent = new Intent(AppConstants.DOSIGNUP);
+                            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
                         }
 
+                        }catch(Exception e){
+                            Log.e("TAG", "Caught in the exception getLocality 1" + e.getMessage());
 
-                        RealmResults<Localities> results1 =
-                                myRealm.where(Localities.class).findAll();
-
-                        for (Localities c : results1) {
-
-                            Log.i("results1", "getLocality5 " + c.getLocality());
-                            Log.i("results1", "getLocality5 " + c.getLng());
                         }
-
-
-
-                        General.setBadgeCount(getContext(), AppConstants.PORTFOLIO_COUNT,General.getBadgeCount(getContext(),AppConstants.PORTFOLIO_COUNT) + j.length());
-                        getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
-                        View containerSignup  = getActivity().findViewById(R.id.container_Signup);
-                        View card  = getActivity().findViewById(R.id.card);
-                        containerSignup.setBackgroundColor(Color.parseColor("#00000000"));
-                        containerSignup.setClickable(false);
-                        card.setClickable(false);
-
-                        Intent intent = new Intent(AppConstants.DOSIGNUP);
-                        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
-
-
-                    } catch (Exception e) {
-                        Log.e("TAG", "Caught in the exception getLocality 1"+ e.getMessage());
-
-                    }
 
 
                 }

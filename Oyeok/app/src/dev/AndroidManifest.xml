@@ -1,9 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
 <application>
+
     <activity android:name="com.nbourses.oyeok.activities.MyPortfolioActivity" android:label="@string/MyPortfolio"
         android:screenOrientation="portrait"
         android:theme="@style/AppTheme1"
+
         android:windowSoftInputMode="adjustNothing">
 
     </activity>
@@ -16,8 +18,6 @@
         android:screenOrientation="portrait" android:windowSoftInputMode="adjustNothing">
 
     </activity>
-    <activity android:name="com.nbourses.oyeok.activities.LogActivity" android:label="@string/title_activity_log"
-        android:theme="@style/MyMaterialTheme"></activity>
 
     <activity android:name="com.nbourses.oyeok.activities.BrokerMainPageActivity"></activity>
     <activity android:name="com.nbourses.oyeok.activities.BrokerListingActivity"
@@ -26,5 +26,3 @@
 
 </application>
 </manifest>
-
-    <!--android:theme="@style/AppTheme1"-->

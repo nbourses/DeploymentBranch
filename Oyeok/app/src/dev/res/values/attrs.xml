@@ -44,7 +44,7 @@
     </declare-styleable>
 
     <declare-styleable name="CircularSeekBarNew">
-        <attr name="radius" format="dimension"></attr>
+        <attr name="oyeok_radius" format="dimension"></attr>
         <attr name="circlenew_color" format="color"></attr>
         <attr name="circlenew_stroke_width" format="dimension" />
     </declare-styleable>

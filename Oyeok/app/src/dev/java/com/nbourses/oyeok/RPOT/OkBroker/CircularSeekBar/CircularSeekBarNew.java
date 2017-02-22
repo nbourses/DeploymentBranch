@@ -63,6 +63,7 @@ public class CircularSeekBarNew extends View {
     private ArrayList<Rect> imagesRect = new ArrayList<Rect>();
     private imageAction mImageAction = null;
     private JSONArray values = new JSONArray();
+
     private Paint mCircleTextColor;
     private Paint mCircleRangeColor;
     private Paint paint;
@@ -74,8 +75,11 @@ public class CircularSeekBarNew extends View {
     private int difference;
     private JSONArray tempvalues = new JSONArray();
     private Drawable d = null;
-    public int [] drawables= {R.drawable.ic_broker_home, R.drawable.ic_industrial_oye_intent_specs, R.drawable.ic_shop, R.drawable.ic_loans};;
+  // public int [] drawables= {R.drawable.ic_svgasset_matchinghome_v1, R.drawable.ic_svgasset_matchingindustrial_v1, R.drawable.ic_shop, R.drawable.ic_svgasset_matchingoffice_v1,R.drawable.ic_match_home_clicked,R.drawable.ic_match_industry_clicked,R.drawable.ic_match_office_clicked,R.drawable.ic_match_office_clicked};;
+  public int [] drawables= {R.drawable.ic_svgasset_matchinghome_v1, R.drawable.ic_svgasset_matchingindustrial_v1, R.drawable.ic_svgasset_matchingshop_v1, R.drawable.ic_svgasset_matchingoffice_v1,R.drawable.ic_match_home_clicked,R.drawable.ic_match_industry_clicked,R.drawable.ic_match_shop_clicked,R.drawable.ic_match_office_clicked,R.drawable.ic_home,R.drawable.ic_industry,R.drawable.ic_shop,R.drawable.ic_office,R.drawable.ic_home_selected,R.drawable.ic_industry_selected,R.drawable.ic_shop_selected,R.drawable.ic_office_selected,R.drawable.svg_icon_req,R.drawable.svg_selected_req};;
 
+    // public int [] drawables= {R.drawable.ic_user_unclicked, R.drawable.ic_broker_home};;
+//ic_broker_home
     public CircularSeekBarNew(Context context) {
         super(context);
         mContext = context;
@@ -114,7 +118,7 @@ public class CircularSeekBarNew extends View {
 
     protected void initAttributes(TypedArray attrArray) {
 
-        mRadius = attrArray.getDimension(R.styleable.CircularSeekBarNew_radius, 30f * DPTOPX_SCALE);
+        mRadius = attrArray.getDimension(R.styleable.CircularSeekBarNew_oyeok_radius, 30f * DPTOPX_SCALE);
         mCircleColor = attrArray.getColor(R.styleable.CircularSeekBarNew_circlenew_color, DEFAULT_CIRCLE_COLOR);
         mCircleColor = Color.parseColor("#2DC4B6");
         mCircleStrokeWidth = attrArray.getDimension(R.styleable.CircularSeekBarNew_circlenew_stroke_width, DEFAULT_CIRCLE_STROKE_WIDTH * DPTOPX_SCALE);
@@ -219,7 +223,8 @@ public class CircularSeekBarNew extends View {
         imagesRect.clear();
         //int count = 0;
 
-        Log.i("TRACE","theta" +theta);
+        Log.i("TRACE","theta 2 " +theta);
+        Log.i("TRACE","theta 23 " +values.length());
 
         for(int i=0; i<theta.size(); i++)
         {
@@ -227,78 +232,86 @@ public class CircularSeekBarNew extends View {
             //Drawable d = getResources().getDrawable(drawables[i % 4]);
            // Drawable d = null;
             String ptype = "home";
-            String pstype;
+            String reqAvl = "REQ";
+            int matchCount = 0;
             try {
-      /*          pstype = values.getJSONObject(i).getString("property_subtype");
 
-                if(pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")){
-                    ptype = "home";
-                }
-                else if(pstype.equals("retail outlet") || pstype.equals("food outlet") || pstype.equals("bank")){
-                    ptype = "shop";
-                }
-                else if(pstype.equals("cold storage") || pstype.equals("kitchen") || pstype.equals("manufacturing") || pstype.equals("warehouse") || pstype.equals("workshop")){
-                    ptype = "industrial";
-                }
-                else if(pstype.equals("<15") || pstype.equals("<35") || pstype.equals("<50") || pstype.equals("<100") || pstype.equals("100+")){
-                    ptype = "office";
-                }
-        */
-               try {
-                   ptype = values.getJSONObject(i).getString("property_type");
-               }
+                try {
+                    ptype = values.getJSONObject(i).getString("property_type");
+                    reqAvl = values.getJSONObject(i).getString("req_avl");
+                    matchCount = values.getJSONObject(i).getInt("match_count");
+                } catch (Exception e) {
 
-               catch(Exception e){
-
-
-                       pstype = values.getJSONObject(i).getString("property_subtype");
-
-                       if (pstype.equals("1bhk") || pstype.equals("2bhk") || pstype.equals("3bhk") || pstype.equals("4bhk") || pstype.equals("4+bhk")) {
-                           ptype = "home";
-                       } else if (pstype.equals("retail outlet") || pstype.equals("food outlet") || pstype.equals("bank")) {
-                           ptype = "shop";
-                       } else if (pstype.equals("cold storage") || pstype.equals("kitchen") || pstype.equals("manufacturing") || pstype.equals("warehouse") || pstype.equals("workshop")) {
-                           ptype = "industrial";
-                       } else if (pstype.equals("<15") || pstype.equals("<35") || pstype.equals("<50") || pstype.equals("<100") || pstype.equals("100+")) {
-                           ptype = "office";
-                       } else {
-                           ptype = "home";
-                       }
-
-
-               }
-
-
-                Log.i("TRACE","Ptype decided: "+ptype);
-                //ptype = values.getJSONObject(i).getString("property_type");
-
-                if(ptype.equals("home")){
-                    d = getResources().getDrawable(drawables[0]);
-                    Log.i("TRACE","image selected "+getResources().getDrawable(drawables[0]));
-                    Log.i("TRACE","image selected "+drawables[0]);
 
                 }
-                else if(ptype.equals("industrial")){
-                    d = getResources().getDrawable(drawables[1]);
-                    Log.i("TRACE","image selected "+getResources().getDrawable(drawables[1]));
-                    Log.i("TRACE","image selected "+drawables[1]);
-                }
-                else if(ptype.equals("shop")){
-                    d = getResources().getDrawable(drawables[2]);
-                    Log.i("TRACE","image selected "+getResources().getDrawable(drawables[2]));
-                    Log.i("TRACE","image selected "+drawables[2]);
-                }
-                else if(ptype.equals("office")){
-                    d = getResources().getDrawable(drawables[3]);
-                    Log.i("TRACE","image selected "+getResources().getDrawable(drawables[3]));
-                    Log.i("TRACE","image selected "+drawables[3]);
-                }
-                else{
-                    Log.i("TRACE","ptype not set");
+
+
+                Log.i("TRACE", "Ptype decided: " + ptype);
+
+if(matchCount == 0){
+    if (reqAvl.equalsIgnoreCase("REQ")) {
+        if (i == index)
+            d = getResources().getDrawable(drawables[4]); // man
+         else
+            d = getResources().getDrawable(drawables[0]); // man clicked
+    }
+    else{
+        if(ptype.equalsIgnoreCase("home")){
+            if (i == index)
+                d = getResources().getDrawable(drawables[4]); // home
+            else
+                d = getResources().getDrawable(drawables[0]); // home clicked
+        }
+        else if(ptype.equalsIgnoreCase("industrial")){
+            if (i == index)
+                d = getResources().getDrawable(drawables[5]); // ind
+            else
+                d = getResources().getDrawable(drawables[1]); // ind clicked
+        }
+        else if(ptype.equalsIgnoreCase("shop")){
+            if (i == index)
+                d = getResources().getDrawable(drawables[6]); // shop
+            else
+                d = getResources().getDrawable(drawables[2]); // shop clicked
+        }
+        else if(ptype.equalsIgnoreCase("office")){
+            if (i == index)
+                d = getResources().getDrawable(drawables[7]); // office
+            else
+                d = getResources().getDrawable(drawables[3]); // office clicked
+        }
+    }
+
+}else {
+                if (ptype.equalsIgnoreCase("home")) {
+                   if (i == index)
+                            d = getResources().getDrawable(drawables[4]);
+                         else
+                            d = getResources().getDrawable(drawables[0]);
+                } else if (ptype.equalsIgnoreCase("industrial")) {
+                    if (i == index)
+                        d = getResources().getDrawable(drawables[5]);
+                    else
+                        d = getResources().getDrawable(drawables[1]);
+
+                } else if (ptype.equalsIgnoreCase("shop")) {
+                    if (i == index)
+                        d = getResources().getDrawable(drawables[6]);
+                    else
+                        d = getResources().getDrawable(drawables[2]);
+
+                } else if (ptype.equalsIgnoreCase("office")) {
+                    if (i == index)
+                        d = getResources().getDrawable(drawables[7]);
+                    else
+                        d = getResources().getDrawable(drawables[3]);
+
+                } else {
                     d = getResources().getDrawable(drawables[0]);
                 }
             }
-            catch (JSONException e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
            // Log.i("TRACE","Property type" + values.getJSONObject(0).getString("price"));
@@ -314,7 +327,7 @@ public class CircularSeekBarNew extends View {
 //                        d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#E53935"), PorterDuff.Mode.SRC_ATOP)); //Red
 //                    } else {
 
-                   d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));  // Gray
+                   //d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));  // Gray
 //                    }
 //                }
 //                catch (JSONException e) {#BDBDBD
@@ -322,13 +335,18 @@ public class CircularSeekBarNew extends View {
 //                }
 
                } else {
+
+                  // d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.SRC_ATOP));
+
+                   // d = getResources().getDrawable(drawables[7]);
                    //This is if the icon is clicked or selected
-                   d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#81C784"), PorterDuff.Mode.SRC_ATOP)); //Light green
+                  // d.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#81C784"), PorterDuff.Mode.SRC_ATOP)); //Light green
                }
 
 
             int house_image_left;
             int house_image_top;
+            int house_image_bottom;
             int height = d.getIntrinsicHeight();
             int width = d.getIntrinsicWidth();
 
@@ -371,6 +389,7 @@ public class CircularSeekBarNew extends View {
 
             house_image_left = house_image_centerx - (width/2) ;
             house_image_top  = house_image_centery + (height/2) ;
+            house_image_bottom = house_image_top + (height/2);
             d.setBounds(house_image_left, house_image_top - height, house_image_left + width, house_image_top);
 //                canvas.drawBitmap(icon,house_image_left,house_image_top-height,paint);
 
@@ -404,9 +423,15 @@ public class CircularSeekBarNew extends View {
         //  Log.i("TRACE", "mCircleTextColor" + value.getJSONObject(0));
 
 //canvas.drawText();
-            canvas.drawText(s, house_image_left , house_image_top - height, mCircleTextColor);
-        //    canvas.drawText(s, house_image_left+width / 2, house_image_top, mCircleTextColor);
-            canvas.drawText(l, house_image_left, house_image_top, mCircleTextColor);
+            Log.i("TRACE","dplk 14" );
+            if(i != index) {
+                canvas.drawText(s, house_image_left, house_image_top - height, mCircleTextColor);
+                //    canvas.drawText(s, house_image_left+width / 2, house_image_top, mCircleTextColor);
+                //////     canvas.drawText(l, house_image_left, house_image_top, mCircleTextColor);
+
+                canvas.drawText(l, house_image_left, house_image_bottom, mCircleTextColor);
+            }
+
 //            canvas.drawText("Min:"+minValue,mCircleRectF.left+10*DPTOPX_SCALE,mCircleRectF.top+mCircleRectF.height()/2,mCircleTextColor);
 //            canvas.drawText("Max:"+maxvalue,mCircleRectF.right-60*DPTOPX_SCALE,mCircleRectF.top+mCircleRectF.height()/2,mCircleTextColor);
         }
@@ -460,18 +485,18 @@ public class CircularSeekBarNew extends View {
         try {
             values=new JSONArray(m);
 
-                     Log.i("TRACE","values" +values.getJSONObject(0));
+
+                     Log.i("TRACE","values value set" +values);
 
 
-            int[] arrayTemp = new int[values.length()];
+            /*int[] arrayTemp = new int[values.length()];
+
 
                 if(values.length()==3) {
                     arrayTemp[0] = Integer.parseInt(values.getJSONObject(0).getString("price"));
                     arrayTemp[1] = Integer.parseInt(values.getJSONObject(1).getString("price"));
                     arrayTemp[2] = Integer.parseInt(values.getJSONObject(2).getString("price"));
-                /*    arrayTemp[0] =15000;
-                    arrayTemp[1] =500000;
-                    arrayTemp[2] =15000; */
+
 
                     JSONObject j1;
 
@@ -591,13 +616,17 @@ public class CircularSeekBarNew extends View {
 
           Log.i("TRACE","values sorted" +values);
 
+
+
+*/
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        if(values.length()==0){
-            //Toast.makeText(mContext, "Sit back and relax while we find clients for you", Toast.LENGTH_SHORT).show();
-//            ((DashboardActivity)mContext).showToastMessage("Sit back and relax while we find clients for you");
+        if((values.length()) == 0){
+
 
             SnackbarManager.show(
                     Snackbar.with(mContext)
@@ -612,128 +641,7 @@ public class CircularSeekBarNew extends View {
         return  2;
 
 
-/*   Adjusting price values to plot on circular seekbar so they wont overlap
-        if(values.length()==1){
-            int price= 0;
-            try {
-                price = Integer.parseInt(values.getJSONObject(0).getString("price"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            minValue=price-(price/2);
-            maxvalue=price+(price/2);
-        }
-        else if(values.length()==2){
-            int price1= 0,price2=0;
-            try {
-                price1 = Integer.parseInt(values.getJSONObject(0).getString("price"));
-                price2 = Integer.parseInt(values.getJSONObject(1).getString("price"));
-                if(price1>price2){
-                    int temp= price1;
-                    price1=price2;
-                    price2=temp;
 
-
-
-//                    Collections.swap(values, 0, 1);
-
-
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            minValue=price1-(price1/2);
-
-            int[] priceArray = new int[values.length()];
-
-            for(int i=0;i<values.length();i++) {
-                int price;
-                try {
-                    price = Integer.parseInt(values.getJSONObject(i).getString("price"));
-                    priceArray[i] = price;
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            Arrays.sort(priceArray);
-
-            if(priceArray[1] - priceArray[0] >= 10000000 ){
-                difference = 1000000;
-            }
-            else if(priceArray[1] - priceArray[0] >= 100000 ){
-                difference = 50000;
-            }
-            else{
-                difference = 5000;
-            }
-
-            maxvalue=price2+(price2/2)+ difference;
-        }
-        else{
-            int totalPrice = 0, min=9999999, max=0;
-           //values.length() == 0 , means 0 deals recieved
-            if(values.length() != 0) {
-                try {
-                    min = Integer.parseInt(values.getJSONObject(0).getString("price"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    max = Integer.parseInt(values.getJSONObject(0).getString("price"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                for (int i = 0; i < values.length(); i++) {
-                    int j = 0;
-                    try {
-                        j = Integer.parseInt(values.getJSONObject(i).getString("price"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    if (min > j)
-                        min = j;
-                    else if (max < j)
-                        max = j;
-                    totalPrice += max;
-                }
-                minValue = min - (min / 2);
-                // 15 is adjustment done to max to avoid max overlapping with plotted third property in worst case.
-
-                int[] priceArray = new int[values.length()];
-
-                for(int i=0;i<values.length();i++) {
-                    int price;
-                    try {
-                        price = Integer.parseInt(values.getJSONObject(i).getString("price"));
-                        priceArray[i] = price;
-                        Log.i("TRACER","Pricearray is: "+priceArray[i]);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Arrays.sort(priceArray);
-
-
-
-                if((priceArray[2] - priceArray[1] >= 10000000) || priceArray[1] - priceArray[0] >= 10000000 ){
-                    Log.i("TRACER","Inside crore");
-                    difference = 5000000;
-                }
-                else if((priceArray[2] - priceArray[1] >= 100000) || priceArray[1] - priceArray[0] >= 100000 ){
-                    Log.i("TRACER","Inside lakh");
-                    difference = 50000;
-                }
-                else{
-                    Log.i("TRACER","Inside thousand");
-                    difference = 5000;
-                }
-
-                maxvalue = max + (max / 2) + difference;
-            }
-        }   */
     }
 
     public void draw()
@@ -747,8 +655,8 @@ public class CircularSeekBarNew extends View {
 
       int[] priceArray = new int[values.length()];
 
-       Log.i("TRACE", "values.length" + values.length());
 
+       Log.i("TRACE", "values.length" + values.length());
 
         for(int i=0;i<values.length();i++)
         {
@@ -765,6 +673,9 @@ public class CircularSeekBarNew extends View {
             }
         }
         Arrays.sort(priceArray);
+
+
+
 
         if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")) {
 
@@ -784,12 +695,26 @@ public class CircularSeekBarNew extends View {
         }
 
 
-        if (priceArray.length == 3) {
+
+
+        Double d = ((1468.5274595610163-133.68479376977845)/(values.length()-1));
+
+        for(int i=0;i<values.length();i++){
+            theta.add((133.68479376977845+i*d)/306.0);
+            //theta.add((1468.5274595610163/306.0));
+        }
+       /* if(values.length() != 0)
+            theta.add((1468.5274595610163/306.0));*/
+
+    /*    if (priceArray.length == 6) {
 
             try {
                 priceArray[0] = Integer.parseInt(values.getJSONObject(0).getString("price"));
                 priceArray[1] = Integer.parseInt(values.getJSONObject(1).getString("price"));
                 priceArray[2] = Integer.parseInt(values.getJSONObject(2).getString("price"));
+                priceArray[3] = Integer.parseInt(values.getJSONObject(3).getString("price"));
+                priceArray[4] = Integer.parseInt(values.getJSONObject(4).getString("price"));
+                priceArray[5] = Integer.parseInt(values.getJSONObject(5).getString("price"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -810,9 +735,24 @@ public class CircularSeekBarNew extends View {
 //            drawpic((maxvalue - minValue) / 2);
 //            drawpic(maxvalue - difference);
 
-            theta.add((133.68479376977845/306.0));
-            theta.add((799.1008547588506/306.0));
+            Double d = (1468.5274595610163-133.68479376977845)/5;
+
+            theta.add((133.68479376977845)/306.0);
+
+            theta.add((133.68479376977845+d)/306.0);
+
+            theta.add((133.68479376977845+2*d)/306.0);
+
+            theta.add((133.68479376977845+3*d)/306.0);
+
+            theta.add((133.68479376977845+4*d)/306.0);
+
+
+           // theta.add((799.1008547588506/306.0));
+
             theta.add((1468.5274595610163/306.0));
+
+            //theta.add(((1468.5274595610163+133.68479376977845)/306.0));
 
 //            133.68479376977845
 //            306.0
@@ -877,7 +817,7 @@ public class CircularSeekBarNew extends View {
 //                            .position(Snackbar.SnackbarPosition.TOP)
 //                            .text("Sit back and relax while we find clients for you")
 //                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-        }
+        }*/
 
 
         invalidate();

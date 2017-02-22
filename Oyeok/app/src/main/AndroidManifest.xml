@@ -48,7 +48,11 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/MyMaterialTheme"
-        tools:replace="android:icon" >
+
+        tools:replace="theme, icon, label">
+<!--
+        tools:replace="android:icon"
+-->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -211,9 +215,9 @@
         <activity
             android:name=".activities.ClientMainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing"
-            >
+            android:windowSoftInputMode="adjustPan">
         </activity>
+      <!--  android:windowSoftInputMode="adjustNothing"-->
         <activity
             android:name=".activities.ClientDealsListActivity"
             android:screenOrientation="portrait"
@@ -240,15 +244,18 @@
         </activity>
         <activity
             android:name=".activities.BrokerMainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
             android:name=".activities.ProfileActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
             android:name=".activities.IntroActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
             android:name=".activities.SplashScreenActivity"

@@ -64,7 +64,9 @@ import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
-import com.razorpay.PaymentResultListener;
+
+import com.payUMoney.sdk.PayUmoneySdkInitilizer;
+import com.payUMoney.sdk.SdkConstants;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -80,7 +82,7 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 //import com.nbourses.oyeok.Database.DBHelper;
 
 
-public class BrokerMainActivity extends BrokerMainPageActivity implements FragmentDrawer.FragmentDrawerListener, PaymentResultListener {
+public class BrokerMainActivity extends BrokerMainPageActivity implements FragmentDrawer.FragmentDrawerListener {
 
 
 @Bind(R.id.toolbar)
@@ -111,8 +113,8 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
     @Bind(R.id.tv_change_region)
     TextView tv_change_region;
 
-    @Bind(R.id.cardb)
-    FrameLayout cardb;
+    @Bind(R.id.container_sign)
+    FrameLayout container_sign;
     @Bind(R.id.card)
     FrameLayout card;
 
@@ -305,7 +307,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
 
         }
 
-       // showCard();
+        showCard();
         ShortcutBadger.removeCount(this);
 
 //        IntentFilter iff= new IntentFilter(AppConstants.Broker_Locality_Change);
@@ -621,23 +623,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
         showPortfoliobadge();
     }
 
-    @Override
-    public void onPaymentSuccess(String s) {
-        try {
-            Log.i("RAzorpay","success "+s);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    @Override
-    public void onPaymentError(int i, String s) {
-        try {
-            Log.i("RAzorpay","failure"+s);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         protected Bitmap doInBackground(String... urls) {
@@ -852,47 +838,53 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
 
 
     private void shareReferralLink() {
-        //DBHelper dbHelper=new DBHelper(getApplicationContext());
-        //String user_id = dbHelper.getValue(DatabaseConstants.userId);
-        String user_id = General.getSharedPreferences(this,AppConstants.USER_ID);
+        try {
+            //DBHelper dbHelper=new DBHelper(getApplicationContext());
+            //String user_id = dbHelper.getValue(DatabaseConstants.userId);
+            String user_id = General.getSharedPreferences(this,AppConstants.USER_ID);
+            String name = General.getSharedPreferences(this,AppConstants.NAME);
 
-        Branch branch = Branch.getInstance(getApplicationContext());
+            Branch branch = Branch.getInstance(getApplicationContext());
 
-        String mob_no = General.getSharedPreferences(this,AppConstants.MOBILE_NUMBER);
-        Log.i("mob_no","mob_no "+mob_no);
+            String mob_no = General.getSharedPreferences(this,AppConstants.MOBILE_NUMBER);
+            Log.i("mob_no","mob_no user_id "+mob_no + " "+user_id+"  "+name);
 
-        branch.setIdentity(mob_no);
+            branch.setIdentity(mob_no);
 
-        BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
-                // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
-                .setTitle("OYEOK")
-                .setContentDescription("Get property at right price. ")
-                .addContentMetadata("user_id",user_id)
-                .setCanonicalIdentifier(mob_no);
-
-
-        LinkProperties linkProperties = new LinkProperties()
-                .setChannel("android")
-                .setFeature("share")
-                .addControlParameter("user_name", user_id)
-                .addControlParameter("$android_url", AppConstants.GOOGLE_PLAY_STORE_APP_URL)
-                .addControlParameter("$always_deeplink", "true");
+            BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
+                    // The identifier is what Branch will use to de-dupe the content across many different Universal Objects
+                    .setTitle("OYEOK")
+                    .setContentDescription("Get property at right price. ")
+                    .addContentMetadata(AppConstants.USER_ID,user_id)
+                    .addContentMetadata(AppConstants.NAME,name)
+                    .setCanonicalIdentifier(mob_no);
 
 
-        branchUniversalObject.generateShortUrl(getApplicationContext(), linkProperties, new Branch.BranchLinkCreateListener() {
-            @Override
-            public void onLinkCreate(String url, BranchError error) {
-                if (error == null) {
-                    Log.i("MyApp", "got my Branch link to share: " + url);
-                    Intent intent = new Intent(Intent.ACTION_SEND);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setType("text/plain");
-                    intent.putExtra(Intent.EXTRA_TEXT, url);
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "Hey check this out!");
-                    startActivity(Intent.createChooser(intent, "Share link via"));
+            LinkProperties linkProperties = new LinkProperties()
+                    .setChannel("android")
+                    .setFeature("share")
+                    .addControlParameter("user_name", user_id)
+                    .addControlParameter("$android_url", AppConstants.GOOGLE_PLAY_STORE_APP_URL)
+                    .addControlParameter("$always_deeplink", "true");
+
+
+            branchUniversalObject.generateShortUrl(getApplicationContext(), linkProperties, new Branch.BranchLinkCreateListener() {
+                @Override
+                public void onLinkCreate(String url, BranchError error) {
+                    if (error == null) {
+                        Log.i("MyApp", "got my Branch link to share: " + url);
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setType("text/plain");
+                        intent.putExtra(Intent.EXTRA_TEXT, url);
+                        intent.putExtra(Intent.EXTRA_SUBJECT, "Hey check this out!");
+                        startActivity(Intent.createChooser(intent, "Share link via"));
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
@@ -906,6 +898,17 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
             AppConstants.cardNotif = false;
             AppConstants.optionspu1.dismiss();
             AppConstants.optionspu.dismiss();
+        }
+        else if(AppConstants.PARTNERBROKERCARD){
+
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+            //getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_up, R.animator.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+
+            container_sign.setBackgroundColor(getResources().getColor(R.color.transparent));
+            container_sign.setClickable(false);
+            card.setClickable(false);
+            AppConstants.PARTNERBROKERCARD = false;
+
         }
         else if(AppConstants.SIGNUP_FLAG){
            if(AppConstants.REGISTERING_FLAG){}else{
@@ -1130,8 +1133,8 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
                     public void run() {
 
 
-                        cardb.setBackgroundColor(Color.parseColor("#CC000000"));
-                        cardb.setClickable(true);
+                        container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
+                        container_sign.setClickable(true);
                         //containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -1150,12 +1153,60 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
                         fragmentTransaction.commitAllowingStateLoss();
 
                         AppConstants.cardCounter = 0;
+                        AppConstants.PARTNERBROKERCARD = true;
 
                     }
 
                 }, 500);
             /*}
         }*/
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == SignUpFragment.RC_SIGN_IN) {
+            SignUpFragment fragment = (SignUpFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.container_Signup);
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
+
+
+        else if (requestCode == PayUmoneySdkInitilizer.PAYU_SDK_PAYMENT_REQUEST_CODE) {
+
+            /*if(data != null && data.hasExtra("result")){
+              String responsePayUmoney = data.getStringExtra("result");
+                if(SdkHelper.checkForValidString(responsePayUmoney))
+                    showDialogMessage(responsePayUmoney);
+            } else {
+                showDialogMessage("Unable to get Status of Payment");
+            }*/
+
+
+            if (resultCode == RESULT_OK) {
+                PartnerBrokerFragment fragment = (PartnerBrokerFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.card);
+                fragment.onActivityResult(requestCode, resultCode, data);
+            } else if (resultCode == RESULT_CANCELED) {
+                PartnerBrokerFragment fragment = (PartnerBrokerFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.card);
+                fragment.onActivityResult(requestCode, resultCode, data);
+            } else if (resultCode == PayUmoneySdkInitilizer.RESULT_FAILED) {
+                PartnerBrokerFragment fragment = (PartnerBrokerFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.card);
+                fragment.onActivityResult(requestCode, resultCode, data);
+                //Write your code if there's no result
+            } else if (resultCode == PayUmoneySdkInitilizer.RESULT_BACK) {
+                PartnerBrokerFragment fragment = (PartnerBrokerFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.card);
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+
+
+        else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     /*public void HideBottomNavBar(){

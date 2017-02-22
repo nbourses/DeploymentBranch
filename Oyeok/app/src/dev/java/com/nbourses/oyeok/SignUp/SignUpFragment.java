@@ -63,6 +63,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.gson.Gson;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
@@ -93,6 +94,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import io.realm.Realm;
@@ -897,7 +899,9 @@ private LinearLayout signinpanel;
         userProfileViewModel.setEmailId(Semail);
         userProfileViewModel.setDeviceId(my_user_id);
         General.setSharedPreferences(getContext(),AppConstants.NAME,Sname); //necessary to get name for default deal
-
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        Log.i("magic","signup request json "+json);
 
 
         if(General.isNetworkAvailable(getContext())) {
@@ -1062,6 +1066,66 @@ private LinearLayout signinpanel;
                         catch(Exception e){
                             Log.i(TAG,"Caught in exdception UseerInfo Realm "+e );
                         }
+
+
+
+
+
+
+
+                        try {
+
+                            final String pushmsg = "Have signed up as "+role_of_user.toUpperCase();
+
+                            General.setSharedPreferences(getContext(), AppConstants.REFERING_ACTIVITY_LOG_ID, AppConstants.MASTER_ACTIVITY_LOG_ID);
+                            if (General.getSharedPreferences(getContext(), AppConstants.REFERING_ACTIVITY_LOG_ID) != null) {
+                                Map message = new HashMap();
+
+                                String name;
+                                if (General.getSharedPreferences(context, AppConstants.USER_ID) == null || General.getSharedPreferences(context, AppConstants.USER_ID) == "")
+                                    name = "Client";
+                                else
+                                    name = General.getSharedPreferences(context, AppConstants.NAME);
+
+                                final String finalName = name;
+
+
+                                message.put("pn_gcm", new HashMap() {{
+                                    put("data", new HashMap() {{
+                                        put("message", pushmsg);
+                                        put("_from", General.getSharedPreferences(getContext(), AppConstants.USER_ID));
+                                        put("to", AppConstants.MASTER_ACTIVITY_LOG_ID);
+                                        put("name", finalName);
+                                        put("status", "LOG_AUTOOK");
+                                    }});
+                                }});
+                                message.put("pn_apns", new HashMap() {{
+                                    put("aps", new HashMap() {{
+                                        put("alert", pushmsg);
+                                        put("from", General.getSharedPreferences(getContext(), AppConstants.USER_ID));
+                                        put("to", AppConstants.MASTER_ACTIVITY_LOG_ID);
+                                        put("name", finalName);
+                                        put("status", "LOG_AUTOOK");
+                                    }});
+                                }});
+
+                                String channel = "global_log_" + General.getSharedPreferences(getContext(), AppConstants.REFERING_ACTIVITY_LOG_ID);
+                                Log.i(TAG, "channel channel channel " + channel);
+                                General.pushMessage(getContext(), channel, message);
+
+
+                            }
+
+
+                        } catch (Exception e) {
+                        }
+
+
+
+
+
+
+
                         Log.i("TRACE", "bef saveDb");
                        // dbHelper.save(DatabaseConstants.userId, my_user_id);
                         SharedPrefs.save(getActivity(), "UserId", my_user_id);
@@ -1526,6 +1590,8 @@ private LinearLayout signinpanel;
         Log.i(TAG,"handleSignInResult 4 "+name1+"  "+email1);
         name.setText(name1);
         email.setText(email1);
+        Sname = name.getText().toString();
+        Semail = email.getText().toString();
         Digits.authenticate(authCallback, R.style.CustomDigitsTheme);
 
     }
