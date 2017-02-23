@@ -1,15 +1,21 @@
 package com.nbourses.oyeok.fragments;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +30,15 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.facebook.CallbackManager;
 import com.google.gson.JsonElement;
 import com.nbourses.oyeok.R;
@@ -49,8 +63,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import io.realm.Realm;
@@ -60,6 +78,8 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class WatchlistTitle extends Fragment {
@@ -85,6 +105,25 @@ public class WatchlistTitle extends Fragment {
     ArrayList<String> ids=new ArrayList<>();
 
     private static Uri mImageUri;
+
+
+
+    //s3
+    private File fileToUpload = new File("/storage/emulated/0/DCIM/Facebook/FB_IMG_1467990952511.jpg");
+    private String imageName = null;
+    public TransferUtility transferUtility;
+    public AmazonS3 s3;
+    private static String Imagepath;
+    private String channel_name = "";
+
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -132,6 +171,39 @@ public class WatchlistTitle extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*for(loadBuildingDataModel c: selectedlist){
+
+
+                        *//*loadBuildingDataModel loadBuildingDataModel1=new loadBuildingDataModel(c.getName(),hold.getLat(),hold.getLng(),hold.getId(),hold.getLocality(),hold.getCity(),hold.getLl_pm(),hold.getOr_psf());
+                        templist.add(loadBuildingDataModel1);*//*
+                        Log.i("selected1","selected building : "+c.getName());
+
+
+                }*/
+                if(watchlist_name.getText().toString().length()>3){
+                    pg_create_watch.setVisibility(View.VISIBLE);
+                    CreateWatchlist();
+                }else {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Invalid Title")
+                            .setMessage("Please Type watchlist title (length should be greater then 3 character eg: Salman khan Properties)!")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // continue with delete
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                }
+            }
+        });
+
+
 
         btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,10 +264,24 @@ public class WatchlistTitle extends Fragment {
                 watchlist_dp.setImageBitmap(null);
                 if (Image != null)
                     Image.recycle();
-                Intent intent1 = new Intent();
-                intent1.setType("image/*");
+                /*Intent intent1 = new Intent();
+                intent1.setType("image*//*");
                 intent1.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent1, "Select Picture"), RESULT_LOAD_IMAGE);
+                startActivityForResult(Intent.createChooser(intent1, "Select Picture"), RESULT_LOAD_IMAGE);*/
+
+
+                ////////////
+
+                Intent intent = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intent.setType("image/*");
+                startActivityForResult(
+                        Intent.createChooser(intent, "Select File"),
+                        RESULT_LOAD_IMAGE);
+
+
+
             }
         });
 
@@ -218,36 +304,50 @@ public class WatchlistTitle extends Fragment {
 
 
     public  void init(){
-        done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*for(loadBuildingDataModel c: selectedlist){
 
 
-                        *//*loadBuildingDataModel loadBuildingDataModel1=new loadBuildingDataModel(c.getName(),hold.getLat(),hold.getLng(),hold.getId(),hold.getLocality(),hold.getCity(),hold.getLl_pm(),hold.getOr_psf());
-                        templist.add(loadBuildingDataModel1);*//*
-                        Log.i("selected1","selected building : "+c.getName());
 
 
-                }*/
-                if(watchlist_name.getText().toString().length()>3){
-                    pg_create_watch.setVisibility(View.VISIBLE);
-                    CreateWatchlist();
-                }else {
-                    new AlertDialog.Builder(getContext())
-                            .setTitle("Invalid Title")
-                            .setMessage("Please Type watchlist title (length should be greater then 3 character eg: Salman khan Properties)!")
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // continue with delete
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
+        if (Environment.getExternalStorageState() == null) {
+            //create new file directory object
+            File directory = new File(Environment.getDataDirectory()
+                    + "/oyeok/");
 
-                }
+            // if no directory exists, create new directory
+            if (!directory.exists()) {
+                directory.mkdir();
             }
-        });
+
+            // if phone DOES have sd card
+        } else if (Environment.getExternalStorageState() != null) {
+            // search for directory on SD card
+            File directory = new File(Environment.getExternalStorageDirectory()
+                    + "/oyeok/");
+
+            // if no directory exists, create new directory to store test
+            // results
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+        }
+
+        credentialsProvider();
+
+        setTransferUtility();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 
@@ -305,7 +405,7 @@ public void AddDataToRealm(String watchlist_id){
     WatchListRealmModel watchListRealmModel=new WatchListRealmModel();
     watchListRealmModel.setWatchlist_id(watchlist_id);
     watchListRealmModel.setWatchlist_name(watchlist_name.getText().toString());
-    watchListRealmModel.setImageuri(mImageUri+"");
+    watchListRealmModel.setImageuri(imageName);
     watchListRealmModel.setCity("mumbai");
     watchListRealmModel.setTt(AppConstants.TT_TYPE);
     watchListRealmModel.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
@@ -333,6 +433,7 @@ public void AddDataToRealm(String watchlist_id){
 
 
     }*/
+    myRealm.close();
     pg_create_watch.setVisibility(View.GONE);
     ((MyPortfolioActivity)getActivity()).Close();
 }
@@ -382,6 +483,8 @@ public void AddDataToRealm(String watchlist_id){
             /*fileToUpload = new File(getRealPathFromURI(this,mImageUri));
             Log.i(TAG, "lolwa imagewa uri fileToUpload "+fileToUpload);
             setFileToUpload(saveBitmapToFile(fileToUpload));*/
+            fileToUpload = new File(getRealPathFromURI(getContext(),mImageUri));
+            setFileToUpload(saveBitmapToFile(fileToUpload));
             try {
                 Image = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), mImageUri);
                 if (getOrientation(getContext(), mImageUri) != 0) {
@@ -406,6 +509,275 @@ public void AddDataToRealm(String watchlist_id){
 
 
 
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    private File saveBitmapToFile(File file){
+        try {
+
+            // BitmapFactory options to downsize the image
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            o.inSampleSize = 6;
+            // factor of downsizing the image
+
+            FileInputStream inputStream = new FileInputStream(file);
+            //Bitmap selectedBitmap = null;
+            BitmapFactory.decodeStream(inputStream, null, o);
+            inputStream.close();
+
+            // The new size we want to scale to
+            final int REQUIRED_SIZE=75;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            inputStream = new FileInputStream(file);
+
+            Bitmap selectedBitmap = BitmapFactory.decodeStream(inputStream, null, o2);
+            inputStream.close();
+
+            // here i override the original image file
+            file.createNewFile();
+            FileOutputStream outputStream = new FileOutputStream(file);
+
+            selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100 , outputStream);
+
+
+            Log.i("JPEG IMAGE","===================");
+            return file;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+
+    public void setFileToUpload(File fileToU){
+
+        fileToUpload = fileToU;
+        imageName = "andro"+String.valueOf(System.currentTimeMillis())+".png";
+
+        try {
+            if (Environment.getExternalStorageState() == null) {
+                //create new file directory object
+                File directory = new File(Environment.getDataDirectory()
+                        + "/oyeok/watchlist/");
+
+
+                // if no directory exists, create new directory
+                if (!directory.exists()) {
+                    directory.mkdir();
+                }
+
+                File destdir = new File(Environment.getExternalStorageDirectory()
+                        + "/oyeok/watchlist/" + imageName);
+                Log.i("image1", "dest diro " + destdir);
+                copyFileUsingStream(fileToUpload, destdir);
+                Log.i("image1", "file after save ");
+
+                // if phone DOES have sd card
+            } else if (Environment.getExternalStorageState() != null) {
+                // search for directory on SD card
+                File directory = new File(Environment.getExternalStorageDirectory()
+                        + "/oyeok/watchlist/");
+
+                // if no directory exists, create new directory to store test
+                // results
+                if (!directory.exists()) {
+                    directory.mkdir();
+                }
+                File destdir = new File(Environment.getExternalStorageDirectory()
+                        + "/oyeok/watchlist/" + imageName);
+                Log.i("image1", "dest diro " + destdir);
+                copyFileUsingStream(fileToUpload, destdir);
+                Log.i("image1", "file after save ");
+            }
+        }
+        catch (Exception e)
+        {
+
+            Log.i("image1", "Caught in exFception saving image /watch " + e);
+
+        }
+
+
+       // displayImgMessage("oyeok-watchlist-images",imageName); //oyes-watchlist-images//oyeok-chat-images
+
+        TransferObserver transferObserver = transferUtility.upload(
+                "oyeok-watchlist-images",      //The bucket to upload to
+                imageName,    // The key for the uploaded object
+                fileToUpload       // The file where the data to upload exists
+        );
+
+        transferObserverListener(transferObserver);
+        //
+
+    }
+
+
+
+    public static void copyFileUsingStream(File source, File dest) throws IOException {
+
+        Log.i("image1","fila source "+source);
+        Log.i("image1","fila dest "+dest);
+
+        InputStream is = null;
+        OutputStream os = null;
+
+        try {
+
+            is = new FileInputStream(source);
+            os = new FileOutputStream(dest);
+
+            byte[] buffer = new byte[1024];
+            int length;
+
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+
+        } finally {
+
+            is.close();
+            os.close();
+        }
+    }
+
+
+
+//////      jsonMsg.put("message", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);   ///////
+
+
+    private void displayImgMessage(String bucketName, String imgName){
+
+        Log.i("image1", "calipso inside displayimage msg"+bucketName +" "+imgName );
+        Log.i("image1", "displayImgMessage called ");
+
+        String user_id = null;
+
+
+        if(General.getSharedPreferences(getContext(),AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes"))
+            user_id = General.getSharedPreferences(getContext(),AppConstants.USER_ID);
+        else
+            user_id = General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI);
+
+
+
+        try {
+            JSONObject jsonMsg = new JSONObject();
+
+            jsonMsg.put("timestamp",String.valueOf(System.currentTimeMillis()));
+
+
+            jsonMsg.put("_from", user_id);
+
+            jsonMsg.put("to", channel_name);
+            if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
+                jsonMsg.put("status","OKI");
+            else if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                jsonMsg.put("status","OYEI");
+
+            jsonMsg.put("name","");
+
+
+
+
+            jsonMsg.put("message", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);
+            Log.i("yoyoyo","urlo "+jsonMsg);
+            Log.i("image1", "calipso inside calling displayMsg "+jsonMsg );
+
+            /*displayMessage(jsonMsg);
+            sendNotification(jsonMsg);*/
+//            pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
+
+
+        }
+        catch(Exception e){}
+
+
+    }
+
+
+    public void transferObserverListener(TransferObserver transferObserver){
+
+        transferObserver.setTransferListener(new TransferListener(){
+
+            @Override
+            public void onStateChanged(int id, TransferState state) {
+                Log.i("sushilimage statechange", state+"");
+                if(state.toString().equalsIgnoreCase("COMPLETED")){
+
+                }
+            }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                int percentage = (int) (bytesCurrent/bytesTotal * 100);
+                Log.i("imageu percentage",percentage +"");
+            }
+
+            @Override
+            public void onError(int id, Exception ex) {
+                Log.i("imageu error","error"+ex);
+            }
+
+        });
+    }
+
+
+
+
+    public void credentialsProvider(){
+
+        // Initialize the Amazon Cognito credentials provider
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                getApplicationContext(),
+                "us-east-1:d166d43a-32b3-4690-9975-aed1c61f2b28", // Identity Pool ID
+                Regions.US_EAST_1 // Region
+        );
+
+        setAmazonS3Client(credentialsProvider);
+    }
+
+
+    public void setAmazonS3Client(CognitoCachingCredentialsProvider credentialsProvider){
+
+        // Create an S3 client
+        s3 = new AmazonS3Client(credentialsProvider);
+
+        // Set the region of your S3 bucket
+        s3.setRegion(Region.getRegion(Regions.AP_SOUTH_1));
+
+    }
+
+
+
+    public void setTransferUtility(){
+
+        transferUtility = new TransferUtility(s3, getApplicationContext());
+    }
+
+
+
     public static int getOrientation(Context context, Uri photoUri) {
         Cursor cursor = context.getContentResolver().query(photoUri,
                 new String[] { MediaStore.Images.ImageColumns.ORIENTATION },null, null, null);
@@ -417,69 +789,12 @@ public void AddDataToRealm(String watchlist_id){
         return cursor.getInt(0);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        //myRealm.close();
+    }
 
-
-   /* public void setFileToUpload(File fileToU){
-
-        fileToUpload = fileToU;
-        imageName = "droid"+String.valueOf(System.currentTimeMillis())+".png";
-
-        try {
-            if (Environment.getExternalStorageState() == null) {
-                //create new file directory object
-                File directory = new File(Environment.getDataDirectory()
-                        + "/oyeok/");
-
-
-                // if no directory exists, create new directory
-                if (!directory.exists()) {
-                    directory.mkdir();
-                }
-
-                File destdir = new File(Environment.getExternalStorageDirectory()
-                        + "/oyeok/" + imageName);
-                Log.i(TAG, "dest diro " + destdir);
-                copyFileUsingStream(fileToUpload, destdir);
-                Log.i(TAG, "file after save ");
-
-                // if phone DOES have sd card
-            } else if (Environment.getExternalStorageState() != null) {
-                // search for directory on SD card
-                File directory = new File(Environment.getExternalStorageDirectory()
-                        + "/oyeok/");
-
-                // if no directory exists, create new directory to store test
-                // results
-                if (!directory.exists()) {
-                    directory.mkdir();
-                }
-                File destdir = new File(Environment.getExternalStorageDirectory()
-                        + "/oyeok/" + imageName);
-                Log.i(TAG, "dest diro " + destdir);
-                copyFileUsingStream(fileToUpload, destdir);
-                Log.i(TAG, "file after save ");
-            }
-        }
-        catch (Exception e)
-        {
-
-            Log.i(TAG, "Caught in exFception saving image /oyeok " + e);
-
-        }
-
-
-        displayImgMessage("oyeok-chat-images",imageName);
-
-        TransferObserver transferObserver = transferUtility.upload(
-                "oyeok-chat-images",     *//* The bucket to upload to *//*
-                imageName,    *//* The key for the uploaded object *//*
-                fileToUpload       *//* The file where the data to upload exists *//*
-        );
-
-        transferObserverListener(transferObserver);
-        //
-
-    }*/
 
 
 }

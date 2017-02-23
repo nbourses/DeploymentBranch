@@ -102,6 +102,14 @@ public class AddListingBorker {
     @SerializedName("furnishing")
     private String furnishing;
 
+
+    @Expose
+    @SerializedName("listing_id")
+    private String listing_id;
+
+
+
+
     public int getCarpet_area() {
         return carpet_area;
     }
@@ -283,6 +291,14 @@ public class AddListingBorker {
 
     public void setProperty_type(String property_type) {
         this.property_type = property_type;
+    }
+
+    public String getListing_id() {
+        return listing_id;
+    }
+
+    public void setListing_id(String listing_id) {
+        this.listing_id = listing_id;
     }
 }
 

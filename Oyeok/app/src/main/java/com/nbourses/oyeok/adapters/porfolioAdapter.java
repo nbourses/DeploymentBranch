@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -23,7 +24,12 @@ import com.nbourses.oyeok.models.portListingModel;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -42,7 +48,14 @@ public class porfolioAdapter extends BaseAdapter {
     private static Bitmap Image = null;
     private static Bitmap rotateImage = null;
     private static Bitmap finalimage = null;
-    private static Uri uri_image ;
+    private static String uri_image ;
+    Boolean stopDownloadImage5 = false;
+    Holder1 holder1;
+    Holder holder;
+    private Bitmap mIcon12 = null;
+    
+    
+    
     public porfolioAdapter(Context context, ArrayList<portListingModel> portListing) {
         this.context = context;
         this.portListing = portListing;
@@ -64,26 +77,30 @@ public class porfolioAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View v = null;
-        Holder holder;
-        Holder1 holder1;
-        listing=portListing.get(position);
 
+        
+        listing=portListing.get(position);
+        
         if(listing.getTt() == null&&listing.getDisplay_type()!=null&&listing.getDisplay_type().equalsIgnoreCase("watchlist")){
-            v = convertView;
-            if (v == null) {
+            v = null;
+            if (convertView == null) {
+                
 
                 v = inflater.inflate(R.layout.watchlist_listview_row, null);
                 holder1 = new Holder1(v);
 
                 v.setTag(holder1);
             } else {
+                v = convertView;
                 holder1 = (Holder1) v.getTag();
             }
 
-
+            
             try {
-                uri_image=Uri.parse(listing.getImageUri());
-                showimage(holder1 ,uri_image);
+                if(!listing.getImageUri().equalsIgnoreCase("")&&listing.getImageUri()!=null) {
+                    uri_image = listing.getImageUri();
+                    showimage(holder1, uri_image);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -98,8 +115,8 @@ public class porfolioAdapter extends BaseAdapter {
 
         }else {
 
-            v = convertView;
-            if (v == null) {
+            v = null;
+            if (convertView == null) {
                 v = inflater.inflate(R.layout.rental_listview_row, null);
                 holder = new Holder(v);
             /*holder.tvPersonName = (TextView) v.findViewById(R.id.tvPersonName);
@@ -107,7 +124,7 @@ public class porfolioAdapter extends BaseAdapter {
             holder.ivDeletePerson=(ImageView)v.findViewById(R.id.ivDeletePerson);*/
                 v.setTag(holder);
             } else {
-
+                v = convertView;
                 holder = (Holder) v.getTag();
             }
             if (listing.getTt() != null && listing.getTt().equalsIgnoreCase("ll") && listing.getDisplay_type() == null) {
@@ -249,44 +266,25 @@ public class porfolioAdapter extends BaseAdapter {
 
 
 
-    void showimage(porfolioAdapter.Holder1 holder1,Uri mImageUri) {
+    void showimage(porfolioAdapter.Holder1 holder1,String mImageUri) {
 
-        /*try {
-            Image = MediaStore.Images.Media.getBitmap(context.getContentResolver(), mImageUri);
-            if (getOrientation(context, mImageUri) != 0) {
-                Matrix matrix = new Matrix();
-                matrix.postRotate(getOrientation(context, mImageUri));
-                if (rotateImage != null)
-                    rotateImage.recycle();
-                rotateImage = Bitmap.createBitmap(Image, 0, 0, Image.getWidth(), Image.getHeight(), matrix, true);
-                Log.i("imageuri", "onActivityResult imageuri : "+Image+" mImageUri : "+mImageUri);
-                //return rotateImage;
-                holder1.watchlist_dp.setImageBitmap(rotateImage);
-            } else {
-               // Log.i("imageuri", "onActivityResult imageuri : "+Image+" mImageUri : "+mImageUri);
-                holder1.watchlist_dp.setImageBitmap(Image);
-//                return Image;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-
-//Add image from local folder oyeok
+     
         if (Environment.getExternalStorageState() == null) {
             Log.i("IMGURL","image exists 11 ");
             //create new file directory object
             File image = new File(Environment.getDataDirectory()
-                    + ""+mImageUri);
-
+                    + "/oyeok/watchlist/"+mImageUri);
             // if no directory exists, create new directory
             if (image.exists()) {
                 Log.i("IMGURL","image exists 1 ");
                 Bitmap bmp = BitmapFactory.decodeFile(Environment.getDataDirectory()
-                        + ""+mImageUri);
+                        + "/oyeok/watchlist/"+mImageUri);
                 Log.i("IMGURL","image exists 1 bmp "+bmp);
                 holder1.watchlist_dp.setImageBitmap(bmp);
+                
 
+
+                stopDownloadImage5 = true;
 
             }
 
@@ -295,7 +293,7 @@ public class porfolioAdapter extends BaseAdapter {
             Log.i("IMGURL","image exists 22 ");
             // search for directory on SD card
             File image = new File(Environment.getExternalStorageDirectory()
-                    + ""+mImageUri);
+                    + "/oyeok/watchlist/"+mImageUri);
 
             Log.i("IMGURL","image exists 223 "+image);
 
@@ -304,13 +302,28 @@ public class porfolioAdapter extends BaseAdapter {
             if (image.exists()) {
                 Log.i("IMGURL","image exists 2 ");
                 Bitmap bmp = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()
-                        + ""+mImageUri);
+                        + "/oyeok/watchlist/"+mImageUri);
 
 
                 holder1.watchlist_dp.setImageBitmap(bmp);
+                
 
+
+                Log.i("IMGURL","image exists 2 bmp "+bmp);
+                //holder5.imageView.setImageBitmap(bmp);
+                stopDownloadImage5 = true;
             }
         }
+        Log.i("TAG","stopDownloadImage "+stopDownloadImage5+" :: "+mImageUri);
+        /*if(!stopDownloadImage5) {
+            Log.i("TAG","stopDownloadImage1 "+stopDownloadImage5+"  ::  "+mImageUri);
+            try {
+                new porfolioAdapter.DownloadImageTask5(holder1.watchlist_dp).execute("https://s3.ap-south-1.amazonaws.com/oyeok-watchlist-images/"+mImageUri);
+
+            } catch (Exception e) {
+                Log.i("IMGURL", "image url is e " + e);
+            }
+        }*/
 
 
 
@@ -335,6 +348,106 @@ public class porfolioAdapter extends BaseAdapter {
 
 
 
+
+
+
+
+    private class DownloadImageTask5 extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+
+        public DownloadImageTask5(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            Log.i("TAG","stopDownloadImage3 yo bro "+urls[0]);
+
+
+            final String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+
+            if(exists(urldisplay)) {
+                Log.i("TAG","exists image url yo bro "+exists(urldisplay));
+                try {
+                    InputStream in = new java.net.URL(urldisplay).openStream();
+                    mIcon11 = BitmapFactory.decodeStream(in);
+                } catch (Exception e) {
+                    Log.e("Error", e.getMessage());
+                    e.printStackTrace();
+                }
+
+                return mIcon11;
+            }
+            else{
+                try {
+
+                    final Thread thread=  new Thread(){
+                        @Override
+                        public void run(){
+                            try {
+                                synchronized(this){
+                                    wait(2000);
+
+                                    Thread.currentThread().interrupt();
+                                    call5(urldisplay);
+                                }
+                            }
+                            catch(InterruptedException ex){
+                            }
+
+                            // TODO
+                        }
+                    };
+
+                    thread.start();
+
+
+                }
+                catch(Exception e){
+
+                }
+                return mIcon12;
+            }
+
+        }
+
+
+
+        protected void onPostExecute(Bitmap result) {
+            if(result != null) {
+                Log.i("flok", "flokai 2 ");
+                bmImage.setImageBitmap(result);
+                saveImageLocally(uri_image, result);
+            }
+        }
+    }
+
+
+    public static boolean exists(String URLName){
+        Log.i("flok","inside exists yo bro ");
+        try {
+            HttpURLConnection.setFollowRedirects(false);
+            // note : you may also need
+            //        HttpURLConnection.setInstanceFollowRedirects(false)
+            HttpURLConnection con =
+                    (HttpURLConnection) new URL(URLName).openConnection();
+            con.setRequestMethod("HEAD");
+            Log.i("flok","inside exists 1 "+con.getResponseCode());
+            return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+
+        }
+        catch (Exception e) {
+            Log.i("flok","Caught in exception inside exists "+e);
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void call5(String url){
+        Log.i("TAG","inside call yo bro");
+        new DownloadImageTask5(holder1.watchlist_dp).execute(url);
+    }
 
 
     public static int getOrientation(Context context, Uri photoUri) {
@@ -349,7 +462,50 @@ public class porfolioAdapter extends BaseAdapter {
     }
 
 
+    private void saveImageLocally(String imageName,Bitmap result){
+        try {
+            if (Environment.getExternalStorageState() == null) {
+                //create new file directory object
+                File directory = new File(Environment.getDataDirectory()
+                        + "/watch/");
 
+                // if no directory exists, create new directory
+                if (!directory.exists()) {
+                    directory.mkdir();
+                }
+
+                OutputStream stream = new FileOutputStream(Environment.getDataDirectory() + "/watch/"+imageName);
+                result.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                stream.close();
+                Log.i("TAG","result compressed"+result);
+//
+                // if phone DOES have sd card
+            }
+            else if (Environment.getExternalStorageState() != null) {
+                // search for directory on SD card
+                File directory = new File(Environment.getExternalStorageDirectory()
+                        + "/watch/");
+
+                // if no directory exists, create new directory to store test
+                // results
+                if (!directory.exists()) {
+                    directory.mkdir();
+                }
+
+                OutputStream stream = new FileOutputStream(Environment.getExternalStorageDirectory() + "/watch/"+imageName);
+                result.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                stream.close();
+                Log.i("TAG","result compressed"+result);
+
+
+            }
+
+        }catch(Exception e){
+            Log.i("chatlistadapter", "Caught in exception saving image recievers /watch "+e);
+        }
+
+
+    }
 
 
     /*public static void ShowConfirmDialog(Context context,final int personId,final int position)

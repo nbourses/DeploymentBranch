@@ -12,6 +12,7 @@ import com.digits.sdk.android.DigitsSession;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.onesignal.OneSignal;
+import com.squareup.leakcanary.LeakCanary;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 
@@ -38,6 +39,13 @@ public class MyApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
+
         OneSignal.startInit(this).init();
        // new Instabug.Builder(this, "cc39b2bf5c9fffb413e7fd81ce5e9f2e").setInvocationEvent(IBGInvocationEvent.IBGInvocationEventShake) .build();
 

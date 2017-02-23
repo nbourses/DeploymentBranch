@@ -2,7 +2,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
 <application>
-
+    <!--<service
+        android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+        android:enabled="true" />-->
     <activity android:name="com.nbourses.oyeok.activities.MyPortfolioActivity" android:label="@string/MyPortfolio"
         android:screenOrientation="portrait"
         android:theme="@style/AppTheme1" android:windowSoftInputMode="adjustNothing">

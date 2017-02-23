@@ -45,6 +45,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.adapters.BrokerListingListView;
+import com.nbourses.oyeok.fragments.AddListingFinalCard;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.ShareOwnersNo;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -89,6 +90,12 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
     @Bind(R.id.resaleCount)
     TextView resaleCount;
+
+    @Bind(R.id.container_sign)
+    FrameLayout container_sign;
+
+    @Bind(R.id.card)
+    FrameLayout card;
 
     CustomPhasedSeekBar  mPhasedSeekBar;
     int position=0;
@@ -335,50 +342,42 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
             add_create.setText("Create");
 
 
-       /* rental_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        rental_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 if(item != null)
                     item.clear();
                 item.add((portListingModel)adapter.getItem(position));
-                String ids=((portListingModel) adapter.getItem(position)).getId();
-                Log.i( "portfolio1","portListingModel   : "+position+" "+ids);
+                portListingModel p= (portListingModel) adapter.getItem(position);
+                String ids=p.getId();
 
-                RealmResults<MyPortfolioModel> result= realm.where(MyPortfolioModel.class).findAll();
-                for(MyPortfolioModel c:result){
+
+                RealmResults<addBuildingRealm> result= realm.where(addBuildingRealm.class).findAll();
+                Log.i( "portfolio1","portListingModel   : "+position+" "+(portListingModel)adapter.getItem(position)+"  : "+"   "+p.getName()+" ::"+p.getId()+result);
+
+                for(addBuildingRealm c:result){
                     Log.i( "portfolio1","portListingModel inside for loop  : "+position+" "+ids+" "+c.getId());
                     if(ids.equalsIgnoreCase(c.getId())){
-                        Log.i( "portfolio1","portListingModel inside if  : "+position+" "+ids);
-                        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
-                            General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, ids);
-                            Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
-                            in.putExtra("id",ids);
-                            in.putExtra("Cmarkerflag","true");
-                            in.addFlags(
-                                    Intent.FLAG_ACTIVITY_CLEAR_TOP );*//*|
-                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                                Intent.FLAG_ACTIVITY_NEW_TASK);*//*
-                            startActivity(in);
+                        Log.i( "portfolio11","portListingModel inside if sushil  : "+position+" "+p.getName()+" : realm : "+c.getBuilding_name());
 
-                            break;
-                        }else{
-                            General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, ids);
-                            Intent in = new Intent(getBaseContext(), BrokerMap.class);
-                            in.putExtra("id",ids);
-                            in.putExtra("Bmarkerflag","true");
-                            in.addFlags(
-                                    Intent.FLAG_ACTIVITY_CLEAR_TOP );*//*|
-                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                                Intent.FLAG_ACTIVITY_NEW_TASK);*//*
-                            startActivity(in);
-                            break;
-                        }
+                        General.setSharedPreferences(getBaseContext(),AppConstants.BUILDING_NAME,p.getName());
+                        General.setSharedPreferences(getBaseContext(),AppConstants.BUILDING_LOCALITY,p.getLocality()+"");
+                        General.setSharedPreferences(getBaseContext(),AppConstants.MY_LAT,c.getLat()+"");
+                        General.setSharedPreferences(getBaseContext(),AppConstants.MY_LNG,c.getLng()+"");
+                        General.setSharedPreferences(getBaseContext(), AppConstants.MY_CITY,p.getCity());
+                        General.setSharedPreferences(getBaseContext(), AppConstants.LL_PM,c.getServer_ll_pm()+"");
+                        General.setSharedPreferences(getBaseContext(), AppConstants.OR_PSF,c.getServer_or_psf()+"");
+                        General.setSharedPreferences(getBaseContext(),AppConstants.PROPERTY,"home");
+                        General.setSharedPreferences(getBaseContext(),AppConstants.CONFIG,p.getConfig());
+                        openAddListingFinalCard(p.getId());
+
                     }
                 }
 
+
             }
-        });*/
+        });
 
 
         rental_list.setChoiceMode( ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -990,7 +989,35 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
 
 
+    public void openAddListingFinalCard(String id){
 
+        container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
+        container_sign.setClickable(true);
+        AddListingFinalCard addListingFinalCard= new AddListingFinalCard();
+        Bundle b =new Bundle();
+        b.putString("edit_listing","update");
+        b.putString("listing_id",id);
+        /*addListingFinalCard.setArguments(b);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        card.setClickable(true);
+
+        fragmentTransaction.addToBackStack("card");
+        fragmentTransaction.replace(R.id.card, addListingFinalCard);
+        fragmentTransaction.commitAllowingStateLoss();*/
+
+        loadFragmentAnimated(addListingFinalCard,b,R.id.card,"card");
+
+    }
+    public void closeCardContainer(){
+
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+        container_sign.setBackgroundColor(getResources().getColor(R.color.transparent));
+        container_sign.setClickable(false);
+        card.setClickable(false);
+        // ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
+    }
 
 
 

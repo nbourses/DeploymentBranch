@@ -682,7 +682,11 @@ public class WatchlistExplorer extends Fragment   {
 
 
 
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        myRealm.close();
+    }
 
 
 

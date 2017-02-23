@@ -188,7 +188,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             dynamicContent.addView(wizard);
             RadioGroup rg = (RadioGroup) findViewById(R.id.radioGroup1);
             RadioButton rb = (RadioButton) findViewById(R.id.watchList);
-            rb.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_watchlist_clicked, 0, 0);
+            rb.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.favourite_heart, 0, 0);
 //            rb.setChecked(true);
             // rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_watchlist) , null, null);
             rb.setTextColor(Color.parseColor("#2dc4b6"));
@@ -259,8 +259,9 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
 
 
-
-        Loadwatchlist();
+        if (!General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+            Loadwatchlist();
+        }
 
 
 
@@ -1533,6 +1534,9 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
 
     }
+
+
+
     /*private void RemoveWatchlist(){
         ReadWatchlistAPI readWatchlistAPI=new ReadWatchlistAPI();
         readWatchlistAPI.setUser_id(General.getSharedPreferences(getBaseContext(), AppConstants.USER_ID));
@@ -1585,7 +1589,6 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         @Override
         protected String doInBackground(String... params) {
 
-
 //    private void DetailWatchlist(){
             ids.clear();
             Log.i("magic1112", "addBuildingRealm success response " + ids);
@@ -1612,25 +1615,29 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
                         JSONArray building = new JSONArray(jsonResponse.getString("responseData"));
                         Log.i("magic1112", "addBuildingRealm success response " + building.length() + "\n" + building);
                         int size = building.length();
-                        if (realmsids != null)
-                            realmsids.clear();
-                        for (int i = 0; i < size; i++) {
-                            JSONObject j = new JSONObject(building.get(i).toString());
-                            Log.i("magic1112", "addBuildingRealm success response  :::::  " + j.getJSONArray("build_list").get(i) + " ::\n " + j.getString("title"));
+                       /* if (realmsids != null)
+                            realmsids.clear();*/
 
-                            Log.i("magic1112", "addBuildingRealm success response  :::::  " + j.getJSONArray("build_list").length());
+                        if(size>0) {
+                            for (int i = 0; i < size; i++) {
+                                JSONObject j = new JSONObject(building.get(i).toString());
+                                Log.i("magic1112", "addBuildingRealm success response  :::::  " + " i: " + i + "  ::  build_list  :: " + j.getJSONArray("build_list") + " ::\n " + j.getString("title"));
 
+                                Log.i("magic1112", "addBuildingRealm success response  :::::  " + j.getJSONArray("build_list").length());
 
-                            int size1 = j.getJSONArray("build_list").length();
-                            for (int k = 0; k < size1; k++) {
-                                loadBuildingdataModelRealm loadBuildingdataModelRealm1 = new loadBuildingdataModelRealm(j.getJSONArray("build_list").get(k)+"");
-                                realmsids.add(loadBuildingdataModelRealm1);
-                                Log.i("magic1112", "addBuildingRealm success response  :::::  " +j.getJSONArray("build_list").get(k));
+                                if (realmsids != null)
+                                    realmsids.clear();
+                                int size1 = j.getJSONArray("build_list").length();
+                                for (int k = 0; k < size1; k++) {
+                                    loadBuildingdataModelRealm loadBuildingdataModelRealm1 = new loadBuildingdataModelRealm(j.getJSONArray("build_list").get(k) + "");
+                                    realmsids.add(loadBuildingdataModelRealm1);
+                                    Log.i("magic1112", "addBuildingRealm success response  :::::  " + j.getJSONArray("build_list").get(k));
+                                }
+
+                                Log.i("magic1112", "addBuildingRealm success response  :::::  " + j.getString("title"));
+
+                                AddDataToRealm(j.getString("title"), j.getString("watchlist_id"), j.getString("city"), j.getString("tt"), j.getString("user_id"), j.getString("user_role"), j.getString("user_name"));
                             }
-
-                            Log.i("magic1112", "addBuildingRealm success response  :::::  " + j.getString("title"));
-
-                            AddDataToRealm(j.getString("title"), j.getString("watchlist_id"), j.getString("city"), j.getString("tt"), j.getString("user_id"), j.getString("user_role"), j.getString("user_name"));
                         }
                         //watchlist_id=building.getString("watchlist_id");
                     /*JSONArray buildingdata=new JSONArray(building.getString("buildings"));
@@ -1664,11 +1671,6 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
           General.setSharedPreferences(getBaseContext(),AppConstants.IS_SIGNUP,"false");
         }
 
-
-
-
-
-
     }
 
 
@@ -1692,8 +1694,9 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
     }
 
-
-
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
 }

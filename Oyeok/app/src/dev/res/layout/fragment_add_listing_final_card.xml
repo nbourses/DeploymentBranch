@@ -15,7 +15,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dip"
-            android:layout_weight="0.5"
+            android:layout_weight="0.7"
             android:orientation="horizontal"
             android:background="@color/greenish_blue">
             <TextView
@@ -130,6 +130,7 @@
                 android:layout_height="wrap_content"
                 android:text="Step 1 : Set transaction type"
                 android:textColor="@color/black"
+                android:layout_marginLeft="4dp"
                 android:textStyle="bold"/>
         </LinearLayout>
         <LinearLayout
@@ -210,6 +211,7 @@
                 android:layout_height="wrap_content"
                 android:text="Step 2 : Set possession date"
                 android:textColor="@color/black"
+                android:layout_marginLeft="4dp"
                 android:textStyle="bold"/>
         </LinearLayout>
         <LinearLayout
@@ -257,7 +259,10 @@
                 android:layout_marginLeft="2dp"
                 android:paddingRight="3dp"
                 android:id="@+id/spinner"
+                android:background="@drawable/spinner_bg1"
                 style="@style/spinner_style1"
+                android:theme="@style/MyMaterialTheme1"
+
                 />
 
             <TextView
@@ -446,7 +451,7 @@
 
         </LinearLayout>
     </LinearLayout>
-    <FrameLayout
+    <!--<FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
@@ -458,6 +463,6 @@
     android:layout_height="wrap_content"
      android:id="@+id/pg_bar"
      android:layout_gravity="center" />
-    </FrameLayout>
+    </FrameLayout>-->
 
 </FrameLayout>
