@@ -90,10 +90,10 @@
                     android:checked="false"
                     android:layout_weight="1"
                     android:textSize="12sp"
-                    android:drawableTop="@drawable/selector_listing"
+                    android:drawableTop="@drawable/selector_deals"
                     android:textColor="@drawable/selector_nav_text"
-                    android:id="@+id/listing"
-                    android:text="Listing"/>
+                    android:id="@+id/deals"
+                    android:text="Deals"/>
                 <RadioButton
                     android:layout_width="match_parent"
                     android:gravity="center"
@@ -103,10 +103,11 @@
                     android:checked="false"
                     android:layout_weight="1"
                     android:textSize="12sp"
-                    android:drawableTop="@drawable/selector_deals"
+                    android:drawableTop="@drawable/selector_listing"
                     android:textColor="@drawable/selector_nav_text"
-                    android:id="@+id/deals"
-                    android:text="Deals"/>
+                    android:id="@+id/listing"
+                    android:text="Listing"/>
+
 
             </RadioGroup>
             <FrameLayout

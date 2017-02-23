@@ -12,26 +12,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
-import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AbsListView;
@@ -69,6 +63,7 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCusto
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.adapters.BrokerDealsListAdapter;
 import com.nbourses.oyeok.enums.DealStatusType;
+import com.nbourses.oyeok.fragments.ActivityLogFragment;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.ShareOwnersNo;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -1747,8 +1742,7 @@ if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
     @OnClick(R.id.signUp)
     public void onClickSignUp(View v) {
 
-
-        SignUpFragment d = new SignUpFragment();
+      SignUpFragment d = new SignUpFragment();
         Bundle bundle = new Bundle();
         if (General.getSharedPreferences(this, AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
             bundle.putString("lastFragment", "brokerDeal");
@@ -1761,11 +1755,14 @@ if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
 
         fragmentTransaction.addToBackStack("cardSignUp");
 
+        Log.i(TAG,"swat 23 ");
         if(!General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            Log.i(TAG,"swat 24 ");
             fragmentTransaction.replace(R.id.fragment_container1, d);
             fragment_container1.setVisibility(View.VISIBLE);
         }
         else {
+            Log.i(TAG,"swat 25 ");
             fragmentTransaction.replace(R.id.container_sign, d);
         }
 
@@ -2334,6 +2331,18 @@ Log.i(TAG,"Caught in exception narcos "+e);
         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == SignUpFragment.RC_SIGN_IN) {
+            SignUpFragment fragment = (SignUpFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.container_Signup);
+            fragment.onActivityResult(requestCode, resultCode, data);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
 

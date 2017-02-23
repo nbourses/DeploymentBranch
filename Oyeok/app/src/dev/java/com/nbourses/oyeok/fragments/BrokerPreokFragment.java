@@ -46,13 +46,13 @@ import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.PointD;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.loopj.android.image.SmartImageView;
 import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.BrokerBuildings;
-import com.nbourses.oyeok.RPOT.ApiSupport.models.Oyeok;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.AcceptOkCall;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OnAcceptOkSuccess;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
@@ -62,12 +62,11 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.activities.BrokerDealsListActivity;
-import com.nbourses.oyeok.activities.BrokerMainActivity;
-import com.nbourses.oyeok.activities.BrokerMap;
 import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.activities.ProfileActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.models.PreOk;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.skyfishjy.library.RippleBackground;
@@ -77,6 +76,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -87,6 +88,7 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
@@ -168,15 +170,35 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
 
     @Bind(R.id.leadPrompt)
     TextView leadPrompt;
+
+    @Bind(R.id.loadingLeads)
+    TextView loadingLeals;
+
+
+    private String oye_id;
+    private String locality = "";
+    private String growth_rate = "";
+    private String config = "";
+    private String price = "";
+    private String broker_name = "";
+    private String date = "";
+
+
     private int countertut;
+
+    private int maxPages = 1;
+    private int page = 1;
 
     private static final String TAG = "BrokerPreokFragment";
     private static final int REQUEST_CODE_TO_SELECT_CLIENT = 302;
-
-    private JSONArray jsonArrayReqLl;
-    private JSONArray jsonArrayReqOr;
-    private JSONArray jsonArrayAvlLl;
-    private JSONArray jsonArrayAvlOr;
+    JSONArray sortedJsonArrayReqLl = new JSONArray();
+    JSONArray sortedJsonArrayAvlLl = new JSONArray();
+    JSONArray sortedJsonArrayReqOr = new JSONArray();
+    JSONArray sortedJsonArrayAvlOr = new JSONArray();
+    private JSONArray jsonArrayReqLl = new JSONArray();
+    private JSONArray jsonArrayReqOr = new JSONArray();
+    private JSONArray jsonArrayAvlLl = new JSONArray();
+    private JSONArray jsonArrayAvlOr = new JSONArray();
     private JSONArray buildings;
     private List<String> names;
     //  private JSONArray jsonArrayPreokRecent;
@@ -384,7 +406,11 @@ private String transaction_type="Rental";
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(slideDownBuildings, new IntentFilter(AppConstants.SLIDEDOWNBUILDINGS));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(badgeCountBroadcast, new IntentFilter(AppConstants.BADGE_COUNT_BROADCAST));
        // LocalBroadcastManager.getInstance(getContext()).registerReceiver(ResetPhase, new IntentFilter(AppConstants.RESETPHASE));
-        preok();
+
+        if(page == 1)
+        preok(page);
+        else
+            preok(--page);
     }
     @Override
     public void onPause() {
@@ -493,7 +519,7 @@ private String transaction_type="Rental";
 
     public void refreshCircularSeekbar(JSONArray arr,int currentSeekbarPosition){
 
-        circularSeekbar.setValues(arr.toString());
+        //circularSeekbar.setValues(arr.toString());
 
     }
 
@@ -745,7 +771,185 @@ private String transaction_type="Rental";
      * load preok data by making server API call
      */
 
-    public void preok() {
+    public void preok(final int pageno) {
+        if(General.isNetworkAvailable(getContext())) {
+            loadingLeals.setVisibility(View.VISIBLE);
+
+            General.slowInternet(getContext());
+        PreOk preok = new PreOk();
+        preok.setEmail("");
+            preok.setUser_role(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
+        preok.setGcm_id(General.getSharedPreferences(getContext(),AppConstants.GCM_ID));
+            if(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase("")) {
+                Log.i("baseLoc","Base location case 1"+General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION));
+                preok.setLocality("Mumbai");
+                preok.setLng(SharedPrefs.getString(getContext(), SharedPrefs.MY_LNG));
+                preok.setLat(SharedPrefs.getString(getContext(), SharedPrefs.MY_LAT));
+            }else{
+                Log.i("baseLoc","Base location case 2"+General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION));
+                preok.setLocality(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION));
+                preok.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LAT));
+                preok.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LNG));
+            }
+            if (General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                preok.setUser_id(General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
+
+            } else {
+                preok.setUser_id(General.getSharedPreferences(getContext(), AppConstants.USER_ID));
+                Log.i("PREOK", "user_id " + General.getSharedPreferences(getContext(), AppConstants.USER_ID));
+            }
+
+        preok.setPlatform("Android");
+        preok.setPage(pageno+"");
+
+            Gson gson = new Gson();
+            String json = gson.toJson(preok);
+            Log.i("magic","preok  json "+json);
+
+
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(AppConstants.SERVER_BASE_URL_12)
+                .build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+        try {
+            oyeokApiService.preOk(preok, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+                    Log.i("PREOK CALLED", "preok success");
+                    General.slowInternetFlag = false;
+                    General.t.interrupt();
+
+                    try {
+                        page ++;
+                        sortedJsonArrayReqLl = new JSONArray();
+                        sortedJsonArrayReqOr = new JSONArray();
+                        sortedJsonArrayAvlOr = new JSONArray();
+                        sortedJsonArrayAvlLl = new JSONArray();
+                        jsonArrayReqLl = new JSONArray();
+                        jsonArrayReqOr = new JSONArray();
+                        jsonArrayAvlOr = new JSONArray();
+                        jsonArrayAvlLl = new JSONArray();
+
+
+                        String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+                        JSONObject ne = new JSONObject(strResponse);
+                        Log.i("PREOK CALLED", "preok success "+ne);
+                        if(ne.getString("errors").equals("8")){
+                            Intent openProfileActivity =  new Intent(getContext(), ProfileActivity.class);
+                            openProfileActivity.putExtra("msg","compulsary");
+                            startActivity(openProfileActivity);
+
+                        }
+                        else{
+                            Log.i("PREOK CALLED", "ne is the" + ne);
+                            JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
+                            maxPages = Integer.parseInt(ne.getJSONObject("responseData").getString("max_pages"));
+                            Log.i("PREOK CALLED", "ne is the neighbours "+maxPages+" " + neighbours);
+                            JSONArray j = neighbours.getJSONObject("My Listings Match").getJSONArray("LL");
+                            JSONArray k = neighbours.getJSONObject("My Listings Match").getJSONArray("OR");
+                            JSONArray l = neighbours.getJSONObject("Matching Oye").getJSONArray("LL");
+                            JSONArray m = neighbours.getJSONObject("Matching Oye").getJSONArray("OR");
+
+
+
+
+                            Log.i("PREOK CALLED", "ne is the neighbours length " + j.length() +" "+k.length()+" "+l.length()+" "+m.length());
+
+                            Log.i("PREOK CALLED", "ne is the neighbours length j " + j);
+                            for(int i = 0; i<j.length(); i++) {
+                                JSONObject jo = new JSONObject(j.get(i).toString());
+
+                                    if(jo.getString("req_avl").equalsIgnoreCase("REQ")){
+
+                                        jsonArrayReqLl.put(jo);
+                                    }
+                                else{
+                                        jsonArrayAvlLl.put(jo);
+                                    }
+
+                                }
+
+                            for(int i = 0; i<l.length(); i++){
+                                JSONObject jo = new JSONObject(l.get(i).toString());
+                                if(jo.getString("req_avl").equalsIgnoreCase("REQ")){
+
+                                    jsonArrayReqLl.put(jo);
+                                }
+                                else{
+                                    jsonArrayAvlLl.put(jo);
+                                }
+                            }
+                            for(int i = 0; i<k.length(); i++){
+                                JSONObject jo = new JSONObject(k.get(i).toString());
+                                if(jo.getString("req_avl").equalsIgnoreCase("REQ")){
+
+                                    jsonArrayReqOr.put(jo);
+                                }
+                                else{
+                                    jsonArrayAvlOr.put(jo);
+                                }
+                            }
+
+
+                            for(int i = 0; i<m.length(); i++){
+                                JSONObject jo = new JSONObject(m.get(i).toString());
+                                if(jo.getString("req_avl").equalsIgnoreCase("REQ")){
+
+                                    jsonArrayReqOr.put(jo);
+                                }
+                                else{
+                                    jsonArrayAvlOr.put(jo);
+                                }
+                            }
+
+
+                            Log.i("PREOK CALLED", "ne is the neighbours jsonArrayReqLl "+jsonArrayReqLl);
+                            Log.i("PREOK CALLED", "ne is the neighbours jsonArrayAvlLl "+jsonArrayAvlLl);
+                            Log.i("PREOK CALLED", "ne is the neighbours jsonArrayReqOr "+jsonArrayReqOr);
+                            Log.i("PREOK CALLED", "ne is the neighbours jsonArrayAvlOr "+jsonArrayAvlOr);
+
+                            sortedJsonArrayReqLl = sortPreok(jsonArrayReqLl, jsonArrayAvlLl);
+                            Log.i("PREOK CALLED", "ne is the neighbours sortedJsonArrayReqLl "+sortedJsonArrayReqLl);
+                            sortedJsonArrayReqOr = sortPreok(jsonArrayReqOr, jsonArrayAvlOr);
+
+                            onPositionSelected(currentSeekbarPosition, currentCount);
+                            loadingLeals.setVisibility(View.GONE);
+                        }
+                    } catch (JSONException e) {
+                        Log.i("PREOK CALLED", "caught in exception inside preok"+e);
+                        loadingLeals.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.i("PREOK CALLED", "Caught in exception preok " + error);
+                    loadingLeals.setVisibility(View.GONE);
+                    General.slowInternetFlag = false;
+                    General.t.interrupt();
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+    }else{
+
+        try {
+            if (!General.isNetworkAvailable(getContext())) {
+                texPtype.setText("Go online to get Leads.");
+            }
+        }
+        catch(Exception e){
+
+        }
+
+    }
+    }
+
+ /*   public void preok() {
         Log.i(TAG,"preok called ");
         if(General.isNetworkAvailable(getContext())) {
             General.slowInternet(getContext());
@@ -780,7 +984,7 @@ private String transaction_type="Rental";
             }
             RestAdapter restAdapter = new RestAdapter.Builder()
                     //.setEndpoint(AppConstants.SERVER_BASE_URL_101)
-                    .setEndpoint(AppConstants.SERVER_BASE_URL_11)
+                    .setEndpoint(AppConstants.SERVER_BASE_URL_12)
                     .build();
             restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
@@ -852,7 +1056,7 @@ private String transaction_type="Rental";
         }
     }
 
-
+*/
    @OnClick({R.id.okButton, R.id.deals1})
     public void onButtonsClick(View v) {
        Log.i("CHARTid", "clickeda "+v.getId()+"deal.getId()  "+deal.getId()+ " okButton.getId() "+okButton.getId());
@@ -860,8 +1064,33 @@ private String transaction_type="Rental";
            long now = SystemClock.elapsedRealtime();
            if (now - lastClickMillis > THRESHOLD_MILLIS) {
                listings = new HashMap<String, Float>();
+
+               Log.i("GRAPH", "jsonObjectArray is " + jsonObjectArray);
+               if (jsonObjectArray == null) {
+                   SnackbarManager.show(
+                           com.nispok.snackbar.Snackbar.with(getContext())
+                                   .position(Snackbar.SnackbarPosition.BOTTOM)
+                                   .text("Please select a Matching and then press OK.")
+                                   .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+               } else {
+
+                   MatchListingFragment matchListingFragment = new MatchListingFragment();
+Bundle b = new Bundle();
+                   b.putString("oye_id",oye_id);
+                   b.putString("broker_name",broker_name);
+                   b.putString("config",config);
+                   b.putString("locality",locality);
+                   b.putString("price",price);
+                   b.putString("growth_rate",growth_rate);
+                   b.putString("date",date);
+                   loadFragmentAnimated(matchListingFragment, b, R.id.container_sign, "");
+               }
+           }
+          /* long now = SystemClock.elapsedRealtime();
+           if (now - lastClickMillis > THRESHOLD_MILLIS) {
+               listings = new HashMap<String, Float>();
                listings.put("building1", 1f);
-               listings.put("building2", 2f);
+               listings.put("building2", 2f);try {
                listings.put("building3", 3f);
                Log.i("GRAPH", "jsonObjectArray is " + jsonObjectArray);
                if (jsonObjectArray == null) {
@@ -910,10 +1139,25 @@ private String transaction_type="Rental";
                    }
                    lastClickMillis = now;
                }
-           }
+           }*/
        }else if (deal.getId() == v.getId()) {
            Log.i("CHARTid","==================== ");
-           if (General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT) > 0) {
+
+
+           new Handler().post(new Runnable() {
+               @Override
+               public void run() {
+                   if(page < maxPages) {
+                       preok(page);
+                   }
+                   else {
+                       page = 1;
+                       preok(page);
+                   }
+               }
+           });
+
+           /*if (General.getBadgeCount(getContext(), AppConstants.HDROOMS_COUNT) > 0) {
                General.setBadgeCount(getContext(), AppConstants.HDROOMS_COUNT, 0);
                hdroomsCount.setVisibility(View.GONE);
            }
@@ -921,7 +1165,7 @@ private String transaction_type="Rental";
            Intent openDealsListing = new Intent(getActivity(), ClientDealsListActivity.class);
            openDealsListing.addFlags(
                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-           startActivity(openDealsListing);
+           startActivity(openDealsListing);*/
        }
    }
 
@@ -1153,7 +1397,7 @@ private String transaction_type="Rental";
 
 
                 Log.i("PREOK CALLED","values set phase"+jsonArrayReqLl.toString());
-                circularSeekbar.setValues(jsonArrayReqLl.toString());
+                circularSeekbar.setValues(sortedJsonArrayReqLl.toString());
 
 
             }
@@ -1161,7 +1405,7 @@ private String transaction_type="Rental";
 
                 Log.i("PREOK CALLED", "values set phase" + jsonArrayAvlLl.toString());
 
-                circularSeekbar.setValues(jsonArrayAvlLl.toString());
+                circularSeekbar.setValues(sortedJsonArrayAvlLl.toString());
 
             }
 
@@ -1193,18 +1437,19 @@ private String transaction_type="Rental";
             if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
                 Log.i(TAG,"jsonArrayReqOr yo 1"+jsonArrayReqOr);
                 Log.i("PREOK CALLED", "values set phase" + jsonArrayReqOr.toString());
-                circularSeekbar.setValues(jsonArrayReqOr.toString());
+                circularSeekbar.setValues(sortedJsonArrayReqOr.toString());
             }
             else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
                 Log.i(TAG,"jsonArrayReqOr yo 2"+jsonArrayReqOr);
                 Log.i("PREOK CALLED1", "values set phase" + jsonArrayAvlOr.toString());
                 Log.i("tester","4"+currentOptionSelectedString);
-                circularSeekbar.setValues(jsonArrayAvlOr.toString());
+                circularSeekbar.setValues(sortedJsonArrayAvlOr.toString());
             }
         }
         onPositionSelected(currentSeekbarPosition, currentCount);
         if(!General.isNetworkAvailable(getContext())){
             texPtype.setText("Go online to get Leads.");
+            loadingLeals.setVisibility(View.GONE);
         }
        animatebadges();
     }
@@ -1291,14 +1536,15 @@ private String transaction_type="Rental";
                 lookingSeeking2 = ") is having";
                 Log.i("PREOK CALLED13", "currentOptionSelectedString1" + currentOptionSelectedString+" lookingSeeking: "+lookingSeeking);
             }
-            if (jsonArrayReqLl != null && currentOptionSelectedString.equalsIgnoreCase(strTenants)) {
-                Log.i("PREOK CALLED11","values set"+jsonArrayReqLl.toString());
-                prompt = circularSeekbar.setValues(jsonArrayReqLl.toString());
+            Log.i("PREOK CALLED11","values set 678"+sortedJsonArrayReqLl);
+            if (sortedJsonArrayReqLl != null /*&& currentOptionSelectedString.equalsIgnoreCase(strTenants)*/) {
+                Log.i("PREOK CALLED11","values set 67"+sortedJsonArrayReqLl);
+                prompt = circularSeekbar.setValues(sortedJsonArrayReqLl.toString());
             }
-            else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
+           /* else if (jsonArrayAvlLl != null && currentOptionSelectedString.equalsIgnoreCase(strOwners)) {
                 Log.i("PREOK CALLED12", "values set" + jsonArrayAvlLl.toString());
-                prompt = circularSeekbar.setValues(jsonArrayAvlLl.toString());
-            }
+                prompt = circularSeekbar.setValues(sortedJsonArrayAvlLl.toString());
+            }*/
             if(prompt == 1 ){
                 texPtype.setText("No leads available in this area for now.");
                 leadPrompt.setText("No leads available in this area for now.");
@@ -1308,7 +1554,7 @@ private String transaction_type="Rental";
                 leadPrompt.setText("Please select a Lead and press OK.");
             }
 
-         Log.i("ja munna ja"," agaya beta tu : "+General.getSharedPreferences(getContext(),AppConstants.TT)+"   "+transaction_type);
+
 //            txtPreviouslySelectedOption = txtOption1;
 
         }/*else  if(position==2){
@@ -1404,13 +1650,13 @@ private String transaction_type="Rental";
                 lookingSeeking2 = ") is having";
                 Log.i("PREOK CALLED19", "currentOptionSelectedString2" + currentOptionSelectedString+" lookingSeeking: "+lookingSeeking);
             }
-            if (jsonArrayReqOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeekers)) {
+            if (sortedJsonArrayReqOr != null /*&& currentOptionSelectedString.equalsIgnoreCase(strSeekers)*/) {
                 Log.i("PREOK CALLED17", "values set" + jsonArrayReqOr.toString());
-                prompt = circularSeekbar.setValues(jsonArrayReqOr.toString());
+                prompt = circularSeekbar.setValues(sortedJsonArrayReqOr.toString());
             }
-            else if (jsonArrayAvlOr != null && currentOptionSelectedString.equalsIgnoreCase(strSeller)) {
+            else if (sortedJsonArrayReqOr != null /*&& currentOptionSelectedString.equalsIgnoreCase(strSeller)*/) {
                 Log.i("PREOK CALLED18", "values set" + jsonArrayAvlOr.toString());
-                prompt = circularSeekbar.setValues(jsonArrayAvlOr.toString());
+                prompt = circularSeekbar.setValues(sortedJsonArrayAvlOr.toString());
             }
             try {
                 buildingPrice.clear();
@@ -1443,18 +1689,13 @@ private String transaction_type="Rental";
         }
         catch(Exception e){
         }
-        Log.i("ja munna ja"," agaya beta tu 1 : "+General.getSharedPreferences(getContext(),AppConstants.TT)+ "  "+transaction_type);
+
     }
 
 
     @Override
     public void onclick(int position, JSONArray m, String show, int x_c, int y_c) {
-        //sus
-        //start deals changed
 
-//        deal.setEnabled(true);
-//        deal.setBackground(getResources().getDrawable(R.drawable.deals_button_background));
-        //end
         try {
             leadPrompt.setVisibility(View.VISIBLE);
             leadPrompt.setText("Please select a Lead and press OK.");
@@ -1468,6 +1709,17 @@ private String transaction_type="Rental";
             if(jsonObjectArray.getJSONObject(position).getString("possession_date") != ""){
                 possession_date = jsonObjectArray.getJSONObject(position).getString("possession_date");
             }
+            JSONObject k = jsonObjectArray.getJSONObject(position);
+            oye_id = k.getString("oye_id");
+            broker_name = "Broker_name";
+            config = k.getString("req_avl").toUpperCase()+" ("+k.getString("property_subtype").toUpperCase()+") "+k.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(k.getString("price")).toUpperCase();
+            growth_rate = /*k.getString("growth_rate")*/ "+6";
+            price = k.getString("price");
+            locality = k.getString("locality");
+            date = k.getString("possession_date");
+
+
+
             pstype = jsonObjectArray.getJSONObject(position).getString("property_subtype");
             if(jsonObjectArray.getJSONObject(position).getString("furnishing").equalsIgnoreCase("uf"))
                 furnishing = "Un-Furnished";
@@ -2176,7 +2428,57 @@ private String transaction_type="Rental";
         mCustomPhasedSeekbar.setAdapter(new SimpleCustomPhasedAdapter(getActivity().getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector, R.drawable.broker_type2_selector}, new String[]{"30", "40", "15"}, new String[]{getContext().getResources().getString(R.string.Rental),"Add Listing", getContext().getResources().getString(R.string.Resale)}));
     }
 
+private JSONArray sortPreok(JSONArray ll, JSONArray or){
+    try {
+        JSONArray c = new JSONArray();
+        List<JSONObject> jsonList = new ArrayList<JSONObject>();
+        for (int i = 0; i < ll.length(); i++) {
+            jsonList.add(ll.getJSONObject(i));
+        }
 
+        for (int i = 0; i < or.length(); i++) {
+            jsonList.add(or.getJSONObject(i));
+        }
+
+        Collections.sort(jsonList, new Comparator<JSONObject>() {
+
+            public int compare(JSONObject a, JSONObject b) {
+                String valA = new String();
+                String valB = new String();
+
+                try {
+                    valA = a.get("price") + "";
+                    valB = b.get("price") + "";
+                } catch (JSONException e) {
+                    //do something
+                }
+
+                return valA.compareTo(valB);
+            }
+        });
+
+        Log.i(TAG, "preok 1.2 jsonArrayReqLl " + ll.length()+or.length() + "  jsonList " + jsonList.size());
+
+        for (int i = 0; i < jsonList.size(); i++) {
+            c.put(i, jsonList.get(i));
+        }
+
+
+    return c;
+    }catch (Exception e){
+        return null;
+    }
+}
+
+    private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
 
 
 }

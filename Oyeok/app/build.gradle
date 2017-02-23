@@ -35,14 +35,15 @@ android {
 
 
     compileSdkVersion 25
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "25.0.0"
+
 
     defaultConfig {
         applicationId "com.nbourses.oyeok"
         minSdkVersion 16
         multiDexEnabled true
         targetSdkVersion 25
-        versionCode 44
+        versionCode 45
         versionName "1.0"
         manifestPlaceholders = [manifestApplicationId          : "${applicationId}",
                                 onesignal_app_id               : "9e2ab2be-54c5-4981-b15f-fb8dc78b81ee",
@@ -55,7 +56,7 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file("/Users/sushil/Desktop/oyeok.jks")
+            storeFile file("/Users/shlokmalik/Desktop/oyeok.jks")
             storePassword "NBAscent@123A"
             keyAlias "oyeok"
             keyPassword "NBAscent@123A"
@@ -330,13 +331,14 @@ dependencies {
     compile "com.google.android.gms:play-services-location:9.0.2"
     compile "com.github.tarek360:instacapture:0.44"
     compile 'com.kyleduo.switchbutton:library:1.4.4'
-
     compile 'com.razorpay:checkout:1.2.0'
 
 
 
 
+
     compile 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
+
 
     compile('io.intercom.android:intercom-sdk:1.+@aar') {
         transitive = true
@@ -360,17 +362,14 @@ dependencies {
 
     compile 'com.google.android.gms:play-services-auth:9.0.2'
 
+
+    compile project(path: ':payUMoneysdk')
 }
 apply plugin: 'com.google.gms.google-services'
 dependencies {
     compile 'com.android.support:support-v4:25.+'
 }
-dependencies {
-    compile 'com.android.support:support-v4:25.+'
-}
-dependencies {
-    compile 'com.android.support:support-v4:25.+'
-}
+
 
 
 

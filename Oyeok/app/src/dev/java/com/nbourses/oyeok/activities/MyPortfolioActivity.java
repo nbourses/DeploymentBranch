@@ -217,6 +217,8 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             addbuildingLL.clear();
         if (addbuildingOR != null)
             addbuildingOR.clear();
+        if(myLocalitiesLL != null)
+            myLocalitiesLL.clear();
 
         Log.i("port", "portListing " + watchlist);
         Log.i("port", "portListing " + portListing);
@@ -383,7 +385,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         for (Localities c : results2) {
 
 
-            portListingModel portListingModel = new portListingModel(c.getLocality(), "budget based suggestion", ((Integer.parseInt(c.getLlMin()) + Integer.parseInt(c.getLlMax())) / 2), 0, c.getTimestamp(), c.getGrowthRate(), "LOCALITIES");
+            portListingModel portListingModel = new portListingModel(c.getLocality(), c.getType(), ((Integer.parseInt(c.getLlMin()) + Integer.parseInt(c.getLlMax())) / 2), 0, c.getTimestamp(), c.getGrowthRate(), "LOCALITIES");
 
             myLocalitiesLL.add(portListingModel);
             // portListingModel portListingModel1 = new  portListingModel(c.getLocality(),"budget based suggestion",0,((Integer.parseInt(c.getOrMin()) + Integer.parseInt(c.getOrMax()))/2),c.getTimestamp(),c.getGrowthRate(),"LOCALITIES");
@@ -617,7 +619,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
                         }*/
                 if (item.getItemId() == R.id.delete) {
-
+                    General.setBadgeCount(MyPortfolioActivity.this, AppConstants.PORTFOLIO_COUNT, 0);
                     for (final portListingModel d : deletelist) {
 
                         // Here your room is available
@@ -714,6 +716,20 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
                         } catch (Exception e) {
                             Log.i("TAG", "caught in exception deleting default droom 31 " + e);
                         }
+
+                        try {
+                            Realm myRealm = General.realmconfig(MyPortfolioActivity.this);
+                            Localities result = myRealm.where(Localities.class).equalTo("timestamp", d.getTimpstamp()).findFirst();
+                            if (myRealm.isInTransaction())
+                                myRealm.cancelTransaction();
+                            myRealm.beginTransaction();
+                            result.removeFromRealm();
+                            myRealm.commitTransaction();
+                        } catch (Exception e) {
+                            Log.i("TAG", "caught in exception deleting default droom 31 " + e);
+                        }
+
+
 
                     }
                     mode.finish();

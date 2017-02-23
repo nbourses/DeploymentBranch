@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.CompoundButtonCompat;
 import android.text.Html;
 import android.text.SpannableString;
@@ -335,10 +337,13 @@ public class InitialCard  extends Fragment {
                         b.putString(AppConstants.TT,"LL");
                     else
                         b.putString(AppConstants.TT,"OR");
-
+AppConstants.SETLOCATIONBTOL = true;
 
                     BudgetToLocations budgetToLocations = new BudgetToLocations();
                     loadFragmentAnimated(budgetToLocations,b,R.id.card,"");
+                }
+                else{
+                    underConstruction();
                 }
             }
         });
@@ -346,10 +351,50 @@ public class InitialCard  extends Fragment {
         q2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TastyToast.makeText(getContext(),q2.getText().toString(),TastyToast.LENGTH_SHORT,TastyToast.SUCCESS);
+
+                if(selection == 0) {
+                    //TastyToast.makeText(getContext(),q2.getText().toString(),TastyToast.LENGTH_SHORT,TastyToast.SUCCESS);
+                    getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+
+                    Intent intent = new Intent(AppConstants.SETLOCN);
+                    intent.putExtra("question", "LtoP");
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                }
+
+                else{
+                    underConstruction();
+                }
+
+
+
+            }
+        });
+
+        q3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(selection == 0) {
+                    getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+
+                    Intent intent = new Intent(AppConstants.SETLOCN);
+                    intent.putExtra("question", "TravelTime");
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                }
+                    else{
+                        underConstruction();
+
+                }
+            }
+        });
+        q4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                underConstruction();
                 if(selection == 0){
 
-                    Bundle b = new Bundle();
+                    /*Bundle b = new Bundle();
                     if(rent)
                         b.putString(AppConstants.TT,"LL");
                     else
@@ -357,21 +402,8 @@ public class InitialCard  extends Fragment {
 
 
                     DepositeAsEmi depositeAsEmi = new DepositeAsEmi();
-                    loadFragmentAnimated(depositeAsEmi,b,R.id.card,"");
+                    loadFragmentAnimated(depositeAsEmi,b,R.id.card,"");*/
                 }
-            }
-        });
-
-        q3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TastyToast.makeText(getContext(),q3.getText().toString(),TastyToast.LENGTH_SHORT,TastyToast.SUCCESS);
-            }
-        });
-        q4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TastyToast.makeText(getContext(),q4.getText().toString(),TastyToast.LENGTH_SHORT,TastyToast.SUCCESS);
             }
         });
 
@@ -390,7 +422,6 @@ public class InitialCard  extends Fragment {
 //                if(isTelephonyEnabled()) {
                 if (hasPermission != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(permissions, REQUEST_CALL_PHONE);
-
 
                 } else {
 
@@ -420,6 +451,7 @@ public class InitialCard  extends Fragment {
         fragment.setArguments(args);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.addToBackStack("cardbtol");
         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
@@ -437,22 +469,31 @@ public class InitialCard  extends Fragment {
         ss1 = new SpannableString(s);
         ss1.setSpan(new RelativeSizeSpan(1.5f), 11, 17, 0); // set size
         q1.setText(ss1);
+        q1.setPaintFlags( q1.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+        q1.setTextColor(getResources().getColor(R.color.black));
 
         s = getString(R.string.tenant_card_question2);
         ss1 = new SpannableString(s);
-        ss1.setSpan(new RelativeSizeSpan(1.5f), 6, 12, 0); // set size
-        ss1.setSpan(new RelativeSizeSpan(1.5f), 21, 29, 0);
+        ss1.setSpan(new RelativeSizeSpan(1.5f), 6, 15, 0); // set size
+        ss1.setSpan(new RelativeSizeSpan(1.5f), 29, 35, 0);
         q2.setText(ss1);
+        q2.setPaintFlags( q2.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+        q2.setTextColor(getResources().getColor(R.color.black));
 
         s = getString(R.string.tenant_card_question3);
         ss1 = new SpannableString(s);
         ss1.setSpan(new RelativeSizeSpan(1.5f), 8, 19, 0); // set size
         q3.setText(ss1);
+        q3.setPaintFlags( q3.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+        q3.setTextColor(getResources().getColor(R.color.black));
 
         s = getString(R.string.tenant_card_question4);
         ss1 = new SpannableString(s);
         ss1.setSpan(new RelativeSizeSpan(1.5f), 9, 24, 0); // set size
         q4.setText(ss1);
+        q4.setPaintFlags(q4.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        q4.setTextColor(getResources().getColor(R.color.gray));
+
 
     }
 
@@ -464,16 +505,30 @@ public class InitialCard  extends Fragment {
         ss1 = new SpannableString(s);
         ss1.setSpan(new RelativeSizeSpan(1.5f), 25, s.length(), 0); // set size
         q1.setText(ss1);
+        q1.setPaintFlags(q1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        q1.setTextColor(getResources().getColor(R.color.gray));
 
         s = getString(R.string.owner_card_question2);
         ss1 = new SpannableString(s);
         ss1.setSpan(new RelativeSizeSpan(1.5f), 7, 16, 0); // set size
         q2.setText(ss1);
+        q2.setPaintFlags(q2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        q2.setTextColor(getResources().getColor(R.color.gray));
 
         s = getString(R.string.owner_card_question3);
         ss1 = new SpannableString(s);
         ss1.setSpan(new RelativeSizeSpan(1.5f), 11, 18, 0); // set size
         q3.setText(ss1);
+        q3.setPaintFlags(q3.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        q3.setTextColor(getResources().getColor(R.color.gray));
+
+        s = getString(R.string.tenant_card_question4);
+        ss1 = new SpannableString(s);
+        ss1.setSpan(new RelativeSizeSpan(1.5f), 9, 24, 0); // set size
+        q4.setText(ss1);
+        q4.setPaintFlags(q4.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        q4.setTextColor(getResources().getColor(R.color.gray));
+
 
     }
 
@@ -486,18 +541,30 @@ public class InitialCard  extends Fragment {
         ss1.setSpan(new RelativeSizeSpan(1.5f), 0, 5, 0); // set size
         ss1.setSpan(new RelativeSizeSpan(1.5f), 20, 29, 0);
         q1.setText(ss1);
+        q1.setPaintFlags(q1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        q1.setTextColor(getResources().getColor(R.color.gray));
 
         s = getString(R.string.buyer_card_question2);
         ss1 = new SpannableString(s);
         ss1.setSpan(new RelativeSizeSpan(1.5f), 4, 12, 0); // set size
         ss1.setSpan(new RelativeSizeSpan(1.5f), 16, s.length(), 0);
         q2.setText(ss1);
+        q2.setPaintFlags(q2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        q2.setTextColor(getResources().getColor(R.color.gray));
 
         s = getString(R.string.buyer_card_question3);
         ss1 = new SpannableString(s);
         ss1.setSpan(new RelativeSizeSpan(1.5f), 5, s.length(), 0); // set size
         q3.setText(ss1);
+        q3.setPaintFlags(q3.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        q3.setTextColor(getResources().getColor(R.color.gray));
 
+        s = getString(R.string.tenant_card_question4);
+        ss1 = new SpannableString(s);
+        ss1.setSpan(new RelativeSizeSpan(1.5f), 9, 24, 0); // set size
+        q4.setText(ss1);
+        q4.setPaintFlags(q4.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        q4.setTextColor(getResources().getColor(R.color.gray));
     }
 
     private void setSeller() {
@@ -507,25 +574,45 @@ public class InitialCard  extends Fragment {
         s = getString(R.string.seller_card_question1);
         ss1 = new SpannableString(s);
         ss1.setSpan(new RelativeSizeSpan(1.5f), 13, s.length(), 0); // set size
-
         q1.setText(ss1);
+        q1.setPaintFlags(q1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        q1.setTextColor(getResources().getColor(R.color.gray));
 
         s = getString(R.string.seller_card_question2);
         ss1 = new SpannableString(s);
         ss1.setSpan(new RelativeSizeSpan(1.5f), 0, 5, 0); // set size
         ss1.setSpan(new RelativeSizeSpan(1.5f), 23, s.length(), 0);
         q2.setText(ss1);
+        q2.setPaintFlags(q2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        q2.setTextColor(getResources().getColor(R.color.gray));
 
         s = getString(R.string.seller_card_question3);
         ss1 = new SpannableString(s);
         ss1.setSpan(new RelativeSizeSpan(1.5f), 18, s.length(), 0); // set size
         q3.setText(ss1);
+        q3.setPaintFlags(q3.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        q3.setTextColor(getResources().getColor(R.color.gray));
+
+        s = getString(R.string.tenant_card_question4);
+        ss1 = new SpannableString(s);
+        ss1.setSpan(new RelativeSizeSpan(1.5f), 9, 24, 0); // set size
+        q4.setText(ss1);
+        q4.setPaintFlags(q4.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        q4.setTextColor(getResources().getColor(R.color.gray));
+
 
     }
 
 
 
+private void underConstruction(){
+    try {
 
+        TastyToast.makeText(getContext(), "We are coming with this feature very soon!", TastyToast.LENGTH_LONG, TastyToast.INFO);
+
+    }
+    catch(Exception e){}
+}
 
 
 

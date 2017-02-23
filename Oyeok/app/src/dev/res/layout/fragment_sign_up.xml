@@ -6,6 +6,7 @@
     android:layout_height="fill_parent"
     android:clickable="true"
     android:background="@color/custom_color_darkblue">
+   <!-- android:background="@color/custom_color_darkblue"-->
     <!--android:background="@android:color/primary_text_light"-->
     <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
     <!--<ScrollView-->
@@ -15,12 +16,12 @@
     <ScrollView
         android:orientation="vertical"
         android:id="@+id/scrollview"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="fill_parent"
         android:fillViewport="true">
         <!--android:isScrollContainer="true"-->
         <LinearLayout
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_margin="16dp">
@@ -247,11 +248,12 @@
             <LinearLayout
                 android:id="@+id/llotp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:orientation="vertical"
                 android:visibility="visible"
-                android:paddingTop="15dp">
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp">
                 <!--      <com.rengwuxian.materialedittext.MaterialEditText
                            android:id="@+id/etvcode"
                            android:layout_width="match_parent"
@@ -267,18 +269,123 @@
                 <Button
                     android:id="@+id/submitprofile"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:background="@color/greenish_blue"
                     android:textColor="@android:color/white"
                     android:layout_alignParentBottom="true"
 
                     android:text="Register as a Customer" />
 
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="OR"
+                    android:id="@+id/signinOR"
+                    android:textStyle="bold"
+                    android:textColor="@color/dark_white"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:id="@+id/signinpanel"
+                    android:orientation="horizontal"
+
+                    android:layout_marginBottom="10dp">
+
+
+                    <!--<Button
+                        android:id="@+id/fconnect"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@color/greenish_blue"
+                        android:textColor="@android:color/white"
+                        android:layout_alignParentBottom="true"
+                        android:layout_weight="1"
+
+
+
+                        android:text="Connect" />-->
+                    <LinearLayout
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:layout_width="0dp"
+                        android:id="@+id/fconnect"
+                        android:layout_marginRight="5dp"
+                        android:layout_height="40dp"
+                        android:background="@color/greenish_blue"
+                        android:layout_weight="1"
+                        android:orientation="horizontal" >
+                        <ImageView
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:background="#0000"
+                            android:padding="5dp"
+                            android:layout_gravity="right"
+                            android:src="@drawable/ic_facebook"/>
+
+                        <TextView
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+
+                           android:textColor="@color/dark_white"
+                            android:text="Connect"
+                            android:gravity="left"
+                            android:id="@+id/txtfconnect" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:id="@+id/gconnect"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:background="@color/greenish_blue"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="horizontal" >
+                        <ImageView
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:padding="5dp"
+                            android:background="#0000"
+                            android:src="@drawable/ic_google"/>
+                        <TextView
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:gravity="left"
+                            android:textColor="@color/dark_white"
+                            android:text="Connect"
+                           android:id="@+id/txtgconnect"/>
+                    </LinearLayout>
+                  <!--  <Button
+                        android:id="@+id/gconnect"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="5dp"
+                        android:layout_height="40dp"
+                        android:background="@color/greenish_blue"
+                        android:textColor="@android:color/white"
+                        android:layout_alignParentBottom="true"
+                        android:text="Connect" />-->
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:visibility="gone"
                     android:orientation="horizontal"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp">
@@ -325,7 +432,11 @@
                         android:visibility="gone"
                         />
                 </LinearLayout>
+
             </LinearLayout>
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="50dp"/>
 
         </LinearLayout>
     </ScrollView>

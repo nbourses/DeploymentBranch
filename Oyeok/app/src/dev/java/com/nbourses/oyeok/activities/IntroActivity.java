@@ -515,6 +515,18 @@ btnC.setOnClickListener(new View.OnClickListener() {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == SignUpFragment.RC_SIGN_IN) {
+            SignUpFragment fragment = (SignUpFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.container_Signup);
+            fragment.onActivityResult(requestCode, resultCode, data);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
 
 
 

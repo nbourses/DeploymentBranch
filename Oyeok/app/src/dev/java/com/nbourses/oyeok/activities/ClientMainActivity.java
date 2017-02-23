@@ -71,7 +71,6 @@ import com.nbourses.oyeok.fragments.AddListingFinalCard;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.BrokerMap;
 import com.nbourses.oyeok.fragments.BuildingOyeConfirmation;
-import com.nbourses.oyeok.fragments.CardFragment;
 import com.nbourses.oyeok.fragments.DFragment;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.fragments.InitialCard;
@@ -242,6 +241,8 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
     }
 
+
+
     public interface openMapsClicked{
         public void clicked();
     }
@@ -272,6 +273,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
                 confirm_screen_title.setVisibility(View.VISIBLE);
                 getSupportActionBar().setDisplayShowHomeEnabled(false);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
                 setbaseloc.setVisibility(View.GONE);
                 cancel_btn.setVisibility(View.VISIBLE);
                 getSupportActionBar().setTitle("");
@@ -328,7 +330,7 @@ public void signUp(){
             closeOyeScreen();
         }
 
-        SignUpFragment signUpFragment = new SignUpFragment();
+       SignUpFragment signUpFragment = new SignUpFragment();
         loadFragmentAnimated(signUpFragment, bundle, R.id.container_Signup, "");
     AppConstants.SIGNUP_FLAG = true;
         Log.i("Signup called =", "Sign up yo "+AppConstants.SIGNUP_FLAG);
@@ -897,6 +899,8 @@ try {
             new DownloadImageTask().execute(General.getSharedPreferences(ClientMainActivity.this, AppConstants.PROMO_IMAGE_URL));
         }*/
 
+
+
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -1114,14 +1118,15 @@ try {
             loadFragment(frag, null, R.id.container_map, title);
         }
         else if (itemTitle.equals(getString(R.string.settings))) {
-            AppSetting appSetting=new AppSetting();
+            //ActivityLogFragment appSetting = new ActivityLogFragment();
+           AppSetting appSetting=new AppSetting();
             loadFragment(appSetting,null,R.id.container_Signup,"");
-            setting=true;
+           // setting=true;
 
 
         }
         else if (itemTitle.equals(getString(R.string.RegisterSignIn))) {
-            SignUpFragment signUpFragment = new SignUpFragment();
+           SignUpFragment signUpFragment = new SignUpFragment();
             // signUpFragment.getView().bringToFront();
             Bundle bundle = new Bundle();
             bundle.putString("lastFragment", "clientDrawer");
@@ -1321,16 +1326,36 @@ if(AppConstants.FAV) {
             // CloseBuildingOyeComfirmation();
 
         }else  if(cardFlag){
-            Log.i(TAG,"flaga isa 3 ");
-            Log.i("sushil123","card back ");
-           // getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.card)).commit();
-         //getSupportFragmentManager().popBackStack();
-            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
-            //getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_up, R.animator.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
-            cardFlag = false;
-            containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
-            containerSignup.setClickable(false);
-            card.setClickable(false);
+
+             if(AppConstants.SETLOCATIONBTOL){
+
+                 FragmentManager fragmentManager = getSupportFragmentManager();
+                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                 fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+                 InitialCard c = new InitialCard();
+
+                 c.setArguments(null);
+
+                 card.setClickable(true);
+                 fragmentTransaction.addToBackStack("card");
+                 fragmentTransaction.replace(R.id.card, c);
+                 fragmentTransaction.commitAllowingStateLoss();
+
+
+                 AppConstants.SETLOCATIONBTOL = false;
+             }else {
+                 Log.i(TAG, "flaga isa 3 ");
+                 Log.i("sushil123", "card back ");
+                 // getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+                 //getSupportFragmentManager().popBackStack();
+                 getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+                 //getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_up, R.animator.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+                 cardFlag = false;
+                 containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
+                 containerSignup.setClickable(false);
+                 card.setClickable(false);
+             }
         }else if(AppConstants.SIGNUP_FLAG){
             Log.i(TAG,"flaga isa 6 ");
 
@@ -1897,9 +1922,9 @@ if(AppConstants.FAV) {
 
     public void showCard() {
         Log.i(TAG,"in show card "+firstLaunch);
-       if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("") && !firstLaunch &&!buidingInfoFlag) {
+      /* if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("") && !firstLaunch &&!buidingInfoFlag) {
            firstLaunch=false;
-            if (AppConstants.cardCounter >3) {
+            if (AppConstants.cardCounter >3) {*/
 
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -1916,7 +1941,7 @@ if(AppConstants.FAV) {
                         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
 
                         InitialCard c = new InitialCard();
-                     //CardFragment c = new CardFragment();
+                    // CardFragment c = new CardFragment();
                         //loadFragment(d,null,R.id.container_Signup,"");
                         c.setArguments(null);
 //                FragmentManager fragmentManager = getSupportFragmentManager();
@@ -1932,8 +1957,8 @@ if(AppConstants.FAV) {
                     }
 
                 }, 500);
-            }
-        }
+          /*  }
+        }*/
     }
 
     public  void EditOyeDetails(){
@@ -2241,10 +2266,10 @@ public void openAddListing(){
 
     }
 
-    public  void setBaseRegion(){
+  /*  public  void setBaseRegion(){
         btnMyDeals.setVisibility(View.GONE);
-        /*btn_back.setVisibility(View.VISIBLE);
-        btn_cancel.setVisibility(View.VISIBLE);*/
+        *//*btn_back.setVisibility(View.VISIBLE);
+        btn_cancel.setVisibility(View.VISIBLE);*//*
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setbaseloc.setVisibility(View.GONE);
@@ -2253,14 +2278,14 @@ public void openAddListing(){
         hdroomsCount.setVisibility(View.GONE);
 
 //        closeAddBuilding();
-      /*  containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
+      *//*  containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
         containerSignup.setClickable(false);
-        card.setClickable(false);*/
+        card.setClickable(false);*//*
         Log.i(TAG,"set base region 5");
         ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).setLocation11();
         Log.i(TAG,"set base region 6");
 
-    }
+    }*/
 
     public void Reset(){
         Log.i(TAG,"rolewa 2 ");
@@ -2313,6 +2338,7 @@ public void openAddListing(){
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
 
 
 }

@@ -14,6 +14,9 @@ public class Oyeok {
      * A unique identifier for the user
      *
      */
+
+
+
     @SerializedName("url")
     private String url;
 

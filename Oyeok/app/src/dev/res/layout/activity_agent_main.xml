@@ -92,7 +92,7 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/card"
+        android:id="@+id/card1"
         android:layout_margin="40dp">
     </FrameLayout>
 

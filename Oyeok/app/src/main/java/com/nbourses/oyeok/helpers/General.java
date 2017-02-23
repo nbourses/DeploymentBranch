@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -50,6 +51,9 @@ import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
+import com.pubnub.api.callbacks.PNCallback;
+import com.pubnub.api.models.consumer.PNPublishResult;
+import com.pubnub.api.models.consumer.PNStatus;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
@@ -70,6 +74,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -160,16 +165,16 @@ public class General extends BroadcastReceiver {
     public static void slowInternet(Context context) {
        try {
            General.startTime = SystemClock.uptimeMillis();
-        Log.i(TAG,"pokemon");
+
             con = context;
 
             t = new Thread(new Runnable() {
                 public void run() {
                     slowInternetFlag = true;
-                    Log.i(TAG,"pokemon 1 "+((SystemClock.uptimeMillis() - startTime) / 1000.0));
+                    Log.i(TAG," 1 "+((SystemClock.uptimeMillis() - startTime) / 1000.0));
 while(slowInternetFlag) {
     if (((SystemClock.uptimeMillis() - startTime) / 1000.0) > AppConstants.slowInternet) {
-        Log.i(TAG, "pokemon Slow net connection ,Please move to better connectivity area.");
+        Log.i(TAG, " Slow net connection ,Please move to better connectivity area.");
         try {
             SnackbarManager.show(
                     Snackbar.with(con)
@@ -656,6 +661,7 @@ public static PubNub initPubnub(Context context, String UUID){
                         Calendar c = Calendar.getInstance();
                         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String formattedDate = df.format(c.getTime());
+                            String msg = "Recently Oyed";
 
 
                             Log.i("TRACE16", "in try toast response");
@@ -677,6 +683,9 @@ public static PubNub initPubnub(Context context, String UUID){
                                 return;
                             } else {
                                 OKID = jsonResponseData.getString("ok_id");
+
+                                final String pushmsg = "Have initiated enquiry for a "+AppConstants.letsOye.getFurnishing()+" "+ ptype.substring(0,1).toUpperCase() + ptype.substring(1) + " property (" + pstype + ") by "+AppConstants.letsOye.getPossession_date()+" within budget " + General.currencyFormat(price) + ".";
+
 
                                 try {
 
@@ -763,6 +772,42 @@ public static PubNub initPubnub(Context context, String UUID){
                                 storeDealTime(OKID,context);
                                 TastyToast.makeText(context, jsonResponseData.getString("message"), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
 //                                
+try{
+    General.setSharedPreferences(context,AppConstants.REFERING_ACTIVITY_LOG_ID,AppConstants.MASTER_ACTIVITY_LOG_ID);
+    if(General.getSharedPreferences(context,AppConstants.REFERING_ACTIVITY_LOG_ID) != "") {
+        Map message = new HashMap();
+        String name;
+        if (General.getSharedPreferences(context, AppConstants.USER_ID) == null || General.getSharedPreferences(context, AppConstants.USER_ID) == "")
+            name = "Client";
+        else
+            name = General.getSharedPreferences(context, AppConstants.NAME);
+
+        final String finalName = name;
+        message.put("pn_gcm", new HashMap() {{
+            put("data", new HashMap() {{
+                put("message", pushmsg);
+                put("_from", getSharedPreferences(context, AppConstants.USER_ID));
+                put("to", AppConstants.MASTER_ACTIVITY_LOG_ID);
+                put("name", finalName);
+                put("status", "LOG_OYE");
+            }});
+        }});
+        message.put("pn_apns", new HashMap() {{
+            put("aps", new HashMap() {{
+                put("alert", pushmsg);
+                put("from", getSharedPreferences(context, AppConstants.USER_ID));
+                put("to", AppConstants.MASTER_ACTIVITY_LOG_ID);
+                put("name", finalName);
+                put("status", "LOG_OYE");
+            }});
+        }});
+
+        String channel = "global_log_" + General.getSharedPreferences(context, AppConstants.REFERING_ACTIVITY_LOG_ID);
+        Log.i(TAG,"channel channel channel "+channel);
+        pushMessage(context, channel, message);
+    }
+}
+catch(Exception e){}
 
                             }
                         } catch (Exception e) {
@@ -1346,7 +1391,39 @@ public static PubNub initPubnub(Context context, String UUID){
 
 
 
+public static void pushMessage(Context c,String channel, Map message){
 
+    try {
+        PubNub pubnub = initPubnub(c,getSharedPreferences(c,AppConstants.USER_ID));
+        Log.i(TAG,"Message is "+message);
+
+        pubnub.publish()
+                .message(message)
+                .shouldStore(true)
+                .usePOST(true)
+                .channel(channel)
+                .async(new PNCallback<PNPublishResult>() {
+                    @Override
+                    public void onResponse(PNPublishResult result, PNStatus status) {
+                        try {
+                            if (status.isError()) {
+                                System.out.println("publish failed!");
+                                Log.i(TAG,"PUBNUB publish "+status.getStatusCode());
+                            } else {
+                                System.out.println("push notification worked!");
+                                System.out.println(result);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+
+}
 
     public static void shareReferralLink(final Context context) {
         String user_id = General.getSharedPreferences(context, AppConstants.USER_ID);
@@ -1390,6 +1467,32 @@ public static PubNub initPubnub(Context context, String UUID){
     }
 
 
+
+    public static String  getMapsApiDirectionsUrl(LatLng origin, LatLng dest) {
+        Log.i(TAG, "route drawer 1");
+        // Origin of route
+        String str_origin = "origin="+origin.latitude+","+origin.longitude;
+
+        // Destination of route
+        String str_dest = "destination="+dest.latitude+","+dest.longitude;
+
+
+        // Sensor enabled
+        String sensor = "sensor=false";
+
+        // Building the parameters to the web service
+        String parameters = str_origin+"&"+str_dest+"&"+sensor;
+
+        // Output format
+        String output = "json";
+
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/"+output+"?"+parameters;
+
+
+        return url;
+
+    }
 
 
 

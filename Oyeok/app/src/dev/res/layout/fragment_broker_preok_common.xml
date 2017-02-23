@@ -39,6 +39,7 @@
         android:layout_marginBottom="50dp"
         app:circlenew_stroke_width="5dp" />
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_gravity="bottom|center_horizontal"
@@ -147,7 +148,7 @@
         <Button
             android:id="@+id/deals1"
             android:textColor="@color/white"
-            android:text="Deals"
+            android:text="Next >>"
             android:background="@drawable/deals_button_background"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
@@ -199,6 +200,7 @@
         android:layout_height="wrap_content">
 
 
+
         <TextView
             android:id="@+id/texPtype"
             android:visibility="visible"
@@ -209,7 +211,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
             android:text="Please select a Lead and press OK."
-            android:textColor="@color/Black"
+            android:textColor="@color/greenish_blue"
             android:textStyle="bold" />
 
         <TextView
@@ -287,4 +289,16 @@
               android:layout_marginLeft="25dp"
               android:text="Select\nClient"/> -->
     </LinearLayout>
+    <TextView
+        android:text="Fetching matches..."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/loadingLeads"
+        android:textAlignment="center"
+        android:textColor="@color/greenish_blue"
+        android:visibility="visible"
+        android:layout_gravity="bottom"
+        android:textStyle="bold"
+        android:paddingTop="2dp"
+        android:layout_marginBottom="65dp"/>
 </FrameLayout>

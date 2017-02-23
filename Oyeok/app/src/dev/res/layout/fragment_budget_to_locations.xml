@@ -26,6 +26,7 @@
                 android:layout_weight="20"
                 android:textColor="@color/black"
                 android:gravity="center"
+                android:visibility="invisible"
                 android:id="@+id/back"/>
 
             <TextView

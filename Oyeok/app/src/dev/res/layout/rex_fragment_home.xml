@@ -156,7 +156,9 @@
                             android:text=""
                             android:gravity="top|center_horizontal"
                             android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:maxLines="1"
+                            android:ellipsize="end"/>
                         <LinearLayout
                             android:layout_width="265dp"
                             android:layout_height="fill_parent"
@@ -881,34 +883,67 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="75dip"
-                android:gravity="bottom"
-                android:layout_gravity="bottom"
                 android:orientation="horizontal"
-                android:background="@color/greenish_blue"
+                android:background="@drawable/border_bg_greenish_blue"
                 android:id="@+id/addlistingText"
-                android:visibility="gone"
-                >
+                android:visibility="gone">
                 <Button
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_gravity="left|bottom"
-                    android:background="@drawable/asset_add_listing"
+                    android:background="@drawable/ic_location"
                     android:text=""
                     android:layout_marginLeft="10dp"
                     android:visibility="visible"
                     android:layout_marginTop="15dp"  />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dip"
-                    android:textColor="@color/white"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginTop="2dip"
-                    android:layout_marginBottom="2dip"
-                    android:textStyle="bold"
-                    android:id="@+id/addBText"
-                    android:visibility="visible"
-                    android:gravity="center"
-                    android:text="Find your Building Location and on Save"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dip"
+                        android:textColor="@color/black"
+                        android:layout_marginLeft="5dip"
+                        android:layout_marginBottom="2dip"
+                        android:layout_marginTop="2dip"
+                        android:textStyle="bold|italic"
+                        android:textSize="20dp"
+                        android:id="@+id/addBText"
+                        android:visibility="visible"
+                        android:gravity="bottom"
+                        android:text="Your Area:"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dip"
+                        android:textColor="@color/black"
+                        android:layout_marginLeft="5dip"
+                        android:layout_toRightOf="@+id/addBText"
+                        android:layout_marginBottom="2dip"
+                        android:layout_marginTop="2dip"
+                        android:textStyle="bold|italic"
+                        android:textSize="25dp"
+                        android:id="@+id/locality"
+                        android:visibility="visible"
+                        android:gravity="bottom"
+                        android:text="Mumbai"
+                        android:maxLines="1"
+                        android:ellipsize="end"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dip"
+                        android:textColor="@color/white"
+                        android:layout_marginLeft="15dip"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="2dip"
+                        android:layout_marginTop="2dip"
+                        android:textStyle="bold|italic"
+                        android:textSize="15dp"
+                        android:gravity="top"
+                        android:id="@+id/addBTextd"
+                        android:visibility="visible"
+                        android:text="(Click on SAVE to FIX your Area)"/>
+                </RelativeLayout>
+
             </LinearLayout>
 
 
@@ -958,6 +993,7 @@
         android:gravity="center"
         android:layout_alignParentBottom="true"
         >
+
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
@@ -966,7 +1002,9 @@
             android:textStyle="bold"
             android:textSize="13dp"
             android:gravity="center_horizontal|center_vertical"
-            android:text="10% Cashback"/>
+            android:text="10% Cashback"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"

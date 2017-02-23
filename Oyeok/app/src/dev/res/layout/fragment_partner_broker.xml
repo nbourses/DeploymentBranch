@@ -24,6 +24,7 @@
                 android:layout_weight="20"
                 android:textColor="@color/black"
                 android:gravity="center"
+                android:visibility="gone"
                 android:id="@+id/back"/>
 
             <TextView
@@ -46,6 +47,7 @@
                 android:layout_weight="20"
                 android:textColor="@color/black"
                 android:gravity="center"
+                android:visibility="gone"
                 android:id="@+id/Cancel_add_building"/>
 
         </LinearLayout>
