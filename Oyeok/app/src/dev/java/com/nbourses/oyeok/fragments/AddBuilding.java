@@ -22,8 +22,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.activities.BrokerMap;
@@ -101,6 +104,12 @@ private TextView Cancel,back,usertext;
         usertext=(TextView)v.findViewById(R.id.usertext);
         progressBar=(ProgressBar)v.findViewById(R.id.loadbuilding);
         building_names= new ArrayList<>();
+
+        MyApplication application = (MyApplication) getActivity().getApplication();
+        Tracker mTracker = application.getDefaultTracker();
+
+        mTracker.setScreenName("SearchBuilding");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override

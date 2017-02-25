@@ -26,8 +26,11 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
@@ -186,6 +189,17 @@ public class OyeScreenFragment extends Fragment {
                 }
             }
         });
+
+
+        try {
+            MyApplication application = (MyApplication) getActivity().getApplication();
+            Tracker mTracker = application.getDefaultTracker();
+
+            mTracker.setScreenName("OyeBegin");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         /*satView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -686,6 +700,15 @@ public class OyeScreenFragment extends Fragment {
     @OnClick(R.id.btnOnOyeClick)
     public void submitOyeOk(View v) {
 //        my_expectation=txtSelected.getText().toString();
+        try {
+            MyApplication application = (MyApplication) getActivity().getApplication();
+            Tracker mTracker = application.getDefaultTracker();
+
+            mTracker.setScreenName("OyeSubmit");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         SendDataToOyeConfirmationScreen();
         if(General.isNetworkAvailable(getContext())) {
             Log.i("TAG", "property subtype selected" + General.retriveBoolean(getContext(), "propertySubtypeFlag"));

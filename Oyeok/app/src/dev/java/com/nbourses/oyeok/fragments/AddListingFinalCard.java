@@ -20,9 +20,12 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.JsonElement;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
@@ -143,6 +146,16 @@ public class AddListingFinalCard extends Fragment {
         String ts = tsLong.toString();
         Log.i("timestamp12", "  tsLong :"+ ts+"    "+System.currentTimeMillis());
 
+
+        try {
+            MyApplication application = (MyApplication) getActivity().getApplication();
+            Tracker mTracker = application.getDefaultTracker();
+
+            mTracker.setScreenName("SetBudget");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         config.setText(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG).toString());
         approx_area.setText(General.getSharedPreferences(getContext(), AppConstants.APPROX_AREA).toString());
@@ -448,6 +461,16 @@ private void init(){
 
 
    private void addListing(){
+       try {
+           MyApplication application = (MyApplication) getActivity().getApplication();
+           Tracker mTracker = application.getDefaultTracker();
+
+           mTracker.setScreenName("ListingAPI");
+           mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+
        AddListingBorker addListingBorker=new AddListingBorker();
        addListingBorker.setProperty_type(General.getSharedPreferences(getContext(),AppConstants.PROPERTY));
        addListingBorker.setConfig(General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
@@ -554,6 +577,15 @@ private void init(){
 
     public void AddBuildingDataToRealm(String id) {
 
+        try {
+            MyApplication application = (MyApplication) getActivity().getApplication();
+            Tracker mTracker = application.getDefaultTracker();
+
+            mTracker.setScreenName("ListingSuccess");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Realm myRealm = General.realmconfig(getContext());
         addBuildingRealm add_Building = new addBuildingRealm();
         add_Building.setTimestamp(String.valueOf(System.currentTimeMillis()));

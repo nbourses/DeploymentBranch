@@ -45,6 +45,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -59,6 +61,7 @@ import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.gson.JsonElement;
 import com.google.maps.android.ui.IconGenerator;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
@@ -208,6 +211,17 @@ public class Game extends AppCompatActivity implements AdapterView.OnItemClickLi
         month = (TextView) findViewById( R.id.month );
         year = (TextView) findViewById( R.id.year );
         clocktick = (TextView) findViewById( R.id.clocktick1 );
+
+        try {
+            MyApplication application = (MyApplication) getApplication();
+            Tracker mTracker = application.getDefaultTracker();
+
+            mTracker.setScreenName("Game");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (!SharedPrefs.getString( this, SharedPrefs.My_BALANCE ).equals( "" )) {
 
             Log.i( "balance", "balance 11:" + SharedPrefs.getString( this, SharedPrefs.My_BALANCE ) );

@@ -47,8 +47,11 @@ import android.widget.RelativeLayout;
 
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.maps.GoogleMap;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.fragments.AddBuilding;
@@ -291,6 +294,17 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
             }
         }catch(Exception e){
 
+        }
+
+
+        try {
+            MyApplication application = (MyApplication) getApplication();
+            Tracker mTracker = application.getDefaultTracker();
+
+            mTracker.setScreenName("BrokerMainActivity");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         showCard();
