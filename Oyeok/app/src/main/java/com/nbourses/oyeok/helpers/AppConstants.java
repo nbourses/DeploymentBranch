@@ -92,7 +92,7 @@ public class AppConstants {
     /*public static final String SERVER_BASE_URL_103 = "https://test.hailyo.com/1";
     public static final String SERVER_BASE_URL_TEST = "https://test.hailyo.com/1";
     public static final String SERVER_BASE_URL_TEST_102 = "https://test.hailyo.com/1.02";*/
-    
+
     public static final String OK_ID = "ok_id";
     public static final String OYE_ID = "oye_id";
 

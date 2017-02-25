@@ -87,7 +87,7 @@ public class porfolioAdapter extends BaseAdapter {
         
         if(listing.getTt() == null&&listing.getDisplay_type()!=null&&listing.getDisplay_type().equalsIgnoreCase("watchlist")){
             v = null;
-            if (convertView == null) {
+            if (v == null) {
                 
 
                 v = inflater.inflate(R.layout.watchlist_listview_row, null);
@@ -125,7 +125,7 @@ public class porfolioAdapter extends BaseAdapter {
         }else {
 
             v = null;
-            if (convertView == null) {
+            if (v == null) {
                 v = inflater.inflate(R.layout.rental_listview_row, null);
                 holder = new Holder(v);
             /*holder.tvPersonName = (TextView) v.findViewById(R.id.tvPersonName);

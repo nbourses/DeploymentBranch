@@ -1615,7 +1615,7 @@ public class HorizontalPicker extends View {
         else
             truncate_first = 3;
 
-        Log.i("TRACED","no is"+no);
+//        Log.i("TRACED","no is"+no);
         String str = "",v = "";
 
         int twoWord = 0,val = 1;
@@ -1674,7 +1674,7 @@ public class HorizontalPicker extends View {
             default :
                 break;
         }
-        Log.i("TRACE","budget string"+str);
+        //Log.i("TRACE","budget string"+str);
         return str;
     }
 

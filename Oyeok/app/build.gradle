@@ -43,7 +43,7 @@ android {
         minSdkVersion 16
         multiDexEnabled true
         targetSdkVersion 25
-        versionCode 45
+        versionCode 46
         versionName "1.0"
         manifestPlaceholders = [manifestApplicationId          : "${applicationId}",
                                 onesignal_app_id               : "9e2ab2be-54c5-4981-b15f-fb8dc78b81ee",
@@ -322,7 +322,7 @@ dependencies {
     compile 'com.amazonaws:aws-android-sdk-s3:2.2.13'
     compile 'com.amazonaws:aws-android-sdk-ddb:2.2.13'
     compile 'com.amazonaws:aws-android-sdk-core:2.2.+'
-    compile 'com.amazonaws:aws-android-sdk-s3:2.2.+'
+//    compile 'com.amazonaws:aws-android-sdk-s3:2.2.+'
     compile 'com.amazonaws:aws-android-sdk-ddb:2.2.+'
     compile 'com.sdsmdg.tastytoast:tastytoast:0.0.1'
     compile 'com.onesignal:OneSignal:2.+@aar'

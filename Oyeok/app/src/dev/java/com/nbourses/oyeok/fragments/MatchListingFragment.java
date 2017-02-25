@@ -286,9 +286,9 @@ mrview.setOnClickListener(new View.OnClickListener() {
                             config = jo.getString("req_avl").toUpperCase()+" ("+jo.getString("property_subtype").toUpperCase()+") "+jo.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(jo.getString("price")).toUpperCase();
                             root_config.setText(config);
 
-                            growth_rate = jo.getString("rate_growth");
+//                            growth_rate = jo.getString("rate_growth");
 
-
+                            growth_rate = General.percentageCalculator(Integer.parseInt(jo.getString("price")),Integer.parseInt(jo.getString("real_price")));
                             if (Integer.parseInt(growth_rate) < 0) {
 
                                 root_growth_image.setImageResource( R.drawable.sort_down_red );
@@ -307,7 +307,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
                                 root_growth_rate.setText( growth_rate + "%" );
                             }
 
-                            price = jo.getString("price");
+                            price = jo.getString("real_price");
                             root_price.setText(General.currencyFormat(price));
 
 
