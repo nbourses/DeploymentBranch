@@ -66,11 +66,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -540,6 +542,15 @@ public static PubNub initPubnub(Context context, String UUID){
     }
 
 
+    public static String timestampToString(long timeStamp){
+
+
+            DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            Date netDate = (new Date(timeStamp));
+            return sdf.format(netDate);
+
+
+    }
     public static String timeStampToString(Long timeStamp){
 
         int secondsInADay   = 60*60*24;

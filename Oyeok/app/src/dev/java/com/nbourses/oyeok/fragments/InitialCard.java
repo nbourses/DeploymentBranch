@@ -154,9 +154,9 @@ public class InitialCard  extends Fragment {
         tagline1.setText(Html.fromHtml("<i><b>Tenant</b> you are 3 clicks away</i>"));
         setTenant();
 
-        int states[][] = {{android.R.attr.state_checked}, {}};
-        int colors[] = {R.color.greenish_blue, R.color.dark_white};
-        CompoundButtonCompat.setButtonTintList(tenant, new ColorStateList(states, colors));
+        /*int states[][] = {{android.R.attr.state_checked}, {}};
+       int colors[] = {R.color.black, R.color.dark_white};
+        CompoundButtonCompat.setButtonTintList(tenant, new ColorStateList(states, colors));*/
 
         tenant.setChecked(true);
         bounce = AnimationUtils.loadAnimation(getContext(),
@@ -189,7 +189,7 @@ public class InitialCard  extends Fragment {
                     /*q1.setText(Html.fromHtml(getString(R.string.owner_card_question1)));
                     q2.setText(Html.fromHtml(getString(R.string.owner_card_question2)));
                     q3.setText(Html.fromHtml(getString(R.string.owner_card_question3)));*/
-                    setOwner();
+                    setBuyer();
 
                 } else {
                     AppConstants.Card_TT = "LL";
@@ -554,14 +554,14 @@ AppConstants.SETLOCATIONBTOL = true;
 
         s = getString(R.string.buyer_card_question3);
         ss1 = new SpannableString(s);
-        ss1.setSpan(new RelativeSizeSpan(1.5f), 5, s.length(), 0); // set size
+        ss1.setSpan(new RelativeSizeSpan(1.5f), 0, 9, 0); // set size
         q3.setText(ss1);
         q3.setPaintFlags(q3.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         q3.setTextColor(getResources().getColor(R.color.gray));
 
-        s = getString(R.string.tenant_card_question4);
+        s = getString(R.string.buyer_card_question4);
         ss1 = new SpannableString(s);
-        ss1.setSpan(new RelativeSizeSpan(1.5f), 9, 24, 0); // set size
+        ss1.setSpan(new RelativeSizeSpan(1.5f), 14, 20, 0); // set size
         q4.setText(ss1);
         q4.setPaintFlags(q4.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         q4.setTextColor(getResources().getColor(R.color.gray));

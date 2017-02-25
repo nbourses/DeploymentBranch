@@ -1383,7 +1383,7 @@ if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
                             Log.i("TRACE", "jsonObjectResponseData max_pages" + jsonObjectResponseData.getString("max_pages"));
                             maxPages = Integer.parseInt(jsonObjectResponseData.getString("max_pages"));
                             Log.d("CHATTRACE", "default drooms" + jsonObjectResponseData);
-
+                            Log.i("magic", "rollonar 3 " + jsonObjectResponseData);
 
 //                        JSONObject jsonObjectResponseData1 = new JSONObject(jsonObjectResponseData.getString("for_oyes"));
 //

@@ -395,13 +395,17 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
 
         // Replace your server side hash generator API URL
         String url = "https://test.payumoney.com/payment/op/calculateHashForTest";
+        //String url = "https://test.hailyo.com/1/jotform/test";
 
        // Toast.makeText(getContext(), "Please wai Generating hash ", Toast.LENGTH_LONG).show();
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+
                 try {
                     JSONObject jsonObject = new JSONObject(response);
+
+                    Log.i("app_activity", "Server calculated Hash jsonObject :  " + jsonObject);
 
                     if (jsonObject.has(SdkConstants.STATUS)) {
                         String status = jsonObject.optString(SdkConstants.STATUS);

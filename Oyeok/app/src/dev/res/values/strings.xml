@@ -198,8 +198,8 @@
 
     <string name="buyer_card_question1">Rates of old vs new Buildings</string>
     <string name="buyer_card_question2">new Projects in Budget &amp; EMI</string>
-    <string name="buyer_card_question3">best investment locations</string>
-    <string name="buyer_card_question4">apply for I Hate Deposit scheme</string>
+    <string name="buyer_card_question3">Trending locations near me</string>
+    <string name="buyer_card_question4">invest in only 1sqft fractional ownership</string>
 
     <string name="seller_card_question1">compare with Live Market Rates</string>
     <string name="seller_card_question2">track to sell at right time &amp; price</string>

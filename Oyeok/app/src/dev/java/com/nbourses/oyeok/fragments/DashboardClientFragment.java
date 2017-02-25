@@ -881,8 +881,8 @@ else {
             sort_down_red = getContext().getResources().getDrawable(R.drawable.sort_down_red);
             sort_up_black = getContext().getResources().getDrawable(R.drawable.sort_up_black);
             sort_up_green = getContext().getResources().getDrawable(R.drawable.up);
-            iconHome = getBitmapDescriptor(R.drawable.ic_home,90,40);
-            iconOffice = getBitmapDescriptor(R.drawable.ic_office,100,55);
+            iconHome = getBitmapDescriptor(R.drawable.ic_home,110,55);
+            iconOffice = getBitmapDescriptor(R.drawable.ic_office,120,65);
             iconOther = getBitmapDescriptor(R.drawable.ic_location,100,85);
            // iconOffice = BitmapDescriptorFactory.fromResource(R.drawable.favoffice);
             //iconOther = BitmapDescriptorFactory.fromResource(R.drawable.favother);
@@ -941,6 +941,7 @@ else {
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"callbutton status ");
+                AppConstants.cardCounter = 4;
                 ((ClientMainActivity)getActivity()).showCard();
               /*  callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:+912239659137"));//+912233836068
@@ -2321,6 +2322,12 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
 
                         myRealm.beginTransaction();
                         Localities l = new Localities();
+
+
+                        RealmResults<Localities> result = myRealm.where(Localities.class).equalTo("type", HomeTravel).findAll();
+                        result.clear();
+
+
                         l.setLocality(General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
                         l.setGrowthRate("-6");
                         l.setLlMin(llMin+"");
@@ -2788,7 +2795,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                             mVisits.setEnabled(true);
                                             txtFilterValue.setEnabled(true);
                                             PlotBuilding();
-                                            drawLocalities();
+                                            //drawLocalities();
 
                                             //missingArea.setVisibility(View.GONE);
 
@@ -2830,6 +2837,8 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
 
                                 Log.i("Price Error", "Caught in exception getprice success" + e.getMessage());
                             }
+
+                            drawLocalities();
 
 
                         }
@@ -5048,84 +5057,88 @@ public void resetSeekBar(){
     private void CacheBuildings(String name,String lat,String longi,String locality,int ll_pm,int or_psf,String id,String conf,String listing,String portal,String rate_growth,String transaction){
 
 
-        Realm myRealm = General.realmconfig( getContext());
+        try {
+            Realm myRealm = General.realmconfig( getContext());
 
-        RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp");
-        RealmResults<MyPortfolioModel> result= realm.where(MyPortfolioModel.class).findAll();
-        int size=100+result.size();
-       // RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false);
-        Log.i("dataformrealm1","BuildingCacheRealm before "+result1.size());
+            RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp");
+            RealmResults<MyPortfolioModel> result= realm.where(MyPortfolioModel.class).findAll();
+            int size=100+result.size();
+            // RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false);
+            Log.i("dataformrealm1","BuildingCacheRealm before "+result1.size());
 
-        if(result1.size()>size){
-            if(myRealm.isInTransaction())
-                myRealm.cancelTransaction();
-            realm.beginTransaction();
-            result1.remove(size);
-            realm.commitTransaction();
+            if(result1.size()>size){
+                if(myRealm.isInTransaction())
+                    myRealm.cancelTransaction();
+                realm.beginTransaction();
+                result1.remove(size);
+                realm.commitTransaction();
 
-            Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size()+" =============== : "+String.valueOf(SystemClock.currentThreadTimeMillis()));
-            String ptype;
-            if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
-                ptype = "home";
-            else
-                ptype = AppConstants.PROPERTY;
+                Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size()+" =============== : "+String.valueOf(SystemClock.currentThreadTimeMillis()));
+                String ptype;
+                if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
+                    ptype = "home";
+                else
+                    ptype = AppConstants.PROPERTY;
 
-            BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
-            buildingCacheRealm.setTimestamp(SystemClock.currentThreadTimeMillis());
-            buildingCacheRealm.setName(name);
-            buildingCacheRealm.setLat(lat);
-            buildingCacheRealm.setLng(longi);
-            buildingCacheRealm.setLocality(locality);
-            buildingCacheRealm.setLl_pm(ll_pm);
-            buildingCacheRealm.setOr_psf(or_psf);
-            buildingCacheRealm.setId(id);
-            buildingCacheRealm.setConfig(conf);
-            buildingCacheRealm.setListing(listing);
-            buildingCacheRealm.setPortals(portal);
-            buildingCacheRealm.setRate_growth(rate_growth);
-            buildingCacheRealm.setTransactions(transaction);
-            buildingCacheRealm.setPtype(ptype);
-            if(myRealm.isInTransaction())
-                myRealm.cancelTransaction();
-            myRealm.beginTransaction();
-            myRealm.copyToRealmOrUpdate( buildingCacheRealm );
-//        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
-            myRealm.commitTransaction();
+                BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
+                buildingCacheRealm.setTimestamp(SystemClock.currentThreadTimeMillis());
+                buildingCacheRealm.setName(name);
+                buildingCacheRealm.setLat(lat);
+                buildingCacheRealm.setLng(longi);
+                buildingCacheRealm.setLocality(locality);
+                buildingCacheRealm.setLl_pm(ll_pm);
+                buildingCacheRealm.setOr_psf(or_psf);
+                buildingCacheRealm.setId(id);
+                buildingCacheRealm.setConfig(conf);
+                buildingCacheRealm.setListing(listing);
+                buildingCacheRealm.setPortals(portal);
+                buildingCacheRealm.setRate_growth(rate_growth);
+                buildingCacheRealm.setTransactions(transaction);
+                buildingCacheRealm.setPtype(ptype);
+                if(myRealm.isInTransaction())
+                    myRealm.cancelTransaction();
+                myRealm.beginTransaction();
+                myRealm.copyToRealmOrUpdate( buildingCacheRealm );
+    //        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
+                myRealm.commitTransaction();
 
-        }else{
-            Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size());
+            }else{
+                Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size());
 
-            String ptype;
-            if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
-                ptype = "home";
-            else
-                ptype = AppConstants.PROPERTY;
+                String ptype;
+                if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
+                    ptype = "home";
+                else
+                    ptype = AppConstants.PROPERTY;
 
-            BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
-            buildingCacheRealm.setTimestamp(SystemClock.currentThreadTimeMillis());
-            buildingCacheRealm.setName(name);
-            buildingCacheRealm.setLat(lat);
-            buildingCacheRealm.setLng(longi);
-            buildingCacheRealm.setLocality(locality);
-            buildingCacheRealm.setLl_pm(ll_pm);
-            buildingCacheRealm.setOr_psf(or_psf);
-            buildingCacheRealm.setId(id);
-            buildingCacheRealm.setConfig(conf);
-            buildingCacheRealm.setListing(listing);
-            buildingCacheRealm.setPortals(portal);
-            buildingCacheRealm.setRate_growth(rate_growth);
-            buildingCacheRealm.setTransactions(transaction);
-            buildingCacheRealm.setPtype(ptype);
-            if(myRealm.isInTransaction())
-                myRealm.cancelTransaction();
-            myRealm.beginTransaction();
-            myRealm.copyToRealmOrUpdate( buildingCacheRealm );
-//        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
-            myRealm.commitTransaction();
+                BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
+                buildingCacheRealm.setTimestamp(SystemClock.currentThreadTimeMillis());
+                buildingCacheRealm.setName(name);
+                buildingCacheRealm.setLat(lat);
+                buildingCacheRealm.setLng(longi);
+                buildingCacheRealm.setLocality(locality);
+                buildingCacheRealm.setLl_pm(ll_pm);
+                buildingCacheRealm.setOr_psf(or_psf);
+                buildingCacheRealm.setId(id);
+                buildingCacheRealm.setConfig(conf);
+                buildingCacheRealm.setListing(listing);
+                buildingCacheRealm.setPortals(portal);
+                buildingCacheRealm.setRate_growth(rate_growth);
+                buildingCacheRealm.setTransactions(transaction);
+                buildingCacheRealm.setPtype(ptype);
+                if(myRealm.isInTransaction())
+                    myRealm.cancelTransaction();
+                myRealm.beginTransaction();
+                myRealm.copyToRealmOrUpdate( buildingCacheRealm );
+    //        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
+                myRealm.commitTransaction();
+            }
+
+
+            fr.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            Log.i(TAG,"Caught in exception CacheBuildings "+e.getMessage());
         }
-
-
-       fr.setVisibility(View.VISIBLE);
 
     }
 

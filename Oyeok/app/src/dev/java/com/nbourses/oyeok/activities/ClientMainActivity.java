@@ -1288,6 +1288,7 @@ if(AppConstants.FAV) {
 }
 */
 
+
          if(AppConstants.SEARCHFLAG){
              Log.i("sushil123","SEARCHFLAG 123 ");
 
@@ -1922,9 +1923,10 @@ if(AppConstants.FAV) {
 
     public void showCard() {
         Log.i(TAG,"in show card "+firstLaunch);
-      /* if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("") && !firstLaunch &&!buidingInfoFlag) {
-           firstLaunch=false;
-            if (AppConstants.cardCounter >3) {*/
+       /*if (*//*General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("")*//* !firstLaunch &&!buidingInfoFlag) {
+           firstLaunch=false;*/
+
+            if (AppConstants.cardCounter >3) {
 
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -1957,8 +1959,8 @@ if(AppConstants.FAV) {
                     }
 
                 }, 500);
-          /*  }
-        }*/
+            }
+     /*   }*/
     }
 
     public  void EditOyeDetails(){

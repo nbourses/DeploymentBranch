@@ -1,5 +1,7 @@
 package com.nbourses.oyeok.models;
 
+import com.nbourses.oyeok.fragments.MatchListingFragment;
+
 /**
  * Created by Ritesh Warke on 18/02/17.
  */
@@ -14,6 +16,10 @@ public class MatchListing {
     private String price;
     private String config;
     private String oye_id;
+    private String req_avl;
+    private String property_type;
+    private String user_id;
+
 
     private boolean isSelected = false;
 
@@ -25,7 +31,7 @@ public class MatchListing {
         isSelected = selected;
     }
 
-    public MatchListing(String oye_id,String config, String broker_name, String locality, String date, String price, String growth_rate) {
+    public MatchListing(String user_id, String property_type, String req_avl, String oye_id, String config, String broker_name, String locality, String date, String price, String growth_rate) {
         this.config = config;
         this.broker_name = broker_name;
         this.locality = locality;
@@ -33,6 +39,34 @@ public class MatchListing {
         this.price = price;
         this.growth_rate = growth_rate;
         this.oye_id = oye_id;
+        this.req_avl = req_avl;
+
+        this.property_type = property_type;
+        this.user_id = user_id;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getProperty_type() {
+        return property_type;
+    }
+
+    public void setProperty_type(String property_type) {
+        this.property_type = property_type;
+    }
+
+    public String getReq_avl() {
+        return req_avl;
+    }
+
+    public void setReq_avl(String req_avl) {
+        this.req_avl = req_avl;
     }
 
     public String getOye_id() {
@@ -106,4 +140,6 @@ public class MatchListing {
     public void setDesc(String desc) {
         this.desc = desc;
     }
+
+
 }

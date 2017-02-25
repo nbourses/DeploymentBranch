@@ -1059,34 +1059,63 @@ private String transaction_type="Rental";
 */
    @OnClick({R.id.okButton, R.id.deals1})
     public void onButtonsClick(View v) {
+
        Log.i("CHARTid", "clickeda "+v.getId()+"deal.getId()  "+deal.getId()+ " okButton.getId() "+okButton.getId());
+
+
        if (okButton.getId() == v.getId()) {
            long now = SystemClock.elapsedRealtime();
            if (now - lastClickMillis > THRESHOLD_MILLIS) {
-               listings = new HashMap<String, Float>();
 
-               Log.i("GRAPH", "jsonObjectArray is " + jsonObjectArray);
-               if (jsonObjectArray == null) {
-                   SnackbarManager.show(
-                           com.nispok.snackbar.Snackbar.with(getContext())
-                                   .position(Snackbar.SnackbarPosition.BOTTOM)
-                                   .text("Please select a Matching and then press OK.")
-                                   .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
-               } else {
+               if (!General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")) {
 
-                   MatchListingFragment matchListingFragment = new MatchListingFragment();
-Bundle b = new Bundle();
-                   b.putString("oye_id",oye_id);
-                   b.putString("broker_name",broker_name);
-                   b.putString("config",config);
-                   b.putString("locality",locality);
-                   b.putString("price",price);
-                   b.putString("growth_rate",growth_rate);
-                   b.putString("date",date);
-                   loadFragmentAnimated(matchListingFragment, b, R.id.container_sign, "");
+                   listings = new HashMap<String, Float>();
+
+                   Log.i("GRAPH", "jsonObjectArray is " + jsonObjectArray);
+                   if (jsonObjectArray == null) {
+                       SnackbarManager.show(
+                               com.nispok.snackbar.Snackbar.with(getContext())
+                                       .position(Snackbar.SnackbarPosition.BOTTOM)
+                                       .text("Please select a Matching and then press OK.")
+                                       .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                   } else {
+
+                       MatchListingFragment matchListingFragment = new MatchListingFragment();
+                       Bundle b = new Bundle();
+                       b.putString("oye_id", oye_id);
+                       b.putString("broker_name", broker_name);
+                       b.putString("config", config);
+                       b.putString("locality", locality);
+                       b.putString("price", price);
+                       b.putString("growth_rate", growth_rate);
+                       b.putString("date", date);
+                       //b.putString("JsonArray", jsonObjectArray.toString());
+                       AppConstants.MATCHINGOKFLAG = true;
+                       loadFragmentAnimated(matchListingFragment, b, R.id.container_sign, "");
+                   }
+
+               }else{
+                   SignUpFragment s = new SignUpFragment();
+                   Bundle b = new Bundle();
+                   b.putString("oye_id", oye_id);
+                   b.putString("broker_name", broker_name);
+                   b.putString("config", config);
+                   b.putString("locality", locality);
+                   b.putString("price", price);
+                   b.putString("growth_rate", growth_rate);
+                   b.putString("date", date);
+                   b.putString("lastFragment", "okyed");
+                   AppConstants.SIGNUP_FLAG = true;
+                   loadFragmentAnimated(s, b, R.id.container_sign, "");
+
                }
            }
-          /* long now = SystemClock.elapsedRealtime();
+
+
+
+        /*
+
+           long now = SystemClock.elapsedRealtime();
            if (now - lastClickMillis > THRESHOLD_MILLIS) {
                listings = new HashMap<String, Float>();
                listings.put("building1", 1f);
@@ -1706,9 +1735,28 @@ Bundle b = new Bundle();
             String name;
             String furnishing = "Semi-Furnished";
             String possession_date = "";
+            /*String oyee = "";*/
             if(jsonObjectArray.getJSONObject(position).getString("possession_date") != ""){
-                possession_date = jsonObjectArray.getJSONObject(position).getString("possession_date");
+
+                try {
+                    possession_date = General.timestampToString(Long.parseLong(jsonObjectArray.getJSONObject(position).getString("possession_date")));
+                } catch (NumberFormatException e1) {
+
+                    possession_date = jsonObjectArray.getJSONObject(position).getString("possession_date");
+                    e1.printStackTrace();
+                } catch (JSONException e1) {
+
+                    possession_date = jsonObjectArray.getJSONObject(position).getString("possession_date");
+                    e1.printStackTrace();
+
+                }
             }
+
+
+
+            /*if(jsonObjectArray.getJSONObject(position).getString("oye_id") != ""){
+                oyee = jsonObjectArray.getJSONObject(position).getString("oye_id");
+            }*/
             JSONObject k = jsonObjectArray.getJSONObject(position);
             oye_id = k.getString("oye_id");
             broker_name = "Broker_name";

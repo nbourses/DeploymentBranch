@@ -16,6 +16,7 @@ import com.nbourses.oyeok.models.CreateWatchlistAPI;
 import com.nbourses.oyeok.models.GetLocality;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.MatchingOK;
+import com.nbourses.oyeok.models.OkAccept;
 import com.nbourses.oyeok.models.PreOk;
 import com.nbourses.oyeok.models.PublishLetsOye;
 import com.nbourses.oyeok.models.ReadWatchlistAPI;
@@ -49,6 +50,9 @@ public interface OyeokApiService {
 
     @POST("/1/ok/accept")
     void acceptOk(@Body Oyeok oyeok, Callback<AcceptOk> callback);
+
+    @POST("/ok/accept")
+    void okAccept(@Body OkAccept o, Callback<JsonElement> callback);
 
     @POST("/lets/oye")
     void publishOye(@Body PublishLetsOye publishLetsOye, Callback<PublishLetsOye> callback);
