@@ -546,6 +546,15 @@ public static PubNub initPubnub(Context context, String UUID){
     }
 
 
+    public static String timestampToString(long timeStamp){
+
+
+            DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            Date netDate = (new Date(timeStamp));
+            return sdf.format(netDate);
+
+
+    }
     public static String timeStampToString(Long timeStamp){
 
         int secondsInADay   = 60*60*24;

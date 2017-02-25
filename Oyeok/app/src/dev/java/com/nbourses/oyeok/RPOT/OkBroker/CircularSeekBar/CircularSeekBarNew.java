@@ -251,34 +251,34 @@ public class CircularSeekBarNew extends View {
 if(matchCount == 0){
     if (reqAvl.equalsIgnoreCase("REQ")) {
         if (i == index)
-            d = getResources().getDrawable(drawables[4]); // man
+            d = getResources().getDrawable(drawables[17]); // man
          else
-            d = getResources().getDrawable(drawables[0]); // man clicked
+            d = getResources().getDrawable(drawables[16]); // man clicked
     }
     else{
         if(ptype.equalsIgnoreCase("home")){
             if (i == index)
-                d = getResources().getDrawable(drawables[4]); // home
+                d = getResources().getDrawable(drawables[12]); // home
             else
-                d = getResources().getDrawable(drawables[0]); // home clicked
+                d = getResources().getDrawable(drawables[8]); // home clicked
         }
         else if(ptype.equalsIgnoreCase("industrial")){
             if (i == index)
-                d = getResources().getDrawable(drawables[5]); // ind
+                d = getResources().getDrawable(drawables[13]); // ind
             else
-                d = getResources().getDrawable(drawables[1]); // ind clicked
+                d = getResources().getDrawable(drawables[9]); // ind clicked
         }
         else if(ptype.equalsIgnoreCase("shop")){
             if (i == index)
-                d = getResources().getDrawable(drawables[6]); // shop
+                d = getResources().getDrawable(drawables[14]); // shop
             else
-                d = getResources().getDrawable(drawables[2]); // shop clicked
+                d = getResources().getDrawable(drawables[10]); // shop clicked
         }
         else if(ptype.equalsIgnoreCase("office")){
             if (i == index)
-                d = getResources().getDrawable(drawables[7]); // office
+                d = getResources().getDrawable(drawables[15]); // office
             else
-                d = getResources().getDrawable(drawables[3]); // office clicked
+                d = getResources().getDrawable(drawables[11]); // office clicked
         }
     }
 

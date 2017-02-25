@@ -19,6 +19,8 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -81,6 +83,8 @@ import com.nbourses.oyeok.activities.BrokerDealsListActivity;
 import com.nbourses.oyeok.activities.BrokerMainActivity;
 import com.nbourses.oyeok.activities.BrokerMap;
 import com.nbourses.oyeok.activities.ClientMainActivity;
+import com.nbourses.oyeok.fragments.BrokerPreokFragment;
+import com.nbourses.oyeok.fragments.MatchListingFragment;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.realmModels.HalfDeals;
@@ -609,7 +613,7 @@ private LinearLayout signinpanel;
                 name.setVisibility(View.VISIBLE);
                 email.setVisibility(View.VISIBLE);
                 signinpanel.setVisibility(View.VISIBLE);
-                signinOR.setVisibility(View.GONE);
+
                 try {
                     MyApplication application = (MyApplication) getActivity().getApplication();
                     Tracker mTracker = application.getDefaultTracker();
@@ -620,6 +624,7 @@ private LinearLayout signinpanel;
                     e.printStackTrace();
                 }
 
+                signinOR.setVisibility(View.VISIBLE);
                 already_registered_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
                 new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
                 if(okBroker==false && General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
@@ -1282,7 +1287,52 @@ private LinearLayout signinpanel;
                         }
                         else if(lastFragment.equalsIgnoreCase("okyed")){
                             Log.i(TAG,"prasanna 1");
-                            jsonArray=b.getString("JsonArray");
+
+
+                            //open matching fragment
+
+
+
+
+
+
+                            MatchListingFragment matchListingFragment = new MatchListingFragment();
+                            Bundle bun = new Bundle();
+
+                            if(b.containsKey("oye_id"))
+                                bun.putString("oye_id",  b.getString("oye_id"));
+
+                            if(b.containsKey("broker_name"))
+                                bun.putString("broker_name",  b.getString("broker_name"));
+
+                            if(b.containsKey("config"))
+                                bun.putString("config",  b.getString("config"));
+
+                            if(b.containsKey("locality"))
+                                bun.putString("locality",  b.getString("locality"));
+
+                            if(b.containsKey("price"))
+                                bun.putString("price",  b.getString("price"));
+
+                            if(b.containsKey("growth_rate"))
+                                bun.putString("growth_rate",  b.getString("growth_rate"));
+
+                            if(b.containsKey("date"))
+                                bun.putString("date",  b.getString("date"));
+
+
+                            /*bun.putString("broker_name", "broker_name");
+                            bun.putString("config", "config");
+                            bun.putString("locality", "locality");
+                            bun.putString("price", "5000");
+                            bun.putString("growth_rate", "-6");
+                            bun.putString("date", "date");*/
+
+                            //b.putString("JsonArray", jsonObjectArray.toString());
+                            AppConstants.MATCHINGOKFLAG = true;
+                            loadFragmentAnimated(matchListingFragment, bun, R.id.container_sign, "");
+
+                            /*jsonArray=b.getString("JsonArray");
                             try {
                                 p=new JSONArray(jsonArray);
                             } catch (JSONException e) {
@@ -1292,7 +1342,7 @@ private LinearLayout signinpanel;
                             Log.i(TAG,"c prasanna 2 " +j);
                             AcceptOkCall a = new AcceptOkCall();
                             a.setmCallBack(SignUpFragment.this);
-                            a.acceptOk(listings,p,j,getActivity());
+                            a.acceptOk(listings,p,j,getActivity());*/
                         }else if(lastFragment.equalsIgnoreCase("brokermap")){
 
                             ((BrokerMap)getActivity()).CloseSignUP();
@@ -1748,6 +1798,17 @@ private LinearLayout signinpanel;
     public boolean isLoggedInfb() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
+    }
+
+
+    private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
 }

@@ -31,6 +31,7 @@ public class AppConstants {
     public static  int minRent = 35000;
     public static  int maxRent = 60000;
     public static Boolean SEARCHFLAG = false;
+    public static Boolean MATCHINGOKFLAG = false;
     public static  int minSale = 21500;
     public static  int maxSale = 27000;
     public static final int slowInternet = 10;
@@ -47,6 +48,7 @@ public class AppConstants {
     public static final String DOSIGNUP = "doSignUp";
     public static final String RESETMAP = "resetMap";
     public static final String AUTOCOMPLETEFLAG1 = "autoCompleteFlag1";
+
     public static final String AUTOCOMPLETEFLAG = "autoCompleteFlag";
     public static final String SIGNUPSUCCESSFLAG = "signupSuccessFlag";
     public static final String SLIDEDOWNBUILDINGS = "slideDownBuildings";
@@ -79,20 +81,18 @@ public class AppConstants {
 
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     public static final String SERVER_BASE_URL = "https://ssl.hailyo.com/1";
-    public static final String SERVER_BASE_URL_1 = "https://test.hailyo.com/1";
+    public static final String SERVER_BASE_URL_1 = "https://ssl.hailyo.com/1";
     public static final String SERVER_BASE_URL_101 = "https://ssl.hailyo.com/1.01";
     public static final String SERVER_BASE_URL_11 = "https://ssl.hailyo.com/1.1";
     public static final String SERVER_BASE_URL_102 = "https://ssl.hailyo.com/1.02";
-    public static final String SERVER_BASE_URL_12 = "https://test.hailyo.com/1.2";
+    public static final String SERVER_BASE_URL_12 = "https://ssl.hailyo.com/1.2";
     public static final String MASTER_ACTIVITY_LOG_ID = "14dlr9x50bbuq1ptgkbb0lfh26f7y6no";
     public static final String REFERING_ACTIVITY_LOG_ID = "ref_act_log_id";
 
     /*public static final String SERVER_BASE_URL_103 = "https://test.hailyo.com/1";
     public static final String SERVER_BASE_URL_TEST = "https://test.hailyo.com/1";
     public static final String SERVER_BASE_URL_TEST_102 = "https://test.hailyo.com/1.02";*/
-
-
-
+    
     public static final String OK_ID = "ok_id";
     public static final String OYE_ID = "oye_id";
 

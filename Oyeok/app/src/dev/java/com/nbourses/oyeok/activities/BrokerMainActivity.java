@@ -271,7 +271,6 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
 
         AppConstants.CURRENT_USER_ROLE ="broker";
         General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
-
         Log.i("uas","yo man 96");
 
         ButterKnife.bind(this);
@@ -353,6 +352,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
     @Override
     protected void onResume() {
         super.onResume();
+        AppConstants.cardCounter++;
         // Register mMessageReceiver to receive messages.
        // ((BrokerPreokFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
@@ -889,10 +889,11 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
 
     @Override
     public void onBackPressed() {
-        Log.i("ONBACKPRESSED","signupSuccessflag 432 "+signupSuccessflag);
+        Log.i("ONBACKPRESSED","AppConstants.PARTNERBROKERCARD 432 "+AppConstants.PARTNERBROKERCARD);
         Log.i("ONBACKPRESSED","buildingSliderflag "+buildingSliderflag);
 
         Log.i("ONBACKPRESSED","broker main activity "+setting);
+
 
         if(AppConstants.cardNotif){
             AppConstants.cardNotif = false;
@@ -908,6 +909,14 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
             container_sign.setClickable(false);
             card.setClickable(false);
             AppConstants.PARTNERBROKERCARD = false;
+
+        }
+
+        else if(AppConstants.MATCHINGOKFLAG){
+            Log.i("onbackpressed","MATCHINGOKFLAG 123 ");
+
+            AppConstants.MATCHINGOKFLAG = false;
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
 
         }
         else if(AppConstants.SIGNUP_FLAG){
@@ -1122,44 +1131,46 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
     }
 
     public void showCard() {
-
-       /* if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("") &&  !General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-
-            if (AppConstants.cardCounter >3) {*/
-
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-
-                        container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
-                        container_sign.setClickable(true);
-                        //containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        Log.i("closer","closer 1 showCard ");
+        if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("") &&  General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            Log.i("closer","closer 1 showCard 1 ");
+            if (AppConstants.cardCounter > 3) {
+                if(!AppConstants.MATCHINGOKFLAG) {
+                    Log.i("closer","closer 1 showCard ");
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
 
 
-                        PartnerBrokerFragment c = new PartnerBrokerFragment();
-                        //loadFragment(d,null,R.id.container_Signup,"");
-                        c.setArguments(null);
+                            container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
+                            container_sign.setClickable(true);
+                            //containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+
+                            PartnerBrokerFragment c = new PartnerBrokerFragment();
+                            //loadFragment(d,null,R.id.container_Signup,"");
+                            c.setArguments(null);
 //                FragmentManager fragmentManager = getSupportFragmentManager();
 //                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 //                fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-                        card.setClickable(true);
-                        fragmentTransaction.addToBackStack("card");
-                        fragmentTransaction.replace(R.id.card, c);
-                        fragmentTransaction.commitAllowingStateLoss();
+                            card.setClickable(true);
+                            fragmentTransaction.addToBackStack("card");
+                            fragmentTransaction.replace(R.id.card, c);
+                            fragmentTransaction.commitAllowingStateLoss();
 
-                        AppConstants.cardCounter = 0;
-                        AppConstants.PARTNERBROKERCARD = true;
+                            AppConstants.cardCounter = 0;
+                            AppConstants.PARTNERBROKERCARD = true;
 
-                    }
+                        }
 
-                }, 500);
-            /*}
-        }*/
+                    }, 500);
+
+                } }
+        }
     }
 
     @Override

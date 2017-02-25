@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,11 +10,20 @@
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_above="@+id/connectOk"
+        android:layout_marginBottom="2.5dp">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"></LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/root">
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
@@ -42,21 +51,20 @@
                     android:orientation="vertical"
                     android:layout_weight="0.5">
                     <ImageView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="50dip"
-                        android:id="@+id/imageView"
+                        android:id="@+id/root_match_icon"
                         android:layout_margin="5dip"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_svgasset_matchingoffice_v1"
+                        android:src="@drawable/svg_icon_req"
                         />
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/root_date"
                         android:text="30/1/2017"
                         android:layout_gravity="center_horizontal"
                         android:textColor="@color/gray"
-                        android:layout_marginLeft="3dp"
                         android:textSize="13dp"
                         android:textStyle="bold"/>
                 </LinearLayout>
@@ -64,7 +72,10 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1.8"
+                    android:paddingLeft="5dp"
                     android:orientation="vertical">
+
+
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -179,7 +190,8 @@
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Select Matchings"
+    android:text="Loading Matchings..."
+    android:id="@+id/matching_text"
     android:textSize="20dp"
     android:padding="5dp"
     android:textColor="@color/black"
@@ -191,6 +203,8 @@
         android:id="@+id/mrview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -204,13 +218,15 @@
 
 
 
+
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:cardCornerRadius="3dp"
         android:id="@+id/connectOk"
         app:cardElevation="5dp"
-        app:cardBackgroundColor="@color/orange"
+        app:cardBackgroundColor="@color/greenish_blue"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
         android:layout_gravity="bottom"
@@ -221,12 +237,11 @@
             android:layout_height="match_parent"
             android:id="@+id/ok"
             android:visibility="visible"
-            android:layout_gravity="bottom|center"
-            android:src="@drawable/ic_right_arrow"/>
+            android:layout_gravity="bottom|center" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CONNECT"
+            android:text="CONTINUE"
             android:textSize="20dp"
             android:padding="5dp"
             android:textColor="@color/black"
@@ -235,5 +250,4 @@
 
 
 
-
-</FrameLayout>
+</RelativeLayout>

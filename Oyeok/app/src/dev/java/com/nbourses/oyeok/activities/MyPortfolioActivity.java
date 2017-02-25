@@ -263,9 +263,9 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
        // add_create = (TextView) findViewById(R.id.add_create);
 
 
-        if ((General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL) > 0)) {
+        if ((General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL) + (General.getBadgeCount(this, AppConstants.PORTFOLIO_COUNT)) > 0)) {
             rentalCount.setVisibility(View.VISIBLE);
-            rentalCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL)));
+            rentalCount.setText(String.valueOf(General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL)+(General.getBadgeCount(this, AppConstants.PORTFOLIO_COUNT))));
 
         }
         if ((General.getBadgeCount(this, AppConstants.ADDB_COUNT_OR) > 0)) {
@@ -1192,6 +1192,8 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
             }
             General.setBadgeCount(this, AppConstants.ADDB_COUNT_LL, 0);
+            General.setBadgeCount(this, AppConstants.PORTFOLIO_COUNT, 0);
+
             rentalCount.setVisibility(View.GONE);
         } else {
             TT = "OR";
