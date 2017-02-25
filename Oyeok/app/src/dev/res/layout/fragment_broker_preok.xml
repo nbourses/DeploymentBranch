@@ -201,8 +201,8 @@
             android:layout_height="match_parent"
             android:visibility="visible"
             android:layout_above="@+id/seekbar_linearlayout">
-            <include layout="@layout/fragment_broker_preok_common"/>
-<LinearLayout
+
+            <LinearLayout
     android:layout_width="105dp"
     android:layout_height="85dp"
     android:layout_marginLeft="20dp"
@@ -230,6 +230,8 @@
 
             </com.skyfishjy.library.RippleBackground>
           </LinearLayout>
+
+            <include layout="@layout/fragment_broker_preok_common"/>
 
             <!--<TextView
                 android:layout_width="wrap_content"

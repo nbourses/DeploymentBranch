@@ -1118,12 +1118,12 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
     }
 
     public void showCard() {
-
+        Log.i("closer","closer 1 showCard ");
         if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("") &&  General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-
+            Log.i("closer","closer 1 showCard 1 ");
             if (AppConstants.cardCounter > 3) {
                 if(!AppConstants.MATCHINGOKFLAG) {
-
+                    Log.i("closer","closer 1 showCard ");
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override

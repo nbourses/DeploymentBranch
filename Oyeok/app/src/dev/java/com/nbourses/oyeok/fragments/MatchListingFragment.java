@@ -277,7 +277,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
 
                             String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                             JSONObject ne = new JSONObject(strResponse);
-                            Log.i("MATCHINGOK CALLED", "matchingok success "+ne);
+                            Log.i("MATCHINGOK CALLED", "loadMatchings matchingok success "+ne);
 
 
                                 Log.i("MATCHINGOK CALLED", "matchingok success 2" + ne.getJSONObject("responseData"));
@@ -401,6 +401,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void failure(RetrofitError error) {
+                        matching_text.setText("No Matchings Found.");
                         Log.i("MATCHINGOK CALLED", "Caught in exception preok " + error);
                         try {
                             SnackbarManager.show(
@@ -535,7 +536,9 @@ mrview.setOnClickListener(new View.OnClickListener() {
                             openDealsListing.putExtra("serverMessage", jsonResponse.getJSONObject("responseData").getString("message"));
                             Log.i("TRACEOK", "serverMessage " + jsonResponse.getJSONObject("responseData").getString("message"));
                             Log.i("TRACEBROKERSIGNUP","3");
+
                             startActivity(openDealsListing);
+                            AppConstants.MATCHINGOKFLAG = false;
 
 
 
@@ -550,6 +553,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
 
                             openDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(openDealsListing);
+                            AppConstants.MATCHINGOKFLAG = false;
                         }
 
                     }catch(Exception e){

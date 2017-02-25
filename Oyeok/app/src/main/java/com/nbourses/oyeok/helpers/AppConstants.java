@@ -81,11 +81,11 @@ public class AppConstants {
 
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     public static final String SERVER_BASE_URL = "https://ssl.hailyo.com/1";
-    public static final String SERVER_BASE_URL_1 = "https://test.hailyo.com/1";
+    public static final String SERVER_BASE_URL_1 = "https://ssl.hailyo.com/1";
     public static final String SERVER_BASE_URL_101 = "https://ssl.hailyo.com/1.01";
     public static final String SERVER_BASE_URL_11 = "https://ssl.hailyo.com/1.1";
-    public static final String SERVER_BASE_URL_102 = "https://test.hailyo.com/1.02";
-    public static final String SERVER_BASE_URL_12 = "https://test.hailyo.com/1.2";
+    public static final String SERVER_BASE_URL_102 = "https://ssl.hailyo.com/1.02";
+    public static final String SERVER_BASE_URL_12 = "https://ssl.hailyo.com/1.2";
     public static final String MASTER_ACTIVITY_LOG_ID = "14dlr9x50bbuq1ptgkbb0lfh26f7y6no";
     public static final String REFERING_ACTIVITY_LOG_ID = "ref_act_log_id";
 

@@ -2,6 +2,7 @@
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:local="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -103,7 +104,7 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="gone"
+    android:visibility="visible"
     android:id="@+id/basewraper"
     android:layout_marginLeft="60dip">
 <LinearLayout
@@ -111,9 +112,9 @@
     android:layout_height="40dip"
     android:orientation="horizontal"
     android:id="@+id/setbaseloc"
-    android:visibility="gone"
-    android:layout_alignParentRight="true"
-    android:layout_marginRight="50dp"
+    android:visibility="visible"
+    android:layout_alignParentLeft="true"
+   android:layout_alignLeft="@+id/partner_b"
     android:layout_centerInParent="true"
     android:gravity="center"
     >
@@ -146,19 +147,49 @@
 
 </LinearLayout>
 
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        app:cardCornerRadius="3dp"
+        android:visibility="gone"
+        android:id="@+id/partner_b"
+        android:layout_alignParentRight="true"
 
-   <!-- <ImageView
-        android:id="@+id/favbroker"
+
+        app:cardElevation="5dp"
+        app:cardBackgroundColor="@color/greenish_blue"
+
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Partner Broker"
+            android:textSize="12dp"
+            android:padding="5dp"
+            android:textColor="@color/black"
+            android:layout_gravity="center"/>
+    </android.support.v7.widget.CardView>
+
+   <!-- <ImageButton
+        android:id="@+id/partneb"
         android:layout_gravity="center|right"
-        android:src="@drawable/broker_portfolio_icon"
+        android:background="@drawable/gradient_button_bg_with_border"
         android:gravity="center"
         android:visibility="visible"
         android:layout_marginRight="2dp"
         android:layout_marginLeft="2dp"
-        android:layout_width="35dp"
+        android:layout_width="50dp"
         android:layout_height="35dp"
         android:focusable="true"
-        android:focusableInTouchMode="true" />-->
+
+
+        android:focusableInTouchMode="true" ></ImageButton>-->
+
 
 
 <!--<LinearLayout
@@ -209,6 +240,7 @@
     <!--end-->
 <!--</LinearLayout>-->
 </RelativeLayout>
+
 
     <Button
         android:id="@+id/help"
