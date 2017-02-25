@@ -79,14 +79,15 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:id="@+id/watchlist_dp"
-                android:src="@drawable/ic_profile"
+                android:src="@drawable/watchlist_catalog_icon_home"
                 android:layout_marginLeft="5dp"
                 android:background="@drawable/gradient_edit_profile_pic"
                 android:backgroundTint="@color/grey"
                 app:siBorderWidth="1dp"
-                android:padding="20dp"
+
                 app:siBorderColor="@color/darkgray"
                 />
+            <!--watchlist_catalog_icon_home-->
             <ImageView
                 android:layout_width="35dp"
                 android:layout_height="35dp"

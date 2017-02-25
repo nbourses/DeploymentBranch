@@ -2990,7 +2990,10 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
                         JSONObject jsonResponse = new JSONObject(strResponse);
 
                         Log.i("magic","addBuildingRealm success "+jsonResponse.getJSONObject("responseData").getString("id"));
+                        General.setSharedPreferences(getBaseContext(), AppConstants.BUILDING_ID,jsonResponse.getJSONObject("responseData").getString("id"));
+                        General.setSharedPreferences(getBaseContext(), AppConstants.ADD_TYPE,"building");
                         AddBuildingDataToRealm(jsonResponse.getJSONObject("responseData").getString("id"));
+
 
                     } catch (Exception e) {
 

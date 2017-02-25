@@ -15,15 +15,7 @@ public class loadBuildingdataModelRealm extends RealmObject {
 
 
     @PrimaryKey
-   private String id;
- /*  private String name;
-   private double lat;
-   private double lng;
-   private String locality;
-   private String city;
-   private String ll_pm;
-   private String or_psf;
-   private boolean checkbox;*/
+    private String id;
 
     public loadBuildingdataModelRealm() {
     }

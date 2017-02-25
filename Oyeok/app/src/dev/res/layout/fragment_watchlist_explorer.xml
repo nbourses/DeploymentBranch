@@ -105,7 +105,6 @@
                     android:layout_marginTop="5dp"
                     android:divider="@color/grey"
                     android:dividerHeight="1dp"
-
                     android:id="@+id/listView1"/>
             <!--</LinearLayout>-->
             <!--<LinearLayout

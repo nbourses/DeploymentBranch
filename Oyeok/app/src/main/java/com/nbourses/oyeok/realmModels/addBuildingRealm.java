@@ -22,6 +22,8 @@ public class addBuildingRealm extends RealmObject{
     private String tt;
     private int ll_pm;
     private int or_psf;
+    private int server_ll_pm;
+    private int server_or_psf;
     private String possession_date;
     private String type;
     private String address;
@@ -198,6 +200,22 @@ public class addBuildingRealm extends RealmObject{
 
     public void setBuilding_name(String building_name) {
         Building_name = building_name;
+    }
+
+    public int getServer_ll_pm() {
+        return server_ll_pm;
+    }
+
+    public void setServer_ll_pm(int server_ll_pm) {
+        this.server_ll_pm = server_ll_pm;
+    }
+
+    public int getServer_or_psf() {
+        return server_or_psf;
+    }
+
+    public void setServer_or_psf(int server_or_psf) {
+        this.server_or_psf = server_or_psf;
     }
 }
 

@@ -51,7 +51,7 @@ public class WatchlistDisplayBuilding extends Fragment {
 
 
     View v;
-    TextView back;
+    TextView back,watch_title;
     ListView Watchlist_Listview;
     ProgressBar pg_load_building;
     RealmList<loadBuildingdataModelRealm> ids1=new RealmList<>();
@@ -69,7 +69,7 @@ public class WatchlistDisplayBuilding extends Fragment {
     Bundle b;
 
     boolean status=false;
-    Calendar myCalendar = Calendar.getInstance();
+
 
 
 
@@ -96,6 +96,7 @@ public class WatchlistDisplayBuilding extends Fragment {
         pg_load_building=(ProgressBar)v.findViewById(R.id.pg_load_building);
         btn_delete=(ImageView)v.findViewById(R.id.btn_delete);
         btn_add_property=(ImageView)v.findViewById(R.id.btn_add_property);
+        watch_title=(TextView)v.findViewById(R.id.watch_title);
          b=new Bundle();
         b=getArguments();
         if(b.containsKey("read")) {
@@ -116,6 +117,10 @@ public class WatchlistDisplayBuilding extends Fragment {
         myRealm = General.realmconfig(getContext());
         adapter = new watchlistDisplayAdapter(getContext(), watchlistmodel);
         Watchlist_Listview.setAdapter(adapter);
+
+
+        WatchListRealmModel result = myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id", watchlist_id).findFirst();
+        watch_title.setText(result.getWatchlist_name());
 
         DisplayList();
         btn_add_property.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +143,7 @@ public class WatchlistDisplayBuilding extends Fragment {
                 for(WatchlistDisplayBuildingModel hold: adapter.getAllData()){
                     if(hold.isCheckbox()){
                         deletelist.add(hold);
+                        deleteids.add(hold.getId());
                         count++;
                     }
                 }
@@ -164,7 +170,7 @@ public class WatchlistDisplayBuilding extends Fragment {
                                 if (myRealm.isInTransaction())
                                     myRealm.cancelTransaction();
                                 Log.i("selected1", "selected building : c12 " + result.getDisplayBuildinglist().get(i)+" deletelist "+deletelist.get(0).getName());
-                                deleteids.add(result.getDisplayBuildinglist().get(i).getId());
+                                //deleteids.add(result.getDisplayBuildinglist().get(i).getId());
                                 myRealm.beginTransaction();
                                 result.getDisplayBuildinglist().get(i).removeFromRealm();
                                 myRealm.commitTransaction();
@@ -191,6 +197,7 @@ public class WatchlistDisplayBuilding extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i("datafromrealm1", "onItemSelected  :");
+                if(btn_delete.getVisibility()==View.VISIBLE)
                 adapter.setCheckBox(position);
                 if(checkStatus()==0){
                     adapter.Hide_check();
@@ -321,43 +328,29 @@ private  void AddDataToRealm(){
 
 private void DisplayList(){
 
-        /*RealmResults<*/WatchListRealmModel/*>*/ results2 = myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id", watchlist_id).findFirst();
+      WatchListRealmModel results2 = myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id", watchlist_id).findFirst();
         watchlistmodel.clear();
         WatchListRealmModel c = results2;
-       // for (WatchListRealmModel c : results2) {
-            Log.i("datainraelm", "==============================   :"+c.getDisplayBuildinglist().size());
-           /* if(c.getDisplayBuildinglist().size()!=0 && !status){
-                Log.i("datainraelm", "realm  data present   :  " +c.getDisplayBuildinglist().get(0).getId()+"  :: "+c.getDisplayBuildinglist().get(0).getName());
-                for (int i = 0; i < c.getDisplayBuildinglist().size(); i++) {
-                    Log.i("datainraelm", "realm  data present   :  " +c.getDisplayBuildinglist().get(i).getId()+"  :: "+c.getDisplayBuildinglist().get(i).getName());
-                    WatchlistDisplayBuildingModel watchlistDisplayBuildingModel=new WatchlistDisplayBuildingModel(c.getDisplayBuildinglist().get(i).getId(),c.getDisplayBuildinglist().get(i).getName(),c.getDisplayBuildinglist().get(i).getConfig(),c.getDisplayBuildinglist().get(i).getOr_psf(),c.getDisplayBuildinglist().get(i).getLl_pm(),c.getDisplayBuildinglist().get(i).getLat(),c.getDisplayBuildinglist().get(i).getLng(),c.getDisplayBuildinglist().get(i).getRate_growth(),c.getDisplayBuildinglist().get(i).getListing(),c.getDisplayBuildinglist().get(i).getPortals(),c.getDisplayBuildinglist().get(i).getTransactions(),c.getDisplayBuildinglist().get(i).getLocality(),c.getDisplayBuildinglist().get(i).getReq_avl(),c.getDisplayBuildinglist().get(i).getStatus(),c.getDisplayBuildinglist().get(i).getCity(),c.getDisplayBuildinglist().get(i).getPossession_date(),false);
-                    watchlistmodel.add(watchlistDisplayBuildingModel);
-                }
-                //watchlistmodel.addAll(watchlistDisplayBuildingModel);
-                adapter.notifyDataSetChanged();
-            }else {*/
-                Log.i("datainraelm12", "realm  data absent size   :  "+c.getBuildingids().size());
                 for (int i = 0; i < c.getBuildingids().size(); i++) {
                     //Log.i("datainraelm", "realm data  : " + i + " :  " + c.getBuildingids().get(i).getId());
                     ids.add(c.getBuildingids().get(i).getId());
                     Log.i("datainraelm12", "realm  data absent id  :  "+i+"  :: "+c.getBuildingids().get(i).getId());
                 }
-    Log.i("datainraelm12", "realm  data absent size   :  "+c.getBuildingids().size()+"ids : "+ids.size());
+                Log.i("datainraelm12", "realm  data absent size   :  "+c.getBuildingids().size()+"ids : "+ids.size());
                 watchlist_name=c.getWatchlist_name();
                 ids1.addAll(c.getBuildingids());
                 pg_load_building.setVisibility(View.VISIBLE);
                 status=false;
                 ReadWatchlist();
-           // }
 
-       // }
 }
 
 
     private void DisplayList1(){
-        RealmResults<WatchListRealmModel> results2 = myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id", watchlist_id).findAll();
+        /*RealmResults<*/WatchListRealmModel/*> */results2 = myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id", watchlist_id).findFirst();
         watchlistmodel.clear();
-        for (WatchListRealmModel c : results2) {
+        WatchListRealmModel c = results2;
+        //for (WatchListRealmModel c : results2) {
             Log.i("datainraelm", "==============================   :" + c.getDisplayBuildinglist().size());
             if (c.getDisplayBuildinglist().size() != 0 && !status) {
                 Log.i("datainraelm", "realm  data present   :  " + c.getDisplayBuildinglist().get(0).getId() + "  :: " + c.getDisplayBuildinglist().get(0).getName());
@@ -369,7 +362,7 @@ private void DisplayList(){
                 //watchlistmodel.addAll(watchlistDisplayBuildingModel);
                 adapter.notifyDataSetChanged();
             }
-        }
+        //}
 
 
     }
@@ -413,11 +406,9 @@ private void DisplayList(){
                     Log.i("magic111","addBuildingRealm success response1 "+buildingdata);
                     Log.i("magic111","addBuildingRealm success response2 "+buildingdata.getString(0));*/
                     // AddDataToRealm(watchlist_id);
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override
@@ -428,9 +419,6 @@ private void DisplayList(){
 
 
     }
-
-
-
 
 
 
@@ -449,6 +437,12 @@ public int checkStatus(){
     return count;
 }
 
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        myRealm.close();
+    }
 
 
 

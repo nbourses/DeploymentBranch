@@ -106,8 +106,9 @@ public class watchlistDisplayAdapter extends BaseAdapter {
                 holder.B_image.setBackground(null);
 
             } else {
-                holder.B_image.setImageResource(R.drawable.buildingiconbeforeclick);
-                holder.B_image.setBackground(context.getResources().getDrawable(R.drawable.custom_img_bg));
+                holder.B_image.setImageResource(R.drawable.ic_home_selected);
+                holder.B_image.setBackground(null);
+               // holder.B_image.setBackground(context.getResources().getDrawable(R.drawable.custom_img_bg));
 
             }
             holder.description.setText(listing.getLocality());

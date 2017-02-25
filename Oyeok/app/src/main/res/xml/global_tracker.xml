@@ -15,7 +15,7 @@
       to learn more about configuring this file.
     -->
 
-    <string name="ga_trackingId">UA-89243453-4</string>
+    <!--<string name="ga_trackingId">UA-89243453-4</string>-->
 </resources>
 
 

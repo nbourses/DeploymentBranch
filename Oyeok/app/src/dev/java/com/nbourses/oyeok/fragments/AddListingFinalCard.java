@@ -53,6 +53,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 
+import static com.nbourses.oyeok.R.id.defaultView;
 import static com.nbourses.oyeok.R.id.toggleBtn;
 
 
@@ -82,6 +83,12 @@ public class AddListingFinalCard extends Fragment {
     TextView txt_req_aval;
     FrameLayout fr_pgbar;
     ProgressBar pg_bar;
+    String listing_type="new",listing_id="";
+    Bundle b;
+    int server_ll_pm,server_or_psf;
+    Spinner spinner;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -97,8 +104,8 @@ public class AddListingFinalCard extends Fragment {
 
         toggleBtn1 = (SwitchButton) v.findViewById(toggleBtn);
 
-        fr_pgbar=(FrameLayout)v.findViewById(R.id.fr_pgBar);
-        pg_bar=(ProgressBar)v.findViewById(R.id.pg_bar);
+//        fr_pgbar=(FrameLayout)v.findViewById(R.id.fr_pgBar);
+        //pg_bar=(ProgressBar)v.findViewById(R.id.pg_bar);
         txtcalendar=(TextView)v.findViewById(R.id.txtcalendar1);
         transaction_type=(TextView)v.findViewById(R.id.transaction_type);
         updateLabel();
@@ -122,12 +129,27 @@ public class AddListingFinalCard extends Fragment {
         building_locality=(TextView)v.findViewById(R.id.building_locality);
         tv_rate=(TextView) v.findViewById(R.id.tv_rate);
         txt_req_aval=(TextView) v.findViewById(R.id.txt_req_aval11);
+        spinner = (Spinner) v.findViewById(R.id.spinner);
+
+        b=new Bundle();
+        b=getArguments();
+        if(b!=null&&b.containsKey("edit_listing")) {
+            listing_type = b.getString("edit_listing");
+            Log.i("timestamp12", "realm data read update  :"+ listing_type);
+            listing_id=b.getString("listing_id");
+
+        }
+        Long tsLong = System.currentTimeMillis()/1000;
+        String ts = tsLong.toString();
+        Log.i("timestamp12", "  tsLong :"+ ts+"    "+System.currentTimeMillis());
 
 
         config.setText(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG).toString());
         approx_area.setText(General.getSharedPreferences(getContext(), AppConstants.APPROX_AREA).toString());
         building_name.setText(General.getSharedPreferences(getContext(), AppConstants.BUILDING_NAME).toString());
         building_locality.setText(General.getSharedPreferences(getContext(), AppConstants.BUILDING_LOCALITY).toString());
+        server_ll_pm= Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.LL_PM));
+        server_or_psf= Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.OR_PSF));
          area=Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.APPROX_AREA));
         seekBar.setMax(maxvalue);
         if(General.getSharedPreferences(getContext(),AppConstants.LL_PM).equalsIgnoreCase("")) {
@@ -156,7 +178,7 @@ public class AddListingFinalCard extends Fragment {
 
         seekBar.setProgress(1000);
 
-        Spinner spinner = (Spinner) v.findViewById(R.id.spinner);
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.Property_Furnishing_Condition, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -287,14 +309,11 @@ public class AddListingFinalCard extends Fragment {
             @Override
             public void onClick(View v) {
 
-
-                //if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                if(listing_type.equalsIgnoreCase("new"))
                     ((BrokerMap)getActivity()).closeCardContainer();
-               // }else{
-
-                 //   ((ClientMainActivity)getActivity()).closeAddBuilding();
-
-                //}
+                else{
+                    ((BrokerListingActivity)getActivity()).closeCardContainer();
+                }
 
             }
         });
@@ -303,10 +322,6 @@ public class AddListingFinalCard extends Fragment {
 
         return v;
     }
-
-
-
-
 
 
 
@@ -436,8 +451,11 @@ private void init(){
        AddListingBorker addListingBorker=new AddListingBorker();
        addListingBorker.setProperty_type(General.getSharedPreferences(getContext(),AppConstants.PROPERTY));
        addListingBorker.setConfig(General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
-       addListingBorker.setListing_date(myCalendar.getTime()+"");
-       Log.i("AddListingBorker","myCalendar current date"+General.getSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY));
+       addListingBorker.setListing_date(System.currentTimeMillis()+"");
+       addListingBorker.setListing_id(listing_id);
+       addListingBorker.setAdd_type(General.getSharedPreferences(getContext(), AppConstants.ADD_TYPE));  //listing || building
+       addListingBorker.setBuilding_id(General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID));
+       Log.i("AddListingBorker","myCalendar current date"+System.currentTimeMillis()+" "+General.getSharedPreferences(getContext(), AppConstants.ADD_TYPE)+" == "+General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID)+" "+General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
        addListingBorker.setCity("Mumbai");
        if(Furnishing.equalsIgnoreCase("fully-furnished")){
        addListingBorker.setFurnishing("ff");
@@ -448,14 +466,21 @@ private void init(){
            addListingBorker.setFurnishing("sf");
 
        }
+
+       try {
+           String timestamp1=General.DateToTimeStamp(txtcalendar.getText().toString()).getTime()+"";
+           Log.i("AddListingBorker","myCalendar current date : "+timestamp1);
+           addListingBorker.setPossession_date(timestamp1);
+       } catch (ParseException e) {
+           e.printStackTrace();
+           Log.i("AddListingBorker","myCalendar current date : "+e);
+       }
        addListingBorker.setBuilding_name(General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
-       addListingBorker.setPossession_date(txtcalendar.getText().toString());
        addListingBorker.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
        addListingBorker.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
        addListingBorker.setUser_name(General.getSharedPreferences(getContext(),AppConstants.NAME));
        Log.i("magic","username   : "+ General.getSharedPreferences(getContext(),AppConstants.NAME)+"  "+General.getSharedPreferences(getContext(),AppConstants.MOBILE_NUMBER));
        addListingBorker.setTt(tt);
-
        addListingBorker.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
         carpet_area=Integer.parseInt(approx_area.getText().toString());
        addListingBorker.setCarpet_area(carpet_area);
@@ -501,9 +526,9 @@ private void init(){
                        String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
                        JSONObject jsonResponse = new JSONObject(strResponse);
 
-
-                       Log.i("magic","addBuildingRealm success "+jsonResponse.getJSONObject("responseData").getString("id"));
-                       ids= jsonResponse.getJSONObject("responseData").getString("id");
+                       Log.i("magic","addBuildingRealm success "+jsonResponse.getJSONObject("responseData"));
+                       Log.i("magic","addBuildingRealm success "+jsonResponse.getJSONObject("responseData").getString("listing_id"));
+                       ids= jsonResponse.getJSONObject("responseData").getString("listing_id");
                    } catch (Exception e) {Log.i("magic","msg "+e);}
                    Log.i("magic","addBuildingRealm success ids value :  "+ids);
                    AddBuildingDataToRealm(ids);
@@ -524,13 +549,7 @@ private void init(){
        }
 
 
-
-
-
-
-
    }
-
 
 
     public void AddBuildingDataToRealm(String id) {
@@ -546,8 +565,10 @@ private void init(){
         add_Building.setId(id);
         add_Building.setType("LIST");
         add_Building.setDisplay_type(null);
+        add_Building.setServer_ll_pm(server_ll_pm);
+        add_Building.setServer_or_psf(server_or_psf);
         int area=carpet_area;
-        Log.i("magic","reached "+numberAsString+"  area : "+area);
+        Log.i("magic","reached "+numberAsString+"  area : "+area+" id : "+id);
 
        String growthrate=null;
         //Log.i("magic","reached "+p);
@@ -617,22 +638,22 @@ private void init(){
         myRealm.copyToRealmOrUpdate(add_Building);
 //        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
         myRealm.commitTransaction();
-        Log.i("magic","reached "+General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
-        if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+       // Log.i("magic","reached "+General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
+//        if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
             Intent in = new Intent(getContext(), BrokerListingActivity.class);
             in.addFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP /*|
                             Intent.FLAG_ACTIVITY_CLEAR_TASK |
                             Intent.FLAG_ACTIVITY_NEW_TASK*/);
             startActivity(in);
-        }else {
+      /*  }else {
             Intent in = new Intent(getContext(), MyPortfolioActivity.class);
             in.addFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP |
                             Intent.FLAG_ACTIVITY_CLEAR_TASK |
                             Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(in);
-        }
+        }*/
 
     }
 
@@ -837,6 +858,10 @@ private void  setMinMaxValue(){
         }
     //}
 }
+
+
+
+
 
 
 

@@ -2760,9 +2760,9 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                                     CacheBuildings(name[i],lat+"",longi+"",j.getString("locality"),ll_pm[i],or_psf[i],id[i],config[i],listing[i],portal[i],rate_growth[i],transaction[i] );
 
 
-                                                    mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc[i]).title(name[i]).snippet(customSnippet).icon(icon1).flat(true));
+                                                   // mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc[i]).title(name[i]).snippet(customSnippet).icon(icon1).flat(true));
                                                     Log.i("TRACE", "mCustomerMarker after :" + mCustomerMarker[i]);
-                                                    flag[i] = false;
+                                                   // flag[i] = false;
 //                                                dropPinEffect(mCustomerMarker[i]);
 //                                                private void CacheBuildings(String name,String lat,String longi,String locality,int ll_pm,int or_psf,String id,String conf,String listing,String portal,String rate_growth,String transaction){
 
@@ -2794,6 +2794,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                             tvFetchingrates.setVisibility(View.GONE);
                                             mVisits.setEnabled(true);
                                             txtFilterValue.setEnabled(true);
+
                                             PlotBuilding();
                                             //drawLocalities();
 
@@ -4990,6 +4991,8 @@ public int price(String conf,int rate){
                     JSONObject jsonResponse = new JSONObject(strResponse);
 
                         Log.i("magic","addBuildingRealm success "+jsonResponse.getJSONObject("responseData").getString("id"));
+                        General.setSharedPreferences(getContext(), AppConstants.BUILDING_ID,jsonResponse.getJSONObject("responseData").getString("id"));
+                        General.setSharedPreferences(getContext(), AppConstants.ADD_TYPE,"building");
                         AddBuildingDataToRealm(jsonResponse.getJSONObject("responseData").getString("id"));
 
                     } catch (Exception e) {

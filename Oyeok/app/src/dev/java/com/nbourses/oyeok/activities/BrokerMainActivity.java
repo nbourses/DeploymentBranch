@@ -115,6 +115,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
 
     @Bind(R.id.container_sign)
     FrameLayout container_sign;
+
     @Bind(R.id.card)
     FrameLayout card;
 
@@ -249,7 +250,6 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_agent_main);
 
-
          dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent);
         bottonNavBar= (LinearLayout) findViewById(R.id.bottonNavBar);
 //        NestedScrollView dynamicContent = (NestedScrollView) findViewById(R.id.myScrollingContent);
@@ -267,23 +267,9 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
        // LinearLayout l_container=(LinearLayout)findViewById(R.id.);
 
         AppConstants.CURRENT_USER_ROLE ="broker";
-
-       // RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT); //Parent Params
-        //linearLayout.setLayoutParmas(params);
-       // params = (LinearLayout.LayoutParams)dynamicContent.getLayoutParams();
-    //  params.setMargins(0, 0, 0, 56);
-        //params.setMargins(left, top, right, bottom);
-        //dynamicContent.setLayoutParams(params);
-
-
-
-       // dbHelper = new DBHelper(getBaseContext());
-       // dbHelper.save(DatabaseConstants.userRole,"Broker");
         General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
 
         Log.i("uas","yo man 96");
-
-
 
         ButterKnife.bind(this);
 

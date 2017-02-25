@@ -69,6 +69,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -621,7 +622,10 @@ public static PubNub initPubnub(Context context, String UUID){
                 AppConstants.letsOye.setUserId(General.getSharedPreferences(context, AppConstants.USER_ID));
                 //set gcmId
                 AppConstants.letsOye.setGcmId(SharedPrefs.getString(context, SharedPrefs.MY_GCM_ID));
-                AppConstants.letsOye.setPossession_date(General.getSharedPreferences(context,AppConstants.POSSESSION_DATE));
+
+                String timestamp1=General.DateToTimeStamp(General.getSharedPreferences(context,AppConstants.POSSESSION_DATE)).getTime()+"";
+
+                AppConstants.letsOye.setPossession_date(timestamp1);
                 AppConstants.letsOye.setBuilding_id("");
                 String furnishingStatus="sf",furnishing=General.getSharedPreferences(context,AppConstants.FURNISHING);
                 Log.i("TRACE16","oye published r"+General.getSharedPreferences(context,AppConstants.FURNISHING));
@@ -1504,6 +1508,60 @@ public static void pushMessage(Context c,String channel, Map message){
         return url;
 
     }
+
+
+
+
+
+   public static Date DateToTimeStamp(String date1) throws ParseException {
+       String str_date=date1;
+       DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+//       Date date = (Date)formatter.parse(str_date);
+       Date date = (Date)formatter.parse(str_date);
+       System.out.println("Today is " +date.getTime());
+
+       return date;
+   }
+
+
+
+    public static String getDate(long time) {
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(time);
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String date = formatter.format(time);
+        Log.i("dateformat","formated date ");
+        return date;
+    }
+
+
+
+
+  public static String percentageCalculator(int selectedRate,int MarketRate){
+        int Percentage;
+        int diff;
+        String str="";
+
+
+        // Log.i("percent","selectedRate : "+selectedRate+"MarketRate : "+MarketRate+"Percentage : "+Percentage);
+        if(selectedRate>MarketRate){
+            str="+";
+            diff=selectedRate-MarketRate;
+
+        }else{
+            str="-";
+            diff=MarketRate-selectedRate;
+        }
+        Percentage=(diff*100)/MarketRate;
+        Log.i("percent","selectedRate : "+selectedRate+"MarketRate : "+MarketRate+"Percentage : "+Percentage+"str : "+str);
+        return str+Percentage+"";
+    }
+
+
+
+
+
+
 
 
 

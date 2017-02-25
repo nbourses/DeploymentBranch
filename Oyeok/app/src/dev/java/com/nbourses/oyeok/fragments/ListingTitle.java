@@ -1,11 +1,8 @@
 package com.nbourses.oyeok.fragments;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,11 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,26 +33,19 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.facebook.CallbackManager;
 import com.google.gson.JsonElement;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
+import com.nbourses.oyeok.activities.BrokerListingActivity;
 import com.nbourses.oyeok.activities.MyPortfolioActivity;
-import com.nbourses.oyeok.adapters.WatchlistExplorerAdapter;
-import com.nbourses.oyeok.adapters.watchlistAdapter;
+import com.nbourses.oyeok.adapters.ListingTitleAdapter;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
-import com.nbourses.oyeok.models.CreateWatchlistAPI;
-import com.nbourses.oyeok.models.UpdateBuildingRateModel;
-import com.nbourses.oyeok.models.loadBuildingDataModel;
-import com.nbourses.oyeok.models.portListingModel;
-import com.nbourses.oyeok.realmModels.Localities;
-import com.nbourses.oyeok.realmModels.WatchListRealmModel;
-import com.nbourses.oyeok.realmModels.loadBuildingdataModelRealm;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterException;
+import com.nbourses.oyeok.models.CreateCatalogListing;
 
+import com.nbourses.oyeok.models.portListingModel;
+import com.nbourses.oyeok.realmModels.ListingCatalogRealm;
+import com.nbourses.oyeok.realmModels.Listingidsrealm;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -82,33 +69,26 @@ import retrofit.mime.TypedByteArray;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
-public class WatchlistTitle extends Fragment {
+public class ListingTitle extends Fragment {
 
-
-
-    ImageView watchlist_dp,done,editProfile_pic,btn_delete;
-    EditText watchlist_name;
-    ListView selected_info;
-    TextView back;
-    watchlistAdapter adapter;
     View v;
+    ImageView list_catalog_dp,list_done,list_editProfile_pic,list_btn_delete;
+    EditText list_catalog_name;
+    ListView list_selected_info;
+    TextView list_back;
+    private static ArrayList<portListingModel> selectedList=new ArrayList<>();
+    ListingTitleAdapter adapter;
     ProgressBar pg_create_watch;
-    String watchlist_id;
+
+
+
+//image
     private static Bitmap Image = null;
     private static final int RESULT_LOAD_IMAGE = 1;
-    //private CallbackManager callbackManager;
     private static Bitmap rotateImage = null;
-   private static ArrayList<loadBuildingDataModel> selectedlist = new ArrayList<>();
-    private static ArrayList<loadBuildingDataModel> copyselectedlist = new ArrayList<>();
-    private static ArrayList<loadBuildingDataModel> templist = new ArrayList<>();
-    private static RealmList<loadBuildingdataModelRealm> realmList = new RealmList<>();
-    ArrayList<String> ids=new ArrayList<>();
-
     private static Uri mImageUri;
 
-
-
-    //s3
+ //s3
     private File fileToUpload = new File("/storage/emulated/0/DCIM/Facebook/FB_IMG_1467990952511.jpg");
     private String imageName = null;
     public TransferUtility transferUtility;
@@ -116,81 +96,43 @@ public class WatchlistTitle extends Fragment {
     private static String Imagepath;
     private String channel_name = "";
 
-
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
+//realm data
+    Realm realm;
+    private static RealmList<Listingidsrealm> realmList = new RealmList<>();
+    
+    
+    
+    String catalog_id;
+    ArrayList<String> ids=new ArrayList<>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-         v=inflater.inflate(R.layout.fragment_watchlist_title, container, false);
-
-        watchlist_dp=(ImageView)v.findViewById(R.id.watchlist_dp);
-        done =(ImageView)v.findViewById(R.id.done);
-        watchlist_name=(EditText)v.findViewById(R.id.watchlist_name);
-        selected_info=(ListView) v.findViewById(R.id.selected_info);
-        back=(TextView)v.findViewById(R.id.back);
-        editProfile_pic=(ImageView)v.findViewById(R.id.editProfile_pic);
-        btn_delete=(ImageView)v.findViewById(R.id.btn_delete);
+         v =inflater.inflate(R.layout.fragment_listing_title, container, false);
+        list_catalog_dp=(ImageView)v.findViewById(R.id.list_watchlist_dp);
+        list_done=(ImageView)v.findViewById(R.id.list_done);
+        list_editProfile_pic=(ImageView)v.findViewById(R.id.list_editProfile_pic);
+        list_btn_delete=(ImageView)v.findViewById(R.id.list_btn_delete);
+        list_catalog_name=(EditText)v.findViewById(R.id.list_catalog_name);
+        list_back=(TextView)v.findViewById(R.id.list_back1);
+        list_selected_info=(ListView)v.findViewById(R.id.list_selected_info);
         pg_create_watch=(ProgressBar)v.findViewById(R.id.pg_create_watch);
-        /*if (selectedlist != null)
-            selectedlist.clear();*/
-        if (copyselectedlist != null)
-            copyselectedlist.clear();
 
-        if(ids!=null)
-            ids.clear();
+//        if(portListing1 != null)
+//            portListing1.clear();
+        selectedList= ((BrokerListingActivity)getActivity()).PortlistingData1();
+        adapter=new ListingTitleAdapter(getContext(),selectedList);
+        list_selected_info.setAdapter(adapter);
 
-        selectedlist.addAll(((MyPortfolioActivity)getActivity()).passingListActivity());
-
-        /*copyselectedlist.addAll(selectedlist);
-        for(int i=0;i<copyselectedlist.size();i++){
-            Log.i("selected11","selected building init : "+selectedlist.size()+"   === "+selectedlist.get(i).getName() );
-            if(selectedlist.get(i).isCheckbox()) {
-                selectedlist.remove(i);
-            }
-
-        }*/
-
-
-        try {
-            adapter= new watchlistAdapter(selectedlist,getContext());
-            selected_info.setAdapter(adapter);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        done.setOnClickListener(new View.OnClickListener() {
+        list_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*for(loadBuildingDataModel c: selectedlist){
-
-
-                        *//*loadBuildingDataModel loadBuildingDataModel1=new loadBuildingDataModel(c.getName(),hold.getLat(),hold.getLng(),hold.getId(),hold.getLocality(),hold.getCity(),hold.getLl_pm(),hold.getOr_psf());
-                        templist.add(loadBuildingDataModel1);*//*
-                        Log.i("selected1","selected building : "+c.getName());
-
-
-                }*/
-                if(watchlist_name.getText().toString().length()>3){
+                if(list_catalog_name.getText().toString().length()>3){
                     pg_create_watch.setVisibility(View.VISIBLE);
-                    CreateWatchlist();
+                    CreateCatalog();
                 }else {
                     new AlertDialog.Builder(getContext())
                             .setTitle("Invalid Title")
-                            .setMessage("Please Type watchlist title (length should be greater then 3 character eg: Properties for bachelor)!")
+                            .setMessage("Please Type Catalog title (length should be greater then 3 character)!")
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     // continue with delete
@@ -203,65 +145,45 @@ public class WatchlistTitle extends Fragment {
             }
         });
 
-
-
-        btn_delete.setOnClickListener(new View.OnClickListener() {
+        list_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("selected1","selected building : "+selectedlist.size()+"   === "+templist.size() );
-                //selectedlist.clear();
-                templist.clear();
-               // selectedlist.addAll(adapter.getAllData());
-                for(loadBuildingDataModel hold: adapter.getAllData()){
-                    if(hold.isCheckbox()){
 
-                       // selectedlist.remove(hold);
-
-                        loadBuildingDataModel loadBuildingDataModel1=new loadBuildingDataModel(hold.getName(),hold.getLat(),hold.getLng(),hold.getId(),hold.getLocality(),hold.getCity(),hold.getLl_pm(),hold.getOr_psf());
-                        templist.add(loadBuildingDataModel1);
-                        Log.i("selected1","selected building hold : "+hold.getName());
-                    }
-
-                }
-
-                copyselectedlist.clear();
-                copyselectedlist.addAll(selectedlist);
-
-                for ( loadBuildingDataModel d : templist) {
-                    Log.i("selected1","selected building : templist "+selectedlist.size()+" contains  "+selectedlist.contains(d));
-
-                    for(loadBuildingDataModel c : copyselectedlist)
-                    if(d.getId()==c.getId()){
-                        Log.i("selected1","selected building : c "+c.getName()+"d  "+d.getName());
-                        selectedlist.remove(c);
-                        break;
-                    }
-
-                }
-                copyselectedlist.clear();
-                Log.i("selected1","selected building : "+selectedlist.size());
-                adapter.notifyDataSetChanged();
+                ((BrokerListingActivity)getActivity()).Back();
             }
         });
 
-        back.setOnClickListener(new View.OnClickListener() {
+        list_btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                ((MyPortfolioActivity)getActivity()).Back("");
-            }
-        });
-        editProfile_pic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                watchlist_dp.performClick();
+
+
+
+
             }
         });
 
-        watchlist_dp.setOnClickListener(new View.OnClickListener() {
+        list_editProfile_pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                watchlist_dp.setImageBitmap(null);
+
+            }
+        });
+
+
+        list_selected_info.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                adapter.setCheckBox(position);
+                Log.i("multimode","inside onItemClick  123 "+position);
+            }
+        });
+
+        list_catalog_dp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                list_catalog_dp.setImageBitmap(null);
                 if (Image != null)
                     Image.recycle();
                 Intent intent = new Intent(
@@ -271,28 +193,24 @@ public class WatchlistTitle extends Fragment {
                 startActivityForResult(
                         Intent.createChooser(intent, "Select File"),
                         RESULT_LOAD_IMAGE);
-
-
-
             }
         });
 
-        selected_info.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                adapter.setCheckBox(position);
-                Log.i("multimode","inside onItemClick  123 "+position+" "+selectedlist.size());
-
-
-            }
-        });
 
         init();
-
         return v;
     }
 
+
+
+
+
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
 
 
     public  void init(){
@@ -332,129 +250,6 @@ public class WatchlistTitle extends Fragment {
     }
 
 
-
-
-
-    private void CreateWatchlist(){
-        CreateWatchlistAPI createWatchlistAPI=new CreateWatchlistAPI();
-        createWatchlistAPI.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
-        createWatchlistAPI.setAction("create");
-        createWatchlistAPI.setCity("mumbai");
-        createWatchlistAPI.setTt(AppConstants.TT_TYPE );
-        for(loadBuildingDataModel c:selectedlist){
-            //loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(c.getId(),c.getName(),c.getLat(),c.getLng(),c.getLocality(),c.getCity(),c.getLl_pm(),c.getOr_psf(),c.isCheckbox());
-            ids.add(c.getId());
-        }
-        createWatchlistAPI.setTitle(watchlist_name.getText().toString());
-        createWatchlistAPI.setBuild_list(ids);
-        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
-        oyeokApiService.CreateWatchlist(createWatchlistAPI, new retrofit.Callback<JsonElement>() {
-            @Override
-            public void success(JsonElement jsonElement, Response response) {
-
-                String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
-
-                try {
-                    JSONObject jsonResponse = new JSONObject(strResponse);
-                    Log.i("magic11","addBuildingRealm success response "+response+"\n"+jsonResponse);
-                    JSONObject building = new JSONObject(jsonResponse.getString("responseData"));
-                    Log.i("magic11","addBuildingRealm success response "+building);
-                    watchlist_id=building.getString("watchlist_id");
-                    AddDataToRealm(watchlist_id);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-
-
-    }
-
-
-public void AddDataToRealm(String watchlist_id){
-    Realm myRealm = General.realmconfig(getContext());
-    WatchListRealmModel watchListRealmModel=new WatchListRealmModel();
-    watchListRealmModel.setWatchlist_id(watchlist_id);
-    watchListRealmModel.setWatchlist_name(watchlist_name.getText().toString());
-    watchListRealmModel.setImageuri(imageName);
-    watchListRealmModel.setCity("mumbai");
-    watchListRealmModel.setTt(AppConstants.TT_TYPE);
-    watchListRealmModel.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
-    watchListRealmModel.setUser_name(General.getSharedPreferences(getContext(),AppConstants.NAME));
-    watchListRealmModel.setUser_role(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
-    for(loadBuildingDataModel c:selectedlist){
-        /*loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(c.getId(),c.getName(),c.getLat(),c.getLng(),c.getLocality(),c.getCity(),c.getLl_pm(),c.getOr_psf(),c.isCheckbox());
-        realmList.add(loadBuildingdataModelRealm1);*/
-
-        loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(c.getId());
-        realmList.add(loadBuildingdataModelRealm1);
-    }
-    watchListRealmModel.setBuildingids(realmList);
-    myRealm.beginTransaction();
-    myRealm.copyToRealmOrUpdate(watchListRealmModel);
-    myRealm.commitTransaction();
-    //RealmResults<WatchListRealmModel> results2 = myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id", watchlist_id).findAll();
-    RealmResults<WatchListRealmModel> results2 = myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id", watchlist_id).findAll();
-
-    /*for (WatchListRealmModel c : results2) {
-
-        for(int i=0;i<c.getBuildingids().size();i++) {
-            Log.i("datafromraelm", "realm data  : "+i+" :  " + c.getBuildingids().get(i).getId());
-        }
-
-
-    }*/
-    myRealm.close();
-    pg_create_watch.setVisibility(View.GONE);
-    ((MyPortfolioActivity)getActivity()).Close();
-}
-
-
-
-
-    public static WatchlistTitle newInstance() {
-        WatchlistTitle fragment = new WatchlistTitle();
-        Bundle args = new Bundle();
-
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public void onButtonPressed(Uri uri) {
-
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-    }
-
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-
-
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i("google signin", "onActivityResult");
@@ -462,9 +257,10 @@ public void AddDataToRealm(String watchlist_id){
         if (requestCode == RESULT_LOAD_IMAGE && resultCode != 0) {
             mImageUri = data.getData();
             /*fileToUpload = new File(getRealPathFromURI(this,mImageUri));
-            Log.i(TAG, "lolwa imagewa uri fileToUpload "+fileToUpload);
+           // Log.i(TAG, "lolwa imagewa uri fileToUpload "+fileToUpload);
             setFileToUpload(saveBitmapToFile(fileToUpload));*/
             fileToUpload = new File(getRealPathFromURI(getContext(),mImageUri));
+            Log.i("google12", "onActivityResult   "+fileToUpload);
             setFileToUpload(saveBitmapToFile(fileToUpload));
             try {
                 Image = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), mImageUri);
@@ -474,9 +270,9 @@ public void AddDataToRealm(String watchlist_id){
                     if (rotateImage != null)
                         rotateImage.recycle();
                     rotateImage = Bitmap.createBitmap(Image, 0, 0, Image.getWidth(), Image.getHeight(), matrix, true);
-                    watchlist_dp.setImageBitmap(rotateImage);
+                    list_catalog_dp.setImageBitmap(rotateImage);
                 } else
-                    watchlist_dp.setImageBitmap(Image);
+                    list_catalog_dp.setImageBitmap(Image);
                 Log.i("imageuri", "onActivityResult imageuri : "+Image+" mImageUri : "+mImageUri);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -487,7 +283,6 @@ public void AddDataToRealm(String watchlist_id){
 
 
     }
-
 
 
     public String getRealPathFromURI(Context context, Uri contentUri) {
@@ -601,7 +396,7 @@ public void AddDataToRealm(String watchlist_id){
         }
 
 
-       // displayImgMessage("oyeok-watchlist-images",imageName); //oyes-watchlist-images//oyeok-chat-images
+        // displayImgMessage("oyeok-watchlist-images",imageName); //oyes-watchlist-images//oyeok-chat-images
 
         TransferObserver transferObserver = transferUtility.upload(
                 "oyeok-watchlist-images",      //The bucket to upload to
@@ -656,7 +451,7 @@ public void AddDataToRealm(String watchlist_id){
         String user_id = null;
 
 
-        if(General.getSharedPreferences(getContext(),AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes"))
+        if(General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes"))
             user_id = General.getSharedPreferences(getContext(),AppConstants.USER_ID);
         else
             user_id = General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI);
@@ -725,8 +520,6 @@ public void AddDataToRealm(String watchlist_id){
     }
 
 
-
-
     public void credentialsProvider(){
 
         // Initialize the Amazon Cognito credentials provider
@@ -770,11 +563,105 @@ public void AddDataToRealm(String watchlist_id){
         return cursor.getInt(0);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        //myRealm.close();
+
+
+    private void CreateCatalog(){
+        Log.i("magical","CreateCatalog =========== ");
+        CreateCatalogListing createCatalogListing=new CreateCatalogListing();
+        createCatalogListing.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+        createCatalogListing.setAction("create");
+        createCatalogListing.setCatalog_id("");
+        createCatalogListing.setCity("Mumbai");
+        createCatalogListing.setTt((AppConstants.TT_TYPE).toLowerCase());
+        ids.clear();
+        for(portListingModel c:selectedList){
+            //loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(c.getId(),c.getName(),c.getLat(),c.getLng(),c.getLocality(),c.getCity(),c.getLl_pm(),c.getOr_psf(),c.isCheckbox());
+            ids.add(c.getId());
+            Log.i("magical","inside ===========  : "+c.getId());
+        }
+        createCatalogListing.setTitle(list_catalog_name.getText().toString());
+        createCatalogListing.setListing_ids(ids);
+        Log.i("magical","inside =========== ");
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+        oyeokApiService.CreateCataloglist(createCatalogListing, new retrofit.Callback<JsonElement>() {
+            @Override
+            public void success(JsonElement jsonElement, Response response) {
+
+                String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+
+                try {
+                    JSONObject jsonResponse = new JSONObject(strResponse);
+                    Log.i("magical","addBuildingRealm success response "+response+"\n"+jsonResponse);
+                    JSONObject building = new JSONObject(jsonResponse.getString("responseData"));
+                    catalog_id=building.getString("catalog_id");
+                    Log.i("magical","addBuildingRealm success response "+building+"  id :: "+building.getString("catalog_id"));
+
+                    int size = building.length();
+                       /* if (realmsids != null)
+                            realmsids.clear();*/
+
+                    AddDataToRealm();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.i("magical","failure =========== "+error);
+            }
+        });
+
+
     }
+
+
+    public void AddDataToRealm(){
+        Realm myRealm = General.realmconfig(getContext());
+        Log.i("datafromraelm1", "realm data 12 : " +catalog_id+" "+list_catalog_name.getText().toString()+" "+AppConstants.TT_TYPE);
+
+        ListingCatalogRealm listingCatalogRealm=new ListingCatalogRealm();
+        listingCatalogRealm.setCatalog_id(catalog_id);
+        listingCatalogRealm.setCatalog_name(list_catalog_name.getText().toString());
+        listingCatalogRealm.setImageuri(imageName);
+        listingCatalogRealm.setCity("Mumbai");
+        listingCatalogRealm.setTt(AppConstants.TT_TYPE);
+        listingCatalogRealm.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+        listingCatalogRealm.setUser_name(General.getSharedPreferences(getContext(),AppConstants.NAME));
+//        listingCatalogRealm.setDisplayListings(null);
+        //listingCatalogRealm.setUser_role(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
+        int size=ids.size();
+        for(int i=0;i<size;i++){
+        /*loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(c.getId(),c.getName(),c.getLat(),c.getLng(),c.getLocality(),c.getCity(),c.getLl_pm(),c.getOr_psf(),c.isCheckbox());
+        realmList.add(loadBuildingdataModelRealm1);*/
+            Log.i("datafromraelm1", "realm data 12 : "+i+" :  " + ids.get(i).toString());
+            Listingidsrealm  listingidsrealm=new Listingidsrealm(ids.get(i).toString());
+            realmList.add(listingidsrealm);
+        }
+        listingCatalogRealm.setListingids(realmList);
+        myRealm.beginTransaction();
+        myRealm.copyToRealmOrUpdate(listingCatalogRealm);
+        myRealm.commitTransaction();
+
+        //RealmResults<listingCatalogRealm> results2 = myRealm.where(listingCatalogRealm.class).equalTo("watchlist_id", watchlist_id).findAll();
+        RealmResults<ListingCatalogRealm> results2 = myRealm.where(ListingCatalogRealm.class).equalTo("catalog_id",catalog_id).findAll();
+
+        for (ListingCatalogRealm c : results2) {
+
+           for(int i=0;i<c.getListingids().size();i++) {
+            Log.i("datafromraelm", "realm data  : "+i+" :  " + c.getListingids().get(i).getListing_id());
+           }
+
+        }
+        myRealm.close();
+        pg_create_watch.setVisibility(View.GONE);
+        ((BrokerListingActivity)getActivity()).Refresh();
+    }
+
+
 
 
 
