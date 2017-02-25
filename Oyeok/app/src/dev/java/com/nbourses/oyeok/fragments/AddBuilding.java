@@ -197,6 +197,7 @@ private TextView Cancel,back,usertext;
                 }else {
                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
+                   // General.setSharedPreferences(getContext(), AppConstants.ADD_TYPE,"building");
                     if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                         ((BrokerMap) getActivity()).closeCardContainer();
                         ((BrokerMap) getActivity()).setlocation(name);
@@ -305,7 +306,9 @@ private TextView Cancel,back,usertext;
                                     General.setSharedPreferences(getContext(), AppConstants.MY_CITY,adapter.getItem(position).getCity());
                                     General.setSharedPreferences(getContext(), AppConstants.LL_PM,adapter.getItem(position).getLl_pm());
                                     General.setSharedPreferences(getContext(), AppConstants.OR_PSF,adapter.getItem(position).getOr_psf());
-                                    Log.i("Buildingdata", "lat " +adapter.getItem(position).getLl_pm()+" ====== "+adapter.getItem(position).getOr_psf());
+                                    General.setSharedPreferences(getContext(), AppConstants.ADD_TYPE,"listing");
+                                    General.setSharedPreferences(getContext(),AppConstants.BUILDING_ID,adapter.getItem(position).getId());
+                                    Log.i("Buildingdata", "lat " +adapter.getItem(position).getLl_pm()+" ====== "+adapter.getItem(position).getOr_psf());//ADD_TYPE
                                     //General.setSharedPreferences(getContext(),AppConstants.PROPERTY,adapter.getItem(position).getProperty_type());
                                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                                     imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);

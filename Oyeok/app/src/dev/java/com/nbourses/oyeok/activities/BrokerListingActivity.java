@@ -7,7 +7,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -39,7 +41,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.gson.JsonElement;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
@@ -47,13 +51,24 @@ import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.adapters.BrokerListingListView;
 import com.nbourses.oyeok.fragments.AddListingFinalCard;
 import com.nbourses.oyeok.fragments.AppSetting;
+import com.nbourses.oyeok.fragments.CatalogDisplayListing;
+import com.nbourses.oyeok.fragments.ListingExplorer;
+import com.nbourses.oyeok.fragments.ListingTitle;
 import com.nbourses.oyeok.fragments.ShareOwnersNo;
+import com.nbourses.oyeok.fragments.WatchlistExplorer;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.models.CreateCatalogListing;
+import com.nbourses.oyeok.models.ReadWatchlistAPI;
 import com.nbourses.oyeok.models.portListingModel;
+import com.nbourses.oyeok.realmModels.ListingCatalogRealm;
 import com.nbourses.oyeok.realmModels.MyPortfolioModel;
 import com.nbourses.oyeok.realmModels.addBuildingRealm;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -65,6 +80,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 
 public class BrokerListingActivity extends BrokerMainPageActivity implements CustomPhasedListener ,FragmentDrawer.FragmentDrawerListener{
 
@@ -91,11 +110,11 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
     @Bind(R.id.resaleCount)
     TextView resaleCount;
 
-    @Bind(R.id.container_sign)
+    /*@Bind(R.id.container_sign)
     FrameLayout container_sign;
 
     @Bind(R.id.card)
-    FrameLayout card;
+    FrameLayout card;*/
 
     CustomPhasedSeekBar  mPhasedSeekBar;
     int position=0;
@@ -115,21 +134,28 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
     private static ArrayList<portListingModel> addbuildingOR=new ArrayList<>();
     private static ArrayList<portListingModel> deletelist=new ArrayList<>();
     private static ArrayList<portListingModel> item=new ArrayList<>();
+    private static ArrayList<portListingModel> list=new ArrayList<>();
+    private static ArrayList<portListingModel> cataloglistLL = new ArrayList<>();
+    private static ArrayList<portListingModel> cataloglistOR = new ArrayList<>();
+    private static ArrayList<portListingModel> catalogportListing=new ArrayList<>();
 
     RealmResults<addBuildingRealm> results2;
 
     EditText inputSearch;
     private String TT = "LL";
     LinearLayout add_build;
-    private String matchedId;
-    TextView usertext,add_create;
-
+    private String matchedId,catalog_id,catalog_title;
+//    TextView usertext,add_create;
+    TextView  add_catalog,add_building;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+
+
+    FrameLayout container_sign,card;
 
 
     @Override
@@ -154,20 +180,25 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
         drawerFragment.setDrawerListener(this);
+        container_sign=(FrameLayout)findViewById(R.id.container_sign);
+        card=(FrameLayout)findViewById(R.id.card);
         ButterKnife.bind(this);
 
         if(portListing != null)
             portListing.clear();
-        /*if(myPortfolioLL != null)
-            myPortfolioLL.clear();
-        if(myPortfolioOR != null)
-            myPortfolioOR.clear();*/
+        if(cataloglistLL != null)
+            cataloglistLL.clear();
+        if(cataloglistOR != null)
+            cataloglistOR.clear();
         if(addbuildingLL != null)
             addbuildingLL.clear();
         if(addbuildingOR != null)
             addbuildingOR.clear();
         if(portListingCopy != null)
             portListingCopy.clear();
+
+        if(catalogportListing != null)
+            catalogportListing.clear();
 
 
 //        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -194,12 +225,14 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 //        if (menu.findItem(R.id.listing).isChecked()) menu.findItem(R.id.listing).setChecked(false);
 //        else menu.findItem(R.id.listing).setChecked(true);
 
-
+        AppConstants.TT_TYPE = "ll";
         rental_list=(ListView) findViewById(R.id.Rental_listview);
         inputSearch=(EditText) findViewById( R.id.inputSearch1);
         add_build=(LinearLayout)findViewById(R.id.add_build);
-        usertext=(TextView)findViewById(R.id.usertext);
-        add_create=(TextView)findViewById(R.id.add_create);
+        add_building = (TextView) findViewById(R.id.add_building);
+        add_catalog = (TextView) findViewById(R.id.add_catalog);
+//        usertext=(TextView)findViewById(R.id.usertext);
+//        add_create=(TextView)findViewById(R.id.add_create);
 
 
         /*if ((General.getBadgeCount(this, AppConstants.ADDB_COUNT_LL) > 0) ) {
@@ -213,7 +246,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
         }*/
 
-        add_build.setOnClickListener(new View.OnClickListener() {
+       /* add_build.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
@@ -225,8 +258,6 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
                         bundle.putString("lastFragment", "clientDrawer");
                     else
                         bundle.putString("lastFragment", "brokerDrawer");
-//                    loadFragment(signUpFragment, bundle, R.id.container_Signup1, "");
-//                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
                     d.setArguments(bundle);
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -239,26 +270,148 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
                     fragmentTransaction.commitAllowingStateLoss();
 //                    AppConstants.SIGNUP_FLAG = true;
 
-                }/*else if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")){
-                    General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
-                    Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
-                *//*in.putExtra("data","portfolio");
-                in.putExtra("role","");*//*
-                    startActivity(in);
-                }*/else{
+                }else{
                     General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
                     Intent in = new Intent(getBaseContext(), BrokerMap.class);
-                /*in.putExtra("data","portfolio");
-                in.putExtra("role","");*/
+                    startActivity(in);
+                }
+
+            }
+        });*/
+
+
+
+
+
+        add_building.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                    SignUpFragment d = new SignUpFragment();
+                    Bundle bundle = new Bundle();
+                    if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                        bundle.putString("lastFragment", "clientDrawer");
+                    else
+                        bundle.putString("lastFragment", "brokerDrawer");
+                    d.setArguments(bundle);
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+                    fragmentTransaction.addToBackStack("cardSignUp1");
+                    //container_Signup1.setVisibility(View.VISIBLE);
+                    /*if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                        fragmentTransaction.replace(R.id.container_Signup1, d);
+                    else*/
+                        fragmentTransaction.replace(R.id.container_sign, d);
+//                    signUpCardFlag = true;
+                    fragmentTransaction.commitAllowingStateLoss();
+                    AppConstants.SIGNUP_FLAG = true;
+
+                } else {
+                    General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
+                    Intent in = new Intent(getBaseContext(), BrokerMap.class);
                     startActivity(in);
                 }
 
             }
         });
 
+
+
+
+
+
+
+        add_catalog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+
+//                    General.setSharedPreferences(this, AppConstants.ROLE_OF_USER, "client");
+                    SignUpFragment d = new SignUpFragment();
+                    Bundle bundle = new Bundle();
+                    if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                        bundle.putString("lastFragment", "clientDrawer");
+                    else
+                        bundle.putString("lastFragment", "brokerDrawer");
+//                    loadFragment(signUpFragment, bundle, R.id.container_Signup1, "");
+//                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
+                    d.setArguments(bundle);
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+
+                    fragmentTransaction.addToBackStack("cardSignUp1");
+                    //container_Signup1.setVisibility(View.VISIBLE);
+                    /*if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                        fragmentTransaction.replace(R.id.container_Signup1, d);
+                    else*/
+                        fragmentTransaction.replace(R.id.container_sign, d);
+//                    signUpCardFlag = true;
+                    fragmentTransaction.commitAllowingStateLoss();
+                    AppConstants.SIGNUP_FLAG = true;
+
+                }else {
+
+
+                    ListingExplorer listingExplorer=new ListingExplorer();
+                    loadFragmentAnimated(listingExplorer,null,R.id.container_sign,"");
+                }
+
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         realm= General.realmconfig( getBaseContext() );
         adapter=new BrokerListingListView(getBaseContext(),portListing);
         rental_list.setAdapter(adapter);
+
+
+
+        RealmResults<ListingCatalogRealm> results = realm.where(ListingCatalogRealm.class).equalTo("tt","ll").findAll();
+
+        for(ListingCatalogRealm c :results){
+
+            portListingModel portListingModel = new portListingModel(c.getCatalog_id(),c.getCatalog_name(),c.getImageuri(),"catalog","ll");
+
+            cataloglistLL.add(portListingModel);
+
+
+        }
+        RealmResults<ListingCatalogRealm> results1 = realm.where(ListingCatalogRealm.class).equalTo("tt","or").findAll();
+
+        for(ListingCatalogRealm c :results){
+
+            portListingModel portListingModel = new portListingModel(c.getCatalog_id(),c.getCatalog_name(),c.getImageuri(),"catalog","tt");
+
+            cataloglistOR.add(portListingModel);
+
+
+        }
+
+
+
+
+
+
+
+
+
+
        /* RealmResults<MyPortfolioModel> results= realm.where(MyPortfolioModel.class).equalTo("tt", "ll").findAllSorted("timestamp",false);
 
         for(MyPortfolioModel c :results){
@@ -287,7 +440,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         for(addBuildingRealm c :result11){
 
             Log.i("getLocality","getLocality   : "+c.getLocality());
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),null);
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),null,false);
 
             addbuildingLL.add(portListingModel);
 
@@ -298,7 +451,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         for(addBuildingRealm c :result1){
 
             Log.i("getLocality","getLocality   : "+c.getLocality());
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),"ll",c.getReq_avl(),c.getFurnishing(),c.getMarket_rate(),c.getPossession_date());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),c.getLl_pm(),0,c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),"ll",c.getReq_avl(),c.getFurnishing(),c.getMarket_rate(),c.getPossession_date(),false);
 
             addbuildingLL.add(portListingModel);
 
@@ -312,7 +465,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         for(addBuildingRealm c :result22){
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),null);
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),null,false);
 
             addbuildingOR.add(portListingModel);
 
@@ -322,7 +475,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         for(addBuildingRealm c :result2){
 
 
-            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),"or",c.getReq_avl(),c.getFurnishing(),c.getMarket_rate(),c.getPossession_date());
+            portListingModel portListingModel = new  portListingModel(c.getId(),c.getBuilding_name(),c.getSublocality(),c.getGrowth_rate(),0,c.getOr_psf(),c.getTimestamp(),null,c.getConfig(),c.getDisplay_type(),"or",c.getReq_avl(),c.getFurnishing(),c.getMarket_rate(),c.getPossession_date(),false);
 
             addbuildingOR.add(portListingModel);
 
@@ -330,7 +483,9 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         }
 
         //Log.i("dataritesh","myPortfolioLL"+myPortfolioLL);
-        portListing.addAll(addbuildingLL);
+        portListing.addAll(cataloglistLL);
+        catalogportListing.addAll(addbuildingLL);
+        portListing.addAll(catalogportListing);
        // portListing.addAll(myPortfolioLL);
         portListingCopy.addAll(portListing);
 
@@ -338,43 +493,60 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
             getSupportActionBar().setTitle("");
             confirm_screen_title.setText("My Advertised\nListings");
             inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
-            usertext.setHint("\"My Listing\"");
-            add_create.setText("Create");
+           /* usertext.setHint("\"My Listing\"");
+            add_create.setText("Create");*/
 
 
         rental_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                if(item != null)
-                    item.clear();
-                item.add((portListingModel)adapter.getItem(position));
-                portListingModel p= (portListingModel) adapter.getItem(position);
-                String ids=p.getId();
 
 
-                RealmResults<addBuildingRealm> result= realm.where(addBuildingRealm.class).findAll();
-                Log.i( "portfolio1","portListingModel   : "+position+" "+(portListingModel)adapter.getItem(position)+"  : "+"   "+p.getName()+" ::"+p.getId()+result);
+                if (cataloglistLL.contains(portListing.get(position))|| cataloglistOR.contains(portListing.get(position))) {
+                    Bundle b=new Bundle();
+                    b.putString("catalog_id",portListing.get(position).getCatalog_id()+"");
+                    Log.i("datafromraelm1", "realm data 1  :"+ portListing.get(position).getCatalog_id()+"");
+                    CatalogDisplayListing catalogDisplayListing=new CatalogDisplayListing();
 
-                for(addBuildingRealm c:result){
-                    Log.i( "portfolio1","portListingModel inside for loop  : "+position+" "+ids+" "+c.getId());
-                    if(ids.equalsIgnoreCase(c.getId())){
-                        Log.i( "portfolio11","portListingModel inside if sushil  : "+position+" "+p.getName()+" : realm : "+c.getBuilding_name());
+//                    if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+//                        loadFragmentAnimated(catalogDisplayListing,b,R.id.container_Signup1,"");
+//                    }else {
+                        loadFragmentAnimated(catalogDisplayListing,b,R.id.container_sign,"");
+//                    }
 
-                        General.setSharedPreferences(getBaseContext(),AppConstants.BUILDING_NAME,p.getName());
-                        General.setSharedPreferences(getBaseContext(),AppConstants.BUILDING_LOCALITY,p.getLocality()+"");
-                        General.setSharedPreferences(getBaseContext(),AppConstants.MY_LAT,c.getLat()+"");
-                        General.setSharedPreferences(getBaseContext(),AppConstants.MY_LNG,c.getLng()+"");
-                        General.setSharedPreferences(getBaseContext(), AppConstants.MY_CITY,p.getCity());
-                        General.setSharedPreferences(getBaseContext(), AppConstants.LL_PM,c.getServer_ll_pm()+"");
-                        General.setSharedPreferences(getBaseContext(), AppConstants.OR_PSF,c.getServer_or_psf()+"");
-                        General.setSharedPreferences(getBaseContext(),AppConstants.PROPERTY,"home");
-                        General.setSharedPreferences(getBaseContext(),AppConstants.CONFIG,p.getConfig());
-                        openAddListingFinalCard(p.getId());
+                }else {
 
+
+                    if (item != null)
+                        item.clear();
+                    item.add((portListingModel) adapter.getItem(position));
+                    portListingModel p = (portListingModel) adapter.getItem(position);
+                    String ids = p.getId();
+
+
+                    RealmResults<addBuildingRealm> result = realm.where(addBuildingRealm.class).findAll();
+                    Log.i("portfolio1", "portListingModel   : " + position + " " + (portListingModel) adapter.getItem(position) + "  : " + "   " + p.getName() + " ::" + p.getId() + result);
+
+                    for (addBuildingRealm c : result) {
+                        Log.i("portfolio1", "portListingModel inside for loop  : " + position + " " + ids + " " + c.getId());
+                        if (ids.equalsIgnoreCase(c.getId())) {
+                            Log.i("portfolio11", "portListingModel inside if sushil  : " + position + " " + p.getName() + " : realm : " + c.getBuilding_name());
+
+                            General.setSharedPreferences(getBaseContext(), AppConstants.BUILDING_NAME, p.getName());
+                            General.setSharedPreferences(getBaseContext(), AppConstants.BUILDING_LOCALITY, p.getLocality() + "");
+                            General.setSharedPreferences(getBaseContext(), AppConstants.MY_LAT, c.getLat() + "");
+                            General.setSharedPreferences(getBaseContext(), AppConstants.MY_LNG, c.getLng() + "");
+                            General.setSharedPreferences(getBaseContext(), AppConstants.MY_CITY, p.getCity());
+                            General.setSharedPreferences(getBaseContext(), AppConstants.LL_PM, c.getServer_ll_pm() + "");
+                            General.setSharedPreferences(getBaseContext(), AppConstants.OR_PSF, c.getServer_or_psf() + "");
+                            General.setSharedPreferences(getBaseContext(), AppConstants.PROPERTY, "home");
+                            General.setSharedPreferences(getBaseContext(), AppConstants.CONFIG, p.getConfig());
+                            openAddListingFinalCard(p.getId());
+
+                        }
                     }
                 }
-
 
             }
         });
@@ -449,6 +621,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
                         }
 
+
                         if(addbuildingOR.contains(d)){
                             addbuildingOR.remove(d);
                             matchedId = d.getId();
@@ -467,6 +640,31 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
                         }
 
+                       // catalogportListing
+
+                        if(catalogportListing.contains(d)){
+                            catalogportListing.remove(d);
+                        }
+
+                        if(cataloglistLL.contains(d)){
+                            cataloglistLL.remove(d);
+                            matchedId = d.getCatalog_id();
+                            Log.i("portfolio1","deletelist 23 "+matchedId);
+
+                            for (final portListingModel l : cataloglistOR) {
+                                Log.i("portfolio1","deletelist 25 "+l.getId());
+                                if(l.getCatalog_id().equalsIgnoreCase(matchedId)){
+                                    cataloglistOR.remove(l);
+                                    break;
+                                }
+                            }
+
+                            catalog_id=matchedId;
+                            catalog_title=d.getName();
+                            Log.i("addbuildingOR","addbuildingOR 2"+d.getName()+" :: "+catalog_id);
+                         new RemoveCatalog().execute();
+
+                        }
 
                         Log.i("addbuildingOR","addbuildingOR 2"+addbuildingOR);
 
@@ -493,7 +691,17 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
                         } catch (Exception e) {
                             Log.i("TAG", "caught in exception deleting default droom 31 "+e);
                         }
-
+                        try {
+                            Realm myRealm = General.realmconfig(BrokerListingActivity.this);
+                            ListingCatalogRealm result = myRealm.where(ListingCatalogRealm.class).equalTo("catalog_id",d.getCatalog_id()).findFirst();
+                            if(myRealm.isInTransaction())
+                                myRealm.cancelTransaction();
+                            myRealm.beginTransaction();
+                            result.removeFromRealm();
+                            myRealm.commitTransaction();
+                        } catch (Exception e) {
+                            Log.i("TAG", "caught in exception deleting default droom 31 "+e);
+                        }
 
 
 
@@ -502,14 +710,14 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
                     adapter.notifyDataSetChanged();
                     if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
                         inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
-                        usertext.setText("");
+                      /*  usertext.setText("");
                         usertext.setHint("\"My Listing\"");
-                        add_create.setText("Create");
+                        add_create.setText("Create");*/
                     }else{
                         inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
-                        usertext.setText("");
+                       /* usertext.setText("");
                         usertext.setHint("Your Building");
-                        add_create.setText("Add");
+                        add_create.setText("Add");*/
 
                     }
                     return true;
@@ -587,7 +795,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
               portListing.addAll(portListingCopy);*/
                 Log.i("search12","sb outside "+s+" ============ : "+inputSearch.getText().toString().equalsIgnoreCase(""));
                 String s1="\""+s+"\"";
-                if(s.toString().equalsIgnoreCase(""))
+                /*if(s.toString().equalsIgnoreCase(""))
                 {
                     usertext.setText(s);
                     Log.i("search12","sb inside "+s+" ============ : ");
@@ -600,7 +808,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
                 else {
                     usertext.setText(s1);
 
-                }
+                }*/
             }
         });
 
@@ -831,7 +1039,11 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         if (position == 0) {
             TT = "LL";
             portListing.clear();
+            portListing.addAll(cataloglistLL);
             portListing.addAll(addbuildingLL);
+            catalogportListing.clear();
+            catalogportListing.addAll(addbuildingLL);
+
 //            portListing.addAll(myPortfolioLL);
             portListingCopy.clear();
             portListingCopy.addAll(portListing);
@@ -839,16 +1051,16 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
             adapter.notifyDataSetChanged();
             if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
                 inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
-                usertext.setText("");
+               /* usertext.setText("");
                 usertext.setHint("\"My Listing\"");
-                add_create.setText("Create");
-            }else{
+                add_create.setText("Create");*/
+            }/*else{
                 inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
                 usertext.setText("");
                 usertext.setHint("Your Building");
                 add_create.setText("Add");
 
-            }
+            }*/
             General.setBadgeCount(this, AppConstants.ADDB_COUNT_LL, 0);
             rentalCount.setVisibility(View.GONE);
         } else {
@@ -856,21 +1068,24 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
             AppConstants.TT_TYPE = "or";
             Log.i("addbuildingOR", "addbuildingOR 3" + addbuildingOR);
             portListing.clear();
+            portListing.addAll(cataloglistOR);
             portListing.addAll(addbuildingOR);
 //            portListing.addAll(myPortfolioOR);
+            catalogportListing.clear();
+            catalogportListing.addAll(addbuildingOR);
             portListingCopy.clear();
             portListingCopy.addAll(portListing);
             adapter.notifyDataSetChanged();
             if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
                 inputSearch.setHint("Search "+portListing.size()+" Building in Listings");
-                usertext.setText("");
+               /* usertext.setText("");
                 usertext.setHint("\"My Listing\"");
-                add_create.setText("Create");
+                add_create.setText("Create");*/
             }else{
                 inputSearch.setHint("Search "+ portListing.size()+" Building in Watchlist");
-                usertext.setText("");
+                /*usertext.setText("");
                 usertext.setHint("Your Building");
-                add_create.setText("Add");
+                add_create.setText("Add");*/
 
             }
             General.setBadgeCount(this, AppConstants.ADDB_COUNT_OR, 0);
@@ -1017,6 +1232,131 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         container_sign.setClickable(false);
         card.setClickable(false);
         // ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
+    }
+
+
+
+
+    public ArrayList<portListingModel> PortlistingData(){
+        Log.i("listingtest","listing count 12 "+catalogportListing.size());
+
+        return catalogportListing;
+    }
+
+
+   public ArrayList<portListingModel> PortlistingData1(){
+    Log.i("listingtest","listing count 1111 "+portListing.size());
+       for (portListingModel c:list){
+           c.setCheckbox(false);
+           Log.i("listingtest","listing count 1111 "+c.isCheckbox());
+           //list.add();
+       }
+    return list;
+}
+    public void Back(){
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+        Log.i("stacktop","backstack check111 "+getSupportFragmentManager().getBackStackEntryCount());
+       // getSupportFragmentManager().popBackStackImmediate();
+                ListingExplorer listingExplorer=new ListingExplorer();
+                loadFragmentAnimated(listingExplorer,null,R.id.container_sign,"");
+    }
+
+
+    public void Close(){
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+        Log.i("stacktop","backstack check11 "+getSupportFragmentManager().getBackStackEntryCount());
+        //getSupportFragmentManager().popBackStackImmediate();
+        //recreate();
+
+    }
+
+
+    public void Refresh(){
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+        Log.i("stacktop","backstack check11 "+getSupportFragmentManager().getBackStackEntryCount());
+        //getSupportFragmentManager().popBackStackImmediate();
+        //recreate();
+
+       Intent in = new Intent(getBaseContext(), BrokerListingActivity.class);
+        startActivity(in);
+    }
+
+
+
+    public void OpenListingTitle(ArrayList<portListingModel> list1){
+
+        list=list1;
+
+        /*Bundle b=new Bundle();
+        //putParcelableArrayList("listings",list);
+        b.putParcelableArrayList("listings", list1);*/
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
+        Log.i("stacktop","backstack check 1 "+getSupportFragmentManager().getBackStackEntryCount());
+        //getSupportFragmentManager().popBackStackImmediate();
+        ListingTitle listingTitle=new ListingTitle();
+        loadFragmentAnimated(listingTitle,null,R.id.container_sign,"");
+    }
+
+
+
+    protected class RemoveCatalog extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+            CreateCatalogListing createCatalogListing=new CreateCatalogListing();
+            createCatalogListing.setUser_id(General.getSharedPreferences(getBaseContext(),AppConstants.USER_ID));
+            createCatalogListing.setAction("remove");
+            createCatalogListing.setCatalog_id(catalog_id);
+            createCatalogListing.setCity("Mumbai");
+            createCatalogListing.setTitle(catalog_title);
+            createCatalogListing.setTt((AppConstants.TT_TYPE).toLowerCase());
+            // createCatalogListing.setTitle(catalog_name);
+            ids.clear();
+            createCatalogListing.setListing_ids(ids);
+
+
+
+
+            //readWatchlistAPI.setBuild_list(ids);
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+            OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+            oyeokApiService.CreateCataloglist(createCatalogListing, new retrofit.Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+                    String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+                    try {
+
+                        JSONObject jsonResponse = new JSONObject(strResponse);
+                        Log.i("magic111","RemoveCatalog success response "+response+"\n"+jsonResponse);
+                        JSONObject building = new JSONObject(jsonResponse.getString("responseData"));
+                        Log.i("magic111","RemoveCatalog success response "+building);
+                        //watchlist_id=building.getString("watchlist_id");
+                        JSONArray buildingdata=new JSONArray(building.getString("buildings"));
+                        Log.i("magic111","RemoveCatalog success response1 "+buildingdata);
+                        Log.i("magic111","RemoveCatalog success response2 "+buildingdata.getString(0));
+                        // AddDataToRealm(watchlist_id);
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+
+
+            return null;
+        }
+
+
     }
 
 

@@ -190,7 +190,7 @@ public class WatchlistTitle extends Fragment {
                 }else {
                     new AlertDialog.Builder(getContext())
                             .setTitle("Invalid Title")
-                            .setMessage("Please Type watchlist title (length should be greater then 3 character eg: Salman khan Properties)!")
+                            .setMessage("Please Type watchlist title (length should be greater then 3 character eg: Properties for bachelor)!")
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     // continue with delete
@@ -264,14 +264,6 @@ public class WatchlistTitle extends Fragment {
                 watchlist_dp.setImageBitmap(null);
                 if (Image != null)
                     Image.recycle();
-                /*Intent intent1 = new Intent();
-                intent1.setType("image*//*");
-                intent1.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent1, "Select Picture"), RESULT_LOAD_IMAGE);*/
-
-
-                ////////////
-
                 Intent intent = new Intent(
                         Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -311,7 +303,7 @@ public class WatchlistTitle extends Fragment {
         if (Environment.getExternalStorageState() == null) {
             //create new file directory object
             File directory = new File(Environment.getDataDirectory()
-                    + "/oyeok/");
+                    + "/oyeok/watchlist/");
 
             // if no directory exists, create new directory
             if (!directory.exists()) {
@@ -322,7 +314,7 @@ public class WatchlistTitle extends Fragment {
         } else if (Environment.getExternalStorageState() != null) {
             // search for directory on SD card
             File directory = new File(Environment.getExternalStorageDirectory()
-                    + "/oyeok/");
+                    + "/oyeok/watchlist/");
 
             // if no directory exists, create new directory to store test
             // results
@@ -337,17 +329,6 @@ public class WatchlistTitle extends Fragment {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
     }
 
 
@@ -359,7 +340,7 @@ public class WatchlistTitle extends Fragment {
         createWatchlistAPI.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
         createWatchlistAPI.setAction("create");
         createWatchlistAPI.setCity("mumbai");
-        createWatchlistAPI.setTt("ll");
+        createWatchlistAPI.setTt(AppConstants.TT_TYPE );
         for(loadBuildingDataModel c:selectedlist){
             //loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(c.getId(),c.getName(),c.getLat(),c.getLng(),c.getLocality(),c.getCity(),c.getLl_pm(),c.getOr_psf(),c.isCheckbox());
             ids.add(c.getId());

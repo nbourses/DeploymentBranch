@@ -69,7 +69,7 @@ public class WatchlistDisplayBuilding extends Fragment {
     Bundle b;
 
     boolean status=false;
-    Calendar myCalendar = Calendar.getInstance();
+
 
 
 
@@ -328,36 +328,21 @@ private  void AddDataToRealm(){
 
 private void DisplayList(){
 
-        /*RealmResults<*/WatchListRealmModel/*>*/ results2 = myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id", watchlist_id).findFirst();
+      WatchListRealmModel results2 = myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id", watchlist_id).findFirst();
         watchlistmodel.clear();
         WatchListRealmModel c = results2;
-       // for (WatchListRealmModel c : results2) {
-            Log.i("datainraelm", "==============================   :"+c.getDisplayBuildinglist().size());
-           /* if(c.getDisplayBuildinglist().size()!=0 && !status){
-                Log.i("datainraelm", "realm  data present   :  " +c.getDisplayBuildinglist().get(0).getId()+"  :: "+c.getDisplayBuildinglist().get(0).getName());
-                for (int i = 0; i < c.getDisplayBuildinglist().size(); i++) {
-                    Log.i("datainraelm", "realm  data present   :  " +c.getDisplayBuildinglist().get(i).getId()+"  :: "+c.getDisplayBuildinglist().get(i).getName());
-                    WatchlistDisplayBuildingModel watchlistDisplayBuildingModel=new WatchlistDisplayBuildingModel(c.getDisplayBuildinglist().get(i).getId(),c.getDisplayBuildinglist().get(i).getName(),c.getDisplayBuildinglist().get(i).getConfig(),c.getDisplayBuildinglist().get(i).getOr_psf(),c.getDisplayBuildinglist().get(i).getLl_pm(),c.getDisplayBuildinglist().get(i).getLat(),c.getDisplayBuildinglist().get(i).getLng(),c.getDisplayBuildinglist().get(i).getRate_growth(),c.getDisplayBuildinglist().get(i).getListing(),c.getDisplayBuildinglist().get(i).getPortals(),c.getDisplayBuildinglist().get(i).getTransactions(),c.getDisplayBuildinglist().get(i).getLocality(),c.getDisplayBuildinglist().get(i).getReq_avl(),c.getDisplayBuildinglist().get(i).getStatus(),c.getDisplayBuildinglist().get(i).getCity(),c.getDisplayBuildinglist().get(i).getPossession_date(),false);
-                    watchlistmodel.add(watchlistDisplayBuildingModel);
-                }
-                //watchlistmodel.addAll(watchlistDisplayBuildingModel);
-                adapter.notifyDataSetChanged();
-            }else {*/
-                Log.i("datainraelm12", "realm  data absent size   :  "+c.getBuildingids().size());
                 for (int i = 0; i < c.getBuildingids().size(); i++) {
                     //Log.i("datainraelm", "realm data  : " + i + " :  " + c.getBuildingids().get(i).getId());
                     ids.add(c.getBuildingids().get(i).getId());
                     Log.i("datainraelm12", "realm  data absent id  :  "+i+"  :: "+c.getBuildingids().get(i).getId());
                 }
-    Log.i("datainraelm12", "realm  data absent size   :  "+c.getBuildingids().size()+"ids : "+ids.size());
+                Log.i("datainraelm12", "realm  data absent size   :  "+c.getBuildingids().size()+"ids : "+ids.size());
                 watchlist_name=c.getWatchlist_name();
                 ids1.addAll(c.getBuildingids());
                 pg_load_building.setVisibility(View.VISIBLE);
                 status=false;
                 ReadWatchlist();
-           // }
 
-       // }
 }
 
 

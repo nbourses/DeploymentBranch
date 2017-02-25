@@ -453,7 +453,9 @@ private void init(){
        addListingBorker.setConfig(General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
        addListingBorker.setListing_date(System.currentTimeMillis()+"");
        addListingBorker.setListing_id(listing_id);
-       Log.i("AddListingBorker","myCalendar current date"+myCalendar.getTime());
+       addListingBorker.setAdd_type(General.getSharedPreferences(getContext(), AppConstants.ADD_TYPE));  //listing || building
+       addListingBorker.setBuilding_id(General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID));
+       Log.i("AddListingBorker","myCalendar current date"+System.currentTimeMillis()+" "+General.getSharedPreferences(getContext(), AppConstants.ADD_TYPE)+" == "+General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID)+" "+General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
        addListingBorker.setCity("Mumbai");
        if(Furnishing.equalsIgnoreCase("fully-furnished")){
        addListingBorker.setFurnishing("ff");
@@ -464,14 +466,21 @@ private void init(){
            addListingBorker.setFurnishing("sf");
 
        }
+
+       try {
+           String timestamp1=General.DateToTimeStamp(txtcalendar.getText().toString()).getTime()+"";
+           Log.i("AddListingBorker","myCalendar current date : "+timestamp1);
+           addListingBorker.setPossession_date(timestamp1);
+       } catch (ParseException e) {
+           e.printStackTrace();
+           Log.i("AddListingBorker","myCalendar current date : "+e);
+       }
        addListingBorker.setBuilding_name(General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
-       addListingBorker.setPossession_date(txtcalendar.getText().toString());
        addListingBorker.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
        addListingBorker.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
        addListingBorker.setUser_name(General.getSharedPreferences(getContext(),AppConstants.NAME));
        Log.i("magic","username   : "+ General.getSharedPreferences(getContext(),AppConstants.NAME)+"  "+General.getSharedPreferences(getContext(),AppConstants.MOBILE_NUMBER));
        addListingBorker.setTt(tt);
-
        addListingBorker.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
         carpet_area=Integer.parseInt(approx_area.getText().toString());
        addListingBorker.setCarpet_area(carpet_area);
@@ -849,6 +858,10 @@ private void  setMinMaxValue(){
         }
     //}
 }
+
+
+
+
 
 
 

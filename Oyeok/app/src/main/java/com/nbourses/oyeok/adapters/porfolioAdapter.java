@@ -21,6 +21,8 @@ import android.widget.TextView;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.portListingModel;
+import com.nbourses.oyeok.realmModels.ListingCatalogRealm;
+import com.nbourses.oyeok.realmModels.WatchListRealmModel;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,6 +33,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+
+import io.realm.Realm;
 
 /**
  * Created by sushil on 07/11/16.
@@ -50,8 +54,8 @@ public class porfolioAdapter extends BaseAdapter {
     private static Bitmap finalimage = null;
     private static String uri_image ;
     Boolean stopDownloadImage5 = false;
-    Holder1 holder1;
-    Holder holder;
+    private Holder1 holder1;
+    private Holder holder;
     private Bitmap mIcon12 = null;
     
     
@@ -97,10 +101,13 @@ public class porfolioAdapter extends BaseAdapter {
 
             
             try {
+                holder1.watchlist_dp.setImageResource(R.drawable.watchlist_catalog_icon_home);
+
                 if(!listing.getImageUri().equalsIgnoreCase("")&&listing.getImageUri()!=null) {
                     uri_image = listing.getImageUri();
                     showimage(holder1, uri_image);
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -108,7 +115,9 @@ public class porfolioAdapter extends BaseAdapter {
 
             holder1.watch_name.setText(listing.getName());
             //holder1.watchlist_dp.setImageResource(finalimage);
-
+            Realm myRealm = General.realmconfig(context);
+            WatchListRealmModel result = myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id", listing.getWatchlist_id()).findFirst();
+            holder1.count.setText(result.getBuildingids().size()+"");
 
 
 
@@ -249,13 +258,12 @@ public class porfolioAdapter extends BaseAdapter {
 
         public final TextView watch_name;
         public final ImageView watchlist_dp;
-
+        public final TextView count;
         public Holder1(View itemView) {
 
             this.watch_name = (TextView) itemView.findViewById(R.id.watch_name);
             this.watchlist_dp =(ImageView) itemView.findViewById(R.id.watchlist_dp);
-
-
+            this.count = (TextView) itemView.findViewById(R.id.count);
 
         }
     }
@@ -266,7 +274,7 @@ public class porfolioAdapter extends BaseAdapter {
 
 
 
-    void showimage(porfolioAdapter.Holder1 holder1,String mImageUri) {
+    void showimage(Holder1 holder1,String mImageUri) {
 
      
         if (Environment.getExternalStorageState() == null) {

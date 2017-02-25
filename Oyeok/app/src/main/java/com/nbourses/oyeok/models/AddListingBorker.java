@@ -25,7 +25,9 @@ public class AddListingBorker {
     @SerializedName("locality")
     private String locality;
 
-
+    @Expose
+    @SerializedName("city")
+    private String city;
 
 
     @Expose
@@ -49,6 +51,10 @@ public class AddListingBorker {
     private String tt;
 
     @Expose
+    @SerializedName("building_id")
+    private String building_id;
+
+    @Expose
     @SerializedName("ll_pm")
     private String ll_pm;
 
@@ -69,10 +75,21 @@ public class AddListingBorker {
     private String user_name;
 
     @Expose
+    @SerializedName("user_id")
+    private String user_id;
+
+    @Expose
     @SerializedName("mobile")
     private String mobile;
-    @Expose
 
+
+    @Expose
+    @SerializedName("carpet_area")
+    private int carpet_area;
+
+
+
+    @Expose
     @SerializedName("price_per_sqft")
     private String price_per_sqft;
 
@@ -86,26 +103,22 @@ public class AddListingBorker {
 
 
     @Expose
-    @SerializedName("user_id")
-    private String user_id;
-
-    @Expose
-    @SerializedName("carpet_area")
-    private int carpet_area;
-
-
-    @Expose
-    @SerializedName("city")
-    private String city;
-
-    @Expose
     @SerializedName("furnishing")
     private String furnishing;
+
+    @Expose
+    @SerializedName("add_type")
+    private String add_type;
 
 
     @Expose
     @SerializedName("listing_id")
     private String listing_id;
+
+
+
+
+
 
 
 
@@ -299,6 +312,23 @@ public class AddListingBorker {
 
     public void setListing_id(String listing_id) {
         this.listing_id = listing_id;
+    }
+
+
+    public String getBuilding_id() {
+        return building_id;
+    }
+
+    public void setBuilding_id(String building_id) {
+        this.building_id = building_id;
+    }
+
+    public String getAdd_type() {
+        return add_type;
+    }
+
+    public void setAdd_type(String add_type) {
+        this.add_type = add_type;
     }
 }
 

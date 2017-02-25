@@ -1676,15 +1676,21 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
             return null;
         }
+
+        @Override
+        protected void onPostExecute(String s) {
+           // super.onPostExecute(s);
+            General.setSharedPreferences(getBaseContext(),AppConstants.IS_SIGNUP,"false");
+        }
     }
 
     void Loadwatchlist(){
 
         Log.i("magic1112","  Loadwatchlist =======================:  "+General.getSharedPreferences(getBaseContext(),AppConstants.IS_SIGNUP));
 
-        if(General.getSharedPreferences(getBaseContext(),AppConstants.IS_SIGNUP).equalsIgnoreCase("true")){
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.IS_SIGNUP).equalsIgnoreCase("true")&& General.isNetworkAvailable(getBaseContext())){
             new DetailWatchlist().execute();
-          General.setSharedPreferences(getBaseContext(),AppConstants.IS_SIGNUP,"false");
+
         }
 
     }

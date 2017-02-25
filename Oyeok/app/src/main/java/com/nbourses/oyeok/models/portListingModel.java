@@ -83,6 +83,15 @@ public class portListingModel {
     @SerializedName("city")
     private String city;
 
+    @Expose
+    @SerializedName("checkbox")
+    private boolean checkbox;
+
+
+    @Expose
+    @SerializedName("catalog_id")
+    private String catalog_id;
+
 
 
     /*@Expose
@@ -143,6 +152,21 @@ public class portListingModel {
         this.config = config;
     }
 
+    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config, String display_type, String tt,boolean checkbox) {
+        this.id = id;
+        this.name = name;
+        this.locality = locality;
+        this.growth_rate = growth_rate;
+        this.ll_pm = ll_pm;
+        this.or_psf = or_psf;
+        this.timpstamp = timpstamp;
+        this.transaction = transaction;
+        this.config = config;
+        this.display_type = display_type;
+        this.tt = tt;
+        this.checkbox=checkbox;
+    }
+
     public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config, String display_type, String tt) {
         this.id = id;
         this.name = name;
@@ -157,7 +181,7 @@ public class portListingModel {
         this.tt = tt;
     }
 
-    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config, String display_type, String tt, String req_avl, String furnishing, int market_rate, String possession_date) {
+    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config, String display_type, String tt, String req_avl, String furnishing, int market_rate, String possession_date,boolean checkbox) {
         this.id = id;
         this.name = name;
         this.locality = locality;
@@ -173,6 +197,7 @@ public class portListingModel {
         this.furnishing = furnishing;
         this.market_rate = market_rate;
         this.possession_date = possession_date;
+        this.checkbox=checkbox;
     }
 
     public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config, String display_type, String tt, String req_avl, String furnishing) {
@@ -210,7 +235,13 @@ public class portListingModel {
         this.display_type = display_type;
     }
 
-
+    public portListingModel(String catalog_id, String name,String imageUri, String display_type,String tt) {
+        this.catalog_id = catalog_id;
+        this.name = name;
+        this.imageUri = imageUri;
+        this.display_type = display_type;
+        this.tt = tt;
+    }
 
     public String getReq_avl() {
         return req_avl;
@@ -309,7 +340,23 @@ public class portListingModel {
         this.imageUri = imageUri;
     }
 
-    /*
+    public boolean isCheckbox() {
+        return checkbox;
+    }
+
+    public void setCheckbox(boolean checkbox) {
+        this.checkbox = checkbox;
+    }
+
+    public String getCatalog_id() {
+        return catalog_id;
+    }
+
+    public void setCatalog_id(String catalog_id) {
+        this.catalog_id = catalog_id;
+    }
+
+  /*
     @Override
     public int compareTo(portListingModel another) {
         return 0;
