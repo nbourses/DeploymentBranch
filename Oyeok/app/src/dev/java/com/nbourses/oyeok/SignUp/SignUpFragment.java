@@ -55,6 +55,8 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -68,6 +70,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.gson.Gson;
 import com.nbourses.oyeok.Database.DatabaseConstants;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.SignUp;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
@@ -346,7 +349,15 @@ private LinearLayout signinpanel;
 
 
 
+        try {
+            MyApplication application = (MyApplication) getActivity().getApplication();
+            Tracker mTracker = application.getDefaultTracker();
 
+            mTracker.setScreenName("SignUpPage");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
 
@@ -556,7 +567,15 @@ private LinearLayout signinpanel;
                 email.setVisibility(View.GONE);
                 signinpanel.setVisibility(View.GONE);
                 signinOR.setVisibility(View.GONE);
+                try {
+                    MyApplication application = (MyApplication) getActivity().getApplication();
+                    Tracker mTracker = application.getDefaultTracker();
 
+                    mTracker.setScreenName("ExistingUser");
+                    mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 already_registered_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
                 new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
                 Log.i(TAG,"last fragment narcos 2 "+okBroker);
@@ -594,6 +613,17 @@ private LinearLayout signinpanel;
                 name.setVisibility(View.VISIBLE);
                 email.setVisibility(View.VISIBLE);
                 signinpanel.setVisibility(View.VISIBLE);
+
+                try {
+                    MyApplication application = (MyApplication) getActivity().getApplication();
+                    Tracker mTracker = application.getDefaultTracker();
+
+                    mTracker.setScreenName("NewUser");
+                    mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 signinOR.setVisibility(View.VISIBLE);
                 already_registered_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_box));
                 new_user_tab.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_greenish_blue));
@@ -666,6 +696,15 @@ private LinearLayout signinpanel;
                 Log.i("TRACE", "inside submit");
 
                 Log.i("TRACE", "after validationCheck");
+                try {
+                    MyApplication application = (MyApplication) getActivity().getApplication();
+                    Tracker mTracker = application.getDefaultTracker();
+
+                    mTracker.setScreenName("MobileVerification");
+                    mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 // //validation_success = roleSelected()
                 if(newUser==true) {
                     validationCheck();
@@ -737,6 +776,15 @@ private LinearLayout signinpanel;
             @Override
             public void onClick(View view) {
 
+                try {
+                    MyApplication application = (MyApplication) getActivity().getApplication();
+                    Tracker mTracker = application.getDefaultTracker();
+
+                    mTracker.setScreenName("FBLogin");
+                    mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 if (gcon) {
                     SnackbarManager.show(
                             Snackbar.with(getContext())
@@ -754,7 +802,15 @@ private LinearLayout signinpanel;
             @Override
             public void onClick(View view) {
                // btnSignIn.performClick();
+                try {
+                    MyApplication application = (MyApplication) getActivity().getApplication();
+                    Tracker mTracker = application.getDefaultTracker();
 
+                    mTracker.setScreenName("GoogleLogin");
+                    mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 if (isLoggedInfb()) {
                     SnackbarManager.show(
                             Snackbar.with(getContext())
@@ -848,6 +904,19 @@ private LinearLayout signinpanel;
 
 
     void signup_success() {
+
+
+        try {
+            MyApplication application = (MyApplication) getActivity().getApplication();
+            Tracker mTracker = application.getDefaultTracker();
+
+            mTracker.setScreenName("LoginAPI");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         if (General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI).equals("")) {
             General.setSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI, String.valueOf(System.currentTimeMillis()));
             Log.i("TIMESTAMP", "millis " + System.currentTimeMillis());
@@ -991,6 +1060,15 @@ private LinearLayout signinpanel;
                                                 Log.i(TAG,"yoyoyo12 "+oldRole +" "+redirectClient);
                                             }
                                             signup_success();
+                                            try {
+                                                MyApplication application = (MyApplication) getActivity().getApplication();
+                                                Tracker mTracker = application.getDefaultTracker();
+
+                                                mTracker.setScreenName("LoginSuccess");
+                                                mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     })
                                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -1128,7 +1206,15 @@ private LinearLayout signinpanel;
 
 
 
+                        try {
+                            MyApplication application = (MyApplication) getActivity().getApplication();
+                            Tracker mTracker = application.getDefaultTracker();
 
+                            mTracker.setScreenName("LoginSuccess");
+                            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
                         Log.i("TRACE", "bef saveDb");
                        // dbHelper.save(DatabaseConstants.userId, my_user_id);

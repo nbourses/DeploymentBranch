@@ -286,12 +286,13 @@ mrview.setOnClickListener(new View.OnClickListener() {
                             config = jo.getString("req_avl").toUpperCase()+" ("+jo.getString("property_subtype").toUpperCase()+") "+jo.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(jo.getString("price")).toUpperCase();
                             root_config.setText(config);
 
-                            /*int a = Integer.parseInt(jo.getString("price"));
-                            int b = Integer.parseInt(jo.getString("real_price"));*/
+/*<<<<<<< HEAD
+                            *//*int a = Integer.parseInt(jo.getString("price"));
+                            int b = Integer.parseInt(jo.getString("real_price"));*//*
 
                             growth_rate = percentageCalculator(Integer.parseInt(jo.getString("price")),Integer.parseInt(jo.getString("real_price")));
 
-                            /*int g = ((a - b)/b);*/
+                            *//*int g = ((a - b)/b);*//*
 
                            //int g= (Integer.parseInt(jo.getString("price")) -  Integer.parseInt(jo.getString("real_price")))/Integer.parseInt(jo.getString("real_price"));
                             //Log.i("MATCHINGOK CALLED", "loadMatchings matchingok success 1 "+g+" "+jo.getString("price")+" "+jo.getString("real_price"));
@@ -299,6 +300,12 @@ mrview.setOnClickListener(new View.OnClickListener() {
 
                             Log.i("MATCHINGOK CALLED", "loadMatchings matchingok success 2"+jo.getString("price")+"   "+growth_rate+"  "+jo.getString("real_price"));
                             if (Integer.parseInt(growth_rate )< 0) {
+=======*/
+//                            growth_rate = jo.getString("rate_growth");
+
+                            growth_rate = General.percentageCalculator(Integer.parseInt(jo.getString("price")),Integer.parseInt(jo.getString("real_price")));
+                            if (Integer.parseInt(growth_rate) < 0) {
+/*>>>>>>> dc16cfa9d1a19c15bf66b67365046ae9d9d26d0b*/
 
                                 root_growth_image.setImageResource( R.drawable.sort_down_red );
                                 root_growth_rate.setTextColor( Color.parseColor("#ffb91422"));

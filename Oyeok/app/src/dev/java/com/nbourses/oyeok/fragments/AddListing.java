@@ -19,6 +19,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.activities.*;
 import com.nbourses.oyeok.activities.BrokerMap;
@@ -84,6 +87,17 @@ public class AddListing extends Fragment {
         area=(TextView) v.findViewById(R.id.area);
 
         General.setSharedPreferences(getContext(),AppConstants.PROPERTY,"home");
+
+
+        MyApplication application = (MyApplication) getActivity().getApplication();
+        Tracker mTracker = application.getDefaultTracker();
+
+        mTracker.setScreenName("ListingStart");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
+
+
+
         home.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {

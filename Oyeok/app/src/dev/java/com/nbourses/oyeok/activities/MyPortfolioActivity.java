@@ -43,8 +43,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.JsonElement;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
@@ -199,6 +202,18 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             drawerFragment.setDrawerListener(this);
         }
         ButterKnife.bind(this);
+
+        try {
+            MyApplication application = (MyApplication) getApplication();
+            Tracker mTracker = application.getDefaultTracker();
+
+            mTracker.setScreenName("MyPortfolioActivity");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         if (watchlist != null)
             watchlist.clear();
         if (portListing != null)

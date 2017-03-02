@@ -104,6 +104,7 @@ public class FragmentDrawer extends Fragment {
 
 
 
+
         Log.d(TAG, "IS_LOGGED_IN_USER "+General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER));
         Log.d(TAG, "ROLE_OF_USER "+General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER));
 
@@ -147,6 +148,8 @@ public class FragmentDrawer extends Fragment {
         // Inflating view layout
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
 
+        txtemail=(TextView)layout.findViewById(R.id.txtEmail);
+        txtemail.setText(General.getSharedPreferences(getContext(),AppConstants.EMAIL));
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

@@ -236,7 +236,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     private BitmapDescriptor homeM;
     private BitmapDescriptor officeM;
-    private BitmapDescriptor industryM;
+    private BitmapDescriptor industryM,shopM;
 
 
     private Drawable sort_down_black,sort_down_red,sort_up_black,sort_up_green,comman_icon;
@@ -702,7 +702,7 @@ else {
         });
 
 
-
+        AppConstants.PROPERTY="Home";
 
 
 
@@ -889,6 +889,7 @@ else {
             homeM = BitmapDescriptorFactory.fromResource(R.drawable.buildingiconbeforeclick);
             officeM = BitmapDescriptorFactory.fromResource(R.drawable.office_m);
             industryM = BitmapDescriptorFactory.fromResource(R.drawable.industry_m);
+            shopM = BitmapDescriptorFactory.fromResource(R.drawable.shop_icon);
 
             favIcon = iconHome;
         }
@@ -2727,7 +2728,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                             fav.setVisibility(View.VISIBLE);
                                             StartOyeButtonAnimation();
 
-                                            try {
+//                                            try {
                                                 JSONArray buildings = new JSONArray(jsonResponseData.getString("buildings"));
                                                 Log.i("TRACE", "Response getprice buildings" + buildings);
                                                 JSONObject k = new JSONObject(buildings.get(1).toString());
@@ -2777,9 +2778,9 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                                                 .text("Drag to get more Buildings..")
                                                                 .position(Snackbar.SnackbarPosition.TOP)
                                                                 .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)), getActivity());
-                                            } catch (Exception e) {
+                                           /* } catch (Exception e) {
                                                 Log.i("Price Error", "Caught in exception Building plot success" + e.getMessage());
-                                            }
+                                            }*/
 
                                             showFavourites();
                                            // drawLocalities();
@@ -3075,11 +3076,15 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
 
                     dispProperty.setVisibility(View.VISIBLE);
 
-                    if (INDEX!=0 && buildingCacheModels.get(INDEX).getFlag() == true) {
-                        tv_building.setVisibility( View.VISIBLE );
-                        tv_building.setText( "Average Rate in last 1 WEEK" );
-                        String text = "<font color=#ffffff>" + buildingCacheModels.get(INDEX).getName() + "</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat( String.valueOf( buildingCacheModels.get(INDEX).getOr_psf() ) ).substring( 2, General.currencyFormat( String.valueOf( buildingCacheModels.get(INDEX).getOr_psf() ) ).length() ) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font>";
-                        tvFetchingrates.setText( Html.fromHtml( text ) );
+                    try {
+                        if (INDEX!=0 && buildingCacheModels.get(INDEX).getFlag() == true) {
+                            tv_building.setVisibility( View.VISIBLE );
+                            tv_building.setText( "Average Rate in last 1 WEEK" );
+                            String text = "<font color=#ffffff>" + buildingCacheModels.get(INDEX).getName() + "</b></b></font> <font color=#ffffff> @ </font>&nbsp<font color=#ff9f1c>\u20B9" + General.currencyFormat( String.valueOf( buildingCacheModels.get(INDEX).getOr_psf() ) ).substring( 2, General.currencyFormat( String.valueOf( buildingCacheModels.get(INDEX).getOr_psf() ) ).length() ) + "</font><b><font color=#ff9f1c><sub>/sq.ft</sub></font>";
+                            tvFetchingrates.setText( Html.fromHtml( text ) );
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     break;
             }
@@ -4792,11 +4797,19 @@ favOText.getText()*/
         if(brokerType=="rent") {
 
             myPortfolioModel.setTt("ll");
-            General.setBadgeCount(getContext(),AppConstants.ADDB_COUNT_LL,General.getBadgeCount(getContext(),AppConstants.ADDB_COUNT_LL)+1);
+            try {
+                General.setBadgeCount(getContext(),AppConstants.ADDB_COUNT_LL,General.getBadgeCount(getContext(),AppConstants.ADDB_COUNT_LL)+1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }else{
             myPortfolioModel.setTt("or");
-            General.setBadgeCount(getContext(),AppConstants.ADDB_COUNT_OR,General.getBadgeCount(getContext(),AppConstants.ADDB_COUNT_OR)+1);
+            try {
+                General.setBadgeCount(getContext(),AppConstants.ADDB_COUNT_OR,General.getBadgeCount(getContext(),AppConstants.ADDB_COUNT_OR)+1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
 
@@ -5076,11 +5089,11 @@ public void resetSeekBar(){
                 result1.remove(size);
                 realm.commitTransaction();
 
-                Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size()+" =============== : "+String.valueOf(SystemClock.currentThreadTimeMillis()));
+                Log.i("magie"," entered 123456 "+result1.size()+" =============== : "+AppConstants.PROPERTY);
                 String ptype;
-                if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
+                /*if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
                     ptype = "home";
-                else
+                else*/
                     ptype = AppConstants.PROPERTY;
 
                 BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
@@ -5109,9 +5122,9 @@ public void resetSeekBar(){
                 Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size());
 
                 String ptype;
-                if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
+                /*if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
                     ptype = "home";
-                else
+                else*/
                     ptype = AppConstants.PROPERTY;
 
                 BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
@@ -5181,6 +5194,8 @@ public void resetSeekBar(){
 
           Log.i(TAG,"property type marker "+c.getPtype());
 
+
+
           if(c.getPtype().equalsIgnoreCase("home")){
               customMarker.add(map.addMarker(new MarkerOptions()
                       .position(new LatLng(Double.parseDouble(c.getLat()), Double.parseDouble(c.getLng())))
@@ -5200,9 +5215,21 @@ public void resetSeekBar(){
                       .title(c.getName())
                       .snippet(c.getId())
                       .icon(industryM)));
+          }else if(c.getPtype().equalsIgnoreCase("shop")){
+              customMarker.add(map.addMarker(new MarkerOptions()
+                      .position(new LatLng(Double.parseDouble(c.getLat()), Double.parseDouble(c.getLng())))
+                      .title(c.getName())
+                      .snippet(c.getId())
+                      .icon(shopM)));
+          }else{
+              customMarker.add(map.addMarker(new MarkerOptions()
+                      .position(new LatLng(Double.parseDouble(c.getLat()), Double.parseDouble(c.getLng())))
+                      .title(c.getName())
+                      .snippet(c.getId())
+                      .icon(homeM)));
           }
 
-          Log.i("dataformrealm","BuildingCacheRealm"+c.getName());
+         // Log.i("dataformrealm","BuildingCacheRealm"+c.getName());
 //          customMarker.add( map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(c.getLng()),Double.parseDouble(c.getLng()))).title(c.getName()).snippet(c.getId()).icon(icon1).flat(true)));
 //           map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(c.getLng()),Double.parseDouble(c.getLng()))).title(c.getName()).snippet(c.getId()).icon(icon1).flat(true));
         /* customMarker.add(map.addMarker(new MarkerOptions()
@@ -5213,7 +5240,7 @@ public void resetSeekBar(){
           buildingCacheModels.add(new buildingCacheModel(c.getId(),c.getName(),c.getConfig(),c.getOr_psf(),c.getLl_pm(),c.getLat(),c.getLng(),c.getRate_growth(),c.getListing(),c.getPortals(),c.getTimestamp(),c.getTransactions(),c.getLocality(),false));
          // public buildingCacheModel(String id, String name, String config, int or_psf, int ll_pm, String lat, String lng, String rate_growth, String listing, String portals, String timestamp, String transactions, String locality) {
 
-              Log.i("dataformrealm","BuildingCacheRealm11m :  "+c.getName());
+             // Log.i("dataformrealm","BuildingCacheRealm11m :  "+c.getName());
 
           /*buildingCacheModel buildingCacheModels = new  buildingCacheModel(c.getId(),c.getName(),c.getLocality(),c.getRate_growth(),c.getLl_pm(),c.getOr_psf(),c.getTimestamp(),c.getTransactions(),c.getConfig(),null);
 
@@ -5228,20 +5255,7 @@ public void resetSeekBar(){
 
       Intent inn = new Intent(AppConstants.REFRESH_LISTVIEW);
       LocalBroadcastManager.getInstance(getContext()).sendBroadcast(inn);
-     // fr.setVisibility(View.VISIBLE);
-     /* new CountDownTimer(500, 500) {
 
-          public void onTick(long millisUntilFinished) {
-
-
-          }
-
-          public void onFinish() {
-              // if(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase(""))
-
-          }
-
-      }.start();*/
 
 
   }

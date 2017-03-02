@@ -24,8 +24,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.maps.GoogleMap;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -94,6 +97,19 @@ public class OyeConfirmation extends Fragment {
         Property_conf_furnishing=(TextView) view.findViewById(R.id.property_config);
         selected_loc_to_oye=(TextView) view.findViewById(R.id.selected_loc_to_oye);
         slide_arrow=(AnimationUtils.loadAnimation(getContext(), R.anim.sliding_arrow));
+
+
+        try {
+            MyApplication application = (MyApplication) getActivity().getApplication();
+            Tracker mTracker = application.getDefaultTracker();
+
+            mTracker.setScreenName("OyeConfirm");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         StartOyeButtonAnimation();
         updateLabel();
         proceed_to_oye.setEnabled(true);
@@ -390,11 +406,20 @@ public class OyeConfirmation extends Fragment {
 
         public void handleMessage() {
 
+            try {
+                MyApplication application = (MyApplication) getActivity().getApplication();
+                Tracker mTracker = application.getDefaultTracker();
+
+                mTracker.setScreenName("OyeAPI");
+                mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             // Get an actual reference to the DownloadActivity
             // from the WeakReference.
             Context context=mContext.get();
             Log.i("proceed oye ","oye oye oye 8");
-            General.publishOye(context);
+            General.publishOye(getActivity());
 
         }
     }

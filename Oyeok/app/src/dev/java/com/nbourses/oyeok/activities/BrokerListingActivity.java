@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.activities;
 
 import android.Manifest;
+import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -41,7 +42,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.JsonElement;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
@@ -156,7 +160,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
 
     FrameLayout container_sign,card;
-
+    private Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,7 +204,15 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         if(catalogportListing != null)
             catalogportListing.clear();
 
+        try {
+            MyApplication application = (MyApplication) getApplication();
+            mTracker = application.getDefaultTracker();
 
+            mTracker.setScreenName("BrokerListingActivity");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 //        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setActionBar(toolbar); only for above 21 API
         setSupportActionBar(toolbar);
@@ -309,6 +321,16 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
                     AppConstants.SIGNUP_FLAG = true;
 
                 } else {
+
+                    // Get tracker.
+                   /* Tracker t = ((AnalyticsSampleApp) getActivity().getApplication()).getTracker(
+                            TrackerName.APP_TRACKER);*/
+// Build and send an Event.
+                   /* mTracker.send(new HitBuilders.EventBuilder()
+                            .setCategory("Broker Listing")
+                            .setAction("")
+                            .setLabel("")
+                            .build());*/
                     General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
                     Intent in = new Intent(getBaseContext(), BrokerMap.class);
                     startActivity(in);
@@ -524,6 +546,15 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
                     portListingModel p = (portListingModel) adapter.getItem(position);
                     String ids = p.getId();
 
+                    try {
+                        MyApplication application = (MyApplication) getApplication();
+                        Tracker mTracker = application.getDefaultTracker();
+
+                        mTracker.setScreenName("UpdateListing");
+                        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                     RealmResults<addBuildingRealm> result = realm.where(addBuildingRealm.class).findAll();
                     Log.i("portfolio1", "portListingModel   : " + position + " " + (portListingModel) adapter.getItem(position) + "  : " + "   " + p.getName() + " ::" + p.getId() + result);
@@ -1315,7 +1346,6 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
             // createCatalogListing.setTitle(catalog_name);
             ids.clear();
             createCatalogListing.setListing_ids(ids);
-
 
 
 

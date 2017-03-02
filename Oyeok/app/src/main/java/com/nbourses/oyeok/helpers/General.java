@@ -33,6 +33,8 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -40,6 +42,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateStatus;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
@@ -579,7 +582,7 @@ public static PubNub initPubnub(Context context, String UUID){
 
 
 
-    public static void publishOye(final Context context) {
+    public static void publishOye(final Activity context) {
         try {
 
             if(isNetworkAvailable(context)) {
@@ -660,6 +663,17 @@ public static PubNub initPubnub(Context context, String UUID){
                 oyeokApiService.publishOye(AppConstants.letsOye, new Callback<PublishLetsOye>() {
                     @Override
                     public void success(PublishLetsOye letsOye, Response response) {
+
+                        try {
+                            MyApplication application = (MyApplication) context.getApplication();
+                            Tracker mTracker = application.getDefaultTracker();
+
+                            mTracker.setScreenName("OyePublished");
+                            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                         try {
                         General.slowInternetFlag = false;
                         General.t.interrupt();

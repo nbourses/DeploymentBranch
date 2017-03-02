@@ -34,6 +34,8 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -41,6 +43,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 //import com.nbourses.oyeok.Database.DBHelper;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.deleteHDroom;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
@@ -194,7 +197,15 @@ public class BrokerDealsListActivity extends AppCompatActivity implements Custom
         bgtxt.setText("'OK' More Leads,\nTo Create Dealing\nRooms with new Client");
         bgtxtlayout.setVisibility(View.VISIBLE);
         ButterKnife.bind(this);
+        try {
+            MyApplication application = (MyApplication) getApplication();
+            Tracker mTracker = application.getDefaultTracker();
 
+            mTracker.setScreenName("BrokerDealsListActivity");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         init();
     }
 

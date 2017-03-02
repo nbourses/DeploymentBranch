@@ -57,10 +57,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedListener;
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhasedSeekBar;
@@ -427,7 +430,15 @@ public void signUp(){
         } catch (NoSuchAlgorithmException e) {
 
         }
+        try {
+            MyApplication application = (MyApplication) getApplication();
+            Tracker mTracker = application.getDefaultTracker();
 
+            mTracker.setScreenName("ClientMainActivity");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 
 // Check Google Play Service Available

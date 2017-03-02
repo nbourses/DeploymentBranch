@@ -61,6 +61,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -72,6 +74,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.gson.JsonElement;
 import com.nbourses.oyeok.Database.SharedPrefs;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
@@ -430,11 +433,24 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
             @Override
             public void onClick(View v) {
                 General.setSharedPreferences(getBaseContext(), AppConstants.BUILDING_LOCALITY,General.getSharedPreferences(getBaseContext(),AppConstants.LOCALITY));
+                MyApplication application = (MyApplication) getApplication();
+                Tracker mTracker = application.getDefaultTracker();
 
+                mTracker.setScreenName("BuildingToListing");
+                mTracker.send(new HitBuilders.ScreenViewBuilder().build());
                 openAddListingFinalCard();
             }
         });
 
+        try {
+            MyApplication application = (MyApplication) getApplication();
+            Tracker mTracker = application.getDefaultTracker();
+
+            mTracker.setScreenName("BrokerMap");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         try {
             SharedPreferences prefs =
