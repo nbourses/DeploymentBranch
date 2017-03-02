@@ -18,6 +18,7 @@ import com.nbourses.oyeok.models.GetLocality;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.MatchingOK;
 import com.nbourses.oyeok.models.OkAccept;
+import com.nbourses.oyeok.models.PayUHash.PayUHash;
 import com.nbourses.oyeok.models.PreOk;
 import com.nbourses.oyeok.models.PublishLetsOye;
 import com.nbourses.oyeok.models.ReadWatchlistAPI;
@@ -54,6 +55,9 @@ public interface OyeokApiService {
 
     @POST("/ok/accept")
     void okAccept(@Body OkAccept o, Callback<JsonElement> callback);
+
+    @POST("/payu/hash/")
+    void payUHash(@Body PayUHash payUHash, Callback<JsonElement> callback);
 
     @POST("/lets/oye")
     void publishOye(@Body PublishLetsOye publishLetsOye, Callback<PublishLetsOye> callback);

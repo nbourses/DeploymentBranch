@@ -1163,6 +1163,8 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        Log.i("TAG","partner broker "+requestCode+  " "+resultCode);
+
         if (requestCode == SignUpFragment.RC_SIGN_IN) {
             SignUpFragment fragment = (SignUpFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.container_Signup);

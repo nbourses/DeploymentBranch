@@ -3,6 +3,7 @@ package com.nbourses.oyeok.fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -22,9 +23,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
+import com.nbourses.oyeok.activities.ClientDealsListActivity;
+import com.nbourses.oyeok.helpers.AppConstants;
+import com.nbourses.oyeok.helpers.General;
+import com.nbourses.oyeok.models.OkAccept;
+import com.nbourses.oyeok.models.PayUHash.PayUHash;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 import com.payUMoney.sdk.PayUmoneySdkInitilizer;
 import com.payUMoney.sdk.SdkConstants;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +48,10 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.mime.TypedByteArray;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -59,6 +75,9 @@ public class PartnerBrokerFragment extends Fragment {
 
     @Bind(R.id.pb_partner)
     Button pb_partner;
+
+    private String hash;
+    private String ammount;
 
     public PartnerBrokerFragment() {
         // Required empty public constructor
@@ -100,7 +119,7 @@ public class PartnerBrokerFragment extends Fragment {
 
         //Payu.setInstance(getContext());
 
-
+      //gethash();
 
 
     }
@@ -226,11 +245,11 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
     }
 
     public void pay(){
-        String phone = "8882434664";
-        String productName = "product_name";
-        String firstName = "piyush";
-        String txnId = "0nf7" + System.currentTimeMillis();
-        String email="piyush.jain@payu.in";
+        String phone = "8483";
+        String productName = "partner_broker";
+        String firstName = General.getSharedPreferences(getContext(),AppConstants.NAME);
+        String txnId = General.getSharedPreferences(getContext(),AppConstants.USER_ID);
+        String email=General.getSharedPreferences(getContext(),AppConstants.EMAIL);
         String sUrl = "https://test.payumoney.com/mobileapp/payumoney/success.php";
         String fUrl = "https://test.payumoney.com/mobileapp/payumoney/failure.php";
         String udf1 = "";
@@ -238,31 +257,77 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
         String udf3 = "";
         String udf4 = "";
         String udf5 = "";
-        boolean isDebug = true;
-        String key = "dRQuiA";
-        String merchantId = "4928174" ;
+        boolean isDebug = false;
+        String key = "6n0lZhgF";
+        String merchantId = "5703399" ;
 
         PayUmoneySdkInitilizer.PaymentParam.Builder builder = new PayUmoneySdkInitilizer.PaymentParam.Builder();
 
-
-        builder.setAmount(getAmount())
+//*//*.setProductName(productName)*//*
+        builder.setAmount(Double.parseDouble("50000"))
+                .setKey(key)
                 .setTnxId(txnId)
                 .setPhone(phone)
-                .setProductName(productName)
                 .setFirstName(firstName)
                 .setEmail(email)
                 .setsUrl(sUrl)
                 .setfUrl(fUrl)
                 .setUdf1(udf1)
                 .setUdf2(udf2)
+                .setIsDebug(isDebug)
                 .setUdf3(udf3)
                 .setUdf4(udf4)
                 .setUdf5(udf5)
-                .setIsDebug(isDebug)
-                .setKey(key)
+                .setProductName(productName)
                 .setMerchantId(merchantId);
 
+
+            /*String phone = "8882434664";
+            String productName = "product_name";
+            String firstName = "piyush";
+            String txnId = "0nf7" + System.currentTimeMillis();
+            String email="piyush.jain@payu.in";
+            String sUrl = "https://test.payumoney.com/mobileapp/payumoney/success.php";
+            String fUrl = "https://test.payumoney.com/mobileapp/payumoney/failure.php";
+            String udf1 = "";
+            String udf2 = "";
+            String udf3 = "";
+            String udf4 = "";
+            String udf5 = "";
+            boolean isDebug = true;
+            String key = "dRQuiA";
+            String merchantId = "4928174" ;
+
+            PayUmoneySdkInitilizer.PaymentParam.Builder builder = new PayUmoneySdkInitilizer.PaymentParam.Builder();
+
+
+            builder.setAmount(getAmount())
+                    .setTnxId(txnId)
+                    .setPhone(phone)
+                    .setProductName(productName)
+                    .setFirstName(firstName)
+                    .setEmail(email)
+                    .setsUrl(sUrl)
+                    .setfUrl(fUrl)
+                    .setUdf1(udf1)
+                    .setUdf2(udf2)
+                    .setUdf3(udf3)
+                    .setUdf4(udf4)
+                    .setUdf5(udf5)
+                    .setIsDebug(isDebug)
+                    .setKey(key)
+                    .setMerchantId(merchantId);*/
+
+
         PayUmoneySdkInitilizer.PaymentParam paymentParam = builder.build();
+
+
+        paymentParam.setMerchantHash(hash);
+
+        Log.i(TAG,"paymentParam "+paymentParam.getParams().toString());
+      calculateServerSideHashAndInitiatePayment(paymentParam);
+       // PayUmoneySdkInitilizer.startPaymentActivityForResult(getActivity(), paymentParam);
+
 
 //             server side call required to calculate hash with the help of <salt>
 //             <salt> is already shared along with merchant <key>
@@ -278,7 +343,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
         // Recommended
 
 
-        calculateServerSideHashAndInitiatePayment(paymentParam);
+        //calculateServerSideHashAndInitiatePayment(paymentParam);
 
 //        testing purpose
 
@@ -292,12 +357,12 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
     }
 
 
-    public void makePayment() {
+    /*public void makePayment() {
 
-        String phone = "8882434664";
-        String productName = "productName";
+        String phone = "";
+        String productName = "partner_broker";
         String firstName = "piyush";
-        String txnId = "0nf7" + System.currentTimeMillis();
+        String txnId = "oyeok" + System.currentTimeMillis();
         String email="test@payu.in";
         String sUrl = "https://test.payumoney.com/mobileapp/payumoney/success.php";
         String fUrl = "https://test.payumoney.com/mobileapp/payumoney/failure.php";
@@ -345,30 +410,30 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
 
 //             server side call required to calculate hash with the help of <salt>
 //             <salt> is already shared along with merchant <key>
-     /*        serverCalculatedHash =sha512(key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5|<salt>)
+     *//*        serverCalculatedHash =sha512(key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5|<salt>)
 
              (e.g.)
 
              sha512(FCstqb|0nf7|10.0|product_name|piyush|piyush.jain@payu.in||||||MBgjYaFG)
 
              9f1ce50ba8995e970a23c33e665a990e648df8de3baf64a33e19815acd402275617a16041e421cfa10b7532369f5f12725c7fcf69e8d10da64c59087008590fc
-*/
+*//*
 
         // Recommended
         /////calculateServerSideHashAndInitiatePayment(paymentParam);
 
 //        testing purpose
 
-       /* String salt = "";
+       *//* String salt = "";
         String serverCalculatedHash=hashCal(key+"|"+txnId+"|"+getAmount()+"|"+productName+"|"
                 +firstName+"|"+email+"|"+udf1+"|"+udf2+"|"+udf3+"|"+udf4+"|"+udf5+"|"+salt);
 
         paymentParam.setMerchantHash(serverCalculatedHash);
 
-        PayUmoneySdkInitilizer.startPaymentActivityForResult(MyActivity.this, paymentParam);*/
+        PayUmoneySdkInitilizer.startPaymentActivityForResult(MyActivity.this, paymentParam);*//*
 
 
-    }
+    }*/
 
     public static String hashCal(String str) {
         byte[] hashseq = str.getBytes();
@@ -394,8 +459,8 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
     private void calculateServerSideHashAndInitiatePayment(final PayUmoneySdkInitilizer.PaymentParam paymentParam) {
 
         // Replace your server side hash generator API URL
-        String url = "https://test.payumoney.com/payment/op/calculateHashForTest";
-        //String url = "https://test.hailyo.com/1/jotform/test";
+        //String url = "https://test.payumoney.com/payment/op/calculateHashForTest";
+        String url = "https://test.hailyo.com/1/payu/hash/";
 
        // Toast.makeText(getContext(), "Please wai Generating hash ", Toast.LENGTH_LONG).show();
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -427,6 +492,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.i("app_activity", "Server calculated Hash jsonObject 1 :  " + e.getMessage());
                 }
             }
 
@@ -519,7 +585,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
     */
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        Log.i("TAG","partner broker 2 "+requestCode+  " "+resultCode);
         if (requestCode == PayUmoneySdkInitilizer.PAYU_SDK_PAYMENT_REQUEST_CODE) {
 
             /*if(data != null && data.hasExtra("result")){
@@ -567,6 +633,107 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
             }
         });
         builder.show();
+
+    }
+
+    private void gethash(){
+
+        try {
+            Log.i("percent","PayUHash called :");
+
+            // {"user_id":"14dlr9x50bbuq1ptgkbb0lfh26f7y6no","long":"72","lat":"19","user_role":"broker","gcm_id":"gyani","oye_id":"xu4susi2y0852992","listing":"1"}
+            PayUHash payUHash = new PayUHash();
+            payUHash.setTxnid(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+           payUHash.setEmail(General.getSharedPreferences(getContext(),AppConstants.EMAIL));
+            payUHash.setFirstName(General.getSharedPreferences(getContext(),AppConstants.NAME));
+            payUHash.setFURL("https://test.payumoney.com/mobileapp/payumoney/failure.php");
+            payUHash.setSURL("https://test.payumoney.com/mobileapp/payumoney/success.php");
+            payUHash.setKey("6n0lZhgF");
+            payUHash.setPhone("8483");
+            payUHash.setProductInfo("partner_broker");
+            payUHash.setUdf1("");
+            payUHash.setUdf2("");
+            payUHash.setUdf3("");
+            payUHash.setUdf4("");
+            payUHash.setUdf5("");
+           /* payUHash.setUdf6("");
+            payUHash.setUdf7("");
+            payUHash.setUdf8("");
+            payUHash.setUdf9("");
+            payUHash.setUdf10("");*/
+
+
+
+            // g.setProperty_type(ptype.getText().toString());
+
+            Gson gson = new Gson();
+            String json = gson.toJson(payUHash);
+            Log.i("magic","PayUHash  json "+json);
+
+            Log.i("magic","PayUHash 1");
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_1).build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+            OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+            Log.i("magic","PayUHash 2");
+
+            oyeokApiService.payUHash(payUHash, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, retrofit.client.Response response) {
+                    try {
+                        Log.i("magic", "PayUHash");
+                        String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+                        JSONObject jsonResponse = new JSONObject(strResponse);
+
+                        Log.i("magic", "PayUHash " + jsonResponse);
+
+
+                        if (jsonResponse.getString("success").equalsIgnoreCase("false")) {
+
+
+
+                                TastyToast.makeText(getContext(), jsonResponse.getJSONObject("responseData").getString("message"), TastyToast.LENGTH_LONG, TastyToast.WARNING);
+
+
+
+
+
+                        } else {
+                            Log.i("magic", "PayUHash success " + jsonResponse.getJSONObject("responseData"));
+                            JSONObject j = jsonResponse.getJSONObject("responseData");
+                            hash = j.getString("hash");
+                            ammount = j.getString("price");
+                            Log.i("magic", "PayUHash rollonar 1 " + jsonResponse.getJSONObject("responseData"));
+
+                        }
+
+                    }catch(Exception e){
+                        Log.e("TAG", "Caught in the exception getLocality 1" + e.getMessage());
+
+                    }
+
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.i("magic","PayUHash failed 2 "+error);
+                    try {
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text("Server Error: " + error.getMessage())
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }
+                    catch(Exception e){}
+
+                }
+            });
+
+
+        }
+        catch (Exception e){
+            Log.e("TAG", "Caught in the exception getLocality"+ e.getMessage());
+        }
 
     }
 

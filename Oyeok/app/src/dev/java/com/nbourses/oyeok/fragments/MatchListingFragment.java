@@ -260,7 +260,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
 
 
             RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setEndpoint(AppConstants.SERVER_BASE_URL_1)
+                    .setEndpoint(AppConstants.SERVER_BASE_URL)
                     .build();
             restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 
@@ -286,10 +286,19 @@ mrview.setOnClickListener(new View.OnClickListener() {
                             config = jo.getString("req_avl").toUpperCase()+" ("+jo.getString("property_subtype").toUpperCase()+") "+jo.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(jo.getString("price")).toUpperCase();
                             root_config.setText(config);
 
-                            growth_rate = jo.getString("rate_growth");
+                            /*int a = Integer.parseInt(jo.getString("price"));
+                            int b = Integer.parseInt(jo.getString("real_price"));*/
+
+                            growth_rate = percentageCalculator(Integer.parseInt(jo.getString("price")),Integer.parseInt(jo.getString("real_price")));
+
+                            /*int g = ((a - b)/b);*/
+
+                           //int g= (Integer.parseInt(jo.getString("price")) -  Integer.parseInt(jo.getString("real_price")))/Integer.parseInt(jo.getString("real_price"));
+                            //Log.i("MATCHINGOK CALLED", "loadMatchings matchingok success 1 "+g+" "+jo.getString("price")+" "+jo.getString("real_price"));
 
 
-                            if (Integer.parseInt(growth_rate) < 0) {
+                            Log.i("MATCHINGOK CALLED", "loadMatchings matchingok success 2"+jo.getString("price")+"   "+growth_rate+"  "+jo.getString("real_price"));
+                            if (Integer.parseInt(growth_rate )< 0) {
 
                                 root_growth_image.setImageResource( R.drawable.sort_down_red );
                                 root_growth_rate.setTextColor( Color.parseColor("#ffb91422"));
@@ -307,7 +316,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
                                 root_growth_rate.setText( growth_rate + "%" );
                             }
 
-                            price = jo.getString("price");
+                            price = jo.getString("real_price");
                             root_price.setText(General.currencyFormat(price));
 
 
@@ -363,14 +372,14 @@ mrview.setOnClickListener(new View.OnClickListener() {
 
 
                                   if(jo.getString("tt").equalsIgnoreCase("LL")) {
-                                      config = k.getString( "req_avl").toUpperCase()+" ("+k.getString("config").toUpperCase()+") "+k.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(k.getString("listed_ll_pm")).toUpperCase();
+                                      config = k.getString( "req_avl").toUpperCase()+" ("+k.getString("config").toUpperCase()+") "+k.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(k.getString("price")).toUpperCase();
 
-                                      item = new MatchListing(k.getString("user_id"),k.getString("property_type"), req_avl, k.getString("oye_id"), config, k.getString("user_name"), k.getString("locality"), k.getString("possession_date"), k.getString("real_ll_pm"), percentageCalculator(Integer.parseInt(k.getString("listed_ll_pm")), Integer.parseInt(k.getString("real_ll_pm"))));
+                                      item = new MatchListing(k.getString("user_id"),k.getString("property_type"), req_avl, k.getString("oye_id"), config, k.getString("user_name"), k.getString("locality"), k.getString("possession_date"), k.getString("real_price"), percentageCalculator(Integer.parseInt(k.getString("price")), Integer.parseInt(k.getString("real_price"))));
 
                                   }else {
-                                      config = k.getString( "req_avl").toUpperCase()+" ("+k.getString("config").toUpperCase()+") "+k.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(k.getString("listed_or_psf")).toUpperCase();
+                                      config = k.getString( "req_avl").toUpperCase()+" ("+k.getString("config").toUpperCase()+") "+k.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(k.getString("price")).toUpperCase();
 
-                                      item = new MatchListing(k.getString("user_id"),k.getString("property_type"), req_avl, k.getString("oye_id"), config, k.getString("user_name"), k.getString("locality"), k.getString("possession_date"), k.getString("real_or_psf"), percentageCalculator(Integer.parseInt(k.getString("listed_or_psf")), Integer.parseInt(k.getString("real_ll_pm"))));
+                                      item = new MatchListing(k.getString("user_id"),k.getString("property_type"), req_avl, k.getString("oye_id"), config, k.getString("user_name"), k.getString("locality"), k.getString("possession_date"), k.getString("real_price"), percentageCalculator(Integer.parseInt(k.getString("price")), Integer.parseInt(k.getString("real_price"))));
 
                                   }
                                   matchList.add(item);
@@ -507,7 +516,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
             Log.i("magic","okAccept  json "+json);
 
             Log.i("magic","okAccept 1");
-            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_1).build();
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
             restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
             OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
             Log.i("magic","okAccept 2");

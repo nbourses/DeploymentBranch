@@ -92,7 +92,7 @@ public class PayUmoneySdkInitilizer {
             else
                 params.put(SdkConstants.KEY,builder.key);
 
-            if (TextUtils.isEmpty(builder.merchantId))
+           if (TextUtils.isEmpty(builder.merchantId))
                 throw new RuntimeException(" Merchant id missing ,setDebugMerchantId() ");
             else
                 params.put(SdkConstants.MERCHANT_ID,builder.merchantId);
@@ -206,7 +206,10 @@ public class PayUmoneySdkInitilizer {
             private String udf4 = "";
             private String udf5 = "";
 
+
             private boolean isDebug;
+
+
 
             public Builder setIsDebug(boolean isDebug) {
                 this.isDebug = isDebug;

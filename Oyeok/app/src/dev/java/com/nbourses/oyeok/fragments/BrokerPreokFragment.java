@@ -843,7 +843,7 @@ private String transaction_type="Rental";
 
                         }
                         else{
-                            Log.i("PREOK CALLED", "ne is the" + ne);
+                            Log.i("PREOK CALLED", "ne is the complete" + ne);
                             JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
                             maxPages = Integer.parseInt(ne.getJSONObject("responseData").getString("max_pages"));
                             Log.i("PREOK CALLED", "ne is the neighbours "+maxPages+" " + neighbours);
