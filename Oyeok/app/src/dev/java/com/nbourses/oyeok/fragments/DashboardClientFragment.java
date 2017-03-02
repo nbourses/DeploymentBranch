@@ -5089,7 +5089,7 @@ public void resetSeekBar(){
                 result1.remove(size);
                 realm.commitTransaction();
 
-                Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size()+" =============== : "+String.valueOf(SystemClock.currentThreadTimeMillis()));
+                Log.i("magie"," entered 123456 "+result1.size()+" =============== : "+AppConstants.PROPERTY);
                 String ptype;
                 /*if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
                     ptype = "home";
@@ -5122,9 +5122,9 @@ public void resetSeekBar(){
                 Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size());
 
                 String ptype;
-                if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
+                /*if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
                     ptype = "home";
-                else
+                else*/
                     ptype = AppConstants.PROPERTY;
 
                 BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
@@ -5194,6 +5194,8 @@ public void resetSeekBar(){
 
           Log.i(TAG,"property type marker "+c.getPtype());
 
+
+
           if(c.getPtype().equalsIgnoreCase("home")){
               customMarker.add(map.addMarker(new MarkerOptions()
                       .position(new LatLng(Double.parseDouble(c.getLat()), Double.parseDouble(c.getLng())))
@@ -5219,6 +5221,12 @@ public void resetSeekBar(){
                       .title(c.getName())
                       .snippet(c.getId())
                       .icon(shopM)));
+          }else{
+              customMarker.add(map.addMarker(new MarkerOptions()
+                      .position(new LatLng(Double.parseDouble(c.getLat()), Double.parseDouble(c.getLng())))
+                      .title(c.getName())
+                      .snippet(c.getId())
+                      .icon(homeM)));
           }
 
          // Log.i("dataformrealm","BuildingCacheRealm"+c.getName());

@@ -237,9 +237,9 @@ dependencies {
 }*/
 
 
-dependencies {
-    compile 'com.android.support:support-v4:25.+'
-}
+//dependencies {
+//    compile 'com.android.support:support-v4:25.+'
+//}
 dependencies {
     repositories {
         mavenCentral()
@@ -294,7 +294,7 @@ dependencies {
     compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
     compile 'io.branch.sdk.android:library:1.10.2'
     compile 'com.amplitude:android-sdk:2.4.0'
-    compile 'com.android.support:support-v4:25.0.0'
+  //  compile 'com.android.support:support-v4:25.0.0'
     compile group: 'com.pubnub', name: 'pubnub', version: '4.2.0'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     compile 'com.sothree.slidinguppanel:library:3.2.1'
@@ -305,6 +305,9 @@ dependencies {
         all*.exclude module: 'com.facebook.rebound'
     }
 
+    configurations{
+        all*.exclude group: 'com.android.volley'
+    }
 
     compile 'com.instabug.library:instabug:2.+'
     compile 'com.google.android.gms:play-services-ads:9.0.2'
@@ -356,15 +359,19 @@ dependencies {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:25.+'
+    //compile 'com.android.support:support-v4:25.+'
 
-    compile 'com.google.android.gms:play-services-auth:9.0.2'
+    //compile 'com.google.android.gms:play-services-auth:9.0.2'
 
 
-    compile project(path: ':payUMoneysdk')
+    compile project(path:':payUMoneysdk')
 }
+//dependencies {
+//    compile 'com.android.support:support-v4:25.+'
+//}
 apply plugin: 'com.google.gms.google-services'
-dependencies {
+
+/*dependencies {
     compile 'com.android.support:support-v4:25.+'
 }
 dependencies {
@@ -372,10 +379,7 @@ dependencies {
 }
 dependencies {
     compile 'com.android.support:support-v4:25.+'
-}
-dependencies {
-    compile 'com.android.support:support-v4:25.+'
-}
+}*/
 
 
 
