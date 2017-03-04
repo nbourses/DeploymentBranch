@@ -400,7 +400,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         for (Localities c : results2) {
 
 
-            portListingModel portListingModel = new portListingModel(c.getLocality(), c.getType(), ((Integer.parseInt(c.getLlMin()) + Integer.parseInt(c.getLlMax())) / 2), 0, c.getTimestamp(), c.getGrowthRate(), "LOCALITIES");
+            portListingModel portListingModel = new portListingModel(c.getLocality(), c.getType(), ((Integer.parseInt(c.getLlMin()) + Integer.parseInt(c.getLlMax())) / 2)*950, 0, c.getTimestamp(), c.getGrowthRate(), "LOCALITIES");
 
             myLocalitiesLL.add(portListingModel);
             // portListingModel portListingModel1 = new  portListingModel(c.getLocality(),"budget based suggestion",0,((Integer.parseInt(c.getOrMin()) + Integer.parseInt(c.getOrMax()))/2),c.getTimestamp(),c.getGrowthRate(),"LOCALITIES");

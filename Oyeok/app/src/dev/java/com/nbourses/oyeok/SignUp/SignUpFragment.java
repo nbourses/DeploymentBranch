@@ -92,6 +92,7 @@ import com.nbourses.oyeok.realmModels.UserInfo;
 import com.nbourses.oyeok.widgets.NavDrawer.FragmentDrawer;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -987,7 +988,7 @@ private LinearLayout signinpanel;
                     public void success(SignUp signUp, Response response) {
                         General.slowInternetFlag = false;
                         General.t.interrupt();
-                        Log.i("TAG", "Inside signup success");
+                        Log.i("TAG", "Inside signup success "+signUp.getError());
                         Log.i(TAG,"fakata responsedata "+signUp.responseData.getMessage());
                         try {
                             my_user_id = signUp.responseData.getUserId();
@@ -1103,6 +1104,10 @@ private LinearLayout signinpanel;
                             submit.setText("Login/Register");
 //                                      AppConstants.REGISTERING_FLAG=false;
                             return;
+                        }
+                        else if(signUp.getError().equals(9)){
+                            TastyToast.makeText(getContext(),"Your mobile number is already registerd with us with a different name or email, to update name/email go to profile.",TastyToast.LENGTH_LONG,TastyToast.INFO);
+
                         }
                         try {
                             Realm myRealm = General.realmconfig(getContext());

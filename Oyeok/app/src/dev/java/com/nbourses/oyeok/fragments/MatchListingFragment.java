@@ -329,15 +329,18 @@ mrview.setOnClickListener(new View.OnClickListener() {
 
                             try {
                                 date = jo.getString("possession_date");
+
                                 root_date.setText(General.timestampToString(Long.parseLong(date)));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 date = jo.getString("possession_date");
                                 root_date.setText(date);
+
                             } catch (NumberFormatException e) {
                                 e.printStackTrace();
                                 date = jo.getString("possession_date");
                                 root_date.setText(date);
+
                             }
 
                             locality = jo.getString("oye_locality");
@@ -369,7 +372,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
                             JSONArray j = ne.getJSONObject("responseData").getJSONArray("listings");
                             if(j.length() == 0)
                                 matching_text.setText("No Matchings Found!");
-                            else
+                           else
                                 matching_text.setText(j.length()+" Matchings Found");
                           for(int i=0;i<j.length();i++){
                               try {
@@ -379,14 +382,14 @@ mrview.setOnClickListener(new View.OnClickListener() {
 
 
                                   if(jo.getString("tt").equalsIgnoreCase("LL")) {
-                                      config = k.getString( "req_avl").toUpperCase()+" ("+k.getString("config").toUpperCase()+") "+k.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(k.getString("price")).toUpperCase();
+                                      config = k.getString( "req_avl").toUpperCase()+" ("+k.getString("config").toUpperCase()+") "+k.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(k.getString("listed_ll_pm")).toUpperCase();
 
-                                      item = new MatchListing(k.getString("user_id"),k.getString("property_type"), req_avl, k.getString("oye_id"), config, k.getString("user_name"), k.getString("locality"), k.getString("possession_date"), k.getString("real_price"), percentageCalculator(Integer.parseInt(k.getString("price")), Integer.parseInt(k.getString("real_price"))));
+                                      item = new MatchListing(k.getString("user_id"),k.getString("property_type"), req_avl, k.getString("oye_id"), config, k.getString("user_name"), k.getString("locality"), k.getString("possession_date"), k.getString("real_ll_pm"), percentageCalculator(Integer.parseInt(k.getString("listed_ll_pm")), Integer.parseInt(k.getString("real_ll_pm"))));
 
                                   }else {
-                                      config = k.getString( "req_avl").toUpperCase()+" ("+k.getString("config").toUpperCase()+") "+k.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(k.getString("price")).toUpperCase();
+                                      config = k.getString( "req_avl").toUpperCase()+" ("+k.getString("config").toUpperCase()+") "+k.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(k.getString("listed_or_psf")).toUpperCase();
 
-                                      item = new MatchListing(k.getString("user_id"),k.getString("property_type"), req_avl, k.getString("oye_id"), config, k.getString("user_name"), k.getString("locality"), k.getString("possession_date"), k.getString("real_price"), percentageCalculator(Integer.parseInt(k.getString("price")), Integer.parseInt(k.getString("real_price"))));
+                                      item = new MatchListing(k.getString("user_id"),k.getString("property_type"), req_avl, k.getString("oye_id"), config, k.getString("user_name"), k.getString("locality"), k.getString("possession_date"), k.getString("real_or_psf"), percentageCalculator(Integer.parseInt(k.getString("listed_or_psf")), Integer.parseInt(k.getString("real_or_psf"))));
 
                                   }
                                   matchList.add(item);
@@ -398,10 +401,11 @@ mrview.setOnClickListener(new View.OnClickListener() {
                                           mAdapter.notifyDataSetChanged();
                                       }
                                   });
+
                               } catch (JSONException e) {
-                                  e.printStackTrace();
+                                  Log.i("MATCHINGOK CALLED", "caught in exception inside matchingok inner json exc"+e.getMessage());
                               } catch (NumberFormatException e) {
-                                  e.printStackTrace();
+                                  Log.i("MATCHINGOK CALLED", "caught in exception inside matchingok inner numberformat"+e.getMessage());
                               }
 
                           }
@@ -410,7 +414,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
 
 
                         } catch (JSONException e) {
-                            Log.i("MATCHINGOK CALLED", "caught in exception inside preok"+e);
+                            Log.i("MATCHINGOK CALLED", "caught in exception inside matchingok"+e.getMessage());
 
                         }
                     }

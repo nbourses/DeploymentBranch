@@ -96,6 +96,7 @@ public class MatchListingAdapter extends RecyclerView.Adapter<MatchListingAdapte
         } catch (NumberFormatException e) {
             e.printStackTrace();
             holder.date.setText(item.getDate());
+            Log.i("TAG", "invalid date handled "+item.getDate()+" "+item.getConfig());
         }
 
         holder.match_locality.setText(item.getLocality());

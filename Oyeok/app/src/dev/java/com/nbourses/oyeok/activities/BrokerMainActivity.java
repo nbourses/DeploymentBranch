@@ -27,6 +27,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -121,6 +122,11 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
 
     @Bind(R.id.card)
     FrameLayout card;
+
+    @Bind(R.id.partner_b)
+    CardView partner_b;
+
+
 
     //setbaseloc
 //    @Bind(R.id.preok_layout)
@@ -558,6 +564,13 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
         updateEmail();
 
 
+        partner_b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AppConstants.cardCounter = 4;
+                showCard();
+            }
+        });
 
 //Remember
 
@@ -1133,7 +1146,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
     public void showCard() {
         Log.i("closer","closer 1 showCard ");
         if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes") && General.getSharedPreferences(this, AppConstants.STOP_CARD).equalsIgnoreCase("") &&  General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-            Log.i("closer","closer 1 showCard 1 ");
+            Log.i("closer","closer 1 showCard 1 "+AppConstants.MATCHINGOKFLAG);
             if (AppConstants.cardCounter > 3) {
                 if(!AppConstants.MATCHINGOKFLAG) {
                     Log.i("closer","closer 1 showCard ");

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -136,6 +138,8 @@ public class BudgetToLocations extends Fragment {
     private TextView office;
     private TextView industry;
     private TextView ptype;
+    private TextView tv_fd_bank;
+    private TextView tv_security_dep;
     private boolean newtouch = false;
     private int mean;
     private int maxi = 110000;
@@ -185,7 +189,8 @@ public class BudgetToLocations extends Fragment {
         calender = (TextView) rootView.findViewById(R.id.cal);
         submitb = (LinearLayout) rootView.findViewById(R.id.submitb);
         cancel = (TextView) rootView.findViewById(R.id.Cancel_add_building);
-
+        tv_fd_bank = (TextView) rootView.findViewById(R.id.tv_fd_bank);
+        tv_security_dep = (TextView) rootView.findViewById(R.id.tv_security_dep);
 
 
         Bundle bundle = this.getArguments();
@@ -201,7 +206,26 @@ public class BudgetToLocations extends Fragment {
     }
 
     private void init(){
-        toggleBtn.performClick();
+        //toggleBtn.performClick();
+        tv_fd_bank.setTextColor(ContextCompat.getColor(getContext(),R.color.greenish_blue));
+
+        tv_security_dep.setTextColor(ContextCompat.getColor(getContext(),R.color.common_plus_signin_btn_text_light_focused));
+        toggleBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    tv_fd_bank.setTextColor(ContextCompat.getColor(getContext(),R.color.common_plus_signin_btn_text_light_focused));
+
+                    tv_security_dep.setTextColor(ContextCompat.getColor(getContext(),R.color.greenish_blue));
+
+                }
+                else{
+                    tv_fd_bank.setTextColor(ContextCompat.getColor(getContext(),R.color.greenish_blue));
+
+                    tv_security_dep.setTextColor(ContextCompat.getColor(getContext(),R.color.common_plus_signin_btn_text_light_focused));
+                }
+            }
+        });
 
         calender.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -344,7 +368,7 @@ public class BudgetToLocations extends Fragment {
         submitb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                submitb.setClickable(false);
                 getLocalities();
             }
         });
@@ -763,6 +787,7 @@ public class BudgetToLocations extends Fragment {
                             if(General.getSharedPreferences(getContext(),AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")) {
 
                                 getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+                                submitb.setClickable(true);
                                 View containerSignup = getActivity().findViewById(R.id.container_Signup);
                                 View card = getActivity().findViewById(R.id.card);
                                 containerSignup.setBackgroundColor(Color.parseColor("#00000000"));
@@ -776,7 +801,7 @@ public class BudgetToLocations extends Fragment {
 
                         }catch(Exception e){
                             Log.e("TAG", "Caught in the exception getLocality 1" + e.getMessage());
-
+                        submitb.setClickable(true);
                         }
 
 
@@ -785,6 +810,7 @@ public class BudgetToLocations extends Fragment {
                 @Override
                 public void failure(RetrofitError error) {
                     Log.i("magic","getLocality failed "+error);
+                    submitb.setClickable(true);
                     try {
                         SnackbarManager.show(
                                 Snackbar.with(getContext())
@@ -801,6 +827,7 @@ public class BudgetToLocations extends Fragment {
         }
         catch (Exception e){
             Log.e("TAG", "Caught in the exception getLocality"+ e.getMessage());
+            submitb.setClickable(true);
         }
 
     }

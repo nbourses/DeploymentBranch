@@ -52,9 +52,20 @@
                 android:id="@+id/Cancel_add_building"/>
 
         </LinearLayout>
-        <LinearLayout
+        <!--<LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="I like to pay my SECURITY DEPOSIT"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center">
             <com.kyleduo.switchbutton.SwitchButton
@@ -67,8 +78,72 @@
 
 
         </LinearLayout>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="I like to pay my SECURITY DEPOSIT"/>
+        </LinearLayout>-->
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_below="@+id/rootWrapper"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="2dp"
+            android:orientation="horizontal"
+            android:id="@+id/lt"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+
+            >
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="I like to pay my\nSECURITY DEPOSIT"
+                android:id="@+id/tv_fd_bank"
+                android:layout_marginTop="3dp"
+                android:textColor="@color/abc_secondary_text_material_light"
+                android:gravity="center_horizontal"
+                android:textSize="13dp"
+                android:textStyle="bold|italic"
+                android:layout_weight="0.5"
+                android:foregroundGravity="center_horizontal"
+
+                />
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/toggleBtn"
+                android:layout_width="54dp"
+                android:layout_height="27dp"
+                android:checked="false"
+                app:kswThumbColor="@color/greenish_blue"
+                android:layout_gravity="center"/>
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Apply for finance\nSECURITY DEPOSIT"
+                android:id="@+id/tv_security_dep"
+                android:layout_marginTop="3dp"
+
+                android:textColor="@color/abc_secondary_text_material_light"
+
+                android:gravity="center_horizontal"
+                android:textSize="13dp"
+                android:textStyle="bold|italic"
+                android:layout_weight="0.5"
+                android:foregroundGravity="center_horizontal"
+
+                />
+
+
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dip"

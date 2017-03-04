@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -78,6 +79,7 @@ public class PartnerBrokerFragment extends Fragment {
 
     private String hash;
     private String ammount;
+    private PayUmoneySdkInitilizer.PaymentParam.Builder builder;
 
     public PartnerBrokerFragment() {
         // Required empty public constructor
@@ -240,18 +242,21 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
         Double amount = 10.0;
 
 
+            Toast.makeText(getContext(), "Paying Default Amount ₹10", Toast.LENGTH_LONG).show();
             return amount;
 
     }
 
     public void pay(){
-        String phone = "8483";
+        String phone = "8882434664";
         String productName = "partner_broker";
         String firstName = General.getSharedPreferences(getContext(),AppConstants.NAME);
-        String txnId = General.getSharedPreferences(getContext(),AppConstants.USER_ID);
+        String txnId = General.getSharedPreferences(getContext(),AppConstants.USER_ID) + System.currentTimeMillis();
         String email=General.getSharedPreferences(getContext(),AppConstants.EMAIL);
-        String sUrl = "https://test.payumoney.com/mobileapp/payumoney/success.php";
-        String fUrl = "https://test.payumoney.com/mobileapp/payumoney/failure.php";
+        /*String sUrl = "https://test.payumoney.com/mobileapp/payumoney/success.php";
+        String fUrl = "https://test.payumoney.com/mobileapp/payumoney/failure.php";*/
+        String sUrl = "https://oyeok.in";
+        String fUrl = "https://oyeok.in";
         String udf1 = "";
         String udf2 = "";
         String udf3 = "";
@@ -261,10 +266,10 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
         String key = "6n0lZhgF";
         String merchantId = "5703399" ;
 
-        PayUmoneySdkInitilizer.PaymentParam.Builder builder = new PayUmoneySdkInitilizer.PaymentParam.Builder();
+        builder = new PayUmoneySdkInitilizer.PaymentParam.Builder();
 
 //*//*.setProductName(productName)*//*
-        builder.setAmount(Double.parseDouble("50000"))
+        builder.setAmount(getAmount())
                 .setKey(key)
                 .setTnxId(txnId)
                 .setPhone(phone)
@@ -274,7 +279,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
                 .setfUrl(fUrl)
                 .setUdf1(udf1)
                 .setUdf2(udf2)
-                .setIsDebug(isDebug)
+                //.setIsDebug(isDebug)
                 .setUdf3(udf3)
                 .setUdf4(udf4)
                 .setUdf5(udf5)
@@ -322,7 +327,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
         PayUmoneySdkInitilizer.PaymentParam paymentParam = builder.build();
 
 
-        paymentParam.setMerchantHash(hash);
+        //paymentParam.setMerchantHash(hash);
 
         Log.i(TAG,"paymentParam "+paymentParam.getParams().toString());
       calculateServerSideHashAndInitiatePayment(paymentParam);
@@ -335,7 +340,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
 
              (e.g.)
 
-             sha512(dRQuiA|0nf7|10.0|product_name|piyush|piyush.jain@payu.in||||||Qp1mhvgcSY)
+             sha512(dRQuiA|0nf7|10.0|product_name|piyush|piyush.jain@payu.in||||||salt)
 
              9f1ce50ba8995e970a23c33e665a990e648df8de3baf64a33e19815acd402275617a16041e421cfa10b7532369f5f12725c7fcf69e8d10da64c59087008590fc
 */
@@ -460,7 +465,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
 
         // Replace your server side hash generator API URL
         //String url = "https://test.payumoney.com/payment/op/calculateHashForTest";
-        String url = "https://test.hailyo.com/1/payu/hash/";
+        String url = "https://test.hailyo.com/1/a/payu/hash";
 
        // Toast.makeText(getContext(), "Please wai Generating hash ", Toast.LENGTH_LONG).show();
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -470,9 +475,13 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
                 try {
                     JSONObject jsonObject = new JSONObject(response);
 
-                    Log.i("app_activity", "Server calculated Hash jsonObject :  " + jsonObject);
+                    Log.i("app_activity", "Server calculated Hash jsonObject :  " + jsonObject.getJSONObject("responseData").getString("hash"));
 
-                    if (jsonObject.has(SdkConstants.STATUS)) {
+                    String hash = jsonObject.getJSONObject("responseData").getString("hash");
+
+                    paymentParam.setMerchantHash(hash);
+                    PayUmoneySdkInitilizer.startPaymentActivityForResult(getActivity(), paymentParam);
+                    /*if (jsonObject.has(SdkConstants.STATUS)) {
                         String status = jsonObject.optString(SdkConstants.STATUS);
                         if (status != null || status.equals("1")) {
 
@@ -488,7 +497,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
                                     Toast.LENGTH_SHORT).show();
                         }
 
-                    }
+                    }*/
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -500,6 +509,10 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
 
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                Log.i("app_activity", "Server calculated Hash jsonObject 1 VolleyError 1 :  " + error.networkResponse);
+                Log.i("app_activity", "Server calculated Hash jsonObject 1 VolleyError 2 :  " + error.getNetworkTimeMs());
+                Log.i("app_activity", "Server calculated Hash jsonObject 1 VolleyError 3 :  " + error);
 
                 if (error instanceof NoConnectionError) {
                     Toast.makeText(getContext(),

@@ -301,6 +301,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     private String  text;
     private int llMin=35, llMax=60, orMin=21000, orMax=27000;
+    private String growth_rate = "-6";
     private String[] config=new String[5],rate_growth =new String[5],name = new String[5],listing =new String[5],portal= new String[5],transaction=new String[5],id=new String[5],distance=new String[5];
     Marker[] mCustomerMarker = new Marker[5];
     private int[] or_psf = new int[5], ll_pm = new int[5];
@@ -2225,6 +2226,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             tvFetchingrates.setTextColor(Color.parseColor("#2dc4b6"));
 
         }else if(txtFilterValue.getText().toString().equalsIgnoreCase("done")){
+
             /*Log.i("user_role","role of user");
             if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                 if(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase("")) {
@@ -2245,157 +2247,11 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             }*/
             if(AppConstants.SETLOCATION)
             {
-                Log.i("user_role","auto ok12334 ...13");
 
 
-
-                if(AppConstants.SETLOCATIONLTOP){
-
-                    Realm myRealm = null;
-                    try {
-                        myRealm = General.realmconfig(getContext());
+                getLocalityPrice();
 
 
-                        Log.i("magic","getLocality8 ");
-
-
-                        myRealm.beginTransaction();
-                        Localities l = new Localities();
-                        l.setLocality(General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
-                        l.setGrowthRate("-6");
-                        l.setLlMin(llMin+"");
-                        l.setType("fixed locality based search");
-                        l.setLlMax(llMax+"");
-                        l.setOrMin(orMin+"");
-                        l.setOrMax(orMax+"");
-                        l.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
-                        l.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
-                        l.setTimestamp(System.currentTimeMillis()+"");
-
-                        myRealm.copyToRealm(l);
-                        myRealm.commitTransaction();
-                        General.setBadgeCount(getContext(), AppConstants.PORTFOLIO_COUNT,General.getBadgeCount(getContext(),AppConstants.PORTFOLIO_COUNT) + 1);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        AutoOkCall runner = new AutoOkCall(getContext());
-
-                        runner.execute(General.getSharedPreferences(getContext(),AppConstants.MY_LAT),General.getSharedPreferences(getContext(),AppConstants.MY_LNG),General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-
-                    try {
-                        RealmResults<Localities> results1 =
-                                myRealm.where(Localities.class).findAll();
-
-                        for (Localities c : results1) {
-
-                            Log.i("results1", "yoda getLocality5 " + c.getLocality());
-                            Log.i("results1", "yoda getLocality5 " + c.getLng());
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    Intent inten = new Intent(getContext(), ClientMainActivity.class);
-                    inten.addFlags(
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                                    Intent.FLAG_ACTIVITY_NEW_TASK);
-                    AppConstants.SETLOCATION = false;
-                    AppConstants.SETLOCATIONLTOP= false;
-                    startActivity(inten);
-                }
-                else if(AppConstants.SETLOCATIONTRAVELT){
-
-                    Realm myRealm = null;
-                    try {
-                        myRealm = General.realmconfig(getContext());
-
-
-                        Log.i("magic","getLocality8 ");
-
-
-                        myRealm.beginTransaction();
-                        Localities l = new Localities();
-
-
-                        RealmResults<Localities> result = myRealm.where(Localities.class).equalTo("type", HomeTravel).findAll();
-                        result.clear();
-
-
-                        l.setLocality(General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
-                        l.setGrowthRate("-6");
-                        l.setLlMin(llMin+"");
-                        l.setType(HomeTravel);
-                        l.setLlMax(llMax+"");
-                        l.setOrMin(orMin+"");
-                        l.setOrMax(orMax+"");
-                        l.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
-                        l.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
-                        l.setTimestamp(System.currentTimeMillis()+"");
-
-                        myRealm.copyToRealm(l);
-                        myRealm.commitTransaction();
-                        General.setBadgeCount(getContext(), AppConstants.PORTFOLIO_COUNT,General.getBadgeCount(getContext(),AppConstants.PORTFOLIO_COUNT) + 1);
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        AutoOkCall runner = new AutoOkCall(getContext());
-
-                        runner.execute(General.getSharedPreferences(getContext(),AppConstants.MY_LAT),General.getSharedPreferences(getContext(),AppConstants.MY_LNG),General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-
-                    try {
-                        RealmResults<Localities> results1 =
-                                myRealm.where(Localities.class).findAll();
-
-                        for (Localities c : results1) {
-
-                            Log.i("results1", "yoda getLocality5 " + c.getLocality());
-                            Log.i("results1", "yoda getLocality5 " + c.getLng());
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-
-
-                    if(!HomeTravel.equalsIgnoreCase("Office")) {
-    ((ClientMainActivity) getActivity()).disEnDealsbtn(false);
-    HomeTravel = "Office";
-    showHidepanel(false);
-    tvFetchingrates.setTextSize(15);
-    //map.clear();
-
-    txtFilterValue.setText("save");
-    txtFilterValue.setEnabled(true);
-    HomeTravel = "Office";
-
-}else{
-    Intent inten = new Intent(getContext(), ClientMainActivity.class);
-    inten.addFlags(
-            Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                    Intent.FLAG_ACTIVITY_NEW_TASK);
-    AppConstants.SETLOCATION = false;
-    AppConstants.SETLOCATIONTRAVELT = false;
-    startActivity(inten);
-}
-
-                }
 
 
 
@@ -2588,7 +2444,9 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
     public void getPrice() {
         //getRegion();
         if(General.isNetworkAvailable(getContext())) {
-           if (!AppConstants.SETLOCATION) {
+            Log.i("jumba1",  "4545 " );
+          if (!AppConstants.SETLOCATION) {
+              Log.i("jumba1",  "4545 1" );
             General.slowInternet(getContext());
 
             MarkerClickEnable = true;
@@ -2620,6 +2478,8 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                 user.setUserId(General.getSharedPreferences(getContext(), AppConstants.USER_ID));
                 Log.i("jumba1", "user_id " + General.getSharedPreferences(getContext(), AppConstants.USER_ID));
             }
+
+
                 tv_building.setVisibility(View.INVISIBLE);
                 horizontalPicker.setVisibility(View.GONE);
                 tvRate.setVisibility(View.GONE);
@@ -2627,6 +2487,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                 tvFetchingrates.setVisibility(View.VISIBLE);
                 tvFetchingrates.setText("Fetching Rates....");
                 tvFetchingrates.setTextSize(15);
+
                 RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_11).build();
                 restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
                 UserApiService userApiService = restAdapter.create(UserApiService.class);
@@ -2635,19 +2496,21 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                     public void success(JsonElement jsonElement, Response response) {
 
 // START   reset building selection(Click immediately old building after drag)
-                        txtFilterValue.setTextSize(13);
-                        txtFilterValue.setTextColor(Color.parseColor("white"));
-                        txtFilterValue.setText(oyetext);
-                        txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
-                        ((ClientMainActivity)getActivity()).CloseBuildingOyeComfirmation();
-                        Intent in = new Intent(AppConstants.MARKERSELECTED);
-                        in.putExtra("markerClicked", "false");
-                        buildingSelected = true;
-                        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
+
+                            txtFilterValue.setTextSize(13);
+                            txtFilterValue.setTextColor(Color.parseColor("white"));
+                            txtFilterValue.setText(oyetext);
+                            txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
+                            ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+                            Intent in = new Intent(AppConstants.MARKERSELECTED);
+                            in.putExtra("markerClicked", "false");
+                            buildingSelected = true;
+                            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
 
 //  END
 
-                        if (!AppConstants.SETLOCATION) {
+                       if (!AppConstants.SETLOCATION) {
+                           Log.i("jumba1",  "4545 3" );
                             try {
                                 General.slowInternetFlag = false;
                                 General.t.interrupt();
@@ -2668,7 +2531,6 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                 }
 
 
-                                Log.i("Chaman", "ho ghe " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY) + " " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LNG) + " " + SharedPrefs.getString(getActivity(), SharedPrefs.MY_LAT) + " " + jsonResponse+"   : "+msg);
 
                                 if (errors.equals("8")) {
                                     Log.i(TAG, "error code is 2 ");
@@ -2694,6 +2556,8 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                     Log.i("TRACE", "Response getprice buildings pricer ");
                                     Log.i("TRACE", "Response getprice buildings price " + price);
 
+                                    growth_rate =  price.getString("rate_growth");
+
                                     Log.i("TRACE", "Response getprice buildings yo" + price.getString("ll_min"));
                                     if (!price.getString("ll_min").equalsIgnoreCase("")) {
                                         if (!price.getString("ll_min").equalsIgnoreCase("0")) {
@@ -2713,20 +2577,25 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                             Log.i("TRACE", "RESPONSEDATArr" + orMax);
                                             orMin = 500 * (Math.round(orMin / 500));
                                             orMax = 500 * (Math.round(orMax / 500));
+
                                             Log.i("TRACE", "RESPONSEDATAr" + orMin);
                                             Log.i("TRACE", "RESPONSEDATAr" + orMax);
-                                            BroadCastMinMaxValue(llMin, llMax, orMin, orMax);
-                                            updateHorizontalPicker();
-                                            marquee(500, 100);
-                                            map.clear();
-                                            buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
-                                            recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
-                                            mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
-                                            txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
-                                            search_building_icon.setVisibility(View.GONE);
-                                            buildingIcon.setVisibility(View.GONE);
-                                            fav.setVisibility(View.VISIBLE);
-                                            StartOyeButtonAnimation();
+
+
+
+                                                BroadCastMinMaxValue(llMin, llMax, orMin, orMax);
+                                                updateHorizontalPicker();
+                                                marquee(500, 100);
+                                                map.clear();
+                                                buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
+                                                recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
+                                                mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
+                                                txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
+                                                search_building_icon.setVisibility(View.GONE);
+                                                buildingIcon.setVisibility(View.GONE);
+                                                fav.setVisibility(View.VISIBLE);
+
+
 
 //                                            try {
                                                 JSONArray buildings = new JSONArray(jsonResponseData.getString("buildings"));
@@ -2758,12 +2627,12 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                                     portal[i] = j.getString("portals");
                                                     Log.i("Buildingdata", "listing transaction portal" + listing[i] + " " + transaction[i] + " " + portal[i]);
                                                     String customSnippet = rate_growth[i];
-                                                    CacheBuildings(name[i],lat+"",longi+"",j.getString("locality"),ll_pm[i],or_psf[i],id[i],config[i],listing[i],portal[i],rate_growth[i],transaction[i] );
+                                                    CacheBuildings(name[i], lat + "", longi + "", j.getString("locality"), ll_pm[i], or_psf[i], id[i], config[i], listing[i], portal[i], rate_growth[i], transaction[i]);
 
 
-                                                   // mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc[i]).title(name[i]).snippet(customSnippet).icon(icon1).flat(true));
+                                                    // mCustomerMarker[i] = map.addMarker(new MarkerOptions().position(loc[i]).title(name[i]).snippet(customSnippet).icon(icon1).flat(true));
                                                     Log.i("TRACE", "mCustomerMarker after :" + mCustomerMarker[i]);
-                                                   // flag[i] = false;
+                                                    // flag[i] = false;
 //                                                dropPinEffect(mCustomerMarker[i]);
 //                                                private void CacheBuildings(String name,String lat,String longi,String locality,int ll_pm,int or_psf,String id,String conf,String listing,String portal,String rate_growth,String transaction){
 
@@ -2782,27 +2651,45 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                                 Log.i("Price Error", "Caught in exception Building plot success" + e.getMessage());
                                             }*/
 
-                                            showFavourites();
-                                           // drawLocalities();
-                                           // drawCircle();
-                                            mHelperView.setEnabled(true);
-                                            map.getUiSettings().setAllGesturesEnabled(true);
-                                            disablepanel(true);
-                                            horizontalPicker.setVisibility(View.VISIBLE);
-                                            tv_building.setVisibility(View.VISIBLE);
-                                            tvRate.setVisibility(View.VISIBLE);
-                                            rupeesymbol.setVisibility(View.VISIBLE);
-                                            tvFetchingrates.setVisibility(View.GONE);
-                                            mVisits.setEnabled(true);
-                                            txtFilterValue.setEnabled(true);
+                                                showFavourites();
+                                                // drawLocalities();
+                                                // drawCircle();
+                                                mHelperView.setEnabled(true);
+                                                map.getUiSettings().setAllGesturesEnabled(true);
+                                                disablepanel(true);
+                                                horizontalPicker.setVisibility(View.VISIBLE);
+                                                tv_building.setVisibility(View.VISIBLE);
+                                                tvRate.setVisibility(View.VISIBLE);
+                                                rupeesymbol.setVisibility(View.VISIBLE);
+                                                tvFetchingrates.setVisibility(View.GONE);
+                                                mVisits.setEnabled(true);
+                                                txtFilterValue.setEnabled(true);
 
-                                            PlotBuilding();
-                                            //drawLocalities();
+                                                PlotBuilding();
+                                                //drawLocalities();
 
-                                            //missingArea.setVisibility(View.GONE);
+                                                //missingArea.setVisibility(View.GONE);
 
                                         } else {
                                             Log.i("tt", "I am here" + 3);
+
+
+
+
+                                                map.clear();
+                                                tv_building.setVisibility(View.INVISIBLE);
+                                                horizontalPicker.setVisibility(View.GONE);
+                                                tvRate.setVisibility(View.INVISIBLE);
+                                                rupeesymbol.setVisibility(View.INVISIBLE);
+                                                tvFetchingrates.setVisibility(View.VISIBLE);
+                                                tvFetchingrates.setText("Coming Soon...");
+                                                // missingArea.setVisibility(View.VISIBLE);
+                                                mVisits.setEnabled(false);
+                                                txtFilterValue.setEnabled(false);
+                                                CancelAnimation();
+                                              }
+                                    } else {
+
 
                                             map.clear();
                                             tv_building.setVisibility(View.INVISIBLE);
@@ -2811,25 +2698,12 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                             rupeesymbol.setVisibility(View.INVISIBLE);
                                             tvFetchingrates.setVisibility(View.VISIBLE);
                                             tvFetchingrates.setText("Coming Soon...");
-                                           // missingArea.setVisibility(View.VISIBLE);
+                                            // missingArea.setVisibility(View.VISIBLE);
                                             mVisits.setEnabled(false);
                                             txtFilterValue.setEnabled(false);
                                             CancelAnimation();
-                                        }
-                                    } else {
+                                            Log.i("GETPRICE", "Else mode ====== ");
 
-                                        map.clear();
-                                        tv_building.setVisibility(View.INVISIBLE);
-                                        horizontalPicker.setVisibility(View.GONE);
-                                        tvRate.setVisibility(View.INVISIBLE);
-                                        rupeesymbol.setVisibility(View.INVISIBLE);
-                                        tvFetchingrates.setVisibility(View.VISIBLE);
-                                        tvFetchingrates.setText("Coming Soon...");
-                                       // missingArea.setVisibility(View.VISIBLE);
-                                        mVisits.setEnabled(false);
-                                        txtFilterValue.setEnabled(false);
-                                        CancelAnimation();
-                                        Log.i("GETPRICE", "Else mode ====== ");
                                     }
 
                                 }
@@ -2843,7 +2717,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                             drawLocalities();
 
 
-                        }
+                       }
                     }
                     @Override
                     public void failure(RetrofitError error) {
@@ -2865,7 +2739,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                     }
                 });
 
-            }
+          }
         }
         else{
             General.internetConnectivityMsg(getContext());
@@ -3794,6 +3668,9 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                             getPrice();
 
                         }
+
+
+
                         addressBar.setText("Getting Address... ");
                         new LocationUpdater().execute();
                         if (txtFilterValue.getText().toString().equalsIgnoreCase("done")) {
@@ -3801,6 +3678,9 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                             txt_info.setText("Find Building on Map & Save");
                             map.clear();
                         }
+
+                        if(AppConstants.SETLOCATIONLTOP || AppConstants.SETLOCATIONTRAVELT)
+                            getPrice();
                         /*}
                               });*/
                     }
@@ -5701,31 +5581,35 @@ if(c.getType().equalsIgnoreCase("home")){
 
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
-            ArrayList<LatLng> points = null;
-            PolylineOptions polyLineOptions = null;
+            try {
+                ArrayList<LatLng> points = null;
+                PolylineOptions polyLineOptions = null;
 
-            // traversing through routes
-            for (int i = 0; i < routes.size(); i++) {
-                points = new ArrayList<LatLng>();
-                polyLineOptions = new PolylineOptions();
-                List<HashMap<String, String>> path = routes.get(i);
+                // traversing through routes
+                for (int i = 0; i < routes.size(); i++) {
+                    points = new ArrayList<LatLng>();
+                    polyLineOptions = new PolylineOptions();
+                    List<HashMap<String, String>> path = routes.get(i);
 
-                for (int j = 0; j < path.size(); j++) {
-                    HashMap<String, String> point = path.get(j);
+                    for (int j = 0; j < path.size(); j++) {
+                        HashMap<String, String> point = path.get(j);
 
-                    double lat = Double.parseDouble(point.get("lat"));
-                    double lng = Double.parseDouble(point.get("lng"));
-                    LatLng position = new LatLng(lat, lng);
+                        double lat = Double.parseDouble(point.get("lat"));
+                        double lng = Double.parseDouble(point.get("lng"));
+                        LatLng position = new LatLng(lat, lng);
 
-                    points.add(position);
+                        points.add(position);
+                    }
+
+                    polyLineOptions.addAll(points);
+                    polyLineOptions.width(6);
+                    polyLineOptions.color(Color.RED);
                 }
-
-                polyLineOptions.addAll(points);
-                polyLineOptions.width(6);
-                polyLineOptions.color(Color.RED);
+                Log.i(TAG, "route drawer 4");
+                map.addPolyline(polyLineOptions);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
-            Log.i(TAG, "route drawer 4");
-            map.addPolyline(polyLineOptions);
 
         }}
 
@@ -5740,5 +5624,306 @@ if(c.getType().equalsIgnoreCase("home")){
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bm);
     }
+
+
+    public void getLocalityPrice()
+    {
+
+        try {
+            if (General.isNetworkAvailable(getContext())) {
+
+                User user = new User();
+
+                user.setDeviceId(General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
+                Log.i("getprice", "gta vice getcontext " + General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
+                user.setGcmId(General.getSharedPreferences(getContext(), AppConstants.GCM_ID));
+                user.setUserRole("client");
+                user.setLongitude(General.getSharedPreferences(getContext(), AppConstants.MY_LNG));
+                user.setProperty_type("home");
+                user.setLatitude(General.getSharedPreferences(getContext(), AppConstants.MY_LAT));
+                Log.i("getprice", "gta vice My_lng" + "  " + General.getSharedPreferences(getContext(), AppConstants.MY_LNG));
+                if (General.getSharedPreferences(getContext(), AppConstants.LOCALITY) == "")
+                    user.setLocality("Mumbai");
+                else
+                    user.setLocality(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
+                Log.i("getprice", "gta vice My_lat" + "  " + General.getSharedPreferences(getContext(), AppConstants.MY_LAT));
+                user.setPlatform("android");
+
+                user.setPincode("400058");
+                if (General.getSharedPreferences(getContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+                    user.setUserId(General.getSharedPreferences(getContext(), AppConstants.TIME_STAMP_IN_MILLI));
+
+                } else {
+                    user.setUserId(General.getSharedPreferences(getContext(), AppConstants.USER_ID));
+                    Log.i("getprice", "gta vice user_id " + General.getSharedPreferences(getContext(), AppConstants.USER_ID));
+                }
+
+                RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_11).build();
+                restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
+                UserApiService userApiService = restAdapter.create(UserApiService.class);
+
+
+                userApiService.getPrice(user, new Callback<JsonElement>() {
+
+                    @Override
+                    public void success(JsonElement jsonElement, Response response) {
+
+                        try {
+                            General.slowInternetFlag = false;
+                            General.t.interrupt();
+                            String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+    //                        Log.e(TAG, "RETROFIT SUCCESS " + getPrice.getResponseData().getPrice().getLlMin().toString());
+                            JSONObject jsonResponse = new JSONObject(strResponse);
+                            String errors = jsonResponse.getString("errors");
+                            String msg = "";
+                            try {
+                                msg = jsonResponse.getJSONObject("responseData").getJSONObject("price").getString("message");
+                            } catch (Exception e) {
+
+                            }
+                            try {
+                                msg = jsonResponse.getJSONObject("responseData").getString("message");
+                            } catch (Exception e) {
+
+                            }
+
+
+
+                            if (errors.equals("8")) {
+                                Log.i("getprice", "gta vice  error code is 2 ");
+                                Log.i("getprice", "gta vice error code is 1 " + jsonResponse.toString());
+                                Log.i("getprice", "gta vice error code is " + errors);
+                                Log.i("getprice", "gta vice error code is 3 ");
+                                SnackbarManager.show(
+                                        Snackbar.with(getContext())
+                                                .text("You must update profile to proceed.")
+                                                .position(Snackbar.SnackbarPosition.TOP)
+                                                .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                Intent openProfileActivity = new Intent(getContext(), ProfileActivity.class);
+                                openProfileActivity.putExtra("msg", "compulsary");
+                                startActivity(openProfileActivity);
+                            } else if (msg.equalsIgnoreCase("We dont cater here yet") || msg.equalsIgnoreCase("missing Fields in get price")) {
+    //                            tvFetchingrates.setText("We only cater in Mumbai");
+                            } else {
+                                JSONObject jsonResponseData = new JSONObject(jsonResponse.getString("responseData"));
+                                // horizontalPicker.stopScrolling();
+                                Log.i("getprice", "gta vice Response getprice buildings jsonResponse" + jsonResponse);
+                                Log.i("getprice", "gta vice Response getprice buildings jsonResponseData" + jsonResponseData);
+                                JSONObject price = new JSONObject(jsonResponseData.getString("price"));
+                                Log.i("getprice", "gta vice Response getprice buildings pricer ");
+                                Log.i("getprice", "gta vice Response getprice buildings price " + price);
+                                JSONArray buildings = new JSONArray(jsonResponseData.getString("buildings"));
+                                Log.i("getprice", "gta vice Response getprice buildings" + buildings);
+                                JSONObject k = new JSONObject(buildings.get(1).toString());
+                                Log.i("getprice", "gta vice Response getprice buildings yo" + price.getString("ll_min"));
+                                if (!price.getString("ll_min").equalsIgnoreCase("")) {
+                                    if (!price.getString("ll_min").equalsIgnoreCase("0")) {
+                                        Log.i("tt", "gta vice I am here" + 2);
+                                        Log.i("getprice", "gta vice RESPONSEDATAr" + response);
+                                        llMin = Integer.parseInt(price.getString("ll_min"));
+                                        llMax = Integer.parseInt(price.getString("ll_max"));
+                                        Log.i("getprice", "gta vice llMin" + llMin);
+                                        Log.i("getprice", "gta vice llMax" + llMax);
+                                        llMin = 5 * (Math.round(llMin / 5));
+                                        llMax = 5 * (Math.round(llMax / 5));
+                                        Log.i("getprice", "gta vice llMin" + llMin);
+                                        Log.i("getprice", "gta vice llMax" + llMax);
+                                        growth_rate= price.getString("rate_growth");
+                                        Log.i("getprice", "gta vice RESPONSEDATAr" + growth_rate);
+
+                                       /* j.put("llMin",llMin);
+                                        j.put("llMax",llMax);
+
+                                        j.put("gr",gr);
+                                        Log.i("getprice", "gta vice j" + j);*/
+
+
+
+                                        if(AppConstants.SETLOCATIONLTOP){
+
+                                            Realm myRealm = null;
+                                            try {
+
+                                                myRealm = General.realmconfig(getContext());
+
+
+                                                Log.i("magic","getLocality8 ");
+
+
+
+                                                myRealm.beginTransaction();
+                                                Localities l = new Localities();
+                                                l.setLocality(General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+                                                l.setGrowthRate(growth_rate);
+                                                l.setLlMin(llMin+"");
+                                                l.setType("fixed locality based search");
+                                                l.setLlMax(llMax+"");
+                                                l.setOrMin(orMin+"");
+                                                l.setOrMax(orMax+"");
+                                                l.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
+                                                l.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
+                                                l.setTimestamp(System.currentTimeMillis()+"");
+
+                                                myRealm.copyToRealm(l);
+                                                myRealm.commitTransaction();
+                                                General.setBadgeCount(getContext(), AppConstants.PORTFOLIO_COUNT,General.getBadgeCount(getContext(),AppConstants.PORTFOLIO_COUNT) + 1);
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            try {
+                                                AutoOkCall runner = new AutoOkCall(getContext());
+
+                                                runner.execute(General.getSharedPreferences(getContext(),AppConstants.MY_LAT),General.getSharedPreferences(getContext(),AppConstants.MY_LNG),General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+
+                                            try {
+                                                RealmResults<Localities> results1 =
+                                                        myRealm.where(Localities.class).findAll();
+
+                                                for (Localities c : results1) {
+
+                                                    Log.i("results1", "yoda getLocality5 " + c.getLocality());
+                                                    Log.i("results1", "yoda getLocality5 " + c.getLng());
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                                            inten.addFlags(
+                                                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                                            Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            AppConstants.SETLOCATION = false;
+                                            AppConstants.SETLOCATIONLTOP= false;
+                                            startActivity(inten);
+                                        }
+                                        else if(AppConstants.SETLOCATIONTRAVELT){
+
+                                            Realm myRealm = null;
+                                            try {
+
+                            /*JSONObject j = General.getprice();
+                            if(j.has("llMin"))
+                                llMin = j.getInt("llMin");
+                            if(j.has("llMax"))
+                                llMax = j.getInt("llMax");
+                            if(j.has("gr"))
+                                growth_rate = j.getString("gr");*/
+
+                                                myRealm = General.realmconfig(getContext());
+
+
+
+
+
+                                                myRealm.beginTransaction();
+                                                Localities l = new Localities();
+
+
+                                                RealmResults<Localities> result = myRealm.where(Localities.class).equalTo("type", HomeTravel).findAll();
+                                                result.clear();
+
+
+                                                l.setLocality(General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+                                                l.setGrowthRate(growth_rate);
+                                                l.setLlMin(llMin+"");
+                                                l.setType(HomeTravel);
+                                                l.setLlMax(llMax+"");
+                                                l.setOrMin(orMin+"");
+                                                l.setOrMax(orMax+"");
+                                                l.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
+                                                l.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
+                                                l.setTimestamp(System.currentTimeMillis()+"");
+
+                                                myRealm.copyToRealm(l);
+                                                myRealm.commitTransaction();
+                                                General.setBadgeCount(getContext(), AppConstants.PORTFOLIO_COUNT,General.getBadgeCount(getContext(),AppConstants.PORTFOLIO_COUNT) + 1);
+
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            try {
+                                                AutoOkCall runner = new AutoOkCall(getContext());
+
+                                                runner.execute(General.getSharedPreferences(getContext(),AppConstants.MY_LAT),General.getSharedPreferences(getContext(),AppConstants.MY_LNG),General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+
+                                            try {
+                                                RealmResults<Localities> results1 =
+                                                        myRealm.where(Localities.class).findAll();
+
+                                                for (Localities c : results1) {
+
+                                                    Log.i("results1", "yoda getLocality5 " + c.getLocality());
+                                                    Log.i("results1", "yoda getLocality5 " + c.getLng());
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+
+
+                                            if(!HomeTravel.equalsIgnoreCase("Office")) {
+                                                ((ClientMainActivity) getActivity()).disEnDealsbtn(false);
+                                                HomeTravel = "Office";
+                                                showHidepanel(false);
+                                                tvFetchingrates.setTextSize(15);
+                                                //map.clear();
+
+                                                txtFilterValue.setText("save");
+                                                txtFilterValue.setEnabled(true);
+                                                HomeTravel = "Office";
+
+                                            }else{
+                                                Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                                                inten.addFlags(
+                                                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                AppConstants.SETLOCATION = false;
+                                                AppConstants.SETLOCATIONTRAVELT = false;
+                                                startActivity(inten);
+                                            }
+
+                                        }
+
+
+
+
+
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.i(TAG,"gta vice Caught in exception general getprice "+e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                    }
+                });
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     }

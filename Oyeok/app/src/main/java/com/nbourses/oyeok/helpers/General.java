@@ -45,8 +45,11 @@ import com.nbourses.oyeok.Database.SharedPrefs;
 import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.UpdateStatus;
+import com.nbourses.oyeok.RPOT.ApiSupport.models.User;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
+import com.nbourses.oyeok.RPOT.ApiSupport.services.UserApiService;
 import com.nbourses.oyeok.activities.ClientDealsListActivity;
+import com.nbourses.oyeok.activities.ProfileActivity;
 import com.nbourses.oyeok.fragments.GPSTracker;
 import com.nbourses.oyeok.models.PublishLetsOye;
 import com.nbourses.oyeok.realmModels.DefaultDeals;
@@ -59,6 +62,7 @@ import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
 import com.sdsmdg.tastytoast.TastyToast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -99,6 +103,7 @@ import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedByteArray;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.nbourses.oyeok.R.id.area;
 import static java.lang.Math.log10;
 
 /**
@@ -119,8 +124,9 @@ public class General extends BroadcastReceiver {
     private static Bitmap mIcon12 = null; // null image for test condition in download image
     private static ImageView img;
     private static String OKID = null ;
-
-
+    private static int llMin, llMax;
+    private static String gr;
+    private static JSONObject j = new JSONObject();
 
     public static void showPermissionDialog(Context context,Activity activity) {
         GPSTracker gps = new GPSTracker(context);
@@ -1566,10 +1572,16 @@ public static void pushMessage(Context c,String channel, Map message){
             str="-";
             diff=MarketRate-selectedRate;
         }
-        Percentage=(diff*100)/MarketRate;
+
+      Percentage=Math.abs((diff*100)/MarketRate);
         Log.i("percent","selectedRate : "+selectedRate+"MarketRate : "+MarketRate+"Percentage : "+Percentage+"str : "+str);
         return str+Percentage+"";
     }
+
+
+
+
+
 
 
 

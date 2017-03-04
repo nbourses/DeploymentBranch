@@ -183,12 +183,15 @@ public class searchFragment extends Fragment implements GoogleApiClient.Connecti
                                 General.setSharedPreferences(getContext(), AppConstants.MY_BASE_LNG,AppConstants.MY_LONGITUDE+"");
                                 General.setSharedPreferences(getContext(), AppConstants.MY_LAT,AppConstants.MY_LATITUDE+"");
                                 General.setSharedPreferences(getContext(), AppConstants.MY_LNG,AppConstants.MY_LONGITUDE+"");
-                                getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.container_Signup)).commit();
                                 if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+
+                                    getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.container_sign)).commit();
                                     Intent intent = new Intent(AppConstants.RESETMAP);
                                     intent.putExtra("b_resetmap", "b_map");
                                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                                 }else{
+                                    getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.container_Signup)).commit();
+
                                     Intent intent = new Intent(AppConstants.RESETMAP);
                                     intent.putExtra("c_resetmap", "c_map");
                                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
