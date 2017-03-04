@@ -2194,7 +2194,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             if(AppConstants.SETLOCATIONLTOP) {
                 map.addMarker(new MarkerOptions().icon(iconOther).position(new LatLng(lat, lng)));
                 ((ClientMainActivity) getActivity()).getSupportActionBar().setTitle("Confirm Location");
-                locality.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
+                //locality.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
 
                 tvFetchingrates.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
                 tvFetchingrates.setTextSize(20);
@@ -2206,7 +2206,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                 map.addMarker(new MarkerOptions().icon(iconOffice).position(new LatLng(lat, lng)));
                 ((ClientMainActivity) getActivity()).getSupportActionBar().setTitle("Confirm Location");
 
-                locality.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
+               // locality.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
 
                 tvFetchingrates.setText("My "+HomeTravel);
                 tvFetchingrates.setTextSize(20);
@@ -2216,6 +2216,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             addlistingText.setVisibility(View.VISIBLE);
             addBText.setText("To confirm your building Location click on Done");*/
 
+            locality.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
 
             addBText.setText("You Selected: ");
 
@@ -2249,7 +2250,10 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             {
 
 
+                if(AppConstants.SETLOCATIONLTOP||AppConstants.SETLOCATIONTRAVELT)
                 getLocalityPrice();
+                else
+                    Addbuilding();
 
 
 
@@ -3633,6 +3637,18 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                 tvRate.setText("save");
                                 ((ClientMainActivity)getActivity()).getSupportActionBar().setTitle("Adding Present "+HomeTravel);
 
+                            }else{
+//                                phaseGameTitle.setVisibility(View.GONE);
+//                                portfolioCount.setVisibility(View.GONE);
+                                txtFilterValue.setText("SAVE");
+                                addlistingText.setVisibility(View.VISIBLE);
+                                addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
+                                addBText.setTextSize(13);
+                                map.clear();
+                                txt_info.setText("Find Building on Map & Save");
+                               /* String txt;
+                                txt="<font color=#2dc4b6><big>Drag & Save Building Location</big></font>";
+                                tvFetchingrates.setText(Html.fromHtml(txt));*/
                             }
 
                         }
@@ -3673,11 +3689,11 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
 
                         addressBar.setText("Getting Address... ");
                         new LocationUpdater().execute();
-                        if (txtFilterValue.getText().toString().equalsIgnoreCase("done")) {
+                        /*if (txtFilterValue.getText().toString().equalsIgnoreCase("done")) {
                             txtFilterValue.setText("SAVE");
                             txt_info.setText("Find Building on Map & Save");
                             map.clear();
-                        }
+                        }*/
 
                         if(AppConstants.SETLOCATIONLTOP || AppConstants.SETLOCATIONTRAVELT)
                             getPrice();
@@ -4760,15 +4776,17 @@ public int price(String conf,int rate){
         AppConstants.SETLOCATION = true;
         map.clear();
         fr.setVisibility(View.GONE);
+        phaseGameTitle.setVisibility(View.GONE);
         portfolioCount.setVisibility(View.GONE);
         addlistingText.setVisibility(View.VISIBLE);
         addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
+        addBText.setTextSize(13);
         new LocationUpdater().execute();
         horizontalPicker.setVisibility(View.GONE);
         rupeesymbol.setVisibility(View.GONE);
         tvRate.setVisibility(View.GONE);
         txtFilterValue.setText("SAVE");
-        txt_info.setText("Find Building on Map & Save");
+
         tv_building.setText(fullAddress);
         tvFetchingrates.setVisibility(View.VISIBLE);
         txt_info.setVisibility(View.VISIBLE);
@@ -4776,7 +4794,7 @@ public int price(String conf,int rate){
         addbuilding.setVisibility(View.GONE);
         mPhasedSeekBar.setVisibility(View.GONE);
         dispProperty.setVisibility(View.GONE);
-
+        txt_info.setText("Find Building on Map & Save");
         String txt;
         txt="<font color=#2dc4b6><big>Drag & Save Building Location</big></font>";
         tvFetchingrates.setText(Html.fromHtml(txt));
@@ -4790,7 +4808,7 @@ public int price(String conf,int rate){
       horizontalPicker.setVisibility(View.VISIBLE);
       rupeesymbol.setVisibility(View.VISIBLE);
       tvRate.setVisibility(View.VISIBLE);
-
+        phaseGameTitle.setVisibility(View.VISIBLE);
         fr.setVisibility(View.VISIBLE);
         if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")){
             CallButton.setVisibility(View.VISIBLE);
