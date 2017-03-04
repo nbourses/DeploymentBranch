@@ -1,7 +1,10 @@
 package com.nbourses.oyeok.adapters;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.fragments.WatchlistDisplayBuilding;
+import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.models.WatchlistDisplayBuildingModel;
 import com.nbourses.oyeok.models.loadBuildingDataModel;
@@ -33,19 +38,29 @@ public class watchlistDisplayAdapter extends BaseAdapter {
     ArrayList<WatchlistDisplayBuildingModel> watchList=new ArrayList<>();
     Context context;
     Holder holder;
+    WatchlistDisplayBuilding frag;
     //ArrayList<Boolean> check_visible=new ArrayList<>();
     Boolean check_visible=false;
     //public final CheckBox checkBox;
     private LayoutInflater inflater;
-    public watchlistDisplayAdapter(Context context, ArrayList<WatchlistDisplayBuildingModel> watchList) {
+    public watchlistDisplayAdapter(Context context, ArrayList<WatchlistDisplayBuildingModel> watchList, WatchlistDisplayBuilding frag) {
         this.watchList=watchList;
         this.context=context;
+        this.frag=frag;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         /*for(int i=0;i<watchList.size();i++){
             check_visible.add(i,false);
         }*/
 
     }
+
+
+
+
+
+
+
+
 
 
     @Override
@@ -81,7 +96,7 @@ public class watchlistDisplayAdapter extends BaseAdapter {
     }*/
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View v = null;
 
         listing=watchList.get(position);
@@ -128,10 +143,23 @@ public class watchlistDisplayAdapter extends BaseAdapter {
             holder.checkBox.setChecked(false);
         }
 
-
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("status check","=============== "+position);
+                frag.checkboxStatus(position);
+            }
+        });
 
         return v;
     }
+
+
+
+
+
+
+
 
 
     public void setIcon(WatchlistDisplayBuildingModel item, watchlistDisplayAdapter.Holder holder) {
@@ -167,6 +195,8 @@ public class watchlistDisplayAdapter extends BaseAdapter {
     public ArrayList<WatchlistDisplayBuildingModel> getAllData(){
         return watchList;
     }
+
+
     public void setCheckBox(int position){
         //Update status of checkbox
         WatchlistDisplayBuildingModel items = watchList.get(position);

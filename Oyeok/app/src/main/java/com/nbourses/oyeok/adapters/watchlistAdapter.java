@@ -79,7 +79,14 @@ public class watchlistAdapter extends BaseAdapter {
         viewHolder.txtlocality.setText(items.getLocality());
         viewHolder.info.setBackground(activity.getResources().getDrawable(R.drawable.asset_add_listing));
 
-
+        viewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("status check","=============== "+pos);
+                //frag.checkboxStatus(position);
+                setCheckBox(pos);
+            }
+        });
 
         if(items.isCheckbox()){
             viewHolder.checkBox.setChecked(true);

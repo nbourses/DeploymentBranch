@@ -117,6 +117,14 @@ public class ListingTitleAdapter extends BaseAdapter {
         else {
             holder.checkBox.setChecked(false);
         }
+
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setCheckBox(position);
+            }
+        });
+
         // Log.i("namerate","grothrate "+listing.getGrowth_rate()+" name"+listing.getName()+"listing.getLl_pm() "+listing.getLl_pm()+" listing.getor_psf() "+listing.getOr_psf()+" "+listing.getLocality());
 
         return v;

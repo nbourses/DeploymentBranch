@@ -123,7 +123,12 @@ public class CatalogDisplayAdapter extends BaseAdapter {
             holder.checkBox.setChecked(false);
         }
         // Log.i("namerate","grothrate "+listing.getRate_growth()+" name"+listing.getName()+"listing.getLl_pm() "+listing.getLl_pm()+" listing.getor_psf() "+listing.getOr_psf()+" "+listing.getLocality());
-
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setCheckBox(position);
+            }
+        });
         return v;
     }
 

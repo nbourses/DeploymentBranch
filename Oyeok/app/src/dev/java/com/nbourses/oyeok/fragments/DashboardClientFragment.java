@@ -4672,7 +4672,7 @@ favOText.getText()*/
         myPortfolioModel.setId( buildingCacheModels.get(INDEX).getId() );
         myPortfolioModel.setLl_pm(buildingCacheModels.get(INDEX).getLl_pm());
         myPortfolioModel.setOr_psf( buildingCacheModels.get(INDEX).getOr_psf() );
-
+        myPortfolioModel.setPtype( buildingCacheModels.get(INDEX).getPtype() );
 
         if(brokerType=="rent") {
 
@@ -4755,7 +4755,7 @@ public int price(String conf,int rate){
 }
 
     public void saveBuiding(String b_name){
-
+         Log.i("saveBuiding","inside saveBuiding ==== ");
         B_name=b_name;
         AppConstants.SETLOCATION = true;
         map.clear();
@@ -4814,10 +4814,11 @@ public int price(String conf,int rate){
     private void AddBuildingDataToRealm(String id){
 
        String ptype;
-        if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
-        ptype = "home";
-        else
+//        if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
+//        ptype = "home";
+//        else
         ptype = AppConstants.PROPERTY;
+        Log.i("ptypecheck","================ : "+AppConstants.PROPERTY);
         Realm myRealm = General.realmconfig( getContext());
         addBuildingRealm add_Building = new addBuildingRealm();
         add_Building.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
@@ -4956,7 +4957,7 @@ public void resetSeekBar(){
         try {
             Realm myRealm = General.realmconfig( getContext());
 
-            RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp");
+            RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false);
             RealmResults<MyPortfolioModel> result= realm.where(MyPortfolioModel.class).findAll();
             int size=100+result.size();
             // RealmResults<BuildingCacheRealm> result1= myRealm.where(BuildingCacheRealm.class).findAllSorted("timestamp",false);
@@ -4969,12 +4970,13 @@ public void resetSeekBar(){
                 result1.remove(size);
                 realm.commitTransaction();
 
-                Log.i("magie"," entered 123456 "+result1.size()+" =============== : "+AppConstants.PROPERTY);
+                //Log.i("magie"," entered 123456 "+result1.size()+" =============== : "+AppConstants.PROPERTY);
                 String ptype;
                 /*if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
                     ptype = "home";
                 else*/
                     ptype = AppConstants.PROPERTY;
+                Log.i("ptypecheck","================ : "+AppConstants.PROPERTY+" +++ "+ptype);
 
                 BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
                 buildingCacheRealm.setTimestamp(SystemClock.currentThreadTimeMillis());
@@ -4999,14 +5001,15 @@ public void resetSeekBar(){
                 myRealm.commitTransaction();
 
             }else{
-                Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size());
+               // Log.i("dataformrealm1","BuildingCacheRealm entered 123456 "+result1.size());
+
 
                 String ptype;
                 /*if(AppConstants.PROPERTY.equalsIgnoreCase("shop"))
                     ptype = "home";
                 else*/
                     ptype = AppConstants.PROPERTY;
-
+                Log.i("ptypecheck","================ : "+AppConstants.PROPERTY+" +++ "+ptype);
                 BuildingCacheRealm buildingCacheRealm = new BuildingCacheRealm();
                 buildingCacheRealm.setTimestamp(SystemClock.currentThreadTimeMillis());
                 buildingCacheRealm.setName(name);
@@ -5072,7 +5075,7 @@ public void resetSeekBar(){
       }
       for(BuildingCacheRealm c :result1){
 
-          Log.i(TAG,"property type marker "+c.getPtype());
+          Log.i(TAG,"ptypecheck "+c.getPtype());
 
 
 
@@ -5117,7 +5120,7 @@ public void resetSeekBar(){
                   .title(c.getName())
                   .snippet(c.getId())
                   .icon(officeM)));*/
-          buildingCacheModels.add(new buildingCacheModel(c.getId(),c.getName(),c.getConfig(),c.getOr_psf(),c.getLl_pm(),c.getLat(),c.getLng(),c.getRate_growth(),c.getListing(),c.getPortals(),c.getTimestamp(),c.getTransactions(),c.getLocality(),false));
+          buildingCacheModels.add(new buildingCacheModel(c.getId(),c.getName(),c.getConfig(),c.getOr_psf(),c.getLl_pm(),c.getLat(),c.getLng(),c.getRate_growth(),c.getListing(),c.getPortals(),c.getTimestamp(),c.getTransactions(),c.getLocality(),false,c.getPtype()));
          // public buildingCacheModel(String id, String name, String config, int or_psf, int ll_pm, String lat, String lng, String rate_growth, String listing, String portals, String timestamp, String transactions, String locality) {
 
              // Log.i("dataformrealm","BuildingCacheRealm11m :  "+c.getName());
@@ -5161,6 +5164,7 @@ public void resetSeekBar(){
             buildingCacheRealm.setPortals(c.getPortals());
             buildingCacheRealm.setRate_growth(c.getRate_growth());
             buildingCacheRealm.setTransactions(c.getTransactions());
+            buildingCacheRealm.setPtype(c.getPtype());
             if (myRealm.isInTransaction())
                 myRealm.cancelTransaction();
             myRealm.beginTransaction();

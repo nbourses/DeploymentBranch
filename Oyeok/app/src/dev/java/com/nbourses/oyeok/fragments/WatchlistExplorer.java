@@ -86,6 +86,14 @@ public class WatchlistExplorer extends Fragment   {
     ArrayList<String> ids=new ArrayList<>();
     private static RealmList<loadBuildingdataModelRealm> addids=new RealmList<>();
    // private static RealmList<loadBuildingdataModelRealm> realmList = new RealmList<>();
+
+
+    String user_id,user_name,user_role;
+
+
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +128,15 @@ public class WatchlistExplorer extends Fragment   {
             selectedlist.clear();
         if (building_names != null)
             building_names.clear();
+
+
+
+        user_id=General.getSharedPreferences(getContext(),AppConstants.USER_ID);
+        user_name=General.getSharedPreferences(getContext(),AppConstants.NAME);
+        user_role=General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER);
+
+
+
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,34 +152,24 @@ public class WatchlistExplorer extends Fragment   {
                         for (loadBuildingDataModel hold : adapter.getAllData()) {
                             if (hold.isCheckbox()) {
 
-                                /*loadBuildingDataModel loadBuildingDataModel1 = new loadBuildingDataModel(hold.getName(), hold.getLat(), hold.getLng(), hold.getId(), hold.getLocality(), hold.getCity(), hold.getLl_pm(), hold.getOr_psf());
-                                selectedlist.add(loadBuildingDataModel1);*/
+
                                 ids.add(hold.getId());
                                 loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(hold.getId());
                                 addids.add(loadBuildingdataModelRealm1);
-                                //addids.add(hold.getId());
                                 Log.i("selected1", "selected building 1: " + hold.getName() + "  selectedlist.size() : " + +ids.size());
                                 count++;
                             }
 
                         }
                         if(count>0) {
-                            //Log.i("selected1","selected building 13: "+selectedlist.size());
                             WatchListRealmModel result = myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id", watchlist_id).findFirst();
 
                             watchlist_name=result.getWatchlist_name();
                             mImageUri=result.getImageuri();
-                            /*for(int i=0;i<result.getBuildingids().size();i++) {
-                                   // ids.add(result.getBuildingids().get(i).getId());
-                                loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(result.getDisplayBuildinglist().get(i).getId());
-                                //addids.add(loadBuildingdataModelRealm1);
-                                   // addids.add(result.getDisplayBuildinglist().get(i).getId());
-                                Log.i("selected1","selected building 13: "+result.getDisplayBuildinglist().get(i).getId()+"  "+ids.size()+":: "+addids.size());
+                            addids.addAll(result.getBuildingids());
 
-                            }*/
                             Log.i("selected1","selected building 83:");
                             CreateWatchlist();
-                           // ((MyPortfolioActivity) getActivity()).OpenFrag(selectedlist);
                         }else{
                             Log.i("selected1","selected building 14: "+selectedlist.size());
 
@@ -191,13 +198,14 @@ public class WatchlistExplorer extends Fragment   {
 
                                     }
                                 })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
                         /*.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // do nothing
                             }
                         })*/
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show();
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -608,7 +616,7 @@ public class WatchlistExplorer extends Fragment   {
     private void CreateWatchlist(){
         Log.i("magic11","addBuildingRealm success response CreateWatchlist  :::::::::::: ");
         CreateWatchlistAPI createWatchlistAPI=new CreateWatchlistAPI();
-        createWatchlistAPI.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+        createWatchlistAPI.setUser_id(user_id);
         createWatchlistAPI.setAction("create");
         createWatchlistAPI.setCity("mumbai");
         createWatchlistAPI.setTt("ll");
@@ -657,9 +665,9 @@ public class WatchlistExplorer extends Fragment   {
         watchListRealmModel.setImageuri(mImageUri+"");
         watchListRealmModel.setCity("mumbai");
         watchListRealmModel.setTt(AppConstants.TT_TYPE);
-        watchListRealmModel.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
-        watchListRealmModel.setUser_name(General.getSharedPreferences(getContext(),AppConstants.NAME));
-        watchListRealmModel.setUser_role(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
+        watchListRealmModel.setUser_id(user_id);
+        watchListRealmModel.setUser_name(user_name);
+        watchListRealmModel.setUser_role(user_role);
         watchListRealmModel.setBuildingids(addids);
         myRealm.beginTransaction();
         myRealm.copyToRealmOrUpdate(watchListRealmModel);

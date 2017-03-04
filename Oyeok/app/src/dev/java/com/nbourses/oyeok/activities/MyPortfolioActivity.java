@@ -228,10 +228,10 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             addbuildingOR.clear();
         if (portListingCopy != null)
             portListingCopy.clear();
-        if (addbuildingLL != null)
+       /* if (addbuildingLL != null)
             addbuildingLL.clear();
         if (addbuildingOR != null)
-            addbuildingOR.clear();
+            addbuildingOR.clear();*/
         if(myLocalitiesLL != null)
             myLocalitiesLL.clear();
 
@@ -249,7 +249,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         btnMyDeals.setVisibility(View.GONE);
         btnMyDeals1.setVisibility(View.VISIBLE);
         btnMyDeals1.setBackground(getResources().getDrawable(R.drawable.snapshot));
-
+        AppConstants.TT_TYPE="ll";
         //btnMyDeals.setText("Share");
         //Phased seekbar initialisation
         mPhasedSeekBar = (CustomPhasedSeekBar) findViewById(R.id.phasedSeekBar);
@@ -274,7 +274,10 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
         }
 
+        General.setBadgeCount(this, AppConstants.ADDB_COUNT_LL, 0);
+        General.setBadgeCount(this, AppConstants.PORTFOLIO_COUNT, 0);
 
+        rentalCount.setVisibility(View.GONE);
 
         if (!General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
             Loadwatchlist();
@@ -445,7 +448,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
         }
 
-        /*RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).equalTo("tt", "ll").findAllSorted("timestamp",false);
+        RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).equalTo("tt", "ll").or().equalTo("type","ADD").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result1){
 
             Log.i("getLocality","getLocality   : "+c.getLocality());
@@ -454,7 +457,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             addbuildingLL.add(portListingModel);
 
 
-        }*/
+        }
 
 
 //    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config) {
@@ -465,7 +468,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             addbuildingOR.add(portListingModel);
 
         }
-        /*RealmResults<addBuildingRealm> result2= realm.where(addBuildingRealm.class).equalTo("tt", "or").findAllSorted("timestamp",false);
+        RealmResults<addBuildingRealm> result2= realm.where(addBuildingRealm.class).equalTo("tt", "or").or().equalTo("type","ADD").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result2){
 
 
@@ -474,7 +477,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             addbuildingOR.add(portListingModel);
 
 
-        }*/
+        }
 
         Log.i("dataritesh", "myPortfolioLL" + myPortfolioLL);//watchlist
 
@@ -1511,6 +1514,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         }
 
         recreate();
+        adapter.notifyDataSetChanged();
 
         /*WatchlistExplorer watchlistExplorer=new WatchlistExplorer();
         loadFragmentAnimated(watchlistExplorer,null,R.id.container_sign,"");*/

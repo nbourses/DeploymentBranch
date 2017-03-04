@@ -442,7 +442,7 @@ public class ListingTitle extends Fragment {
 
 //////      jsonMsg.put("message", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);   ///////
 
-
+/*
     private void displayImgMessage(String bucketName, String imgName){
 
         Log.i("image1", "calipso inside displayimage msg"+bucketName +" "+imgName );
@@ -481,8 +481,8 @@ public class ListingTitle extends Fragment {
             Log.i("yoyoyo","urlo "+jsonMsg);
             Log.i("image1", "calipso inside calling displayMsg "+jsonMsg );
 
-            /*displayMessage(jsonMsg);
-            sendNotification(jsonMsg);*/
+            *//*displayMessage(jsonMsg);
+            sendNotification(jsonMsg);*//*
 //            pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
 
 
@@ -490,7 +490,7 @@ public class ListingTitle extends Fragment {
         catch(Exception e){}
 
 
-    }
+    }*/
 
 
     public void transferObserverListener(TransferObserver transferObserver){
