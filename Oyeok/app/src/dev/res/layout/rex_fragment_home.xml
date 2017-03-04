@@ -886,7 +886,8 @@
                 android:orientation="horizontal"
                 android:background="@drawable/border_bg_greenish_blue"
                 android:id="@+id/addlistingText"
-                android:visibility="gone">
+                android:visibility="gone"
+               >
                 <Button
                     android:layout_width="45dp"
                     android:layout_height="45dp"
