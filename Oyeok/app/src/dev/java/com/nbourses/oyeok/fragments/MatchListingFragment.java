@@ -99,6 +99,7 @@ public class MatchListingFragment extends Fragment {
     ImageView root_growth_image;
 
     @Bind(R.id.root_locality)
+
     TextView root_locality;
 
     @Bind(R.id.root_price)
@@ -570,7 +571,12 @@ mrview.setOnClickListener(new View.OnClickListener() {
                             Intent openDealsListing = new Intent(getContext(), ClientDealsListActivity.class);
                             openDealsListing.putExtra("oyeok "+AppConstants.OK_ID, j.getString("ok_id"));
                             displayDefaultMessageB(getContext(),j.getString("ok_id"));
-
+                            General.setBadgeCount(getContext(), AppConstants.RENTAL_COUNT, 0);
+                            General.setBadgeCount(getContext(), AppConstants.RESALE_COUNT, 0);
+                            General.setBadgeCount(getContext(), AppConstants.TENANTS_COUNT, 0);
+                            General.setBadgeCount(getContext(), AppConstants.OWNERS_COUNT, 0);
+                            General.setBadgeCount(getContext(), AppConstants.BUYER_COUNT, 0);
+                            General.setBadgeCount(getContext(), AppConstants.SELLER_COUNT, 0);
                             openDealsListing.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(openDealsListing);
                             AppConstants.MATCHINGOKFLAG = false;

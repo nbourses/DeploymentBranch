@@ -198,9 +198,21 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_gravity="center"
+        android:id="@+id/preokWrapper"
         android:layout_height="wrap_content">
 
-
+        <TextView
+            android:id="@+id/texName"
+            android:visibility="gone"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:text=""
+            android:textColor="@color/greenish_blue"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/texPtype"
@@ -212,7 +224,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
             android:text="Please select a Lead and press OK."
-            android:textColor="@color/greenish_blue"
+            android:textColor="@color/Black"
             android:textStyle="bold" />
 
         <TextView

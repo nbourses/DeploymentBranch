@@ -425,11 +425,11 @@ if(matchCount == 0){
 //canvas.drawText();
             Log.i("TRACE","dplk 14" );
             if(i != index) {
-                canvas.drawText(s, house_image_left, house_image_top - height, mCircleTextColor);
+                canvas.drawText(s, house_image_left+dipToPixels(getContext(),5), house_image_top - height - dipToPixels(getContext(),3), mCircleTextColor);
                 //    canvas.drawText(s, house_image_left+width / 2, house_image_top, mCircleTextColor);
                 //////     canvas.drawText(l, house_image_left, house_image_top, mCircleTextColor);
 
-                canvas.drawText(l, house_image_left, house_image_bottom, mCircleTextColor);
+                canvas.drawText(l, house_image_left-dipToPixels(getContext(),10), house_image_bottom- dipToPixels(getContext(),5), mCircleTextColor);
             }
 
 //            canvas.drawText("Min:"+minValue,mCircleRectF.left+10*DPTOPX_SCALE,mCircleRectF.top+mCircleRectF.height()/2,mCircleTextColor);
@@ -442,8 +442,8 @@ if(matchCount == 0){
 //        canvas.drawText("Min: ₹ " + formatter.format(minValue), mCircleRectF.left * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
 //        canvas.drawText("Max: ₹ " + formatter.format(maxvalue), mCircleRectF.right - 120 * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
 
-        canvas.drawText("Min: " + General.currencyFormat(minValue+""), mCircleRectF.left * DPTOPX_SCALE-dipToPixels(getContext(),85), mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
-        canvas.drawText("Max: " + General.currencyFormat(maxvalue+""), mCircleRectF.right - dipToPixels(getContext(),30) * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("Min: " + General.currencyFormat(minValue+""), mCircleRectF.left * DPTOPX_SCALE-dipToPixels(getContext(),45), mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
+        canvas.drawText("Max: " + General.currencyFormat(maxvalue+""), mCircleRectF.right - dipToPixels(getContext(),40) * DPTOPX_SCALE, mCircleRectF.top + mCircleRectF.height() + 15 * DPTOPX_SCALE, mCircleRangeColor);
 
 
     }
