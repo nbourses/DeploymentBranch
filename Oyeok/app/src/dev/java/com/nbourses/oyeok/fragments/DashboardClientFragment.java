@@ -3640,12 +3640,12 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                             }else{
 //                                phaseGameTitle.setVisibility(View.GONE);
 //                                portfolioCount.setVisibility(View.GONE);
-                                txtFilterValue.setText("SAVE");
+                               // txtFilterValue.setText("SAVE");
                                 addlistingText.setVisibility(View.VISIBLE);
                                 addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
                                 addBText.setTextSize(13);
-                                map.clear();
-                                txt_info.setText("Find Building on Map & Save");
+                                /*map.clear();
+                                txt_info.setText("Find Building on Map & Save");*/
                                /* String txt;
                                 txt="<font color=#2dc4b6><big>Drag & Save Building Location</big></font>";
                                 tvFetchingrates.setText(Html.fromHtml(txt));*/
@@ -3689,14 +3689,14 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
 
                         addressBar.setText("Getting Address... ");
                         new LocationUpdater().execute();
-                        /*if (txtFilterValue.getText().toString().equalsIgnoreCase("done")) {
+                        if (txtFilterValue.getText().toString().equalsIgnoreCase("done")) {
                             txtFilterValue.setText("SAVE");
                             txt_info.setText("Find Building on Map & Save");
                             map.clear();
-                        }*/
+                        }
 
-                        if(AppConstants.SETLOCATIONLTOP || AppConstants.SETLOCATIONTRAVELT)
-                            getPrice();
+                       /* if(AppConstants.SETLOCATIONLTOP || AppConstants.SETLOCATIONTRAVELT)
+                            getPrice();*/
                         /*}
                               });*/
                     }
