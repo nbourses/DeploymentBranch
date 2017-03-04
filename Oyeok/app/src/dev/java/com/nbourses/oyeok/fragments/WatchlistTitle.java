@@ -39,10 +39,10 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.facebook.CallbackManager;
 import com.google.gson.JsonElement;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
+import com.nbourses.oyeok.activities.DealConversationActivity;
 import com.nbourses.oyeok.activities.MyPortfolioActivity;
 import com.nbourses.oyeok.adapters.WatchlistExplorerAdapter;
 import com.nbourses.oyeok.adapters.watchlistAdapter;
@@ -79,7 +79,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
+//import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class WatchlistTitle extends Fragment {
@@ -116,6 +116,9 @@ public class WatchlistTitle extends Fragment {
     private static String Imagepath;
     private String channel_name = "";
 
+//constants
+    String user_id,user_name,user_role;
+
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -145,8 +148,8 @@ public class WatchlistTitle extends Fragment {
         editProfile_pic=(ImageView)v.findViewById(R.id.editProfile_pic);
         btn_delete=(ImageView)v.findViewById(R.id.btn_delete);
         pg_create_watch=(ProgressBar)v.findViewById(R.id.pg_create_watch);
-        /*if (selectedlist != null)
-            selectedlist.clear();*/
+        if (selectedlist != null)
+            selectedlist.clear();
         if (copyselectedlist != null)
             copyselectedlist.clear();
 
@@ -154,7 +157,9 @@ public class WatchlistTitle extends Fragment {
             ids.clear();
 
         selectedlist.addAll(((MyPortfolioActivity)getActivity()).passingListActivity());
-
+        user_id=General.getSharedPreferences(getContext(),AppConstants.USER_ID);
+        user_name=General.getSharedPreferences(getContext(),AppConstants.NAME);
+        user_role=General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER);
         /*copyselectedlist.addAll(selectedlist);
         for(int i=0;i<copyselectedlist.size();i++){
             Log.i("selected11","selected building init : "+selectedlist.size()+"   === "+selectedlist.get(i).getName() );
@@ -164,7 +169,7 @@ public class WatchlistTitle extends Fragment {
 
         }*/
 
-
+        verifyStoragePermissions(getActivity());
         try {
             adapter= new watchlistAdapter(selectedlist,getContext());
             selected_info.setAdapter(adapter);
@@ -264,13 +269,15 @@ public class WatchlistTitle extends Fragment {
                 watchlist_dp.setImageBitmap(null);
                 if (Image != null)
                     Image.recycle();
-                Intent intent = new Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.setType("image/*");
-                startActivityForResult(
-                        Intent.createChooser(intent, "Select File"),
-                        RESULT_LOAD_IMAGE);
+                if(verifyStoragePermissions(getActivity())) {
+                    Intent intent = new Intent(
+                            Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    startActivityForResult(
+                            Intent.createChooser(intent, "Select File"),
+                            RESULT_LOAD_IMAGE);
+                }
 
 
 
@@ -293,7 +300,23 @@ public class WatchlistTitle extends Fragment {
         return v;
     }
 
+    public static boolean verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+            return false;
+        }else
+        {
+            return true;
+        }
+    }
 
     public  void init(){
 
@@ -340,7 +363,7 @@ public class WatchlistTitle extends Fragment {
         createWatchlistAPI.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
         createWatchlistAPI.setAction("create");
         createWatchlistAPI.setCity("mumbai");
-        createWatchlistAPI.setTt(AppConstants.TT_TYPE );
+        createWatchlistAPI.setTt(AppConstants.TT_TYPE);
         for(loadBuildingDataModel c:selectedlist){
             //loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(c.getId(),c.getName(),c.getLat(),c.getLng(),c.getLocality(),c.getCity(),c.getLl_pm(),c.getOr_psf(),c.isCheckbox());
             ids.add(c.getId());
@@ -387,19 +410,20 @@ public void AddDataToRealm(String watchlist_id){
     watchListRealmModel.setWatchlist_id(watchlist_id);
     watchListRealmModel.setWatchlist_name(watchlist_name.getText().toString());
     watchListRealmModel.setImageuri(imageName);
-    watchListRealmModel.setCity("mumbai");
+    watchListRealmModel.setCity("Mumbai");
     watchListRealmModel.setTt(AppConstants.TT_TYPE);
     watchListRealmModel.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
     watchListRealmModel.setUser_name(General.getSharedPreferences(getContext(),AppConstants.NAME));
     watchListRealmModel.setUser_role(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
-    for(loadBuildingDataModel c:selectedlist){
-        /*loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(c.getId(),c.getName(),c.getLat(),c.getLng(),c.getLocality(),c.getCity(),c.getLl_pm(),c.getOr_psf(),c.isCheckbox());
-        realmList.add(loadBuildingdataModelRealm1);*/
-
-        loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(c.getId());
+    if(realmList!=null)
+        realmList.clear();
+    for(int i=0;i<ids.size();i++){
+        loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(ids.get(i));
         realmList.add(loadBuildingdataModelRealm1);
     }
     watchListRealmModel.setBuildingids(realmList);
+    if(myRealm.isInTransaction())
+        myRealm.cancelTransaction();
     myRealm.beginTransaction();
     myRealm.copyToRealmOrUpdate(watchListRealmModel);
     myRealm.commitTransaction();
@@ -422,17 +446,14 @@ public void AddDataToRealm(String watchlist_id){
 
 
 
-    public static WatchlistTitle newInstance() {
+    /*public static WatchlistTitle newInstance() {
         WatchlistTitle fragment = new WatchlistTitle();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
         return fragment;
-    }
+    }*/
 
-    public void onButtonPressed(Uri uri) {
-
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -457,7 +478,7 @@ public void AddDataToRealm(String watchlist_id){
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i("google signin", "onActivityResult");
+        Log.i("google signin", "onActivityResult ");
         //callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode != 0) {
             mImageUri = data.getData();
@@ -465,7 +486,14 @@ public void AddDataToRealm(String watchlist_id){
             Log.i(TAG, "lolwa imagewa uri fileToUpload "+fileToUpload);
             setFileToUpload(saveBitmapToFile(fileToUpload));*/
             fileToUpload = new File(getRealPathFromURI(getContext(),mImageUri));
-            setFileToUpload(saveBitmapToFile(fileToUpload));
+
+            Log.i("JPEGIMAGE", "onActivityResult "+fileToUpload);
+            File file= null;
+                file = saveBitmapToFile(fileToUpload);
+
+            Log.i("JPEGIMAGE", "onActivityResult file "+file);
+
+            setFileToUpload(file);
             try {
                 Image = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), mImageUri);
                 if (getOrientation(getContext(), mImageUri) != 0) {
@@ -504,6 +532,8 @@ public void AddDataToRealm(String watchlist_id){
             }
         }
     }
+
+
 
     private File saveBitmapToFile(File file){
         try {
@@ -552,9 +582,59 @@ public void AddDataToRealm(String watchlist_id){
 
 
 
-    public void setFileToUpload(File fileToU){
 
+
+    /*private File saveBitmapToFile(File file) throws IOException {
+       // try {
+
+            // BitmapFactory options to downsize the image
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            o.inSampleSize = 6;
+            // factor of downsizing the image
+
+            FileInputStream inputStream = new FileInputStream(file);
+            //Bitmap selectedBitmap = null;
+            BitmapFactory.decodeStream(inputStream, null, o);
+            inputStream.close();
+
+            // The new size we want to scale to
+            final int REQUIRED_SIZE=75;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            inputStream = new FileInputStream(file);
+
+            Bitmap selectedBitmap = BitmapFactory.decodeStream(inputStream, null, o2);
+           // inputStream.close();
+
+            // here i override the original image file
+            file.createNewFile();
+            FileOutputStream outputStream = new FileOutputStream(file);
+
+            selectedBitmap.compress(Bitmap.CompressFormat.PNG, 100 , outputStream);
+
+
+            Log.i("JPEGIMAGE","=================== :: "+file);
+            return file;
+       *//* } catch (Exception e) {
+            return null;
+        }*//*
+    }*/
+
+
+
+    public void setFileToUpload(File fileToU){
+        Log.i("JPEGIMAGE","==================="+fileToU+"   "+fileToUpload);
         fileToUpload = fileToU;
+
         imageName = "andro"+String.valueOf(System.currentTimeMillis())+".png";
 
         try {
@@ -648,54 +728,7 @@ public void AddDataToRealm(String watchlist_id){
 //////      jsonMsg.put("message", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);   ///////
 
 
-    private void displayImgMessage(String bucketName, String imgName){
 
-        Log.i("image1", "calipso inside displayimage msg"+bucketName +" "+imgName );
-        Log.i("image1", "displayImgMessage called ");
-
-        String user_id = null;
-
-
-        if(General.getSharedPreferences(getContext(),AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes"))
-            user_id = General.getSharedPreferences(getContext(),AppConstants.USER_ID);
-        else
-            user_id = General.getSharedPreferences(getContext(),AppConstants.TIME_STAMP_IN_MILLI);
-
-
-
-        try {
-            JSONObject jsonMsg = new JSONObject();
-
-            jsonMsg.put("timestamp",String.valueOf(System.currentTimeMillis()));
-
-
-            jsonMsg.put("_from", user_id);
-
-            jsonMsg.put("to", channel_name);
-            if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker"))
-                jsonMsg.put("status","OKI");
-            else if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
-                jsonMsg.put("status","OYEI");
-
-            jsonMsg.put("name","");
-
-
-
-
-            jsonMsg.put("message", "https://s3.ap-south-1.amazonaws.com/"+bucketName+"/"+imgName);
-            Log.i("yoyoyo","urlo "+jsonMsg);
-            Log.i("image1", "calipso inside calling displayMsg "+jsonMsg );
-
-            /*displayMessage(jsonMsg);
-            sendNotification(jsonMsg);*/
-//            pubnub.publish(channel_name, jsonMsg, true, new Callback() {});
-
-
-        }
-        catch(Exception e){}
-
-
-    }
 
 
     public void transferObserverListener(TransferObserver transferObserver){
@@ -731,7 +764,7 @@ public void AddDataToRealm(String watchlist_id){
 
         // Initialize the Amazon Cognito credentials provider
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                getApplicationContext(),
+                getContext(),
                 "us-east-1:d166d43a-32b3-4690-9975-aed1c61f2b28", // Identity Pool ID
                 Regions.US_EAST_1 // Region
         );
@@ -754,7 +787,7 @@ public void AddDataToRealm(String watchlist_id){
 
     public void setTransferUtility(){
 
-        transferUtility = new TransferUtility(s3, getApplicationContext());
+        transferUtility = new TransferUtility(s3, getContext());
     }
 
 

@@ -19,6 +19,7 @@ public class buildingCacheModel {
     private  String transactions;
     private String  locality;
     private Boolean flag;
+    private String  ptype;
 
     public buildingCacheModel(String id, String name, String config, int or_psf, int ll_pm, String lat, String lng, String rate_growth, String listing, String portals, long timestamp, String transactions, String locality, Boolean flag) {
         this.id = id;
@@ -37,7 +38,23 @@ public class buildingCacheModel {
         this.flag = flag;
     }
 
-
+    public buildingCacheModel(String id, String name, String config, int or_psf, int ll_pm, String lat, String lng, String rate_growth, String listing, String portals, long timestamp, String transactions, String locality, Boolean flag, String ptype) {
+        this.id = id;
+        this.name = name;
+        this.config = config;
+        this.or_psf = or_psf;
+        this.ll_pm = ll_pm;
+        this.lat = lat;
+        this.lng = lng;
+        this.rate_growth = rate_growth;
+        this.listing = listing;
+        this.portals = portals;
+        this.timestamp = timestamp;
+        this.transactions = transactions;
+        this.locality = locality;
+        this.flag = flag;
+        this.ptype = ptype;
+    }
 
     public String getId() {
         return id;
@@ -149,5 +166,13 @@ public class buildingCacheModel {
 
     public void setFlag(Boolean flag) {
         this.flag = flag;
+    }
+
+    public String getPtype() {
+        return ptype;
+    }
+
+    public void setPtype(String ptype) {
+        this.ptype = ptype;
     }
 }

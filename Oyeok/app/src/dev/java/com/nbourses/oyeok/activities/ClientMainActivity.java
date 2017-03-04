@@ -1132,7 +1132,7 @@ try {
             //ActivityLogFragment appSetting = new ActivityLogFragment();
            AppSetting appSetting=new AppSetting();
             loadFragment(appSetting,null,R.id.container_Signup,"");
-           // setting=true;
+            setting=true;
 
 
         }

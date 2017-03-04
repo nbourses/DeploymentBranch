@@ -249,7 +249,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         btnMyDeals.setVisibility(View.GONE);
         btnMyDeals1.setVisibility(View.VISIBLE);
         btnMyDeals1.setBackground(getResources().getDrawable(R.drawable.snapshot));
-
+        AppConstants.TT_TYPE="ll";
         //btnMyDeals.setText("Share");
         //Phased seekbar initialisation
         mPhasedSeekBar = (CustomPhasedSeekBar) findViewById(R.id.phasedSeekBar);
@@ -274,7 +274,10 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
         }
 
+        General.setBadgeCount(this, AppConstants.ADDB_COUNT_LL, 0);
+        General.setBadgeCount(this, AppConstants.PORTFOLIO_COUNT, 0);
 
+        rentalCount.setVisibility(View.GONE);
 
         if (!General.getSharedPreferences(getBaseContext(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
             Loadwatchlist();
@@ -1511,6 +1514,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         }
 
         recreate();
+        adapter.notifyDataSetChanged();
 
         /*WatchlistExplorer watchlistExplorer=new WatchlistExplorer();
         loadFragmentAnimated(watchlistExplorer,null,R.id.container_sign,"");*/

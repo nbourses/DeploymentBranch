@@ -219,5 +219,6 @@ public class AppConstants {
     public static final String LL_PM = "ll_pm";
     public static final String OR_PSF = "or_psf";
     public static final String IS_SIGNUP = "is_signup";
-    public static final String ADD_TYPE = "addType";
+    public static final String ADD_TYPE = "addType";  //CHECKBOX_STATUS
+    public static final String CHECKBOX_STATUS = "checkboxStatus";
 }

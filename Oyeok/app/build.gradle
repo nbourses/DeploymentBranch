@@ -305,9 +305,9 @@ dependencies {
         all*.exclude module: 'com.facebook.rebound'
     }
 
-    configurations{
+    /*configurations{
         all*.exclude group: 'com.android.volley'
-    }
+    }*/
 
     compile 'com.instabug.library:instabug:2.+'
     compile 'com.google.android.gms:play-services-ads:9.0.2'

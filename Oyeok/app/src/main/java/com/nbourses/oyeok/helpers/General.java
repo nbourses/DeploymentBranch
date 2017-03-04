@@ -98,7 +98,7 @@ import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedByteArray;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
+//import static com.facebook.FacebookSdk.getApplicationContext;
 import static java.lang.Math.log10;
 
 /**
@@ -138,29 +138,29 @@ public class General extends BroadcastReceiver {
 
                saveLatLongLoc(context, gps.getLatitude(), gps.getLongitude());
             }else{
-                SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LAT, "19.1230339");
-                SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LNG, "72.8350437");
-                General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LAT,"19.1230339");
-                General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LNG,"72.8350437");
-                SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LOCALITY, "Andheri West");
-                General.setSharedPreferences(getApplicationContext(),AppConstants.LOCALITY,"Andheri West");
+                SharedPrefs.save(context, SharedPrefs.MY_LAT, "19.1230339");
+                SharedPrefs.save(context, SharedPrefs.MY_LNG, "72.8350437");
+                General.setSharedPreferences(context,AppConstants.MY_LAT,"19.1230339");
+                General.setSharedPreferences(context,AppConstants.MY_LNG,"72.8350437");
+                SharedPrefs.save(context, SharedPrefs.MY_LOCALITY, "Andheri West");
+                General.setSharedPreferences(context,AppConstants.LOCALITY,"Andheri West");
             }
         }
     }
 
     public static void saveLatLongLoc(Context context, Double lat, Double lng){
-        SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LAT, lat +"");
-        SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LNG, lng + "");
-        General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LAT,lat + "");
-        General.setSharedPreferences(getApplicationContext(),AppConstants.MY_LNG,lng + "");
+        SharedPrefs.save(context, SharedPrefs.MY_LAT, lat +"");
+        SharedPrefs.save(context, SharedPrefs.MY_LNG, lng + "");
+        General.setSharedPreferences(context,AppConstants.MY_LAT,lat + "");
+        General.setSharedPreferences(context,AppConstants.MY_LNG,lng + "");
         Log.i("Tag11","latlong 12 : "+lat+"  "+lng);
         try {
             Geocoder geocoder = new Geocoder(context, Locale.getDefault());
             List<Address> addresses = null;
             addresses = geocoder.getFromLocation(lat,lng, 1);
             String region = addresses.get(0).getSubLocality();
-            SharedPrefs.save(getApplicationContext(), SharedPrefs.MY_LOCALITY, region);
-            General.setSharedPreferences(getApplicationContext(),AppConstants.LOCALITY,region);
+            SharedPrefs.save(context, SharedPrefs.MY_LOCALITY, region);
+            General.setSharedPreferences(context,AppConstants.LOCALITY,region);
 
             Log.i("Tag11","latlong 13 : "+lat+"  "+lng+ ""+region);
         } catch (IOException e) {
@@ -771,17 +771,17 @@ public static PubNub initPubnub(Context context, String UUID){
                                 //open deals listing
                                 if(tt.equalsIgnoreCase("LL")) {
                                     try {
-                                        General.setBadgeCount(getApplicationContext(), AppConstants.RENTAL_COUNT, General.getBadgeCount(getApplicationContext(), AppConstants.RENTAL_COUNT) + 1);
+                                        General.setBadgeCount(context, AppConstants.RENTAL_COUNT, General.getBadgeCount(context, AppConstants.RENTAL_COUNT) + 1);
                                     } catch (NumberFormatException e) {
-                                        General.setBadgeCount(getApplicationContext(), AppConstants.RENTAL_COUNT, 1);
+                                        General.setBadgeCount(context, AppConstants.RENTAL_COUNT, 1);
 
                                         e.printStackTrace();
                                     }
                                 } else if(tt.equalsIgnoreCase("OR")) {
                                     try {
-                                        General.setBadgeCount(getApplicationContext(), AppConstants.RESALE_COUNT, General.getBadgeCount(getApplicationContext(), AppConstants.RESALE_COUNT) + 1);
+                                        General.setBadgeCount(context, AppConstants.RESALE_COUNT, General.getBadgeCount(context, AppConstants.RESALE_COUNT) + 1);
                                     } catch (NumberFormatException e) {
-                                        General.setBadgeCount(getApplicationContext(), AppConstants.RESALE_COUNT, 1);
+                                        General.setBadgeCount(context, AppConstants.RESALE_COUNT, 1);
 
                                     }
 
@@ -1457,7 +1457,7 @@ public static void pushMessage(Context c,String channel, Map message){
     public static void shareReferralLink(final Context context) {
         String user_id = General.getSharedPreferences(context, AppConstants.USER_ID);
 
-        Branch branch = Branch.getInstance(getApplicationContext());
+        Branch branch = Branch.getInstance(context);
 
         String mob_no = General.getSharedPreferences(context, AppConstants.MOBILE_NUMBER);
         Log.i("mob_no", "mob_no " + mob_no);
@@ -1479,7 +1479,7 @@ public static void pushMessage(Context c,String channel, Map message){
                 .addControlParameter("$always_deeplink", "true");
 
 
-        branchUniversalObject.generateShortUrl(getApplicationContext(), linkProperties, new Branch.BranchLinkCreateListener() {
+        branchUniversalObject.generateShortUrl(context, linkProperties, new Branch.BranchLinkCreateListener() {
             @Override
             public void onLinkCreate(String url, BranchError error) {
                 if (error == null) {

@@ -27,6 +27,7 @@ public class MyPortfolioModel extends RealmObject {
     private  String transactions;
     private  String  locality;
     private  String  tt;
+    private  String  ptype;
 
     public String getTt() {
         return tt;
@@ -137,6 +138,14 @@ public class MyPortfolioModel extends RealmObject {
 
     public void setTransactions(String transactions) {
         this.transactions = transactions;
+    }
+
+    public String getPtype() {
+        return ptype;
+    }
+
+    public void setPtype(String ptype) {
+        this.ptype = ptype;
     }
 }
 
