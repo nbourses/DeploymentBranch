@@ -4875,7 +4875,7 @@ public int price(String conf,int rate){
 }
 
     public void saveBuiding(String b_name){
-
+         Log.i("saveBuiding","inside saveBuiding ==== ");
         B_name=b_name;
         AppConstants.SETLOCATION = true;
         map.clear();

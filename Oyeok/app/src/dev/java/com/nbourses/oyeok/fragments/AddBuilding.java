@@ -118,14 +118,14 @@ private TextView Cancel,back,usertext;
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
 
-              /*  if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                     ((BrokerMap) getActivity()).closeCardContainer();
                     ((BrokerMap)getActivity()).openAddListing();
                 }else{
 
                     ((ClientMainActivity)getActivity()).closeAddBuilding();
                     ((ClientMainActivity)getActivity()).openAddListing();
-                }*/
+                }
 
 
             }
@@ -137,13 +137,13 @@ private TextView Cancel,back,usertext;
                 imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
                 AppConstants.PROPERTY="Home";
 
-               /* if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                     ((BrokerMap) getActivity()).closeCardContainer();
                 }else{
 
                     ((ClientMainActivity)getActivity()).closeAddBuilding();
 
-                }*/
+                }
             }
         });
 

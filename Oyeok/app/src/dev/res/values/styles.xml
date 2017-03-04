@@ -219,7 +219,7 @@
         <!--<item name="colorAccent">#5bb6b4b4</item>-->
         <item name="colorAccent">#B2DFDB</item>
         <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:actionModeBackground">@color/colorPrimaryDark</item>
+        <!--<item name="android:actionModeBackground">@color/colorPrimaryDark</item>-->
         <!--<item name="android:colorBackground">@color/colorPrimaryDark</item>-->
         <item name="android:textColor">@color/white</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>

@@ -228,10 +228,10 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             addbuildingOR.clear();
         if (portListingCopy != null)
             portListingCopy.clear();
-        if (addbuildingLL != null)
+       /* if (addbuildingLL != null)
             addbuildingLL.clear();
         if (addbuildingOR != null)
-            addbuildingOR.clear();
+            addbuildingOR.clear();*/
         if(myLocalitiesLL != null)
             myLocalitiesLL.clear();
 
@@ -448,7 +448,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
         }
 
-        /*RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).equalTo("tt", "ll").findAllSorted("timestamp",false);
+        RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).equalTo("tt", "ll").or().equalTo("type","ADD").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result1){
 
             Log.i("getLocality","getLocality   : "+c.getLocality());
@@ -457,7 +457,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             addbuildingLL.add(portListingModel);
 
 
-        }*/
+        }
 
 
 //    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config) {
@@ -468,7 +468,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             addbuildingOR.add(portListingModel);
 
         }
-        /*RealmResults<addBuildingRealm> result2= realm.where(addBuildingRealm.class).equalTo("tt", "or").findAllSorted("timestamp",false);
+        RealmResults<addBuildingRealm> result2= realm.where(addBuildingRealm.class).equalTo("tt", "or").or().equalTo("type","ADD").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result2){
 
 
@@ -477,7 +477,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             addbuildingOR.add(portListingModel);
 
 
-        }*/
+        }
 
         Log.i("dataritesh", "myPortfolioLL" + myPortfolioLL);//watchlist
 
