@@ -35,7 +35,7 @@ public class MatchListingAdapter extends RecyclerView.Adapter<MatchListingAdapte
     private Context c;
     private List<MatchListing> matchList;
     public int selected = 0;
-    Animation slide_arrow;
+    //Animation slide_arrow;
 
 
 
@@ -59,7 +59,7 @@ public class MatchListingAdapter extends RecyclerView.Adapter<MatchListingAdapte
             broker_name = (TextView) view.findViewById(R.id.broker_name);
             config = (TextView) view.findViewById(R.id.config);
             matchlisting = (CardView) view.findViewById(R.id.matchlisting);
-            slide_arrow=(AnimationUtils.loadAnimation(c, R.anim.slide_ltor_repeat));
+          //  slide_arrow=(AnimationUtils.loadAnimation(c, R.anim.slide_ltor_repeat));
             tick = (ImageView) view.findViewById(R.id.tick);
             date = (TextView) view.findViewById(R.id.date);
             match_price = (TextView) view.findViewById(R.id.match_price);
@@ -89,8 +89,9 @@ public class MatchListingAdapter extends RecyclerView.Adapter<MatchListingAdapte
         final MatchListing item = matchList.get(position);
         holder.broker_name.setText(item.getBroker_name());
         holder.config.setText(item.getConfig());
-
-
+        holder.matchlisting.setCardBackgroundColor(item.isSelected() ? Color.parseColor("#b2ffb2"):Color.WHITE);
+        holder.tick.setBackground(item.isSelected() ?  ContextCompat.getDrawable(c, R.drawable.ic_checked_greenish_blue):ContextCompat.getDrawable(c, R.drawable.ic_checked_grey));
+        
         try {
             holder.date.setText(General.timestampToString(Long.parseLong(item.getDate())));
         } catch (NumberFormatException e) {
@@ -126,6 +127,7 @@ public class MatchListingAdapter extends RecyclerView.Adapter<MatchListingAdapte
             @Override
             public void onClick(View view) {
 
+                Log.i("MatchListing Adapter","item counta "+item.getConfig());
                 if (item.getUser_id().equalsIgnoreCase(General.getSharedPreferences(c,AppConstants.USER_ID))) {
                     SnackbarManager.show(
                             com.nispok.snackbar.Snackbar.with(c)
@@ -145,11 +147,23 @@ else{
                             AppConstants.oyeIdsForOk.add(item.getOye_id());
                         }
                         item.setSelected(!item.isSelected());
-                        holder.matchlisting.setCardBackgroundColor(item.isSelected() ? Color.parseColor("#b2ffb2") : Color.WHITE);
-                        holder.tick.setBackground(item.isSelected() ? ContextCompat.getDrawable(c, R.drawable.ic_checked_greenish_blue) : ContextCompat.getDrawable(c, R.drawable.ic_checked_grey));
+                        holder.matchlisting.setCardBackgroundColor(item.isSelected() ? Color.parseColor("#b2ffb2"):Color.WHITE);
+                        holder.tick.setBackground(item.isSelected() ?  ContextCompat.getDrawable(c, R.drawable.ic_checked_greenish_blue):ContextCompat.getDrawable(c, R.drawable.ic_checked_grey));
 
-                        View v = f.findViewById(R.id.ok);
-                        v.setAnimation(slide_arrow);
+                        /*if(item.isSelected()){
+                            holder.matchlisting.setCardBackgroundColor(Color.parseColor("#b2ffb2"));
+                            holder.tick.setBackground(ContextCompat.getDrawable(c, R.drawable.ic_checked_greenish_blue));
+                        }
+                        else{
+                            holder.matchlisting.setCardBackgroundColor(Color.WHITE);
+                            holder.tick.setBackground(ContextCompat.getDrawable(c,R.drawable.ic_checked_grey));
+                        }*/
+
+                       /* holder.matchlisting.setCardBackgroundColor(item.isSelected() ? Color.WHITE:Color.parseColor("#b2ffb2"));
+                        holder.tick.setBackground(item.isSelected() ?  ContextCompat.getDrawable(c, R.drawable.ic_checked_grey):ContextCompat.getDrawable(c, R.drawable.ic_checked_greenish_blue));
+                      */
+                       // View v = f.findViewById(R.id.ok);
+                        /*v.setAnimation(slide_arrow);*/
 
 
 
