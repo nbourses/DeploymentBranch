@@ -242,7 +242,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
         Double amount = 10.0;
 
 
-            Toast.makeText(getContext(), "Paying Default Amount ₹10", Toast.LENGTH_LONG).show();
+           // Toast.makeText(getContext(), "Paying Default Amount ₹10", Toast.LENGTH_LONG).show();
             return amount;
 
     }

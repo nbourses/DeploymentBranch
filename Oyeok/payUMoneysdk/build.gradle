@@ -36,11 +36,11 @@ dependencies {
         exclude module: 'com.android.volley.AuthFailureError';
     }*/
 
-    /*android {
+    android {
         configurations {
             all*.exclude module: 'com.android.volley.AuthFailureError'
         }
-    }*/
+    }
 
 //    android {
 //        configurations{
