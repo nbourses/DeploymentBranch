@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.amazonaws.mobileconnectors.s3.transfermanager.Copy;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nbourses.oyeok.R;
@@ -75,10 +76,11 @@ public class WatchlistExplorer extends Fragment   {
     LinearLayout add_b;
     private SideBar sideBar;
     private Timer clockTickTimer;
-    int count=3;
+    int count=0;
     Realm myRealm;
     //    String name;
     private static ArrayList<loadBuildingDataModel> building_names =new ArrayList<>();
+    private static ArrayList<loadBuildingDataModel> Copybuilding_names =new ArrayList<>();
     private static ArrayList<loadBuildingDataModel> selectedlist = new ArrayList<>();
     private static ArrayList<loadBuildingDataModel> selectedlist1 = new ArrayList<>();
 
@@ -90,7 +92,7 @@ public class WatchlistExplorer extends Fragment   {
 
     String user_id,user_name,user_role;
 
-
+Thread thread;
 
 
 
@@ -126,6 +128,8 @@ public class WatchlistExplorer extends Fragment   {
        // listView1.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         if (selectedlist != null)
             selectedlist.clear();
+        if (selectedlist1 != null)
+            selectedlist1.clear();
         if (building_names != null)
             building_names.clear();
 
@@ -135,7 +139,8 @@ public class WatchlistExplorer extends Fragment   {
         user_name=General.getSharedPreferences(getContext(),AppConstants.NAME);
         user_role=General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER);
 
-
+        adapter= new watchlistAdapter(building_names,getContext());
+        listView1.setAdapter(adapter);
 
         done.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -330,7 +335,23 @@ public class WatchlistExplorer extends Fragment   {
                 // TODO Auto-generated method stub
                 name=String.valueOf(arg0);
                 progressBar.setVisibility(View.VISIBLE);
-                SearchBuilding();
+                thread=  new Thread(){
+                    @Override
+                    public void run(){
+                        try {
+                            synchronized(this){
+                                wait(3000);
+                            }
+                        }
+                        catch(InterruptedException ex){
+                        }
+                        //Selectedbuilding();
+                        SearchBuilding();
+                        // TODO
+                    }
+                };
+
+                thread.start();
 
             }
         });
@@ -387,6 +408,22 @@ public class WatchlistExplorer extends Fragment   {
     }
 
 
+
+    public void Selectedbuilding(){
+        selectedlist.clear();
+        for (loadBuildingDataModel hold : adapter.getAllData()) {
+            if (hold.isCheckbox()) {
+
+                loadBuildingDataModel loadBuildingDataModel1 = new loadBuildingDataModel(hold.getName(), hold.getLat(), hold.getLng(), hold.getId(), hold.getLocality(), hold.getCity(), hold.getLl_pm(), hold.getOr_psf(),true);
+                selectedlist.add(loadBuildingDataModel1);
+                Log.i("selected1", "selected building 1: " + hold.getName() + "  selectedlist.size() : " + selectedlist.size());
+                count++;
+            }
+
+        }
+    }
+
+
     public void SearchBuilding()
     {
         Log.i("updateStatus CALLED","updateStatus success called ");
@@ -394,8 +431,6 @@ public class WatchlistExplorer extends Fragment   {
         searchBuildingModel.setBuilding(name);
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_101).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-//        UserApiService userApiService = restAdapter.create(UserApiService.class);
-        /*userApiService.addBuildingRealm(AddBuildingModel, new retrofit.Callback<JsonElement>() {*/
         OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
         try {
             oyeokApiService.SearchBuilding(searchBuildingModel, new Callback<JsonElement>() {
@@ -419,21 +454,29 @@ public class WatchlistExplorer extends Fragment   {
                         Log.i("magic","addBuildingRealm success ne "+ne);
                         Log.i("magic","addBuildingRealm success buildings "+size+"  "+buildings);
                         building_names.clear();
+                        Copybuilding_names.clear();
 //                        List<String> building_names = new ArrayList<String>();
+                        Log.i("sizeof ","selectedlist"+count);
+                        if(selectedlist!=null){
+                            building_names.addAll(selectedlist);
+                        }
                         for(int i=0;i<size;i++){
                             JSONObject j = new JSONObject(buildings.get(i).toString());
                             double lat = Double.parseDouble(j.getJSONArray("loc").get(1).toString());
                             double longi = Double.parseDouble(j.getJSONArray("loc").get(0).toString());
                             Log.i("Buildingdata", "lat " + lat+"longi:  "+longi+"id:  "+j.getString("id")+"name: "+j.getString("name"));
-                            building_names.add(new loadBuildingDataModel(j.getString("name"),lat,longi,j.getString("id"),j.getString("locality"),j.getString("city"),j.getString("ll_pm"),j.getString("or_psf"),false));
+                            Copybuilding_names.add(new loadBuildingDataModel(j.getString("name"),lat,longi,j.getString("id"),j.getString("locality"),j.getString("city"),j.getString("ll_pm"),j.getString("or_psf"),false));
 
                         }
-                        try {
-                            adapter= new watchlistAdapter(building_names,getContext());
-                            listView1.setAdapter(adapter);
-                        } catch (Exception e) {
+//                        try {
+//                            adapter= new watchlistAdapter(building_names,getContext());
+//                            listView1.setAdapter(adapter);
+                        building_names.addAll(Copybuilding_names);
+                       // buildings
+                            adapter.notifyDataSetChanged();
+                       /* } catch (Exception e) {
                             e.printStackTrace();
-                        }
+                        }*/
                         progressBar.setVisibility(View.GONE);
 //                        listView1.setOnItemSelectedListener();
                         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -441,6 +484,7 @@ public class WatchlistExplorer extends Fragment   {
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                                 adapter.setCheckBox(position);
+                                Selectedbuilding();
                                 Log.i("multimode","inside onItemClick  123 "+position+" "+selectedlist.size());
 
 

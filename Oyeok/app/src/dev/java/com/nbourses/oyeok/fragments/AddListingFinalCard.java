@@ -1,10 +1,12 @@
 package com.nbourses.oyeok.fragments;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,8 +104,12 @@ public class AddListingFinalCard extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.MyMaterialTheme);
 
-       v= inflater.inflate( R.layout.fragment_add_listing_final_card, container, false );
+       // clone the inflater using the ContextThemeWrapper
+        LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
+
+       v= localInflater.inflate( R.layout.fragment_add_listing_final_card, container, false );
 
         toggleBtn1 = (SwitchButton) v.findViewById(toggleBtn);
 

@@ -333,6 +333,9 @@ public class OyeScreenFragment extends Fragment {
         //by default Home option is selected
         txtPreviouslySelectedPropertyType = txtHome;
         txtHome.setBackgroundResource(R.drawable.buy_option_circle);
+
+        Log.i("propertystat","============== "+ AppConstants.PROPERTY);
+
         if(AppConstants.PROPERTY.equalsIgnoreCase("")){AppConstants.PROPERTY="Home";}
         AppConstants.letsOye.setPropertyType(AppConstants.PROPERTY);
         loadHomeOptionView(AppConstants.PROPERTY);

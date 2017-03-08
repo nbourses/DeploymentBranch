@@ -794,7 +794,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
             Owner_detail=true;
         }else if(itemTitle.equals(getString(R.string.Listing))){
             Log.i("myWatchList","itemTitle 1 "+itemTitle + R.string.Listing);
-            Intent intent =new Intent( this,MyPortfolioActivity.class );
+            Intent intent =new Intent( this,BrokerListingActivity.class );
             startActivity(intent);
             /*MainScreenPropertyListing my_portfolio = new MainScreenPropertyListing();
             loadFragment(my_portfolio, null, R.id.container_Signup, "");

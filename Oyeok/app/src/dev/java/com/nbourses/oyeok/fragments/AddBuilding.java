@@ -82,6 +82,9 @@ private TextView Cancel,back,usertext;
 //    String name;
     ArrayList<loadBuildingDataModel> building_names;
 
+
+    Thread thread;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -176,7 +179,23 @@ private TextView Cancel,back,usertext;
                 // TODO Auto-generated method stub
                 name=String.valueOf(arg0);
                 progressBar.setVisibility(View.VISIBLE);
-                SearchBuilding();
+//                SearchBuilding();
+                thread=  new Thread(){
+                    @Override
+                    public void run(){
+                        try {
+                            synchronized(this){
+                                wait(3000);
+                            }
+                        }
+                        catch(InterruptedException ex){
+                        }
+                        SearchBuilding();
+                        // TODO
+                    }
+                };
+
+                thread.start();
 
             }
         });

@@ -81,6 +81,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.maps.*;  //google.maps.Marker
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
@@ -585,14 +586,23 @@ else {
     private BroadcastReceiver onFilterValueUpdate = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            String txt="";
             if (intent.getExtras() != null) {
                 if ((intent.getExtras().getString("bhkvalue") != null)&&intent.getExtras().getString("subproperty").equalsIgnoreCase("home")) {
-                    Log.i("filtervalue123", "filtervalue " + intent.getExtras().getString("bhkvalue")+"  "+intent.getExtras().getString("area"));
-                   String txt=intent.getExtras().getString("bhkvalue");
+                    Log.i("filtervalue123", "filtervalue " + intent.getExtras().getString("bhkvalue")+"  "+intent.getExtras().getString("area")+"  "+intent.getExtras().getString("subproperty"));
+                  txt =intent.getExtras().getString("bhkvalue");
+
+                    if(txt.equalsIgnoreCase("home"))
+                    txtFilterValue.setText(Html.fromHtml("<html><small>2BHK</small></html>"));
+                    else
                     txtFilterValue.setText(Html.fromHtml("<html><small>"+txt+"</small></html>"));
                 }
                 if ((intent.getExtras().getString("area") != null)) {
+
                     bhk = intent.getExtras().getString("area");
+//                    if(txt.equalsIgnoreCase("home"))
+//                    txtFilterValue.setText(Html.fromHtml("<html><small>"+bhk+"</small></html>"));
+                    //else
                 }
                 String subprop;
                 if(intent.getExtras().getString("subproperty")!=null)
@@ -633,14 +643,18 @@ else {
                         updateHorizontalPicker();
                         BroadCastMinMaxValue(llMin * filterValueMultiplier, llMax * filterValueMultiplier, orMin * filterValueMultiplier, orMax * filterValueMultiplier);
                         if (brokerType.equals("rent"))
-                            if (subprop.equalsIgnoreCase("home"))
-                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/month");
+                            if (subprop.equalsIgnoreCase("2bhk"))
+                                onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/m");
                             else
                                 onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, llMin * filterValueMultiplier, llMax * filterValueMultiplier, "/sq.ft");
                         else
                             onoyeclickRateChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier, orMin, orMax, "/sq.ft");
                         // }
                 }
+
+
+
+
 
             }
         }
@@ -1358,7 +1372,10 @@ else {
                                     General.setSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY,buildingCacheModels.get(i).getLocality()+"");
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LAT,buildingCacheModels.get(i).getLat()+"");
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LNG,buildingCacheModels.get(i).getLng()+"");
-                                    ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+                                    //((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();//stackPopFragment()
+
+                                    ((ClientMainActivity) getActivity()).stackPopFragment();
+
 //                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(listing[i],transaction[i],portal[i],config[i]);
                                     ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm(),buildingCacheModels.get(i).getOr_psf());
 //                                    mCustomerMarker[i].setIcon(icon2);buildingCacheModels
@@ -1791,7 +1808,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                 }
                 Property_type = "Shop";
                 oyetext = "SHOP";
-                AppConstants.PROPERTY = "Shop";
+                AppConstants.PROPERTY = Property_type;
                 Log.i("home", "you are in shop ");
                 PropertyButtonAnimation();
 //                property_type_layout.setVisibility(View.GONE);
@@ -3836,7 +3853,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             }
             @Override
             public void onAnimationEnd(Animation animation) {
-                if(  pro_click==false) {
+                if(pro_click==false) {
                     property_type_layout.clearAnimation();
                     property_type_layout.setVisibility(View.GONE);
                 }
@@ -3934,6 +3951,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
 //                    autoOk();
         }else */
        // if(!General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
+        AppConstants.PROPERTY = Property_type;
         buildingoyeFlag=false;
             openOyeScreen();
             CancelAnimation();
@@ -3983,7 +4001,7 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         args.putString("brokerType", brokerType);
         args.putString("Address", SharedPrefs.getString(getActivity(), SharedPrefs.MY_REGION));
         onOyeClick.onClickButton(args);
-        buildingoyeFlag=false;
+        //buildingoyeFlag=false;
         CancelAnimation();
         //AppConstants.GOOGLE_MAP = map;
 //        if (clicked == true) {
@@ -5401,12 +5419,24 @@ public void resetSeekBar(){
     }
 
     public Bundle Brokertype(){
-        mHelperView.setEnabled(false);
-        map.getUiSettings().setAllGesturesEnabled(false);
         Bundle args = new Bundle();
         args.putString("brokerType", brokerType);
         args.putString("Address", SharedPrefs.getString(getActivity(), SharedPrefs.MY_REGION));
         return args;
+    }
+
+    public void disableMapGesture(){
+        MarkerClickEnable=false;
+        mHelperView.setEnabled(false);
+        map.getUiSettings().setAllGesturesEnabled(false);
+        buildingCacheModels.get(INDEX).setFlag(false);
+        //buildingoyeFlag=false;
+    }
+
+    public void enableMapGesture(){
+        MarkerClickEnable=false;
+        mHelperView.setEnabled(false);
+        map.getUiSettings().setAllGesturesEnabled(false);
     }
 
     private void showPortfoliobadge(){

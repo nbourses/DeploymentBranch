@@ -291,7 +291,7 @@ public class BuildingOyeConfirmation extends Fragment {
                         ((BrokerMap) getActivity()).openAddListingFinalCard();
                     }
                 }else{
-                    AppConstants.PROPERTY = "home";
+                   // AppConstants.PROPERTY = "home";
                     AppConstants.CONFIG="";
                     //text="<html>Connect'.........,, : <font color=#ff9f1c><big>32</big></font> Nearby Brokers</html>";
                     //btn_listing.setText(Html.fromHtml(text));

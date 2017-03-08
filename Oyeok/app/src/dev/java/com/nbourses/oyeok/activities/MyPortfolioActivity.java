@@ -1102,10 +1102,12 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
     private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
     {
         fragment.setArguments(args);
+        
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
         fragmentTransaction.replace(containerId, fragment);
+
         fragmentTransaction.commitAllowingStateLoss();
     }
     @Override
@@ -1570,7 +1572,18 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         }
 
 
+
     }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1742,4 +1755,11 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         super.onDestroy();
         realm.close();
     }
+
+
+
+
+
+
+
 }
