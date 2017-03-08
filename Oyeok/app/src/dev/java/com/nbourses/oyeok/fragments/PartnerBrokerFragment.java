@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -18,9 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -28,10 +29,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
-import com.nbourses.oyeok.activities.ClientDealsListActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.nbourses.oyeok.helpers.General;
-import com.nbourses.oyeok.models.OkAccept;
 import com.nbourses.oyeok.models.PayUHash.PayUHash;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -146,14 +145,24 @@ pb_continue.setText("Continue Lifetime Free Trial");
             pb_free.setTextColor(ContextCompat.getColor(getContext(), R.color.whitesmoke));
             pb_partner.setTextColor(ContextCompat.getColor(getContext(), R.color.greenish_blue));
 pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Manager\n*Every Deal min: Rs 35,000\n*Limited Edition to 10 Brokers per Area");
-            pb_continue.setText("Pay Rs. 50,000 for 3 Months");
+            pb_continue.setText("Pay "+General.currencyFormat(AppConstants.PARTNER_BROKER_COST+"")+" for 3 Months");
         }
         else if (v.getId() == pb_continue.getId()) {
-            if(pb_continue.getText().toString().equalsIgnoreCase("Pay Rs. 50,000 for 3 Months")){
+            if(pb_continue.getText().toString().equalsIgnoreCase("Pay "+General.currencyFormat(AppConstants.PARTNER_BROKER_COST+"")+" for 3 Months")){
 
                 //startPayment();
                // makePayment();
                 pay();
+            }
+            else {
+                getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getActivity().getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+                //getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_up, R.animator.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+                View container_sign = getActivity().findViewById(R.id.container_sign);
+                View card = getActivity().findViewById(R.id.card);
+                container_sign.setBackgroundColor(getResources().getColor(R.color.transparent));
+                container_sign.setClickable(false);
+                card.setClickable(false);
+                AppConstants.PARTNERBROKERCARD = false;
             }
         }
 
@@ -251,12 +260,13 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
         String phone = "8882434664";
         String productName = "partner_broker";
         String firstName = General.getSharedPreferences(getContext(),AppConstants.NAME);
-        String txnId = General.getSharedPreferences(getContext(),AppConstants.USER_ID) + System.currentTimeMillis();
+        String txnId = General.getSharedPreferences(getContext(),AppConstants.USER_ID) + "yo" /*System.currentTimeMillis()*/;
         String email=General.getSharedPreferences(getContext(),AppConstants.EMAIL);
-        /*String sUrl = "https://test.payumoney.com/mobileapp/payumoney/success.php";
-        String fUrl = "https://test.payumoney.com/mobileapp/payumoney/failure.php";*/
-        String sUrl = "https://oyeok.in";
-        String fUrl = "https://oyeok.in";
+
+        String sUrl = "https://test.payumoney.com/mobileapp/payumoney/success.php";
+        String fUrl = "https://test.payumoney.com/mobileapp/payumoney/failure.php";
+        /*String sUrl = "https://oyeok.in";
+        String fUrl = "https://oyeok.in";*/
         String udf1 = "";
         String udf2 = "";
         String udf3 = "";
@@ -279,7 +289,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
                 .setfUrl(fUrl)
                 .setUdf1(udf1)
                 .setUdf2(udf2)
-                //.setIsDebug(isDebug)
+                .setIsDebug(isDebug)
                 .setUdf3(udf3)
                 .setUdf4(udf4)
                 .setUdf5(udf5)
@@ -329,8 +339,16 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
 
         //paymentParam.setMerchantHash(hash);
 
+
+
+       /* String serverCalculatedHash=hashCal(key+"|"+txnId+"|"+getAmount()+"|"+productName+"|"
+                +firstName+"|"+email+"|"+phone+"|"+udf1+"|"+udf2+"|"+udf3+"|"+udf4+"|"+udf5+"|"+salt);*/
+
+      // paymentParam.setMerchantHash(serverCalculatedHash);
         Log.i(TAG,"paymentParam "+paymentParam.getParams().toString());
-      calculateServerSideHashAndInitiatePayment(paymentParam);
+       /* PayUmoneySdkInitilizer.startPaymentActivityForResult(getActivity(), paymentParam);*/
+
+   calculateServerSideHashAndInitiatePayment(paymentParam);
        // PayUmoneySdkInitilizer.startPaymentActivityForResult(getActivity(), paymentParam);
 
 
@@ -465,7 +483,9 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
 
         // Replace your server side hash generator API URL
         //String url = "https://test.payumoney.com/payment/op/calculateHashForTest";
-        String url = "https://test.hailyo.com/1/a/payu/hash";
+    //String url = "https://test.hailyo.com/1/a/payu/hash";
+     String url = "http://oyeok.in/gethash.php";
+
 
        // Toast.makeText(getContext(), "Please wai Generating hash ", Toast.LENGTH_LONG).show();
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -475,18 +495,24 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
                 try {
                     JSONObject jsonObject = new JSONObject(response);
 
-                    Log.i("app_activity", "Server calculated Hash jsonObject :  " + jsonObject.getJSONObject("responseData").getString("hash"));
+                   /* Log.i("app_activity", "Server calculated Hash jsonObject :  " + jsonObject.getJSONObject("responseData").getString("hash"));
 
-                    String hash = jsonObject.getJSONObject("responseData").getString("hash");
+                   */
+                    /*String hash = jsonObject.getJSONObject("responseData").getString("hash");
 
                     paymentParam.setMerchantHash(hash);
-                    PayUmoneySdkInitilizer.startPaymentActivityForResult(getActivity(), paymentParam);
-                    /*if (jsonObject.has(SdkConstants.STATUS)) {
+
+                    PayUmoneySdkInitilizer.startPaymentActivityForResult(getActivity(), paymentParam);*/
+
+                   /* paymentParam.setMerchantHash(hash);
+                    PayUmoneySdkInitilizer.startPaymentActivityForResult(getActivity(), paymentParam);*/
+                    Log.i("app_activity", "Server calculated Hash paymentParam jsonObject:  " + jsonObject);
+                    if (jsonObject.has(SdkConstants.STATUS)) {
                         String status = jsonObject.optString(SdkConstants.STATUS);
                         if (status != null || status.equals("1")) {
 
                             String hash = jsonObject.getString(SdkConstants.RESULT);
-                            Log.i("app_activity", "Server calculated Hash :  " + hash);
+                            Log.i("app_activity", "Server calculated Hash paymentParam :  " + hash);
 
                             paymentParam.setMerchantHash(hash);
 
@@ -497,7 +523,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
                                     Toast.LENGTH_SHORT).show();
                         }
 
-                    }*/
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -512,7 +538,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
 
                 Log.i("app_activity", "Server calculated Hash jsonObject 1 VolleyError 1 :  " + error.networkResponse);
                 Log.i("app_activity", "Server calculated Hash jsonObject 1 VolleyError 2 :  " + error.getNetworkTimeMs());
-                Log.i("app_activity", "Server calculated Hash jsonObject 1 VolleyError 3 :  " + error);
+                Log.i("app_activity", "Server calculated Hash jsonObject 1 VolleyError 3 :  " + error.getMessage());
 
                 if (error instanceof NoConnectionError) {
                     Toast.makeText(getContext(),
@@ -533,6 +559,11 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
             }
         };
         Volley.newRequestQueue(getContext()).add(jsonObjectRequest);
+
+       /* int socketTimeout = 30000;//30 seconds - change to what you want
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jsonObjectRequest.setRetryPolicy(policy);
+        mRequestQueue.add(jsonObjectRequest);*/
     }
 
    /* private void calculateServerSideHashAndInitiatePayment(final PayUmoneySdkInitilizer.PaymentParam paymentParam) {
@@ -614,6 +645,10 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
                 Log.i(TAG, "Success - Payment ID : " + data.getStringExtra(SdkConstants.PAYMENT_ID));
                 String paymentId = data.getStringExtra(SdkConstants.PAYMENT_ID);
                 showDialogMessage("Payment Success Id : " + paymentId);
+                General.setSharedPreferences(getContext(),AppConstants.PARTNER_BROKER,"yes");
+                View v = getActivity().findViewById(R.id.partner_b);
+                v.setVisibility(View.GONE);
+
             } else if (resultCode == RESULT_CANCELED) {
                 Log.i(TAG, "failure");
                 showDialogMessage("cancelled");
