@@ -26,6 +26,7 @@ public class AppConstants {
     public static boolean SETLOCATIONBTOL = false;
     public static boolean SETLOCATIONTRAVELT = false;
     public static boolean PARTNERBROKERCARD = false;
+    public static String PARTNER_BROKER ="partnerbroker";
     public static boolean FAV = false;
     public static  int MSG_COUNT = 100;
     public static  int minRent = 35000;
@@ -75,6 +76,7 @@ public class AppConstants {
     public static final String MARKERSELECTED = "markerSelected";
     public static PublishLetsOye letsOye = new PublishLetsOye();
     public static String MY_CITY = "myCity";
+    public static int PARTNER_BROKER_COST = 50000;
     //public static final String SERVER_BASE_URL = "http://52.41.200.154:9000/1";
     //public static final String SERVER_BASE_URL_101 = "http://52.41.200.154:9000/1.01";
     //public static final String SERVER_BASE_URL_102 = "http://52.41.200.154:9000/1.02";

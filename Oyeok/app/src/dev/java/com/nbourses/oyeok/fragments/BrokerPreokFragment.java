@@ -800,6 +800,8 @@ private String transaction_type="Rental";
                             Log.i("PREOK CALLED", "ne is the complete" + ne);
                             JSONObject neighbours = ne.getJSONObject("responseData").getJSONObject("neighbours");
                             maxPages = Integer.parseInt(ne.getJSONObject("responseData").getString("max_pages"));
+                            AppConstants.PARTNER_BROKER_COST = ne.getJSONObject("responseData").getInt("partner_broker_cost");
+
                             Log.i("PREOK CALLED", "ne is the neighbours "+maxPages+" " + neighbours);
                             JSONArray j = neighbours.getJSONObject("My Listings Match").getJSONArray("LL");
                             JSONArray k = neighbours.getJSONObject("My Listings Match").getJSONArray("OR");

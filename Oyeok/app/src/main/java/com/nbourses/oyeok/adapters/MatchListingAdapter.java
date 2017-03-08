@@ -91,7 +91,7 @@ public class MatchListingAdapter extends RecyclerView.Adapter<MatchListingAdapte
         holder.config.setText(item.getConfig());
         holder.matchlisting.setCardBackgroundColor(item.isSelected() ? Color.parseColor("#b2ffb2"):Color.WHITE);
         holder.tick.setBackground(item.isSelected() ?  ContextCompat.getDrawable(c, R.drawable.ic_checked_greenish_blue):ContextCompat.getDrawable(c, R.drawable.ic_checked_grey));
-        
+
         try {
             holder.date.setText(General.timestampToString(Long.parseLong(item.getDate())));
         } catch (NumberFormatException e) {

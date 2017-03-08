@@ -564,6 +564,9 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
         updateEmail();
 
 
+        if(General.getSharedPreferences(this,AppConstants.PARTNER_BROKER).equalsIgnoreCase("yes"))
+            partner_b.setVisibility(View.GONE);
+
         partner_b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

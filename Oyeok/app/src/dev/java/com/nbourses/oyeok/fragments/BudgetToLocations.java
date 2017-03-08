@@ -18,7 +18,9 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -100,6 +102,7 @@ public class BudgetToLocations extends Fragment {
     Button bhk6;*/
 
     private RadioGroup rg;
+    private RadioGroup radioGroupany;
     private Button rk1;
     private Button bhk1;
     private Button bhk1_5;
@@ -112,6 +115,7 @@ public class BudgetToLocations extends Fragment {
     private Button bhk5;
     private Button bhk5_5;
     private Button bhk6;
+    private RadioButton txt300h,txt600h,txt800h,txt1300h,txt1600h,txt1800h,txt2100h,txt2300h,txt2500h,txt2700h,txt2900h;
     private TextView calender;
     private LinearLayout submitb;
     private SwitchButton toggleBtn;
@@ -144,6 +148,7 @@ public class BudgetToLocations extends Fragment {
     private int mean;
     private int maxi = 110000;
     private int mini = 10000;
+    private HorizontalScrollView horizontalScrollViewAny,horizontalScrollViewHome;
 
 
     public BudgetToLocations() {
@@ -162,6 +167,8 @@ public class BudgetToLocations extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_budget_to_locations, container,
                 false);
+        horizontalScrollViewHome=(HorizontalScrollView)rootView.findViewById(R.id.horizontalScrollViewHome);
+        horizontalScrollViewAny=(HorizontalScrollView)rootView.findViewById(R.id.horizontalScrollViewAny);
         toggleBtn = (SwitchButton) rootView.findViewById(R.id.toggleBtn);
         spinner = (Spinner) rootView.findViewById(R.id.spinner1);
         seekBar = (DiscreteSeekBar) rootView.findViewById(R.id.seekBar1);
@@ -174,6 +181,7 @@ public class BudgetToLocations extends Fragment {
         industry = (TextView) rootView.findViewById(R.id.btn_industrial);
         ptype = (TextView) rootView.findViewById(R.id.p_type);
         rg = (RadioGroup) rootView.findViewById(R.id.radioGroup1);
+        radioGroupany = (RadioGroup) rootView.findViewById(R.id.radioGroupany);
         rk1 = (Button) rootView.findViewById(R.id.rk1);
         bhk1 = (Button) rootView.findViewById(R.id.bhk1);
         bhk1_5 = (Button) rootView.findViewById(R.id.bhk1_5);
@@ -258,7 +266,8 @@ public class BudgetToLocations extends Fragment {
                 industry.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 shop.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 office.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
-
+                horizontalScrollViewAny.setVisibility(View.GONE);
+                horizontalScrollViewHome.setVisibility(View.VISIBLE);
             }
         });
 
@@ -271,6 +280,8 @@ public class BudgetToLocations extends Fragment {
                 industry.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 office.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
+                horizontalScrollViewAny.setVisibility(View.VISIBLE);
+                horizontalScrollViewHome.setVisibility(View.GONE);
             }
         });
 
@@ -283,6 +294,9 @@ public class BudgetToLocations extends Fragment {
                 industry.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 shop.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
+                horizontalScrollViewAny.setVisibility(View.VISIBLE);
+                horizontalScrollViewHome.setVisibility(View.GONE);
+
             }
         });
 
@@ -295,6 +309,8 @@ public class BudgetToLocations extends Fragment {
                 shop.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
                 office.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_button_bg_with_border));
+                horizontalScrollViewAny.setVisibility(View.VISIBLE);
+                horizontalScrollViewHome.setVisibility(View.GONE);
             }
         });
 
@@ -364,6 +380,71 @@ public class BudgetToLocations extends Fragment {
                 }
             }
         });
+
+        radioGroupany.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+
+                switch (checkedId)
+                {
+                    case R.id.txt300h:
+                        configArea = "300";
+                        break;
+                    case R.id.txt600h:
+
+                        configArea="600";
+
+                        break;
+                    case R.id.txt800h:
+
+                        configArea="800";
+
+                        break;
+                    case R.id.txt950h:
+                        configArea="950";
+
+                        break;
+                    case R.id.txt1300h:
+
+                        configArea="1300";
+
+                        break;
+                    case R.id.txt1600h:
+                        configArea="1600";
+
+                        break;
+                    case R.id.txt1800h:
+                        configArea="1800";
+
+                        break;
+                    case R.id.txt2100h:
+                        configArea="2100";
+
+                        break;
+                    case R.id.txt2300h:
+                        configArea="2300";
+
+                        break;
+                    case R.id.txt2500h:
+                        configArea="2500";
+
+                        break;
+                    case R.id.txt2700h:
+                        configArea="2700";
+
+                        break;
+                    case R.id.txt2900h:
+                        configArea="2900";
+
+                        break;
+
+                }
+
+
+            }
+        });
+
 
         submitb.setOnClickListener(new View.OnClickListener() {
             @Override

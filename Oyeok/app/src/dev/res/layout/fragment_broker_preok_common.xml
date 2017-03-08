@@ -203,7 +203,7 @@
 
         <TextView
             android:id="@+id/texName"
-            android:visibility="gone"
+            android:visibility="visible"
             android:gravity="center"
             android:textSize="15sp"
             android:layout_width="match_parent"
@@ -271,6 +271,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Please select a Lead"
+
             android:id="@+id/leadPrompt"
             android:layout_gravity="center_horizontal|top"
             android:paddingLeft="5dp"
@@ -301,6 +302,35 @@
               android:layout_marginBottom="50dp"
               android:layout_marginLeft="25dp"
               android:text="Select\nClient"/> -->
+
+        <!--<android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="3dp"
+            android:id="@+id/connectOk"
+            app:cardElevation="5dp"
+            app:cardBackgroundColor="@color/greenish_blue"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp">
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/ok"
+                android:visibility="visible"
+                android:layout_gravity="bottom|center" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CONTINUE"
+                android:textSize="20dp"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                android:layout_gravity="center_vertical|center_horizontal"/>
+        </android.support.v7.widget.CardView>-->
     </LinearLayout>
     <TextView
         android:text="Fetching matches..."
