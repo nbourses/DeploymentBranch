@@ -43,7 +43,7 @@ android {
         minSdkVersion 16
         multiDexEnabled true
         targetSdkVersion 25
-        versionCode 47
+        versionCode 48
         versionName "1.0"
         manifestPlaceholders = [manifestApplicationId          : "${applicationId}",
                                 onesignal_app_id               : "9e2ab2be-54c5-4981-b15f-fb8dc78b81ee",
@@ -54,14 +54,14 @@ android {
 
 
 
-    signingConfigs {
+   /* signingConfigs {
         debug {
             storeFile file("/Users/shlokmalik/Desktop/oyeok.jks")
             storePassword "NBAscent@123A"
             keyAlias "oyeok"
             keyPassword "NBAscent@123A"
         }
-    }
+    }*/
     /*buildTypes {
         release {
 
