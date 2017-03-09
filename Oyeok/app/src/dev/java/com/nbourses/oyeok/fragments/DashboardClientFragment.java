@@ -2101,11 +2101,8 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             if(intent.getExtras()!=null && intent.getExtras().getBoolean("buildingoye")==true)
             {
                 Log.i("closeOyeScreenSlide","====onMapclicked===");
-               // try {
-                   // onMapclicked();
-                    //Clearscreen();
+                filterValueMultiplier =950;
                 getPrice();
-                //}catch(Exception e){}
             }
           //  UpdateRatePanel();
            // RatePanel = true;
@@ -2118,23 +2115,13 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
             catch(Exception e){
 
             }
-//            StartAnimation();
-            //if(clicked==false){
                 oyebuttonBackgrountColorGreenishblue();
                 map.getUiSettings().setAllGesturesEnabled(true);
                 mHelperView.setEnabled(true);
                 clicked=true;
-           // }
 
-           // if(RatePanel==true) {
                 UpdateRatePanel();
-               // RatePanel = false;
-           // }
-           // else {
-               // RatePanel = true;
-                // tvFetchingrates.setVisibility(View.VISIBLE);
-            //}
-            // Change color of flip oye button
+
 
         }
     };
