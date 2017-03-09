@@ -248,7 +248,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
     private double getAmount() {
 
 
-        Double amount = 10.0;
+        Double amount = Double.parseDouble(AppConstants.PARTNER_BROKER_COST+"");
 
 
            // Toast.makeText(getContext(), "Paying Default Amount ₹10", Toast.LENGTH_LONG).show();
@@ -483,8 +483,8 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
 
         // Replace your server side hash generator API URL
         //String url = "https://test.payumoney.com/payment/op/calculateHashForTest";
-    //String url = "https://test.hailyo.com/1/a/payu/hash";
-     String url = "http://oyeok.in/gethash.php";
+    String url = "https://ssl.hailyo.com/1/a/payu/hash";
+     //String url = "http://oyeok.in/gethash.php";
 
 
        // Toast.makeText(getContext(), "Please wai Generating hash ", Toast.LENGTH_LONG).show();
@@ -498,16 +498,17 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
                    /* Log.i("app_activity", "Server calculated Hash jsonObject :  " + jsonObject.getJSONObject("responseData").getString("hash"));
 
                    */
-                    /*String hash = jsonObject.getJSONObject("responseData").getString("hash");
+                    Log.i("app_activity", "Server calculated Hash paymentParam jsonObject:  " + jsonObject);
+                    String hash = jsonObject.getJSONObject("responseData").getString("hash");
 
                     paymentParam.setMerchantHash(hash);
 
-                    PayUmoneySdkInitilizer.startPaymentActivityForResult(getActivity(), paymentParam);*/
+                    PayUmoneySdkInitilizer.startPaymentActivityForResult(getActivity(), paymentParam);
 
                    /* paymentParam.setMerchantHash(hash);
                     PayUmoneySdkInitilizer.startPaymentActivityForResult(getActivity(), paymentParam);*/
-                    Log.i("app_activity", "Server calculated Hash paymentParam jsonObject:  " + jsonObject);
-                    if (jsonObject.has(SdkConstants.STATUS)) {
+
+                   /* if (jsonObject.has(SdkConstants.STATUS)) {
                         String status = jsonObject.optString(SdkConstants.STATUS);
                         if (status != null || status.equals("1")) {
 
@@ -523,7 +524,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
                                     Toast.LENGTH_SHORT).show();
                         }
 
-                    }
+                    }*/
 
                 } catch (JSONException e) {
                     e.printStackTrace();
