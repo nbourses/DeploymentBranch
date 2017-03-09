@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -94,7 +95,7 @@ public class FragmentDrawer extends Fragment {
         return data;
     }
 
-    @Override
+  /*  @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -132,21 +133,60 @@ public class FragmentDrawer extends Fragment {
             }
         }
 
-        /*if(userType.equals("Client"))
+        *//*if(userType.equals("Client"))
             titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_signup_client);
         else{
             if (userType.equals("Broker"))
                 titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_signup_broker);
             else
                 titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_no_signup);
-        }*/
-    }
+        }*//*
+    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflating view layout
-        View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        // Inflate the layout for this fragment
+        final Context contextThemeWrapper = new ContextThemeWrapper(getContext(), R.style.MyMaterialTheme1);
+
+        // clone the inflater using the ContextThemeWrapper
+        LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
+
+
+        View layout = localInflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+
+
+        if(General.getSharedPreferences(getActivity(), AppConstants.IS_LOGGED_IN_USER).equals("")) {
+            if (General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+                Log.i(TAG,"yo man 98");
+                titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_no_signup_broker);
+                icons = getActivity().getResources().obtainTypedArray(R.array.nav_drawer_labels_no_signup_icon_broker);
+            }else{
+                Log.i(TAG,"yo man 99");
+                titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_no_signup_client);
+                icons = getActivity().getResources().obtainTypedArray(R.array.nav_drawer_labels_no_signup_icon_client);
+            }
+
+        }
+        else {
+            if (General.getSharedPreferences(getActivity(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+
+                titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_signup_broker);
+                icons = getActivity().getResources().obtainTypedArray(R.array.nav_drawer_labels_signup_broker_icon);
+            }
+            else {
+                titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels_signup_client);
+                icons = getActivity().getResources().obtainTypedArray(R.array.nav_drawer_labels_signup_client_icon);
+            }
+        }
+
+
+
+
+
+
+
 
         txtemail=(TextView)layout.findViewById(R.id.txtEmail);
         txtemail.setText(General.getSharedPreferences(getContext(),AppConstants.EMAIL));

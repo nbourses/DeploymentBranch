@@ -1015,12 +1015,12 @@ try {
             //reset PublishLetsOye object
             AppConstants.letsOye = new PublishLetsOye();
 //bundle_args
-            bundle_args=  ((DashboardClientFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).Brokertype();
+            bundle_args=  ((DashboardClientFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).Brokertype();//disableMapGesture
             OyeScreenFragment oye = new OyeScreenFragment();
             loadFragment(oye, bundle_args, R.id.container_oye, "");
             slidingLayout.setAnchorPoint(0.5f);
             slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
-
+            ((DashboardClientFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).disableMapGesture();
             // btnOnOyeClick.setVisibility(View.VISIBLE);
 
         }
@@ -2069,13 +2069,26 @@ if(AppConstants.FAV) {
         tv_change_region.setText(SharedPrefs.getString(getBaseContext(),SharedPrefs.MY_CITY));
         getSupportActionBar().setTitle("");///Live Building Rates
 
-        if( buidingInfoFlag==true)
+        if( buidingInfoFlag==true) {
 //            for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
-                getSupportFragmentManager().popBackStack();
-        buidingInfoFlag=false;
+            getSupportFragmentManager().popBackStackImmediate();
+            buidingInfoFlag = false;
+        }
         Log.i("backstack count1","   : "+buidingInfoFlag+"  "+getSupportFragmentManager().getBackStackEntryCount());
 
     }
+
+
+
+    public void stackPopFragment(){
+        if( buidingInfoFlag==true) {
+            //for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
+            getSupportFragmentManager().popBackStackImmediate();
+            buidingInfoFlag = false;
+        }
+    }
+
+
     public  void CloseBuildingOye(){
 
       /*  if (!General.getSharedPreferences(this,AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker") && (General.getBadgeCount(this, AppConstants.HDROOMS_COUNT_UV) > 0)){

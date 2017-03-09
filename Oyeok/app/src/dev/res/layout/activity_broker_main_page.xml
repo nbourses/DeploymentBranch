@@ -63,7 +63,7 @@
                     android:drawableTop="@drawable/selector_watchlist"
                     android:textColor="@drawable/selector_nav_text"
                     android:id="@+id/watchList"
-                    android:text="WatchList"/>
+                    android:text="Buildings"/>
 
                 <RadioButton
                     android:layout_width="match_parent"
@@ -153,8 +153,11 @@
             android:layout_width="@dimen/nav_drawer_width"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            app:layout="@layout/fragment_navigation_drawer"
-            tools:layout="@layout/fragment_navigation_drawer" />
+             />
+
+
+        <!--app:layout="@layout/fragment_navigation_drawer"-->
+        <!--tools:layout="@layout/fragment_navigation_drawer"-->
 
     </android.support.v4.widget.DrawerLayout>
     <FrameLayout

@@ -1,8 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:clickable="true"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    app:theme="@style/MyMaterialTheme">
 
 
     <RelativeLayout
@@ -55,9 +57,9 @@
         android:id="@+id/drawerList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
         android:layout_below="@+id/nav_header_container"
-        android:clickable="false" />
+        app:theme="@style/MyMaterialTheme"
+        />
 
 
 
