@@ -1105,10 +1105,10 @@ private LinearLayout signinpanel;
 //                                      AppConstants.REGISTERING_FLAG=false;
                             return;
                         }
-                        else if(signUp.getError().equals(9)){
+                        /*else if(signUp.getError().equals(9)){
                             TastyToast.makeText(getContext(),"Your mobile number is already registerd with us with a different name or email, to update name/email go to profile.",TastyToast.LENGTH_LONG,TastyToast.INFO);
 
-                        }
+                        }*/
                         try {
                             Realm myRealm = General.realmconfig(getContext());
                             if (myRealm.isInTransaction()) {

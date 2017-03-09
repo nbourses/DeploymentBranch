@@ -338,6 +338,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/loadingLeads"
         android:textAlignment="center"
+        android:textSize="10sp"
         android:textColor="@color/greenish_blue"
         android:visibility="visible"
         android:layout_gravity="bottom"

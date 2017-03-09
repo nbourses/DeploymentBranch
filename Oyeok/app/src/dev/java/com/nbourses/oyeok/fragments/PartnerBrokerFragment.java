@@ -483,7 +483,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
 
         // Replace your server side hash generator API URL
         //String url = "https://test.payumoney.com/payment/op/calculateHashForTest";
-    String url = "https://ssl.hailyo.com/1/a/payu/hash";
+    String url = "https://test.hailyo.com/1/a/payu/hash";
      //String url = "http://oyeok.in/gethash.php";
 
 

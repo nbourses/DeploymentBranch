@@ -393,6 +393,8 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
                 R.anim.slide_down);
        // editBaseLocation.setVisibility(View.VISIBLE);
 
+
+
        try {
             SharedPreferences prefs =
                     PreferenceManager.getDefaultSharedPreferences(this);
@@ -563,9 +565,8 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
 
         updateEmail();
 
-
-        if(General.getSharedPreferences(this,AppConstants.PARTNER_BROKER).equalsIgnoreCase("yes"))
-            partner_b.setVisibility(View.GONE);
+        if (General.getSharedPreferences(this, AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("yes") &&   General.getSharedPreferences(this,AppConstants.PARTNER_BROKER).equalsIgnoreCase(""))
+            partner_b.setVisibility(View.VISIBLE);
 
         partner_b.setOnClickListener(new View.OnClickListener() {
             @Override
