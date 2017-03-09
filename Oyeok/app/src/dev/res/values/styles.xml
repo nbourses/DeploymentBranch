@@ -159,6 +159,7 @@
         <item name="android:paddingBottom">5dp</item>
         <item name="android:theme">@style/MyMaterialTheme1</item>
         <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/Black</item>
     </style>
 
     <!--Remember sushil-->

@@ -135,10 +135,10 @@
 
 
 
-    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
+    <!--<style name="checkBoxStyle" parent="Base.Theme.AppCompat">
         <item name="colorAccent">@color/greenish_blue</item>
         <item name="android:textColorSecondary">@color/colorAccent</item>
-    </style>
+    </style>-->
 
 
     <style name="spinner_style" >
