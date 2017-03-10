@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,9 @@ public class AddListing extends Fragment {
     private String Property;
     LinearLayout next;
     HorizontalScrollView hsl;
-    String approx_area;
+    String approx_area,Entry_point="";
+
+    Bundle b;
 
     public AddListing() {
         // Required empty public constructor
@@ -88,6 +91,14 @@ public class AddListing extends Fragment {
 
         General.setSharedPreferences(getContext(),AppConstants.PROPERTY,"home");
 
+        b=new Bundle();
+        b=getArguments();
+        if(b!=null&&b.containsKey("add_listing")) {
+            Entry_point = b.getString("add_listing");
+            Log.i("Entry_point", "Entry_point read   :"+ Entry_point);
+           // Entry_point=b.getString("listing_id");
+
+        }
 
         MyApplication application = (MyApplication) getActivity().getApplication();
         Tracker mTracker = application.getDefaultTracker();
@@ -316,11 +327,15 @@ public class AddListing extends Fragment {
             @Override
             public void onClick(View v) {
                 AppConstants.PROPERTY="Home";
+                if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
+                    ((MyPortfolioActivity) getActivity()).closeCardContainer();
+                }else
                 if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                     ((BrokerMap) getActivity()).closeCardContainer();
                 }else{
 
                     ((ClientMainActivity) getActivity()).closeAddListing();
+                    //((ClientMainActivity) getActivity()).onBackPressed();
 
                 }
             }
@@ -332,12 +347,18 @@ public class AddListing extends Fragment {
                 AppConstants.PROPERTY=Property;
                 General.setSharedPreferences(getContext(),AppConstants.PROPERTY,Property);
                 General.setSharedPreferences(getContext(),AppConstants.APPROX_AREA,approx_area);
+                if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
+                    ((MyPortfolioActivity) getActivity()).closeCardContainer();
+                    ((MyPortfolioActivity) getActivity()).openAddBuilding();
+
+                }else
                if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")){
                    ((BrokerMap) getActivity()).closeCardContainer();
                    ((BrokerMap) getActivity()).openAddBuilding();
+
                 }else{
                     ((ClientMainActivity) getActivity()).closeAddListing();
-                    ((ClientMainActivity) getActivity()).openAddBuilding();
+                   ((ClientMainActivity) getActivity()).openAddBuilding();
                 }
             }
         });

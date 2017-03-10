@@ -55,6 +55,9 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.adapters.porfolioAdapter;
+import com.nbourses.oyeok.fragments.AddBuilding;
+import com.nbourses.oyeok.fragments.AddListing;
+import com.nbourses.oyeok.fragments.AddListingFinalCard;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.DashboardClientFragment;
 import com.nbourses.oyeok.fragments.ShareOwnersNo;
@@ -173,6 +176,10 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
+boolean cardflag=false;
+    FrameLayout container_sign,card;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,6 +187,8 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
         if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
             setContentView(R.layout.activity_my_portfolio);
+            container_sign=(FrameLayout)findViewById(R.id.container_Signup1);
+            card=(FrameLayout)findViewById(R.id.card1);
         } else {
             LinearLayout dynamicContent = (LinearLayout) findViewById(R.id.dynamicContent);
 
@@ -195,7 +204,8 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 //            rb.setChecked(true);
             // rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_watchlist) , null, null);
             rb.setTextColor(Color.parseColor("#2dc4b6"));
-
+            container_sign=(FrameLayout)findViewById(R.id.container_sign);
+            card=(FrameLayout)findViewById(R.id.card);
             drawerFragment = (FragmentDrawer)
                     getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
             drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
@@ -366,14 +376,16 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
                     AppConstants.SIGNUP_FLAG = true;
 
                 } else if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
-                    General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
+                    openAddListing();
+                    /*General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
                     Intent in = new Intent(getBaseContext(), ClientMainActivity.class);
-                    startActivity(in);
+                    startActivity(in);*/
 
                 } else {
-                    General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
+                    openAddListing();
+                    /*General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
                     Intent in = new Intent(getBaseContext(), BrokerMap.class);
-                    startActivity(in);
+                    startActivity(in);*/
                 }
 
             }
@@ -1113,7 +1125,9 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
     @Override
     public void onBackPressed() {
 
-        if (AppConstants.SIGNUP_FLAG) {
+        if(cardflag){
+            closeCardContainer();
+        }else if (AppConstants.SIGNUP_FLAG) {
             //Log.i(TAG,"flaga isa 6 ");
             if (AppConstants.REGISTERING_FLAG) {
             } else {
@@ -1747,7 +1761,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
         // WatchListRealmModel watchListRealmModel=myRealm.where(WatchListRealmModel.class).equalTo("watchlist_id",watchlist_id).findFirst();
         realm.copyToRealmOrUpdate(watchListRealmModel);
         realm.commitTransaction();
-
+        recreate();
     }
 
     @Override
@@ -1759,6 +1773,86 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
 
 
 
+    public void openAddListing(){
+        cardflag=true;
+        container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
+        container_sign.setClickable(true);
+        AddListing addListing= new AddListing();
+        Bundle b =new Bundle();
+        b.putString("add_listing","portfolio");
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            loadFragmentAnimated(addListing, b, R.id.card, "card");
+        }
+        else{
+            loadFragmentAnimated(addListing,b,R.id.card1,"card");
+        }
+
+    }
+    public void closeCardContainer(){
+
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+
+        }else{
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card1)).commit();
+
+        }
+
+        container_sign.setBackgroundColor(getResources().getColor(R.color.transparent));
+        container_sign.setClickable(false);
+        card.setClickable(false);
+        // ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
+    }
+
+    public void openAddBuilding(){
+
+
+
+        cardflag=true;
+
+        container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
+        container_sign.setClickable(true);
+
+        AddBuilding addBuilding= new AddBuilding();
+        Bundle b =new Bundle();
+        b.putString("add_listing","portfolio");
+
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            loadFragmentAnimated(addBuilding, b, R.id.card, "card");
+        }
+        else{
+            loadFragmentAnimated(addBuilding,b,R.id.card1,"card");
+        }
+
+
+        /*FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        card.setClickable(true);
+        fragmentTransaction.addToBackStack("card");
+        fragmentTransaction.replace(R.id.card, addBuilding);
+        fragmentTransaction.commitAllowingStateLoss();*/
+//        loadFragmentAnimated(addBuildingRealm, null, R.id.card, "");
+
+    }
+
+
+    public void openAddListingFinalCard(){
+         cardflag=true;
+        container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
+        container_sign.setClickable(true);
+        AddListingFinalCard addListingFinalCard= new AddListingFinalCard();
+        /*Bundle b =new Bundle();
+        b.putString("edit_listing","update");
+        b.putString("listing_id",id);*/
+
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            loadFragmentAnimated(addListingFinalCard, null, R.id.card, "card");
+        }
+        else{
+            loadFragmentAnimated(addListingFinalCard,null,R.id.card1,"card");
+        }
+    }
 
 
 

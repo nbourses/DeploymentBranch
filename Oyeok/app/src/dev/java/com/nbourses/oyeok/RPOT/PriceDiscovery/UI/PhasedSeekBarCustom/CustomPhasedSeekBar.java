@@ -206,10 +206,14 @@ public class CustomPhasedSeekBar extends View {
     protected int getCount() {
 
 //          Log.i("PHASEDSEEKBAR","getcount "+mAdapter.getCount());
+        int n=2;
+        try {
+          n = isInEditMode() ? 3 : mAdapter.getCount();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            return isInEditMode() ? 3 : mAdapter.getCount();
-
-
+        return n;
     }
 
 

@@ -19,6 +19,7 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -233,6 +234,10 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+
+    String Entry_point="";
+
+
 
     @Override
     public void onPositionSelected(int position, int count) {
@@ -507,9 +512,22 @@ try {
 
         }
         else if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("PC")){
-
                 General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
-                openAddListing();
+
+
+                new CountDownTimer(500,500) {
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+                    public void onFinish() {
+                        String name="";
+                        if(getIntent().getExtras().containsKey("add_listing")){
+                            name = getIntent().getExtras().getString("name_build");
+                            Entry_point = getIntent().getExtras().getString("add_listing");
+                            setlocation(name);
+                        }
+                    }
+                }.start();
 
         }else{
             //dbHelper.save(DatabaseConstants.userRole, "Client");
@@ -567,6 +585,17 @@ try {
 
     }
 
+
+    public void Setloc()
+    {
+        String name="";
+        if(getIntent().getExtras().containsKey("add_listing")){
+            name = getIntent().getExtras().getString("name_build");
+            Entry_point = getIntent().getExtras().getString("add_listing");
+            setlocation(name);
+        }
+    }
+
    /* @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -595,78 +624,6 @@ try {
      */
     private void init() {
 
-//        RealmConfiguration config = new RealmConfiguration
-//                .Builder(this)
-//                .deleteRealmIfMigrationNeeded()
-//                .build();
-//        Realm myRealm = Realm.getInstance(config);
-
-
-        /*
-        //splashscreen
-        Intent introActivity = new Intent(this, IntroActivity.class);
-
-        startActivity(introActivity);*/
-
-//        myRealm.beginTransaction();
-//
-//        // Create an object
-//        Country country1 = myRealm.createObject(Country.class);
-//
-//        // Set its fields
-//        country1.setName("Norway");
-//        country1.setPopulation(5165800);
-//
-//        myRealm.commitTransaction();
-//
-//
-//        Country country2 = new Country();
-//        country2.setName("Russia");
-//        country2.setPopulation(146430430);
-//
-//
-//        myRealm.beginTransaction();
-//        Country copyOfCountry2 = myRealm.copyToRealm(country2);
-//        myRealm.commitTransaction();
-
-
-//        RealmResults<Country> results1 =
-//                myRealm.where(Country.class).findAll();
-//
-//        for(Country c:results1) {
-//            Log.d("results2", c.getName());
-//        }
-
-
-//        myRealm.beginTransaction();
-//        UserInfo user = myRealm.createObject(UserInfo.class);
-//       // UserInfo user = new UserInfo();
-//        user.setName("Rapp");
-//        user.setMobileNumber("146430430");
-//
-//
-//
-//        UserInfo copyOfCountry = myRealm.copyToRealmOrUpdate(user);
-//        myRealm.commitTransaction();
-
-
-//        UserInfo usera = new UserInfo();
-//        usera.setName("Rapter");
-//        usera.setMobileNumber("1464304308");
-//
-//
-//        myRealm.beginTransaction();
-//        UserInfo copyOfCountry2 = myRealm.copyToRealmOrUpdate(usera);
-//        myRealm.commitTransaction();
-//
-//        RealmResults<UserInfo> results4 =
-//                myRealm.where(UserInfo.class).findAll();
-//        Log.i(TAG,"insider1 ");
-//        for(UserInfo c:results4) {
-////            Log.i(TAG,"insider2 ");
-////            Log.i(TAG,"insider3 "+c.getName());
-////            Log.i(TAG,"insider4 "+c.getEmailId());
-//        }
 
 
 
@@ -684,37 +641,6 @@ try {
             hdroomsCount.setVisibility(View.GONE);
         }
 
-
-        /*try {
-            SharedPreferences prefs =
-                    PreferenceManager.getDefaultSharedPreferences(this);
-
-
-            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                    Log.e(TAG, "listener shared 0 " + key);
-                    if (key.equals(AppConstants.HDROOMS_COUNT)) {
-                        if (General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT) <= 0)
-                            hdroomsCount.setVisibility(View.GONE);
-                        else {
-                            hdroomsCount.setVisibility(View.VISIBLE);
-                            hdroomsCount.setText(String.valueOf(General.getBadgeCount(getApplicationContext(), AppConstants.HDROOMS_COUNT)));
-
-
-                        }
-
-
-                    }
-                    if (key.equals(AppConstants.EMAIL)) {
-                        emailTxt.setText(General.getSharedPreferences(ClientMainActivity.this, AppConstants.EMAIL));
-                    }
-                }
-            };
-
-            prefs.registerOnSharedPreferenceChangeListener(listener);
-        } catch (Exception e) {
-            Log.e(TAG, "listener shared 1 " + e.getMessage());
-        }*/
 
         try {
             SharedPreferences prefs =
@@ -765,11 +691,8 @@ try {
         }
 
         //You need to set the Android context using Firebase.setAndroidContext() before using Firebase.
-        Firebase.setAndroidContext(this);
+        //Firebase.setAndroidContext(this);
 
-        /*//gcm implementation
-        Intent intent = new Intent(this, DeviceRegisterService.class);
-        startService(intent);*/
 
         //setup sliding layout
 
@@ -871,7 +794,25 @@ try {
         loadFragment(dashboardClientFragment, bundle1, R.id.container_map, "Client Dashboard");
 
 
+        /* if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("PC")){
+            General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
 
+
+            new CountDownTimer(1000,1000) {
+                public void onTick(long millisUntilFinished) {
+
+                }
+                public void onFinish() {
+                String name="";
+                 if(getIntent().getExtras().containsKey("add_listing")){
+                    name = getIntent().getExtras().getString("name_build");
+                    Entry_point = getIntent().getExtras().getString("add_listing");
+                    setlocation(name);
+                 }
+                }
+            }.start();
+
+        }*/
 
 
         try {
@@ -1282,7 +1223,7 @@ try {
     @Override
     public void onBackPressed() {
 
-        Log.i(TAG,"flaga isa "+AppConstants.SIGNUP_FLAG);
+            Log.i(TAG,"flaga isa "+AppConstants.SIGNUP_FLAG);
 
 
        /* if(!BrokerRole.equalsIgnoreCase("broker")){
@@ -1297,29 +1238,35 @@ try {
 if(AppConstants.FAV) {
     dashboardClientFragment.hideFav();
 }
-*/
-
-
-         if(AppConstants.SEARCHFLAG){
+*/        if(AppConstants.SEARCHFLAG){
              Log.i("sushil123","SEARCHFLAG 123 ");
 
             AppConstants.SEARCHFLAG = false;
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup)).commit();
 
-        }
-        else if(AppConstants.SETLOCATION){
+         }else if(Entry_point.equalsIgnoreCase("portfolio")){
 
-       Intent intent = new Intent(this, ClientMainActivity.class);
-        intent.addFlags(
+            //closeCardContainer();
+            Reset();
+            Intent in = new Intent(getBaseContext(), MyPortfolioActivity.class);
+            in.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(in);
+            //openporfolio();
+            Entry_point="";
+        } else if(AppConstants.SETLOCATION){
+
+          Intent intent = new Intent(this, ClientMainActivity.class);
+          intent.addFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TOP |
                         Intent.FLAG_ACTIVITY_CLEAR_TASK |
                         Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
+          startActivity(intent);
+          finish();
              AppConstants.SETLOCATION=false;
-        }
+         }
 
-        else if(AppConstants.cardNotif){
+         else if(AppConstants.cardNotif){
             Log.i("sushil123","flaga isa 1 ");
             AppConstants.cardNotif = false;
             AppConstants.optionspu1.dismiss();
@@ -2005,7 +1952,7 @@ if(AppConstants.FAV) {
 
     }
 
-    public  void OpenBuildingOyeConfirmation(String listing,String transaction,String portal,String Config,int ll_pm,int or_psf){
+    public  void OpenBuildingOyeConfirmation(String listing,String transaction,String portal,String Config,int ll_pm,int or_psf,String count){
         hdroomsCount.setVisibility(View.GONE);
         drawerFragment.setMenuVisibility(false);
         setbaseloc.setVisibility(View.GONE);
@@ -2017,6 +1964,7 @@ if(AppConstants.FAV) {
         args.putString("config", Config);
         args.putInt("ll_pm", ll_pm);
         args.putInt("or_psf", or_psf);
+        args.putString("count", count);
         confirm_screen_title.setVisibility(View.VISIBLE);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -2070,8 +2018,10 @@ if(AppConstants.FAV) {
         getSupportActionBar().setTitle("");///Live Building Rates
 
         if( buidingInfoFlag==true) {
+            getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
+
 //            for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
-            getSupportFragmentManager().popBackStackImmediate();
+           // getSupportFragmentManager().popBackStackImmediate();
             buidingInfoFlag = false;
         }
         Log.i("backstack count1","   : "+buidingInfoFlag+"  "+getSupportFragmentManager().getBackStackEntryCount());
@@ -2083,7 +2033,7 @@ if(AppConstants.FAV) {
     public void stackPopFragment(){
         if( buidingInfoFlag==true) {
             //for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
-            getSupportFragmentManager().popBackStackImmediate();
+            getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
             buidingInfoFlag = false;
         }
     }
@@ -2275,15 +2225,15 @@ public void openAddListing(){
 
     public  void setlocation(String b_name){
         btnMyDeals.setVisibility(View.GONE);
-        btn_back.setVisibility(View.VISIBLE);
-        btn_cancel.setVisibility(View.VISIBLE);
+        /*btn_back.setVisibility(View.VISIBLE);
+        btn_cancel.setVisibility(View.VISIBLE);*/
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setbaseloc.setVisibility(View.GONE);
         confirm_screen_title.setVisibility(View.VISIBLE);
         confirm_screen_title.setText(b_name);
         getSupportActionBar().setTitle("");
-        closeAddBuilding();
+        //closeAddBuilding();
         containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
         containerSignup.setClickable(false);
         card.setClickable(false);

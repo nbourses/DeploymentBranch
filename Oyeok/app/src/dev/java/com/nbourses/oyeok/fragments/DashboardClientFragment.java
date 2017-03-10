@@ -341,7 +341,7 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     Animation bounce;
     Animation slideUp;
     Animation slideDown;
-    private String favTitle = "My Home",B_name="";
+    private String favTitle = "My Home",B_name="",Broker_count="32";
     private BitmapDescriptor favIcon;
     private Boolean pc=false;
     private Button CallButton,addbuilding;
@@ -1374,10 +1374,10 @@ else {
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LNG,buildingCacheModels.get(i).getLng()+"");
                                     //((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();//stackPopFragment()
 
-                                    ((ClientMainActivity) getActivity()).stackPopFragment();
+                                    //((ClientMainActivity) getActivity()).stackPopFragment();
 
 //                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(listing[i],transaction[i],portal[i],config[i]);
-                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm(),buildingCacheModels.get(i).getOr_psf());
+                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm(),buildingCacheModels.get(i).getOr_psf(),Broker_count);
 //                                    mCustomerMarker[i].setIcon(icon2);buildingCacheModels
                                     customMarker.get(i).setIcon(icon2);
                                     SaveBuildingDataToRealm();
@@ -1507,7 +1507,7 @@ else {
                                 }
                             } else {
                                 if (buildingCacheModels.get(i).getFlag() == true) {
-                                    ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+                                    //((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
                                     buildingCacheModels.get(i).setFlag(false);
                                 }
                                 customMarker.get(i).setIcon(icon1);
@@ -1596,7 +1596,7 @@ else {
             */
 
         //dbHelper.save(DatabaseConstants.userRole, "Client");
-General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
+        General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
         rupeesymbol.bringToFront();
         tvRate.bringToFront();
 //        ll_marker.bringToFront();
@@ -1737,6 +1737,27 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
 
             }, 600);
         }
+
+
+
+
+        /*else if(General.getSharedPreferences(getContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("PC")){
+            General.setSharedPreferences(getContext(), AppConstants.CALLING_ACTIVITY, "");
+
+
+            new CountDownTimer(1000,1000) {
+                public void onTick(long millisUntilFinished) {
+
+                }
+                public void onFinish() {
+                    ((ClientMainActivity)getActivity()).Setloc();
+                }
+            }.start();
+
+        }*/
+
+
+
 
 
         return rootView;
@@ -2561,7 +2582,10 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                     Log.i("TRACE", "Response getprice buildings jsonResponse" + jsonResponse);
                                     Log.i("TRACE", "Response getprice buildings jsonResponseData" + jsonResponseData);
                                     JSONObject price = new JSONObject(jsonResponseData.getString("price"));
-                                    Log.i("TRACE", "Response getprice buildings pricer ");
+                                     Broker_count = jsonResponseData.getString("broker_count");
+
+
+                                    Log.i("BROKER_COUNT", "BROKER COUNT TEST :  "+Broker_count);
                                     Log.i("TRACE", "Response getprice buildings price " + price);
 
                                     growth_rate =  price.getString("rate_growth");
@@ -4781,9 +4805,12 @@ public int price(String conf,int rate){
         AppConstants.SETLOCATION = true;
         map.clear();
         fr.setVisibility(View.GONE);
+        fav.setClickable(false);
         phaseGameTitle.setVisibility(View.GONE);
         portfolioCount.setVisibility(View.GONE);
         addlistingText.setVisibility(View.VISIBLE);
+        property_type_layout.clearAnimation();
+        property_type_layout.setVisibility(View.GONE);
         addBText.setText("Find your Building "+"\""+B_name+"\""+" Location on map and click on Save.");
         addBText.setTextSize(13);
         new LocationUpdater().execute();
@@ -4808,6 +4835,7 @@ public int price(String conf,int rate){
     public void  ResetChanges(){
       AppConstants.SETLOCATION=false;
       addlistingText.setVisibility(View.GONE);
+        fav.setClickable(true);
       txt_info.setVisibility(View.GONE);
       tvFetchingrates.setVisibility(View.GONE);
       horizontalPicker.setVisibility(View.VISIBLE);
@@ -5242,7 +5270,7 @@ public void resetSeekBar(){
                     General.setSharedPreferences(getContext(),AppConstants.MY_LNG,buildingCacheModels.get(i).getLng()+"");
                     ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
 //                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(listing[i],transaction[i],portal[i],config[i]);
-                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm(),buildingCacheModels.get(i).getOr_psf());
+                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm(),buildingCacheModels.get(i).getOr_psf(),Broker_count);
 //                                    mCustomerMarker[i].setIcon(icon2);buildingCacheModels
                     customMarker.get(i).setIcon(icon2);
                     //map.moveCamera(new );

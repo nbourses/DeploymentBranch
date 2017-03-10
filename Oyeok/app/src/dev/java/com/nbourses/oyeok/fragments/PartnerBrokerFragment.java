@@ -720,7 +720,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
             Log.i("magic","PayUHash  json "+json);
 
             Log.i("magic","PayUHash 1");
-            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_1).build();
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
             restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
             OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
             Log.i("magic","PayUHash 2");

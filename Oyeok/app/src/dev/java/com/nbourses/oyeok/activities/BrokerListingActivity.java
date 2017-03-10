@@ -458,7 +458,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         }*/
 
 
-        RealmResults<addBuildingRealm> result11= realm.where(addBuildingRealm.class).equalTo("display_type","both").findAllSorted("timestamp",false);
+        /*RealmResults<addBuildingRealm> result11= realm.where(addBuildingRealm.class).equalTo("display_type","both").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result11){
 
             Log.i("getLocality","getLocality   : "+c.getLocality());
@@ -467,7 +467,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
             addbuildingLL.add(portListingModel);
 
 
-        }
+        }*/
 
         RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).equalTo("tt", "ll").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result1){
@@ -483,7 +483,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
 
 //    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config) {
-        RealmResults<addBuildingRealm> result22= realm.where(addBuildingRealm.class).equalTo("display_type", "both").findAllSorted("timestamp",false);
+        /*RealmResults<addBuildingRealm> result22= realm.where(addBuildingRealm.class).equalTo("display_type", "both").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result22){
 
 
@@ -492,7 +492,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
             addbuildingOR.add(portListingModel);
 
 
-        }
+        }*/
         RealmResults<addBuildingRealm> result2= realm.where(addBuildingRealm.class).equalTo("tt", "or").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result2){
 
@@ -1243,15 +1243,6 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         Bundle b =new Bundle();
         b.putString("edit_listing","update");
         b.putString("listing_id",id);
-        /*addListingFinalCard.setArguments(b);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-        card.setClickable(true);
-
-        fragmentTransaction.addToBackStack("card");
-        fragmentTransaction.replace(R.id.card, addListingFinalCard);
-        fragmentTransaction.commitAllowingStateLoss();*/
 
         loadFragmentAnimated(addListingFinalCard,b,R.id.card,"card");
 
@@ -1262,7 +1253,6 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         container_sign.setBackgroundColor(getResources().getColor(R.color.transparent));
         container_sign.setClickable(false);
         card.setClickable(false);
-        // ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
     }
 
 

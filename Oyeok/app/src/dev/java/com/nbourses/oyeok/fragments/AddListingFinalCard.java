@@ -90,9 +90,10 @@ public class AddListingFinalCard extends Fragment {
     ProgressBar pg_bar;
     String listing_type="new",listing_id="";
     Bundle b;
-    int server_ll_pm,server_or_psf;
+    int server_ll_pm=0,server_or_psf=0;
     Spinner spinner;
 
+    boolean portfolio=false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -148,6 +149,13 @@ public class AddListingFinalCard extends Fragment {
             listing_id=b.getString("listing_id");
 
         }
+        if(b!=null&&b.containsKey("add_listing")) {
+            portfolio=true;
+           // listing_type = b.getString("add_listing");
+            Log.i("timestamp12", "realm data read update  :"+ listing_type);
+           // listing_id=b.getString("listing_id");
+
+        }
         Long tsLong = System.currentTimeMillis()/1000;
         String ts = tsLong.toString();
         Log.i("timestamp12", "  tsLong :"+ ts+"    "+System.currentTimeMillis());
@@ -167,8 +175,10 @@ public class AddListingFinalCard extends Fragment {
         approx_area.setText(General.getSharedPreferences(getContext(), AppConstants.APPROX_AREA).toString());
         building_name.setText(General.getSharedPreferences(getContext(), AppConstants.BUILDING_NAME).toString());
         building_locality.setText(General.getSharedPreferences(getContext(), AppConstants.BUILDING_LOCALITY).toString());
-        server_ll_pm= Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.LL_PM));
-        server_or_psf= Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.OR_PSF));
+        if(!General.getSharedPreferences(getContext(), AppConstants.LL_PM).equalsIgnoreCase("")) {
+            server_ll_pm = Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.LL_PM));
+            server_or_psf = Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.OR_PSF));
+        }
          area=Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.APPROX_AREA));
         seekBar.setMax(maxvalue);
         if(General.getSharedPreferences(getContext(),AppConstants.LL_PM).equalsIgnoreCase("")) {
@@ -328,7 +338,10 @@ public class AddListingFinalCard extends Fragment {
         Cancel_final_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(portfolio){
+                    Intent in = new Intent(getContext(), MyPortfolioActivity.class);
+                    startActivity(in);
+                }else
                 if(listing_type.equalsIgnoreCase("new"))
                     ((BrokerMap)getActivity()).closeCardContainer();
                 else{

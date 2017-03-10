@@ -85,6 +85,15 @@ private TextView Cancel,back,usertext;
 
     Thread thread;
 
+
+    String Entry_point="";
+
+    Bundle b;
+
+
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -107,7 +116,14 @@ private TextView Cancel,back,usertext;
         usertext=(TextView)v.findViewById(R.id.usertext);
         progressBar=(ProgressBar)v.findViewById(R.id.loadbuilding);
         building_names= new ArrayList<>();
+        b=new Bundle();
+        b=getArguments();
+        if(b!=null&&b.containsKey("add_listing")) {
+            Entry_point = b.getString("add_listing");
+            Log.i("Entry_point", "Entry_point read   :"+ Entry_point);
+            // Entry_point=b.getString("listing_id");
 
+        }
         MyApplication application = (MyApplication) getActivity().getApplication();
         Tracker mTracker = application.getDefaultTracker();
 
@@ -120,7 +136,10 @@ private TextView Cancel,back,usertext;
 
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
-
+                if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
+                    ((MyPortfolioActivity) getActivity()).closeCardContainer();
+                    ((MyPortfolioActivity) getActivity()).openAddListing();
+                }else
                 if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                     ((BrokerMap) getActivity()).closeCardContainer();
                     ((BrokerMap)getActivity()).openAddListing();
@@ -139,7 +158,9 @@ private TextView Cancel,back,usertext;
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
                 AppConstants.PROPERTY="Home";
-
+                if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
+                    ((MyPortfolioActivity) getActivity()).closeCardContainer();
+                }else
                 if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                     ((BrokerMap) getActivity()).closeCardContainer();
                 }else{
@@ -204,6 +225,7 @@ private TextView Cancel,back,usertext;
             @Override
             public void onClick(View v) {
 //                ((ClientMainActivity)getActivity()).closeAddBuilding();
+
                 if(inputSearch1.getText().toString().equalsIgnoreCase("")) {
                     new AlertDialog.Builder(getContext())
                             .setTitle("Empty Text")
@@ -225,7 +247,29 @@ private TextView Cancel,back,usertext;
                 }else {
                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
+                    General.setSharedPreferences(getContext(), AppConstants.BUILDING_NAME,name);
+
                    // General.setSharedPreferences(getContext(), AppConstants.ADD_TYPE,"building");
+                    if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
+                       // ((MyPortfolioActivity) getActivity()).closeCardContainer();
+                        if (General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
+                        {
+                           General.setSharedPreferences(getContext(), AppConstants.CALLING_ACTIVITY, "PC");
+                           Intent in = new Intent(getContext(), ClientMainActivity.class);
+                            in.putExtra("name_build",name);
+                            in.putExtra("add_listing","portfolio");//add_listing
+                            in.addFlags(
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                           startActivity(in);
+                        } else {
+                            General.setSharedPreferences(getContext(), AppConstants.CALLING_ACTIVITY, "PC");
+                            Intent in = new Intent(getContext(), BrokerMap.class);
+                            in.putExtra("name_build",name);
+                            in.putExtra("add_listing","portfolio");//add_listing
+
+                                    startActivity(in);
+                        }
+                    }else
                     if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                         ((BrokerMap) getActivity()).closeCardContainer();
                         ((BrokerMap) getActivity()).setlocation(name);
@@ -236,7 +280,6 @@ private TextView Cancel,back,usertext;
                     }
                 }
 
-                General.setSharedPreferences(getContext(), AppConstants.BUILDING_NAME,name);
             }
         });
 
@@ -340,6 +383,9 @@ private TextView Cancel,back,usertext;
                                     //General.setSharedPreferences(getContext(),AppConstants.PROPERTY,adapter.getItem(position).getProperty_type());
                                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                                     imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
+                                    if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
+                                        ((MyPortfolioActivity) getActivity()).openAddListingFinalCard();
+                                    }else
                                     ((BrokerMap)getActivity()).openAddListingFinalCard();
                                 }else{
                                     AddbuildingAPICall(adapter.getItem(position).getName(),adapter.getItem(position).getLat() + "",adapter.getItem(position).getLng() + "",adapter.getItem(position).getId()+"",adapter.getItem(position).getLocality(),adapter.getItem(position).getCity());
