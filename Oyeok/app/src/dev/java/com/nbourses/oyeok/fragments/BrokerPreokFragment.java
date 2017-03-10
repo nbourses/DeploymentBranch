@@ -1450,6 +1450,7 @@ private String transaction_type="Rental";
                 leadPrompt.setText("Please select a Lead and press OK.");
             }
         }
+        Log.i(TAG,"tt set is tha "+General.getSharedPreferences(getContext(),AppConstants.TT));
         synchronized (circularSeekbar) {
             circularSeekbar.post(new Runnable() {
                 @Override
@@ -1565,7 +1566,8 @@ private String transaction_type="Rental";
                 pd.setVisibility(View.VISIBLE);
                 pd.setText(pstype+" by "+possession_date);
             }
-            if(General.getSharedPreferences(getContext(),AppConstants.TT).equalsIgnoreCase("RENTAL")) {
+
+            if(transaction_type.equalsIgnoreCase("RENTAL")) {
                 rentText.setText("@" + General.currencyFormat(jsonObjectArray.getJSONObject(position).getString("price")) + " /m.");
             }
             else {

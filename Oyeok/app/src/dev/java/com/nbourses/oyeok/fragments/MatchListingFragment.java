@@ -117,7 +117,8 @@ public class MatchListingFragment extends Fragment {
     @Bind(R.id.matching_text)
     TextView matching_text;
 
-
+    @Bind(R.id.m_rate_indicatorf)
+    TextView m_rate_indicatorf;
 
     private Timer timer;
     private String oye_id;
@@ -312,16 +313,23 @@ mrview.setOnClickListener(new View.OnClickListener() {
                                 root_growth_rate.setTextColor( Color.parseColor("#ffb91422"));
                                 root_growth_rate.setText( (growth_rate).subSequence( 1, (growth_rate).length() ) + "%" );
 
+                                m_rate_indicatorf.setText("Below market Rate");
+                                m_rate_indicatorf.setTextColor( Color.parseColor("#ffb91422"));
+
                             } else if (Integer.parseInt( growth_rate ) > 0) {
 
                                 root_growth_image.setImageResource( R.drawable.sort_up_green );
                                 root_growth_rate.setTextColor( Color.parseColor("#2dc4b6"));
                                 root_growth_rate.setText( (growth_rate).subSequence( 1, (growth_rate).length() ) + "%" );
+                                m_rate_indicatorf.setText("Above market Rate");
+                                m_rate_indicatorf.setTextColor( Color.parseColor("#2dc4b6"));
 
                             } else {
                                 root_growth_image.setImageResource( R.drawable.sort_up_black );
                                 root_growth_rate.setTextColor( Color.parseColor("black") );
                                 root_growth_rate.setText( growth_rate + "%" );
+                                m_rate_indicatorf.setText("Steady market Rate");
+                                m_rate_indicatorf.setTextColor( Color.parseColor("#black"));
                             }
 
                             price = jo.getString("real_price");
@@ -385,12 +393,12 @@ mrview.setOnClickListener(new View.OnClickListener() {
                                   if(jo.getString("tt").equalsIgnoreCase("LL")) {
                                       config = k.getString( "req_avl").toUpperCase()+" ("+k.getString("config").toUpperCase()+") "+k.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(k.getString("listed_ll_pm")).toUpperCase();
 
-                                      item = new MatchListing(k.getString("user_id"),k.getString("property_type"), req_avl, k.getString("oye_id"), config, k.getString("user_name"), k.getString("locality"), k.getString("possession_date"), k.getString("real_ll_pm"), percentageCalculator(Integer.parseInt(k.getString("listed_ll_pm")), Integer.parseInt(k.getString("real_ll_pm"))));
+                                      item = new MatchListing(k.getString("user_id"),k.getString("property_type"), req_avl, k.getString("oye_id"), config, k.getString("user_name"), k.getString("locality"), k.getString("possession_date"), k.getString("real_ll_pm"), General.percentageCalculator(Integer.parseInt(k.getString("listed_ll_pm")), Integer.parseInt(k.getString("real_ll_pm"))));
 
                                   }else {
                                       config = k.getString( "req_avl").toUpperCase()+" ("+k.getString("config").toUpperCase()+") "+k.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(k.getString("listed_or_psf")).toUpperCase();
 
-                                      item = new MatchListing(k.getString("user_id"),k.getString("property_type"), req_avl, k.getString("oye_id"), config, k.getString("user_name"), k.getString("locality"), k.getString("possession_date"), k.getString("real_or_psf"), percentageCalculator(Integer.parseInt(k.getString("listed_or_psf")), Integer.parseInt(k.getString("real_or_psf"))));
+                                      item = new MatchListing(k.getString("user_id"),k.getString("property_type"), req_avl, k.getString("oye_id"), config, k.getString("user_name"), k.getString("locality"), k.getString("possession_date"), k.getString("real_or_psf"), General.percentageCalculator(Integer.parseInt(k.getString("listed_or_psf")), Integer.parseInt(k.getString("real_or_psf"))));
 
                                   }
                                   matchList.add(item);
@@ -481,25 +489,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
         }
     }
 
-    String percentageCalculator(int selectedRate,int MarketRate){
-        int Percentage;
-        int diff;
-        String str="";
 
-
-        // Log.i("percent","selectedRate : "+selectedRate+"MarketRate : "+MarketRate+"Percentage : "+Percentage);
-        if(selectedRate>MarketRate){
-            str="+";
-            diff=selectedRate-MarketRate;
-
-        }else{
-            str="-";
-            diff=MarketRate-selectedRate;
-        }
-        Percentage=(diff*100)/MarketRate;
-        Log.i("percent","selectedRate : "+selectedRate+"MarketRate : "+MarketRate+"Percentage : "+Percentage+"str : "+str);
-        return str+Percentage+"";
-    }
 
     private void okaccept(){
 
