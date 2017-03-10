@@ -1709,10 +1709,10 @@ if(myRealm.isInTransaction())
             myRealm.beginTransaction();
             RealmResults<Message> results1 =
                     myRealm.where(Message.class).equalTo(AppConstants.OK_ID, channelName).findAll();
-            Log.i(TAG, "until toro foro iko "+results1);
+            Log.i(TAG, "until toro foro loro iko "+results1);
             for (Message c : results1) {
-                Log.i(TAG, "until toro foro "+c.getStatus());
-                Log.i(TAG, "until insideroui3 " + c.getFrom());
+                Log.i(TAG, "until toro foro loro "+c.getStatus());
+                Log.i(TAG, "until toro foro loro " + c.getFrom());
 //                Log.i(TAG, "until insideroui4 " + c.getTimestamp());
 //                Log.i(TAG, "until insideroui4 " + c.getMessage());
 //                Log.i(TAG, "until insideroui4 " + c.getFrom());
@@ -1734,8 +1734,9 @@ if(myRealm.isInTransaction())
 
                     imageName = imageUrl.substring(imageUrl.lastIndexOf("/")+1);
 
-                    Log.i("grrrr IMG IMAGE NAME"," "+imageName);
-                    Log.i(TAG, "calipso" + userSubtype);
+                    Log.i("grrrr IMG IMAGE NAME","until toro foro loro "+imageName);
+                    Log.i(TAG, "until toro foro loro calipso" + userSubtype);
+                    Log.i(TAG, "until toro foro loro calipso c.getFrom()" + c.getFrom());
 
                     if(userID.equalsIgnoreCase(c.getFrom()))
                     {
@@ -1768,11 +1769,15 @@ if(myRealm.isInTransaction())
                     }
                 }
 
-                if(!c.getR_by().equalsIgnoreCase(null))
-                    roleOfUser = c.getR_by();
+                try {
+                    if(!c.getR_by().equalsIgnoreCase(null))
+                        roleOfUser = c.getR_by();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
 
-
+                Log.i(TAG, "until toro foro loro abcs ka yo ");
                 Log.i(TAG, "until toro foro loro abcs ka "+userSubtype+" "+userType+" "+roleOfUser);
 
                 message = new ChatMessage();

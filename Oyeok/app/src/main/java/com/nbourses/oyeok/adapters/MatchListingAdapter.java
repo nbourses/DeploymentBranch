@@ -52,6 +52,7 @@ public class MatchListingAdapter extends RecyclerView.Adapter<MatchListingAdapte
         public ImageView match_icon;
         public ImageView match_growth_image;
         public TextView match_growth_rate;
+        public TextView m_rate_indicator;
 
 
         public MyViewHolder(View view) {
@@ -69,6 +70,7 @@ public class MatchListingAdapter extends RecyclerView.Adapter<MatchListingAdapte
             match_growth_image = (ImageView) view.findViewById(R.id.match_growth_image);
             match_growth_rate = (TextView) view.findViewById(R.id.match_growth_rate);
             match_icon = (ImageView) view.findViewById(R.id.match_icon);
+            m_rate_indicator = (TextView) view.findViewById(R.id.m_rate_indicator);
               /*  year = (TextView) view.findViewById(R.id.year);*/
         }
     }
@@ -205,17 +207,23 @@ else{
             holder.match_growth_image.setImageResource( R.drawable.sort_down_red );
             holder.match_growth_rate.setTextColor( Color.parseColor("#ffb91422"));
             holder.match_growth_rate.setText( (growth_rate).subSequence( 1, (growth_rate).length() ) + "%" );
+            holder.m_rate_indicator.setText("Below market Rate");
+            holder.m_rate_indicator.setTextColor( Color.parseColor("#ffb91422"));
 
         } else if (Integer.parseInt( growth_rate ) > 0) {
 
             holder.match_growth_image.setImageResource( R.drawable.sort_up_green );
             holder.match_growth_rate.setTextColor( Color.parseColor("#2dc4b6"));
             holder.match_growth_rate.setText( (growth_rate).subSequence( 1, (growth_rate).length() ) + "%" );
+            holder.m_rate_indicator.setText("Above market Rate");
+            holder.m_rate_indicator.setTextColor( Color.parseColor("#2dc4b6"));
 
         } else {
             holder.match_growth_image.setImageResource( R.drawable.sort_up_black );
             holder.match_growth_rate.setTextColor( Color.parseColor("black") );
             holder.match_growth_rate.setText( growth_rate + "%" );
+            holder.m_rate_indicator.setText("Steady market Rate");
+            holder.m_rate_indicator.setTextColor( Color.parseColor("#black"));
         }
 
     }

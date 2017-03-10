@@ -164,7 +164,7 @@
                                 android:gravity="center|top"
                                 android:layout_marginLeft="5dp"
                                 android:textSize="12sp"
-                                android:id="@+id/m_rate_indicator"
+                                android:id="@+id/m_rate_indicatorf"
                                 android:textColor="@color/greenish_blue"/>
                         </LinearLayout>
                     </LinearLayout>
