@@ -572,7 +572,7 @@ try {
     @Override
     protected void onResume() {
         super.onResume();
-        AppConstants.cardCounter++;
+       // AppConstants.cardCounter++;
         Log.i(TAG,"fork resumed "+AppConstants.cardCounter);
         // Register mMessageReceiver to receive messages.
 //        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(closeOyeScreenSlide, new IntentFilter(AppConstants.CLOSE_OYE_SCREEN_SLIDE));

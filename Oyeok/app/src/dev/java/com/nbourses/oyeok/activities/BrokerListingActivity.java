@@ -163,7 +163,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
     FrameLayout container_sign,card;
     private Tracker mTracker;
-    boolean cardflag=false;
+    boolean cardflag=false,catalogflag=false;;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -381,7 +381,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
                 }else {
 
-
+                    catalogflag=true;
                     ListingExplorer listingExplorer=new ListingExplorer();
                     loadFragmentAnimated(listingExplorer,null,R.id.container_sign,"");
                 }
@@ -531,6 +531,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
 
                 if (cataloglistLL.contains(portListing.get(position))|| cataloglistOR.contains(portListing.get(position))) {
+                    catalogflag=true;
                     Bundle b=new Bundle();
                     b.putString("catalog_id",portListing.get(position).getCatalog_id()+"");
                     Log.i("datafromraelm1", "realm data 1  :"+ portListing.get(position).getCatalog_id()+"");
@@ -1019,6 +1020,9 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
     @Override
     public void onBackPressed() {
+        if(catalogflag){
+            Close();
+        }else
         if(cardflag){
             closeCardContainer();
         }else if(AppConstants.SIGNUP_FLAG){
@@ -1244,6 +1248,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
     public void openAddListingFinalCard(String id){
 
+        cardflag=true;
         container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
         container_sign.setClickable(true);
         AddListingFinalCard addListingFinalCard= new AddListingFinalCard();
@@ -1257,6 +1262,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
     public void openAddListingFinalCard(){
 
+        cardflag=true;
         container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
         container_sign.setClickable(true);
         AddListingFinalCard addListingFinalCard= new AddListingFinalCard();
@@ -1265,11 +1271,11 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         b.putString("listing_id",id);*/
         Bundle b =new Bundle();
         b.putString("add_listing","Listing");
-        loadFragmentAnimated(addListingFinalCard,null,R.id.card,"card");
+        loadFragmentAnimated(addListingFinalCard,b,R.id.card,"card");
 
     }
     public void closeCardContainer(){
-
+        cardflag=false;
         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
         container_sign.setBackgroundColor(getResources().getColor(R.color.transparent));
         container_sign.setClickable(false);
@@ -1303,6 +1309,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
     return list;
    }
     public void Back(){
+        catalogflag=true;
         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
         Log.i("stacktop","backstack check111 "+getSupportFragmentManager().getBackStackEntryCount());
        // getSupportFragmentManager().popBackStackImmediate();
@@ -1312,6 +1319,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
 
     public void Close(){
+        catalogflag=false;
         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
         Log.i("stacktop","backstack check11 "+getSupportFragmentManager().getBackStackEntryCount());
         //getSupportFragmentManager().popBackStackImmediate();
@@ -1321,6 +1329,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
 
     public void Refresh(){
+        catalogflag=false;
         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
         Log.i("stacktop","backstack check11 "+getSupportFragmentManager().getBackStackEntryCount());
         //getSupportFragmentManager().popBackStackImmediate();
@@ -1335,6 +1344,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
     public void OpenListingTitle(ArrayList<portListingModel> list1){
         list.clear();
         list.addAll(list1);
+        catalogflag=true;
         /*for (portListingModel c:list1){
             c.setCheckbox(false);
             Log.i("listingtest","listing count 1111 "+c.isCheckbox());

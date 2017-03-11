@@ -108,6 +108,12 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     @Bind(R.id.txtOption2)
     TextView txtOption2;
 
+    @Bind(R.id.Minvalue)
+    TextView Minvalue;
+
+    @Bind(R.id.Maxvalue)
+    TextView Maxvalue;
+
     @Bind(R.id.displayOkText)
     TextView displayOkText;
 
@@ -365,7 +371,8 @@ private String transaction_type="Rental";
       //chart removed// chart = (BarChart) v.findViewById(R.id.chart);
 
         SmartImageView myImage = (SmartImageView) v.findViewById(R.id.my_image);
-
+        Minvalue.setText("Min:₹ 15,000");
+        Maxvalue.setText("Max:₹ 1,20,00,000");
         init();
         if(SharedPrefs.getString(getContext(),SharedPrefs.CHECK_BEACON).equalsIgnoreCase("")) {
             beacon = "false";  // beacon disabled
@@ -1254,6 +1261,8 @@ private String transaction_type="Rental";
     public void onPositionSelected(int position, int count) {
         circularSeekbar.onTabclick();
         currentSeekbarPosition = position;
+        Minvalue.setText("Min:₹ 15,000");
+        Maxvalue.setText("Max:₹ 1,20,00,000");
         Log.i("PREOKCALLED","currentSeekbarPosition=============================rent "+currentSeekbarPosition);
         if (position == 0) {
             General.setSharedPreferences(getContext(),AppConstants.TT,"RENTAL");
@@ -1355,7 +1364,8 @@ private String transaction_type="Rental";
 
             General.setSharedPreferences(getContext(),AppConstants.TT,"RESALE");
             transaction_type="RESALE";
-
+            Minvalue.setText("Min:₹ 70,00,000");
+            Maxvalue.setText("Max:₹ 100,00,00,000");
             option1Count.setBackgroundResource(R.drawable.badge_navy);
             option2Count.setBackgroundResource(R.drawable.badge_navy);
             atFor = "for";
