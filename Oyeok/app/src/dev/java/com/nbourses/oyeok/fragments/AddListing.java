@@ -327,6 +327,9 @@ public class AddListing extends Fragment {
             @Override
             public void onClick(View v) {
                 AppConstants.PROPERTY="Home";
+                if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("Listing")){
+                    ((BrokerListingActivity) getActivity()).closeCardContainer();
+                }else
                 if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
                     ((MyPortfolioActivity) getActivity()).closeCardContainer();
                 }else
@@ -347,6 +350,11 @@ public class AddListing extends Fragment {
                 AppConstants.PROPERTY=Property;
                 General.setSharedPreferences(getContext(),AppConstants.PROPERTY,Property);
                 General.setSharedPreferences(getContext(),AppConstants.APPROX_AREA,approx_area);
+                if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("Listing")){
+                    ((BrokerListingActivity) getActivity()).closeCardContainer();
+                    ((BrokerListingActivity) getActivity()).openAddBuilding();
+
+                }else
                 if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
                     ((MyPortfolioActivity) getActivity()).closeCardContainer();
                     ((MyPortfolioActivity) getActivity()).openAddBuilding();

@@ -257,7 +257,7 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
     //String   listing,transaction,portal,config;
 
     String Entry_point="";
-
+     boolean Listing=false;
 
     private BroadcastReceiver resetMap = new BroadcastReceiver() {
         @Override
@@ -440,7 +440,9 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
 
                 mTracker.setScreenName("BuildingToListing");
                 mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-                openAddListingFinalCard();
+                Listing=true;
+                Addbuilding();
+
             }
         });
 
@@ -843,6 +845,9 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
                                 General.setSharedPreferences(getBaseContext(), AppConstants.OR_PSF,buildingCacheModels.get(i).getOr_psf()+"");
                                 OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig());
                                 SaveBuildingDataToRealm();
+                                General.setSharedPreferences(getBaseContext(), AppConstants.BUILDING_ID,buildingCacheModels.get(i).getId());
+                                General.setSharedPreferences(getBaseContext(), AppConstants.ADD_TYPE,"listing");
+
                                 buildingIcon.setVisibility(View.VISIBLE);
                                 fav.setVisibility(View.GONE);
                                 horizontalPicker.setVisibility(View.GONE);
@@ -1571,6 +1576,14 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
       /*  Intent in =new Intent(AppConstants.RESETPHASE);
         in.putExtra("resetphase",true);
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);*/
+        if(Entry_point.equalsIgnoreCase("Listing")){
+
+            //closeCardContainer();
+            Intent in = new Intent(getBaseContext(), BrokerListingActivity.class);
+            startActivity(in);
+            //openporfolio();
+            Entry_point="";
+        }else
         if(Entry_point.equalsIgnoreCase("portfolio")){
 
             //closeCardContainer();
@@ -3087,7 +3100,10 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
                         Log.i("magic","addBuildingRealm success "+jsonResponse.getJSONObject("responseData").getString("id"));
                         General.setSharedPreferences(getBaseContext(), AppConstants.BUILDING_ID,jsonResponse.getJSONObject("responseData").getString("id"));
                         General.setSharedPreferences(getBaseContext(), AppConstants.ADD_TYPE,"building");
+                        if(!Listing)
                         AddBuildingDataToRealm(jsonResponse.getJSONObject("responseData").getString("id"));
+                        else
+                            openAddListingFinalCard();
 
 
                     } catch (Exception e) {

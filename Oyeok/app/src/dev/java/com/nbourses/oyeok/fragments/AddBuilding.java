@@ -29,6 +29,7 @@ import com.google.gson.JsonObject;
 import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
+import com.nbourses.oyeok.activities.BrokerListingActivity;
 import com.nbourses.oyeok.activities.BrokerMap;
 import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.activities.MyPortfolioActivity;
@@ -136,6 +137,10 @@ private TextView Cancel,back,usertext;
 
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
+                if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("Listing")){
+                    ((BrokerListingActivity) getActivity()).closeCardContainer();
+                    ((BrokerListingActivity) getActivity()).openAddListing();
+                }else
                 if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
                     ((MyPortfolioActivity) getActivity()).closeCardContainer();
                     ((MyPortfolioActivity) getActivity()).openAddListing();
@@ -158,6 +163,9 @@ private TextView Cancel,back,usertext;
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
                 AppConstants.PROPERTY="Home";
+                if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("Listing")){
+                    ((MyPortfolioActivity) getActivity()).closeCardContainer();
+                }else
                 if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
                     ((MyPortfolioActivity) getActivity()).closeCardContainer();
                 }else
@@ -250,6 +258,15 @@ private TextView Cancel,back,usertext;
                     General.setSharedPreferences(getContext(), AppConstants.BUILDING_NAME,name);
 
                    // General.setSharedPreferences(getContext(), AppConstants.ADD_TYPE,"building");
+                    if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("Listing")){
+                        // ((MyPortfolioActivity) getActivity()).closeCardContainer();
+                            General.setSharedPreferences(getContext(), AppConstants.CALLING_ACTIVITY, "PC");
+                            Intent in = new Intent(getContext(), BrokerMap.class);
+                            in.putExtra("name_build",name);
+                            in.putExtra("add_listing","Listing");//add_listing
+                            startActivity(in);
+
+                    }else
                     if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
                        // ((MyPortfolioActivity) getActivity()).closeCardContainer();
                         if (General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client"))
@@ -383,6 +400,9 @@ private TextView Cancel,back,usertext;
                                     //General.setSharedPreferences(getContext(),AppConstants.PROPERTY,adapter.getItem(position).getProperty_type());
                                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                                     imm.hideSoftInputFromWindow(inputSearch1.getWindowToken(), 0);
+                                    if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("Listing")){
+                                        ((BrokerListingActivity) getActivity()).openAddListingFinalCard();
+                                    }else
                                     if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
                                         ((MyPortfolioActivity) getActivity()).openAddListingFinalCard();
                                     }else
@@ -484,9 +504,10 @@ private TextView Cancel,back,usertext;
                                 myRealm.commitTransaction();
                             }
                             AppConstants.PROPERTY="Home";
-                            ((ClientMainActivity)getActivity()).closeAddBuilding();
-                            Intent in = new Intent(getContext(), MyPortfolioActivity.class);
-                            startActivity(in);
+                            ((MyPortfolioActivity)getActivity()).closeCardContainer();
+                            getActivity().recreate();
+//                            Intent in = new Intent(getContext(), MyPortfolioActivity.class);
+//                            startActivity(in);
                         } catch (JSONException e) {e.printStackTrace();}
 
                 }

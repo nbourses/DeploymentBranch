@@ -44,8 +44,9 @@ public class ListingExplorer extends Fragment {
         //realm= General.realmconfig(getContext() );
         /*if(portListing1 != null)
             portListing1.clear();*/
+        Log.i("listingtest","listing count ti "+((BrokerListingActivity)getActivity()).PortlistingData().size());
         portListing1= ((BrokerListingActivity)getActivity()).PortlistingData();
-        Log.i("listingtest","listing count "+portListing1.size());
+        Log.i("listingtest","listing count  it "+portListing1.size());
 
         adapter=new ListingExplorerAdapter(getContext(),portListing1);
         list_listView.setAdapter(adapter);
@@ -60,7 +61,7 @@ public class ListingExplorer extends Fragment {
         list_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                selected_listing.clear();
                 for (portListingModel hold : adapter.getAllData()) {
                     if (hold.isCheckbox()) {
 

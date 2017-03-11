@@ -119,6 +119,9 @@ public class ListingTitle extends Fragment {
 
 //        if(portListing1 != null)
 //            portListing1.clear();
+        /*if(selectedList != null)
+        selectedList.clear();*/
+
         selectedList= ((BrokerListingActivity)getActivity()).PortlistingData1();
         adapter=new ListingTitleAdapter(getContext(),selectedList);
         list_selected_info.setAdapter(adapter);
@@ -634,6 +637,7 @@ public class ListingTitle extends Fragment {
 //        listingCatalogRealm.setDisplayListings(null);
         //listingCatalogRealm.setUser_role(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
         int size=ids.size();
+        realmList.clear();
         for(int i=0;i<size;i++){
         /*loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(c.getId(),c.getName(),c.getLat(),c.getLng(),c.getLocality(),c.getCity(),c.getLl_pm(),c.getOr_psf(),c.isCheckbox());
         realmList.add(loadBuildingdataModelRealm1);*/

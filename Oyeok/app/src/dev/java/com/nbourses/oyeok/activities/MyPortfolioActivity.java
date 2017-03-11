@@ -176,7 +176,7 @@ public class MyPortfolioActivity extends BrokerMainPageActivity implements Custo
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-boolean cardflag=false;
+boolean cardflag=false,catalogflag=false;
     FrameLayout container_sign,card;
 
 
@@ -1825,15 +1825,6 @@ boolean cardflag=false;
         }
 
 
-        /*FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-        card.setClickable(true);
-        fragmentTransaction.addToBackStack("card");
-        fragmentTransaction.replace(R.id.card, addBuilding);
-        fragmentTransaction.commitAllowingStateLoss();*/
-//        loadFragmentAnimated(addBuildingRealm, null, R.id.card, "");
-
     }
 
 
@@ -1842,10 +1833,6 @@ boolean cardflag=false;
         container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
         container_sign.setClickable(true);
         AddListingFinalCard addListingFinalCard= new AddListingFinalCard();
-        /*Bundle b =new Bundle();
-        b.putString("edit_listing","update");
-        b.putString("listing_id",id);*/
-
         if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
             loadFragmentAnimated(addListingFinalCard, null, R.id.card, "card");
         }

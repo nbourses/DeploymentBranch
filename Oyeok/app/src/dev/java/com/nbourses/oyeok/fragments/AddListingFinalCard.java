@@ -93,7 +93,7 @@ public class AddListingFinalCard extends Fragment {
     int server_ll_pm=0,server_or_psf=0;
     Spinner spinner;
 
-    boolean portfolio=false;
+    String portfolio="";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -150,7 +150,7 @@ public class AddListingFinalCard extends Fragment {
 
         }
         if(b!=null&&b.containsKey("add_listing")) {
-            portfolio=true;
+            portfolio=b.getString("add_listing");;
            // listing_type = b.getString("add_listing");
             Log.i("timestamp12", "realm data read update  :"+ listing_type);
            // listing_id=b.getString("listing_id");
@@ -338,7 +338,11 @@ public class AddListingFinalCard extends Fragment {
         Cancel_final_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(portfolio){
+                if(portfolio.equalsIgnoreCase("Listing")){
+                    Intent in = new Intent(getContext(), BrokerListingActivity.class);
+                    startActivity(in);
+                }else
+                if(portfolio.equalsIgnoreCase("portfolio")){
                     Intent in = new Intent(getContext(), MyPortfolioActivity.class);
                     startActivity(in);
                 }else
@@ -496,9 +500,10 @@ private void init(){
        addListingBorker.setConfig(General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG));
        addListingBorker.setListing_date(System.currentTimeMillis()+"");
        addListingBorker.setListing_id(listing_id);
-       addListingBorker.setAdd_type(General.getSharedPreferences(getContext(), AppConstants.ADD_TYPE));  //listing || building
+       Log.i("magic","BUILDING_ID:   "+General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID));
        addListingBorker.setBuilding_id(General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID));
-       Log.i("AddListingBorker","myCalendar current date"+System.currentTimeMillis()+" "+General.getSharedPreferences(getContext(), AppConstants.ADD_TYPE)+" == "+General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID)+" "+General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
+       Log.i("AddListingBorker","myCalendar current date"+System.currentTimeMillis()+"ADD_TYPE :  "+General.getSharedPreferences(getContext(), AppConstants.ADD_TYPE)+" == "+General.getSharedPreferences(getContext(),AppConstants.BUILDING_ID)+" "+General.getSharedPreferences(getContext(),AppConstants.BUILDING_NAME));
+       addListingBorker.setAdd_type(General.getSharedPreferences(getContext(), AppConstants.ADD_TYPE));  //listing || building
        addListingBorker.setCity("Mumbai");
        if(Furnishing.equalsIgnoreCase("fully-furnished")){
        addListingBorker.setFurnishing("ff");
@@ -620,7 +625,7 @@ private void init(){
         add_Building.setServer_ll_pm(server_ll_pm);
         add_Building.setServer_or_psf(server_or_psf);
         int area=carpet_area;
-        Log.i("magic","reached "+numberAsString+"  area : "+area+" id : "+id);
+        Log.i("magics","reached "+numberAsString+"  area : "+area+" id : "+id+" rate : "+General.getSharedPreferences(getContext(), AppConstants.LL_PM)+" s "+server_ll_pm+" ss : "+server_or_psf+" ll min "+llMin+" ormax "+orMax);
 
        String growthrate=null;
         //Log.i("magic","reached "+p);
@@ -832,6 +837,12 @@ private  void getprice()
                                 seekBar.setMax(maxvalue);
                                 seekBar.setMin(minvalue);
                                 numberAsString=minvalue+"";
+                                if(General.getSharedPreferences(getContext(), AppConstants.LL_PM).equalsIgnoreCase("")) {
+                                    General.setSharedPreferences(getContext(), AppConstants.LL_PM,llMin+"");
+                                    General.setSharedPreferences(getContext(), AppConstants.OR_PSF,orMin+"");
+                                    server_ll_pm = Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.LL_PM));
+                                    server_or_psf = Integer.parseInt(General.getSharedPreferences(getContext(), AppConstants.OR_PSF));
+                                }
                             }
                         }
                     }
