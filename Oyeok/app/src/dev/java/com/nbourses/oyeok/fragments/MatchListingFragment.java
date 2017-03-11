@@ -231,6 +231,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
                 Log.i("percent","okaccept called 3 :");
                 ok.setClickable(false);
                               okaccept();
+                ok.setClickable(false);
             }
         });
 
@@ -593,6 +594,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
                     }
                     catch(Exception e){}
                     ok.setClickable(true);
+
                 }
             });
 

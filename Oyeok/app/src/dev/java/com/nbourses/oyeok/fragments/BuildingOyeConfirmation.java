@@ -37,7 +37,7 @@ public class BuildingOyeConfirmation extends Fragment {
     TextView conf1,conf2,conf3,conf4,conf;
     TextView listingcount,show_more,btn_listing,sharing;
     private RadioGroup radioGroup1;
-    String  listing,portal,transaction,approx_area,config;
+    String  listing,portal,transaction,approx_area,config,Broker_count;
     Bundle  data;
     int approx_area1,price;
     boolean fisrtconf=true;
@@ -258,6 +258,7 @@ public class BuildingOyeConfirmation extends Fragment {
         portal=data.getString( "portal" );
         ll_pm=data.getInt("ll_pm");
         or_psf=data.getInt("or_psf");
+        Broker_count=data.getString("count");
         Log.i("sendDataToOye"," listing  : "+listing+" ");
         String text;
         text="<font color=#000000>In last 6 Months : <b><font color=#2dc4b6><big>"+transaction+" Txns</big></font> | <font color=#ff9f1c><big>"+listing+"</big></font> listing on <font color=#ff9f1c><big>"+portal+" </big></font>portals<b></font>";
@@ -314,7 +315,7 @@ public class BuildingOyeConfirmation extends Fragment {
     private void   setEMI(){
         if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
             String text1;
-            text1 = "<html>Connect : <font color=#ff9f1c>32</font> Nearby Brokers</html>";
+            text1 = "<html>Connect : <font color=#ff9f1c>"+Broker_count+"</font> Nearby Brokers</html>";
             btn_listing.setText(Html.fromHtml(text1));
             if (AppConstants.CURRENT_DEAL_TYPE.equalsIgnoreCase("rent")) {
                 int emi = (formattedPrice * 4) / 3;

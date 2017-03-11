@@ -103,7 +103,7 @@ public class porfolioAdapter extends BaseAdapter {
             try {
                 holder1.watchlist_dp.setImageResource(R.drawable.watchlist_catalog_icon_home);
 
-                if(!listing.getImageUri().equalsIgnoreCase("")&&listing.getImageUri()!=null) {
+                if(listing.getImageUri()!=null&&!listing.getImageUri().equalsIgnoreCase("")) {
                     uri_image = listing.getImageUri();
                     showimage(holder1, uri_image);
                 }

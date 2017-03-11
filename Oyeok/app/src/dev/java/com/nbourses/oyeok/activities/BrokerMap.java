@@ -256,6 +256,8 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
     boolean setting=false;*/
     //String   listing,transaction,portal,config;
 
+    String Entry_point="";
+     boolean Listing=false;
 
     private BroadcastReceiver resetMap = new BroadcastReceiver() {
         @Override
@@ -438,7 +440,9 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
 
                 mTracker.setScreenName("BuildingToListing");
                 mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-                openAddListingFinalCard();
+                Listing=true;
+                Addbuilding();
+
             }
         });
 
@@ -548,11 +552,17 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
         });
 
 //// phase seekbar code
-        if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("PC")){
+        /*if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("PC")){
 
-            General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
-            openAddListing();
-        }
+            //General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
+            //openAddListing();
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            String name="";
+            name =getIntent().getExtras().getString("name_build");
+            setlocation(name);
+
+        }*/
         mPhasedSeekBar = (CustomPhasedSeekBar) findViewById(R.id.phasedSeekBar1);
         mPhasedSeekBar.setAdapter(new SimpleCustomPhasedAdapter(this.getResources(), new int[]{R.drawable.real_estate_selector, R.drawable.broker_type2_selector}, new String[]{"10", "15"}, new String[]{this.getResources().getString(R.string.Rental), this.getResources().getString(R.string.Resale)}));
         mPhasedSeekBar.setListener((this));
@@ -835,6 +845,9 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
                                 General.setSharedPreferences(getBaseContext(), AppConstants.OR_PSF,buildingCacheModels.get(i).getOr_psf()+"");
                                 OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig());
                                 SaveBuildingDataToRealm();
+                                General.setSharedPreferences(getBaseContext(), AppConstants.BUILDING_ID,buildingCacheModels.get(i).getId());
+                                General.setSharedPreferences(getBaseContext(), AppConstants.ADD_TYPE,"listing");
+
                                 buildingIcon.setVisibility(View.VISIBLE);
                                 fav.setVisibility(View.GONE);
                                 horizontalPicker.setVisibility(View.GONE);
@@ -994,6 +1007,51 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
             Log.i("setBaseRegion","==========================================base Region is not yet set. : ");
             setBaseRegion();
         }
+
+
+
+
+
+
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.CALLING_ACTIVITY).equalsIgnoreCase("PC")){
+            General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
+            //openAddListing();
+            /*getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);*/
+
+
+            String name="";
+            if(getIntent().getExtras().containsKey("add_listing")) {
+                name = getIntent().getExtras().getString("name_build");
+                Entry_point = getIntent().getExtras().getString("add_listing");
+                map.clear();
+                setlocation(name);
+            }
+
+           /* try {*/
+                /*new CountDownTimer(500,500) {
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+                    public void onFinish() {
+                        String name="";
+                        if(getIntent().getExtras().containsKey("add_listing")){
+                        name =getIntent().getExtras().getString("name_build");
+                        Entry_point=getIntent().getExtras().getString("add_listing");
+                        map.clear();
+                        setlocation(name);
+                        }
+                    }
+                }.start();*/
+            /*}catch (Exception e){}*/
+
+
+
+
+        }
+
+        // end of oncreate
+
     }
 
 
@@ -1505,15 +1563,35 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
 
     }
 
+
+   /* void openporfolio(){Intent in = new Intent(getBaseContext(), MyPortfolioActivity.class);
+        startActivity(in);
+        Log.i("onBackPressed ","Entry_point =========== "  +Entry_point);}
+*/
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        Log.i("onBackPressed ","onBackPressed() =========== "+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
+        Log.i("onBackPressed ","onBackPressed() =========== "+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount()+" "+Entry_point);
 
       /*  Intent in =new Intent(AppConstants.RESETPHASE);
         in.putExtra("resetphase",true);
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);*/
-        if(AppConstants.SIGNUP_FLAG){
+        if(Entry_point.equalsIgnoreCase("Listing")){
+
+            //closeCardContainer();
+            Intent in = new Intent(getBaseContext(), BrokerListingActivity.class);
+            startActivity(in);
+            //openporfolio();
+            Entry_point="";
+        }else
+        if(Entry_point.equalsIgnoreCase("portfolio")){
+
+            //closeCardContainer();
+            Intent in = new Intent(getBaseContext(), MyPortfolioActivity.class);
+            startActivity(in);
+            //openporfolio();
+            Entry_point="";
+        }else if(AppConstants.SIGNUP_FLAG){
 //            if(AppConstants.REGISTERING_FLAG){}else{
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commitAllowingStateLoss();
 
@@ -1532,7 +1610,9 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
             setting = false;
 
 
-        }if(webView != null){
+        }else if(webView != null){
+
+
             if (webView.canGoBack()) {
                 webView.goBack();
             }
@@ -1566,19 +1646,11 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
             //AppConstants.MY_BASE_LOCATION_FLAG = false;
             //do nothing
         }else{
-           // onBackPressed();
+
             General.setSharedPreferences(getBaseContext(), AppConstants.RESETPHASE, "true");
-            //this.finish();
-            /*Intent in = new Intent(getBaseContext(),BrokerMainActivity.class);
-            in.addFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                            Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(in);*/
+
             startActivity(new Intent(getBaseContext(),BrokerMainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                    /*Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                    Intent.FLAG_ACTIVITY_NEW_TASK) */
-           // this.finish();
+
         }
         Log.i("onBackPressed ","onBackPressed() =========== "+getSupportFragmentManager().getBackStackEntryCount()+" "+getFragmentManager().getBackStackEntryCount());
 
@@ -2726,14 +2798,18 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
         //HideBottomNavBar();
         container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
         container_sign.setClickable(true);
-        AddListing addBuildingCardView = new AddListing();
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        AddListing addListing = new AddListing();
+        /*FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
         card.setClickable(true);
         fragmentTransaction.addToBackStack("card");
         fragmentTransaction.replace(R.id.card, addBuildingCardView);
-        fragmentTransaction.commitAllowingStateLoss();
+        fragmentTransaction.commitAllowingStateLoss();*/
+
+        Bundle b =new Bundle();
+        b.putString("add_listing","Broker_map");
+        loadFragmentAnimated(addListing,b,R.id.card,"card");
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         //pc=true;
@@ -2742,17 +2818,25 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
 
     public void openAddBuilding(){
 
+
+
+
+
         container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
         container_sign.setClickable(true);
 
         AddBuilding addBuilding= new AddBuilding();
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        Bundle b =new Bundle();
+        b.putString("add_listing","Broker_map");
+        loadFragmentAnimated(addBuilding,b,R.id.card,"card");
+
+        /*FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
         card.setClickable(true);
         fragmentTransaction.addToBackStack("card");
         fragmentTransaction.replace(R.id.card, addBuilding);
-        fragmentTransaction.commitAllowingStateLoss();
+        fragmentTransaction.commitAllowingStateLoss();*/
 //        loadFragmentAnimated(addBuildingRealm, null, R.id.card, "");
 
     }
@@ -2762,14 +2846,18 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
         container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
         container_sign.setClickable(true);
         AddListingFinalCard addListingFinalCard= new AddListingFinalCard();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-        card.setClickable(true);
-        fragmentTransaction.addToBackStack("card");
-        fragmentTransaction.replace(R.id.card, addListingFinalCard);
-        fragmentTransaction.commitAllowingStateLoss();
-//        loadFragmentAnimated(addListingFinalCard, null, R.id.card, "");
+
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+//        card.setClickable(true);
+//        fragmentTransaction.addToBackStack("card");
+//        fragmentTransaction.replace(R.id.card, addListingFinalCard);
+//        fragmentTransaction.commitAllowingStateLoss();
+       // Reset();
+        Bundle b =new Bundle();
+        b.putString("add_listing",Entry_point);
+        loadFragmentAnimated(addListingFinalCard, b, R.id.card, "");
 
     }
     public void closeCardContainer(){
@@ -2785,22 +2873,26 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
 
     public  void setlocation(String b_name){
         btnMyDeals.setVisibility(View.GONE);
-        btn_back.setVisibility(View.VISIBLE);
-        btn_cancel.setVisibility(View.VISIBLE);
-        fr.setVisibility(View.GONE);
+        /*btn_back.setVisibility(View.VISIBLE);
+        btn_cancel.setVisibility(View.VISIBLE);*/
+        fav.setEnabled(false);
+
         HideBottomNavBar();
+        fr.setVisibility(View.GONE);
         setbaseloc.setVisibility(View.GONE);
         /*getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);*/
+        property_type_layout.clearAnimation();
+        property_type_layout.setVisibility(View.GONE);
         confirm_screen_title.setVisibility(View.VISIBLE);
         Log.i("sushil","Building name "+b_name+"visibility : "+confirm_screen_title.getVisibility());
         confirm_screen_title.setText(b_name);
         //confirm_screen_title.setTextColor(Color.WHITE);
         getSupportActionBar().setTitle("");
-        closeCardContainer();
-        container_sign.setBackgroundColor(getResources().getColor(R.color.transparent));
+        //closeCardContainer();
+        /*container_sign.setBackgroundColor(getResources().getColor(R.color.transparent));
         container_sign.setClickable(false);
-        card.setClickable(false);
+        card.setClickable(false);*/
         saveBuiding(b_name);
        // hdroomsCount.setVisibility(View.GONE);
 
@@ -3008,7 +3100,10 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
                         Log.i("magic","addBuildingRealm success "+jsonResponse.getJSONObject("responseData").getString("id"));
                         General.setSharedPreferences(getBaseContext(), AppConstants.BUILDING_ID,jsonResponse.getJSONObject("responseData").getString("id"));
                         General.setSharedPreferences(getBaseContext(), AppConstants.ADD_TYPE,"building");
+                        if(!Listing)
                         AddBuildingDataToRealm(jsonResponse.getJSONObject("responseData").getString("id"));
+                        else
+                            openAddListingFinalCard();
 
 
                     } catch (Exception e) {

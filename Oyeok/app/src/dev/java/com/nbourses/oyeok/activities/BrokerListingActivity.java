@@ -53,6 +53,8 @@ import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.CustomPhase
 import com.nbourses.oyeok.RPOT.PriceDiscovery.UI.PhasedSeekBarCustom.SimpleCustomPhasedAdapter;
 import com.nbourses.oyeok.SignUp.SignUpFragment;
 import com.nbourses.oyeok.adapters.BrokerListingListView;
+import com.nbourses.oyeok.fragments.AddBuilding;
+import com.nbourses.oyeok.fragments.AddListing;
 import com.nbourses.oyeok.fragments.AddListingFinalCard;
 import com.nbourses.oyeok.fragments.AppSetting;
 import com.nbourses.oyeok.fragments.CatalogDisplayListing;
@@ -161,6 +163,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
     FrameLayout container_sign,card;
     private Tracker mTracker;
+    boolean cardflag=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -331,9 +334,11 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
                             .setAction("")
                             .setLabel("")
                             .build());*/
-                    General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
+                    /*General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
                     Intent in = new Intent(getBaseContext(), BrokerMap.class);
-                    startActivity(in);
+                    startActivity(in);*/
+
+                    openAddListing();
                 }
 
             }
@@ -415,8 +420,8 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
         }
         RealmResults<ListingCatalogRealm> results1 = realm.where(ListingCatalogRealm.class).equalTo("tt","or").findAll();
-
-        for(ListingCatalogRealm c :results){
+        Log.i("getLocality","getLocality   : "+results1.size());
+        for(ListingCatalogRealm c :results1){
 
             portListingModel portListingModel = new portListingModel(c.getCatalog_id(),c.getCatalog_name(),c.getImageuri(),"catalog","tt");
 
@@ -458,7 +463,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         }*/
 
 
-        RealmResults<addBuildingRealm> result11= realm.where(addBuildingRealm.class).equalTo("display_type","both").findAllSorted("timestamp",false);
+        /*RealmResults<addBuildingRealm> result11= realm.where(addBuildingRealm.class).equalTo("display_type","both").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result11){
 
             Log.i("getLocality","getLocality   : "+c.getLocality());
@@ -467,7 +472,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
             addbuildingLL.add(portListingModel);
 
 
-        }
+        }*/
 
         RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).equalTo("tt", "ll").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result1){
@@ -483,7 +488,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
 
 //    public portListingModel(String id, String name, String locality, String growth_rate, int ll_pm, int or_psf, String timpstamp, String transaction, String config) {
-        RealmResults<addBuildingRealm> result22= realm.where(addBuildingRealm.class).equalTo("display_type", "both").findAllSorted("timestamp",false);
+        /*RealmResults<addBuildingRealm> result22= realm.where(addBuildingRealm.class).equalTo("display_type", "both").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result22){
 
 
@@ -492,7 +497,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
             addbuildingOR.add(portListingModel);
 
 
-        }
+        }*/
         RealmResults<addBuildingRealm> result2= realm.where(addBuildingRealm.class).equalTo("tt", "or").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result2){
 
@@ -1014,7 +1019,9 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
     @Override
     public void onBackPressed() {
-        if(AppConstants.SIGNUP_FLAG){
+        if(cardflag){
+            closeCardContainer();
+        }else if(AppConstants.SIGNUP_FLAG){
             //Log.i(TAG,"flaga isa 6 ");
 
             if(AppConstants.REGISTERING_FLAG){}else{
@@ -1243,17 +1250,22 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         Bundle b =new Bundle();
         b.putString("edit_listing","update");
         b.putString("listing_id",id);
-        /*addListingFinalCard.setArguments(b);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-        card.setClickable(true);
-
-        fragmentTransaction.addToBackStack("card");
-        fragmentTransaction.replace(R.id.card, addListingFinalCard);
-        fragmentTransaction.commitAllowingStateLoss();*/
 
         loadFragmentAnimated(addListingFinalCard,b,R.id.card,"card");
+
+    }
+
+    public void openAddListingFinalCard(){
+
+        container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
+        container_sign.setClickable(true);
+        AddListingFinalCard addListingFinalCard= new AddListingFinalCard();
+       /* Bundle b =new Bundle();
+        b.putString("edit_listing","update");
+        b.putString("listing_id",id);*/
+        Bundle b =new Bundle();
+        b.putString("add_listing","Listing");
+        loadFragmentAnimated(addListingFinalCard,null,R.id.card,"card");
 
     }
     public void closeCardContainer(){
@@ -1262,13 +1274,14 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         container_sign.setBackgroundColor(getResources().getColor(R.color.transparent));
         container_sign.setClickable(false);
         card.setClickable(false);
-        // ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
     }
 
 
 
 
     public ArrayList<portListingModel> PortlistingData(){
+       // if(AppConstants.TT_TYPE.equalsIgnoreCase("ll"))
+           // catalogportListing.addAll(portListing);
         Log.i("listingtest","listing count 12 "+catalogportListing.size());
 
         return catalogportListing;
@@ -1276,14 +1289,19 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
 
    public ArrayList<portListingModel> PortlistingData1(){
-    Log.i("listingtest","listing count 1111 "+portListing.size());
-       for (portListingModel c:list){
+    Log.i("listingtest","listing count 1111 "+list.size());
+       //list.clear();
+       /*for (portListingModel c:list){
+
+           Log.i("listingtest","listing count 1111 "+c.getName()+" "+c.isCheckbox());
+           if(c.isCheckbox())
            c.setCheckbox(false);
-           Log.i("listingtest","listing count 1111 "+c.isCheckbox());
-           //list.add();
-       }
+           Log.i("listingtest","listing count 1111 "+c.getName()+" "+c.isCheckbox());
+
+
+       }*/
     return list;
-}
+   }
     public void Back(){
         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
         Log.i("stacktop","backstack check111 "+getSupportFragmentManager().getBackStackEntryCount());
@@ -1315,9 +1333,13 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
 
     public void OpenListingTitle(ArrayList<portListingModel> list1){
-
-        list=list1;
-
+        list.clear();
+        list.addAll(list1);
+        /*for (portListingModel c:list1){
+            c.setCheckbox(false);
+            Log.i("listingtest","listing count 1111 "+c.isCheckbox());
+            list.add(c);
+        }*/
         /*Bundle b=new Bundle();
         //putParcelableArrayList("listings",list);
         b.putParcelableArrayList("listings", list1);*/
@@ -1388,6 +1410,64 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
 
 
     }
+
+
+
+    public void openAddListing(){
+        cardflag=true;
+        container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
+        container_sign.setClickable(true);
+        AddListing addListing= new AddListing();
+        Bundle b =new Bundle();
+        b.putString("add_listing","Listing");
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            loadFragmentAnimated(addListing, b, R.id.card, "card");
+        }
+        else{
+            loadFragmentAnimated(addListing,b,R.id.card1,"card");
+        }
+
+    }
+    /*public void closeCardContainer(){
+
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+
+        }else{
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card1)).commit();
+
+        }
+
+        container_sign.setBackgroundColor(getResources().getColor(R.color.transparent));
+        container_sign.setClickable(false);
+        card.setClickable(false);
+        // ((DashboardClientFragment) getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
+    }*/
+
+    public void openAddBuilding(){
+
+
+
+        cardflag=true;
+
+        container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
+        container_sign.setClickable(true);
+
+        AddBuilding addBuilding= new AddBuilding();
+        Bundle b =new Bundle();
+        b.putString("add_listing","Listing");
+
+        if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
+            loadFragmentAnimated(addBuilding, b, R.id.card, "card");
+        }
+        else{
+            loadFragmentAnimated(addBuilding,b,R.id.card1,"card");
+        }
+
+
+    }
+
+
 
 
 
