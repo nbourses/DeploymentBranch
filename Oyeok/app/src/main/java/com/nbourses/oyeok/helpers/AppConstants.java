@@ -223,4 +223,18 @@ public class AppConstants {
     public static final String IS_SIGNUP = "is_signup";
     public static final String ADD_TYPE = "addType";  //CHECKBOX_STATUS
     public static final String CHECKBOX_STATUS = "checkboxStatus";
+
+
+
+    //MentalMaps
+    public static final String QUESTION = "question";
+    public static final String OWNERQ1 = "ownerQ1";
+    public static final String OWNERQ2 = "ownerQ2";
+    public static final String OWNERQ3 = "ownerQ3";
+    public static final String OWNERQ4 = "ownerQ4";
+    public static boolean SETLOCATIONOQ1 = false;
+    public static boolean SETLOCATIONOWNERQ1 = false;
+    public static boolean SETLOCATIONOWNERQ2 = false;
+
+
 }

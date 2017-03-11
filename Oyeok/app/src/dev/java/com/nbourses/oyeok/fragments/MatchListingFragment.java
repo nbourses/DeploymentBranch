@@ -229,6 +229,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("percent","okaccept called 3 :");
+                ok.setClickable(false);
                               okaccept();
             }
         });
@@ -574,7 +575,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
 
                     }catch(Exception e){
                         Log.e("TAG", "Caught in the exception getLocality 1" + e.getMessage());
-
+                        ok.setClickable(true);
                     }
 
 
@@ -591,7 +592,7 @@ mrview.setOnClickListener(new View.OnClickListener() {
                                         .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
                     }
                     catch(Exception e){}
-
+                    ok.setClickable(true);
                 }
             });
 

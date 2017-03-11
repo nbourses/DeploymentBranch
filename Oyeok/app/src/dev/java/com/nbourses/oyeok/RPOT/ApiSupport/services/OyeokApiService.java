@@ -14,6 +14,7 @@ import com.nbourses.oyeok.models.AddBuildingModel;
 import com.nbourses.oyeok.models.AddListingBorker;
 import com.nbourses.oyeok.models.CreateCatalogListing;
 import com.nbourses.oyeok.models.CreateWatchlistAPI;
+import com.nbourses.oyeok.models.FindBuildings;
 import com.nbourses.oyeok.models.GetLocality;
 import com.nbourses.oyeok.models.HdRooms;
 import com.nbourses.oyeok.models.MatchingOK;
@@ -35,6 +36,8 @@ import retrofit.http.POST;
 public interface OyeokApiService {
 
 
+    @POST("/find/buildings")
+    void findBuildings(@Body FindBuildings f, Callback<JsonElement> callback);
     @POST("/matching/ok")
     void matchingOk(@Body MatchingOK m, Callback<JsonElement> callback);
 

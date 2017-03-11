@@ -114,6 +114,8 @@ import com.nbourses.oyeok.helpers.AutoOkCall;
 import com.nbourses.oyeok.helpers.General;
 import com.nbourses.oyeok.interfaces.OnOyeClick;
 import com.nbourses.oyeok.models.AddBuildingModel;
+import com.nbourses.oyeok.models.FindBuildings;
+import com.nbourses.oyeok.models.GetLocality;
 import com.nbourses.oyeok.models.buildingCacheModel;
 import com.nbourses.oyeok.realmModels.BuildingCacheRealm;
 import com.nbourses.oyeok.realmModels.Favourites;
@@ -359,6 +361,8 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
 
     private View tv_change_region, editBaseLocation,setbaseloc;
 
+    private String cardConfig = "2bhk";
+
 //    @Bind(R.id.seekbar_linearlayout)
 //    LinearLayout seekbarLinearLayout;
 
@@ -550,11 +554,28 @@ else {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getExtras() != null)
-                if(intent.getExtras().containsKey("question"))
-                    if(intent.getExtras().getString("question").equalsIgnoreCase("LtoP"))
+                if(intent.getExtras().containsKey(AppConstants.QUESTION))
+                    if(intent.getExtras().getString(AppConstants.QUESTION).equalsIgnoreCase("LtoP"))
                              AppConstants.SETLOCATIONLTOP = true;
-                    else if(intent.getExtras().getString("question").equalsIgnoreCase("TravelTime"))
+                    else if(intent.getExtras().getString(AppConstants.QUESTION).equalsIgnoreCase("TravelTime"))
                              AppConstants.SETLOCATIONTRAVELT = true;
+                    else if(intent.getExtras().getString(AppConstants.QUESTION).equalsIgnoreCase(AppConstants.OWNERQ1)) {
+                        AppConstants.SETLOCATIONOWNERQ1 = true;
+                        if(intent.getExtras().containsKey(AppConstants.CONFIG))
+                            cardConfig = intent.getExtras().getString(AppConstants.CONFIG);
+                    }
+                    else if(intent.getExtras().getString(AppConstants.QUESTION).equalsIgnoreCase(AppConstants.OWNERQ2)) {
+                        AppConstants.SETLOCATIONOWNERQ2 = true;
+                        if(intent.getExtras().containsKey(AppConstants.CONFIG))
+                            cardConfig = intent.getExtras().getString(AppConstants.CONFIG);
+                        ((ClientMainActivity)getActivity()).disEnDealsbtn(false);
+                        CallButton.setVisibility(View.GONE);
+                        Log.i(TAG,"asdfgh "+cardConfig);
+                        txtFilterValue.setText(cardConfig);
+                        txtFilterValue.setEnabled(false);
+                        TastyToast.makeText(getContext(),"Type address & search, click on Building, will be added watchlist",TastyToast.LENGTH_LONG,TastyToast.INFO);
+                    return;
+                    }
 
                       Log.i(TAG,"broadcast reciever here ");
             AppConstants.SETLOCATION = true;
@@ -2215,6 +2236,16 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                 tvFetchingrates.setText("My "+HomeTravel);
                 tvFetchingrates.setTextSize(20);
             }
+            else if(AppConstants.SETLOCATIONOWNERQ1) {
+                map.addMarker(new MarkerOptions().icon(iconOther).position(new LatLng(lat, lng)));
+                ((ClientMainActivity) getActivity()).getSupportActionBar().setTitle("Confirm Location");
+                //locality.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
+
+                tvFetchingrates.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
+                tvFetchingrates.setTextSize(20);
+            }
+
+
             txtFilterValue.setText("done");
             /*txt_info.setText("Is this Location Correct ? press Done");
             addlistingText.setVisibility(View.VISIBLE);
@@ -2256,6 +2287,9 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
 
                 if(AppConstants.SETLOCATIONLTOP||AppConstants.SETLOCATIONTRAVELT)
                 getLocalityPrice();
+                else if(AppConstants.SETLOCATIONOWNERQ1) {
+                    findBuildings();
+                }
                 else
                     Addbuilding();
 
@@ -3641,7 +3675,19 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                                 tvRate.setText("save");
                                 ((ClientMainActivity)getActivity()).getSupportActionBar().setTitle("Adding Present "+HomeTravel);
 
-                            }else{
+                            }
+
+                            else if(AppConstants.SETLOCATIONOWNERQ1){
+                                addBText.setText("Your Area: ");
+                                locality.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
+                                addBTextd.setText("(Click on SAVE to FIX your area)");
+                                txt_info.setText("Find Location on Map & Save");
+                                String txt;
+                                txt="<font color=#2dc4b6><big>Drag & Save My Property</big></font>";
+                                tvFetchingrates.setText(Html.fromHtml(txt));
+                                ((ClientMainActivity)getActivity()).getSupportActionBar().setTitle("Adding My Property");
+                            }
+                            else{
 //                                phaseGameTitle.setVisibility(View.GONE);
 //                                portfolioCount.setVisibility(View.GONE);
                                // txtFilterValue.setText("SAVE");
@@ -4167,6 +4213,16 @@ General.setSharedPreferences(getContext(),AppConstants.ROLE_OF_USER,"client");
                 txt="<font color=#2dc4b6><big>Drag & Save "+HomeTravel+" Location</big></font>";
                 tvFetchingrates.setText(Html.fromHtml(txt));
                 ((ClientMainActivity)getActivity()).getSupportActionBar().setTitle("Adding "+HomeTravel);
+            }
+            else if(AppConstants.SETLOCATIONOWNERQ1){
+                addBText.setText("Your Area: ");
+                locality.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
+                addBTextd.setText("(Click on SAVE to FIX your area)");
+                txt_info.setText("Find Location on Map & Save");
+                String txt;
+                txt="<font color=#2dc4b6><big>Drag & Save My Property</big></font>";
+                tvFetchingrates.setText(Html.fromHtml(txt));
+                ((ClientMainActivity)getActivity()).getSupportActionBar().setTitle("Adding My Property");
             }
             phaseGameTitle.setVisibility(View.GONE);
             rental.setVisibility(View.GONE);
@@ -5960,6 +6016,189 @@ if(c.getType().equalsIgnoreCase("home")){
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+    }
+
+
+
+    private void findBuildings(){
+
+        try {
+
+            FindBuildings f = new FindBuildings();
+            f.setConfig(cardConfig);
+            f.setProperty_type("home");
+            f.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
+            f.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
+            // g.setProperty_type(ptype.getText().toString());
+
+            Gson gson = new Gson();
+            String json = gson.toJson(f);
+            Log.i("magic","findBuildings  json "+json);
+
+            Log.i("magic","findBuildings 1");
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
+            restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+            OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+            Log.i("magic","findBuildings 2");
+
+            oyeokApiService.findBuildings(f, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement jsonElement, Response response) {
+                    try {
+                        Log.i("magic", "findBuildings3");
+                        String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+                        JSONObject jsonResponse = new JSONObject(strResponse);
+
+                        Log.i("magic", "findBuildings4 " + jsonResponse);
+
+
+                        if (jsonResponse.getString("success").equalsIgnoreCase("false")) {
+
+
+                                TastyToast.makeText(getContext(), jsonResponse.getJSONObject("responseData").getString("message"), TastyToast.LENGTH_LONG, TastyToast.INFO);
+
+
+
+
+                        } else {
+                            Log.i("magic", "findBuildings success " + jsonResponse.getJSONArray("responseData"));
+                            JSONArray j = jsonResponse.getJSONArray("responseData");
+
+
+                            Realm myRealm = General.realmconfig(getContext());
+                            if (myRealm.isInTransaction())
+                                myRealm.cancelTransaction();
+                            myRealm.beginTransaction();
+                            Localities l = new Localities();
+                            l.setLocality(General.getSharedPreferences(getContext(),AppConstants.LOCALITY));
+                            l.setGrowthRate(growth_rate);
+                            l.setLlMin(llMin+"");
+                            l.setLlMax(llMax+"");
+                            l.setOrMin(orMin+"");
+                            l.setType("Compare Neighbours");
+                            l.setOrMax(orMax+"");
+                            l.setLat(General.getSharedPreferences(getContext(),AppConstants.MY_LAT));
+                            l.setLng(General.getSharedPreferences(getContext(),AppConstants.MY_LNG));
+                            l.setTimestamp(System.currentTimeMillis() + "");
+
+                            myRealm.copyToRealm(l);
+                            myRealm.commitTransaction();
+                            Log.i("magic", "findBuildings7 " + j.length());
+
+
+
+
+
+
+                            for (int i = 0; i < j.length(); i++) {
+                                JSONObject jo = j.getJSONObject(i);
+                                MyPortfolioModel myPortfolioModel = new MyPortfolioModel();
+                                myPortfolioModel.setName(jo.getString("name"));
+                                myPortfolioModel.setConfig(jo.getString("config"));
+                                myPortfolioModel.setLat(jo.getJSONArray("loc").getDouble(1)+"");
+                                myPortfolioModel.setLng(jo.getJSONArray("loc").getDouble(0)+"");
+                                myPortfolioModel.setId(jo.getString("id"));
+                                myPortfolioModel.setLl_pm(jo.getInt("ll_pm"));
+                                myPortfolioModel.setOr_psf(jo.getInt("or_psf"));
+                                myPortfolioModel.setPtype("home");
+                                myPortfolioModel.setTt("ll");
+                                myPortfolioModel.setPortals(jo.getString("portals"));
+                                myPortfolioModel.setListing(jo.getString("listings"));
+                                myPortfolioModel.setRate_growth(jo.getString("rate_growth"));
+                                myPortfolioModel.setTransactions(jo.getString("transactions"));
+                                myPortfolioModel.setLocality(jo.getString("locality"));
+                                myPortfolioModel.setTimestamp(String.valueOf(System.currentTimeMillis()));
+                                if (myRealm.isInTransaction())
+                                    myRealm.cancelTransaction();
+                                myRealm.beginTransaction();
+                                myRealm.copyToRealmOrUpdate(myPortfolioModel);
+//
+                                myRealm.commitTransaction();
+
+                            }
+
+                            General.setBadgeCount(getContext(), AppConstants.PORTFOLIO_COUNT, General.getBadgeCount(getContext(), AppConstants.PORTFOLIO_COUNT) + (j.length()+1));
+
+
+                           /* for (int i = 0; i < j.length(); i++) {
+                                Log.i("magic", "findBuildings8 ");
+                                JSONObject jo = j.getJSONObject(i);
+
+                                Log.i("magic", "findBuildings9 " + jo.getJSONArray("loc").get(0).toString());
+
+                                myRealm.beginTransaction();
+                                Localities l = new Localities();
+                                l.setLocality(jo.getString("locality"));
+                                l.setGrowthRate(jo.getString("rate_growth"));
+                                l.setLlMin(jo.getString("ll_min"));
+                                l.setLlMax(jo.getString("ll_max"));
+                                l.setOrMin(jo.getString("or_min"));
+                                l.setType("Compare Neighbours");
+                                l.setOrMax(jo.getString("or_max"));
+                                l.setLat(jo.getJSONArray("loc").get(1).toString());
+                                l.setLng(jo.getJSONArray("loc").get(0).toString());
+                                l.setTimestamp(System.currentTimeMillis() + "");
+
+                                myRealm.copyToRealm(l);
+                                myRealm.commitTransaction();
+
+                                AutoOkCall runner = new AutoOkCall(getContext());
+
+                                runner.execute(jo.getJSONArray("loc").get(1).toString(), jo.getJSONArray("loc").get(0).toString(), jo.getString("locality"));
+                            }
+
+
+                            RealmResults<Localities> results1 =
+                                    myRealm.where(Localities.class).findAll();
+
+                            for (Localities c : results1) {
+
+                                Log.i("results1", "findBuildings5 " + c.getLocality());
+                                Log.i("results1", "findBuildings5 " + c.getLng());
+                            }
+*/
+
+                             Intent inten = new Intent(getContext(), ClientMainActivity.class);
+                            inten.addFlags(
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                            Intent.FLAG_ACTIVITY_NEW_TASK);
+                            AppConstants.SETLOCATIONOWNERQ1 = false;
+                            AppConstants.SETLOCATION = false;
+                            startActivity(inten);
+
+                        }
+
+                    }catch(Exception e){
+                        Log.e("TAG", "Caught in the exception getLocality 1" + e.getMessage());
+
+                    }
+
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.i("magic","findBuildings failed "+error);
+                    try {
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text("Server Error: " + error.getMessage())
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }
+                    catch(Exception e){}
+
+                }
+            });
+
+
+        }
+        catch (Exception e){
+            Log.e("TAG", "Caught in the exception getLocality"+ e.getMessage());
+
         }
 
     }
