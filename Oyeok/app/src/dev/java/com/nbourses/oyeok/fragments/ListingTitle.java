@@ -77,6 +77,11 @@ public class ListingTitle extends Fragment {
     ListView list_selected_info;
     TextView list_back;
     private static ArrayList<portListingModel> selectedList=new ArrayList<>();
+
+    private static ArrayList<portListingModel> copyselectedlist = new ArrayList<>();
+    private static ArrayList<portListingModel> templist = new ArrayList<>();
+
+
     ListingTitleAdapter adapter;
     ProgressBar pg_create_watch;
 
@@ -161,7 +166,37 @@ public class ListingTitle extends Fragment {
             public void onClick(View v) {
 
 
+                templist.clear();
+                // selectedlist.addAll(adapter.getAllData());
+                for(portListingModel hold: adapter.getAllData()){
+                    if(hold.isCheckbox()){
 
+                        // selectedlist.remove(hold);
+
+                        //portListingModel loadBuildingDataModel1=new portListingModel(hold.getName(),hold.getLat(),hold.getLng(),hold.getId(),hold.getLocality(),hold.getCity(),hold.getLl_pm(),hold.getOr_psf());
+                        templist.add(hold);
+                        Log.i("selected1","selected building hold : "+hold.getName());
+                    }
+
+                }
+
+                copyselectedlist.clear();
+                copyselectedlist.addAll(selectedList);
+
+                for ( portListingModel d : templist) {
+                    Log.i("selected1","selected building : templist "+selectedList.size()+" contains  "+selectedList.contains(d));
+
+                    for(portListingModel c : copyselectedlist)
+                        if(d.getId()==c.getId()){
+                            Log.i("selected1","selected building : c "+c.getName()+"d  "+d.getName());
+                            selectedList.remove(c);
+                            break;
+                        }
+
+                }
+                copyselectedlist.clear();
+                Log.i("selected1","selected building : "+selectedList.size());
+                adapter.notifyDataSetChanged();
 
 
             }

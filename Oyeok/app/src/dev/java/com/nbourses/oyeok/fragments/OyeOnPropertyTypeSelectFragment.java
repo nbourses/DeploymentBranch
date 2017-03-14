@@ -127,7 +127,7 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
     b_conf="2BHK";
     onFilterValueUpdate("950","home");
 }
-        Log.i("selectedPropertyType","selectedPropertyType================== "+selectedPropertyType+"  AppConstants.CONFIG   : "+AppConstants.CONFIG+" ===== "+General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG)+" ======= "+AppConstants.PROPERTY);
+        Log.i("selectedPropertyType","selectedPropertyType================== "+selectedPropertyType+"  AppConstants.CONFIG   : "+AppConstants.CONFIG+" ===== "+General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG)+" ======= "+AppConstants.PROPERTY+"b_conf  : "+b_conf);
 
         /*selected_config =(TextView) v.findViewById( R.id.selected_config );*/
         //init(inflater, container);
@@ -139,9 +139,14 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
                 horizontalScrollViewHome.setVisibility(View.VISIBLE);
                 horizontalScrollViewAny.setVisibility(View.GONE);
                 General.saveBoolean(getContext(), "propertySubtypeFlag", true);
-                General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,b_conf);
-                AppConstants.letsOye.setPropertySubType(b_conf);
-                AppConstants.letsOye.setSize(b_conf);
+                General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,b_conf.toLowerCase());
+                if(!b_conf.equalsIgnoreCase("")) {
+                    AppConstants.letsOye.setPropertySubType(b_conf.toLowerCase());
+                    AppConstants.letsOye.setSize(b_conf.toLowerCase());
+                }else{
+                    AppConstants.letsOye.setPropertySubType("2bhk");
+                    AppConstants.letsOye.setSize("2bhk");
+                }
                 onFilterValueUpdate("950","home");
 
                 plotconf(b_conf);
@@ -578,7 +583,7 @@ if(!General.getSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG).equa
 private void addData(){
     onFilterValueUpdate(area,bhkNumber+""+bhkNumberValue);
     General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,bhkNumber+""+bhkNumberValue);
-    oyeButtonData = selectedPropertyType +" "+bhkNumber+""+bhkNumberValue;
+    //oyeButtonData = selectedPropertyType +" "+bhkNumber+""+bhkNumberValue;
     AppConstants.letsOye.setPropertySubType(bhkNumber+""+bhkNumberValue);
     AppConstants.letsOye.setSize(bhkNumber+""+bhkNumberValue);
     General.saveBoolean(getContext(), "propertySubtypeFlag", true);
@@ -872,7 +877,9 @@ private void addData(){
 
             }
         }.start();
-
+        General.saveBoolean(getContext(), "propertySubtypeFlag", true);
+        General.setSharedPreferences(getContext(),AppConstants.PROPERTY_CONFIG,AppConstants.CONFIG);
+        AppConstants.letsOye.setPropertySubType(AppConstants.CONFIG);
         onFilterValueUpdate(area,AppConstants.CONFIG);
     }
 

@@ -327,6 +327,7 @@ boolean cardflag=false,catalogflag=false;
                     AppConstants.SIGNUP_FLAG = true;
 
                 } else if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
+                    catalogflag=true;
                     WatchlistExplorer watchlistExplorer=new WatchlistExplorer();
                     loadFragmentAnimated(watchlistExplorer,null,R.id.container_Signup1,"");
                     /*General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
@@ -340,7 +341,7 @@ boolean cardflag=false,catalogflag=false;
                     /*General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "PC");
                     Intent in = new Intent(getBaseContext(), BrokerMap.class);
                     startActivity(in);*/
-
+                    catalogflag=true;
                     WatchlistExplorer watchlistExplorer=new WatchlistExplorer();
                     loadFragmentAnimated(watchlistExplorer,null,R.id.container_sign,"");
                 }
@@ -534,6 +535,7 @@ boolean cardflag=false,catalogflag=false;
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i("zyzz", "zyzz 1");
                 if (watchlist.contains(portListing.get(position))) {
+                    catalogflag=true;
                     Bundle b=new Bundle();
                     b.putString("watchlist_id",portListing.get(position).getWatchlist_id()+"");
                     Log.i("datafromraelm1", "realm data 1  :"+ portListing.get(position).getWatchlist_id()+"");
@@ -1124,9 +1126,17 @@ boolean cardflag=false,catalogflag=false;
     }
     @Override
     public void onBackPressed() {
-
+        Log.i("catalogflag", "catalogflag :  " + cardflag+" :: "+catalogflag);
+        if(catalogflag){
+            Log.i("catalogflag", "catalogflag :  " + catalogflag);
+            closeWatchlistFragment();
+            //cardflag=false;
+        }else
         if(cardflag){
+            Log.i("catalogflag", "catalogflag :  " + cardflag);
+
             closeCardContainer();
+            //cardflag=false;
         }else if (AppConstants.SIGNUP_FLAG) {
             //Log.i(TAG,"flaga isa 6 ");
             if (AppConstants.REGISTERING_FLAG) {
@@ -1442,6 +1452,7 @@ boolean cardflag=false,catalogflag=false;
 
 
    public void closeWatchlistFragment(){
+       catalogflag=false;
        if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
 
@@ -1464,6 +1475,7 @@ boolean cardflag=false,catalogflag=false;
         }
         selectedlist.clear();
         selectedlist.addAll(selectedlist1);
+        catalogflag=true;
         Log.i("selected111","selected building init : "+selectedlist.size() );
         if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
@@ -1484,6 +1496,7 @@ boolean cardflag=false,catalogflag=false;
     public void Back(String edit){
         Bundle b=new Bundle();
         b.putString("edit",edit);
+        catalogflag=true;
         if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
             WatchlistExplorer watchlistExplorer=new WatchlistExplorer();
@@ -1507,6 +1520,7 @@ boolean cardflag=false,catalogflag=false;
     public void Refresh(String read){
         Bundle b=new Bundle();
         b.putString("read",read);
+        catalogflag=true;
         if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
             WatchlistDisplayBuilding watchlistDisplayBuilding=new WatchlistDisplayBuilding();
@@ -1522,6 +1536,7 @@ boolean cardflag=false,catalogflag=false;
     }
 
     public void Close(){
+        catalogflag=false;
         if (General.getSharedPreferences(getBaseContext(), AppConstants.ROLE_OF_USER).equalsIgnoreCase("client")) {
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_Signup1)).commit();
 
@@ -1789,7 +1804,7 @@ boolean cardflag=false,catalogflag=false;
 
     }
     public void closeCardContainer(){
-
+        cardflag=false;
         if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up,R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
 
@@ -1833,8 +1848,11 @@ boolean cardflag=false,catalogflag=false;
         container_sign.setBackgroundColor(Color.parseColor("#CC000000"));
         container_sign.setClickable(true);
         AddListingFinalCard addListingFinalCard= new AddListingFinalCard();
+        Bundle b =new Bundle();
+        b.putString("add_listing","portfolio");
+        //loadFragmentAnimated(addListingFinalCard,b,R.id.card,"card");
         if(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-            loadFragmentAnimated(addListingFinalCard, null, R.id.card, "card");
+            loadFragmentAnimated(addListingFinalCard, b, R.id.card, "card");
         }
         else{
             loadFragmentAnimated(addListingFinalCard,null,R.id.card1,"card");

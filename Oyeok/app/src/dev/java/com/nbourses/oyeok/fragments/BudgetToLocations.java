@@ -864,20 +864,14 @@ public class BudgetToLocations extends Fragment {
 
 
                             General.setBadgeCount(getContext(), AppConstants.PORTFOLIO_COUNT, General.getBadgeCount(getContext(), AppConstants.PORTFOLIO_COUNT) + j.length());
+                            getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+                            submitb.setClickable(true);
+                            View containerSignup = getActivity().findViewById(R.id.container_Signup);
+                            View card = getActivity().findViewById(R.id.card);
+                            containerSignup.setBackgroundColor(Color.parseColor("#00000000"));
+                            containerSignup.setClickable(false);
+                            card.setClickable(false);
 
-                            if(General.getSharedPreferences(getContext(),AppConstants.IS_LOGGED_IN_USER).equalsIgnoreCase("")) {
-
-                                getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
-                                submitb.setClickable(true);
-                                View containerSignup = getActivity().findViewById(R.id.container_Signup);
-                                View card = getActivity().findViewById(R.id.card);
-                                containerSignup.setBackgroundColor(Color.parseColor("#00000000"));
-                                containerSignup.setClickable(false);
-                                card.setClickable(false);
-
-                                Intent intent = new Intent(AppConstants.DOSIGNUP);
-                                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
-                            }
                         }
 
                         }catch(Exception e){

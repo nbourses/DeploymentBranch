@@ -290,9 +290,13 @@ public class MainScreenPropertyListing extends Fragment {
 
                 //reset listview
                 params.topMargin = bottom;
-                v.setLayoutParams(params);
+                try {
+                    v.setLayoutParams(params);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-               // ((DashboardClientFragment)getContext())
+                // ((DashboardClientFragment)getContext())
             }
         });
         Searchlist.addTextChangedListener(new TextWatcher() {

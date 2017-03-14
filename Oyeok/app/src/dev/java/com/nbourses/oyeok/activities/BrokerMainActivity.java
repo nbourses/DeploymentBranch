@@ -358,7 +358,7 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
     @Override
     protected void onResume() {
         super.onResume();
-        AppConstants.cardCounter++;
+       // AppConstants.cardCounter++;
         // Register mMessageReceiver to receive messages.
        // ((BrokerPreokFragment)getSupportFragmentManager().findFragmentById(R.id.container_map)).resetSeekBar();
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(networkConnectivity, new IntentFilter(AppConstants.NETWORK_CONNECTIVITY));
