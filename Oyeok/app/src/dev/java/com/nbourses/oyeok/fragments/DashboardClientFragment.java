@@ -574,7 +574,9 @@ else {
                         txtFilterValue.setText(cardConfig);
                         txtFilterValue.setEnabled(false);
                         TastyToast.makeText(getContext(),"Type address & search, click on Building, will be added watchlist",TastyToast.LENGTH_LONG,TastyToast.INFO);
-                    return;
+                        txt_info.setVisibility(View.VISIBLE);
+                        txt_info.setText("Type address & search, click on Building, will be added watchlist");
+                        return;
                     }
 
                       Log.i(TAG,"broadcast reciever here ");

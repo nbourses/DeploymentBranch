@@ -4,6 +4,8 @@ package com.nbourses.oyeok.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -198,9 +200,33 @@ private String config = "2bhk";
                 intent.putExtra(AppConstants.CONFIG,config);
                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
             }
+            else if(Q.equalsIgnoreCase(AppConstants.OWNERQ3)) {
+                AddBuilding addBuilding= new AddBuilding();
+                Bundle b =new Bundle();
+                b.putString("add_listing","mentalMap");
+
+                    loadFragmentAnimated(addBuilding, b, R.id.card, "card");
+
+            }
+
 
 
          }
      });
 
-}}
+}
+
+    private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.addToBackStack("cardbtol");
+        fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
+
+
+
+}

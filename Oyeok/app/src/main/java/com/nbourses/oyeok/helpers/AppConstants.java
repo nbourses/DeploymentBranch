@@ -235,6 +235,7 @@ public class AppConstants {
     public static boolean SETLOCATIONOQ1 = false;
     public static boolean SETLOCATIONOWNERQ1 = false;
     public static boolean SETLOCATIONOWNERQ2 = false;
+    public static boolean SETLOCATIONOWNERQ3 = false;
 
 
 }

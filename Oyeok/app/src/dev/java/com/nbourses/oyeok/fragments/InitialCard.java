@@ -393,6 +393,11 @@ AppConstants.SETLOCATIONBTOL = true;
                     Intent intent = new Intent(AppConstants.SETLOCN);
                     intent.putExtra("question", "TravelTime");
                     LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                }else if(selection == 1){
+                    Bundle b = new Bundle();
+                    b.putString(AppConstants.QUESTION,AppConstants.OWNERQ3);
+                    MentalMapOwnerScreen mentalMapOwnerScreen = new MentalMapOwnerScreen();
+                    loadFragmentAnimated(mentalMapOwnerScreen,b,R.id.card,"");
                 }
                     else{
                         underConstruction();
