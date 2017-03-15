@@ -1237,8 +1237,27 @@ try {
 /*
 if(AppConstants.FAV) {
     dashboardClientFragment.hideFav();
+
+
+
 }
-*/        if(AppConstants.SEARCHFLAG){
+*/
+
+        if(AppConstants.SETLOCATIONOWNERQ2){
+            AppConstants.cardCounter = 4;
+            AppConstants.SETLOCATIONOWNERQ2 = false;
+            AppConstants.SETLOCATION = false;
+            Intent inten = new Intent(this, ClientMainActivity.class);
+            inten.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                            Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            startActivity(inten);
+
+        }
+
+        else if(AppConstants.SEARCHFLAG){
              Log.i("sushil123","SEARCHFLAG 123 ");
 
             AppConstants.SEARCHFLAG = false;

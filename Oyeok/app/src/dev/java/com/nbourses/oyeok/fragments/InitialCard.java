@@ -3,7 +3,6 @@ package com.nbourses.oyeok.fragments;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
@@ -13,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.CompoundButtonCompat;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
@@ -354,6 +352,14 @@ public class InitialCard  extends Fragment {
                     BudgetToLocations budgetToLocations = new BudgetToLocations();
                     loadFragmentAnimated(budgetToLocations,b,R.id.card,"");
                 }
+                else if(selection == 1){
+                    Bundle b = new Bundle();
+                    b.putString(AppConstants.QUESTION,AppConstants.OWNERQ1);
+                    MentalMapOwnerScreen mentalMapOwnerScreen = new MentalMapOwnerScreen();
+                    loadFragmentAnimated(mentalMapOwnerScreen,b,R.id.card,"");
+
+                }
+
                 else{
                     underConstruction();
                 }
@@ -374,6 +380,13 @@ public class InitialCard  extends Fragment {
                     Intent intent = new Intent(AppConstants.SETLOCN);
                     intent.putExtra("question", "LtoP");
                     LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                }
+                else if(selection == 1){
+                    Bundle b = new Bundle();
+                    b.putString(AppConstants.QUESTION,AppConstants.OWNERQ2);
+                    MentalMapOwnerScreen mentalMapOwnerScreen = new MentalMapOwnerScreen();
+                    loadFragmentAnimated(mentalMapOwnerScreen,b,R.id.card,"");
+
                 }
 
                 else{
@@ -398,6 +411,11 @@ public class InitialCard  extends Fragment {
                     Intent intent = new Intent(AppConstants.SETLOCN);
                     intent.putExtra("question", "TravelTime");
                     LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                }else if(selection == 1){
+                    Bundle b = new Bundle();
+                    b.putString(AppConstants.QUESTION,AppConstants.OWNERQ3);
+                    MentalMapOwnerScreen mentalMapOwnerScreen = new MentalMapOwnerScreen();
+                    loadFragmentAnimated(mentalMapOwnerScreen,b,R.id.card,"");
                 }
                     else{
                         underConstruction();

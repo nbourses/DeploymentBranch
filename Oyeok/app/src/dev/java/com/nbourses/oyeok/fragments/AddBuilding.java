@@ -408,6 +408,7 @@ private TextView Cancel,back,usertext;
                                     }else
                                     ((BrokerMap)getActivity()).openAddListingFinalCard();
                                 }else{
+
                                     AddbuildingAPICall(adapter.getItem(position).getName(),adapter.getItem(position).getLat() + "",adapter.getItem(position).getLng() + "",adapter.getItem(position).getId()+"",adapter.getItem(position).getLocality(),adapter.getItem(position).getCity());
                                 }
 
@@ -504,8 +505,13 @@ private TextView Cancel,back,usertext;
                                 myRealm.commitTransaction();
                             }
                             AppConstants.PROPERTY="Home";
-                            ((MyPortfolioActivity)getActivity()).closeCardContainer();
-                            getActivity().recreate();
+                            if(AppConstants.SETLOCATIONOWNERQ3){
+                                getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+
+                            }else {
+                                ((MyPortfolioActivity) getActivity()).closeCardContainer();
+                                getActivity().recreate();
+                            }
 //                            Intent in = new Intent(getContext(), MyPortfolioActivity.class);
 //                            startActivity(in);
                         } catch (JSONException e) {e.printStackTrace();}

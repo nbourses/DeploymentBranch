@@ -52,16 +52,58 @@ android {
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
 
-    /* signingConfigs {
+     signingConfigs {
         debug {
             storeFile file("/Users/shlokmalik/Desktop/oyeok.jks")
             storePassword "NBAscent@123A"
             keyAlias "oyeok"
             keyPassword "NBAscent@123A"
         }
-    }*/
+    }
     /*buildTypes {
         release {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/
+    /
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             signingConfig signingConfigs.release
         }
