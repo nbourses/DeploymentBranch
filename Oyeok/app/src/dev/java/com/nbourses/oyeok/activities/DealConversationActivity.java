@@ -299,7 +299,6 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
         ButterKnife.bind(this);
         texrating = (TextView) findViewById(R.id.texRating);
         ratingBar.setOnRatingBarChangeListener(this);
-
         if(!General.isNetworkAvailable(this)){
             General.internetConnectivityMsg(this);
         }

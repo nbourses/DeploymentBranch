@@ -1,6 +1,7 @@
 package com.nbourses.oyeok.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -69,7 +70,7 @@ View v;
     String catalog_id,catalog_name,matchedid;
     ImageView btn_delete,btn_add_property;
     Bundle b;
-
+LinearLayout btn_connect;
     boolean status=false;
 
 
@@ -80,7 +81,7 @@ View v;
 
         back=(TextView)v.findViewById(R.id.list_back);
         Listview=(ListView)v.findViewById(R.id.list_Watchlist_Listview);
-       // btn_connect=(LinearLayout)v.findViewById(R.id.list_btn_connect);
+        btn_connect=(LinearLayout)v.findViewById(R.id.list_btn_connect);
         pg_load_building=(ProgressBar)v.findViewById(R.id.list_pg_load_building);
         btn_delete=(ImageView)v.findViewById(R.id.list_btn_delete);
         //btn_add_property=(ImageView)v.findViewById(R.id.list_btn_add_property);
@@ -194,6 +195,15 @@ View v;
         });
 
 
+
+        btn_connect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareListingCatalog();
+            }
+        });
+
+
         return v;
     }
 
@@ -217,13 +227,13 @@ View v;
         ids1.addAll(c.getListingids());
         pg_load_building.setVisibility(View.VISIBLE);
         status=false;
-        ReadWatchlist();
+        ReadListingCatalog();
 
     }
 
 
 
-    private void ReadWatchlist(){
+    private void ReadListingCatalog(){
         Log.i("magic111","addBuildingRealm success response "+ids+"ids1 "+ids1);
 
         CreateCatalogListing createCatalogListing=new CreateCatalogListing();
@@ -401,12 +411,85 @@ View v;
 
 
 
+    private void ShareListingCatalog(){
+        Log.i("magic111","addBuildingRealm success response "+ids+"ids1 "+ids1);
+
+        CreateCatalogListing createCatalogListing=new CreateCatalogListing();
+        createCatalogListing.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+        createCatalogListing.setAction("share");
+        createCatalogListing.setCatalog_id(catalog_id);
+        createCatalogListing.setCity("Mumbai");
+        createCatalogListing.setTt((AppConstants.TT_TYPE).toLowerCase());
+        createCatalogListing.setTitle(catalog_name);
+       // createCatalogListing.setListing_ids(ids);
+
+        // Log.i("createCatalogListing","addBuildingRealm createCatalogListing request "+createCatalogListing.getUser_id()+" :: "+createCatalogListing.getCatalog_id()+" : "+createCatalogListing.getCatalog_id()+" : "+createCatalogListing.getTitle()+" : "+createCatalogListing.getListing_ids().get(0)+","+createCatalogListing.getListing_ids().get(1));
+
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+
+        oyeokApiService.CreateCataloglist(createCatalogListing, new retrofit.Callback<JsonElement>() {
+            @Override
+            public void success(JsonElement jsonElement, Response response) {
+
+                String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+
+                try {
+                    JSONObject jsonResponse = new JSONObject(strResponse);
+                    Log.i("magical44","addBuildingRealm success response "+response+"\n"+jsonResponse);
+                    JSONObject building = new JSONObject(jsonResponse.getString("responseData"));
+                    Log.i("magical44","addBuildingRealm success response "+building);
+                    //watchlist_id=building.getString("watchlist_id");
+                    String Sharelink=building.getString("share_link");
+                    Log.i("magical44","addBuildingRealm success response1 "+Sharelink);
+                    //Log.i("magical11","addBuildingRealm success response2 "+buildingdata.getString(0));
+                    /*// AddDataToRealm(watchlist_id);
+                    DisplayListRealm.clear();
+                    int size =buildingdata.length();
+                    for(int i=0;i<size;i++){
+                        JSONObject singleRowData = new JSONObject(buildingdata.get(i).toString());
+
+                        String lat = singleRowData.getJSONArray("loc").get(1).toString();
+                        Log.i("Buildingdata", "lat " + lat);
+                        String longi = singleRowData.getJSONArray("loc").get(0).toString();
+
+                        ListingRealm listingRealm=new ListingRealm(singleRowData.getString("listing_id"),singleRowData.getString("name"),singleRowData.getString("config"),Integer.parseInt(singleRowData.getString("listed_ll_pm")),Integer.parseInt(singleRowData.getString("listed_or_psf")),lat,longi,Integer.parseInt(singleRowData.getString("real_ll_pm")),Integer.parseInt(singleRowData.getString("real_or_psf")),singleRowData.getString("possession_date"),singleRowData.getString("req_avl"),singleRowData.getString("locality"),singleRowData.getString("city"),singleRowData.getString("rate_growth"),singleRowData.getString("portals"),singleRowData.getString("listings"),singleRowData.getString("transactions"));
+                        DisplayListRealm.add(listingRealm);
+                        Log.i("Buildingdata", "name " + singleRowData.getString("name"));
+                        // AddDataToRealm();
+
+                    }
+                    AddDataToRealm();*/
+                    openScreenshot(Sharelink);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+
+
+    }
 
 
 
 
+    private void openScreenshot(String url) {
 
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, url);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Hey check this out!");
+        startActivity(Intent.createChooser(intent, "Share link via"));
 
+    }
 
 
 

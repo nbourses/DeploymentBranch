@@ -81,24 +81,23 @@
                 android:dividerHeight="2dp"/>
 
         </LinearLayout>
-        <!--<LinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dip"
-            android:layout_weight="0.25"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="2dp"
+            android:layout_weight="0.20"
+            android:layout_margin="4dp"
             android:id="@+id/list_btn_connect"
             android:background="@color/colorPrimary">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Connect to Broker"
+                android:text="Share"
                 android:textColor="@color/white"
                 android:textStyle="bold"
+                android:clickable="false"
                 android:textSize="16dp"
                 android:gravity="center"/>
-        </LinearLayout>-->
+        </LinearLayout>
     </LinearLayout>
     <ProgressBar
         android:layout_width="wrap_content"

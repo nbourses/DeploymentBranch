@@ -1,11 +1,13 @@
 package com.nbourses.oyeok.fragments;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -40,6 +42,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -69,7 +72,7 @@ public class WatchlistDisplayBuilding extends Fragment {
     watchlistDisplayAdapter adapter;
     Realm myRealm;
     String watchlist_id,watchlist_name,matchedid;
-    LinearLayout btn_connect;
+    TextView btn_connect;
     ImageView btn_delete,btn_add_property;
     Bundle b;
 
@@ -117,7 +120,7 @@ public class WatchlistDisplayBuilding extends Fragment {
         v=inflater.inflate(R.layout.fragment_watchlist_display_building, container, false);
         back=(TextView)v.findViewById(R.id.back);
         Watchlist_Listview=(ListView)v.findViewById(R.id.Watchlist_Listview);
-//        btn_connect=(LinearLayout)v.findViewById(R.id.btn_connect);
+        btn_connect=(TextView)v.findViewById(R.id.btn_connect);
         pg_load_building=(ProgressBar)v.findViewById(R.id.pg_load_building);
         btn_delete=(ImageView)v.findViewById(R.id.btn_delete);
         btn_add_property=(ImageView)v.findViewById(R.id.btn_add_property);
@@ -258,12 +261,14 @@ public class WatchlistDisplayBuilding extends Fragment {
 
 
 
-        /*btn_connect.setOnClickListener(new View.OnClickListener() {
+        btn_connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //DetailWatchlist();
+                Log.i("magic111","addBuildingRealm success response  :  "+ids.size()+"  :: ids1 "+ids1);
+
+                shareWatchlist();
             }
-        });*/
+        });
 
 
 
@@ -519,6 +524,69 @@ public int checkStatus(){
         myRealm.close();
     }
 
+
+
+
+
+    private void shareWatchlist(){
+        Log.i("magic111","addBuildingRealm success response  :  "+ids.size()+"  :: ids1 "+ids1);
+        ReadWatchlistAPI readWatchlistAPI=new ReadWatchlistAPI();
+        readWatchlistAPI.setUser_id(General.getSharedPreferences(getContext(), AppConstants.USER_ID));
+        readWatchlistAPI.setAction("share");
+        readWatchlistAPI.setCity("mumbai");
+        //readWatchlistAPI.setTt("ll");
+       // readWatchlistAPI.setBuild_list(ids);
+        readWatchlistAPI.setTt((AppConstants.TT_TYPE).toLowerCase());
+        readWatchlistAPI.setWatchlist_id(watchlist_id);
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
+        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
+        oyeokApiService.ReadWatchlist(readWatchlistAPI, new retrofit.Callback<JsonElement>() {
+            @Override
+            public void success(JsonElement jsonElement, Response response) {
+
+                String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
+
+                try {
+                    JSONObject jsonResponse = new JSONObject(strResponse);
+                    Log.i("magic321","shareWatchlist success response "+response+"\n"+jsonResponse);
+                    JSONObject building = new JSONObject(jsonResponse.getString("responseData"));
+                    Log.i("magic321","shareWatchlist success response "+building);
+                    //watchlist_id=building.getString("watchlist_id");
+                    String share_link=building.getString("share_link");
+                    Log.i("magic321","shareWatchlist success response1 "+share_link);
+
+                    openScreenshot(share_link);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                AddDataToRealm();
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+
+
+    }
+
+
+
+
+
+    private void openScreenshot(String url) {
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, url);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Hey check this out!");
+        startActivity(Intent.createChooser(intent, "Share link via"));
+
+    }
 
 
 

@@ -25,9 +25,12 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nbourses.oyeok.activities.ClientDealsListActivity;
@@ -149,7 +152,7 @@ public class BudgetToLocations extends Fragment {
     private int maxi = 110000;
     private int mini = 10000;
     private HorizontalScrollView horizontalScrollViewAny,horizontalScrollViewHome;
-
+Tracker mTracker;
 
     public BudgetToLocations() {
         // Required empty public constructor
@@ -199,7 +202,9 @@ public class BudgetToLocations extends Fragment {
         cancel = (TextView) rootView.findViewById(R.id.Cancel_add_building);
         tv_fd_bank = (TextView) rootView.findViewById(R.id.tv_fd_bank);
         tv_security_dep = (TextView) rootView.findViewById(R.id.tv_security_dep);
-
+//init tracker
+        MyApplication application = (MyApplication) getActivity().getApplication();
+        mTracker = application.getDefaultTracker();
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
@@ -245,6 +250,13 @@ public class BudgetToLocations extends Fragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("fixed Budget")
+                        .setAction("Cancel")
+                        .setLabel("Scree2")
+                        .build());
+
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(fragmentManager.findFragmentById(R.id.card)).commit();
                 //getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_up, R.animator.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
@@ -260,6 +272,13 @@ public class BudgetToLocations extends Fragment {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("fixed Budget")
+                        .setAction("home")
+                        .setLabel("Scree2")
+                        .build());
+
                 Property="home" ;
                 ptype.setText("Home");
                 home.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_btn_bg_with_check));
@@ -274,6 +293,11 @@ public class BudgetToLocations extends Fragment {
         shop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("fixed Budget")
+                        .setAction("shop")
+                        .setLabel("Scree2")
+                        .build());
                 Property="shop" ;
                 ptype.setText("Shop");
                 shop.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_btn_bg_with_check));
@@ -288,6 +312,11 @@ public class BudgetToLocations extends Fragment {
         office.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("fixed Budget")
+                        .setAction("office")
+                        .setLabel("Scree2")
+                        .build());
                 Property="office" ;
                 ptype.setText("Office");
                 office.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_btn_bg_with_check));
@@ -303,6 +332,11 @@ public class BudgetToLocations extends Fragment {
         industry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("fixed Budget")
+                        .setAction("Industries")
+                        .setLabel("Scree2")
+                        .build());
                 Property="industrial" ;
                 ptype.setText("Industrial");
                 industry.setBackground(getContext().getResources().getDrawable(R.drawable.gradient_btn_bg_with_check));
@@ -449,6 +483,11 @@ public class BudgetToLocations extends Fragment {
         submitb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("fixed Budget")
+                        .setAction("Submit")
+                        .setLabel("Scree2")
+                        .build());
                 submitb.setClickable(false);
                 getLocalities();
             }

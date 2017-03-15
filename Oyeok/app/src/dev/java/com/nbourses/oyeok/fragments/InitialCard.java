@@ -29,7 +29,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.activities.DealConversationActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -96,6 +99,8 @@ public class InitialCard  extends Fragment {
     private int selection = 0;
     private static final int REQUEST_CALL_PHONE = 1;
 
+    Tracker mTracker;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -126,7 +131,9 @@ public class InitialCard  extends Fragment {
         call = (ImageButton) rootView.findViewById(R.id.call);
         toggleBtn.performClick();
 
-
+        //init tracker
+        MyApplication application = (MyApplication) getActivity().getApplication();
+        mTracker = application.getDefaultTracker();
         init();
         return rootView;
 
@@ -330,6 +337,11 @@ public class InitialCard  extends Fragment {
             @Override
             public void onClick(View v) {
                 //TastyToast.makeText(getContext(),q1.getText().toString(),TastyToast.LENGTH_SHORT,TastyToast.SUCCESS);
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("fixed Budget")
+                        .setAction("click")
+                        .build());
+
                 if(selection == 0){
 
                     Bundle b = new Bundle();
@@ -337,8 +349,8 @@ public class InitialCard  extends Fragment {
                         b.putString(AppConstants.TT,"LL");
                     else
                         b.putString(AppConstants.TT,"OR");
-AppConstants.SETLOCATIONBTOL = true;
 
+                    AppConstants.SETLOCATIONBTOL = true;
                     BudgetToLocations budgetToLocations = new BudgetToLocations();
                     loadFragmentAnimated(budgetToLocations,b,R.id.card,"");
                 }
@@ -351,7 +363,10 @@ AppConstants.SETLOCATIONBTOL = true;
         q2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("fixed Locality")
+                        .setAction("click")
+                        .build());
                 if(selection == 0) {
                     //TastyToast.makeText(getContext(),q2.getText().toString(),TastyToast.LENGTH_SHORT,TastyToast.SUCCESS);
                     getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
@@ -373,7 +388,10 @@ AppConstants.SETLOCATIONBTOL = true;
         q3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("save Travel Time")
+                        .setAction("click")
+                        .build());
                 if(selection == 0) {
                     getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
 

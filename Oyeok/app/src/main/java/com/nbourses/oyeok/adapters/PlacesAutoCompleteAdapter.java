@@ -171,26 +171,7 @@ public class PlacesAutoCompleteAdapter extends RecyclerView.Adapter<PlacesAutoCo
             // Release the buffer now that all data has been copied.
             autocompletePredictions.release();
             try {
-                /*Realm myRealm = General.realmconfig(mContext);
-                RealmResults<Favourites> results11 =
-                        myRealm.where(Favourites.class).findAll();
 
-                for (Favourites c : results11) {
-                    Log.i("TAG", "insiderrnm2 ");
-                    Log.i("TAG", "insiderrnm3 " + c.getTitle());
-                    Log.i("TAG", "insiderrnm4 " + c.getLatiLongi().getLat());
-                    Log.i("TAG", "insiderrnm4 " + c.getLatiLongi().getLng());
-//                    Log.i("TAG", "insiderrn yo 1 " + searchQuery + " " + c.getTitle());
-                    if (constraint.toString().equalsIgnoreCase("Ritz369")) {
-                        resultList.add(0, new PlaceAutocomplete(c.getTitle(),
-                                c.getTitle(), c.getAddress(), true));
-                    } else if (c.getTitle().toLowerCase().contains(constraint.toString().toLowerCase())) {
-                        Log.i("TAG", "insiderrn yo " + constraint.toString() + " " + c.getTitle());
-                        //resultList.ins(c.getTitle());
-                        resultList.add(0, new PlaceAutocomplete(c.getTitle(),
-                                c.getTitle(), c.getAddress(), false));
-                    }
-                }*/
                 Realm myRealm = General.realmconfig(mContext);
                 RealmResults<Favourites> results11 = myRealm.where(Favourites.class).findAll();
                 Log.i("TAG", "insiderrn yo 1 sushil ==================================");
