@@ -247,7 +247,8 @@ public class InitialCard  extends Fragment {
                                                       //* rental.setChecked(true);
                                                       setTenant();
 
-                                                  }
+                                                  }else
+                                                      owner.setChecked(true);
 
 
                                               }
@@ -273,7 +274,8 @@ public class InitialCard  extends Fragment {
                                                      q2.setText(Html.fromHtml(getString(R.string.owner_card_question2)));
                                                      q3.setText(Html.fromHtml(getString(R.string.owner_card_question3)));*/
                                                      setOwner();
-                                                 }
+                                                 }else
+                                                     tenant.setChecked(true);
 
                                              }
                                          }
@@ -299,7 +301,8 @@ public class InitialCard  extends Fragment {
                                                       q3.setText(Html.fromHtml(getString(R.string.seller_card_question3)));
 */
                                                       setSeller();
-                                                  }
+                                                  }else
+                                                      buyer.setChecked(true);
 
                                               }
                                           }
@@ -324,7 +327,8 @@ public class InitialCard  extends Fragment {
                                                      q3.setText(Html.fromHtml(getString(R.string.buyer_card_question3)));
 */
                                                      setBuyer();
-                                                 }
+                                                 }else
+                                                     seller.setChecked(true);
 
                                              }
                                          }
@@ -352,13 +356,13 @@ public class InitialCard  extends Fragment {
                     BudgetToLocations budgetToLocations = new BudgetToLocations();
                     loadFragmentAnimated(budgetToLocations,b,R.id.card,"");
                 }
-                else if(selection == 1){
+               /* else if(selection == 1){
                     Bundle b = new Bundle();
                     b.putString(AppConstants.QUESTION,AppConstants.OWNERQ1);
                     MentalMapOwnerScreen mentalMapOwnerScreen = new MentalMapOwnerScreen();
                     loadFragmentAnimated(mentalMapOwnerScreen,b,R.id.card,"");
 
-                }
+                }*/
 
                 else{
                     underConstruction();
@@ -381,13 +385,13 @@ public class InitialCard  extends Fragment {
                     intent.putExtra("question", "LtoP");
                     LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
                 }
-                else if(selection == 1){
+                /*else if(selection == 1){
                     Bundle b = new Bundle();
                     b.putString(AppConstants.QUESTION,AppConstants.OWNERQ2);
                     MentalMapOwnerScreen mentalMapOwnerScreen = new MentalMapOwnerScreen();
                     loadFragmentAnimated(mentalMapOwnerScreen,b,R.id.card,"");
 
-                }
+                }*/
 
                 else{
                     underConstruction();
@@ -411,12 +415,12 @@ public class InitialCard  extends Fragment {
                     Intent intent = new Intent(AppConstants.SETLOCN);
                     intent.putExtra("question", "TravelTime");
                     LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
-                }else if(selection == 1){
+                }/*else if(selection == 1){
                     Bundle b = new Bundle();
                     b.putString(AppConstants.QUESTION,AppConstants.OWNERQ3);
                     MentalMapOwnerScreen mentalMapOwnerScreen = new MentalMapOwnerScreen();
                     loadFragmentAnimated(mentalMapOwnerScreen,b,R.id.card,"");
-                }
+                }*/
                     else{
                         underConstruction();
 

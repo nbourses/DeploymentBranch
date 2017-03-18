@@ -142,7 +142,14 @@ public class WatchlistDisplayBuilding extends Fragment {
         user_role=General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER);
         if (watchlistmodel != null)
             watchlistmodel.clear();
-
+        if (copywatchlistmodel != null)
+            copywatchlistmodel.clear();
+        if (deletelist != null)
+            deletelist.clear();
+        if (realmList != null)
+            realmList.clear();
+        if (deleteids != null)
+            deleteids.clear();
 
         myRealm = General.realmconfig(getContext());
         adapter = new watchlistDisplayAdapter(getContext(), watchlistmodel,WatchlistDisplayBuilding.this);

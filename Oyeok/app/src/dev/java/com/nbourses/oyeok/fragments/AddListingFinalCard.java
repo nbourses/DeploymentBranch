@@ -663,9 +663,9 @@ private void init(){
         if(Avail.isChecked()){
             Log.i("Reqstatus","Reqstatus 1 inside: "+Avail.isChecked()+ " "+Req.isChecked());
 
-            add_Building.setReq_avl("Avail.");
+            add_Building.setReq_avl("avl");
         }else{
-            add_Building.setReq_avl("Req.");
+            add_Building.setReq_avl("req");
         }
 
         if(Furnishing.equalsIgnoreCase("fully-furnished")){

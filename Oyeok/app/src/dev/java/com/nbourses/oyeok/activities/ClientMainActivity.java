@@ -225,7 +225,7 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
     private String description;
     private String heading;
     private String  BrokerRole="";
-    private Boolean cardFlag = false;
+    //private Boolean cardFlag = false;
     private WebView webView;
     private  Boolean autocomplete = false,oyeconfirm_flag=false;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
@@ -351,7 +351,7 @@ public void signUp(){
         @Override
         public void onReceive(Context context, Intent intent) {
             card.setClickable(false);
-            cardFlag = false;
+            AppConstants.CARDFLAG = false;
             containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
             containerSignup.setClickable(false);
             SignUpFragment d = new SignUpFragment();
@@ -515,7 +515,7 @@ try {
                 General.setSharedPreferences(getBaseContext(), AppConstants.CALLING_ACTIVITY, "");
 
 
-                new CountDownTimer(500,500) {
+                new CountDownTimer(400,400) {
                     public void onTick(long millisUntilFinished) {
 
                     }
@@ -783,6 +783,15 @@ try {
 
 
                         bundle1.putString(AppConstants.RESETMAP,"yes");
+
+
+                    }
+                }
+                if(bundle.containsKey("add_listing")){
+                    if(bundle.getString("add_listing").equalsIgnoreCase("yes")){
+
+
+                        bundle1.putString("add_listing","yes");
 
 
                     }
@@ -1243,7 +1252,7 @@ if(AppConstants.FAV) {
 }
 */
 
-        if(AppConstants.SETLOCATIONOWNERQ2){
+        /*if(AppConstants.SETLOCATIONOWNERQ2){
             AppConstants.cardCounter = 4;
             AppConstants.SETLOCATIONOWNERQ2 = false;
             AppConstants.SETLOCATION = false;
@@ -1257,7 +1266,7 @@ if(AppConstants.FAV) {
 
         }
 
-        else if(AppConstants.SEARCHFLAG){
+        else*/ if(AppConstants.SEARCHFLAG){
              Log.i("sushil123","SEARCHFLAG 123 ");
 
             AppConstants.SEARCHFLAG = false;
@@ -1303,10 +1312,11 @@ if(AppConstants.FAV) {
 //            buidingInfoFlag=false;
             // CloseBuildingOyeComfirmation();
 
-        }else  if(cardFlag){
+        }else  if(AppConstants.CARDFLAG){
+            Log.i("TAG","cardFlag ");
 
              if(AppConstants.SETLOCATIONBTOL){
-
+                 Log.i("TAG","cardFlag 1");
                  FragmentManager fragmentManager = getSupportFragmentManager();
                  FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                  fragmentTransaction.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
@@ -1320,16 +1330,21 @@ if(AppConstants.FAV) {
                  fragmentTransaction.replace(R.id.card, c);
                  fragmentTransaction.commitAllowingStateLoss();
 
-
+                 AppConstants.CARDFLAG = false;
                  AppConstants.SETLOCATIONBTOL = false;
              }else {
+                 Log.i("TAG","cardFlag 2 ");
                  Log.i(TAG, "flaga isa 3 ");
                  Log.i("sushil123", "card back ");
                  // getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.card)).commit();
                  //getSupportFragmentManager().popBackStack();
-                 getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+                 try {
+                     getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.card)).commit();
+                 } catch (Exception e) {
+                     e.printStackTrace();
+                 }
                  //getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_up, R.animator.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
-                 cardFlag = false;
+                 AppConstants.CARDFLAG = false;
                  containerSignup.setBackgroundColor(getResources().getColor(R.color.transparent));
                  containerSignup.setClickable(false);
                  card.setClickable(false);
@@ -1930,7 +1945,7 @@ if(AppConstants.FAV) {
                         fragmentTransaction.addToBackStack("card");
                         fragmentTransaction.replace(R.id.card, c);
                         fragmentTransaction.commitAllowingStateLoss();
-                        cardFlag = true;
+                        AppConstants.CARDFLAG = true;
                         AppConstants.cardCounter = 0;
 
                     }
@@ -2038,9 +2053,6 @@ if(AppConstants.FAV) {
 
         if( buidingInfoFlag==true) {
             getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
-
-//            for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
-           // getSupportFragmentManager().popBackStackImmediate();
             buidingInfoFlag = false;
         }
         Log.i("backstack count1","   : "+buidingInfoFlag+"  "+getSupportFragmentManager().getBackStackEntryCount());

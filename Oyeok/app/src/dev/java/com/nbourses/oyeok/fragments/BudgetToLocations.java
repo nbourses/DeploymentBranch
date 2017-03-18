@@ -910,6 +910,8 @@ Tracker mTracker;
                             containerSignup.setBackgroundColor(Color.parseColor("#00000000"));
                             containerSignup.setClickable(false);
                             card.setClickable(false);
+                            AppConstants.SETLOCATIONBTOL = false;
+                            AppConstants.CARDFLAG = false;
 
                         }
 

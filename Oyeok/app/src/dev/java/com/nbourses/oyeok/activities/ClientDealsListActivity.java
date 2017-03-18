@@ -1565,55 +1565,6 @@ if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
                                 });
 
 
-
-                                /*if(RefreshDrooms) {
-
-                                    Log.i("Shine", "Drooms refreshed");
-                                    listViewDeals.setAdapter(listAdapter);
-                                    listAdapter.notifyDataSetChanged();
-                                    //listViewDeals.setAdapter(null);
-                                    //listViewDeals.setAdapter(listAdapter);
-                                }else {
-
-                                    Log.i("Shine", "Drooms not refreshed");*/
-
-
-                                   /* listViewDeals.setAdapter(listAdapter);*/
-
-                                    /*listViewDeals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                        @Override
-                                        public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-
-                                            Log.i("TRACE", "main deals adapter clicked" + position);
-
-
-                                            final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-                                            String json = gson.toJson(AppConstants.letsOye);
-
-                                            Log.d(TAG, "AppConstants.letsOye " + json);
-                                            Log.i("TRACE", "AppConstants.letsOye " + json);
-
-
-                                            BrokerDeals brokerDeals = (BrokerDeals) adapterView.getAdapter().getItem(position);
-                                            Log.i("getSpecCode","getSpecCode yo 2 "+brokerDeals.getSpecCode());
-                                            AppConstants.CLIENT_DEAL_FLAG = true;
-                                            Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
-                                            intent.putExtra("userRole", "client");
-                                            intent.putExtra(AppConstants.OK_ID, brokerDeals.getOkId());
-                                            intent.putExtra(AppConstants.OYE_ID, brokerDeals.getOyeId());
-                                            intent.putExtra(AppConstants.SPEC_CODE, brokerDeals.getSpecCode());
-                                            intent.putExtra(AppConstants.LOCALITY, brokerDeals.getLocality());
-                                            intent.putExtra("isDefaultDeal",brokerDeals.getdefaultDeal());
-                                            Log.i("TRACE DEALS FLAG 2", "FLAG " + brokerDeals.getOyeId());
-                                            startActivity(intent);
-                                        }
-                                    });
-*/
-
-                                // }
-
-
                             }
                             else{
                                 loadingDeals.setVisibility(View.GONE);
@@ -1718,26 +1669,6 @@ if(General.getBadgeCount(this, AppConstants.SUPPORT_COUNT) >0) {
 
     }
 
-
-    /*private void displayTextMessage(String message) {
-        if (message == null)
-            message = getString(R.string.no_active_deal);
-        txtNoActiveDeal.setText(message);
-        txtNoActiveDeal.setVisibility(View.VISIBLE);
-        listViewDeals.setVisibility(View.GONE);
-    }
-    private void displayListView() {
-        txtNoActiveDeal.setVisibility(View.GONE);
-        listViewDeals.setVisibility(View.VISIBLE);
-    }*/
-//
-//    @OnClick(R.id.dealItemRoot)
-//    public void onClickDealItemRoot(View v) {
-//        Intent intent = new Intent(getApplicationContext(), DealConversationActivity.class);
-//        intent.putExtra("userRole", "client");
-//        intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
-//        startActivity(intent);
-//    }
 
     @OnClick(R.id.signUp)
     public void onClickSignUp(View v) {
@@ -1923,10 +1854,7 @@ Log.i("this","this is role "+General.getSharedPreferences(this,AppConstants.ROLE
                     search(searchQuery);
             }
 
-
                 showBgText();
-
-
             showBgText();
             SnackbarManager.show(
                     Snackbar.with(this)
