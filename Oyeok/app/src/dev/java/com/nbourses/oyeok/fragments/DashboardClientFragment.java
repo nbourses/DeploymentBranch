@@ -5657,7 +5657,12 @@ if(c.getType().equalsIgnoreCase("home")){
                     polyLineOptions.color(Color.RED);
                 }
                 Log.i(TAG, "route drawer 4");
+                if(polyLineOptions!=null)
                 map.addPolyline(polyLineOptions);
+                else{
+                    Log.i("polyLineOptions", "polyLineOptions drawer 4");
+
+                }
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }

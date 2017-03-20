@@ -1313,7 +1313,7 @@ if(AppConstants.FAV) {
             // CloseBuildingOyeComfirmation();
 
         }else  if(AppConstants.CARDFLAG){
-            Log.i("TAG","cardFlag ");
+            Log.i("TAG","cardFlag "+AppConstants.CARDFLAG+"   "+AppConstants.SETLOCATIONBTOL);
 
              if(AppConstants.SETLOCATIONBTOL){
                  Log.i("TAG","cardFlag 1");
@@ -1330,7 +1330,7 @@ if(AppConstants.FAV) {
                  fragmentTransaction.replace(R.id.card, c);
                  fragmentTransaction.commitAllowingStateLoss();
 
-                 AppConstants.CARDFLAG = false;
+                 //AppConstants.CARDFLAG = false;
                  AppConstants.SETLOCATIONBTOL = false;
              }else {
                  Log.i("TAG","cardFlag 2 ");

@@ -266,6 +266,8 @@ Tracker mTracker;
                 f.setBackgroundColor(getResources().getColor(R.color.transparent));
                 f.setClickable(false);
                 c.setClickable(false);
+                AppConstants.CARDFLAG = false;
+                AppConstants.SETLOCATIONBTOL = false;
             }
         });
 
