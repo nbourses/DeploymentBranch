@@ -86,7 +86,7 @@ private TextView Cancel,back,usertext;
 
     Thread thread;
 
-
+    boolean first=true;
     String Entry_point="";
 
     Bundle b;
@@ -407,9 +407,10 @@ private TextView Cancel,back,usertext;
                                         ((MyPortfolioActivity) getActivity()).openAddListingFinalCard();
                                     }else
                                     ((BrokerMap)getActivity()).openAddListingFinalCard();
-                                }else{
+                                }else if(first){
 
                                     AddbuildingAPICall(adapter.getItem(position).getName(),adapter.getItem(position).getLat() + "",adapter.getItem(position).getLng() + "",adapter.getItem(position).getId()+"",adapter.getItem(position).getLocality(),adapter.getItem(position).getCity());
+                                    first=false;
                                 }
 
                             }
@@ -471,9 +472,9 @@ private TextView Cancel,back,usertext;
                             JSONObject building = new JSONObject(jsonResponse.getString("responseData"));
                             Log.i("magic1","addBuildingRealm success response "+building);
 //                            Log.i("magic1","addBuildingRealm success response "+building.getString("rate_growth")+" 2."+building.getString("or_psf")+" 2."+building.getString("ll_pm"));
-
+                            Realm myRealm = General.realmconfig(getContext());
                             for(int i=0;i<2;i++) {
-                                Realm myRealm = General.realmconfig(getContext());
+
                                 addBuildingRealm add_Building = new addBuildingRealm();
                                 add_Building.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
                                 add_Building.setBuilding_name(name);

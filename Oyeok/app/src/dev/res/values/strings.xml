@@ -6,6 +6,7 @@
     <string name="drawer_close">Close</string>
     <string name="profile">User Profile</string>
     <string name="Oye">Oye</string>
+    <string name="server_error">Servers are currently busy!</string>
 
 
     <string name="Rs">\u20B9</string>

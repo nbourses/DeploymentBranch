@@ -220,10 +220,10 @@ else{
 
         } else {
             holder.match_growth_image.setImageResource( R.drawable.sort_up_black );
-            holder.match_growth_rate.setTextColor( Color.parseColor("black") );
+            holder.match_growth_rate.setTextColor( Color.parseColor("#000000") );
             holder.match_growth_rate.setText( growth_rate + "%" );
             holder.m_rate_indicator.setText("Steady market Rate");
-            holder.m_rate_indicator.setTextColor( Color.parseColor("#black"));
+            holder.m_rate_indicator.setTextColor( Color.parseColor("#000000"));
         }
 
     }

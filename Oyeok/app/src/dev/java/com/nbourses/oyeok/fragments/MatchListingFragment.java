@@ -328,10 +328,10 @@ mrview.setOnClickListener(new View.OnClickListener() {
 
                             } else {
                                 root_growth_image.setImageResource( R.drawable.sort_up_black );
-                                root_growth_rate.setTextColor( Color.parseColor("black") );
+                                root_growth_rate.setTextColor(Color.parseColor("#000000") );
                                 root_growth_rate.setText( growth_rate + "%" );
                                 m_rate_indicatorf.setText("Steady market Rate");
-                                m_rate_indicatorf.setTextColor( Color.parseColor("#black"));
+                                m_rate_indicatorf.setTextColor( Color.parseColor("#000000"));
                             }
 
                             price = jo.getString("real_price");

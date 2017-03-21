@@ -118,6 +118,7 @@ public class AddListingFinalCard extends Fragment {
         //pg_bar=(ProgressBar)v.findViewById(R.id.pg_bar);
         txtcalendar=(TextView)v.findViewById(R.id.txtcalendar1);
         transaction_type=(TextView)v.findViewById(R.id.transaction_type);
+        myCalendar.add(Calendar.DATE,1);
         updateLabel();
         txtcalendar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -587,6 +588,14 @@ private void init(){
                @Override
                public void failure(RetrofitError error) {
                    Log.i("magic","addBuildingRealm failed "+error);
+                   try {
+                       SnackbarManager.show(
+                               Snackbar.with(getContext())
+                                       .position(Snackbar.SnackbarPosition.TOP)
+                                       .text("Server Error: " + error.getMessage())
+                                       .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                   }
+                   catch(Exception e){}
                }
            });
 
@@ -852,7 +861,15 @@ private  void getprice()
 
             @Override
             public void failure(RetrofitError error) {
-
+                Log.i("magic11c"," failure response   "+error);
+                try {
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Server Error: " + error.getMessage())
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }
+                catch(Exception e){}
             }
         });
 

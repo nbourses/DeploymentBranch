@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -37,6 +38,8 @@ import com.nbourses.oyeok.models.loadBuildingDataModel;
 import com.nbourses.oyeok.realmModels.WatchListRealmModel;
 import com.nbourses.oyeok.realmModels.WatchlistBuildingRealm;
 import com.nbourses.oyeok.realmModels.loadBuildingdataModelRealm;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -213,7 +216,6 @@ public class WatchlistDisplayBuilding extends Fragment {
 
                         }
                         for(int i=0;i<result.getBuildingids().size();i++) {
-
                             Log.i("selected1", "selected building : c22 " +" d.getId(): "+d.getId()+" result : "+result.getBuildingids().get(i).getId());
                             if (result.getBuildingids().get(i).getId().equalsIgnoreCase(d.getId())){
                                 if (myRealm.isInTransaction())
@@ -373,7 +375,22 @@ public class WatchlistDisplayBuilding extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-
+                Log.i("magic11c"," failure response   "+error);
+                try {
+                    if(error.getMessage().equalsIgnoreCase("500 Internal Server Error")){
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text(R.string.server_error)
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }else
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Server Error: " + error.getMessage())
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }
+                catch(Exception e){}
             }
         });
 
@@ -500,7 +517,22 @@ private void DisplayList(){
 
             @Override
             public void failure(RetrofitError error) {
-
+                Log.i("magic11c"," failure response   "+error);
+                try {
+                    if(error.getMessage().equalsIgnoreCase("500 Internal Server Error")){
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text(R.string.server_error)
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }else
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Server Error: " + error.getMessage())
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }
+                catch(Exception e){}
             }
         });
 
@@ -573,7 +605,22 @@ public int checkStatus(){
 
             @Override
             public void failure(RetrofitError error) {
-
+                Log.i("magic11c"," failure response   "+error);
+                try {
+                    if(error.getMessage().equalsIgnoreCase("500 Internal Server Error")){
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text(R.string.server_error)
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }else
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Server Error: " + error.getMessage())
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }
+                catch(Exception e){}
             }
         });
 

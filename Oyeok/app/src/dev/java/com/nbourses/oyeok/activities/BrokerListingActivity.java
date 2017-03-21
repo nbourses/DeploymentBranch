@@ -1323,7 +1323,7 @@ public class BrokerListingActivity extends BrokerMainPageActivity implements Cus
         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getSupportFragmentManager().findFragmentById(R.id.container_sign)).commit();
         Log.i("stacktop","backstack check11 "+getSupportFragmentManager().getBackStackEntryCount());
         //getSupportFragmentManager().popBackStackImmediate();
-        //recreate();
+        this.recreate();
 
     }
 

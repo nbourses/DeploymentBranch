@@ -139,8 +139,6 @@ public class General extends BroadcastReceiver {
         if (ContextCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-
-
             ActivityCompat.requestPermissions(activity,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     AppConstants.LOCATION_PERMISSION_REQUEST_CODE);
@@ -270,16 +268,13 @@ public static PubNub initPubnub(Context context, String UUID){
     PNConfiguration pnConfiguration = new PNConfiguration();
     pnConfiguration.setSubscribeKey(AppConstants.PUBNUB_SUBSCRIBE_KEY);
     pnConfiguration.setPublishKey(AppConstants.PUBNUB_PUBLISH_KEY);
-
         pnConfiguration.setUuid(UUID);
-
-
     return new PubNub(pnConfiguration);
 }
 
 
     public static void saveSet(Context context,String name, Set<String> value) {
-// for storing catched msgs
+       // for storing catched msgs
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putStringSet(name, value);
@@ -288,13 +283,8 @@ public static PubNub initPubnub(Context context, String UUID){
     }
 
     public static Set<String> getSet(Context context, String name) {
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-
         return prefs.getStringSet(name, null);
-
-
     }
 
 
@@ -743,7 +733,7 @@ public static PubNub initPubnub(Context context, String UUID){
                                     defaultDeals.setFurnishing(AppConstants.letsOye.getFurnishing());
                                     defaultDeals.setP_type(ptype);
                                     defaultDeals.setPs_type(pstype);
-                                    defaultDeals.setPossation_date(AppConstants.letsOye.getPossession_date());
+                                    defaultDeals.setPossation_date(General.timestampToString(Long.parseLong(AppConstants.letsOye.getPossession_date())));
                                     defaultDeals.setBudget(price);
 
                                     Log.i("TRACE16","locality is thee " +SharedPrefs.getString(context,SharedPrefs.MY_LOCALITY));

@@ -479,7 +479,8 @@ public class InitialCard  extends Fragment {
                 intent.putExtra("userRole", "client");
                 AppConstants.CLIENT_DEAL_FLAG = true;
 
-
+                AppConstants.SETLOCATION=false;
+                AppConstants.CARDFLAG = false;
                 intent.putExtra(AppConstants.OK_ID, AppConstants.SUPPORT_CHANNEL_NAME);
                 startActivity(intent);
             }

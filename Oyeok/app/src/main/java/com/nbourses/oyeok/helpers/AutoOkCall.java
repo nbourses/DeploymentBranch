@@ -9,6 +9,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.models.AutoOk;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
 import com.nispok.snackbar.Snackbar;
@@ -132,6 +133,15 @@ public class AutoOkCall extends AsyncTask<String, String, String> {
 
                         Log.i("AUTOOK CALLED","coupon fail "+error);
                         try {
+
+
+                                    if(error.getMessage().equalsIgnoreCase("500 Internal Server Error")){
+                                        SnackbarManager.show(
+                                                Snackbar.with(mContext)
+                                                        .position(Snackbar.SnackbarPosition.TOP)
+                                                        .text(R.string.server_error)
+                                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                                    }else
                             SnackbarManager.show(
                                     Snackbar.with(mContext)
                                             .position(Snackbar.SnackbarPosition.TOP)

@@ -205,7 +205,8 @@ Tracker mTracker;
 //init tracker
         MyApplication application = (MyApplication) getActivity().getApplication();
         mTracker = application.getDefaultTracker();
-
+        myCalendar.add(Calendar.DATE,1);
+         updateLabel();
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             if(bundle.containsKey(AppConstants.TT)) {
@@ -775,7 +776,7 @@ Tracker mTracker;
     private void updateLabel(){
         String myFormat = "dd/MM/yyyy";
         //In which you need put here
-        myCalendar.add(Calendar.DATE,1);
+       // myCalendar.add(Calendar.DATE,1);
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         calender.setText(sdf.format(myCalendar.getTime()));
 //        PossessionDate=txtcalendar.getText().toString();

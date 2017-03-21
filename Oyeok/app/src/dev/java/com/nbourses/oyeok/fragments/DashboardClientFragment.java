@@ -1294,21 +1294,10 @@ else {
                                     General.setSharedPreferences(getContext(),AppConstants.BUILDING_LOCALITY,buildingCacheModels.get(i).getLocality()+"");
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LAT,buildingCacheModels.get(i).getLat()+"");
                                     General.setSharedPreferences(getContext(),AppConstants.MY_LNG,buildingCacheModels.get(i).getLng()+"");
-                                    //((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();//stackPopFragment()
-
-                                    //((ClientMainActivity) getActivity()).stackPopFragment();
-
-//                                    ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(listing[i],transaction[i],portal[i],config[i]);
                                     ((ClientMainActivity) getActivity()).OpenBuildingOyeConfirmation(buildingCacheModels.get(i).getListing(),buildingCacheModels.get(i).getTransactions(),buildingCacheModels.get(i).getPortals(),buildingCacheModels.get(i).getConfig(),buildingCacheModels.get(i).getLl_pm(),buildingCacheModels.get(i).getOr_psf(),Broker_count);
-//                                    mCustomerMarker[i].setIcon(icon2);buildingCacheModels
                                     customMarker.get(i).setIcon(icon2);
                                     SaveBuildingDataToRealm();
-//                                    SendConfigData(config[i]);
-//                                    sendDataToOyeConfirmation(i);
-                                /*m=mCustomerMarker[i];
-                                mCustomerMarker[i].remove();
-                                mCustomerMarker[i]=  map.addMarker(new MarkerOptions().position(m.getPosition()).title(m.getTitle()).snippet(m.getSnippet()).icon(icon2));
-                                search_building_icon.setVisibility(View.VISIBLE);*/
+//
                                     buildingIcon.setVisibility(View.VISIBLE);
                                     fav.setVisibility(View.GONE);
 //                                    mCustomerMarker[i].showInfoWindow();
@@ -3577,7 +3566,7 @@ else {
                             txtFilterValue.setTextSize(13);
                             txtFilterValue.setTextColor(Color.parseColor("white"));
                             txtFilterValue.setText(oyetext);
-                            ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+                           // ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
                             Intent in = new Intent(AppConstants.MARKERSELECTED);
                             in.putExtra("markerClicked", "false");
                             buildingSelected = true;
@@ -4206,7 +4195,7 @@ else {
                 ((ClientMainActivity) getActivity()).closeOyeConfirmation();
                 ((ClientMainActivity) getActivity()).closeOyeScreen();
             }
-            ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+           // ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
             onMapclicked();
         }
     }

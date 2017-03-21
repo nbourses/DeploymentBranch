@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,6 +47,9 @@ import com.nbourses.oyeok.models.CreateCatalogListing;
 import com.nbourses.oyeok.models.portListingModel;
 import com.nbourses.oyeok.realmModels.ListingCatalogRealm;
 import com.nbourses.oyeok.realmModels.Listingidsrealm;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -650,6 +654,17 @@ public class ListingTitle extends Fragment {
             @Override
             public void failure(RetrofitError error) {
                 Log.i("magical","failure =========== "+error);
+                try {
+                    if(error.getMessage().equalsIgnoreCase("500 Internal Server Error")){
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text(R.string.server_error)
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -674,13 +689,13 @@ public class ListingTitle extends Fragment {
         int size=ids.size();
         realmList.clear();
         for(int i=0;i<size;i++){
-        /*loadBuildingdataModelRealm  loadBuildingdataModelRealm1=new loadBuildingdataModelRealm(c.getId(),c.getName(),c.getLat(),c.getLng(),c.getLocality(),c.getCity(),c.getLl_pm(),c.getOr_psf(),c.isCheckbox());
-        realmList.add(loadBuildingdataModelRealm1);*/
             Log.i("datafromraelm1", "realm data 12 : "+i+" :  " + ids.get(i).toString());
             Listingidsrealm  listingidsrealm=new Listingidsrealm(ids.get(i).toString());
             realmList.add(listingidsrealm);
         }
         listingCatalogRealm.setListingids(realmList);
+        if(myRealm.isInTransaction())
+            myRealm.cancelTransaction();
         myRealm.beginTransaction();
         myRealm.copyToRealmOrUpdate(listingCatalogRealm);
         myRealm.commitTransaction();

@@ -916,9 +916,22 @@ try {
         Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  loadFragment client "+getFragmentManager().getBackStackEntryCount());
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commitAllowingStateLoss();
-        //set title
-        //set title
-//        getSupportActionBar().setTitle(title);
+
+    }
+
+
+    private void loadFragment1(Fragment fragment, Bundle args, int containerId, String title)
+    {
+        //set arguments
+        fragment.setArguments(args);
+        //load fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        //fragmentTransaction.addToBackStack(title);
+        Log.i("SIGNUP_FLAG","SIGNUP_FLAG=========  loadFragment client "+getFragmentManager().getBackStackEntryCount());
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commitAllowingStateLoss();
+
     }
 
     private void loadFragmentAnimated(Fragment fragment, Bundle args, int containerId, String title)
@@ -1292,6 +1305,7 @@ if(AppConstants.FAV) {
           startActivity(intent);
           finish();
              AppConstants.SETLOCATION=false;
+             AppConstants.CARDFLAG = false;
          }
 
          else if(AppConstants.cardNotif){
@@ -2015,7 +2029,7 @@ if(AppConstants.FAV) {
 
         }
         BuildingOyeConfirmation buildingOyeConfirmation = new BuildingOyeConfirmation();
-        loadFragment(buildingOyeConfirmation, args, R.id.container_OyeConfirmation, "");
+        loadFragment1(buildingOyeConfirmation, args, R.id.container_OyeConfirmation, "");
     }
 
 
@@ -2098,10 +2112,10 @@ if(AppConstants.FAV) {
         cancel_btn.setVisibility(View.GONE);
 
         getSupportActionBar().setTitle("Live Building Rates");
-        if( buidingInfoFlag==true)
-           // for(int i=0;i<getSupportFragmentManager().getBackStackEntryCount();i++)
-            getSupportFragmentManager().popBackStack();
-        buidingInfoFlag=false;
+        if( buidingInfoFlag==true) {
+            getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.container_OyeConfirmation)).commit();
+            buidingInfoFlag = false;
+        }
     }
 
     public  void closeOyeConfirmation(){
