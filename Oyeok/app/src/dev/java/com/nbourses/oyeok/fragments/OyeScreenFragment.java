@@ -160,7 +160,7 @@ public class OyeScreenFragment extends Fragment {
         bundle = getArguments();
         tv_fd_bank=(TextView)rootView.findViewById(R.id.tv_fd_bank);
         tv_security_dep=(TextView)rootView.findViewById(R.id.tv_security_dep);
-
+        myCalendar.add(Calendar.DATE,1);
 //        tv_dealinfo=(TextView)rootView.findViewById(R.id.tv_dealinfo);
         AppConstants.CUSTOMER_TYPE="Tenant";
         txtcalendar=(TextView)rootView.findViewById(R.id.txtcalendar);
@@ -765,6 +765,18 @@ public class OyeScreenFragment extends Fragment {
         txtcalendar.setText(sdf.format(myCalendar.getTime()));
         PossessionDate=txtcalendar.getText().toString();
     }
+
+    /*private void updateLabel1(){
+        String myFormat = "dd/MM/yyyy";
+        //In which you need put here
+        // myCalendar.add(Calendar.DATE,1);
+        Calendar now= Calendar.getInstance();
+        Calendar now1= now;
+        now1.add(Calendar.DATE,1);
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        txtcalendar.setText(sdf.format(myCalendar.getTime()));
+        PossessionDate=txtcalendar.getText().toString();
+    }*/
 
     private void displayDatePicker(){
         Calendar now= Calendar.getInstance();

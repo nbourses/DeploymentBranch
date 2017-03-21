@@ -3070,7 +3070,7 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
         addBuildingModel.setCity(City);
         addBuildingModel.setLocality(General.getSharedPreferences( getBaseContext(), AppConstants.LOCALITY ));
         addBuildingModel.setUser_role(General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER));
-        addBuildingModel.setUser_id(General.getSharedPreferences(getBaseContext(),AppConstants.NAME));
+        addBuildingModel.setUser_id(General.getSharedPreferences(getBaseContext(),AppConstants.USER_ID));
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_101).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
 

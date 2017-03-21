@@ -1521,7 +1521,7 @@ boolean cardflag=false,catalogflag=false;
             WatchlistDisplayBuilding watchlistDisplayBuilding=new WatchlistDisplayBuilding();
             loadFragmentAnimated(watchlistDisplayBuilding,b,R.id.container_sign,"");
         }
-        recreate();
+        //recreate();
         /*WatchlistExplorer watchlistExplorer=new WatchlistExplorer();
         loadFragmentAnimated(watchlistExplorer,null,R.id.container_sign,"");*/
     }

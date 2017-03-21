@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
@@ -55,6 +56,8 @@ import com.nbourses.oyeok.models.portListingModel;
 import com.nbourses.oyeok.realmModels.Localities;
 import com.nbourses.oyeok.realmModels.WatchListRealmModel;
 import com.nbourses.oyeok.realmModels.loadBuildingdataModelRealm;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
@@ -396,7 +399,22 @@ public class WatchlistTitle extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-
+                Log.i("magic11c"," failure response   "+error);
+                try {
+                    if(error.getMessage().equalsIgnoreCase("500 Internal Server Error")){
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text(R.string.server_error)
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }else
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Server Error: " + error.getMessage())
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }
+                catch(Exception e){}
             }
         });
 

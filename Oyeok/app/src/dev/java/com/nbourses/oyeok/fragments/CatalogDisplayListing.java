@@ -2,6 +2,7 @@ package com.nbourses.oyeok.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,6 +36,8 @@ import com.nbourses.oyeok.realmModels.Listingidsrealm;
 import com.nbourses.oyeok.realmModels.WatchListRealmModel;
 import com.nbourses.oyeok.realmModels.WatchlistBuildingRealm;
 import com.nbourses.oyeok.realmModels.loadBuildingdataModelRealm;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,6 +75,7 @@ View v;
     Bundle b;
 LinearLayout btn_connect;
     boolean status=false;
+    String User_name,user_id;
 
 
     @Override
@@ -86,8 +90,6 @@ LinearLayout btn_connect;
         btn_delete=(ImageView)v.findViewById(R.id.list_btn_delete);
         //btn_add_property=(ImageView)v.findViewById(R.id.list_btn_add_property);
         catalog_title=(TextView)v.findViewById(R.id.list_watch_title);
-
-
 
         b=new Bundle();
         b=getArguments();
@@ -106,6 +108,8 @@ LinearLayout btn_connect;
             DisplayListmodel.clear();
 
 
+        User_name=General.getSharedPreferences(getContext(),AppConstants.NAME);
+        user_id=General.getSharedPreferences(getContext(),AppConstants.USER_ID);
         myRealm = General.realmconfig(getContext());
         adapter = new CatalogDisplayAdapter(getContext(), DisplayListmodel);
         Listview.setAdapter(adapter);
@@ -180,6 +184,22 @@ LinearLayout btn_connect;
                             }
 
                         }
+
+
+                        for(int i=0;i<result.getListingids().size();i++) {
+                            Log.i("selected1", "selected building : c22 " +" d.getId(): "+d.getListing_id()+" result : "+result.getListingids().get(i).getListing_id());
+                            if (result.getListingids().get(i).getListing_id().equalsIgnoreCase(d.getListing_id())){
+                                if (myRealm.isInTransaction())
+                                    myRealm.cancelTransaction();
+                                myRealm.beginTransaction();
+                                result.getListingids().get(i).removeFromRealm();
+                                myRealm.commitTransaction();
+                                break;
+                            }
+
+                        }
+
+
 
 
                     }
@@ -291,7 +311,22 @@ LinearLayout btn_connect;
 
             @Override
             public void failure(RetrofitError error) {
-
+                Log.i("magic11c"," failure response   "+error);
+                try {
+                    if(error.getMessage().equalsIgnoreCase("500 Internal Server Error")){
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text(R.string.server_error)
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }else
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Server Error: " + error.getMessage())
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }
+                catch(Exception e){}
             }
         });
 
@@ -313,8 +348,8 @@ LinearLayout btn_connect;
         listingCatalogRealm.setCatalog_name(catalog_name);
         listingCatalogRealm.setCity("Mumbai");
         listingCatalogRealm.setTt((AppConstants.TT_TYPE).toLowerCase());
-        listingCatalogRealm.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
-        listingCatalogRealm.setUser_name(General.getSharedPreferences(getContext(),AppConstants.NAME));
+        listingCatalogRealm.setUser_id(user_id);
+        listingCatalogRealm.setUser_name(User_name);
         //listingCatalogRealm.setUser_role(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
         listingCatalogRealm.setImageuri(results2.getImageuri());
         myRealm.beginTransaction();
@@ -401,7 +436,22 @@ LinearLayout btn_connect;
 
             @Override
             public void failure(RetrofitError error) {
-
+                Log.i("magic11c"," failure response   "+error);
+                try {
+                    if(error.getMessage().equalsIgnoreCase("500 Internal Server Error")){
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text(R.string.server_error)
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }else
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Server Error: " + error.getMessage())
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }
+                catch(Exception e){}
             }
         });
 
@@ -443,24 +493,7 @@ LinearLayout btn_connect;
                     //watchlist_id=building.getString("watchlist_id");
                     String Sharelink=building.getString("share_link");
                     Log.i("magical44","addBuildingRealm success response1 "+Sharelink);
-                    //Log.i("magical11","addBuildingRealm success response2 "+buildingdata.getString(0));
-                    /*// AddDataToRealm(watchlist_id);
-                    DisplayListRealm.clear();
-                    int size =buildingdata.length();
-                    for(int i=0;i<size;i++){
-                        JSONObject singleRowData = new JSONObject(buildingdata.get(i).toString());
 
-                        String lat = singleRowData.getJSONArray("loc").get(1).toString();
-                        Log.i("Buildingdata", "lat " + lat);
-                        String longi = singleRowData.getJSONArray("loc").get(0).toString();
-
-                        ListingRealm listingRealm=new ListingRealm(singleRowData.getString("listing_id"),singleRowData.getString("name"),singleRowData.getString("config"),Integer.parseInt(singleRowData.getString("listed_ll_pm")),Integer.parseInt(singleRowData.getString("listed_or_psf")),lat,longi,Integer.parseInt(singleRowData.getString("real_ll_pm")),Integer.parseInt(singleRowData.getString("real_or_psf")),singleRowData.getString("possession_date"),singleRowData.getString("req_avl"),singleRowData.getString("locality"),singleRowData.getString("city"),singleRowData.getString("rate_growth"),singleRowData.getString("portals"),singleRowData.getString("listings"),singleRowData.getString("transactions"));
-                        DisplayListRealm.add(listingRealm);
-                        Log.i("Buildingdata", "name " + singleRowData.getString("name"));
-                        // AddDataToRealm();
-
-                    }
-                    AddDataToRealm();*/
                     openScreenshot(Sharelink);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -470,7 +503,22 @@ LinearLayout btn_connect;
 
             @Override
             public void failure(RetrofitError error) {
-
+                Log.i("magic11c"," failure response   "+error);
+                try {
+                    if(error.getMessage().equalsIgnoreCase("500 Internal Server Error")){
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text(R.string.server_error)
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }else
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Server Error: " + error.getMessage())
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }
+                catch(Exception e){}
             }
         });
 

@@ -3,6 +3,7 @@ package com.nbourses.oyeok.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
@@ -41,6 +42,8 @@ import com.nbourses.oyeok.realmModels.WatchListRealmModel;
 import com.nbourses.oyeok.realmModels.WatchlistBuildingRealm;
 import com.nbourses.oyeok.realmModels.addBuildingRealm;
 import com.nbourses.oyeok.realmModels.loadBuildingdataModelRealm;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -510,6 +513,21 @@ Thread thread;
                 @Override
                 public void failure(RetrofitError error) {
                     Log.i("magic","addBuildingRealm failed 2: "+error);
+                    try {
+                        if(error.getMessage().equalsIgnoreCase("500 Internal Server Error")){
+                            SnackbarManager.show(
+                                    Snackbar.with(getContext())
+                                            .position(Snackbar.SnackbarPosition.TOP)
+                                            .text(R.string.server_error)
+                                            .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                        }else
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text("Server Error: " + error.getMessage())
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }
+                    catch(Exception e){}
                 }
             });
 
@@ -523,83 +541,6 @@ Thread thread;
 
 
 
-    public void AddbuildingAPICall(final String name,final String lat,final String longi,final String b_id,final String locality,String city) {
-
-        Log.i("updateStatus CALLED", "updateStatus success called ");
-        UpdateBuildingRateModel updateBuildingRateModel =new UpdateBuildingRateModel();
-        updateBuildingRateModel.setBuilding(name);
-        updateBuildingRateModel.setLat(lat);
-        updateBuildingRateModel.setCity(city);
-        updateBuildingRateModel.setLongiute(longi);
-        updateBuildingRateModel.setBuilding_id(b_id);
-        updateBuildingRateModel.setUser_id(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
-        updateBuildingRateModel.setUser_role(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER));
-        updateBuildingRateModel.setLocality(locality);
-        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL_101).build();
-        restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-        OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
-        try {
-            oyeokApiService.updateBuildingData(updateBuildingRateModel, new Callback<JsonElement>() {
-                @Override
-                public void success(JsonElement jsonElement, Response response) {
-
-                    String strResponse = new String(((TypedByteArray) response.getBody()).getBytes());
-                    try {
-                        JSONObject jsonResponse = new JSONObject(strResponse);
-                        Log.i("magic1","addBuildingRealm success response "+response+"\n"+jsonResponse);
-                        JSONObject building = new JSONObject(jsonResponse.getString("responseData"));
-                        Log.i("magic1","addBuildingRealm success response "+building);
-//                            Log.i("magic1","addBuildingRealm success response "+building.getString("rate_growth")+" 2."+building.getString("or_psf")+" 2."+building.getString("ll_pm"));
-
-                        for(int i=0;i<2;i++) {
-                            Realm myRealm = General.realmconfig(getContext());
-                            addBuildingRealm add_Building = new addBuildingRealm();
-                            add_Building.setTimestamp(String.valueOf(SystemClock.currentThreadTimeMillis()));
-                            add_Building.setBuilding_name(name);
-                            add_Building.setType("ADD");
-                            add_Building.setAddress(" Mumbai");
-                            add_Building.setConfig(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG));
-                            add_Building.setProperty_type(AppConstants.PROPERTY);
-                            add_Building.setLat(lat);
-                            add_Building.setLng(longi);
-                            add_Building.setSublocality(locality);
-                            add_Building.setGrowth_rate(building.getString("rate_growth"));
-                            add_Building.setDisplay_type(null);
-                            add_Building.setId(b_id);
-                            add_Building.setLl_pm(Integer.parseInt(building.getString("ll_pm")));
-                            add_Building.setOr_psf(Integer.parseInt(building.getString("or_psf")));
-                            if(AppConstants.TT_TYPE.equalsIgnoreCase("ll")){
-                                add_Building.setTt("ll");
-                                // General.setBadgeCount(getContext(),AppConstants.ADDB_COUNT_LL,General.getBadgeCount(getContext(),AppConstants.ADDB_COUNT_LL)+1);
-                            }else{
-                                //add_Building.setId(b_id+"1");
-                                add_Building.setTt("or");
-                                // General.setBadgeCount(getContext(),AppConstants.ADDB_COUNT_OR,General.getBadgeCount(getContext(),AppConstants.ADDB_COUNT_OR)+1);
-
-                            }
-                            if(myRealm.isInTransaction())
-                                myRealm.cancelTransaction();
-                            myRealm.beginTransaction();
-                            myRealm.copyToRealmOrUpdate(add_Building);
-                            myRealm.commitTransaction();
-                        }
-                        AppConstants.PROPERTY="Home";
-                        ((ClientMainActivity)getActivity()).closeAddBuilding();
-                        Intent in = new Intent(getContext(), MyPortfolioActivity.class);
-                        startActivity(in);
-                    } catch (JSONException e) {e.printStackTrace();}
-
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
-
-        }catch (Exception e){}
-
-    }
 
     /*@Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -658,7 +599,7 @@ Thread thread;
 
 
     private void CreateWatchlist(){
-        Log.i("magic11","addBuildingRealm success response CreateWatchlist  :::::::::::: ");
+        Log.i("magic11c","addBuildingRealm success response CreateWatchlist  :::::::::::: ");
         CreateWatchlistAPI createWatchlistAPI=new CreateWatchlistAPI();
         createWatchlistAPI.setUser_id(user_id);
         createWatchlistAPI.setAction("create");
@@ -678,9 +619,9 @@ Thread thread;
 
                 try {
                     JSONObject jsonResponse = new JSONObject(strResponse);
-                    Log.i("magic11","addBuildingRealm success response CreateWatchlist  "+response+"\n"+jsonResponse);
+                    Log.i("magic11c","addBuildingRealm success response CreateWatchlist  "+response+"\n"+jsonResponse);
                     JSONObject building = new JSONObject(jsonResponse.getString("responseData"));
-                    Log.i("magic11","addBuildingRealm success response CreateWatchlist 1  "+building+" : : "+watchlist_id+" ::::: "+building.getString("watchlist_id"));
+                    Log.i("magic11c","addBuildingRealm success response CreateWatchlist 1  "+building+" : : "+watchlist_id+" ::::: "+building.getString("watchlist_id"));
                     watchlist_id=building.getString("watchlist_id");
                     AddDataToRealm(watchlist_id);
                 } catch (JSONException e) {
@@ -693,6 +634,22 @@ Thread thread;
 
             @Override
             public void failure(RetrofitError error) {
+                Log.i("magic11c"," failure response   "+error);
+                try {
+                    if(error.getMessage().equalsIgnoreCase("500 Internal Server Error")){
+                        SnackbarManager.show(
+                                Snackbar.with(getContext())
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text(R.string.server_error)
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                    }else
+                    SnackbarManager.show(
+                            Snackbar.with(getContext())
+                                    .position(Snackbar.SnackbarPosition.TOP)
+                                    .text("Server Error: " + error.getMessage())
+                                    .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+                }
+                catch(Exception e){}
 
             }
         });

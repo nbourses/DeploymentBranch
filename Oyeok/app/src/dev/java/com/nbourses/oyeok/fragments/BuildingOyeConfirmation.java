@@ -294,8 +294,6 @@ public class BuildingOyeConfirmation extends Fragment {
                 }else{
                    // AppConstants.PROPERTY = "home";
                     AppConstants.CONFIG="";
-                    //text="<html>Connect'.........,, : <font color=#ff9f1c><big>32</big></font> Nearby Brokers</html>";
-                    //btn_listing.setText(Html.fromHtml(text));
                     ((ClientMainActivity)getActivity()).CloseBuildingOye();
                     ((ClientMainActivity)getActivity()).openOyeSreen();
                 }
