@@ -2057,8 +2057,8 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
                                             orMax = Integer.parseInt(price.getString("or_max"));
                                             Log.i("TRACE", "RESPONSEDATArr" + orMin);
                                             Log.i("TRACE", "RESPONSEDATArr" + orMax);
-                                           // orMin = 500 * (Math.round(orMin / 500));
-                                            //orMax = 500 * (Math.round(orMax / 500));
+                                            orMin = 100 * (Math.round(orMin / 100));
+                                            orMax = 100 * (Math.round(orMax / 100));
 //                                            Log.i("TRACE", "RESPONSEDATAr" + orMin);
 //                                            Log.i("TRACE", "RESPONSEDATAr" + orMax);
                                            // BroadCastMinMaxValue(llMin, llMax, orMin, orMax);

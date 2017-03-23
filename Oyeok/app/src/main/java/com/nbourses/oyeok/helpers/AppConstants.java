@@ -71,6 +71,10 @@ public class AppConstants {
     public static final String SETLOCN = "setLocation";
     public static final String USER_ID = "userId";
     public static final String NAME = "name";
+    public static final String ORGANIZATION_NAME = "OrgnizationName";
+    public static final String ORGANIZATION_ID = "OrgnizationId";
+    public static final String PAN = "pan";
+
     public static final String EMAIL = "email";
     public static final String CLIENT_HEADING = "client_heading";
     public static final String MARKERSELECTED = "markerSelected";

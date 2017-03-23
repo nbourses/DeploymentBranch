@@ -101,6 +101,15 @@ public class User {
         @SerializedName("pincode")
         public String pincode;
 
+    @SerializedName("organization_name")
+    public String organization_name;
+
+    @SerializedName("organization_id")
+    public String organization_id;
+
+    @SerializedName("pan")
+    public String pan;
+
     @SerializedName("property_type")
     private String property_type;
 
@@ -211,7 +220,31 @@ public class User {
                 this.locality = locality;
         }
 
-        @SerializedName("locality")
+    public String getOrganization_id() {
+        return organization_id;
+    }
+
+    public void setOrganization_id(String organization_id) {
+        this.organization_id = organization_id;
+    }
+
+    public String getOrganization_name() {
+        return organization_name;
+    }
+
+    public void setOrganization_name(String organization_name) {
+        this.organization_name = organization_name;
+    }
+
+    public String getPan() {
+        return pan;
+    }
+
+    public void setPan(String pan) {
+        this.pan = pan;
+    }
+
+    @SerializedName("locality")
         private String locality;
 
         public String getDeviceId() {
