@@ -260,7 +260,7 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
         String phone = "8882434664";
         String productName = "partner_broker";
         String firstName = General.getSharedPreferences(getContext(),AppConstants.NAME);
-        String txnId = General.getSharedPreferences(getContext(),AppConstants.USER_ID) + "yo" /*System.currentTimeMillis()*/;
+        String txnId = General.getSharedPreferences(getContext(),AppConstants.USER_ID) + System.currentTimeMillis();
         String email=General.getSharedPreferences(getContext(),AppConstants.EMAIL);
 
         String sUrl = "https://test.payumoney.com/mobileapp/payumoney/success.php";
@@ -297,86 +297,18 @@ pb_des.setText("*Assured 30 Site Visits per Month\n*Dedicated Oyeok Assistant Ma
                 .setMerchantId(merchantId);
 
 
-            /*String phone = "8882434664";
-            String productName = "product_name";
-            String firstName = "piyush";
-            String txnId = "0nf7" + System.currentTimeMillis();
-            String email="piyush.jain@payu.in";
-            String sUrl = "https://test.payumoney.com/mobileapp/payumoney/success.php";
-            String fUrl = "https://test.payumoney.com/mobileapp/payumoney/failure.php";
-            String udf1 = "";
-            String udf2 = "";
-            String udf3 = "";
-            String udf4 = "";
-            String udf5 = "";
-            boolean isDebug = true;
-            String key = "dRQuiA";
-            String merchantId = "4928174" ;
 
-            PayUmoneySdkInitilizer.PaymentParam.Builder builder = new PayUmoneySdkInitilizer.PaymentParam.Builder();
-
-
-            builder.setAmount(getAmount())
-                    .setTnxId(txnId)
-                    .setPhone(phone)
-                    .setProductName(productName)
-                    .setFirstName(firstName)
-                    .setEmail(email)
-                    .setsUrl(sUrl)
-                    .setfUrl(fUrl)
-                    .setUdf1(udf1)
-                    .setUdf2(udf2)
-                    .setUdf3(udf3)
-                    .setUdf4(udf4)
-                    .setUdf5(udf5)
-                    .setIsDebug(isDebug)
-                    .setKey(key)
-                    .setMerchantId(merchantId);*/
 
 
         PayUmoneySdkInitilizer.PaymentParam paymentParam = builder.build();
 
 
-        //paymentParam.setMerchantHash(hash);
 
-
-
-       /* String serverCalculatedHash=hashCal(key+"|"+txnId+"|"+getAmount()+"|"+productName+"|"
-                +firstName+"|"+email+"|"+phone+"|"+udf1+"|"+udf2+"|"+udf3+"|"+udf4+"|"+udf5+"|"+salt);*/
-
-      // paymentParam.setMerchantHash(serverCalculatedHash);
         Log.i(TAG,"paymentParam "+paymentParam.getParams().toString());
-       /* PayUmoneySdkInitilizer.startPaymentActivityForResult(getActivity(), paymentParam);*/
+
 
    calculateServerSideHashAndInitiatePayment(paymentParam);
-       // PayUmoneySdkInitilizer.startPaymentActivityForResult(getActivity(), paymentParam);
 
-
-//             server side call required to calculate hash with the help of <salt>
-//             <salt> is already shared along with merchant <key>
-     /*        serverCalculatedHash =sha512(key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5|<salt>)
-
-             (e.g.)
-
-             sha512(dRQuiA|0nf7|10.0|product_name|piyush|piyush.jain@payu.in||||||salt)
-
-             9f1ce50ba8995e970a23c33e665a990e648df8de3baf64a33e19815acd402275617a16041e421cfa10b7532369f5f12725c7fcf69e8d10da64c59087008590fc
-*/
-
-        // Recommended
-
-
-        //calculateServerSideHashAndInitiatePayment(paymentParam);
-
-//        testing purpose
-
-       /* String salt = "";
-        String serverCalculatedHash=hashCal(key+"|"+txnId+"|"+getAmount()+"|"+productName+"|"
-                +firstName+"|"+email+"|"+udf1+"|"+udf2+"|"+udf3+"|"+udf4+"|"+udf5+"|"+salt);
-
-        paymentParam.setMerchantHash(serverCalculatedHash);
-
-        PayUmoneySdkInitilizer.startPaymentActivityForResult(MyActivity.this, paymentParam);*/
     }
 
 

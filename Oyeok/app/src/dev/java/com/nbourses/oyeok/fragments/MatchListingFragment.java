@@ -2,6 +2,7 @@ package com.nbourses.oyeok.fragments;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -10,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +25,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.nbourses.oyeok.R;
@@ -42,6 +51,8 @@ import com.nbourses.oyeok.models.OkAccept;
 import com.nbourses.oyeok.realmModels.Localities;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.payUMoney.sdk.PayUmoneySdkInitilizer;
+import com.payUMoney.sdk.SdkConstants;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.models.consumer.PNPublishResult;
@@ -68,6 +79,9 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -120,6 +134,10 @@ public class MatchListingFragment extends Fragment {
     @Bind(R.id.m_rate_indicatorf)
     TextView m_rate_indicatorf;
 
+    @Bind(R.id.continueb)
+    TextView continueb;
+
+
     private Timer timer;
     private String oye_id;
     private String req_avl = "REQ";
@@ -131,8 +149,11 @@ public class MatchListingFragment extends Fragment {
     private String price = "";
     private String broker_name = "";
     private String date = "";
+    private int verified = 0;
+    private int cost = 0 ;
     private MatchListingAdapter mAdapter;
     private List<MatchListing> matchList = new ArrayList<>();
+    private PayUmoneySdkInitilizer.PaymentParam.Builder builder;
     public MatchListingFragment() {
         // Required empty public constructor
     }
@@ -230,7 +251,12 @@ mrview.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Log.i("percent","okaccept called 3 :");
                 ok.setClickable(false);
+                if(verified ==0)
                               okaccept();
+                else{
+                    pay();
+                }
+
                 ok.setClickable(false);
             }
         });
@@ -289,6 +315,15 @@ mrview.setOnClickListener(new View.OnClickListener() {
 
                             config = jo.getString("req_avl").toUpperCase()+" ("+jo.getString("property_subtype").toUpperCase()+") "+jo.getString("furnishing").toUpperCase()+"@ "+General.currencyFormat(jo.getString("price")).toUpperCase();
                             root_config.setText(config);
+
+                            if(jo.getInt("quality") == 1){
+                                cost = jo.getInt("lead_price");
+                                continueb.setText("Continue for "+General.currencyFormat(cost+""));
+                            }else{
+
+                                continueb.setText("Continue for FREE"/*+General.currencyFormat(cost+"")*/);
+                            }
+
 
 /*<<<<<<< HEAD
                             *//*int a = Integer.parseInt(jo.getString("price"));
@@ -491,7 +526,59 @@ mrview.setOnClickListener(new View.OnClickListener() {
         }
     }
 
+    public void pay(){
+        String phone = "8882434664";
+        String productName = "ppc";
+        String firstName = General.getSharedPreferences(getContext(),AppConstants.NAME);
+        String txnId = General.getSharedPreferences(getContext(),AppConstants.USER_ID) + System.currentTimeMillis();
+        String email=General.getSharedPreferences(getContext(),AppConstants.EMAIL);
 
+        String sUrl = "https://test.payumoney.com/mobileapp/payumoney/success.php";
+        String fUrl = "https://test.payumoney.com/mobileapp/payumoney/failure.php";
+
+        String udf1 = "";
+        String udf2 = "";
+        String udf3 = "";
+        String udf4 = "";
+        String udf5 = "";
+        boolean isDebug = false;
+        String key = "6n0lZhgF";
+        String merchantId = "5703399" ;
+
+        builder = new PayUmoneySdkInitilizer.PaymentParam.Builder();
+
+//*//*.setProductName(productName)*//*
+        builder.setAmount(Double.parseDouble(cost+""))
+                .setKey(key)
+                .setTnxId(txnId)
+                .setPhone(phone)
+                .setFirstName(firstName)
+                .setEmail(email)
+                .setsUrl(sUrl)
+                .setfUrl(fUrl)
+                .setUdf1(udf1)
+                .setUdf2(udf2)
+                .setIsDebug(isDebug)
+                .setUdf3(udf3)
+                .setUdf4(udf4)
+                .setUdf5(udf5)
+                .setProductName(productName)
+                .setMerchantId(merchantId);
+
+
+
+
+
+        PayUmoneySdkInitilizer.PaymentParam paymentParam = builder.build();
+
+
+
+        Log.i("TAG","paymentParam "+paymentParam.getParams().toString());
+
+
+        calculateServerSideHashAndInitiatePayment(paymentParam);
+
+    }
 
     private void okaccept(){
 
@@ -655,5 +742,126 @@ mrview.setOnClickListener(new View.OnClickListener() {
         }
 
     }
+
+
+    private void calculateServerSideHashAndInitiatePayment(final PayUmoneySdkInitilizer.PaymentParam paymentParam) {
+
+
+        String url = "https://ssl.hailyo.com/1/a/payu/hash";
+
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+
+                   /* Log.i("app_activity", "Server calculated Hash jsonObject :  " + jsonObject.getJSONObject("responseData").getString("hash"));
+
+                   */
+                    Log.i("app_activity", "Server calculated Hash paymentParam jsonObject:  " + jsonObject);
+                    String hash = jsonObject.getJSONObject("responseData").getString("hash");
+
+                    paymentParam.setMerchantHash(hash);
+
+                    PayUmoneySdkInitilizer.startPaymentActivityForResult(getActivity(), paymentParam);
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.i("app_activity", "Server calculated Hash jsonObject 1 :  " + e.getMessage());
+                }
+            }
+
+        }, new com.android.volley.Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Log.i("app_activity", "Server calculated Hash jsonObject 1 VolleyError 1 :  " + error.networkResponse);
+                Log.i("app_activity", "Server calculated Hash jsonObject 1 VolleyError 2 :  " + error.getNetworkTimeMs());
+                Log.i("app_activity", "Server calculated Hash jsonObject 1 VolleyError 3 :  " + error.getMessage());
+
+                if (error instanceof NoConnectionError) {
+                    Toast.makeText(getContext(),
+                            getActivity().getString(R.string.connect_to_internet),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(),
+                            error.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                return paymentParam.getParams();
+            }
+        };
+        Volley.newRequestQueue(getContext()).add(jsonObjectRequest);
+
+
+    }
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("TAG","partner broker 2 "+requestCode+  " "+resultCode);
+        if (requestCode == PayUmoneySdkInitilizer.PAYU_SDK_PAYMENT_REQUEST_CODE) {
+
+            /*if(data != null && data.hasExtra("result")){
+              String responsePayUmoney = data.getStringExtra("result");
+                if(SdkHelper.checkForValidString(responsePayUmoney))
+                    showDialogMessage(responsePayUmoney);
+            } else {
+                showDialogMessage("Unable to get Status of Payment");
+            }*/
+
+
+            if (resultCode == RESULT_OK) {
+                Log.i("TAG", "Success - Payment ID : " + data.getStringExtra(SdkConstants.PAYMENT_ID));
+                String paymentId = data.getStringExtra(SdkConstants.PAYMENT_ID);
+                showDialogMessage("Payment Success Id : " + paymentId);
+                General.setSharedPreferences(getContext(),AppConstants.PARTNER_BROKER,"yes");
+                View v = getActivity().findViewById(R.id.partner_b);
+                v.setVisibility(View.GONE);
+                okaccept();
+
+            } else if (resultCode == RESULT_CANCELED) {
+                Log.i("TAG", "failure");
+                showDialogMessage("cancelled");
+            } else if (resultCode == PayUmoneySdkInitilizer.RESULT_FAILED) {
+                Log.i("app_activity", "failure");
+
+                if (data != null) {
+                    if (data.getStringExtra(SdkConstants.RESULT).equals("cancel")) {
+
+                    } else {
+                        showDialogMessage("failure");
+                    }
+                }
+                //Write your code if there's no result
+            } else if (resultCode == PayUmoneySdkInitilizer.RESULT_BACK) {
+                Log.i("TAG", "User returned without login");
+                showDialogMessage("User returned without login");
+            }
+        }
+    }
+    private void showDialogMessage(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("TAG");
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+
+    }
+
 }
 

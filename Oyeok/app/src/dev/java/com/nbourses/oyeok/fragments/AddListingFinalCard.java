@@ -672,6 +672,7 @@ private void init(){
         if(Avail.isChecked()){
             Log.i("Reqstatus","Reqstatus 1 inside: "+Avail.isChecked()+ " "+Req.isChecked());
 
+
             add_Building.setReq_avl("avl");
         }else{
             add_Building.setReq_avl("req");

@@ -24,6 +24,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nbourses.oyeok.MyApplication;
@@ -144,7 +146,9 @@ private TextView Cancel,back,usertext;
                 if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
                     ((MyPortfolioActivity) getActivity()).closeCardContainer();
                     ((MyPortfolioActivity) getActivity()).openAddListing();
-                }else
+                }
+
+                else
                 if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                     ((BrokerMap) getActivity()).closeCardContainer();
                     ((BrokerMap)getActivity()).openAddListing();
@@ -286,7 +290,10 @@ private TextView Cancel,back,usertext;
 
                                     startActivity(in);
                         }
-                    }else
+                    }
+
+
+                    else
                     if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
                         ((BrokerMap) getActivity()).closeCardContainer();
                         ((BrokerMap) getActivity()).setlocation(name);
@@ -405,7 +412,12 @@ private TextView Cancel,back,usertext;
                                     }else
                                     if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
                                         ((MyPortfolioActivity) getActivity()).openAddListingFinalCard();
-                                    }else
+                                    }
+                                    if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("mentalMaps")){
+                                        getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
+                                        /*plotSelectedBuilding(adapter.getItem(position).getLat()+"",adapter.getItem(position).getLng()+"");
+                              */      }
+                                    else
                                     ((BrokerMap)getActivity()).openAddListingFinalCard();
                                 }else if(first){
 

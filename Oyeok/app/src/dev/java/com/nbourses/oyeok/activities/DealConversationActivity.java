@@ -4,21 +4,28 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.RemoteException;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -161,9 +168,15 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 
    // private DBHelper dbHelper;
 
+    private  Intent callIntent;
+    private static final int REQUEST_CALL_PHONE = 2;
+    private static final int REQUEST_CONTACTS = 3;
+
     private String onlineColor;
     private String offlineColor;
     private String typingColor;
+    private String clientNo;
+    private String clientName;
 
     private static final String TAG = "DealConversationActivit";
     private static final int REQUEST_CAMERA = 1;
@@ -383,6 +396,7 @@ public class DealConversationActivity extends AppCompatActivity implements OnRat
 //        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(chatMessageReceived);
         super.onPause();
         General.setSharedPreferences(this,AppConstants.CHAT_OPEN_OK_ID,null);
+
 
           pubnub.removeListener(s);
           pubnub.unsubscribe();
@@ -1591,6 +1605,12 @@ if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCas
 
 
                 }
+                else if (msgStatus.equalsIgnoreCase("OKC")){
+
+                    userType = ChatMessageUserType.CONTACT;
+
+
+                }
 
 
                 else{
@@ -1671,7 +1691,8 @@ if(!channel_name.equalsIgnoreCase("my_channel") && !channel_name.equalsIgnoreCas
 
 
     private void displayMessage(){
-
+        chatMessages.clear();
+        listAdapter.notifyDataSetChanged();
         Log.i(TAG, "until toro foro loro displayMessage ");
         myRealm = General.realmconfig(this);
         String body = null;
@@ -1755,6 +1776,12 @@ if(myRealm.isInTransaction())
 
 
                     userType = ChatMessageUserType.LISTING;
+
+
+                }
+                else if (c.getStatus().equalsIgnoreCase("OKC")){
+
+                    userType = ChatMessageUserType.CONTACT;
 
 
                 }
@@ -2193,7 +2220,7 @@ if(i==AppConstants.MSG_COUNT) {
      */
 
     public void sendNotification(final JSONObject jsonMsg) throws JSONException {
-String channel;
+        String channel;
         if (channel_name.equalsIgnoreCase("my_channel")){
 
             channel = General.getSharedPreferences(this, AppConstants.TIME_STAMP_IN_MILLI);
@@ -3269,6 +3296,52 @@ Log.i(TAG,"Caught in exception clearing notification count "+e);
 
     }
 
+    public void saveContact(String name, String no){
+        clientName = name;
+        clientNo = no;
+        String contactPermission = Manifest.permission.READ_CONTACTS;
+        int hasPermission = ContextCompat.checkSelfPermission(this, contactPermission);
+        String[] permissions = new String[] { contactPermission };
+            if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(permissions, REQUEST_CONTACTS);
+                }
+
+            } else {
+
+                Intent contactIntent = new Intent(ContactsContract.Intents.SHOW_OR_CREATE_CONTACT,ContactsContract.Contacts.CONTENT_URI);
+                contactIntent.setData(Uri.parse("tel:"+no));//Add the mobile number here
+                contactIntent.putExtra(ContactsContract.Intents.Insert.PHONE, name); //ADD contact name here
+                //Below Start activity function will display the Add contacts native screen along with your input data
+                startActivity(contactIntent);
+            }
+
+
+
+        }
+
+
+    public void call(String no){
+        clientNo = no;
+        callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:"+no));//+912233836068
+        callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        String callPermission = Manifest.permission.CALL_PHONE;
+
+        int hasPermission = ContextCompat.checkSelfPermission(this, callPermission);
+        String[] permissions = new String[] { callPermission };
+//                if(isTelephonyEnabled()) {
+        if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(permissions, REQUEST_CALL_PHONE);
+            }
+
+        } else {
+
+            startActivity(callIntent);
+        }
+    }
+
     private void checkLocalBlockStatus(){
         Realm myRealm = General.realmconfig(this);
         DealStatusType dealStatusType = null;
@@ -3304,8 +3377,28 @@ Log.i(TAG,"Caught in exception clearing notification count "+e);
         if(requestCode==REQUEST_EXTERNAL_STORAGE){
             if(permissions.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
 
-                Log.i("==== ","SELECT IMAGE ==============");
+                Log.i("==== ","SELECT IMAGEy1 ==============");
                 selectImage();
+            }
+            else{
+                //do nothing
+            }
+        }
+        else if(requestCode==REQUEST_CALL_PHONE){
+            if(permissions.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+
+                Log.i("==== ","SELECT IMAGEy2 ==============");
+                call(clientNo);
+            }
+            else{
+                //do nothing
+            }
+        }
+        else if(requestCode==REQUEST_CONTACTS){
+            if(permissions.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+
+                Log.i("==== ","SELECT IMAGEy3 ==============");
+                  saveContact(clientName,clientNo);
             }
             else{
                 //do nothing
