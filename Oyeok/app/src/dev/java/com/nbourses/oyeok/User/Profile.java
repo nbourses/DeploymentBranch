@@ -19,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,9 +45,10 @@ import retrofit.client.Response;
 
 public class Profile extends Fragment {
     private TextView role_txt,phoneTxt;
-    private EditText emailTxt,username_txt;
-    private Button updateProfile;
+    private EditText emailTxt,username_txt,ed_Agency_name,ed_pan;
+    private Button updateProfile,Create_org;
     private ImageView profileImage,profileImageMain;
+    CheckBox check_box;
    // DBHelper dbhelper;
     String filePath="";
 //
@@ -80,17 +83,38 @@ public class Profile extends Fragment {
 
         myRealm = General.realmconfig(getContext());
 
-
-
         //dbhelper=new DBHelper(getActivity());
         username_txt=(EditText)layout.findViewById(R.id.txt_user);
         updateProfile= (Button)layout.findViewById(R.id.update_profile);
+        check_box=(CheckBox)layout.findViewById(R.id.check_box);
+        ed_Agency_name=(EditText)layout.findViewById(R.id.ed_Agency_name);
+        ed_pan=(EditText)layout.findViewById(R.id.ed_pan);
+        Create_org= (Button)layout.findViewById(R.id.Create_org);
+
        // Log.i("TAG","fakata name 12 "+dbhelper.getValue(DatabaseConstants.name));
        // Log.i("TAG","fakata email 12 "+dbhelper.getValue(DatabaseConstants.email));
         Log.i("TAG","fakata email 13 "+General.getSharedPreferences(getContext(), AppConstants.NAME));
         Log.i("TAG","fakata email 13 "+General.getSharedPreferences(getContext(), AppConstants.EMAIL));
         Log.i("TAG","fakata email 14 "+General.getSharedPreferences(getContext(), AppConstants.MOBILE_NUMBER));
         Log.i("TAG","fakata email 14 "+General.getSharedPreferences(getContext(), AppConstants.ROLE_OF_USER));
+
+        check_box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    ed_Agency_name.setVisibility(View.VISIBLE);
+                    ed_pan.setVisibility(View.VISIBLE);
+                    Create_org.setVisibility(View.VISIBLE);
+                    updateProfile.setVisibility(View.GONE);
+
+                }else{
+                    ed_Agency_name.setVisibility(View.GONE);
+                    ed_pan.setVisibility(View.GONE);
+                    Create_org.setVisibility(View.GONE);
+                    updateProfile.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
 
         if(!General.getSharedPreferences(getContext(), AppConstants.NAME).equals("null")) {
@@ -196,11 +220,13 @@ public class Profile extends Fragment {
         user.setMobileNo(phoneTxt.getText().toString());
         user.setEmail(emailTxt.getText().toString());
         user.setName((username_txt.getText().toString()));
-        user.setUserRole((String) role_txt.getText());
-//        user.setUserId(dbhelper.getValue(DatabaseConstants.userId));
-            user.setUserId(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
 
-            user.setMyPhoto(filePath);
+        user.setPan((ed_pan.getText().toString()));
+        user.setPan((ed_Agency_name.getText().toString()));
+
+        user.setUserRole((String) role_txt.getText());
+        user.setUserId(General.getSharedPreferences(getContext(),AppConstants.USER_ID));
+        user.setMyPhoto(filePath);
         user.setPlatform("android");
         user.setSeeWhat("all");
         user.setAdditionalProperty(null, null);
@@ -208,13 +234,14 @@ public class Profile extends Fragment {
         //{"email":"nvew@xyz", "user_role":"broker", "name": "New","my_photo":"smiles", "user_id":"a03ap69xm641mfoldqjlx15h1a27vy07"}
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+
         UserApiService userApiService = restAdapter.create(UserApiService.class);
         Log.i("Profile","update profile request call"+user);
-        //if (dbhelper.getValue(DatabaseConstants.offmode).equalsIgnoreCase("null") && isNetworkAvailable()) {
-        userApiService.userUpdateProfile(user, new Callback<UpdateProfile>() {
 
+        userApiService.userUpdateProfile(user, new Callback<UpdateProfile>() {
             @Override
             public void success(UpdateProfile updateProfile, Response response) {
+
                 General.slowInternetFlag = false;
                 General.t.interrupt();
                 Log.i("Profile","success"+response);
@@ -224,38 +251,16 @@ public class Profile extends Fragment {
                             .text("Profile updated successfully")
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
-
-                        //dbhelper.save(DatabaseConstants.email, emailTxt.getText().toString());
                 General.setSharedPreferences(getContext(), AppConstants.EMAIL,emailTxt.getText().toString());
-               // dbhelper.save(DatabaseConstants.name,username_txt.getText().toString());
                 General.setSharedPreferences(getContext(),AppConstants.NAME,username_txt.getText().toString());
-               // dbhelper.save(DatabaseConstants.imageFilePath,filePath);
-                //drawerFragment = (FragmentDrawer) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-//                AppConstants.EMAIL_PROFILE=email;
+
+                General.setSharedPreferences(getContext(),AppConstants.ORGANIZATION_NAME,ed_Agency_name.getText().toString());
+                General.setSharedPreferences(getContext(),AppConstants.PAN,ed_pan.getText().toString());
+                General.setSharedPreferences(getContext(),AppConstants.ORGANIZATION_ID,"org_id");
                 profileImageMain = (ImageView)getActivity().findViewById(R.id.profile_image_main);
-
-//                if(!dbhelper.getValue(DatabaseConstants.imageFilePath).equalsIgnoreCase("null")) {
-//                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(dbhelper.getValue(DatabaseConstants.imageFilePath));
-//                    profileImageMain.setImageBitmap(yourSelectedImage);
-//                }
-
-               /* if (!General.getSharedPreferences(getContext(),AppConstants.EMAIL).equalsIgnoreCase("null")) {
-                    emailTxt1.setVisibility(View.VISIBLE);
-                    emailTxt1.setText(General.getSharedPreferences(getContext(),AppConstants.EMAIL));
-
-                }*/
-                /*BrokerMainActivity act=new
-                         BrokerMainActivity();
-                act.profileEmailUpdate(email);*/
-//                ((BrokerMainActivity)getContext()).profileEmailUpdate(email);
-
                 Intent in = new Intent(AppConstants.EMAIL_PROFILE);
-                //in.putExtra("emailProfile", email);
                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);
-//                tx=(TextView) getView().findViewById(R.id.txtEmail);
-//                Log.i("kaka","kaka"+tx.getText());
-//                tx.setText("sushil");
-//                Log.i("kaka","kaka"+tx.getText());
+
 
             }
 
@@ -264,15 +269,14 @@ public class Profile extends Fragment {
 
                 General.slowInternetFlag = false;
                 General.t.interrupt();
-
                 Log.i("update profile", "failed "+error );
             }
         });
 
-    }else{
+      }else{
 
         General.internetConnectivityMsg(getContext());
-    }
+      }
     }
 
 

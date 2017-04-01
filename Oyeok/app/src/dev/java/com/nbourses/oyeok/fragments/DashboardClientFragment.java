@@ -2542,16 +2542,16 @@ else {
                                             llMax = Integer.parseInt(price.getString("ll_max"));
                                             Log.i("TRACE", "RESPONSEDATArr" + llMin);
                                             Log.i("TRACE", "RESPONSEDATArr" + llMax);
-                                            llMin = 5 * (Math.round(llMin / 5));
-                                            llMax = 5 * (Math.round(llMax / 5));
+                                            /*llMin = 5 * (Math.round(llMin / 5));
+                                            llMax = 5 * (Math.round(llMax / 5));*/
                                             Log.i("TRACE", "RESPONSEDATAr" + llMin);
                                             Log.i("TRACE", "RESPONSEDATAr" + llMax);
                                             orMin = Integer.parseInt(price.getString("or_min"));
                                             orMax = Integer.parseInt(price.getString("or_max"));
                                             Log.i("TRACE", "RESPONSEDATArr" + orMin);
                                             Log.i("TRACE", "RESPONSEDATArr" + orMax);
-                                            orMin = 500 * (Math.round(orMin / 500));
-                                            orMax = 500 * (Math.round(orMax / 500));
+                                            orMin = 100 * (Math.round(orMin / 100));
+                                            orMax = 100 * (Math.round(orMax / 100));
 
                                             Log.i("TRACE", "RESPONSEDATAr" + orMin);
                                             Log.i("TRACE", "RESPONSEDATAr" + orMax);

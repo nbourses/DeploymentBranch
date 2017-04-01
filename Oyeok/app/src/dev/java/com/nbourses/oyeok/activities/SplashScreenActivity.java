@@ -101,16 +101,20 @@ public class SplashScreenActivity extends AppCompatActivity {
             public void onInitFinished(BranchUniversalObject branchUniversalObject, LinkProperties linkProperties, BranchError error) {
                 if (error == null && branchUniversalObject != null) {
 
-
                     try {
-
                         General.setSharedPreferences(getApplicationContext(),AppConstants.REFERING_ACTIVITY_LOG_ID,branchUniversalObject.getMetadata().get(AppConstants.USER_ID));
-
                         SnackbarManager.show(
                     Snackbar.with(context)
                            .position(Snackbar.SnackbarPosition.BOTTOM)
                             .text("You are refered by "+branchUniversalObject.getMetadata().get(AppConstants.NAME))
                             .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
+
+                        General.setSharedPreferences(getApplicationContext(),AppConstants.REFERING_ACTIVITY_LOG_ID,branchUniversalObject.getMetadata().get(AppConstants.ORGANIZATION_ID));
+                        SnackbarManager.show(
+                                Snackbar.with(context)
+                                        .position(Snackbar.SnackbarPosition.TOP)
+                                        .text("You Organization id is : "+branchUniversalObject.getMetadata().get(AppConstants.ORGANIZATION_ID))
+                                        .color(Color.parseColor(AppConstants.DEFAULT_SNACKBAR_COLOR)));
 
                         /* AlertDialog.Builder dialog = new AlertDialog.Builder(SplashScreenActivity.this);
                         dialog.setCancelable(false);
