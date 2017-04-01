@@ -283,6 +283,7 @@ public class BrokerPreokFragment extends Fragment implements CustomPhasedListene
     private int prompt = 2;
     private static final long THRESHOLD_MILLIS = 2000L;
     private long lastClickMillis = 0;
+    private int verified = 0 ;
 
     Animation bounce;
     Animation zoomin;
@@ -1555,6 +1556,12 @@ private String transaction_type="Rental";
             Log.i(TAG,"furnishing "+jsonObjectArray.getJSONObject(position).getString("furnishing"));
             ptype = jsonObjectArray.getJSONObject(position).getString("property_type");
             name = jsonObjectArray.getJSONObject(position).getString("name");
+            verified = jsonObjectArray.getJSONObject(position).getInt("quality");
+            if(verified == 0){
+                name = name+" (unverified)";
+            }else{
+                name = name+" (verified)";
+            }
             Log.i(TAG,"property_type "+ptype);
             Log.i(TAG, "property_subtype " + pstype);
             texName.setText(name);

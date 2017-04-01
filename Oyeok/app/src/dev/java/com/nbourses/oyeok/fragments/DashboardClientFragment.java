@@ -576,9 +576,13 @@ else {
                         Log.i(TAG,"asdfgh "+cardConfig);
                         txtFilterValue.setText(cardConfig);
                         txtFilterValue.setEnabled(false);
-                        TastyToast.makeText(getContext(),"Type address & search, click on Building, will be added watchlist",TastyToast.LENGTH_LONG,TastyToast.INFO);
+                       // TastyToast.makeText(getContext(),"Type address & search, click on Building, will be added watchlist",TastyToast.LENGTH_LONG,TastyToast.INFO);
                         txt_info.setVisibility(View.VISIBLE);
                         txt_info.setText("Type address & search, click on Building, will be added watchlist");
+                        AppConstants.SETLOCATION = true;
+                        View vi = getActivity().findViewById(R.id.hdroomsCount);
+                        vi.clearAnimation();
+                        vi.setVisibility(View.GONE);
                         return;
                     }
 
@@ -2174,6 +2178,10 @@ else {
 
             tvFetchingrates.setTextColor(Color.parseColor("#2dc4b6"));
 
+            View vi = getActivity().findViewById(R.id.hdroomsCount);
+            vi.clearAnimation();
+            vi.setVisibility(View.GONE);
+
         }else if(txtFilterValue.getText().toString().equalsIgnoreCase("done")){
 
 
@@ -2462,13 +2470,16 @@ else {
                             txtFilterValue.setText(oyetext);
                             txtFilterValue.setBackground(getContext().getResources().getDrawable(R.drawable.oye_button_border));
                             ((ClientMainActivity) getActivity()).CloseBuildingOyeComfirmation();
+
                            buildingSelected = true;
                             /*Intent in = new Intent(AppConstants.MARKERSELECTED);
+
                             in.putExtra("markerClicked", "false");
 
                             LocalBroadcastManager.getInstance(getContext()).sendBroadcast(in);*/
 
 //  END
+
 
                        if (!AppConstants.SETLOCATION) {
                            Log.i("jumba1",  "4545 3" );
@@ -2546,9 +2557,13 @@ else {
                                             Log.i("TRACE", "RESPONSEDATAr" + orMax);
 
 
+
                                                 map.clear();
                                                 BroadCastMinMaxValue(llMin, llMax, orMin, orMax);
                                                 marquee(500, 100);
+
+
+
                                                 buildingTextChange(SharedPrefs.getString(getActivity(), SharedPrefs.MY_LOCALITY), filterValueMultiplier);
                                                 recordWorkout.setBackgroundColor(Color.parseColor("#2dc4b6"));
                                                 mVisits.setBackground(getContext().getResources().getDrawable(R.drawable.bg_animation));
@@ -2556,14 +2571,18 @@ else {
                                                 search_building_icon.setVisibility(View.GONE);
                                                 buildingIcon.setVisibility(View.GONE);
                                                 fav.setVisibility(View.VISIBLE);
+
                                                 updateHorizontalPicker();
+
 
 
                                             try {
                                                 JSONArray buildings = new JSONArray(jsonResponseData.getString("buildings"));
                                                 Log.i("TRACE", "Response getprice buildings" + buildings);
                                                // JSONObject k = new JSONObject(buildings.get(1).toString());
+
                                                 for (int i = 0; i < buildings.length(); i++) {
+
                                                     try {
                                                         JSONObject j = new JSONObject(buildings.get(i).toString());
                                                         config[0] = j.getString("config");
@@ -2584,12 +2603,15 @@ else {
                                                         Log.i("Buildingdata", "longi" + longi);
                                                         loc[0] = new LatLng(lat, longi);
                                                         Log.i("Buildingdata", "loc " + loc[0]);
+
                                                         listing[0] = j.getString("listings");
                                                         transaction[0] = j.getString("transactions");
                                                         portal[0] = j.getString("portals");
                                                         Log.i("Buildingdata", "listing transaction portal" + listing[0] + " " + transaction[0] + " " + portal[0]);
+
                                                         //String customSnippet = rate_growth[i];
                                                         CacheBuildings(name[0], lat + "", longi + "", j.getString("locality"), ll_pm[0], or_psf[0], id[0], config[0], listing[0], portal[0], rate_growth[0], transaction[0]);
+
                                                     } catch (JSONException e) {
                                                         e.printStackTrace();
                                                     } catch (NumberFormatException e) {
@@ -2601,7 +2623,9 @@ else {
 
 
 
+
                                             } catch (Exception e) {
+
                                                 Log.i("Price Error", "Caught in exception Building plot success" + e.getMessage());
                                             }
 
@@ -2616,10 +2640,9 @@ else {
                                                 e.printStackTrace();
                                             }
 
-                                            String building_count = jsonResponseData.getString("building_count");
-                                            Log.i("Buildingdata", "loc " + building_count + " " + mCustomerMarker.length);
 
-                                                showFavourites();
+
+                                            showFavourites();
                                                 // drawLocalities();
                                                 // drawCircle();
                                                 mHelperView.setEnabled(true);
@@ -2682,7 +2705,11 @@ else {
                                 Log.i("Price Error", "Caught in exception getprice success" + e.getMessage());
                             }
 
-                            drawLocalities();
+                           try {
+                               drawLocalities();
+                           } catch (Exception e) {
+                               e.printStackTrace();
+                           }
 
 
                        }
@@ -3552,7 +3579,7 @@ else {
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 //                                  horizontalPicker.stopScrolling();
 //                                  marquee(500,100);
-            Log.i("MotionEvent.ACTION_UP", "========================= "+AppConstants.SETLOCATION+" "+spanning);
+            Log.i("MotionEvent.ACTION_UP", "========================= "+AppConstants.SETLOCATION+" "+spanning+"  "+AppConstants.SETLOCATIONOWNERQ2);
             updateHorizontalPicker();
             if (!spanning) {
                 if (isNetworkAvailable()) {
@@ -3622,6 +3649,24 @@ else {
                                 tvFetchingrates.setText(Html.fromHtml(txt));
                                 ((ClientMainActivity)getActivity()).getSupportActionBar().setTitle("Adding My Property");
                             }
+
+
+                            else if(AppConstants.SETLOCATIONOWNERQ2) {
+
+                                AppConstants.SETLOCATIONOWNERQ2 = true;
+                                ((ClientMainActivity)getActivity()).disEnDealsbtn(false);
+                                CallButton.setVisibility(View.GONE);
+                                Log.i(TAG,"asdfgh "+cardConfig);
+                                txtFilterValue.setText(cardConfig);
+                                txtFilterValue.setEnabled(false);
+                                TastyToast.makeText(getContext(),"Type address & search, click on Building, will be added watchlist",TastyToast.LENGTH_LONG,TastyToast.INFO);
+                                txt_info.setVisibility(View.VISIBLE);
+                                txt_info.setText("Type address & search, click on Building, will be added watchlist");
+
+                            }
+
+
+
                             else{
 //                                phaseGameTitle.setVisibility(View.GONE);
 //                                portfolioCount.setVisibility(View.GONE);
@@ -5733,6 +5778,7 @@ if(c.getType().equalsIgnoreCase("home")){
 
                             }
 
+
     try {
         if(!msg.equalsIgnoreCase("")) {
         SnackbarManager.show(
@@ -5744,6 +5790,7 @@ if(c.getType().equalsIgnoreCase("home")){
     } catch (Exception e) {
         e.printStackTrace();
     }
+
 
 
                             if (errors.equals("8")) {

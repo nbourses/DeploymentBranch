@@ -1,13 +1,16 @@
 package com.nbourses.oyeok.adapters;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.activities.DealConversationActivity;
 import com.nbourses.oyeok.enums.ChatMessageStatus;
 import com.nbourses.oyeok.enums.ChatMessageUserType;
 import com.nbourses.oyeok.helpers.AppConstants;
@@ -50,6 +54,7 @@ public class ChatListAdapter extends BaseAdapter {
     private ViewHolder5 holder5;
     private ViewHolder6 holder6;
     private WebView i;
+
     private Boolean isDefaultDeal = false;
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("h:mm a");
 
@@ -94,11 +99,64 @@ public class ChatListAdapter extends BaseAdapter {
         ViewHolder2 holder2;
         ViewHolder3 holder3;
         ViewHolder4 holder4;
+        ViewHolder7 holder7;
 
         Log.i("uri","message ust "+message.getUserType());
 
 
-        if (message.getUserType() == ChatMessageUserType.LISTING) {
+
+        if (message.getUserType() == ChatMessageUserType.CONTACT) {
+            if (convertView == null) {
+                v = LayoutInflater.from(context).inflate(R.layout.contact, null, false);
+
+                holder7 = new ViewHolder7();
+                holder7.save = (Button) v.findViewById(R.id.save);
+                holder7.call = (Button) v.findViewById(R.id.call);
+                holder7.name = (TextView) v.findViewById(R.id.name);
+
+
+
+
+                v.setTag(holder7);
+            }
+            else {
+                v = convertView;
+                holder7 = (ViewHolder7) v.getTag();
+            }
+
+            //String userName = message.getUserName(); // broker
+//            String userName = General.getSharedPreferences(context, AppConstants.NAME);
+//            String name = String.valueOf(userName.charAt(0)).toUpperCase() + userName.subSequence(1, userName.length());
+
+            Log.i("CONVER", "Chat message is Listing1" + message.getMessageText());
+
+            final List<String> list = Arrays.asList(message.getMessageText().split("--"));
+
+
+            try {
+                holder7.name.setText(list.get(0));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            holder7.call.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((DealConversationActivity)context).call(list.get(1));
+                }
+            });
+            holder7.save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((DealConversationActivity)context).saveContact(list.get(0),list.get(1));
+                }
+            });
+
+        }
+
+
+
+        else if (message.getUserType() == ChatMessageUserType.LISTING) {
             if (convertView == null) {
                 v = LayoutInflater.from(context).inflate(R.layout.cardview, null, false);
 
@@ -673,7 +731,7 @@ public class ChatListAdapter extends BaseAdapter {
 
     @Override
     public int getViewTypeCount() {
-        return 6;
+        return 7;
     }
 
     /*@Override
@@ -754,6 +812,12 @@ public class ChatListAdapter extends BaseAdapter {
         public TextView timeTextView;
     }
 
+    private class ViewHolder7 {
+        public Button call;
+        public Button save;
+        public TextView name;
+
+    }
     private class DownloadImageTask5 extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 

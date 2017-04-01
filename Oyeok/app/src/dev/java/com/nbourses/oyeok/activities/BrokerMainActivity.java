@@ -860,7 +860,11 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
             //String user_id = dbHelper.getValue(DatabaseConstants.userId);
             String user_id = General.getSharedPreferences(this,AppConstants.USER_ID);
             String name = General.getSharedPreferences(this,AppConstants.NAME);
+
+            String email = General.getSharedPreferences(this,AppConstants.EMAIL);
+
             String org_id= General.getSharedPreferences(getBaseContext(),AppConstants.ORGANIZATION_ID);
+
 
             Branch branch = Branch.getInstance(getApplicationContext());
 
@@ -875,7 +879,11 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
                     .setContentDescription("Get property at right price. ")
                     .addContentMetadata(AppConstants.USER_ID,user_id)
                     .addContentMetadata(AppConstants.NAME,name)
+
+                    .addContentMetadata(AppConstants.EMAIL,email)
+
                     .addContentMetadata(AppConstants.ORGANIZATION_ID,org_id)
+
                     .setCanonicalIdentifier(mob_no);
 
 
