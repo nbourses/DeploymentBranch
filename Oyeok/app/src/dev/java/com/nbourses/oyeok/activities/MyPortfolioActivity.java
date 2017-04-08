@@ -107,7 +107,7 @@ import retrofit.mime.TypedByteArray;
  * Created by sushil on 29/09/16.
  */
 
-public class MyPortfolioActivity extends BrokerMainPageActivity implements CustomPhasedListener,FragmentDrawer.FragmentDrawerListener {
+public class    MyPortfolioActivity extends BrokerMainPageActivity implements CustomPhasedListener,FragmentDrawer.FragmentDrawerListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -441,16 +441,16 @@ boolean cardflag=false,catalogflag=false;
         }
 
 
-        RealmResults<addBuildingRealm> result11 = realm.where(addBuildingRealm.class).equalTo("display_type", "both").findAllSorted("timestamp", false);
-        for (addBuildingRealm c : result11) {
-
-            Log.i("getLocality", "getLocality   : " + c.getLocality());
-            portListingModel portListingModel = new portListingModel(c.getId(), c.getBuilding_name(), c.getSublocality(), c.getGrowth_rate(), c.getLl_pm(), 0, c.getTimestamp(), null, c.getConfig(), c.getDisplay_type(), null);
-
-            addbuildingLL.add(portListingModel);
-
-
-        }
+//        RealmResults<addBuildingRealm> result11 = realm.where(addBuildingRealm.class).equalTo("display_type", "both").findAllSorted("timestamp", false);
+//        for (addBuildingRealm c : result11) {
+//
+//            Log.i("getLocality", "getLocality   : " + c.getLocality());
+//            portListingModel portListingModel = new portListingModel(c.getId(), c.getBuilding_name(), c.getSublocality(), c.getGrowth_rate(), c.getLl_pm(), 0, c.getTimestamp(), null, c.getConfig(), c.getDisplay_type(), null);
+//
+//            addbuildingLL.add(portListingModel);
+//
+//
+//        }
 
         RealmResults<addBuildingRealm> result1= realm.where(addBuildingRealm.class).equalTo("tt", "ll").or().equalTo("type","ADD").findAllSorted("timestamp",false);
         for(addBuildingRealm c :result1){

@@ -2934,6 +2934,7 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
 
     public void saveBuiding(String b_name){
         //HideBottomNavBar();
+        EnableDrawer(false);
          B_name=b_name;
         addlistingText.setVisibility(View.VISIBLE);
         String txt;
@@ -2992,6 +2993,7 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
     public void Reset(){
         Log.i(TAG,"rolewa 2 ");
         //]]btnMyDeals.setVisibility(View.VISIBLE);
+        EnableDrawer(true);
         addlistingText.setVisibility(View.GONE);
         btn_back.setVisibility(View.GONE);
         btn_cancel.setVisibility(View.GONE);
@@ -3047,12 +3049,12 @@ public class BrokerMap extends BrokerMainPageActivity implements CustomPhasedLis
           //  General.setBadgeCount(this,AppConstants.ADDB_COUNT_OR,General.getBadgeCount(this,AppConstants.ADDB_COUNT_OR)+1);
 
         add_Building.setGrowth_rate(null);
-        add_Building.setDisplay_type("both");
+        //add_Building.setDisplay_type("both");
         myRealm.beginTransaction();
         myRealm.copyToRealmOrUpdate(add_Building);
 //        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
         myRealm.commitTransaction();
-        Reset();
+        //Reset();
        // if(!General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
             Intent in = new Intent(getBaseContext(), MyPortfolioActivity.class);
             startActivity(in);
@@ -3317,7 +3319,9 @@ public void CloseSignUP(){
 
 
 
-
+    public  void EnableDrawer(Boolean state){
+        ((FragmentDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer)).EnableDrawer(state);
+    }
 
 
 

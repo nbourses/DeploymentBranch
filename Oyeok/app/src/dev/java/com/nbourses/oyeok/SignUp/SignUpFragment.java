@@ -221,7 +221,7 @@ public class SignUpFragment extends Fragment implements OnAcceptOkSuccess, Googl
 
     private Boolean gcon =  false;
 
-private LinearLayout signinpanel;
+    private LinearLayout signinpanel;
 
 
 

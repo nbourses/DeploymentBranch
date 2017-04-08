@@ -32,6 +32,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.nbourses.oyeok.MyApplication;
 import com.nbourses.oyeok.R;
+import com.nbourses.oyeok.activities.ClientMainActivity;
 import com.nbourses.oyeok.activities.DealConversationActivity;
 import com.nbourses.oyeok.helpers.AppConstants;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -373,6 +374,8 @@ public class InitialCard  extends Fragment {
         q2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                ((ClientMainActivity) getActivity()).EnableDrawer(false);
                 mTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("fixed Locality")
                         .setAction("click")
@@ -405,6 +408,7 @@ public class InitialCard  extends Fragment {
         q3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((ClientMainActivity) getActivity()).EnableDrawer(false);
                 mTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("save Travel Time")
                         .setAction("click")

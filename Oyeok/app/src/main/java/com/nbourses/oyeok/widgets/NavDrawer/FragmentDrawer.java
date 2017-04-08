@@ -148,10 +148,10 @@ public class FragmentDrawer extends Fragment {
                              Bundle savedInstanceState) {
         // Inflating view layout
         // Inflate the layout for this fragment
-        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.MyMaterialTheme1);
+       // final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(),R.style.MyMaterialTheme1);
 
         // clone the inflater using the ContextThemeWrapper
-        LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
+       // LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
 
 
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
@@ -227,6 +227,8 @@ public class FragmentDrawer extends Fragment {
     public void setUp(int fragmentId, DrawerLayout drawerLayout, final Toolbar toolbar) {
         containerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
+        //mDrawerLayout.set
+
         if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
             /*dynamicContent = (LinearLayout) getActivity().findViewById(R.id.dynamicContent);
             params = (ViewGroup.MarginLayoutParams) dynamicContent.getLayoutParams();*/
@@ -274,19 +276,20 @@ public class FragmentDrawer extends Fragment {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
+                Log.i("onDrawerSlide","=================================position");
                 try {
+
                     toolbar.setAlpha(1 - slideOffset / 2);
 
-                    // ((BrokerMainActivity)getActivity()).HideBottomNavBar();
-                } catch (Exception e) {
+                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-               /* if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-                    params.setMargins(0, 0, 0, 0);
-                    dynamicContent.setLayoutParams(params);
-                }*/
             }
+
+
+
+
         };
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -363,7 +366,17 @@ public class FragmentDrawer extends Fragment {
         }
     }
 
+
+
     public interface FragmentDrawerListener {
         public void onDrawerItemSelected(View view, int position, String itemTitle);
+    }
+
+    public  void EnableDrawer(Boolean state){
+        if(state){
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        }else{
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        }
     }
 }

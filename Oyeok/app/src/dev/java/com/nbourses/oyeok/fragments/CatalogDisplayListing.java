@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.nbourses.oyeok.R;
 import com.nbourses.oyeok.RPOT.ApiSupport.services.OyeokApiService;
@@ -267,6 +268,10 @@ LinearLayout btn_connect;
 
        // Log.i("createCatalogListing","addBuildingRealm createCatalogListing request "+createCatalogListing.getUser_id()+" :: "+createCatalogListing.getCatalog_id()+" : "+createCatalogListing.getCatalog_id()+" : "+createCatalogListing.getTitle()+" : "+createCatalogListing.getListing_ids().get(0)+","+createCatalogListing.getListing_ids().get(1));
 
+       // Gson g=new Gson(createCatalogListing);
+        Gson gson = new Gson();
+        String json = gson.toJson(createCatalogListing);
+        Log.i("magic11","getLocality  json "+json);
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(AppConstants.SERVER_BASE_URL).build();
         restAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
         OyeokApiService oyeokApiService = restAdapter.create(OyeokApiService.class);
@@ -290,15 +295,21 @@ LinearLayout btn_connect;
                     DisplayListRealm.clear();
                     int size =buildingdata.length();
                     for(int i=0;i<size;i++){
-                        JSONObject singleRowData = new JSONObject(buildingdata.get(i).toString());
+                        try {
+                            JSONObject singleRowData = new JSONObject(buildingdata.get(i).toString());
 
-                        String lat = singleRowData.getJSONArray("loc").get(1).toString();
-                        Log.i("Buildingdata", "lat " + lat);
-                        String longi = singleRowData.getJSONArray("loc").get(0).toString();
+                            String lat = singleRowData.getJSONArray("loc").get(1).toString();
+                            Log.i("Buildingdata", "lat " + lat);
+                            String longi = singleRowData.getJSONArray("loc").get(0).toString();
 
-                        ListingRealm listingRealm=new ListingRealm(singleRowData.getString("listing_id"),singleRowData.getString("name"),singleRowData.getString("config"),Integer.parseInt(singleRowData.getString("listed_ll_pm")),Integer.parseInt(singleRowData.getString("listed_or_psf")),lat,longi,Integer.parseInt(singleRowData.getString("real_ll_pm")),Integer.parseInt(singleRowData.getString("real_or_psf")),singleRowData.getString("possession_date"),singleRowData.getString("req_avl"),singleRowData.getString("locality"),singleRowData.getString("city"),singleRowData.getString("rate_growth"),singleRowData.getString("portals"),singleRowData.getString("listings"),singleRowData.getString("transactions"));
-                        DisplayListRealm.add(listingRealm);
-                        Log.i("Buildingdata", "name " + singleRowData.getString("name"));
+                            ListingRealm listingRealm=new ListingRealm(singleRowData.getString("listing_id"),singleRowData.getString("name"),singleRowData.getString("config"),Integer.parseInt(singleRowData.getString("listed_ll_pm")),Integer.parseInt(singleRowData.getString("listed_or_psf")),lat,longi,Integer.parseInt(singleRowData.getString("real_ll_pm")),Integer.parseInt(singleRowData.getString("real_or_psf")),singleRowData.getString("possession_date"),singleRowData.getString("req_avl"),singleRowData.getString("locality"),singleRowData.getString("city"),singleRowData.getString("rate_growth"),singleRowData.getString("portals"),singleRowData.getString("listings"),singleRowData.getString("transactions"));
+                            DisplayListRealm.add(listingRealm);
+                            Log.i("Buildingdata", "name " + singleRowData.getString("name"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
                         // AddDataToRealm();
 
                     }

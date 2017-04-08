@@ -239,6 +239,9 @@ public class ClientMainActivity extends AppCompatActivity implements NetworkInte
 
 
 
+    DrawerLayout mDrawerLayout;
+
+
     @Override
     public void onPositionSelected(int position, int count) {
         Log.i(TAG,"card position "+position);
@@ -2272,6 +2275,7 @@ public void openAddListing(){
         btnMyDeals.setVisibility(View.GONE);
         /*btn_back.setVisibility(View.VISIBLE);
         btn_cancel.setVisibility(View.VISIBLE);*/
+        EnableDrawer(false);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setbaseloc.setVisibility(View.GONE);
@@ -2313,6 +2317,7 @@ public void openAddListing(){
         btnMyDeals.setVisibility(View.VISIBLE);
         btn_back.setVisibility(View.GONE);
         btn_cancel.setVisibility(View.GONE);
+        EnableDrawer(false);
         if(!General.getSharedPreferences(getBaseContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
 
 //            Log.i(TAG,"rolewa 2 22");
@@ -2360,7 +2365,9 @@ public void openAddListing(){
         }
     }
 
-
+    public  void EnableDrawer(Boolean state){
+        ((FragmentDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer)).EnableDrawer(state);
+    }
 
 }
 

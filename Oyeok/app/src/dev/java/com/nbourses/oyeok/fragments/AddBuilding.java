@@ -413,12 +413,13 @@ private TextView Cancel,back,usertext;
                                     if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("portfolio")){
                                         ((MyPortfolioActivity) getActivity()).openAddListingFinalCard();
                                     }
-                                    if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("mentalMaps")){
+                                    else if(!Entry_point.equalsIgnoreCase("")&&Entry_point.equalsIgnoreCase("mentalMaps")){
                                         getFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_up, R.anim.slide_down).remove(getFragmentManager().findFragmentById(R.id.card)).commit();
                                         /*plotSelectedBuilding(adapter.getItem(position).getLat()+"",adapter.getItem(position).getLng()+"");
                               */      }
-                                    else
-                                    ((BrokerMap)getActivity()).openAddListingFinalCard();
+                                    else {
+                                        ((BrokerMap) getActivity()).openAddListingFinalCard();
+                                    }
                                 }else if(first){
 
                                     AddbuildingAPICall(adapter.getItem(position).getName(),adapter.getItem(position).getLat() + "",adapter.getItem(position).getLng() + "",adapter.getItem(position).getId()+"",adapter.getItem(position).getLocality(),adapter.getItem(position).getCity());

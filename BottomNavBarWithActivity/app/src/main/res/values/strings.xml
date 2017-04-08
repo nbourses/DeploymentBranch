@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BottomNavBarWithActivity</string>
+    <string name="title_activity_matching">MatchingActivity</string>
+    <string name="title_activity_watchlist">WatchlistActivity</string>
+</resources>

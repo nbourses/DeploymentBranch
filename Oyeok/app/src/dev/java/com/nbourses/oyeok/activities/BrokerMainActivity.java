@@ -273,18 +273,12 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
         rb.setCompoundDrawablesWithIntrinsicBounds( 0,R.drawable.ic_matching_clicked, 0,0);
        // rb.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_select_matching) , null, null);
         rb.setTextColor(Color.parseColor("#2dc4b6"));
-       // LinearLayout l_container=(LinearLayout)findViewById(R.id.);
-
         AppConstants.CURRENT_USER_ROLE ="broker";
         General.setSharedPreferences(this,AppConstants.ROLE_OF_USER,"broker");
         Log.i("uas","yo man 96");
 
         ButterKnife.bind(this);
-
-        //tv_change_region=(TextView) findViewById(R.id.tv_change_region);
-       // editBaseLocation=(ImageView) findViewById(R.id.editBaseLocation);
         setbaseloc.setVisibility(View.VISIBLE);
-        //favbroker.setVisibility(View.VISIBLE);
         tv_change_region.setVisibility(View.VISIBLE);
         basewraper.setVisibility(View.VISIBLE);
         try {
@@ -294,7 +288,6 @@ public class BrokerMainActivity extends BrokerMainPageActivity implements Fragme
                 Intent intent = new Intent(getBaseContext(), BrokerMap.class);
                 startActivity(intent);
             }else {
-//                AppConstants.BROKER_BASE_REGION="true";
                 tv_change_region.setText(General.getSharedPreferences(getBaseContext(), AppConstants.MY_BASE_LOCATION));
             }
         }catch(Exception e){

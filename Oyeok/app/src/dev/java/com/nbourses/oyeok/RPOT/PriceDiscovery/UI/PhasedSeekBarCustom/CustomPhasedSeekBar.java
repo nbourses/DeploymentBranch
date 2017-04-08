@@ -278,7 +278,7 @@ public class CustomPhasedSeekBar extends View {
 
             //Updating the current item while dragging or touch (but not on pointer up).Calculated according to which is the closest item.
             int distance;
-            int minIndex = 0;
+            int minIndex = 2;
             int minDistance = Integer.MAX_VALUE;
             for (int i = 0; i < count; i++) {
                 distance = Math.abs( mAnchors[i][0] - mCurrentX);

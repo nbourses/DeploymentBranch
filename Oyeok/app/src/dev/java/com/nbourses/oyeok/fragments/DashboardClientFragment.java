@@ -298,7 +298,6 @@ public class DashboardClientFragment extends Fragment implements CustomPhasedLis
     private TextView tv_building;
     private TextView tvFetchingrates;
     CustomMapFragment customMapFragment;
-    GPSTracker gpsTracker;
     static int x, y;
     static int top, bottom, left, right, width, height, truncate_first;
 
@@ -734,13 +733,13 @@ else {
         phaseGameTitle = (TextView) rootView.findViewById(R.id.phaseGameTitle);
         addBTextd = (TextView) rootView.findViewById(R.id.addBTextd);
         locality = (TextView) rootView.findViewById(R.id.locality);
-        btn_add_building.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Addbuilding();
-                ((ClientMainActivity)getActivity()).Reset();
-            }
-        });
+//        btn_add_building.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Addbuilding();
+//                ((ClientMainActivity)getActivity()).Reset();
+//            }
+//        });
 
         btn_add_listing.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -884,6 +883,7 @@ else {
             public void onClick(View v) {
                 Log.i(TAG,"callbutton status ");
                 AppConstants.cardCounter = 4;
+
                 ((ClientMainActivity)getActivity()).showCard();
               /*  callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:+912239659137"));//+912233836068
@@ -2012,23 +2012,6 @@ else {
 //        Spanned spanned = Html.fromHtml(code, this, null);
     }
 
-/*@Override
-    public Drawable getDrawable(String arg0) {
-        // TODO Auto-generated method stub
-        int id = 0;
-        if(arg0.equals("addbutton.png")){
-            id = R.drawable.sort_down_red;
-        }
-        if(arg0.equals("tu1.png")){
-            id = R.drawable.sort_up_green;
-        }
-        LevelListDrawable d = new LevelListDrawable();
-        Drawable empty = getResources().getDrawable(id);
-        d.addLevel(0, 0, empty);
-        d.setBounds(0, 0, empty.getIntrinsicWidth(), empty.getIntrinsicHeight());
-        return d;
-    }*/
-
     private BroadcastReceiver closeOyeScreenSlide = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -2115,14 +2098,6 @@ else {
         }
     }
 
-   /* @OnClick({R.id.ll_marker})
-    public void onButtonsClick(View v) {
-//        if (ll_marker.getId() == v.getId()) {
-           // txtFilterValue.performClick();
-            OnOyeClick();
-//        }
-    }*/
-
     @OnClick(R.id.txtFilterValue)
     public void onTxtFilterValueClick(View v) {
         Log.i("user_role","auto ok ...OnOyeClick1");
@@ -2164,49 +2139,19 @@ else {
 
 
             txtFilterValue.setText("done");
-            /*txt_info.setText("Is this Location Correct ? press Done");
-            addlistingText.setVisibility(View.VISIBLE);
-            addBText.setText("To confirm your building Location click on Done");*/
-
             locality.setText(General.getSharedPreferences(getContext(), AppConstants.LOCALITY));
-
             addBText.setText("You Selected: ");
-
             addBTextd.setText("(Click DONE to Confirm)");
             txt_info.setText("Is this Location Correct? Press Done else Drag");
-
-
             tvFetchingrates.setTextColor(Color.parseColor("#2dc4b6"));
-
             View vi = getActivity().findViewById(R.id.hdroomsCount);
             vi.clearAnimation();
             vi.setVisibility(View.GONE);
 
         }else if(txtFilterValue.getText().toString().equalsIgnoreCase("done")){
 
-
-            /*Log.i("user_role","role of user");
-            if(General.getSharedPreferences(getContext(),AppConstants.ROLE_OF_USER).equalsIgnoreCase("broker")) {
-                if(General.getSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION).equalsIgnoreCase("")) {
-                    General.setSharedPreferences(getContext(),AppConstants.MY_BASE_LAT,SharedPrefs.getString(getContext(),SharedPrefs.MY_LAT));
-                    General.setSharedPreferences(getContext(),AppConstants.MY_BASE_LNG,SharedPrefs.getString(getContext(),SharedPrefs.MY_LNG));
-                    General.setSharedPreferences(getContext(),AppConstants.MY_BASE_LOCATION,SharedPrefs.getString(getContext(),SharedPrefs.MY_LOCALITY));
-//                  AppConstants.BROKER_BASE_REGION="true";
-                    brokerType = "rent";
-                    fav.setClickable(true);
-                    ((ClientMainActivity) getActivity()).Reset();
-                }else {
-
-                    addlistinglayout.setVisibility(View.VISIBLE);
-                    txtFilterValue.setText(General.getSharedPreferences(getContext(), AppConstants.PROPERTY_CONFIG));
-                }
-            }else {
-
-            }*/
-            //Addbuilding();
             if(AppConstants.SETLOCATION)
             {
-
 
                 if(AppConstants.SETLOCATIONLTOP||AppConstants.SETLOCATIONTRAVELT) {
 
@@ -2218,20 +2163,6 @@ else {
                 }
                 else
                     Addbuilding();
-
-
-
-
-
-               /* new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        autoOk();
-                    }
-                });*/
-
-
-
 
             }
         }
@@ -3617,7 +3548,7 @@ else {
                                 addBTextd.setText("(Click on SAVE to FIX your area)");
                                 txt_info.setText("Find Location of Choice on Map & Save");
                                 String txt;
-                                txt="<font color=#2dc4b6><big>Drag & Save Location</big></font>";
+                                txt="<font color=#2dc4b6>Drag & Save Location</font>";
                                 tvFetchingrates.setText(Html.fromHtml(txt));
                                 tvRate.setText("save");
                                 ((ClientMainActivity)getActivity()).getSupportActionBar().setTitle("Choose Locality");
@@ -3632,7 +3563,7 @@ else {
                                 addBTextd.setText("(Click on SAVE to FIX your area)");
                                 txt_info.setText("Find Location of "+HomeTravel+" on Map & Save");
                                 String txt;
-                                txt="<font color=#2dc4b6><big>Drag & Save "+HomeTravel+" Location</big></font>";
+                                txt="<font color=#2dc4b6>Drag & Save "+HomeTravel+" Location</font>";
                                 tvFetchingrates.setText(Html.fromHtml(txt));
                                 tvRate.setText("save");
                                 ((ClientMainActivity)getActivity()).getSupportActionBar().setTitle("Adding Present "+HomeTravel);
@@ -4898,7 +4829,7 @@ public int price(String conf,int rate){
         add_Building.setLl_pm(0);
         add_Building.setOr_psf(0);
         add_Building.setGrowth_rate(null);
-        add_Building.setDisplay_type("both");
+       // add_Building.setDisplay_type("both");
         myRealm.beginTransaction();
         myRealm.copyToRealmOrUpdate(add_Building);
 //        myRealm.copyToRealmOrUpdate((Iterable<RealmObject>) myPortfolioModel);
